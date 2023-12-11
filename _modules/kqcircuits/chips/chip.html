@@ -772,7 +772,7 @@
 <div class="viewcode-block" id="Chip.produce_structures"><a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.produce_structures">[docs]</a>    <span class="k">def</span> <span class="nf">produce_structures</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Produces chip frame and possibly other structures before the ground grid.</span>
 
-<span class="sd">        This method is called in build(). Override this method to produce a different set of chip frames.</span>
+<span class="sd">        This method is called in post_build(). Override this method to produce a different set of chip frames.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">face</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frames_enabled</span><span class="p">):</span>
@@ -800,10 +800,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_produce_ground_tsvs</span><span class="p">(</span><span class="n">face_id</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_face1_gnd_tsvs</span><span class="p">:</span>
             <span class="n">tsv_box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_box</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">enlarged</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">edge_from_tsv</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">edge_from_tsv</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_produce_ground_tsvs</span><span class="p">(</span><span class="n">face_id</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">tsv_box</span><span class="o">=</span><span class="n">tsv_box</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_gnd_bumps</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_produce_ground_bumps</span><span class="p">()</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_produce_ground_tsvs</span><span class="p">(</span><span class="n">face_id</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">tsv_box</span><span class="o">=</span><span class="n">tsv_box</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Chip.get_box"><a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.get_box">[docs]</a>    <span class="k">def</span> <span class="nf">get_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -880,6 +877,8 @@
 
 <div class="viewcode-block" id="Chip.post_build"><a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.post_build">[docs]</a>    <span class="k">def</span> <span class="nf">post_build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">produce_structures</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_gnd_bumps</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_produce_ground_bumps</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_grid</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">produce_ground_grid</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge_base_metal_gap</span><span class="p">:</span>

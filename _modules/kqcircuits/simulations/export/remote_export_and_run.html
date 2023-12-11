@@ -797,6 +797,7 @@
                           <span class="n">kqc_remote_tmp_path</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                           <span class="n">detach_simulation</span> <span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                           <span class="n">poll_interval</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                          <span class="n">export_path_basename</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                           <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Exports locally and runs KQC simulations on a remote host. Froced to use no GUI (--quiet, -q option)</span>
@@ -806,6 +807,8 @@
 <span class="sd">        kqc_remote_tmp_path    (str): tmp directory on remote</span>
 <span class="sd">        detach_simulation     (bool): Detach the remote simulation from terminal, not waiting for it to finish</span>
 <span class="sd">        poll_interval           (int): Polling interval in seconds when waiting for the remote simulation to finish</span>
+<span class="sd">        export_path_basename   (str): Alternative export folder name for the simulation</span>
+<span class="sd">                                      If None, the simulation script name will be used</span>
 <span class="sd">        args                  (list): a list of strings:</span>
 <span class="sd">                                        - If starts with a letter and ends with &quot;.py&quot;  -&gt; export script</span>
 <span class="sd">                                        - If starts with &quot;-&quot; or &quot;--&quot;                   -&gt; script option</span>
@@ -834,8 +837,10 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Skipping unkown argument: </span><span class="si">{</span><span class="n">arg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-
-    <span class="n">export_tmp_paths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">)</span> <span class="o">/</span> <span class="nb">str</span><span class="p">(</span><span class="n">script</span><span class="o">.</span><span class="n">stem</span><span class="p">))</span> <span class="k">for</span> <span class="n">script</span> <span class="ow">in</span> <span class="n">export_scripts</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">export_path_basename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">export_scripts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">export_tmp_paths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">)</span> <span class="o">/</span> <span class="nb">str</span><span class="p">(</span><span class="n">export_path_basename</span><span class="p">))]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">export_tmp_paths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">)</span> <span class="o">/</span> <span class="nb">str</span><span class="p">(</span><span class="n">script</span><span class="o">.</span><span class="n">stem</span><span class="p">))</span> <span class="k">for</span> <span class="n">script</span> <span class="ow">in</span> <span class="n">export_scripts</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">export_scripts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;No valid simulation script provided in remote_export_and_run&quot;</span><span class="p">)</span>

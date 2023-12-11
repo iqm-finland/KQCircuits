@@ -717,12 +717,12 @@ the parent refpoint name, <cite>DPoint</cite> or <cite>DVector</cite>. Default i
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.elements.element.Element.face">
-<span class="sig-name descname"><span class="pre">face</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">face_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.face"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.face" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the face dictionary corresponding to self.face_ids[face_index].</p>
+<span class="sig-name descname"><span class="pre">face</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">face_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.face"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.face" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the face dictionary corresponding to face_id.</p>
 <p>The face dictionary contains key “id” for the face ID and keys for all the available layers in that face.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>face_index</strong> – index of the face_id in self.face_ids, default=0</p>
+<dd class="field-odd"><p><strong>face_id</strong> – name or index of the face, default=0</p>
 </dd>
 </dl>
 </dd></dl>
@@ -757,7 +757,7 @@ to False, it will be replaced with <cite>port</cite></p></li>
 <li><p><strong>direction</strong> – direction of the signal going _to_ the port to determine the location of the “corner” reference
 point which is used for waveguide direction. If evaluates to False as is the default, no corner point is
 added.</p></li>
-<li><p><strong>face_id</strong> – index of the face id, default=0</p></li>
+<li><p><strong>face_id</strong> – name or index of the face, default=0</p></li>
 </ul>
 </dd>
 </dl>
@@ -859,7 +859,7 @@ added.</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>shape</strong> – The shape (Region, DPolygon, etc.) to add to ground_grid_avoidance layer</p></li>
-<li><p><strong>face_id</strong> – primary face index of ground_grid_avoidance layer, default=0</p></li>
+<li><p><strong>face_id</strong> – Name or index of the primary face of ground_grid_avoidance layer, default=0</p></li>
 </ul>
 </dd>
 </dl>

@@ -561,6 +561,7 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.cross_section_simulation</span> <span class="kn">import</span> <span class="n">CrossSectionSimulation</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_json_encoder</span> <span class="kn">import</span> <span class="n">GeometryJsonEncoder</span>
 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <div class="viewcode-block" id="copy_elmer_scripts_to_directory"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.copy_elmer_scripts_to_directory">[docs]</a><span class="k">def</span> <span class="nf">copy_elmer_scripts_to_directory</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -638,16 +639,26 @@
     <span class="k">if</span> <span class="n">is_cross_section</span><span class="p">:</span>
         <span class="n">layers</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">layer_dict</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frequency</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-        <span class="n">frequency</span> <span class="o">=</span> <span class="p">[</span><span class="n">frequency</span><span class="p">]</span>
+    <span class="n">sim_data</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">get_simulation_data</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">is_cross_section</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">sim_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;london_penetration_depth&#39;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">sif_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;capacitance&#39;</span><span class="p">,</span> <span class="s1">&#39;inductance&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sif_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;capacitance&#39;</span><span class="p">,</span> <span class="s1">&#39;capacitance0&#39;</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">tool</span><span class="o">==</span><span class="s1">&#39;wave_equation&#39;</span><span class="p">:</span>
+        <span class="n">stem</span> <span class="o">=</span> <span class="n">sim_data</span><span class="p">[</span><span class="s1">&#39;parameters&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+        <span class="n">sif_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">stem</span> <span class="o">+</span> <span class="s1">&#39;_f&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">frequency</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sif_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">sim_data</span><span class="p">[</span><span class="s1">&#39;parameters&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span>
 
     <span class="n">json_data</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;tool&#39;</span><span class="p">:</span> <span class="n">tool</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">simulation</span><span class="o">.</span><span class="n">get_simulation_data</span><span class="p">(),</span>
+        <span class="o">**</span><span class="n">sim_data</span><span class="p">,</span>
         <span class="o">**</span><span class="p">({</span><span class="s1">&#39;layers&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">layer</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">datatype</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">layers</span><span class="o">.</span><span class="n">items</span><span class="p">()}}</span> <span class="k">if</span> <span class="n">is_cross_section</span> <span class="k">else</span> <span class="p">{}),</span>
         <span class="s1">&#39;mesh_size&#39;</span><span class="p">:</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">mesh_size</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">mesh_size</span><span class="p">,</span>
         <span class="s1">&#39;boundary conditions&#39;</span><span class="p">:</span> <span class="n">boundary_conditions</span><span class="p">,</span>
-        <span class="s1">&#39;workflow&#39;</span><span class="p">:</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">workflow</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">workflow</span><span class="p">,</span>
+        <span class="s1">&#39;workflow&#39;</span><span class="p">:</span> <span class="n">workflow</span><span class="p">,</span>
         <span class="s1">&#39;percent_error&#39;</span><span class="p">:</span> <span class="n">percent_error</span><span class="p">,</span>
         <span class="s1">&#39;max_error_scale&#39;</span><span class="p">:</span> <span class="n">max_error_scale</span><span class="p">,</span>
         <span class="s1">&#39;max_outlier_fraction&#39;</span><span class="p">:</span> <span class="n">max_outlier_fraction</span><span class="p">,</span>
@@ -658,20 +669,8 @@
         <span class="s1">&#39;linear_system_method&#39;</span><span class="p">:</span> <span class="n">linear_system_method</span><span class="p">,</span>
         <span class="s1">&#39;p_element_order&#39;</span><span class="p">:</span> <span class="n">p_element_order</span><span class="p">,</span>
         <span class="s1">&#39;is_axisymmetric&#39;</span><span class="p">:</span> <span class="n">is_axisymmetric</span><span class="p">,</span>
+        <span class="s1">&#39;sif_names&#39;</span><span class="p">:</span> <span class="n">sif_names</span><span class="p">,</span>
     <span class="p">}</span>
-
-    <span class="k">if</span> <span class="n">is_cross_section</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">json_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;london_penetration_depth&#39;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">sif_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;capacitance&#39;</span><span class="p">,</span> <span class="s1">&#39;inductance&#39;</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">sif_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;capacitance&#39;</span><span class="p">,</span> <span class="s1">&#39;capacitance0&#39;</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="n">tool</span><span class="o">==</span><span class="s1">&#39;wave_equation&#39;</span><span class="p">:</span>
-        <span class="n">stem</span> <span class="o">=</span> <span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;parameters&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
-        <span class="n">sif_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">stem</span> <span class="o">+</span> <span class="s1">&#39;_f&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">frequency</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">sif_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;parameters&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span>
-
-    <span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;sif_names&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sif_names</span>
 
     <span class="c1"># write .json file</span>
     <span class="n">json_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.json&#39;</span><span class="p">))</span>
@@ -691,8 +690,11 @@
     <span class="k">return</span> <span class="n">json_filename</span></div>
 
 
-<div class="viewcode-block" id="export_elmer_script"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer_script">[docs]</a><span class="k">def</span> <span class="nf">export_elmer_script</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">workflow</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="s1">&#39;simulation&#39;</span><span class="p">,</span>
-        <span class="n">script_file</span><span class="o">=</span><span class="s1">&#39;scripts/run.py&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="export_elmer_script"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer_script">[docs]</a><span class="k">def</span> <span class="nf">export_elmer_script</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+                        <span class="n">workflow</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">file_prefix</span><span class="o">=</span><span class="s1">&#39;simulation&#39;</span><span class="p">,</span>
+                        <span class="n">script_file</span><span class="o">=</span><span class="s1">&#39;scripts/run.py&#39;</span><span class="p">,</span>
+                        <span class="n">n_simulations</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create script files for running one or more simulations.</span>
 <span class="sd">    Create also a main script to launch all the simulations at once.</span>
@@ -703,21 +705,98 @@
 <span class="sd">        workflow(dict): Parameters for simulation workflow</span>
 <span class="sd">        file_prefix: Name of the script file to be created.</span>
 <span class="sd">        script_file: Name of the script file to run.</span>
+<span class="sd">        n_simulations: Total number of simulations</span>
 
 <span class="sd">    Returns:</span>
 
 <span class="sd">        Path of exported main script file</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">if</span> <span class="n">workflow</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">workflow</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
     <span class="n">sbatch</span> <span class="o">=</span> <span class="s1">&#39;sbatch_parameters&#39;</span> <span class="ow">in</span> <span class="n">workflow</span>
-    <span class="n">python_executable</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;python_executable&#39;</span><span class="p">,</span> <span class="s1">&#39;python&#39;</span><span class="p">)</span>
-    <span class="n">parallelize_workload</span> <span class="o">=</span> <span class="s1">&#39;n_workers&#39;</span> <span class="ow">in</span> <span class="n">workflow</span>
 
+    <span class="n">python_executable</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;python_executable&#39;</span><span class="p">,</span> <span class="s1">&#39;python&#39;</span><span class="p">)</span>
     <span class="n">main_script_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">file_prefix</span> <span class="o">+</span> <span class="s1">&#39;.sh&#39;</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="n">sbatch</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">_multiply_time</span><span class="p">(</span><span class="n">time_str</span><span class="p">,</span> <span class="n">multiplier</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Helper function to multiply a time of format &quot;HH:MM:SS&quot; with a constant. In</span>
+<span class="sd">            this case, we multiply timeout per simulation by the number of simulations</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                time_str (str): Time in format &quot;HH:MM:SS&quot;</span>
+<span class="sd">                multiplier (float): multiplier</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                New time string in format &quot;HH:MM:SS&quot;</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">time_str</span> <span class="o">=</span> <span class="n">time_str</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">time_str</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">8</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid sbatch/slurm time formatting! Format has to be &quot;HH:MM:SS&quot;&#39;</span><span class="p">)</span>
+            <span class="n">hours</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">time_str</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span> <span class="o">*</span> <span class="n">multiplier</span><span class="p">)</span>
+            <span class="n">minutes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">time_str</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">5</span><span class="p">])</span> <span class="o">*</span> <span class="n">multiplier</span><span class="p">)</span>
+            <span class="n">seconds</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">time_str</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">8</span><span class="p">])</span> <span class="o">*</span> <span class="n">multiplier</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">seconds</span> <span class="o">&gt;</span> <span class="mi">60</span><span class="p">:</span>
+                <span class="n">minutes</span> <span class="o">=</span> <span class="n">minutes</span> <span class="o">+</span> <span class="n">seconds</span> <span class="o">//</span> <span class="mi">60</span>
+                <span class="n">seconds</span> <span class="o">=</span> <span class="n">seconds</span> <span class="o">%</span> <span class="mi">60</span>
+            <span class="k">if</span> <span class="n">minutes</span> <span class="o">&gt;</span> <span class="mi">60</span><span class="p">:</span>
+                <span class="n">hours</span> <span class="o">=</span> <span class="n">hours</span> <span class="o">+</span> <span class="n">minutes</span> <span class="o">//</span> <span class="mi">60</span>
+                <span class="n">minutes</span> <span class="o">=</span> <span class="n">minutes</span> <span class="o">%</span> <span class="mi">60</span>
+            <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{:02d}</span><span class="s2">:</span><span class="si">{:02d}</span><span class="s2">:</span><span class="si">{:02d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hours</span><span class="p">,</span> <span class="n">minutes</span><span class="p">,</span> <span class="n">seconds</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">_multiply_mem</span><span class="p">(</span><span class="n">mem_str</span><span class="p">,</span> <span class="n">multiplier</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Helper function to multiply a memory specification with a constant. If multiplier &lt; 1,</span>
+<span class="sd">            will convert to using smaller units if possible</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                mem_str (str): Amount of memory in format &quot;1234X&quot; where &quot;X&quot; specifies the unit</span>
+<span class="sd">                               and anything before is a number specifying the amount</span>
+<span class="sd">                multiplier (float): multiplier</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                New memory string</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">original_memstr</span> <span class="o">=</span> <span class="n">mem_str</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">unit</span> <span class="o">=</span> <span class="n">original_memstr</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">unit</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">):</span>
+                <span class="n">original_mem_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">original_memstr</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="n">unit</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">original_mem_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">original_memstr</span><span class="p">)</span>
+                <span class="n">unit</span> <span class="o">=</span> <span class="s1">&#39;M&#39;</span>
+            <span class="n">downconversion</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;M&#39;</span><span class="p">:</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span><span class="s1">&#39;G&#39;</span><span class="p">:</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span><span class="s1">&#39;T&#39;</span><span class="p">:</span> <span class="s1">&#39;G&#39;</span><span class="p">}</span>
+            <span class="k">if</span> <span class="n">multiplier</span> <span class="o">&lt;</span> <span class="mf">1.0</span> <span class="ow">and</span> <span class="n">unit</span> <span class="o">!=</span> <span class="s1">&#39;K&#39;</span><span class="p">:</span>
+                <span class="n">elmer_mem_per_f</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">original_mem_int</span><span class="o">*</span><span class="mi">1024</span> <span class="o">*</span> <span class="n">multiplier</span><span class="p">)</span>
+                <span class="n">elmer_mem_per_f</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">elmer_mem_per_f</span><span class="p">)</span> <span class="o">+</span> <span class="n">downconversion</span><span class="p">[</span><span class="n">unit</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">elmer_mem_per_f</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">original_mem_int</span> <span class="o">*</span> <span class="n">multiplier</span><span class="p">)</span>
+                <span class="n">elmer_mem_per_f</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">elmer_mem_per_f</span><span class="p">)</span> <span class="o">+</span> <span class="n">unit</span>
+            <span class="k">return</span> <span class="n">elmer_mem_per_f</span>
+
+        <span class="k">def</span> <span class="nf">_divup</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+            <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="n">a</span> <span class="o">//</span> <span class="o">-</span><span class="n">b</span><span class="p">)</span>
+
         <span class="n">sbatch_parameters</span> <span class="o">=</span> <span class="n">workflow</span><span class="p">[</span><span class="s1">&#39;sbatch_parameters&#39;</span><span class="p">]</span>
+
+        <span class="n">parallelization_level</span> <span class="o">=</span> <span class="n">sbatch_parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;_parallelization_level&#39;</span><span class="p">,</span> <span class="s1">&#39;none&#39;</span><span class="p">)</span>
+        <span class="n">_n_workers</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sbatch_parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;n_workers&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">parallelization_level</span> <span class="o">==</span> <span class="s1">&#39;full_simulation&#39;</span><span class="p">:</span>
+            <span class="n">n_workers_full</span> <span class="o">=</span> <span class="n">_n_workers</span>
+            <span class="n">n_workers_elmer_only</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">n_simulations_gmsh</span> <span class="o">=</span> <span class="n">n_simulations</span>
+        <span class="k">elif</span> <span class="n">parallelization_level</span> <span class="o">==</span> <span class="s1">&#39;elmer&#39;</span><span class="p">:</span>
+            <span class="n">n_workers_full</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">n_workers_elmer_only</span> <span class="o">=</span> <span class="n">_n_workers</span>
+            <span class="n">n_simulations_gmsh</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">parallelization_level</span> <span class="o">==</span> <span class="s1">&#39;none&#39;</span><span class="p">:</span>
+            <span class="n">n_workers_full</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">n_workers_elmer_only</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">n_simulations_gmsh</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown parallelization level </span><span class="si">{</span><span class="n">parallelization_level</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">sbatch_parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;--account&#39;</span><span class="p">,</span> <span class="s1">&#39;project_0&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;project_0&#39;</span><span class="p">:</span>
             <span class="n">sbatch_parameters</span><span class="p">[</span><span class="s1">&#39;--account&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">KQC_REMOTE_ACCOUNT</span>
@@ -727,26 +806,60 @@
 
         <span class="n">sbatch_settings_meshes</span> <span class="o">=</span> <span class="n">sbatch_settings_elmer</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-        <span class="n">sbatch_settings_elmer</span><span class="p">[</span><span class="s1">&#39;--time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sbatch_parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;elmer_time&#39;</span><span class="p">,</span> <span class="s1">&#39;00:10:00&#39;</span><span class="p">)</span>
-        <span class="n">sbatch_settings_elmer</span><span class="p">[</span><span class="s1">&#39;--nodes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sbatch_parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;elmer_n_nodes&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">sbatch_settings_elmer</span><span class="p">[</span><span class="s1">&#39;--ntasks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sbatch_parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;elmer_n_processes&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-        <span class="n">sbatch_settings_elmer</span><span class="p">[</span><span class="s1">&#39;--cpus-per-task&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sbatch_parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;elmer_n_threads&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">sbatch_settings_elmer</span><span class="p">[</span><span class="s1">&#39;--mem&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sbatch_parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;elmer_mem&#39;</span><span class="p">,</span> <span class="s1">&#39;64G&#39;</span><span class="p">)</span>
+        <span class="n">max_cpus_per_node</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sbatch_parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;max_threads_per_node&#39;</span><span class="p">,</span> <span class="mi">40</span><span class="p">))</span>
 
-        <span class="n">sbatch_settings_meshes</span><span class="p">[</span><span class="s1">&#39;--time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sbatch_parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;gmsh_time&#39;</span><span class="p">,</span> <span class="s1">&#39;00:10:00&#39;</span><span class="p">)</span>
-        <span class="n">sbatch_settings_meshes</span><span class="p">[</span><span class="s1">&#39;--nodes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="n">sbatch_settings_meshes</span><span class="p">[</span><span class="s1">&#39;--ntasks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="n">sbatch_settings_meshes</span><span class="p">[</span><span class="s1">&#39;--cpus-per-task&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sbatch_parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;gmsh_n_threads&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-        <span class="n">sbatch_settings_meshes</span><span class="p">[</span><span class="s1">&#39;--mem&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sbatch_parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;gmsh_mem&#39;</span><span class="p">,</span> <span class="s1">&#39;64G&#39;</span><span class="p">)</span>
+        <span class="n">elmer_tasks_per_worker</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sbatch_parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;elmer_n_processes&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+        <span class="n">elmer_cpus_per_task</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sbatch_parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;elmer_n_threads&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">elmer_cpus_per_task</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">elmer_tasks_per_worker</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Using both process and thread level parallelization&quot;</span>
+                            <span class="s2">&quot; with Elmer might result in poor performance&quot;</span><span class="p">)</span>
+        <span class="n">elmer_cpus_per_worker</span> <span class="o">=</span> <span class="n">elmer_tasks_per_worker</span> <span class="o">*</span> <span class="n">elmer_cpus_per_task</span>
+
+        <span class="n">elmer_mem_per_worker</span> <span class="o">=</span> <span class="n">sbatch_parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;elmer_mem&#39;</span><span class="p">,</span> <span class="s1">&#39;64G&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">elmer_cpus_per_worker</span> <span class="o">&gt;</span> <span class="n">max_cpus_per_node</span><span class="p">:</span>
+            <span class="n">elmer_nodes_per_worker</span> <span class="o">=</span> <span class="n">_divup</span><span class="p">(</span><span class="n">elmer_cpus_per_worker</span><span class="p">,</span> <span class="n">max_cpus_per_node</span><span class="p">)</span>
+            <span class="n">elmer_total_nodes</span> <span class="o">=</span> <span class="n">elmer_nodes_per_worker</span> <span class="o">*</span> <span class="n">_n_workers</span>
+            <span class="n">elmer_tasks_per_node</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">elmer_tasks_per_worker</span><span class="p">,</span> <span class="n">max_cpus_per_node</span><span class="p">)</span>
+            <span class="n">elmer_mem_per_node</span> <span class="o">=</span> <span class="n">_multiply_mem</span><span class="p">(</span><span class="n">elmer_mem_per_worker</span><span class="p">,</span> <span class="n">_n_workers</span> <span class="o">/</span> <span class="n">elmer_total_nodes</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">elmer_nodes_per_worker</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">elmer_max_workers_per_node</span> <span class="o">=</span> <span class="n">max_cpus_per_node</span> <span class="o">//</span> <span class="n">elmer_cpus_per_worker</span>
+            <span class="n">elmer_total_nodes</span> <span class="o">=</span> <span class="n">_divup</span><span class="p">(</span><span class="n">_n_workers</span><span class="p">,</span> <span class="n">elmer_max_workers_per_node</span><span class="p">)</span>
+            <span class="n">elmer_workers_per_node</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">_n_workers</span><span class="p">,</span> <span class="n">elmer_max_workers_per_node</span><span class="p">)</span>
+            <span class="n">elmer_tasks_per_node</span> <span class="o">=</span> <span class="n">elmer_workers_per_node</span> <span class="o">*</span> <span class="n">elmer_tasks_per_worker</span>
+            <span class="n">elmer_mem_per_node</span> <span class="o">=</span> <span class="n">_multiply_mem</span><span class="p">(</span><span class="n">elmer_mem_per_worker</span><span class="p">,</span> <span class="n">elmer_workers_per_node</span><span class="p">)</span>
+
+        <span class="n">gmsh_cpus_per_worker</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sbatch_parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;gmsh_n_threads&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">gmsh_cpus_per_worker</span> <span class="o">&gt;</span> <span class="n">max_cpus_per_node</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Requested more gmsh threads per worker </span><span class="si">{gmsh_cpus_per_worker}</span><span class="s2">&quot;</span>
+                               <span class="s2">&quot; than the limit per node </span><span class="si">{max_cpus_per_node}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">gmsh_max_workers_per_node</span> <span class="o">=</span> <span class="n">max_cpus_per_node</span> <span class="o">//</span> <span class="n">gmsh_cpus_per_worker</span>
+        <span class="n">gmsh_n_nodes</span> <span class="o">=</span> <span class="n">_divup</span><span class="p">(</span><span class="n">n_workers_full</span><span class="p">,</span> <span class="n">gmsh_max_workers_per_node</span><span class="p">)</span>
+        <span class="n">gmsh_mem_per_worker</span> <span class="o">=</span> <span class="n">sbatch_parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;gmsh_mem&#39;</span><span class="p">,</span> <span class="s1">&#39;64G&#39;</span><span class="p">)</span>
+
+        <span class="n">gmsh_workers_per_node</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">n_workers_full</span><span class="p">,</span> <span class="n">gmsh_max_workers_per_node</span><span class="p">)</span>
+        <span class="n">gmsh_cpus_per_node</span> <span class="o">=</span> <span class="n">gmsh_cpus_per_worker</span> <span class="o">*</span> <span class="n">gmsh_workers_per_node</span>
+        <span class="n">gmsh_mem_per_node</span> <span class="o">=</span> <span class="n">_multiply_mem</span><span class="p">(</span><span class="n">gmsh_mem_per_worker</span><span class="p">,</span> <span class="n">gmsh_workers_per_node</span><span class="p">)</span>
+
+        <span class="n">sbatch_settings_elmer</span><span class="p">[</span><span class="s1">&#39;--time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_multiply_time</span><span class="p">(</span><span class="n">sbatch_parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;elmer_time&#39;</span><span class="p">,</span> <span class="s1">&#39;00:10:00&#39;</span><span class="p">),</span>
+                                                         <span class="n">_divup</span><span class="p">(</span><span class="n">n_simulations</span><span class="p">,</span> <span class="n">_n_workers</span><span class="p">))</span>
+        <span class="n">sbatch_settings_elmer</span><span class="p">[</span><span class="s1">&#39;--nodes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">elmer_total_nodes</span>
+        <span class="n">sbatch_settings_elmer</span><span class="p">[</span><span class="s1">&#39;--ntasks-per-node&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">elmer_tasks_per_node</span>
+        <span class="n">sbatch_settings_elmer</span><span class="p">[</span><span class="s1">&#39;--cpus-per-task&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">elmer_cpus_per_task</span>
+        <span class="n">sbatch_settings_elmer</span><span class="p">[</span><span class="s1">&#39;--mem&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">elmer_mem_per_node</span>
+
+        <span class="n">sbatch_settings_meshes</span><span class="p">[</span><span class="s1">&#39;--time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_multiply_time</span><span class="p">(</span><span class="n">sbatch_parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;gmsh_time&#39;</span><span class="p">,</span> <span class="s1">&#39;00:10:00&#39;</span><span class="p">),</span>
+                                                          <span class="n">_divup</span><span class="p">(</span><span class="n">n_simulations_gmsh</span><span class="p">,</span> <span class="n">n_workers_full</span><span class="p">))</span>
+        <span class="n">sbatch_settings_meshes</span><span class="p">[</span><span class="s1">&#39;--nodes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gmsh_n_nodes</span>
+        <span class="n">sbatch_settings_meshes</span><span class="p">[</span><span class="s1">&#39;--ntasks-per-node&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">sbatch_settings_meshes</span><span class="p">[</span><span class="s1">&#39;--cpus-per-task&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gmsh_cpus_per_node</span>
+        <span class="n">sbatch_settings_meshes</span><span class="p">[</span><span class="s1">&#39;--mem&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gmsh_mem_per_node</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sbatch_parameters</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Unused sbatch parameters: &quot;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">sbatch_parameters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> : </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="n">gmsh_n_threads</span> <span class="o">=</span> <span class="n">sbatch_settings_meshes</span><span class="p">[</span><span class="s1">&#39;--cpus-per-task&#39;</span><span class="p">]</span>
-        <span class="n">elmer_n_processes</span> <span class="o">=</span> <span class="n">sbatch_settings_elmer</span><span class="p">[</span><span class="s1">&#39;--ntasks&#39;</span><span class="p">]</span>
-        <span class="n">elmer_n_threads</span> <span class="o">=</span> <span class="n">sbatch_settings_elmer</span><span class="p">[</span><span class="s1">&#39;--cpus-per-task&#39;</span><span class="p">]</span>
 
         <span class="n">main_script_filename_meshes</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">file_prefix</span> <span class="o">+</span> <span class="s1">&#39;_meshes.sh&#39;</span><span class="p">))</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">main_script_filename_meshes</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">main_file</span><span class="p">:</span>
@@ -765,45 +878,48 @@
                     <span class="n">json_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
                     <span class="n">simulation_name</span> <span class="o">=</span> <span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;parameters&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
 
-                <span class="n">sif_names</span> <span class="o">=</span> <span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;sif_names&#39;</span><span class="p">]</span>
-
                 <span class="n">script_filename_meshes</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">simulation_name</span> <span class="o">+</span> <span class="s1">&#39;_meshes.sh&#39;</span><span class="p">))</span>
                 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">script_filename_meshes</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
                     <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;echo &quot;Simulation </span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1"> Gmsh&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">)))</span>
-                    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;srun -c </span><span class="si">{3}</span><span class="s1"> </span><span class="si">{2}</span><span class="s1"> &quot;</span><span class="si">{0}</span><span class="s1">&quot; &quot;</span><span class="si">{1}</span><span class="s1">&quot; --only-gmsh -q 2&gt;&amp;1 &gt;&gt; &#39;</span>\
-                            <span class="s1">&#39;&quot;</span><span class="si">{1}</span><span class="s1">_Gmsh.log&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;srun -N 1 -n 1 -c </span><span class="si">{3}</span><span class="s1"> </span><span class="si">{2}</span><span class="s1"> &quot;</span><span class="si">{0}</span><span class="s1">&quot; &quot;</span><span class="si">{1}</span><span class="s1">&quot; --only-gmsh -q 2&gt;&amp;1 &gt;&gt; &#39;</span>\
+                            <span class="s1">&#39;&quot;</span><span class="si">{4}</span><span class="s1">.Gmsh.log&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">script_file</span><span class="p">,</span>
                         <span class="n">Path</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">),</span>
                         <span class="n">python_executable</span><span class="p">,</span>
-                        <span class="nb">str</span><span class="p">(</span><span class="n">gmsh_n_threads</span><span class="p">)</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="n">gmsh_cpus_per_worker</span><span class="p">),</span>
+                        <span class="n">simulation_name</span>
                         <span class="p">))</span>
                     <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;echo &quot;Simulation </span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1"> ElmerGrid&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">)))</span>
-                    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;srun -c </span><span class="si">{2}</span><span class="s1"> ElmerGrid 14 2 &quot;</span><span class="si">{0}</span><span class="s1">&quot; 2&gt;&amp;1 &gt;&gt; &quot;</span><span class="si">{1}</span><span class="s1">_ElmerGrid.log&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="n">simulation_name</span> <span class="o">+</span> <span class="s2">&quot;.msh&quot;</span><span class="p">,</span>
+                    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;srun -N 1 -n 1 -c </span><span class="si">{2}</span><span class="s1"> ElmerGrid 14 2 &quot;</span><span class="si">{0}</span><span class="s1">.msh&quot; 2&gt;&amp;1 &gt;&gt; &quot;</span><span class="si">{0}</span><span class="s1">.ElmerGrid.log&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">simulation_name</span><span class="p">,</span>
                         <span class="n">Path</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">),</span>
-                        <span class="nb">str</span><span class="p">(</span><span class="n">gmsh_n_threads</span><span class="p">)</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="n">gmsh_cpus_per_worker</span><span class="p">),</span>
                     <span class="p">))</span>
-                    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">elmer_n_processes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;srun -c </span><span class="si">{3}</span><span class="s1"> ElmerGrid 2 2 &quot;</span><span class="si">{0}</span><span class="s1">&quot; 2&gt;&amp;1 -metis </span><span class="si">{1}</span><span class="s1"> 4 --partdual --removeunused &gt;&gt; &#39;</span>\
-                                <span class="s1">&#39;&quot;</span><span class="si">{2}</span><span class="s1">_ElmerGrid_part.log&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">elmer_tasks_per_worker</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;srun -N 1 -n 1 -c </span><span class="si">{3}</span><span class="s1"> ElmerGrid 2 2 &quot;</span><span class="si">{0}</span><span class="s1">&quot; 2&gt;&amp;1 -metis </span><span class="si">{1}</span><span class="s1"> 4&#39;</span>\
+                                <span class="s1">&#39; --partdual --removeunused &gt;&gt; &quot;</span><span class="si">{0}</span><span class="s1">.ElmerGrid_part.log&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                             <span class="n">simulation_name</span><span class="p">,</span>
-                            <span class="nb">str</span><span class="p">(</span><span class="n">elmer_n_processes</span><span class="p">),</span>
+                            <span class="nb">str</span><span class="p">(</span><span class="n">elmer_tasks_per_worker</span><span class="p">),</span>
                             <span class="n">Path</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">),</span>
-                            <span class="nb">str</span><span class="p">(</span><span class="n">gmsh_n_threads</span><span class="p">)</span>
+                            <span class="nb">str</span><span class="p">(</span><span class="n">gmsh_cpus_per_worker</span><span class="p">)</span>
                         <span class="p">))</span>
                     <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;echo &quot;Simulation </span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1"> Write Elmer sif files&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">)))</span>
-                    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;srun -c </span><span class="si">{3}</span><span class="s1"> </span><span class="si">{2}</span><span class="s1"> &quot;</span><span class="si">{0}</span><span class="s1">&quot; &quot;</span><span class="si">{1}</span><span class="s1">&quot; --only-elmer-sifs -q 2&gt;&amp;1 &gt;&gt; &quot;</span><span class="si">{1}</span><span class="s1">_Elmer.log&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;srun -N 1 -n 1 -c </span><span class="si">{3}</span><span class="s1"> </span><span class="si">{2}</span><span class="s1"> &quot;</span><span class="si">{0}</span><span class="s1">&quot; &quot;</span><span class="si">{1}</span><span class="s1">&quot; --only-elmer-sifs &#39;</span>\
+                               <span class="s1">&#39;2&gt;&amp;1 &gt;&gt; &quot;</span><span class="si">{4}</span><span class="s1">.Elmer_sifs.log&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">script_file</span><span class="p">,</span>
                         <span class="n">Path</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">),</span>
                         <span class="n">python_executable</span><span class="p">,</span>
-                        <span class="nb">str</span><span class="p">(</span><span class="n">gmsh_n_threads</span><span class="p">)</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="n">gmsh_cpus_per_worker</span><span class="p">),</span>
+                        <span class="n">simulation_name</span>
                     <span class="p">))</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">script_filename_meshes</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">script_filename_meshes</span><span class="p">)</span><span class="o">.</span><span class="n">st_mode</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IEXEC</span><span class="p">)</span>
 
                 <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;echo &quot;Submitting gmsh and ElmerGrid part </span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">)))</span>
                 <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;echo &quot;--------------------------------------------&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-                <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;source &quot;</span><span class="si">{}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">script_filename_meshes</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">)))</span>
+                <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;source &quot;</span><span class="si">{}</span><span class="s1">&quot; &amp;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">script_filename_meshes</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">)))</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">n_workers_full</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;wait</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="c1"># change permission</span>
         <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">main_script_filename_meshes</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">main_script_filename_meshes</span><span class="p">)</span><span class="o">.</span><span class="n">st_mode</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IEXEC</span><span class="p">)</span>
@@ -822,54 +938,69 @@
                 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                     <span class="n">json_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
                     <span class="n">simulation_name</span> <span class="o">=</span> <span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;parameters&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+                    <span class="n">sif_names</span> <span class="o">=</span> <span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;sif_names&#39;</span><span class="p">]</span>
 
-                <span class="n">sif_names</span> <span class="o">=</span> <span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;sif_names&#39;</span><span class="p">]</span>
                 <span class="n">script_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">simulation_name</span> <span class="o">+</span> <span class="s1">&#39;.sh&#39;</span><span class="p">))</span>
                 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">script_filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-
                     <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;echo &quot;Simulation </span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1"> Elmer&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">)))</span>
-                    <span class="k">for</span> <span class="n">sif</span> <span class="ow">in</span> <span class="n">sif_names</span><span class="p">:</span>
-                        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;srun --cpu-bind none -n </span><span class="si">{0}</span><span class="s1"> -c </span><span class="si">{4}</span><span class="s1"> ElmerSolver_mpi &#39;</span>\
-                                <span class="s1">&#39;&quot;</span><span class="si">{1}</span><span class="s1">/</span><span class="si">{2}</span><span class="s1">.sif&quot; 2&gt;&amp;1 &gt;&gt; &quot;</span><span class="si">{3}</span><span class="s1">_Elmer.log&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                                    <span class="n">elmer_n_processes</span><span class="p">,</span>
-                                    <span class="n">simulation_name</span><span class="p">,</span>
-                                    <span class="n">sif</span><span class="p">,</span>
-                                    <span class="n">Path</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">),</span>
-                                    <span class="n">elmer_n_threads</span>
-                                    <span class="p">))</span>
+
+                    <span class="n">n_sifs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sif_names</span><span class="p">)</span>
+                    <span class="n">sifs_split</span> <span class="o">=</span> <span class="p">[</span><span class="n">sif_names</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="nb">min</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">n_workers_elmer_only</span><span class="p">,</span> <span class="n">n_sifs</span><span class="p">)]</span>
+                                  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_sifs</span><span class="p">,</span> <span class="n">n_workers_elmer_only</span><span class="p">)]</span>
+                    <span class="k">for</span> <span class="n">sif_list</span> <span class="ow">in</span> <span class="n">sifs_split</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">sif</span> <span class="ow">in</span> <span class="n">sif_list</span><span class="p">:</span>
+                            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;srun --cpu-bind none --exact --mem=</span><span class="si">{4}</span><span class="s1"> -N </span><span class="si">{5}</span><span class="s1"> -n </span><span class="si">{0}</span><span class="s1"> -c </span><span class="si">{3}</span><span class="s1"> &#39;</span>
+                                    <span class="s1">&#39;ElmerSolver_mpi &quot;</span><span class="si">{1}</span><span class="s1">/</span><span class="si">{2}</span><span class="s1">.sif&quot; 2&gt;&amp;1 &gt;&gt; &quot;</span><span class="si">{2}</span><span class="s1">.Elmer.log&quot; &amp; </span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                        <span class="n">elmer_tasks_per_worker</span><span class="p">,</span>
+                                        <span class="n">simulation_name</span><span class="p">,</span>
+                                        <span class="n">sif</span><span class="p">,</span>
+                                        <span class="n">elmer_cpus_per_task</span><span class="p">,</span>
+                                        <span class="n">elmer_mem_per_worker</span><span class="p">,</span>
+                                        <span class="n">elmer_nodes_per_worker</span>
+                                        <span class="p">))</span>
+                        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;wait</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
                     <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;echo &quot;Simulation </span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1"> write results json&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">)))</span>
-                    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;srun -n 1 -c </span><span class="si">{3}</span><span class="s1"> </span><span class="si">{2}</span><span class="s1"> &quot;</span><span class="si">{0}</span><span class="s1">&quot; &quot;</span><span class="si">{1}</span><span class="s1">&quot; --write-project-results 2&gt;&amp;1 &gt;&gt; &#39;</span>\
-                            <span class="s1">&#39;</span><span class="si">{1}</span><span class="s1">_write_project_results.log</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;srun -N 1 -n 1 -c </span><span class="si">{3}</span><span class="s1"> </span><span class="si">{2}</span><span class="s1"> &quot;</span><span class="si">{0}</span><span class="s1">&quot; &quot;</span><span class="si">{1}</span><span class="s1">&quot; --write-project-results 2&gt;&amp;1 &gt;&gt; &#39;</span>\
+                            <span class="s1">&#39;</span><span class="si">{4}</span><span class="s1">.write_project_results.log</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">script_file</span><span class="p">,</span>
                         <span class="n">Path</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">),</span>
                         <span class="n">python_executable</span><span class="p">,</span>
-                        <span class="n">elmer_n_threads</span>
+                        <span class="mi">1</span><span class="p">,</span>
+                        <span class="n">simulation_name</span>
                     <span class="p">))</span>
 
                     <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;echo &quot;Simulation </span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1"> write versions json&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">)))</span>
-                    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;srun -n 1 -c </span><span class="si">{3}</span><span class="s1"> </span><span class="si">{2}</span><span class="s1"> &quot;</span><span class="si">{0}</span><span class="s1">&quot; &quot;</span><span class="si">{1}</span><span class="s1">&quot; --write-versions-file 2&gt;&amp;1 &gt;&gt; &#39;</span>\
-                            <span class="s1">&#39;</span><span class="si">{1}</span><span class="s1">_write_versions_file.log</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;srun -N 1 -n 1 -c </span><span class="si">{3}</span><span class="s1"> </span><span class="si">{2}</span><span class="s1"> &quot;</span><span class="si">{0}</span><span class="s1">&quot; &quot;</span><span class="si">{1}</span><span class="s1">&quot; --write-versions-file 2&gt;&amp;1 &gt;&gt; &#39;</span>\
+                            <span class="s1">&#39;</span><span class="si">{4}</span><span class="s1">.write_versions_file.log</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">script_file</span><span class="p">,</span>
                         <span class="n">Path</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">),</span>
                         <span class="n">python_executable</span><span class="p">,</span>
-                        <span class="n">elmer_n_threads</span>
+                        <span class="mi">1</span><span class="p">,</span>
+                        <span class="n">simulation_name</span>
                     <span class="p">))</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">script_filename</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">script_filename</span><span class="p">)</span><span class="o">.</span><span class="n">st_mode</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IEXEC</span><span class="p">)</span>
 
-            <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;echo &quot;Submitting ElmerSolver part</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
-                        <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">)))</span>
-            <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;echo &quot;--------------------------------------------&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;source &quot;</span><span class="si">{}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">script_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">)))</span>
 
+                <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;echo &quot;Submitting ElmerSolver part</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
+                            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">)))</span>
+                <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;echo &quot;--------------------------------------------&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;source &quot;</span><span class="si">{}</span><span class="s1">&quot; &amp;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">script_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">)))</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">n_workers_full</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;wait</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="k">else</span><span class="p">:</span>
+        <span class="n">n_workers</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;n_workers&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">parallelization_level</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;_parallelization_level&#39;</span><span class="p">)</span>
+        <span class="n">parallelize_workload</span> <span class="o">=</span> <span class="n">parallelization_level</span> <span class="o">==</span> <span class="s1">&#39;full_simulation&#39;</span> <span class="ow">and</span> <span class="n">n_workers</span> <span class="o">&gt;</span> <span class="mi">1</span>
 
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">main_script_filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">main_file</span><span class="p">:</span>
 
-            <span class="k">if</span> <span class="n">parallelize_workload</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">sbatch</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">parallelize_workload</span><span class="p">:</span>
+                <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;export OMP_NUM_THREADS=</span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">workflow</span><span class="p">[</span><span class="s1">&#39;elmer_n_threads&#39;</span><span class="p">]))</span>
                 <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> scripts/simple_workload_manager.py </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">python_executable</span><span class="p">,</span>
-                    <span class="n">workflow</span><span class="p">[</span><span class="s1">&#39;n_workers&#39;</span><span class="p">]</span>
+                    <span class="n">n_workers</span>
                 <span class="p">))</span>
 
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">json_filename</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">):</span>
@@ -881,26 +1012,30 @@
 
                 <span class="n">script_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">simulation_name</span> <span class="o">+</span> <span class="s1">&#39;.sh&#39;</span><span class="p">))</span>
                 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">script_filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;#!/bin/bash</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
                     <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;echo &quot;Simulation </span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1"> Gmsh&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">)))</span>
-                    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{2}</span><span class="s1"> &quot;</span><span class="si">{0}</span><span class="s1">&quot; &quot;</span><span class="si">{1}</span><span class="s1">&quot; --only-gmsh 2&gt;&amp;1 &gt;&gt; &quot;</span><span class="si">{1}</span><span class="s1">_Gmsh.log&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{2}</span><span class="s1"> &quot;</span><span class="si">{0}</span><span class="s1">&quot; &quot;</span><span class="si">{1}</span><span class="s1">&quot; --only-gmsh 2&gt;&amp;1 &gt;&gt; &quot;</span><span class="si">{3}</span><span class="s1">.Gmsh.log&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">script_file</span><span class="p">,</span>
                         <span class="n">Path</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">),</span>
-                        <span class="n">python_executable</span><span class="p">)</span>
+                        <span class="n">python_executable</span><span class="p">,</span>
+                        <span class="n">simulation_name</span><span class="p">)</span>
                     <span class="p">)</span>
                     <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;echo &quot;Simulation </span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1"> ElmerGrid&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">)))</span>
-                    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{2}</span><span class="s1"> &quot;</span><span class="si">{0}</span><span class="s1">&quot; &quot;</span><span class="si">{1}</span><span class="s1">&quot; --only-elmergrid 2&gt;&amp;1 &gt;&gt; &quot;</span><span class="si">{1}</span><span class="s1">_ElmerGrid.log&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{2}</span><span class="s1"> &quot;</span><span class="si">{0}</span><span class="s1">&quot; &quot;</span><span class="si">{1}</span><span class="s1">&quot; --only-elmergrid 2&gt;&amp;1 &gt;&gt; &quot;</span><span class="si">{3}</span><span class="s1">.ElmerGrid.log&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">script_file</span><span class="p">,</span>
                         <span class="n">Path</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">),</span>
-                        <span class="n">python_executable</span><span class="p">)</span>
+                        <span class="n">python_executable</span><span class="p">,</span>
+                        <span class="n">simulation_name</span><span class="p">)</span>
                     <span class="p">)</span>
                     <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;echo &quot;Simulation </span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1"> Write Elmer sif files&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">)))</span>
-                    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{2}</span><span class="s1"> &quot;</span><span class="si">{0}</span><span class="s1">&quot; &quot;</span><span class="si">{1}</span><span class="s1">&quot; --only-elmer-sifs 2&gt;&amp;1 &gt;&gt; &quot;</span><span class="si">{1}</span><span class="s1">_Elmer.log&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{2}</span><span class="s1"> &quot;</span><span class="si">{0}</span><span class="s1">&quot; &quot;</span><span class="si">{1}</span><span class="s1">&quot; --only-elmer-sifs 2&gt;&amp;1 &gt;&gt; &quot;</span><span class="si">{3}</span><span class="s1">.Elmer_sifs.log&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">script_file</span><span class="p">,</span>
                         <span class="n">Path</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">),</span>
-                        <span class="n">python_executable</span><span class="p">)</span>
+                        <span class="n">python_executable</span><span class="p">,</span>
+                        <span class="n">simulation_name</span><span class="p">)</span>
                         <span class="p">)</span>
                     <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;echo &quot;Simulation </span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1"> Elmer&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">)))</span>
-                    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{2}</span><span class="s1"> &quot;</span><span class="si">{0}</span><span class="s1">&quot; &quot;</span><span class="si">{1}</span><span class="s1">&quot; --only-elmer 2&gt;&amp;1 &gt;&gt; &quot;</span><span class="si">{1}</span><span class="s1">_Elmer.log&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{2}</span><span class="s1"> &quot;</span><span class="si">{0}</span><span class="s1">&quot; &quot;</span><span class="si">{1}</span><span class="s1">&quot; --only-elmer</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">script_file</span><span class="p">,</span>
                         <span class="n">Path</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">),</span>
                         <span class="n">python_executable</span><span class="p">)</span>
@@ -914,10 +1049,11 @@
 
                     <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;echo &quot;Simulation </span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1"> write results json&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">)))</span>
                     <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{2}</span><span class="s1"> &quot;</span><span class="si">{0}</span><span class="s1">&quot; &quot;</span><span class="si">{1}</span><span class="s1">&quot; --write-project-results 2&gt;&amp;1 &gt;&gt; &#39;</span>\
-                            <span class="s1">&#39;&quot;</span><span class="si">{1}</span><span class="s1">_write_project_results.log&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="s1">&#39;&quot;</span><span class="si">{3}</span><span class="s1">_write_project_results.log&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">script_file</span><span class="p">,</span>
                         <span class="n">Path</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">),</span>
-                        <span class="n">python_executable</span><span class="p">)</span>
+                        <span class="n">python_executable</span><span class="p">,</span>
+                        <span class="n">simulation_name</span><span class="p">)</span>
                     <span class="p">)</span>
 
                     <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;echo &quot;Simulation </span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1"> write versions file&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">)))</span>
@@ -1025,6 +1161,85 @@
                 <span class="s1">&#39;run_paraview&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>  <span class="c1"># this is visual view of the results</span>
             <span class="p">})</span>
 
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frequency</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">frequency</span> <span class="o">=</span> <span class="n">frequency</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frequency</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">frequency</span> <span class="o">=</span> <span class="p">[</span><span class="n">frequency</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">workflow</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">num_freqs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">frequency</span><span class="p">)</span>
+        <span class="n">num_sims</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">simulations</span><span class="p">)</span>
+        <span class="n">parallelization_level</span> <span class="o">=</span> <span class="s1">&#39;none&#39;</span>
+        <span class="n">n_worker_lim</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">num_freqs</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">num_sims</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Simultaneous sweep of frequency and other&quot;</span>
+                                           <span class="s2">&quot;simulation parameters is not supported&quot;</span><span class="p">)</span>
+
+            <span class="n">parallelization_level</span> <span class="o">=</span> <span class="s1">&#39;elmer&#39;</span>
+            <span class="n">n_worker_lim</span> <span class="o">=</span> <span class="n">num_freqs</span>
+
+            <span class="k">if</span> <span class="n">tool</span> <span class="o">!=</span> <span class="s1">&#39;wave_equation&#39;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Elmer level parallelization currently&quot;</span>
+                                          <span class="s2">&quot;supported only with wave-equation tool&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">num_sims</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">parallelization_level</span> <span class="o">=</span> <span class="s1">&#39;full_simulation&#39;</span>
+            <span class="n">n_worker_lim</span> <span class="o">=</span> <span class="n">num_sims</span>
+
+        <span class="k">if</span> <span class="s1">&#39;sbatch_parameters&#39;</span> <span class="ow">in</span> <span class="n">workflow</span><span class="p">:</span>
+            <span class="n">n_workers</span> <span class="o">=</span> <span class="n">workflow</span><span class="p">[</span><span class="s1">&#39;sbatch_parameters&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;n_workers&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+            <span class="n">workflow</span><span class="p">[</span><span class="s1">&#39;sbatch_parameters&#39;</span><span class="p">][</span><span class="s1">&#39;n_workers&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">n_workers</span><span class="p">),</span> <span class="n">n_worker_lim</span><span class="p">)</span>
+            <span class="n">workflow</span><span class="p">[</span><span class="s1">&#39;sbatch_parameters&#39;</span><span class="p">][</span><span class="s1">&#39;_parallelization_level&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">parallelization_level</span>
+            <span class="n">workflow</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;elmer_n_processes&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">workflow</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;elmer_n_threads&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">workflow</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;n_workers&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">workflow</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;gmsh_n_threads&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">n_workers</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;n_workers&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">n_processes</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;elmer_n_processes&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">n_threads</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;elmer_n_threads&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">n_processes</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">n_threads</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Using both process and thread level parallelization&quot;</span>
+                                <span class="s2">&quot; with Elmer might result in poor performance&quot;</span><span class="p">)</span>
+
+            <span class="c1"># for the moment avoid psutil.cpu_count(logical=False)</span>
+            <span class="n">max_cpus</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+            <span class="n">workflow</span><span class="p">[</span><span class="s1">&#39;local_machine_cpu_count&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_cpus</span>
+
+            <span class="k">if</span> <span class="n">n_workers</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">n_processes</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">n_processes</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="n">n_processes</span>
+                <span class="n">n_threads</span> <span class="o">=</span>  <span class="mi">1</span> <span class="k">if</span> <span class="n">n_threads</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="n">n_threads</span>
+                <span class="n">n_workers</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_cpus</span> <span class="o">//</span> <span class="p">(</span><span class="n">n_threads</span><span class="o">*</span><span class="n">n_processes</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">n_workers</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">n_workers</span><span class="p">,</span> <span class="n">n_worker_lim</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">n_processes</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">n_workers</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">n_workers</span><span class="p">,</span> <span class="n">n_worker_lim</span><span class="p">)</span>
+                <span class="n">n_threads</span> <span class="o">=</span>  <span class="mi">1</span> <span class="k">if</span> <span class="n">n_threads</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="n">n_threads</span>
+                <span class="n">n_processes</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_cpus</span> <span class="o">//</span> <span class="p">(</span><span class="n">n_threads</span><span class="o">*</span><span class="n">n_workers</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">n_threads</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">n_workers</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">n_workers</span><span class="p">,</span> <span class="n">n_worker_lim</span><span class="p">)</span>
+                <span class="n">n_threads</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_cpus</span> <span class="o">//</span> <span class="p">(</span><span class="n">n_processes</span><span class="o">*</span><span class="n">n_workers</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="n">requested_cpus</span> <span class="o">=</span> <span class="n">n_workers</span><span class="o">*</span><span class="n">n_processes</span><span class="o">*</span><span class="n">n_threads</span>
+            <span class="k">if</span> <span class="n">requested_cpus</span> <span class="o">&gt;</span> <span class="n">max_cpus</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Requested more CPUs (</span><span class="si">{</span><span class="n">requested_cpus</span><span class="si">}</span><span class="s2">) than available (</span><span class="si">{</span><span class="n">max_cpus</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+            <span class="n">workflow</span><span class="p">[</span><span class="s1">&#39;n_workers&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_workers</span>
+            <span class="n">workflow</span><span class="p">[</span><span class="s1">&#39;elmer_n_processes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_processes</span>
+            <span class="n">workflow</span><span class="p">[</span><span class="s1">&#39;elmer_n_threads&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_threads</span>
+            <span class="n">workflow</span><span class="p">[</span><span class="s1">&#39;_parallelization_level&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">parallelization_level</span>
+
+            <span class="n">gmsh_n_threads</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;gmsh_n_threads&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">gmsh_n_threads</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">parallelization_level</span> <span class="o">==</span> <span class="s1">&#39;full_simulation&#39;</span><span class="p">:</span>
+                    <span class="n">workflow</span><span class="p">[</span><span class="s1">&#39;gmsh_n_threads&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_cpus</span> <span class="o">//</span> <span class="n">n_workers</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">workflow</span><span class="p">[</span><span class="s1">&#39;gmsh_n_threads&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_cpus</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">workflow</span> <span class="o">=</span> <span class="p">{}</span>
+
+
     <span class="n">write_commit_reference_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="n">copy_elmer_scripts_to_directory</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="n">json_filenames</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1064,7 +1279,10 @@
                     <span class="s1">&#39;geometry files.&#39;</span>
                 <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
 
-    <span class="k">return</span> <span class="n">export_elmer_script</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">workflow</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="n">file_prefix</span><span class="p">,</span> <span class="n">script_file</span><span class="o">=</span><span class="n">script_file</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">export_elmer_script</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">workflow</span><span class="p">,</span>
+                               <span class="n">file_prefix</span><span class="o">=</span><span class="n">file_prefix</span><span class="p">,</span>
+                               <span class="n">script_file</span><span class="o">=</span><span class="n">script_file</span><span class="p">,</span>
+                               <span class="n">n_simulations</span><span class="o">=</span><span class="n">n_worker_lim</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

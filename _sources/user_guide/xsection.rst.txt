@@ -40,7 +40,7 @@ demonstrated in :git_url:`klayout_package/python/scripts/simulations/waveguides_
    XSection 1.7 does not work immediately after package install due to the improvement
    to backwards compatibility with older Ruby versions. To mitigate the issue,
    you need to make a change in the XSection code. From you KLayout environment directory,
-   open ``KLayout/salt/xsetion/ruby/xsection.rb`` file in editor and change line 200
+   open ``.klayout/salt/xsection/ruby/xsection_script.rb`` file in editor and change line 200
    from ``pts << [[[ p1, p2 ]]]`` to ``pts << [[ p1, p2 ]]``
 
 Process files (.xs)

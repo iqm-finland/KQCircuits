@@ -40,46 +40,60 @@ capacitance matrix), and visualizes the results using Paraview.
 `simulation.sh` is a shell script for running all simulations at once.
 The simulations are executed by running the `.sh` file in the output folder (here `waveguides_sim_elmer`).
 
-Parallelization of the FEM computations has two levels: 
+Parallelization of the FEM computations has three levels: 
   1. independent processes, that are completely self consistent simulation processes that 
-     do not need to communicate to other processes 
+     do not need to communicate to other processes. This level of parallelism can be used with parameter sweeps 
+     where multiple Elmer simulations are needed. If the varied parameter does not affect meshing i.e. frequency
+     or material parameters, the meshes will be only generated once for all simulations in the sweep. 
+     Number of parallel processes on this level can be controlled by setting ``n_workers`` in ``workflow``.
   2. dependent processes that are computing the same simulation and need to communicate
-     with the others doing the same thing.
+     with the others doing the same thing. This level of parallelism is handled by MPI. 
+     Number of dependent processes per independent process or simulation can be controlled 
+     by setting ``elmer_n_processes`` in ``workflow``.
+  3. thread-level parallelism where multiple threads or cores are used per each dependent process. 
+     This is implemented using OpenMP. The number of threads per process can be controlled by 
+     setting ``elmer_n_threads`` in ``workflow``. It is usually also most efficient to prefer MPI processes than threads.
+     However, when the mesh is small, it may be beneficial to increase the use of threads. 
 
-A workflow manager is needed for dealing with the first level and a multiprocessing paradigm for dealing
-with the latter. Image below is a representation of these levels and their relationship:
+Image below is a representation of these levels and their relationship:
 
 .. raw:: html
     :file: ../../images/fem_parallelization_schemes.svg
 
-By default, the simulations are run sequentially, but simple first-level parallelization can be enabled with ``n_workers`` in the `workflow` settings of :py:func:`.export_elmer`.
-For example in `waveguides_sim_compare.py` defining the following will use two parallel workers for independent computations:
+The total number of threads running in parallel will then be ``n_workers*elmer_n_processes*elmer_n_threads`` .
+Requesting more computing resources than available might lead to poor performance. 
+
+If the parallelization settings are not explicitly stated in ``workflow``, the simulations are run sequentially. If the any
+of the numbers are set to ``-1``, then as many processes/threads are used as available on the machine. For example in 
+`waveguides_sim_compare.py` defining the following will use two parallel workers for independent computation, with the number of
+dependent processes automatically chosen. If there are 10 threads available on the computer then ``elmer_n_processes`` will be set 
+automatically to ``floor( 10 / n_workers)`` = 5.
 
 .. code-block::
 
     workflow = {
-        'run_elmergrid': True,
-        'run_elmer': True,
-        'run_paraview': True,  # this is visual view of the results 
-                               # which can be removed to speed up the process
-        'python_executable': 'python', # use 'kqclib' when using singularity 
-                                       # image (you can also put a full path)
-        'elmer_n_processes': elmer_n_processes,  # <------ This defines the number of 
-                                                 #         processes in the second level 
-                                                 #         of parallelization. -1 uses all
-                                                 #         the physical cores (based on 
-                                                 #         the machine which was used to 
-                                                 #         prepare the simulation)
-        'elmer_n_threads': elmer_n_threads,  # <------ This defines the number of omp threads per process
-        'n_workers': 2, # <--------- This defines the number of 
-                        #            parallel independent processes.
-                        #            Moreover, adding this line activates
-                        #            the use of the simple workload manager.
+        'run_gmsh_gui': True,    # <-------- For GMSH: if true, the mesh is shown after it is done, for large
+                                 #           meshes this can take a long time
+        'run_elmergrid': True,   # <-------- Run ElmerGrid to process the meshes to Elmer supported format
+        'run_elmer': True,       # <-------- Run Elmer
+        'run_paraview': True,    # <-------- Open visual view of the results. Can be set to False to speed up the process
+        'python_executable': 'python', # <-- Can be used to choose alternative python executable. For example this could
+                                       #     point to the singularity image via the symbolic link ``kqclib`` or full path
+        'n_workers': 2, # <----------------- This defines the number of parallel independent processes. Can be used
+                        #                    To parallelize different simulations in a parameter sweep.
+                        #                    Setting this larger than 1 activates the use of the simple workload manager.
+        'elmer_n_processes': -1,   # <------ This defines the number of
+                                   #         processes in the second level
+                                   #         of parallelization. -1 uses all
+                                   #         the physical cores (based on
+                                   #         the machine which was used to
+                                   #         prepare the simulation)
+        'elmer_n_threads': 1,  # <---------- This defines the number of omp threads per process
+        'gmsh_n_threads': -1,  # <---------- This defines the number of processes in the
+                               #             second level of parallelization. -1 uses all
+                               #             the physical cores (based on the machine which
+                               #             was used to prepare the simulation).
     }
-
-Note that Elmer has `elmer_n_processes` and `elmer_n_threads`. The first is number of MPI processes and the second
-is number of OMP threads per process. It is usually most efficient to prefer MPI processes than threads.
-However, when the mesh is small, it may be beneficial to increase the use of threads.
 
 Additionally, Slurm is supported for cluster computing (also available for desktop computers with Linux/BSD operating systems). Slurm can be used by
 defining ``workflow['sbatch_parameters']`` in the export script. An example can be found in ``waveguides_sim_compare.py``
@@ -94,17 +108,18 @@ Instead of forwarding the settings directly to ``sbatch`` command from ``workflo
 .. code-block::
 
     workflow['sbatch_parameters'] = {
-        'elmer_n_nodes': '1'        # Number of computing nodes
-        'elmer_n_processes': '10'   # Total number of task (separate processes)
-        'elmer_n_threads': '1'      # Number of threads per task                  
-        'elmer_mem': '64G'          # Memory allocated for running Elmer
-        'elmer_time': '00:10:00'    # Timeout for the elmer batch job
+        'n_workers': 2,             # <-- Number of parallel simulations, the total amount of resources requested
+                                    #     is `n_workers` times the definitions below for single simulation
+        'max_threads_per_node': 20, # <-- Max number of tasks allowed on a node. dependent on the used remote host
+                                    #     Automatically divides the tasks to as few nodes as possible
+        'elmer_n_processes':10,     # <-- Number of tasks per simulation
+        'elmer_n_threads':1,        # <-- Number of threads per task
+        'elmer_mem':'64G',          # <-- Amount of memory per simulation
+        'elmer_time':'00:10:00',    # <-- Maximum time per simulation
 
-        'gmsh_n_threads':           # Number of threads used for gmsh
-                                    # Note that this cannot exceed the available number
-                                    # of threads per node on the used partition
-        'gmsh_mem': '64G'           # Memory allocated for running gmsh          
-        'gmsh_time': '00:10:00'     # Timeout for the gmsh batch job                    
+        'gmsh_n_threads':10,        # <-- Threads per simulation
+        'gmsh_mem':'64G',           # <-- Allocated memory per simulation
+        'gmsh_time':'00:10:00',     # <-- Maximum time per simulation 
     }
 
 Additionally the account and partition info must be given:
@@ -112,11 +127,12 @@ Additionally the account and partition info must be given:
 .. code-block:: 
 
     workflow['sbatch_parameters'] = {
-        '--account':   'project_0'
-        '--partition': 'partition'
+        '--account':'project_0',    # <-- Remote account for billing
+        '--partition':'test',       # <-- Slurm partition used, options depend on the remote
     }
 
-All other keys in ``workflow['sbatch_parameters']`` starting with ``--`` are used directly in both parts of the simulation. 
+The account can alternatively be set with an environment variable ``KQC_REMOTE_ACCOUNT``. All other keys in 
+``workflow['sbatch_parameters']`` starting with ``--`` are used directly in both parts of the simulation. 
 However, note that the custom parameters might overwrite these. Keys without ``--``, which are none of the above are ignored.
 
 By running ``RES=$(sbatch ./simulation_meshes.sh) && sbatch -d afterok:${RES##* } ./simulation.sh``, the tasks will be sent to 
@@ -127,25 +143,15 @@ For running the simulations on a remote machine see :ref:`elmer_remote_workflow`
 We recommend using the `n_workers` approach for simple systems when computing queues are not needed (no shared resources),
 and Slurm approach for more complicated resource allocations (for example multiple users using the same machine).
 
-Gmsh can also be parallelized (second level of parallelization) using OpenMP:
+Gmsh can also be parallelized using OpenMP:
 
 .. code-block::
 
-    mesh_parameters = {
-        'default_mesh_size': 100.,
-        'gap_min_mesh_size': 2.,
-        'gap_min_dist': 4.,
-        'gap_max_dist': 200.,
-        'port_min_mesh_size': 1.,
-        'port_min_dist': 4.,
-        'port_max_dist': 200.,
-        'algorithm': 5,
+    workflow = {
         'gmsh_n_threads': -1,  # <---------- This defines the number of processes in the
                                #             second level of parallelization
                                #             -1 uses all the physical cores (based on the machine 
                                #             which was used to prepare the simulation)
-        'show': True,  # For GMSH: if true, the mesh is shown after it is done
-                       # (for large meshes this can take a long time)
     }
 
 Please note that running the example requires the installation of
