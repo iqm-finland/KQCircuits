@@ -27,6 +27,7 @@ from kqcircuits.pya_resolver import pya, klayout_executable_command
 from kqcircuits.simulations.export.util import export_layers
 from kqcircuits.simulations.cross_section_simulation import CrossSectionSimulation
 from kqcircuits.simulations.simulation import Simulation
+from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
 
 
 def xsection_call(input_oas: Path, output_oas: Path, cut1: pya.DPoint, cut2: pya.DPoint,
@@ -298,7 +299,7 @@ def _dump_xsection_parameters(xsection_dir, simulation):
     simulation_params['sim_layers'] = sim_layers
     xsection_parameters_file = xsection_dir / f"parameters_{simulation.cell.name}.json"
     with open(xsection_parameters_file, "w") as sweep_file:
-        json.dump(simulation_params, sweep_file)
+        json.dump(simulation_params, sweep_file, cls=GeometryJsonEncoder)
     return xsection_parameters_file
 
 
