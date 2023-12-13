@@ -29,7 +29,7 @@ from kqcircuits.pya_resolver import pya
 
 def convert_cells_to_code(top_cell, print_waveguides_as_composite=False, add_instance_names=True, refpoint_snap=50.0,
                           grid_snap=1.0, output_format="insert_cell+chip", include_imports=True,
-                          use_create_with_refpoints=True):
+                          use_create_with_refpoints=True, create_code=True):
 
     """Prints out the Python code required to create the cells in top_cell.
 
@@ -61,6 +61,7 @@ def convert_cells_to_code(top_cell, print_waveguides_as_composite=False, add_ins
         include_imports: If true, then import statements for all used elements are included in the generated code
         use_create_with_refpoints: If true, then create_with_refpoints() is used instead of create(). Only used when
             output_format is "create" or "create+macro". Required if you want to use refpoints as waveguide points.
+        create_code: if False then does not export code but snap cells to refpoints in place
 
     Returns:
         str: The generated Python code. This is also printed.
@@ -72,32 +73,16 @@ def convert_cells_to_code(top_cell, print_waveguides_as_composite=False, add_ins
     inst_names = []
     pcell_classes = set()
 
-    def add_instance(inst):
-        cell = _get_cell(inst)
-        inst_name = inst.property('id')
-        pcell_decl = inst.pcell_declaration()
-        # ChipFrame is always constructed by Chip, so we don't want to generate code for it
-        if isinstance(pcell_decl, ChipFrame):
-            return
-        # Instance name labels are generated based on element instance names, we don't want to create them explicitly
-        if cell.name == "TEXT":
-            return
-        instances.append(inst)
-        if inst_name is not None:
-            inst_names.append(inst_name)
-        if pcell_decl is not None:
-            pcell_classes.add(pcell_decl.__class__)
-
     # If some instances are selected, then we are only going to export code for them
     cell_view = pya.CellView.active() if hasattr(pya, "CellView") else None
     if cell_view and cell_view.is_valid() and len(cell_view.view().object_selection) > 0:
         for obj in cell_view.view().object_selection:
             if obj.is_cell_inst():
-                add_instance(obj.inst())
+                _add_instance(obj.inst(), instances, inst_names, pcell_classes)
     # Otherwise get all instances at one level below top_cell.
     else:
         for inst in top_cell.each_inst():
-            add_instance(inst)
+            _add_instance(inst, instances, inst_names, pcell_classes)
 
     # Order the instances according to cell type, x-coordinate, and y-coordinate
     instances = sorted(instances, key=lambda inst: (inst.cell.name, -inst.dtrans.disp.y, inst.dtrans.disp.x))
@@ -137,9 +122,20 @@ def convert_cells_to_code(top_cell, print_waveguides_as_composite=False, add_ins
         if print_waveguides_as_composite or WaveguideComposite in pcell_classes:
             element_imports += f"from {WaveguideComposite.__module__} import {Node.__name__}\n"
 
-    def get_waveguide_code(inst, prefix, postfix, pcell_type, point_prefix, point_postfix="", refpoint_prefix="",
-                           refpoint_postfix=""):
-        path_str = prefix
+    def get_waveguide_code(inst, pcell_type):
+        point_prefix="pya.DPoint"
+        point_postfix=""
+        refpoint_prefix=""
+        refpoint_postfix=""
+        path_str="path=pya.DPath(["
+        postfix="], 0)"
+        if pcell_type == "WaveguideComposite":
+            point_prefix="Node("
+            point_postfix=")"
+            refpoint_prefix="Node("
+            refpoint_postfix=")"
+            path_str="nodes=["
+            postfix="]"
 
         wg_points = []
         nodes = None
@@ -170,16 +166,7 @@ def convert_cells_to_code(top_cell, print_waveguides_as_composite=False, add_ins
                         element_imports += node_elem_import
 
             # If a refpoint is close to the path point, snap the path point to it
-            closest_dist = float_info.max
-            closest_refpoint_name = None
-            for name, point in refpoints.items():
-                dist = point.distance(path_point)
-                if dist <= closest_dist and dist < refpoint_snap:
-                    # If this refpoint is at exact same position as closest_refpoint, compare also refpoint names.
-                    # This should ensure that chip-level refpoints are chosen over lower-level refpoints.
-                    if dist < closest_dist or (len(name) > len(closest_refpoint_name)):
-                        closest_dist = dist
-                        closest_refpoint_name = name
+            closest_refpoint_name = _get_closest_refpoint(refpoints, path_point, refpoint_snap)
             if closest_refpoint_name is not None:
                 if output_format.startswith("insert_cell"):
                     path_str += f"{refpoint_prefix}self.refpoints[\"{closest_refpoint_name}\"]{node_params}" \
@@ -195,46 +182,31 @@ def convert_cells_to_code(top_cell, print_waveguides_as_composite=False, add_ins
                 path_str += f"{point_prefix}({x_snapped}, {y_snapped}){node_params}{point_postfix}, "
         path_str = path_str[:-2]  # Remove extra comma and space
         path_str += postfix + wg_params
+
         if output_format.startswith("insert_cell"):
             return f"self.insert_cell({pcell_type}, {path_str})\n"
         else:
             return f"view.insert_cell({pcell_type}, {path_str})\n"
-
-    def transform_as_string(inst):
-        trans = inst.dcplx_trans
-        x, y = trans.disp.x, trans.disp.y
-        if trans.mag == 1 and trans.angle % 90 == 0:
-            if trans.rot() == 0 and not trans.is_mirror():
-                if x == 0 and trans.disp.y == 0:
-                    return ""
-                else:
-                    return f"pya.DTrans({x}, {y})"
-            else:
-                return f"pya.DTrans({trans.rot()}, {trans.is_mirror()}, {x}, {y})"
-        else:
-            return f"pya.DCplxTrans({trans.mag}, {trans.angle}, {trans.is_mirror()}, {x}, {y})"
 
     # Generate the code for creating each instance
     instances_code = ""
     for inst in instances:
         # Print python code for creating the instance at the given position
         cell = _get_cell(inst)
-        transform = transform_as_string(inst)
+        transform = _transform_as_string(inst)
         pcell_declaration = inst.pcell_declaration()
         if pcell_declaration is not None:
             if isinstance(pcell_declaration, Element):
                 pcell_type = type(pcell_declaration).__name__
                 # special handling for waveguides
                 if isinstance(pcell_declaration, (WaveguideComposite, WaveguideCoplanar)):
-                    if print_waveguides_as_composite or isinstance(pcell_declaration, WaveguideComposite):
-                        instances_code += \
-                            get_waveguide_code(inst, prefix="nodes=[", postfix="]", pcell_type="WaveguideComposite",
-                                               point_prefix="Node(", point_postfix=")", refpoint_prefix="Node(",
-                                               refpoint_postfix=")")
+                    if pcell_type == "WaveguideCoplanar" and print_waveguides_as_composite:
+                        pcell_type = "WaveguideComposite"
+                    if create_code:
+                        instances_code += get_waveguide_code(inst, pcell_type)
                     else:
-                        instances_code += \
-                            get_waveguide_code(inst, prefix="path=pya.DPath([", postfix="], 0)",
-                                               pcell_type=pcell_type, point_prefix="pya.DPoint")
+                        _snap_waveguide_to_refpoints(inst, refpoints, refpoint_snap, grid_snap)
+                        continue
                 # other elements
                 else:
                     inst_name = inst.property('id') if (inst.property('id') is not None) else ""
@@ -277,6 +249,9 @@ def convert_cells_to_code(top_cell, print_waveguides_as_composite=False, add_ins
                 instances_code += f"cell = layout.create_cell(\"{cell.name}\", \"{cell.library().name()}\")\n"
                 instances_code += f"view.insert_cell(cell, {transform})\n"
 
+    if not create_code:
+        return ""
+
     # Generate code for the beginning of the chip or macro file if needed
     start_code = ""
     if output_format == "insert_cell+chip":
@@ -304,6 +279,38 @@ def convert_cells_to_code(top_cell, print_waveguides_as_composite=False, add_ins
         full_code = start_code + instances_code
 
     return full_code
+
+
+def _transform_as_string(inst):
+    trans = inst.dcplx_trans
+    x, y = trans.disp.x, trans.disp.y
+    if trans.mag == 1 and trans.angle % 90 == 0:
+        if trans.rot() == 0 and not trans.is_mirror():
+            if x == 0 and trans.disp.y == 0:
+                return ""
+            else:
+                return f"pya.DTrans({x}, {y})"
+        else:
+            return f"pya.DTrans({trans.rot()}, {trans.is_mirror()}, {x}, {y})"
+    else:
+        return f"pya.DCplxTrans({trans.mag}, {trans.angle}, {trans.is_mirror()}, {x}, {y})"
+
+
+def _add_instance(inst, instances, inst_names, pcell_classes):
+    cell = _get_cell(inst)
+    inst_name = inst.property('id')
+    pcell_decl = inst.pcell_declaration()
+    # ChipFrame is always constructed by Chip, so we don't want to generate code for it
+    if isinstance(pcell_decl, ChipFrame):
+        return
+    # Instance name labels are generated based on element instance names, we don't want to create them explicitly
+    if cell.name == "TEXT":
+        return
+    instances.append(inst)
+    if inst_name is not None:
+        inst_names.append(inst_name)
+    if pcell_decl is not None:
+        pcell_classes.add(pcell_decl.__class__)
 
 
 def _get_cell(inst):
@@ -429,3 +436,51 @@ def restore_pcells_to_views(views):
             params = {**def_params, **pc[2]}
             insert_cell_into(top_cell, pc[0], pc[1], **params)
         top_cell.refresh()
+
+
+def _snap_waveguide_to_refpoints(inst, refpoints, refpoint_snap, grid_snap):
+    """Helper function to do only refpoint and grid snapping."""
+    wg_points = []
+    _params = inst.pcell_parameters_by_name()
+    if type(inst.pcell_declaration()).__name__ == "WaveguideCoplanar":
+        for p in _params.pop("path").each_point():
+            wg_points.append(p)
+    else:
+        nodes = Node.nodes_from_string(_params.pop("nodes"))
+        for node in nodes:
+            wg_points.append(node.position)
+
+    new_points = []
+    for i, path_point in enumerate(wg_points):
+        _point = path_point + inst.dtrans.disp
+        x_snapped = grid_snap*round(_point.x/grid_snap)
+        y_snapped = grid_snap*round(_point.y/grid_snap)
+
+        closest_refpoint_name = _get_closest_refpoint(refpoints, path_point, refpoint_snap)
+        if closest_refpoint_name is not None:
+            new_points.append(refpoints[closest_refpoint_name])
+        else:
+            new_points.append(pya.DPoint(x_snapped, y_snapped))
+
+    itrans = inst.dtrans.inverted()
+    for i, point in enumerate(new_points):
+        new_points[i] = point * itrans
+
+    if type(inst.pcell_declaration()).__name__ == "WaveguideCoplanar":
+        inst.change_pcell_parameter('path', pya.DPath(new_points, 1))
+    else:
+        inst.change_pcell_parameter('gui_path', pya.DPath(new_points, 1))
+
+
+def _get_closest_refpoint(refpoints, path_point, refpoint_snap):
+    closest_dist = float_info.max
+    closest_refpoint_name = None
+    for name, point in refpoints.items():
+        dist = point.distance(path_point)
+        if dist <= closest_dist and dist < refpoint_snap:
+            # If this refpoint is at exact same position as closest_refpoint, compare also refpoint names.
+            # This should ensure that chip-level refpoints are chosen over lower-level refpoints.
+            if dist < closest_dist or (len(name) > len(closest_refpoint_name)):
+                closest_dist = dist
+                closest_refpoint_name = name
+    return closest_refpoint_name
