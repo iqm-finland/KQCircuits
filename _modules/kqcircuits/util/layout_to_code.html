@@ -557,7 +557,7 @@
 
 <div class="viewcode-block" id="convert_cells_to_code"><a class="viewcode-back" href="../../../api/kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.convert_cells_to_code">[docs]</a><span class="k">def</span> <span class="nf">convert_cells_to_code</span><span class="p">(</span><span class="n">top_cell</span><span class="p">,</span> <span class="n">print_waveguides_as_composite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">add_instance_names</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">refpoint_snap</span><span class="o">=</span><span class="mf">50.0</span><span class="p">,</span>
                           <span class="n">grid_snap</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">output_format</span><span class="o">=</span><span class="s2">&quot;insert_cell+chip&quot;</span><span class="p">,</span> <span class="n">include_imports</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                          <span class="n">use_create_with_refpoints</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                          <span class="n">use_create_with_refpoints</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">create_code</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Prints out the Python code required to create the cells in top_cell.</span>
 
@@ -589,6 +589,7 @@
 <span class="sd">        include_imports: If true, then import statements for all used elements are included in the generated code</span>
 <span class="sd">        use_create_with_refpoints: If true, then create_with_refpoints() is used instead of create(). Only used when</span>
 <span class="sd">            output_format is &quot;create&quot; or &quot;create+macro&quot;. Required if you want to use refpoints as waveguide points.</span>
+<span class="sd">        create_code: if False then does not export code but snap cells to refpoints in place</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        str: The generated Python code. This is also printed.</span>
@@ -600,32 +601,16 @@
     <span class="n">inst_names</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">pcell_classes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">add_instance</span><span class="p">(</span><span class="n">inst</span><span class="p">):</span>
-        <span class="n">cell</span> <span class="o">=</span> <span class="n">_get_cell</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span>
-        <span class="n">inst_name</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">property</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
-        <span class="n">pcell_decl</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">()</span>
-        <span class="c1"># ChipFrame is always constructed by Chip, so we don&#39;t want to generate code for it</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pcell_decl</span><span class="p">,</span> <span class="n">ChipFrame</span><span class="p">):</span>
-            <span class="k">return</span>
-        <span class="c1"># Instance name labels are generated based on element instance names, we don&#39;t want to create them explicitly</span>
-        <span class="k">if</span> <span class="n">cell</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;TEXT&quot;</span><span class="p">:</span>
-            <span class="k">return</span>
-        <span class="n">instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">inst_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">inst_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inst_name</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">pcell_decl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">pcell_classes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pcell_decl</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
-
     <span class="c1"># If some instances are selected, then we are only going to export code for them</span>
     <span class="n">cell_view</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">CellView</span><span class="o">.</span><span class="n">active</span><span class="p">()</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pya</span><span class="p">,</span> <span class="s2">&quot;CellView&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">cell_view</span> <span class="ow">and</span> <span class="n">cell_view</span><span class="o">.</span><span class="n">is_valid</span><span class="p">()</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell_view</span><span class="o">.</span><span class="n">view</span><span class="p">()</span><span class="o">.</span><span class="n">object_selection</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">cell_view</span><span class="o">.</span><span class="n">view</span><span class="p">()</span><span class="o">.</span><span class="n">object_selection</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">is_cell_inst</span><span class="p">():</span>
-                <span class="n">add_instance</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">inst</span><span class="p">())</span>
+                <span class="n">_add_instance</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">inst</span><span class="p">(),</span> <span class="n">instances</span><span class="p">,</span> <span class="n">inst_names</span><span class="p">,</span> <span class="n">pcell_classes</span><span class="p">)</span>
     <span class="c1"># Otherwise get all instances at one level below top_cell.</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">top_cell</span><span class="o">.</span><span class="n">each_inst</span><span class="p">():</span>
-            <span class="n">add_instance</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span>
+            <span class="n">_add_instance</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">instances</span><span class="p">,</span> <span class="n">inst_names</span><span class="p">,</span> <span class="n">pcell_classes</span><span class="p">)</span>
 
     <span class="c1"># Order the instances according to cell type, x-coordinate, and y-coordinate</span>
     <span class="n">instances</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">instances</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">inst</span><span class="p">:</span> <span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="o">-</span><span class="n">inst</span><span class="o">.</span><span class="n">dtrans</span><span class="o">.</span><span class="n">disp</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">inst</span><span class="o">.</span><span class="n">dtrans</span><span class="o">.</span><span class="n">disp</span><span class="o">.</span><span class="n">x</span><span class="p">))</span>
@@ -665,9 +650,20 @@
         <span class="k">if</span> <span class="n">print_waveguides_as_composite</span> <span class="ow">or</span> <span class="n">WaveguideComposite</span> <span class="ow">in</span> <span class="n">pcell_classes</span><span class="p">:</span>
             <span class="n">element_imports</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;from </span><span class="si">{</span><span class="n">WaveguideComposite</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2"> import </span><span class="si">{</span><span class="n">Node</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
 
-    <span class="k">def</span> <span class="nf">get_waveguide_code</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">postfix</span><span class="p">,</span> <span class="n">pcell_type</span><span class="p">,</span> <span class="n">point_prefix</span><span class="p">,</span> <span class="n">point_postfix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">refpoint_prefix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-                           <span class="n">refpoint_postfix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
-        <span class="n">path_str</span> <span class="o">=</span> <span class="n">prefix</span>
+    <span class="k">def</span> <span class="nf">get_waveguide_code</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">pcell_type</span><span class="p">):</span>
+        <span class="n">point_prefix</span><span class="o">=</span><span class="s2">&quot;pya.DPoint&quot;</span>
+        <span class="n">point_postfix</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="n">refpoint_prefix</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="n">refpoint_postfix</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="n">path_str</span><span class="o">=</span><span class="s2">&quot;path=pya.DPath([&quot;</span>
+        <span class="n">postfix</span><span class="o">=</span><span class="s2">&quot;], 0)&quot;</span>
+        <span class="k">if</span> <span class="n">pcell_type</span> <span class="o">==</span> <span class="s2">&quot;WaveguideComposite&quot;</span><span class="p">:</span>
+            <span class="n">point_prefix</span><span class="o">=</span><span class="s2">&quot;Node(&quot;</span>
+            <span class="n">point_postfix</span><span class="o">=</span><span class="s2">&quot;)&quot;</span>
+            <span class="n">refpoint_prefix</span><span class="o">=</span><span class="s2">&quot;Node(&quot;</span>
+            <span class="n">refpoint_postfix</span><span class="o">=</span><span class="s2">&quot;)&quot;</span>
+            <span class="n">path_str</span><span class="o">=</span><span class="s2">&quot;nodes=[&quot;</span>
+            <span class="n">postfix</span><span class="o">=</span><span class="s2">&quot;]&quot;</span>
 
         <span class="n">wg_points</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">nodes</span> <span class="o">=</span> <span class="kc">None</span>
@@ -698,16 +694,7 @@
                         <span class="n">element_imports</span> <span class="o">+=</span> <span class="n">node_elem_import</span>
 
             <span class="c1"># If a refpoint is close to the path point, snap the path point to it</span>
-            <span class="n">closest_dist</span> <span class="o">=</span> <span class="n">float_info</span><span class="o">.</span><span class="n">max</span>
-            <span class="n">closest_refpoint_name</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">refpoints</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">dist</span> <span class="o">=</span> <span class="n">point</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">path_point</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">dist</span> <span class="o">&lt;=</span> <span class="n">closest_dist</span> <span class="ow">and</span> <span class="n">dist</span> <span class="o">&lt;</span> <span class="n">refpoint_snap</span><span class="p">:</span>
-                    <span class="c1"># If this refpoint is at exact same position as closest_refpoint, compare also refpoint names.</span>
-                    <span class="c1"># This should ensure that chip-level refpoints are chosen over lower-level refpoints.</span>
-                    <span class="k">if</span> <span class="n">dist</span> <span class="o">&lt;</span> <span class="n">closest_dist</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">closest_refpoint_name</span><span class="p">)):</span>
-                        <span class="n">closest_dist</span> <span class="o">=</span> <span class="n">dist</span>
-                        <span class="n">closest_refpoint_name</span> <span class="o">=</span> <span class="n">name</span>
+            <span class="n">closest_refpoint_name</span> <span class="o">=</span> <span class="n">_get_closest_refpoint</span><span class="p">(</span><span class="n">refpoints</span><span class="p">,</span> <span class="n">path_point</span><span class="p">,</span> <span class="n">refpoint_snap</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">closest_refpoint_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">output_format</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;insert_cell&quot;</span><span class="p">):</span>
                     <span class="n">path_str</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">refpoint_prefix</span><span class="si">}</span><span class="s2">self.refpoints[</span><span class="se">\&quot;</span><span class="si">{</span><span class="n">closest_refpoint_name</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">]</span><span class="si">{</span><span class="n">node_params</span><span class="si">}</span><span class="s2">&quot;</span> \
@@ -723,46 +710,31 @@
                 <span class="n">path_str</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">point_prefix</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">x_snapped</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">y_snapped</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="n">node_params</span><span class="si">}{</span><span class="n">point_postfix</span><span class="si">}</span><span class="s2">, &quot;</span>
         <span class="n">path_str</span> <span class="o">=</span> <span class="n">path_str</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>  <span class="c1"># Remove extra comma and space</span>
         <span class="n">path_str</span> <span class="o">+=</span> <span class="n">postfix</span> <span class="o">+</span> <span class="n">wg_params</span>
+
         <span class="k">if</span> <span class="n">output_format</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;insert_cell&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;self.insert_cell(</span><span class="si">{</span><span class="n">pcell_type</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">path_str</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;view.insert_cell(</span><span class="si">{</span><span class="n">pcell_type</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">path_str</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span>
-
-    <span class="k">def</span> <span class="nf">transform_as_string</span><span class="p">(</span><span class="n">inst</span><span class="p">):</span>
-        <span class="n">trans</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">dcplx_trans</span>
-        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">trans</span><span class="o">.</span><span class="n">disp</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">trans</span><span class="o">.</span><span class="n">disp</span><span class="o">.</span><span class="n">y</span>
-        <span class="k">if</span> <span class="n">trans</span><span class="o">.</span><span class="n">mag</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">trans</span><span class="o">.</span><span class="n">angle</span> <span class="o">%</span> <span class="mi">90</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">trans</span><span class="o">.</span><span class="n">rot</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">trans</span><span class="o">.</span><span class="n">is_mirror</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">trans</span><span class="o">.</span><span class="n">disp</span><span class="o">.</span><span class="n">y</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="s2">&quot;&quot;</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;pya.DTrans(</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">y</span><span class="si">}</span><span class="s2">)&quot;</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;pya.DTrans(</span><span class="si">{</span><span class="n">trans</span><span class="o">.</span><span class="n">rot</span><span class="p">()</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">trans</span><span class="o">.</span><span class="n">is_mirror</span><span class="p">()</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">y</span><span class="si">}</span><span class="s2">)&quot;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;pya.DCplxTrans(</span><span class="si">{</span><span class="n">trans</span><span class="o">.</span><span class="n">mag</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">trans</span><span class="o">.</span><span class="n">angle</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">trans</span><span class="o">.</span><span class="n">is_mirror</span><span class="p">()</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">y</span><span class="si">}</span><span class="s2">)&quot;</span>
 
     <span class="c1"># Generate the code for creating each instance</span>
     <span class="n">instances_code</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">instances</span><span class="p">:</span>
         <span class="c1"># Print python code for creating the instance at the given position</span>
         <span class="n">cell</span> <span class="o">=</span> <span class="n">_get_cell</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span>
-        <span class="n">transform</span> <span class="o">=</span> <span class="n">transform_as_string</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span>
+        <span class="n">transform</span> <span class="o">=</span> <span class="n">_transform_as_string</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span>
         <span class="n">pcell_declaration</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">pcell_declaration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pcell_declaration</span><span class="p">,</span> <span class="n">Element</span><span class="p">):</span>
                 <span class="n">pcell_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">pcell_declaration</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
                 <span class="c1"># special handling for waveguides</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pcell_declaration</span><span class="p">,</span> <span class="p">(</span><span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">WaveguideCoplanar</span><span class="p">)):</span>
-                    <span class="k">if</span> <span class="n">print_waveguides_as_composite</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pcell_declaration</span><span class="p">,</span> <span class="n">WaveguideComposite</span><span class="p">):</span>
-                        <span class="n">instances_code</span> <span class="o">+=</span> \
-                            <span class="n">get_waveguide_code</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;nodes=[&quot;</span><span class="p">,</span> <span class="n">postfix</span><span class="o">=</span><span class="s2">&quot;]&quot;</span><span class="p">,</span> <span class="n">pcell_type</span><span class="o">=</span><span class="s2">&quot;WaveguideComposite&quot;</span><span class="p">,</span>
-                                               <span class="n">point_prefix</span><span class="o">=</span><span class="s2">&quot;Node(&quot;</span><span class="p">,</span> <span class="n">point_postfix</span><span class="o">=</span><span class="s2">&quot;)&quot;</span><span class="p">,</span> <span class="n">refpoint_prefix</span><span class="o">=</span><span class="s2">&quot;Node(&quot;</span><span class="p">,</span>
-                                               <span class="n">refpoint_postfix</span><span class="o">=</span><span class="s2">&quot;)&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">pcell_type</span> <span class="o">==</span> <span class="s2">&quot;WaveguideCoplanar&quot;</span> <span class="ow">and</span> <span class="n">print_waveguides_as_composite</span><span class="p">:</span>
+                        <span class="n">pcell_type</span> <span class="o">=</span> <span class="s2">&quot;WaveguideComposite&quot;</span>
+                    <span class="k">if</span> <span class="n">create_code</span><span class="p">:</span>
+                        <span class="n">instances_code</span> <span class="o">+=</span> <span class="n">get_waveguide_code</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">pcell_type</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="n">instances_code</span> <span class="o">+=</span> \
-                            <span class="n">get_waveguide_code</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;path=pya.DPath([&quot;</span><span class="p">,</span> <span class="n">postfix</span><span class="o">=</span><span class="s2">&quot;], 0)&quot;</span><span class="p">,</span>
-                                               <span class="n">pcell_type</span><span class="o">=</span><span class="n">pcell_type</span><span class="p">,</span> <span class="n">point_prefix</span><span class="o">=</span><span class="s2">&quot;pya.DPoint&quot;</span><span class="p">)</span>
+                        <span class="n">_snap_waveguide_to_refpoints</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">refpoints</span><span class="p">,</span> <span class="n">refpoint_snap</span><span class="p">,</span> <span class="n">grid_snap</span><span class="p">)</span>
+                        <span class="k">continue</span>
                 <span class="c1"># other elements</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">inst_name</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">property</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">property</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
@@ -805,6 +777,9 @@
                 <span class="n">instances_code</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;cell = layout.create_cell(</span><span class="se">\&quot;</span><span class="si">{</span><span class="n">cell</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">, </span><span class="se">\&quot;</span><span class="si">{</span><span class="n">cell</span><span class="o">.</span><span class="n">library</span><span class="p">()</span><span class="o">.</span><span class="n">name</span><span class="p">()</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="n">instances_code</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;view.insert_cell(cell, </span><span class="si">{</span><span class="n">transform</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span>
 
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">create_code</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+
     <span class="c1"># Generate code for the beginning of the chip or macro file if needed</span>
     <span class="n">start_code</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="k">if</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s2">&quot;insert_cell+chip&quot;</span><span class="p">:</span>
@@ -832,6 +807,38 @@
         <span class="n">full_code</span> <span class="o">=</span> <span class="n">start_code</span> <span class="o">+</span> <span class="n">instances_code</span>
 
     <span class="k">return</span> <span class="n">full_code</span></div>
+
+
+<span class="k">def</span> <span class="nf">_transform_as_string</span><span class="p">(</span><span class="n">inst</span><span class="p">):</span>
+    <span class="n">trans</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">dcplx_trans</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">trans</span><span class="o">.</span><span class="n">disp</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">trans</span><span class="o">.</span><span class="n">disp</span><span class="o">.</span><span class="n">y</span>
+    <span class="k">if</span> <span class="n">trans</span><span class="o">.</span><span class="n">mag</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">trans</span><span class="o">.</span><span class="n">angle</span> <span class="o">%</span> <span class="mi">90</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">trans</span><span class="o">.</span><span class="n">rot</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">trans</span><span class="o">.</span><span class="n">is_mirror</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">trans</span><span class="o">.</span><span class="n">disp</span><span class="o">.</span><span class="n">y</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;pya.DTrans(</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">y</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;pya.DTrans(</span><span class="si">{</span><span class="n">trans</span><span class="o">.</span><span class="n">rot</span><span class="p">()</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">trans</span><span class="o">.</span><span class="n">is_mirror</span><span class="p">()</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">y</span><span class="si">}</span><span class="s2">)&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;pya.DCplxTrans(</span><span class="si">{</span><span class="n">trans</span><span class="o">.</span><span class="n">mag</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">trans</span><span class="o">.</span><span class="n">angle</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">trans</span><span class="o">.</span><span class="n">is_mirror</span><span class="p">()</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">y</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+
+<span class="k">def</span> <span class="nf">_add_instance</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">instances</span><span class="p">,</span> <span class="n">inst_names</span><span class="p">,</span> <span class="n">pcell_classes</span><span class="p">):</span>
+    <span class="n">cell</span> <span class="o">=</span> <span class="n">_get_cell</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span>
+    <span class="n">inst_name</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">property</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+    <span class="n">pcell_decl</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">()</span>
+    <span class="c1"># ChipFrame is always constructed by Chip, so we don&#39;t want to generate code for it</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pcell_decl</span><span class="p">,</span> <span class="n">ChipFrame</span><span class="p">):</span>
+        <span class="k">return</span>
+    <span class="c1"># Instance name labels are generated based on element instance names, we don&#39;t want to create them explicitly</span>
+    <span class="k">if</span> <span class="n">cell</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;TEXT&quot;</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="n">instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">inst_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">inst_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inst_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">pcell_decl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">pcell_classes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pcell_decl</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_get_cell</span><span class="p">(</span><span class="n">inst</span><span class="p">):</span>
@@ -957,6 +964,54 @@
             <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">def_params</span><span class="p">,</span> <span class="o">**</span><span class="n">pc</span><span class="p">[</span><span class="mi">2</span><span class="p">]}</span>
             <span class="n">insert_cell_into</span><span class="p">(</span><span class="n">top_cell</span><span class="p">,</span> <span class="n">pc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
         <span class="n">top_cell</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span></div>
+
+
+<span class="k">def</span> <span class="nf">_snap_waveguide_to_refpoints</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">refpoints</span><span class="p">,</span> <span class="n">refpoint_snap</span><span class="p">,</span> <span class="n">grid_snap</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function to do only refpoint and grid snapping.&quot;&quot;&quot;</span>
+    <span class="n">wg_points</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">_params</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">pcell_parameters_by_name</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">())</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;WaveguideCoplanar&quot;</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">_params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;path&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">each_point</span><span class="p">():</span>
+            <span class="n">wg_points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">nodes</span> <span class="o">=</span> <span class="n">Node</span><span class="o">.</span><span class="n">nodes_from_string</span><span class="p">(</span><span class="n">_params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+            <span class="n">wg_points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+
+    <span class="n">new_points</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">path_point</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">wg_points</span><span class="p">):</span>
+        <span class="n">_point</span> <span class="o">=</span> <span class="n">path_point</span> <span class="o">+</span> <span class="n">inst</span><span class="o">.</span><span class="n">dtrans</span><span class="o">.</span><span class="n">disp</span>
+        <span class="n">x_snapped</span> <span class="o">=</span> <span class="n">grid_snap</span><span class="o">*</span><span class="nb">round</span><span class="p">(</span><span class="n">_point</span><span class="o">.</span><span class="n">x</span><span class="o">/</span><span class="n">grid_snap</span><span class="p">)</span>
+        <span class="n">y_snapped</span> <span class="o">=</span> <span class="n">grid_snap</span><span class="o">*</span><span class="nb">round</span><span class="p">(</span><span class="n">_point</span><span class="o">.</span><span class="n">y</span><span class="o">/</span><span class="n">grid_snap</span><span class="p">)</span>
+
+        <span class="n">closest_refpoint_name</span> <span class="o">=</span> <span class="n">_get_closest_refpoint</span><span class="p">(</span><span class="n">refpoints</span><span class="p">,</span> <span class="n">path_point</span><span class="p">,</span> <span class="n">refpoint_snap</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">closest_refpoint_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">new_points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">refpoints</span><span class="p">[</span><span class="n">closest_refpoint_name</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x_snapped</span><span class="p">,</span> <span class="n">y_snapped</span><span class="p">))</span>
+
+    <span class="n">itrans</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">dtrans</span><span class="o">.</span><span class="n">inverted</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">point</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">new_points</span><span class="p">):</span>
+        <span class="n">new_points</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">point</span> <span class="o">*</span> <span class="n">itrans</span>
+
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">())</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;WaveguideCoplanar&quot;</span><span class="p">:</span>
+        <span class="n">inst</span><span class="o">.</span><span class="n">change_pcell_parameter</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">(</span><span class="n">new_points</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">inst</span><span class="o">.</span><span class="n">change_pcell_parameter</span><span class="p">(</span><span class="s1">&#39;gui_path&#39;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">(</span><span class="n">new_points</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">_get_closest_refpoint</span><span class="p">(</span><span class="n">refpoints</span><span class="p">,</span> <span class="n">path_point</span><span class="p">,</span> <span class="n">refpoint_snap</span><span class="p">):</span>
+    <span class="n">closest_dist</span> <span class="o">=</span> <span class="n">float_info</span><span class="o">.</span><span class="n">max</span>
+    <span class="n">closest_refpoint_name</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">refpoints</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">dist</span> <span class="o">=</span> <span class="n">point</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">path_point</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dist</span> <span class="o">&lt;=</span> <span class="n">closest_dist</span> <span class="ow">and</span> <span class="n">dist</span> <span class="o">&lt;</span> <span class="n">refpoint_snap</span><span class="p">:</span>
+            <span class="c1"># If this refpoint is at exact same position as closest_refpoint, compare also refpoint names.</span>
+            <span class="c1"># This should ensure that chip-level refpoints are chosen over lower-level refpoints.</span>
+            <span class="k">if</span> <span class="n">dist</span> <span class="o">&lt;</span> <span class="n">closest_dist</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">closest_refpoint_name</span><span class="p">)):</span>
+                <span class="n">closest_dist</span> <span class="o">=</span> <span class="n">dist</span>
+                <span class="n">closest_refpoint_name</span> <span class="o">=</span> <span class="n">name</span>
+    <span class="k">return</span> <span class="n">closest_refpoint_name</span>
 </pre></div>
 
            </div>

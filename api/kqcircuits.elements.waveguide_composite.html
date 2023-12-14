@@ -648,7 +648,9 @@ only be placed collinear with each other.</p>
 parameters: <code class="docutils literal notranslate"><span class="pre">a</span></code>, <code class="docutils literal notranslate"><span class="pre">b</span></code> or <code class="docutils literal notranslate"><span class="pre">face_id</span></code>. They insert a WaveguideCoplanarTaper or a
 FlipChipConnector, respectively and change the defaults too.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">ab_across=True</span></code> parameter places a single airbridge across the node. The <code class="docutils literal notranslate"><span class="pre">n_bridges=N</span></code>
-parameter puts N airbridges evenly distributed across the preceding edge.</p>
+parameter puts N airbridges evenly distributed across the preceding edge. If <code class="docutils literal notranslate"><span class="pre">n_bridges=-1</span></code> the number of bridges
+will be calculated automatically from <code class="docutils literal notranslate"><span class="pre">ab_to_ab_spacing</span></code> and <code class="docutils literal notranslate"><span class="pre">ab_to_node_clearance</span></code>, with the former defining
+the density of airbridges and the latter the clearance from the start and end node of the straight segment.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">length_before</span></code> parameter of a node can be specified to automatically set the length of
 the waveguide between that node and the previous one. It will in fact create a Meander element
 instead of a normal waveguide between those nodes to achieve the correct length. Alternative parameter
@@ -813,6 +815,8 @@ inserted after if the next Node is not collinear.</p>
 <li><p><strong>gui_path</strong><em> (Shape)</em><span> - </span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">(0,0;200,0)</span> <span class="pre">w=1</span> <span class="pre">bx=0</span> <span class="pre">ex=0</span> <span class="pre">r=false</span></code></p></li>
 <li><p><strong>gui_path_shadow</strong><em> (Shape)</em><span> - Hidden path to detect GUI operations</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">(0,0;200,0)</span> <span class="pre">w=1</span> <span class="pre">bx=0</span> <span class="pre">ex=0</span> <span class="pre">r=false</span></code></p></li>
 <li><p><strong>tight_routing</strong><em> (Boolean)</em><span> - Tight routing for corners</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>ab_to_ab_spacing</strong><em> (Double)</em><span> - Spacing between consecutive airbridges</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">500</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>ab_to_node_clearance</strong><em> (Double)</em><span> - Spacing between an airbridge and a node</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>a</strong><em> (Double)</em><span> - Width of center conductor</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>b</strong><em> (Double)</em><span> - Width of gap</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">6</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>n</strong><em> (Int)</em><span> - Number of points on turns</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">64</span></code></p></li>

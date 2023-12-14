@@ -547,7 +547,7 @@
 <span class="kn">import</span> <span class="nn">ast</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">zip_longest</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
-<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span><span class="p">,</span> <span class="n">tan</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span><span class="p">,</span> <span class="n">tan</span><span class="p">,</span> <span class="n">floor</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 
 <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">root_scalar</span>
@@ -729,7 +729,9 @@
 <span class="sd">    FlipChipConnector, respectively and change the defaults too.</span>
 
 <span class="sd">    The ``ab_across=True`` parameter places a single airbridge across the node. The ``n_bridges=N``</span>
-<span class="sd">    parameter puts N airbridges evenly distributed across the preceding edge.</span>
+<span class="sd">    parameter puts N airbridges evenly distributed across the preceding edge. If ``n_bridges=-1`` the number of bridges</span>
+<span class="sd">    will be calculated automatically from ``ab_to_ab_spacing`` and ``ab_to_node_clearance``, with the former defining</span>
+<span class="sd">    the density of airbridges and the latter the clearance from the start and end node of the straight segment.</span>
 
 <span class="sd">    The ``length_before`` parameter of a node can be specified to automatically set the length of</span>
 <span class="sd">    the waveguide between that node and the previous one. It will in fact create a Meander element</span>
@@ -757,6 +759,8 @@
     <span class="n">gui_path_shadow</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeShape</span><span class="p">,</span> <span class="s2">&quot;Hidden path to detect GUI operations&quot;</span><span class="p">,</span>
                             <span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span> <span class="mi">1</span><span class="p">),</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">tight_routing</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Tight routing for corners&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">ab_to_ab_spacing</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Spacing between consecutive airbridges&quot;</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
+    <span class="n">ab_to_node_clearance</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Spacing between an airbridge and a node&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="WaveguideComposite.create"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite.create">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
@@ -1306,7 +1310,7 @@
                 <span class="n">n0</span> <span class="o">=</span> <span class="n">n1</span>
                 <span class="n">p0</span> <span class="o">=</span> <span class="n">p1</span>
                 <span class="n">point0</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">end_len</span> <span class="o">&lt;</span> <span class="mf">1e-4</span> <span class="k">else</span> <span class="p">[</span><span class="n">meander_end</span><span class="p">]</span>
-            <span class="k">elif</span> <span class="s2">&quot;n_bridges&quot;</span> <span class="ow">in</span> <span class="n">node1</span><span class="o">.</span><span class="n">params</span> <span class="ow">and</span> <span class="n">node1</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;n_bridges&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="s2">&quot;n_bridges&quot;</span> <span class="ow">in</span> <span class="n">node1</span><span class="o">.</span><span class="n">params</span> <span class="ow">and</span> <span class="n">node1</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;n_bridges&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">ab_len</span> <span class="o">=</span> <span class="n">node1</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;bridge_length&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;bridge_length&quot;</span> <span class="ow">in</span> <span class="n">node1</span><span class="o">.</span><span class="n">params</span> <span class="k">else</span> <span class="kc">None</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_ab_across</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="n">p1</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="n">p1</span><span class="p">],</span> <span class="n">node1</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;n_bridges&quot;</span><span class="p">],</span> <span class="n">ab_len</span><span class="p">)</span>
 
@@ -1321,24 +1325,32 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_wg_start_idx</span> <span class="o">=</span> <span class="n">end_index</span>
 
     <span class="k">def</span> <span class="nf">_ab_across</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">ab_len</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates ``num`` airbridge crossings equally distributed between ``start`` and ``end``.</span>
-<span class="sd">        If ``num == 0`` then one airbridge crossing is created at the node. ``ab_len`` is the airbridges&#39; lenght.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates airbridges between ``start`` and ``end``.</span>
+<span class="sd">        If num &gt; 0, num is the number of airbridges equally distributed between ``start`` and ``end``.</span>
+<span class="sd">        If num == 0, then one airbridge is created at the end node.</span>
+<span class="sd">        If num &lt; 0, the number of airbridges is determined by self.ab_to_node_clearance and self.ab_to_ab_spacing.</span>
+<span class="sd">        ab_len is the length of airbridges.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># determine airbridge distribution</span>
+        <span class="n">v_dir</span> <span class="o">=</span> <span class="n">end</span> <span class="o">-</span> <span class="n">start</span>
+        <span class="k">if</span> <span class="n">num</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">xs</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="o">/</span> <span class="p">(</span><span class="n">num</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="k">elif</span> <span class="n">num</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">xs</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">v_length</span> <span class="o">=</span> <span class="n">v_dir</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
+            <span class="n">final_num</span> <span class="o">=</span> <span class="n">floor</span><span class="p">((</span><span class="n">v_length</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ab_to_node_clearance</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">ab_to_ab_spacing</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">final_num</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span>
+            <span class="n">xs</span> <span class="o">=</span> <span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">ab_to_node_clearance</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ab_to_ab_spacing</span><span class="p">)</span> <span class="o">/</span> <span class="n">v_length</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">final_num</span><span class="p">)]</span>
 
+        <span class="c1"># add airbridges</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;airbridge_type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">airbridge_type</span><span class="p">}</span>
         <span class="k">if</span> <span class="n">ab_len</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="s1">&#39;bridge_length&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ab_len</span>
         <span class="n">ab_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">Airbridge</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
-        <span class="n">v_dir</span> <span class="o">=</span> <span class="n">end</span> <span class="o">-</span> <span class="n">start</span>
-        <span class="n">alpha</span> <span class="o">=</span> <span class="n">get_angle</span><span class="p">(</span><span class="n">v_dir</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">num</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-                <span class="n">ab_trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">start</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">v_dir</span> <span class="o">/</span> <span class="p">(</span><span class="n">num</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">ab_cell</span><span class="p">,</span> <span class="n">ab_trans</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">ab_trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">ab_cell</span><span class="p">,</span> <span class="n">ab_trans</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">ab_cell</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">get_angle</span><span class="p">(</span><span class="n">v_dir</span><span class="p">),</span> <span class="kc">False</span><span class="p">,</span> <span class="n">start</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="n">v_dir</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_terminator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Terminate the waveguide ending with an Element.&quot;&quot;&quot;</span>

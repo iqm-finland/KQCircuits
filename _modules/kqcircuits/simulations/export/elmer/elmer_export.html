@@ -581,6 +581,9 @@
                       <span class="n">linear_system_method</span><span class="o">=</span><span class="s1">&#39;bicgstab&#39;</span><span class="p">,</span>
                       <span class="n">p_element_order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                       <span class="n">frequency</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                      <span class="n">frequency_batch</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                      <span class="n">sweep_type</span><span class="o">=</span><span class="s1">&#39;explicit&#39;</span><span class="p">,</span>
+                      <span class="n">max_delta_s</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
                       <span class="n">mesh_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                       <span class="n">boundary_conditions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                       <span class="n">workflow</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -648,8 +651,11 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">sif_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;capacitance&#39;</span><span class="p">,</span> <span class="s1">&#39;capacitance0&#39;</span><span class="p">]</span>
     <span class="k">elif</span> <span class="n">tool</span><span class="o">==</span><span class="s1">&#39;wave_equation&#39;</span><span class="p">:</span>
-        <span class="n">stem</span> <span class="o">=</span> <span class="n">sim_data</span><span class="p">[</span><span class="s1">&#39;parameters&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
-        <span class="n">sif_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">stem</span> <span class="o">+</span> <span class="s1">&#39;_f&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">frequency</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">sweep_type</span> <span class="o">==</span> <span class="s1">&#39;interpolating&#39;</span><span class="p">:</span>
+            <span class="n">sif_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">stem</span> <span class="o">=</span> <span class="n">sim_data</span><span class="p">[</span><span class="s1">&#39;parameters&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+            <span class="n">sif_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">stem</span> <span class="o">+</span> <span class="s1">&#39;_f&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">frequency</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">sif_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">sim_data</span><span class="p">[</span><span class="s1">&#39;parameters&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span>
 
@@ -666,6 +672,9 @@
         <span class="s1">&#39;maximum_passes&#39;</span><span class="p">:</span> <span class="n">maximum_passes</span><span class="p">,</span>
         <span class="s1">&#39;minimum_passes&#39;</span><span class="p">:</span> <span class="n">minimum_passes</span><span class="p">,</span>
         <span class="s1">&#39;frequency&#39;</span><span class="p">:</span> <span class="n">frequency</span><span class="p">,</span>
+        <span class="s1">&#39;frequency_batch&#39;</span><span class="p">:</span> <span class="n">frequency_batch</span><span class="p">,</span>
+        <span class="s1">&#39;sweep_type&#39;</span><span class="p">:</span> <span class="n">sweep_type</span><span class="p">,</span>
+        <span class="s1">&#39;max_delta_s&#39;</span><span class="p">:</span> <span class="n">max_delta_s</span><span class="p">,</span>
         <span class="o">**</span><span class="p">({}</span> <span class="k">if</span> <span class="n">dielectric_surfaces</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{</span><span class="s1">&#39;dielectric_surfaces&#39;</span><span class="p">:</span> <span class="n">dielectric_surfaces</span><span class="p">}),</span>
         <span class="s1">&#39;linear_system_method&#39;</span><span class="p">:</span> <span class="n">linear_system_method</span><span class="p">,</span>
         <span class="s1">&#39;p_element_order&#39;</span><span class="p">:</span> <span class="n">p_element_order</span><span class="p">,</span>
@@ -1098,6 +1107,9 @@
                  <span class="n">linear_system_method</span><span class="o">=</span><span class="s1">&#39;bicgstab&#39;</span><span class="p">,</span>
                  <span class="n">p_element_order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
                  <span class="n">frequency</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                 <span class="n">frequency_batch</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                 <span class="n">sweep_type</span><span class="o">=</span><span class="s1">&#39;explicit&#39;</span><span class="p">,</span>
+                 <span class="n">max_delta_s</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
                  <span class="n">file_prefix</span><span class="o">=</span><span class="s1">&#39;simulation&#39;</span><span class="p">,</span>
                  <span class="n">script_file</span><span class="o">=</span><span class="s1">&#39;scripts/run.py&#39;</span><span class="p">,</span>
                  <span class="n">mesh_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1269,6 +1281,9 @@
                     <span class="n">linear_system_method</span><span class="o">=</span><span class="n">linear_system_method</span><span class="p">,</span>
                     <span class="n">p_element_order</span><span class="o">=</span><span class="n">p_element_order</span><span class="p">,</span>
                     <span class="n">frequency</span><span class="o">=</span><span class="n">frequency</span><span class="p">,</span>
+                    <span class="n">frequency_batch</span><span class="o">=</span><span class="n">frequency_batch</span><span class="p">,</span>
+                    <span class="n">sweep_type</span><span class="o">=</span><span class="n">sweep_type</span><span class="p">,</span>
+                    <span class="n">max_delta_s</span><span class="o">=</span><span class="n">max_delta_s</span><span class="p">,</span>
                     <span class="n">mesh_size</span><span class="o">=</span><span class="n">mesh_size</span><span class="p">,</span>
                     <span class="n">boundary_conditions</span><span class="o">=</span><span class="n">boundary_conditions</span><span class="p">,</span>
                     <span class="n">workflow</span><span class="o">=</span><span class="n">workflow</span><span class="p">,</span>
