@@ -590,7 +590,8 @@
                       <span class="n">maximum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                       <span class="n">minimum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                       <span class="n">dielectric_surfaces</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                      <span class="n">is_axisymmetric</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                      <span class="n">is_axisymmetric</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                      <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Export Elmer simulation into json and gds files.</span>
 
@@ -690,11 +691,14 @@
     <span class="k">return</span> <span class="n">json_filename</span></div>
 
 
-<div class="viewcode-block" id="export_elmer_script"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer_script">[docs]</a><span class="k">def</span> <span class="nf">export_elmer_script</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+<div class="viewcode-block" id="export_elmer_script"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer_script">[docs]</a><span class="k">def</span> <span class="nf">export_elmer_script</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">,</span>
+                        <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
                         <span class="n">workflow</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">file_prefix</span><span class="o">=</span><span class="s1">&#39;simulation&#39;</span><span class="p">,</span>
                         <span class="n">script_file</span><span class="o">=</span><span class="s1">&#39;scripts/run.py&#39;</span><span class="p">,</span>
-                        <span class="n">n_simulations</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+                        <span class="n">post_process_script</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">n_simulations</span> <span class="o">=</span> <span class="mi">1</span>
+                        <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create script files for running one or more simulations.</span>
 <span class="sd">    Create also a main script to launch all the simulations at once.</span>
@@ -706,6 +710,7 @@
 <span class="sd">        file_prefix: Name of the script file to be created.</span>
 <span class="sd">        script_file: Name of the script file to run.</span>
 <span class="sd">        n_simulations: Total number of simulations</span>
+<span class="sd">        post_process_script: Name of post processing script file.</span>
 
 <span class="sd">    Returns:</span>
 
@@ -988,6 +993,9 @@
                 <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;source &quot;</span><span class="si">{}</span><span class="s1">&quot; &amp;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">script_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">)))</span>
                 <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">n_workers_full</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;wait</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">post_process_script</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;echo &quot;Running post process script </span><span class="se">\&quot;</span><span class="s1">scripts/</span><span class="si">{}</span><span class="se">\&quot;</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">post_process_script</span><span class="p">))</span>
+                <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;python scripts/</span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">post_process_script</span><span class="p">))</span>
 
     <span class="k">else</span><span class="p">:</span>
         <span class="n">n_workers</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;n_workers&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -1074,6 +1082,10 @@
                     <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;echo &quot;--------------------------------------------&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
                     <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&quot;./</span><span class="si">{}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">script_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">)))</span>
 
+            <span class="k">if</span> <span class="n">post_process_script</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;echo &quot;Running post process script </span><span class="se">\&quot;</span><span class="s1">scripts/</span><span class="si">{}</span><span class="se">\&quot;</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">post_process_script</span><span class="p">))</span>
+                <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;python scripts/</span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">post_process_script</span><span class="p">))</span>
+
     <span class="c1"># change permission</span>
     <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">main_script_filename</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">main_script_filename</span><span class="p">)</span><span class="o">.</span><span class="n">st_mode</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IEXEC</span><span class="p">)</span>
 
@@ -1098,7 +1110,9 @@
                  <span class="n">minimum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                  <span class="n">dielectric_surfaces</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">is_axisymmetric</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">skip_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                 <span class="n">skip_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">post_process_script</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Exports an elmer simulation model to the simulation path.</span>
 
@@ -1143,6 +1157,8 @@
 
 <span class="sd">               **Use this carefully**, some of your simulations might not make sense physically and</span>
 <span class="sd">               you might end up wasting time on bad simulations.</span>
+<span class="sd">        post_process_script: Name of post processing script file.</span>
+
 
 <span class="sd">    Returns:</span>
 
@@ -1262,7 +1278,7 @@
                     <span class="n">maximum_passes</span><span class="o">=</span><span class="n">maximum_passes</span><span class="p">,</span>
                     <span class="n">minimum_passes</span><span class="o">=</span><span class="n">minimum_passes</span><span class="p">,</span>
                     <span class="n">dielectric_surfaces</span><span class="o">=</span><span class="n">dielectric_surfaces</span><span class="p">,</span>
-                    <span class="n">is_axisymmetric</span><span class="o">=</span><span class="n">is_axisymmetric</span>
+                    <span class="n">is_axisymmetric</span><span class="o">=</span><span class="n">is_axisymmetric</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
@@ -1279,10 +1295,13 @@
                     <span class="s1">&#39;geometry files.&#39;</span>
                 <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
 
-    <span class="k">return</span> <span class="n">export_elmer_script</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">workflow</span><span class="p">,</span>
+    <span class="k">return</span> <span class="n">export_elmer_script</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">,</span>
+                               <span class="n">path</span><span class="p">,</span>
+                               <span class="n">workflow</span><span class="p">,</span>
                                <span class="n">file_prefix</span><span class="o">=</span><span class="n">file_prefix</span><span class="p">,</span>
                                <span class="n">script_file</span><span class="o">=</span><span class="n">script_file</span><span class="p">,</span>
-                               <span class="n">n_simulations</span><span class="o">=</span><span class="n">n_worker_lim</span><span class="p">)</span></div>
+                               <span class="n">n_simulations</span><span class="o">=</span><span class="n">n_worker_lim</span><span class="p">,</span>
+                               <span class="n">post_process_script</span><span class="o">=</span><span class="n">post_process_script</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
