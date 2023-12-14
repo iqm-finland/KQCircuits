@@ -40,12 +40,12 @@ def write_simulation_machine_versions_file(path, name):
     versions['python'] = sys.version_info
 
     gmsh_versions_list = []
-    with open(path.joinpath(name+'.Gmsh.log')) as f:
+    with open(path.joinpath('log_files').joinpath(name+'.Gmsh.log')) as f:
         gmsh_log = f.readlines()
         gmsh_versions_list = [line.replace('\n', '') for line in gmsh_log if 'ersion' in line]
 
     elmer_versions_list = []
-    with open(next(Path(path).rglob("*Elmer.log"))) as f:
+    with open(next(path.joinpath('log_files').glob("*Elmer.log"))) as f:
         elmer_log = f.readlines()
         elmer_versions_list = [line.replace('\n', '') for line in elmer_log if 'ersion' in line]
 
@@ -182,6 +182,24 @@ def pool_run_cmds(n_workers: int, cmds: list, output_files: list=None, cwd=None,
     pool.join()
 
 
+def elmer_check_convergence(log_file, cwd=None):
+    """
+    Reads the Elmer log file and logs a warning in case a linear system did not converge
+
+    Args:
+        log_file      (str): Path of the Elmer.log file
+        cwd      (str/Path): Working directory where the commands will be executed
+    """
+    if cwd is not None:
+        log_file = cwd.joinpath(log_file)
+
+    with open(log_file, 'r') as f:
+        lines = [line.rstrip().lower() for line in f]
+
+    for ind, l in enumerate(lines):
+        if 'did not converge' in l:
+            logging.warning(f"Linear system iteration did not converge. See {log_file}:{ind+1}")
+
 def _run_elmer_solver(sim_name,
                       sif_names,
                       n_parallel_simulations,
@@ -231,7 +249,7 @@ def _run_elmer_solver(sim_name,
         logging.warning("ElmerSolver was not found! Make sure you have ElmerFEM installed: "
                         "https://github.com/ElmerCSC/elmerfem")
         sys.exit()
-    output_files = [f"{sif}.Elmer.log" for sif in sif_names]
+    output_files = [f"log_files/{sif}.Elmer.log" for sif in sif_names]
 
     if n_parallel_simulations > 1:
         pool_run_cmds(n_parallel_simulations, run_cmds, output_files=output_files, cwd=exec_path_override, env=my_env)
@@ -239,6 +257,9 @@ def _run_elmer_solver(sim_name,
         for cmd, out in zip(run_cmds, output_files):
             with open(out, 'w') as f:
                 subprocess.check_call(cmd, cwd=exec_path_override, env=my_env, stdout=f)
+
+    for f in output_files:
+        elmer_check_convergence(f, cwd=exec_path_override)
 
 def run_elmer_solver(json_data, exec_path_override=None):
     """

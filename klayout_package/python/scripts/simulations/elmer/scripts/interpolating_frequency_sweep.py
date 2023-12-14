@@ -17,7 +17,6 @@
 
 
 import logging
-import shutil
 import importlib.util
 import copy
 from elmer_helpers import read_result_smatrix, produce_sif_files
@@ -157,8 +156,9 @@ def interpolating_frequency_sweep(json_data,
     n_processes = json_data['workflow'].get('elmer_n_processes', 1)
     n_threads = json_data['workflow'].get('elmer_n_threads', 1)
 
-    data_folder = exec_path_override.joinpath('elmer_data')
-    data_folder.mkdir(parents=True, exist_ok=True)
+    if plot_results:
+        image_folder = exec_path_override.joinpath('s_matrix_plots')
+        image_folder.mkdir(parents=True, exist_ok=True)
 
     json_freqs = np.array(json_data['frequency'])
     start_f = min(json_freqs)
@@ -321,18 +321,12 @@ def interpolating_frequency_sweep(json_data,
                           n_threads=n_threads,
                           exec_path_override=exec_path_override)
 
-        for sif in sif_names:
-            shutil.move(f'{sif}.Elmer.log', data_folder)
-
         s_new = []
         for f in cur_freqs:
             smatrix_filaname = f'SMatrix_{simname}_f{str(f).replace(".", "_")}.dat'
             s_new.append(np.array(read_result_smatrix(smatrix_filaname,
                                                       path=exec_path_override.joinpath(simname),
                                                       polar_form=False)))
-            shutil.move(smatrix_filaname, data_folder)
-            shutil.move(str(smatrix_filaname) + '_im', data_folder)
-            shutil.move(str(smatrix_filaname) + '_abs', data_folder)
 
         s_new = np.stack(s_new, axis=0)
         if iteration_count == 1:
@@ -384,7 +378,7 @@ def interpolating_frequency_sweep(json_data,
                 ax.axvline(x=xc, color='r', ls='--', lw=0.5)
             ax.set_xlabel("Frequency (GHz)")
             ax.set_ylabel(f"S1{fit_index + 1} Mag")
-            fig.savefig(plot_filename)
+            fig.savefig(f'{image_folder}/{plot_filename}')
             plt.close()
 
         prev_func_re, prev_func_im = min_func_re, min_func_im
@@ -416,7 +410,7 @@ def interpolating_frequency_sweep(json_data,
                 ax.plot(f_all, s_mag_data, 'x')
                 ax.set_xlabel("Frequency (GHz)")
                 ax.set_ylabel(f"S{i+1}{j+1} Mag")
-                fig.savefig(f"Result_S{i+1}{j+1}_MAG.png")
+                fig.savefig(f"{image_folder}/Result_S{i+1}{j+1}_MAG.png")
                 plt.close()
 
     for ind, f in enumerate(json_freqs):
@@ -438,9 +432,3 @@ def interpolating_frequency_sweep(json_data,
         with open(str(smatrix_path) + '_abs', 'w') as f:
             for i in range(n_ports):
                 f.write(''.join([f'{e}        ' for e in cur_s_abs[i,:]] + ['\n']))
-
-    image_folder = exec_path_override.joinpath('s_matrix_plots')
-    image_folder.mkdir(parents=True, exist_ok=True)
-
-    for png in exec_path_override.glob('*.png'):
-        shutil.move(png, image_folder)

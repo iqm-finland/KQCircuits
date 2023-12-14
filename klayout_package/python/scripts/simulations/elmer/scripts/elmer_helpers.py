@@ -83,7 +83,7 @@ def sif_common_header(
         ] + reset_adaptive_remesh_str)
 
     res += sif_block('Simulation', [
-        'Max Output Level = 4',
+        'Max Output Level = 6',
         ('Coordinate System = "Axi Symmetric"' if json_data.get('is_axisymmetric', False)
          else f'Coordinate System = "Cartesian {dim}D"'),
         'Simulation Type = "Steady State"',
@@ -144,7 +144,7 @@ def sif_linsys(method='mg', p_element_order=3, steady_state_error=None) -> Seque
             'Linear System Solver = Iterative',
             'Linear System Iterative Method = BiCGStab',
             'Linear System Max Iterations = 500',
-            'Linear System Convergence Tolerance = 1.0e-15',
+            'Linear System Convergence Tolerance = 1.0e-10',
             'Linear System Preconditioning = ILU1',
             'Linear System ILUT Tolerance = 1.0e-03',
             f'Steady State Convergence Tolerance = {1e-9 if steady_state_error is None else steady_state_error*1e-1}',
@@ -153,8 +153,8 @@ def sif_linsys(method='mg', p_element_order=3, steady_state_error=None) -> Seque
         linsys += [
             'Linear System Solver = Iterative',
             'Linear System Iterative Method = GCR ',
-            'Linear System Max Iterations = 30',
-            'Linear System Convergence Tolerance = 1.0e-15',
+            'Linear System Max Iterations = 100',
+            'Linear System Convergence Tolerance = 1.0e-10',
             'Linear System Abort Not Converged = False',
             'Linear System Residual Output = 10',
             'Linear System Preconditioning = multigrid !ILU2',
@@ -167,7 +167,7 @@ def sif_linsys(method='mg', p_element_order=3, steady_state_error=None) -> Seque
             'MG Lowest Linear Solver = iterative',
             'mglowest: Linear System Scaling = False',
             'mglowest: Linear System Iterative Method = CG !BiCGStabl',
-            'mglowest: Linear System Preconditioning = none !ILU0',
+            'mglowest: Linear System Preconditioning = ILU0',
             'mglowest: Linear System Max Iterations = 100',
             'mglowest: Linear System Convergence Tolerance = 1.0e-4',
             f'Steady State Convergence Tolerance = {1e-9 if steady_state_error is None else steady_state_error*1e-1}',
@@ -467,7 +467,7 @@ def get_magneto_dynamics_2d_harmonic_solver(
         'Linear System Iterative Method = BicgStabL',
         'Linear System Preconditioning = None',
         'Linear System Complex = Logical True',
-        'Linear System Convergence Tolerance = 1.e-14',
+        'Linear System Convergence Tolerance = 1.e-10',
         'Linear System Max Iterations = 3000',
         'Linear System Residual Output = 10',
         'Linear System Abort not Converged = False',
@@ -1258,6 +1258,7 @@ def write_project_results_json(json_data: dict, path: Path, msh_filepath, polar_
     sif_folder = path.joinpath(msh_filepath.stem)
     main_sim_folder = sif_folder.parent
     json_filename =  main_sim_folder / (sif_folder.name + '_project_results.json')
+    simname = json_data["parameters"]["name"]
 
     if tool == 'capacitance':
         c_matrix_filename = sif_folder.joinpath('capacitance.dat')
@@ -1279,9 +1280,7 @@ def write_project_results_json(json_data: dict, path: Path, msh_filepath, polar_
                         }, outfile, indent=4)
     elif tool == 'wave_equation':
 
-        sweep_type = json_data['sweep_type']
         frequencies = json_data['frequency']
-        simname = json_data["parameters"]["name"]
 
         ports = json_data['ports']
         renormalizations = [p['renormalization'] for p in ports]
@@ -1293,12 +1292,10 @@ def write_project_results_json(json_data: dict, path: Path, msh_filepath, polar_
         data_folder = main_sim_folder.joinpath('elmer_data')
         data_folder.mkdir(parents=True, exist_ok=True)
 
-
         results = []
-        for ind, f in enumerate(frequencies):
+        for f in frequencies:
             s_matrix_filename = main_sim_folder.joinpath(
                 f'SMatrix_{simname}_f{str(f).replace(".", "_")}.dat')
-            print(f"opening {s_matrix_filename}")
             smatrix_full = read_result_smatrix(s_matrix_filename,
                                                path=path.joinpath(msh_filepath.stem),
                                                polar_form=polar_form)
@@ -1309,15 +1306,11 @@ def write_project_results_json(json_data: dict, path: Path, msh_filepath, polar_
                 'smatrix': smatrix_full,
             })
 
-            shutil.move(s_matrix_filename, data_folder.joinpath(s_matrix_filename))
-            shutil.move(str(s_matrix_filename) + '_im', data_folder.joinpath(str(s_matrix_filename) + '_im'))
-            shutil.move(str(s_matrix_filename) + '_abs', data_folder.joinpath(str(s_matrix_filename) + '_abs'))
-            if sweep_type != 'interpolating':
-                sif_names = json_data['sif_names']
-                shutil.move(f'{sif_names[ind]}.Elmer.log', data_folder)
-
         with open(json_filename, 'w') as outfile:
             json.dump(results, outfile, indent=4)
+
+        for f in main_sim_folder.rglob('*.dat*'):
+            shutil.move(f, data_folder / f.name)
         # write touchstone
         touchstone_filename = f"{sif_folder}.s{len(ports)}p"
         with open(touchstone_filename, 'w') as touchstone_file:
