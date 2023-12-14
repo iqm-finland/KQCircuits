@@ -625,3 +625,19 @@ class Element(pya.PCellDeclarationHelper):
         b2 = simulation.b if simulation.b2 < 0 else simulation.b2
         return [WaveguideToSimPort("port_a", side='left', a=simulation.a, b=simulation.b),
                 WaveguideToSimPort("port_b", side='right', a=a2, b=b2)]
+
+    @staticmethod
+    def face_changer_waveguides(simulation):
+        """A common implementation of get_sim_ports that adds waveguides on both sides of a face-changing element.
+        The port names are '{face_ids[0]}_port' and '{face_ids[1]}_port'.
+        The first port points to left and the second port orientation is determined by output_rotation parameter.
+        The a and b values of the second waveguide are adjusted by a2 and b2 parameters.
+        """
+        def diff_to_rotation(x):
+            return abs(x - (simulation.output_rotation % 360))
+        side = {0: 'left', 90: 'bottom', 180: 'right', 270: 'top', 360: 'left'}\
+            .get(min([0, 90, 180, 270, 360], key=diff_to_rotation))
+        a2 = simulation.a if simulation.a2 < 0 else simulation.a2
+        b2 = simulation.b if simulation.b2 < 0 else simulation.b2
+        return [WaveguideToSimPort(f"{simulation.face_ids[0]}_port", side="left"),
+                WaveguideToSimPort(f"{simulation.face_ids[1]}_port", side=side, face=1, a=a2, b=b2)]

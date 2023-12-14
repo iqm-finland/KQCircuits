@@ -18,6 +18,7 @@
 
 import logging
 
+from kqcircuits.elements.element import Element
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.elements.flip_chip_connectors import connector_type_choices
 from kqcircuits.elements.flip_chip_connectors.flip_chip_connector import FlipChipConnector
@@ -25,7 +26,6 @@ from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc import Flip
 from kqcircuits.elements.launcher import Launcher
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
-from kqcircuits.util.refpoints import WaveguideToSimPort
 
 
 @add_parameters_from(FingerCapacitorSquare, "a2", "b2")
@@ -135,9 +135,4 @@ class FlipChipConnectorRf(FlipChipConnector):
 
     @classmethod
     def get_sim_ports(cls, simulation):
-        def diff_to_rotation(x):
-            return abs(x - (simulation.output_rotation % 360))
-        side = {0: 'left', 90: 'bottom', 180: 'right', 270: 'top', 360: 'left'}\
-            .get(min([0, 90, 180, 270, 360], key=diff_to_rotation))
-        return [WaveguideToSimPort("1t1_port", side="left", face=0),
-                WaveguideToSimPort("2b1_port", side=side, face=1)]
+        return Element.face_changer_waveguides(simulation)
