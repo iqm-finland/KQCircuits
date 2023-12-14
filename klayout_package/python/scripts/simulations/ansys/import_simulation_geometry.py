@@ -382,6 +382,11 @@ if data.get('integrate_energies', False) and ansys_tool in {'hfss', 'eigenmode'}
     oModule.CalcOp("Pow")
     oModule.AddNamedExpression("Esq", "Fields")
 
+    oModule.EnterQty("E")
+    oModule.CalcOp("ScalarZ")
+    oModule.CalcOp("VecZ")
+    oModule.AddNamedExpression("Ez", "Fields")
+
     # Create energy integral terms for each object
     total_solids = []
     mer_total = []
@@ -394,22 +399,11 @@ if data.get('integrate_energies', False) and ansys_tool in {'hfss', 'eigenmode'}
         if material == 'pec':
             continue
 
-        thickness = ldata.get('thickness', 0.0)
-        for n, oname in enumerate(objects[lname]):
-            oModule.CopyNamedExprToStack("Esq")
-            if thickness == 0.0:
-                oModule.EnterSurf(oname)
-            else:
-                oModule.EnterVol(oname)
-            oModule.CalcOp("Integrate")
-            if n > 0:
-                oModule.CalcOp("+")
-
         permittivity = material_dict.get(material, {}).get('permittivity', 1.0)
         epsilon = epsilon_0 * permittivity
         sheet_thickness = ldata.get('sheet thickness', None)
 
-        # in case of non model sheets, we have to calculate the field assuming
+        # in case of non model sheets, we have to calculate the perpendicular field assuming
         # d_sheet=epsilon_0 * epsilon_sheet * e_vac
         # thus,
         # energy = 0.5 * epsilon_0/epsilon_sheet e**2. * sheet_thickness
@@ -417,18 +411,47 @@ if data.get('integrate_energies', False) and ansys_tool in {'hfss', 'eigenmode'}
         # sheet_thickness/epsilon_sheet
         if sheet_thickness is not None:
             sheet_thickness *= 1e-6 # thickness in um
-            sheet_constant = sheet_thickness/permittivity
-            epsilon = epsilon_0
-        else:
-            sheet_constant = 1.0
+            parent_material_permittivity = 1  # assume that parent material is vacuum, which is incorrect for ms layer
+            ecorr = parent_material_permittivity / permittivity
+
+            oModule.EnterScalar(ecorr-1)
+            oModule.CopyNamedExprToStack("Ez")
+            oModule.CalcOp("*")
+            oModule.EnterQty("E")
+            oModule.CalcOp("+")
+            oModule.AddNamedExpression("Ecorr_"+lname, "Fields")
+
+            oModule.CopyNamedExprToStack("Ecorr_"+lname)
+            oModule.CalcOp("CmplxMag")
+            oModule.CalcOp("Mag")
+            oModule.EnterScalar(2)
+            oModule.CalcOp("Pow")
+            oModule.AddNamedExpression("Esqcorr_"+lname, "Fields")
+
+        thickness = ldata.get('thickness', 0.0)
+        for n, oname in enumerate(objects[lname]):
+            if thickness == 0.0:
+                if sheet_thickness is not None:
+                    oModule.CopyNamedExprToStack("Esqcorr_"+lname)
+                else:
+                    oModule.CopyNamedExprToStack("Esq")
+                oModule.EnterSurf(oname)
+            else:
+                oModule.CopyNamedExprToStack("Esq")
+                sheet_thickness = 1
+                oModule.EnterVol(oname)
+            oModule.CalcOp("Integrate")
+            if n > 0:
+                oModule.CalcOp("+")
+
         if objects[lname]:
-            oModule.EnterScalar(epsilon / 2 * sheet_constant)
+            oModule.EnterScalar(epsilon / 2 * sheet_thickness)
             oModule.CalcOp("*")
         else:
             oModule.EnterScalar(0.0)
         oModule.AddNamedExpression("E_{}".format(lname), "Fields")
 
-        if not (thickness == 0.0 and sheet_thickness == 0) and material is not None:
+        if thickness != 0.0 and material is not None:
             total_solids.append("E_{}".format(lname))
             if 'mer' in lname:
                 mer_total.append("E_{}".format(lname))
