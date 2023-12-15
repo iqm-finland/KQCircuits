@@ -24,6 +24,7 @@ import shutil
 from pathlib import Path
 from typing import Union, Sequence, Any, Dict
 from scipy.constants import epsilon_0
+from scipy.signal import find_peaks
 import numpy as np
 
 
@@ -1332,3 +1333,58 @@ def write_project_results_json(json_data: dict, path: Path, msh_filepath, polar_
                     for elem in row:
                         touchstone_file.write("{:25s} {:35s}".format(str(elem[0]),str(elem[1])))
                     touchstone_file.write("\n")
+
+        filter_resonant_vtus(results, sif_folder, simname)
+
+
+def filter_resonant_vtus(results, sif_folder, simname):
+    """
+    Roughly find vtus corresponding to resonances and move them to a separate
+    folder `simname/resonant_vtus`. Also includes the ends of sweep interval. Rest of
+    the vtus are moved to a folder `simname/filtered_vtus`
+
+    Args:
+        results (list[dict]): results in a list of dicts as saved to the json
+        sif_folder (str): Folder containing sif and vtu files
+        simname (str): simulation name
+    """
+
+    s_f = np.array([r['frequency'] for r in results])
+    nports = len(results[0]['smatrix'])
+    peak_inds = []
+    # find peaks in diagonal entries
+    for i in range(nports):
+        s_mag = np.array([r['smatrix'][i][i][0] for r in results])
+        peaksp, _ = find_peaks(s_mag)
+        peaksm, _ = find_peaks(-s_mag)
+        peak_inds += (list(peaksp) + list(peaksm))
+    peak_inds = list(set(peak_inds))
+    f_peaks = s_f[peak_inds]
+
+    available_vtus = list(sif_folder.glob('*.pvtu'))
+    vtu_partitioned = len(available_vtus) != 0
+    if not vtu_partitioned:
+        available_vtus = sif_folder.glob('*.vtu')
+    extension_l = len('_t0001.pvtu') if vtu_partitioned else len('_t0001.vtu')
+    available_f = np.array(list({float(str(v.name)[len(simname)+2:-extension_l].replace('_', '.'))
+                                for v in available_vtus}))
+    available_f = np.sort(available_f)
+
+    saved_f = [available_f[0], available_f[-1]]
+    for f_p in f_peaks:
+        i = np.argmin(np.abs(available_f - f_p))
+        saved_f.append(available_f[i])
+    filtered_f = list(set(available_f) - set(saved_f))
+
+    filter_folder = sif_folder.joinpath('filtered_vtus')
+    resonant_folder = sif_folder.joinpath('resonant_vtus')
+    filter_folder.mkdir(exist_ok=True)
+    resonant_folder.mkdir(exist_ok=True)
+
+    for f in available_f:
+        for vtu in sif_folder.glob(simname + '_f' + str(f).replace('.', '_') + '*'):
+            if str(vtu).endswith('vtu'):
+                if f in filtered_f:
+                    shutil.move(vtu, filter_folder / vtu.name)
+                else:
+                    shutil.move(vtu, resonant_folder / vtu.name)
