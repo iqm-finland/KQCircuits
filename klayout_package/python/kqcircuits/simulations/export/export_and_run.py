@@ -54,15 +54,12 @@ def export_and_run(export_script: Path, export_path: Path, quiet: bool=False, ex
         return export_script, export_path
 
     if (export_path / 'simulation.sh').is_file():
-        simulation_shell_script = 'simulation.sh'
+        if platform.system() == 'Darwin':  # macOS
+            subprocess.call(['bash', 'simulation.sh'], cwd=str(export_path))
+        else:  # Linux
+            subprocess.call(['bash', 'simulation.sh'], cwd=str(export_path))
     else:
-        simulation_shell_script = 'simulation.bat'
-
-    if platform.system() == 'Windows':  # Windows
-        subprocess.call(simulation_shell_script, shell=True, cwd=str(export_path))
-    elif platform.system() == 'Darwin':  # macOS
-        subprocess.call(['bash', simulation_shell_script], cwd=str(export_path))
-    else:  # Linux
-        subprocess.call(['bash', simulation_shell_script], cwd=str(export_path))
+        if platform.system() == 'Windows':  # Windows
+            subprocess.call('simulation.bat', shell=True, cwd=str(export_path))
 
     return export_script, export_path
