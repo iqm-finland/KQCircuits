@@ -915,6 +915,15 @@ to port_a and port_b respectively. The a and b values of right waveguide
 can be adjusted separately.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.element.Element.face_changer_waveguides">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">face_changer_waveguides</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulation</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.face_changer_waveguides"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.face_changer_waveguides" title="Permalink to this definition">¶</a></dt>
+<dd><p>A common implementation of get_sim_ports that adds waveguides on both sides of a face-changing element.
+The port names are ‘{face_ids[0]}_port’ and ‘{face_ids[1]}_port’.
+The first port points to left and the second port orientation is determined by output_rotation parameter.
+The a and b values of the second waveguide are adjusted by a2 and b2 parameters.</p>
+</dd></dl>
+
 </dd></dl>
 
 <strong>PCell parameters:</strong><div class="line"><br /></div>
