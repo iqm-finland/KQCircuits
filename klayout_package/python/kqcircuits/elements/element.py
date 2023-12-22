@@ -121,6 +121,8 @@ class Element(pya.PCellDeclarationHelper):
                                             "metal between gaps.")
     opposing_face_id_groups = Param(pdt.TypeList, "Opposing face ID groups (list of lists)", [["1t1", "2b1"]],
                                     hidden=True)
+    etch_opposite_face = Param(pdt.TypeBoolean, "Etch avoidance shaped gap on the opposite face too", False)
+    etch_opposite_face_margin = Param(pdt.TypeDouble, "Margin of the opposite face etch shape", 5, unit="μm")
 
     def __init__(self):
         ""
@@ -409,11 +411,26 @@ class Element(pya.PCellDeclarationHelper):
             text = pya.DText(name, refpoint.x, refpoint.y)
             self.cell.shapes(self.get_layer("refpoints")).insert(text)
 
+    def _etch_opposite_face(self):
+        """Add opposite face etching, if enabled."""
+        if self.etch_opposite_face:
+            etch_shape = pya.Region(self.cell.begin_shapes_rec(self.get_layer("ground_grid_avoidance"))).merged()
+            etch_shape.size((self.etch_opposite_face_margin - self.margin) / self.layout.dbu)
+            protection = etch_shape.sized(self.margin / self.layout.dbu)
+            face = self.face_ids[0]
+            for group in self.opposing_face_id_groups:
+                if face in group:
+                    for other_face in group:
+                        if other_face != face:
+                            self.cell.shapes(self.get_layer("base_metal_gap_wo_grid", other_face)).insert(etch_shape)
+                            self.cell.shapes(self.get_layer("ground_grid_avoidance", other_face)).insert(protection)
+
     def build(self):
         """Child classes re-define this method to build the PCell."""
 
     def post_build(self):
-        """Child classes re-define this method for post-build operations"""
+        """Child classes may re-define this method for post-build operations."""
+        self._etch_opposite_face()
 
     def display_text_impl(self):
         if self.display_name:

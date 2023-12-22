@@ -48,9 +48,9 @@ class QualityFactorTwoface(Chip):
     cap_res_distance = Param(pdt.TypeDouble, "Distance between spiral resonator and capacitor", 200)
     waveguide_indentation = Param(pdt.TypeDouble, "Waveguide indentation from top chip edge", 500)
     extra_resonator_avoidance = Param(pdt.TypeList, "Added avoidance", [0, 0, 0, 0, 0, 0], unit="[μm]",
-                                      docstring="Added avoidance around resonators [μm]")
-    etch_opposite_face_margin = Param(pdt.TypeDouble, "Margin around the waveguide to etch on the opposite face " +
-                                                      "for 'etched' type resonators", 5)
+                                      docstring="Added avoidance around resonators. At both faces.")
+    extra_resonator_etch = Param(pdt.TypeList, "Added opposite face etch", [0, 0, 0, 0, 0, 0], unit="μm",
+                                 docstring="Extra opposite side etching margin around resonators.")
 
     def build(self):
         self._produce_resonators()
@@ -105,14 +105,15 @@ class QualityFactorTwoface(Chip):
 
         # Create resonators
         for i in range(n_resonators):
+            extra_resonator_etch = float(self.extra_resonator_etch[i]) if i < len(self.extra_resonator_etch) else 0.0
             self.produce_resonator(i, float(self.res_a[i]), float(self.res_b[i]), float(self.res_lengths[i]),
                                    float(self.n_fingers[i]), float(self.l_fingers[i]), self.type_coupler[i],
                                    resonator_face_ids, self.resonator_types[i], float(self.connector_distances[i]),
-                                   float(self.extra_resonator_avoidance[i]), mirror=(i % 2 == 1))
+                                   float(self.extra_resonator_avoidance[i]), extra_resonator_etch, mirror=(i % 2 == 1))
 
     def produce_resonator(self, i, a, b, length, n_fingers, l_fingers, type_coupler, face_ids,
                           resonator_type="capped", connector_distance=0.0,
-                          extra_resonator_avoidance=0.0, mirror=False):
+                          extra_resonator_avoidance=0.0, extra_resonator_etch=0.0, mirror=False):
         """
         Produce a single spiral resonator and corresponding input capacitor.
 
@@ -132,6 +133,7 @@ class QualityFactorTwoface(Chip):
             resonator_type: String, type of resonator, one of ``etched``, ``capped``, ``solid`` or ``twoface``
             connector_distance: For ``twoface`` resonators, distance of the flip chip connector starting from capacitor
             extra_resonator_avoidance: Extra ``ground_grid_avoidance`` margin around the resonator
+            extra_resonator_etch: Extra etching on top of ``etch_opposite_face_margin``
             mirror: Turn clockwise if False, or counter-clockwise if True.
         """
 
@@ -151,7 +153,8 @@ class QualityFactorTwoface(Chip):
         cplr_params = cap_params(
             n_fingers, l_fingers, type_coupler, protect_opposite_face=protect_opposite_face,
             face_ids=face_ids, a=self.a_capped, b=self.b_capped, a2=a, b2=b, element_key='cell')
-        inst_cplr, cplr_refpoints = self.insert_cell(**cplr_params, align="port_a", align_to=start,
+        _, cplr_refpoints = self.insert_cell(**cplr_params, align="port_a", align_to=start,
+                                                     etch_opposite_face=(resonator_type == "etched"),
                                                      trans=pya.DCplxTrans(1, start_angle, False, 0, 0))
 
         # Spiral resonator
@@ -161,15 +164,17 @@ class QualityFactorTwoface(Chip):
             res_params = {
                 "airbridge_type": "Airbridge Multi Face",
                 "include_bumps": False,
-                "bridge_length": a + 2 * (b + self.etch_opposite_face_margin + extra_resonator_avoidance),
+                "bridge_length": a + 2 * (b + self.etch_opposite_face_margin + extra_resonator_etch),
                 "bridge_width": 2,
                 "pad_length": 2,
                 "bridge_spacing": self.bridge_spacing,
+                "etch_opposite_face": True,
+                "etch_opposite_face_margin": self.etch_opposite_face_margin + extra_resonator_etch,
             }
         else:
             res_params = {"bridge_spacing": 0}
 
-        inst_res, _ = self.insert_cell(
+        self.insert_cell(
             SpiralResonatorPolygon,
             margin=self.margin + extra_resonator_avoidance,
             input_path=pya.DPath([
@@ -190,14 +195,3 @@ class QualityFactorTwoface(Chip):
             inst_name=f'resonator{i}',
             trans=pya.DCplxTrans(1, start_angle, mirror, cplr_refpoints["port_b"])
         )
-
-        # Top chip etching and grid avoidance above resonator
-        if resonator_type == "etched":
-            l0 = self.get_layer("ground_grid_avoidance", int(self.resonator_faces[0]))
-            region = pya.Region(inst_res.cell.begin_shapes_rec(l0)).transformed(inst_res.trans)
-            region += pya.Region(inst_cplr.cell.begin_shapes_rec(l0)).transformed(inst_cplr.trans)
-            region = region.sized((self.etch_opposite_face_margin - self.margin) / self.layout.dbu)
-            protection_region = region.sized(self.margin / self.layout.dbu)
-            opposite_face = int(self.resonator_faces[1])
-            self.cell.shapes(self.get_layer("ground_grid_avoidance", opposite_face)).insert(protection_region)
-            self.cell.shapes(self.get_layer("base_metal_gap_wo_grid", opposite_face)).insert(region)

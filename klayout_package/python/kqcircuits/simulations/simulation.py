@@ -696,7 +696,7 @@ class Simulation:
                                   use_internal_ports=None, waveguide_length=None,
                                   term1=0, turn_radius=None,
                                   a=None, b=None, over_etching=None,
-                                  airbridge=False, face=0):
+                                  airbridge=False, face=0, etch_opposite_face=False):
         """Create a waveguide connection from some `location` to a port, and add the corresponding port to
         `simulation.ports`.
 
@@ -793,6 +793,7 @@ class Simulation:
                               term2=0,
                               a=waveguide_a,
                               b=waveguide_b,
+                              etch_opposite_face=etch_opposite_face,
                               face_ids=[self.face_ids[face]]
                               )
 
@@ -806,6 +807,7 @@ class Simulation:
                                               b=b,
                                               term1=a-4*over_etching,
                                               term2=0,
+                                              etch_opposite_face=etch_opposite_face,
                                               face_ids=[self.face_ids[face]]
                                               )
             self.cell.insert(pya.DCellInstArray(port_end_piece.cell_index(), pya.DTrans()))

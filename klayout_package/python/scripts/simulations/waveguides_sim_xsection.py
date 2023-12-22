@@ -63,7 +63,7 @@ sim_parameters = {
     'box': pya.DBox(pya.DPoint(-cpw_length/2., -sim_box_height/2.), pya.DPoint(cpw_length/2., sim_box_height/2.)),
     'cpw_length': cpw_length,
     'face_stack': ['1t1', '2b1'] if multiface else ['1t1'],
-    'etch_opposite_face': args.etch_opposite_face,
+    'etch_whole_opposite_face': args.etch_whole_opposite_face,
 }
 
 workflow = {

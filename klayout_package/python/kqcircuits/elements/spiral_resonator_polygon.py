@@ -112,7 +112,6 @@ class SpiralResonatorPolygon(Element):
             else:
                 max_spacing = spacing
         self._produce_resonator(optimal_points)
-        self.add_port("a", optimal_points[0], optimal_points[0] - optimal_points[1])
 
     def _produce_resonator_manual_spacing(self):
         """Produces polygon spiral resonator with spacing defined by `self.manual_spacing`.
@@ -125,7 +124,6 @@ class SpiralResonatorPolygon(Element):
             self.raise_error_on_cell("Cannot create a resonator with the given parameters. Try decreasing the spacings "
                                      "or the turn radius.", (self.input_path.bbox() + self.poly_path.bbox()).center())
         self._produce_resonator(points)
-        self.add_port("a", points[0], points[0] - points[1])
 
     def _produce_path_points(self, spacing):
         """Creates resonator path points with the given spacing.
@@ -279,6 +277,8 @@ class SpiralResonatorPolygon(Element):
             self._produce_wg_with_connector(points, term2)
         else:
             self.insert_cell(WaveguideCoplanar, path=points, term2=term2)
+
+        self.add_port("a", points[0], points[0] - points[1])
 
     def _fix_waveguide_end(self, points, current_length):
         """Modifies the last points and places a WaveguideCoplanarCurved element at the end if needed.
