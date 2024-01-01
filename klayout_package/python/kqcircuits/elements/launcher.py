@@ -18,9 +18,11 @@
 
 from kqcircuits.elements.element import Element
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt
+from kqcircuits.util.parameters import Param, pdt, add_parameters_from
+from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 
 
+@add_parameters_from(WaveguideCoplanar, "add_metal")
 class Launcher(Element):
     """The PCell declaration for a launcher for connecting wirebonds.
 
@@ -50,6 +52,8 @@ class Launcher(Element):
             pya.DPoint(self.l, -self.a_launcher / 2),
             pya.DPoint(0, -self.a / 2 + 0)
         ]
+        if self.add_metal:
+            self.cell.shapes(self.get_layer("base_metal_addition")).insert(pya.DPolygon(pts))
 
         shifts = [
             pya.DVector(0, self.b),

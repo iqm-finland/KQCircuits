@@ -116,10 +116,40 @@ class FlipChipConnectorRf(FlipChipConnector):
             self.insert_cell(Launcher, trans, self.face_ids[0], s=s, l=self.ubm_diameter,
                              a_launcher=self.connector_a, b_launcher=self.connector_b,
                              launcher_frame_gap=self.connector_b)
+
+            # If there are many center bumps and output direction is not colinear with the input direction than a simple
+            # Launcher won't do. For arbitrary angles we use two Launcher objects one to cover the parallel part, like
+            # in the colinear case, but without the tapering part and we add a second short Launcher rotated to the
+            # right output direction. Additionally, we use the metal addition layer to get rid of the parts where one
+            # Launcher's gap overlaps with the others center conductor.
+            add_metal = False
+            if int(self.output_rotation) not in (0, 180) and self.n_center_bumps > 1:
+                ubm = self.ubm_diameter
+                ibm = self.inter_bump_distance
+                l = (self.n_center_bumps - 1) * ibm / 2
+                pts = [
+                    pya.DPoint(l - ibm, ubm / 2),
+                    pya.DPoint(l, ubm / 2),
+                    pya.DPoint(l, -ubm / 2),
+                    pya.DPoint(l - ibm, -ubm / 2),
+                ]
+                self.cell.shapes(self.get_layer("base_metal_addition", self.face_ids[1])).insert(pya.DPolygon(pts))
+
+                lc = ubm * 1.5
+                ts = pya.DCplxTrans(1, 180, False, -lc, 0)
+                self.insert_cell(Launcher, ts * trans, None, s=s-lc, l=ubm, a_launcher=self.connector_a,
+                                 b_launcher=self.connector_b, launcher_frame_gap=self.connector_b,
+                                 face_ids=[self.face_ids[1], self.face_ids[0]], a=ubm, b=ubm)
+                s = ubm
+                trans = pya.DCplxTrans(1, 0, False, bump_ref["base"] + pya.DPoint(-ubm - s / 2, 0))
+                tt = pya.DCplxTrans(1, self.output_rotation, False, (self.n_center_bumps - 1) / 2 * ibm, 0)
+                add_metal = True
+
             self.insert_cell(Launcher, tt * trans, self.face_ids[1], s=s, l=self.ubm_diameter,
                              a_launcher=self.connector_a, b_launcher=self.connector_b,
                              launcher_frame_gap=self.connector_b, face_ids=[self.face_ids[1], self.face_ids[0]],
-                             a=a2, b=b2)
+                             a=a2, b=b2, add_metal=add_metal)
+
 
         # Insert ground bumps
         if self.connector_type == "GSG":
