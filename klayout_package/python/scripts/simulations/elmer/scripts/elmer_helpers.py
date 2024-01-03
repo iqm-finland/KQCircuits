@@ -201,7 +201,8 @@ def sif_adaptive_mesh(percent_error=0.005,
         'Adaptive Mesh Numbering = False',
         f'Adaptive Min Depth = {minimum_passes}',
         f'Adaptive Max Error Scale = Real {max_error_scale}',
-        f'Adaptive Max Outlier Fraction = Real {max_outlier_fraction}'
+        f'Adaptive Max Outlier Fraction = Real {max_outlier_fraction}',
+        'MMG niter = Integer 1',
     ]
     return adaptive_lines
 
@@ -1185,7 +1186,11 @@ def sif_wave_equation(json_data: dict, folder_path: Path):
         boundary_conditions += sif_boundary_condition(
             ordinate=i + n_boundaries,
             target_boundaries=[s],
-            conditions=['! This is a place holder for other boundary conditions'])
+            conditions=[
+                '! Default boundary for full wave (PEC)',
+                'E re {e} = 0',
+                'E im {e} = 0',
+                'Potential = 1'])
     n_boundaries += len(other_groups)
 
     # Solvers

@@ -219,8 +219,9 @@ def produce_mesh(json_data, msh_file):
         if pec_island:
             material_dim_tags[f'ground_{counter}'] = pec_island
             counter += 1
+
+    # set domain boundary as ground for wave equation simulations
     if json_data.get('tool', 'capacitance') == 'wave_equation':
-        # set domain boundary as ground for wave equation simulations
         solid_dts = [(d, t) for dts in material_dim_tags.values() for d, t in dts if d == 3]
         face_dts = [(d, t) for dt in solid_dts for d, t in get_recursive_children([dt]) if d == 2]
         port_dts = [dt for port in ports for dt in new_tags.get(f'port_{port["number"]}', [])]
