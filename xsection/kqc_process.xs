@@ -65,9 +65,10 @@ else
   raise "face_stack list has #{face_stack.length()} elements. Only 1- or 2-face cross-sections are supported"
 end
 
+_cd = chip_distance[0] + ground_metal_height * 2
 # Basic options
 if is_flip_chip
-  depth(substrate_height[0] + chip_distance[0] + substrate_height[1])
+  depth(substrate_height[0] + _cd + substrate_height[1])
 else
   depth(substrate_height[0])
 end
@@ -106,7 +107,7 @@ material_b_substrate = bulk # creates a substrate with top edge at y=0
 # In order to have two chips at different vertical positions, we thus have to remove the top part of
 # the bottom wafer first, so that later a top chip can be created there.
 if is_flip_chip
-  etch(chip_distance[0] + substrate_height[1], :into => material_b_substrate)
+  etch(_cd + substrate_height[1], :into => material_b_substrate)
 end
 
 # deposit base metal
@@ -138,7 +139,7 @@ planarize(:downto => material_b_substrate, :into => material_b_airbridge_resist)
 # deposit underbump metallization
 material_b_underbump_metallization = mask(layer_b_underbump_metallization).grow(ubm_height, -0.1, :mode => :round)
 # deposit indium bumps
-material_b_indium_bump = mask(layer_b_indium_bump).grow(chip_distance[0]/2 - ubm_height - ground_metal_height, 0.1, :mode => :round)
+material_b_indium_bump = mask(layer_b_indium_bump).grow(_cd / 2 - ubm_height - ground_metal_height, 0.1, :mode => :round)
 
 # output the material data for bottom chip to the target layout
 output("b_substrate(#{sim_layers['b_substrate']})", material_b_substrate)
@@ -162,7 +163,7 @@ if is_flip_chip
   flip()
 
   # Remove the part of top chip substrate which is within bottom chip area (see earlier comment for bottom chip).
-  etch(substrate_height[0] + chip_distance[0], :into => material_t_substrate)
+  etch(substrate_height[0] + _cd, :into => material_t_substrate)
 
   # deposit base metal
   material_t_ground = mask(layer_t_ground).grow(ground_metal_height)
@@ -181,7 +182,7 @@ if is_flip_chip
   # deposit underbump metallization
   material_t_underbump_metallization = mask(layer_t_underbump_metallization).grow(ubm_height, -0.1, :mode => :round)
   # deposit indium bumps
-  material_t_indium_bump = mask(layer_t_indium_bump).grow(chip_distance[0]/2 - ubm_height - ground_metal_height, 0.1, :mode => :round)
+  material_t_indium_bump = mask(layer_t_indium_bump).grow(_cd / 2 - ubm_height - ground_metal_height, 0.1, :mode => :round)
 
   # output the material data for top chip to the target layout
   output("t_substrate(#{sim_layers['t_substrate']})", material_t_substrate)

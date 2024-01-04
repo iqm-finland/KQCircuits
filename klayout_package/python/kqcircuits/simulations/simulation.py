@@ -140,9 +140,10 @@ class Simulation:
     material_dict = Param(pdt.TypeString, "Dictionary of dielectric materials", "{'silicon': {'permittivity': 11.45}}",
                           docstring="Material property keywords follow Ansys Electromagnetics property names. "
                                     "For example 'permittivity', 'dielectric_loss_tangent', etc.")
-    chip_distance = Param(pdt.TypeList, "Height of vacuum between two substrates", [8.0], unit="[µm]",
+    chip_distance = Param(pdt.TypeList, "Height of vacuum between two chips", [8.0], unit="[µm]",
                           docstring="The value can be scalar or list of scalars. Set as list to use individual chip "
-                                    "distances from bottom to top.")
+                                    "distances from bottom to top. The chip distances are measured between "
+                                    "the closest layers of the opposing chips.")
     ground_metal_height = Param(pdt.TypeDouble, "Height of the grounded metal (in Xsection tool)", 0.2, unit="µm",
                                 docstring="Only used in Xsection tool and doesn't affect the 3D model")
     signal_metal_height = Param(pdt.TypeDouble, "Height of the trace metal (in Xsection tool)", 0.2, unit="µm",
@@ -303,33 +304,41 @@ class Simulation:
 
         The level z=0 is at lowest substrate top.
         """
-        # Terms below z=0 level
-        substrate_bottom = -float(self.ith_value(self.substrate_height, 0))
-        z_levels = [substrate_bottom - self.lower_box_height] if self.lower_box_height > 0 else []
-        z_levels += [substrate_bottom, 0.0]
+        # Build z-levels such that level z=0 is at very bottom. Z-transformation is applied later.
+        vacuum_at_bottom = self.lower_box_height > 0
+        z = self.lower_box_height if vacuum_at_bottom else float(self.ith_value(self.substrate_height, 0))
+        z_dict = dict()
+        z_list = [0.0]
+        z_trans = 0.0
+        stack = self.face_stack_list_of_lists()
+        for i, face_ids in enumerate(stack):
+            metal_heights = self.ith_value(self.metal_height, i)
+            dielectric_heights = self.ith_value(self.dielectric_height, i)
+            if bool(i % 2) == vacuum_at_bottom:
+                # faces on top of a substrate
+                z_list.append(z)
+                if i < 2:
+                    z_trans = z  # determine z-transformation
+                for j, face_id in enumerate(face_ids):
+                    metal_z = z + float(self.ith_value(metal_heights, j))
+                    dielectric_z = metal_z + float(self.ith_value(dielectric_heights, j))
+                    z_dict[face_id] = [z, metal_z, dielectric_z]
+                    z = dielectric_z
+                z += float(self.ith_value(self.chip_distance, i // 2)) if i < len(stack) - 1 else self.upper_box_height
+            else:
+                # faces on bottom of a substrate
+                for j, face_id in enumerate(face_ids[::-1]):
+                    dielectric_z = z + float(self.ith_value(dielectric_heights, j))
+                    metal_z = dielectric_z + float(self.ith_value(metal_heights, j))
+                    z_dict[face_id] = [metal_z, dielectric_z, z]
+                    z = dielectric_z
+                z_list.append(z)
+                z += float(self.ith_value(self.substrate_height, (i + 1) // 2))
+        z_list.append(z)
 
-        # Terms above z=0 level
-        remaining_substrates = (len(self.face_stack) + 2 - len(z_levels)) // 2
-        for s in range(remaining_substrates):
-            z_levels.append(z_levels[-1] + float(self.ith_value(self.chip_distance, s)))
-            z_levels.append(z_levels[-1] + float(self.ith_value(self.substrate_height, s + 1)))
-        if len(z_levels) < len(self.face_stack) + 2:
-            z_levels.append(z_levels[-1] + self.upper_box_height)
-
-        # Create dictionary of z-levels including integer keys and face_id keys
-        z_dict = dict(enumerate(z_levels))
-        z_dict[-1] = z_levels[-1]
-        for i, face_ids in enumerate(self.face_stack_list_of_lists()):
-            sign = (-1) ** (i + int(self.lower_box_height > 0))
-            base_z = z_levels[i + 1]
-            metal_height = self.ith_value(self.metal_height, i)
-            dielectric_height = self.ith_value(self.dielectric_height, i)
-            for j, face_id in enumerate(face_ids):
-                metal_z = base_z + sign * float(self.ith_value(metal_height, j))
-                dielectric_z = metal_z + sign * float(self.ith_value(dielectric_height, j))
-                z_dict[face_id] = [base_z, metal_z, dielectric_z]
-                base_z = dielectric_z
-        return z_dict
+        # Return combined dictionary such that level z=0 is at lowest substrate top
+        return {**{k: z_list[k] - z_trans for k in range(-1, len(z_list))},
+                **{k: [x - z_trans for x in v] for k, v in z_dict.items()}}
 
     def region_from_layer(self, face_id, layer_name):
         """ Returns a `Region` containing all geometry from a specified layer """
