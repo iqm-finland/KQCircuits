@@ -59,24 +59,24 @@ class Chip(Element):
                      docstring="Width of center conductor in the capped region (μm)")
     b_capped = Param(pdt.TypeDouble, "Width of gap in the capped region ", 10, unit="μm")
 
-    # Tsv grid parameters
-    with_gnd_tsvs = Param(pdt.TypeBoolean, "Make ground TSVs", False)
-    tsv_grid_spacing = Param(pdt.TypeDouble, "TSV grid distance (center to center)", 300, unit="μm")
-    tsv_edge_to_tsv_edge_separation = \
-        Param(pdt.TypeDouble, "Ground TSV clearance to manually placed TSVs (edge to edge)", 250, unit="μm")
-    tsv_edge_to_nearest_element = Param(pdt.TypeDouble, "Ground TSV clearance to other elements (edge to edge)",
-                                        100, unit="μm")
-    edge_from_tsv = Param(pdt.TypeDouble, "Ground TSV center clearance to chip edge", 550, unit="μm")
-    with_face1_gnd_tsvs = Param(pdt.TypeBoolean, "Make ground TSVs on the top face", False)
-    with_gnd_bumps = Param(pdt.TypeBoolean, "Make ground bumps", False)
-    bump_grid_spacing = Param(
-        pdt.TypeDouble, "Bump grid distance (center to center)",
-        default_bump_parameters['bump_grid_spacing'], unit="μm")
-    bump_edge_to_bump_edge_separation = Param(
-        pdt.TypeDouble, "In bump clearance to manually placed Bumps (edge to edge)",
-        default_bump_parameters['bump_edge_to_bump_edge_separation'], unit="μm")
-    edge_from_bump = Param(pdt.TypeDouble, "Spacing between bump and chip edge",
+    # TSV grid parameters
+    with_gnd_tsvs = Param(pdt.TypeBoolean, "Make a grid of through-silicon vias (TSVs)", False)
+    with_face1_gnd_tsvs = Param(pdt.TypeBoolean, "Make a grid of TSVs on top chip", False)
+    tsv_grid_spacing = Param(pdt.TypeDouble, "TSV grid spacing (center to center)", 300, unit="μm")
+    edge_from_tsv = Param(pdt.TypeDouble, "TSV grid clearance to chip edge (center to edge)", 550, unit="μm")
+    tsv_edge_to_tsv_edge_separation = Param(pdt.TypeDouble, "TSV grid clearance to existing TSVs (edge to edge)", 250,
+                                            unit="μm")
+    tsv_edge_to_nearest_element = Param(pdt.TypeDouble, "TSV grid clearance to other elements (edge to edge)", 100,
+                                        unit="μm")
+
+    # Bump grid parameters
+    with_gnd_bumps = Param(pdt.TypeBoolean, "Make a grid of indium bumps", False)
+    bump_grid_spacing = Param(pdt.TypeDouble, "Bump grid spacing (center to center)",
+                              default_bump_parameters['bump_grid_spacing'], unit="μm")
+    edge_from_bump = Param(pdt.TypeDouble, "Bump grid clearance to chip edge (center to edge)",
                            default_bump_parameters['edge_from_bump'], unit="μm")
+    bump_edge_to_bump_edge_separation = Param(pdt.TypeDouble, "Bump grid clearance to existing bumps (edge to edge)",
+                                              default_bump_parameters['bump_edge_to_bump_edge_separation'], unit="μm")
 
     frames_enabled = Param(pdt.TypeList, "List of face ids (integers) for which a ChipFrame is drawn", [0])
     frames_marker_dist = Param(pdt.TypeList, "Marker distance from edge for each chip frame", [1500, 1000], unit="[μm]")
@@ -269,10 +269,10 @@ class Chip(Element):
             self.produce_frame(frame_parameters, frame_trans)
 
         if self.with_gnd_tsvs:
-            self._produce_ground_tsvs(face_id=[0, 2])
+            self._produce_ground_tsvs(faces=[0, 2])
         if self.with_face1_gnd_tsvs:
             tsv_box = self.get_box(1).enlarged(pya.DVector(-self.edge_from_tsv, -self.edge_from_tsv))
-            self._produce_ground_tsvs(face_id=[3, 1], tsv_box=tsv_box)
+            self._produce_ground_tsvs(faces=[3, 1], tsv_box=tsv_box)
 
     def get_box(self, face=0):
         """
@@ -286,6 +286,65 @@ class Chip(Element):
         box = self.face_boxes[face]
         return box if box is not None else self.box
 
+    def get_filter_regions(self, filter_layer_list):
+        """Transforms the filter_layer_list into filter_regions dictionary.
+
+        Args:
+            filter_layer_list: tuple (layer_name, face, distance) specifying the distances to filtering layers
+
+        Returns:
+            dict with distances as keys and filtering regions as values
+        """
+        filter_regions = {distance: pya.Region() for _, _, distance in filter_layer_list}
+        for layer, face, distance in filter_layer_list:
+            if layer in self.face(face):
+                filter_regions[distance] += pya.Region(self.cell.begin_shapes_rec(self.get_layer(layer, face)))
+        return {distance: region for distance, region in filter_regions.items() if not region.is_empty()}
+
+    def insert_filtered_elements(self, element_cell, shape_layers, filter_regions, locations, rotation=0):
+        """Inserts elements into given locations filtered by filter_regions.
+
+        Args:
+            element_cell: pya.Cell specifying the element to be repeated in the grid
+            shape_layers: tuple (layer_name, face) specifying the shape layers on the element_cell
+            filter_regions: dict with distances as keys and filtering regions as values
+            locations: list of grid element locations as DPoints
+            rotation: element rotation in degrees
+
+        Returns:
+            list of filtered grid element locations
+        """
+        # Get element shape
+        shape = pya.Region()
+        for shape_layer in shape_layers:
+            shape += pya.Region(element_cell.begin_shapes_rec(self.get_layer(*shape_layer)))
+        shape.transform(pya.ICplxTrans(1, rotation, False, 0, 0))
+
+        # Filter locations
+        locations_itype = [pya.Vector(pos.to_itype(self.layout.dbu)) for pos in locations]
+        for distance, filter_region in filter_regions.items():
+            # Create expanded shape polygon
+            shape_polygons = list(shape.sized(distance / self.layout.dbu).merged().each())
+            if len(shape_polygons) == 1:
+                shape_polygon = shape_polygons[0]  # use actual element shape
+            elif len(shape_polygons) > 1:
+                shape_polygon = pya.Polygon(shape.bbox())  # use bounding box if shape consists of multiple polygons
+            else:
+                shape_polygon = pya.Polygon(pya.Box(2))  # use small box around origin if shape_region is empty
+            shape_center = shape_polygon.bbox().center()
+
+            # Filter locations
+            test_region = pya.Region([shape_polygon.moved(pos) for pos in locations_itype])
+            test_region.merged_semantics = False
+            pass_region = test_region.outside(filter_region)
+            locations_itype = [p.bbox().center() - shape_center for p in pass_region]
+
+        # Insert elements into filtered locations
+        passed_locations = [pos.to_dtype(self.layout.dbu) for pos in locations_itype]
+        for passed_location in passed_locations:
+            self.insert_cell(element_cell, pya.DCplxTrans(1, rotation, False, passed_location))
+        return passed_locations
+
     def get_ground_bump_locations(self, bump_box):
         """
         Define the locations for a grid. This method returns the full grid.
@@ -297,55 +356,42 @@ class Chip(Element):
         """
         return self.make_grid_locations(bump_box, delta_x=self.bump_grid_spacing, delta_y=self.bump_grid_spacing)
 
-    def _produce_ground_bumps(self):
-        """Produces ground bumps between bottom and top face.
+    def _produce_ground_bumps(self, faces=[0, 1]):  # pylint: disable=dangerous-default-value
+        """Produces a grid of indium bumps between given faces.
 
-        The bumps avoid ground grid avoidance on both faces, and keep a minimum distance to any existing (manually
-        placed) bumps.
+        The bumps avoid ground grid avoidance on both faces, and keep a minimum distance to existing bumps.
         """
-        logging.info('Starting ground bump generation')
-        bump = self.add_element(FlipChipConnectorDc)
+        logging.info('Starting bump grid generation')
 
+        # Count existing bump count for logging purpose
+        existing_bump_region = pya.Region()
+        for face in faces:
+            existing_bump_region += pya.Region(self.cell.begin_shapes_rec(self.get_layer("indium_bump", face)))
+        existing_bump_count = existing_bump_region.merged().count()
+
+        # Specify bump element, filter regions, and locations
+        bump = self.add_element(FlipChipConnectorDc, face_ids=[self.face_ids[face] for face in faces])
+        shape_layers = [("underbump_metallization", face) for face in faces]
+        filter_regions = self.get_filter_regions(
+            [("ground_grid_avoidance", face, 0) for face in faces] +
+            [("indium_bump", face, self.bump_edge_to_bump_edge_separation) for face in faces] +
+            [("through_silicon_via", face, self.tsv_edge_to_nearest_element) for face in faces])
         bump_box = self.get_box(1).enlarged(pya.DVector(-self.edge_from_bump, -self.edge_from_bump))
-
-        avoidance_layer_bottom = pya.Region(
-            self.cell.begin_shapes_rec(self.get_layer("ground_grid_avoidance", 0))).merged()
-        avoidance_layer_top = pya.Region(
-            self.cell.begin_shapes_rec(self.get_layer("ground_grid_avoidance", 1))).merged()
-        existing_bumps = pya.Region(
-            self.cell.begin_shapes_rec(self.get_layer("indium_bump"))).merged()
-        existing_bump_count = existing_bumps.count()
-        avoidance_existing_bumps = existing_bumps.sized(self.bump_edge_to_bump_edge_separation
-                                                        / self.layout.dbu)
-
-        existing_tsvs_bottom = pya.Region(
-            self.cell.begin_shapes_rec(self.get_layer("through_silicon_via", 0))).merged()
-        avoidance_existing_tsvs_bottom = existing_tsvs_bottom. \
-            sized((self.tsv_edge_to_nearest_element) / self.layout.dbu)
-        existing_tsvs_top = pya.Region(
-            self.cell.begin_shapes_rec(self.get_layer("through_silicon_via", 1))).merged()
-        avoidance_existing_tsvs_top = existing_tsvs_top.sized(self.tsv_edge_to_nearest_element / self.layout.dbu)
-        avoidance_region = (avoidance_layer_bottom + avoidance_layer_top + avoidance_existing_bumps +
-                            avoidance_existing_tsvs_bottom + avoidance_existing_tsvs_top).merged()
-
         locations = self.get_ground_bump_locations(bump_box)
 
-        # Determine the shape of the bump from its underbump metallization layer. Assumes that when merged the bump
-        # contains only one polygon.
-        bump_size_polygon = next(pya.Region(bump.begin_shapes_rec(self.get_layer("underbump_metallization")))
-                                 .merged().each())
+        # Produce bump grid
+        if isinstance(locations, dict):
+            # bumps are grouped by rotation
+            bump_locations = []
+            for rotation, locs in locations.items():
+                bump_locations += self.insert_filtered_elements(bump, shape_layers, filter_regions, locs, rotation)
+        else:
+            # Use default rotation for all bumps
+            bump_locations = self.insert_filtered_elements(bump, shape_layers, filter_regions, locations)
 
-        # Use pya.Region logic to efficiently filter bumps which are inside the allowed region
-        test_object_region = pya.Region([bump_size_polygon.moved(pya.Vector(pos.to_itype(self.layout.dbu)))
-                                         for pos in locations])
-        passed_object_region = test_object_region.outside(avoidance_region)
-        bump_locations = [p.bbox().center().to_dtype(self.layout.dbu) for p in passed_object_region]
-
-        for location in bump_locations:
-            self.insert_cell(bump, pya.DTrans(location))
-
-        logging.info(f'Found {existing_bump_count} existing bumps and inserted {len(bump_locations)} ground bumps, '
-                        + f'totalling {existing_bump_count + len(bump_locations)} bumps.')
+        logging.info(f'Found {existing_bump_count} existing bumps and inserted {len(bump_locations)} bumps on grid, '
+                     f'totalling {existing_bump_count + len(bump_locations)} bumps.')
+        return bump_locations
 
     def post_build(self):
         self.produce_structures()
@@ -504,7 +550,7 @@ class Chip(Element):
                 self.add_port(name, launcher_refpoints["port"], face_id=face_id)
         return launchers
 
-    def make_grid_locations(self, box, delta_x=100, delta_y=100):  # pylint: disable=no-self-use
+    def make_grid_locations(self, box, delta_x=100, delta_y=100, x0=0, y0=0):  # pylint: disable=no-self-use
         """
         Define the locations for a grid. This method returns the full grid.
 
@@ -512,18 +558,22 @@ class Chip(Element):
             box: DBox specifying a region for a grid
             delta_x: Int or float specifying the grid separation along the x dimension
             delta_y: Int or float specifying the grid separation along the y dimension
+            x0: Int or float specifying the center point displacement along the x-axis
+            y0: Int or float specifying the center point displacement along the y-axis
 
         Returns: list of DPoint coordinates for the grid.
         """
 
-        # array size for bump creation
-        n = int((box.p2 - box.p1).x / delta_x / 2) * 2  # force even number
-        m = int((box.p2 - box.p1).y / delta_y / 2) * 2  # force even number
+        # array size for grid creation
+        x_neg = int((box.width() / 2 + x0) / delta_x)
+        x_pos = int((box.width() / 2 - x0) / delta_x)
+        y_neg = int((box.height() / 2 + y0) / delta_y)
+        y_pos = int((box.height() / 2 - y0) / delta_y)
 
         locations = []
-        for i in numpy.linspace(-n / 2, n / 2, n + 1):
-            for j in numpy.linspace(-m / 2, m / 2, m + 1):
-                locations.append(box.center() + pya.DPoint(i * delta_x, j * delta_y))
+        for i in numpy.linspace(-x_neg, x_pos, x_neg + x_pos + 1):
+            for j in numpy.linspace(-y_neg, y_pos, y_neg + y_pos + 1):
+                locations.append(box.center() + pya.DPoint(x0 + i * delta_x, y0 + j * delta_y))
         return locations
 
     def get_ground_tsv_locations(self, tsv_box):
@@ -537,81 +587,41 @@ class Chip(Element):
         """
         return self.make_grid_locations(tsv_box, delta_x=self.tsv_grid_spacing, delta_y=self.tsv_grid_spacing)
 
-    def insert_tsvs(self, tsv, translations):
-        """
-        Insert the tsv element at locations specified in the translations list
+    def _produce_ground_tsvs(self, faces=[0, 2], tsv_box=None):  # pylint: disable=dangerous-default-value
+        """Produces a grid of TSVs between given faces.
 
-        Args:
-            tsv: An instance of a TSV class
-            translations: A list of pya.DVector elements specifying
-
-        """
-        for translation in translations:
-            self.insert_cell(tsv, pya.DTrans(translation))
-
-    def _produce_ground_tsvs(self, face_id=[0, 2], tsv_box=None): # pylint: disable=dangerous-default-value
-        """Produces ground TSVs between bottom and top face.
-
-         The TSVs avoid ground grid avoidance on both faces, and keep a minimum distance to any existing (manually
-         placed) TSVs.
+         The TSVs avoid ground grid avoidance on both faces, and keep a distance to existing elements.
          """
-        logging.info(f'Starting ground TSV generation on face(s) {[self.face_ids[f_id] for f_id in face_id]}')
+        logging.info(f'Starting TSV grid generation on face(s) {[self.face_ids[face] for face in faces]}')
 
-        def region_from_layer(layer_name, f_id):
-            return pya.Region(self.cell.begin_shapes_rec(self.get_layer(layer_name, f_id)))
+        # Count existing TSV count for logging purpose
+        existing_tsv_region = pya.Region()
+        for face in faces:
+            existing_tsv_region += pya.Region(self.cell.begin_shapes_rec(self.get_layer("through_silicon_via", face)))
+        existing_tsv_count = existing_tsv_region.merged().count()
 
-        # Produce avoidance regions before adding tsv elements
-        avoidance_region = pya.Region()
-        avoidance_to_element_region = pya.Region()
-        avoidance_existing_tsv_region = pya.Region()
-        for f_id in face_id:
-            avoidance_region += (region_from_layer("ground_grid_avoidance", f_id)
-                                 + region_from_layer("through_silicon_via_avoidance", f_id))
-            avoidance_to_element_region += (region_from_layer("indium_bump", f_id)
-                                            + region_from_layer("base_metal_gap_wo_grid", f_id))
-            avoidance_existing_tsv_region += region_from_layer("through_silicon_via", f_id)
-        avoidance_region.merge()
-        avoidance_to_element_region.merge()
-        avoidance_existing_tsv_region.merge()
-        existing_tsv_count = avoidance_existing_tsv_region.count()
+        # Specify tsv element, filter regions, and locations
+        tsv = self.add_element(Tsv, face_ids=[self.face_ids[face] for face in faces])
+        shape_layers = [("through_silicon_via", face) for face in faces]
+        filter_regions = self.get_filter_regions(
+            [("ground_grid_avoidance", face, 0) for face in faces] +
+            [("through_silicon_via_avoidance", face, 0) for face in faces] +
+            [("indium_bump", face, self.tsv_edge_to_nearest_element) for face in faces] +
+            [("base_metal_gap_wo_grid", face, self.tsv_edge_to_nearest_element) for face in faces] +
+            [("through_silicon_via", face, self.tsv_edge_to_tsv_edge_separation) for face in faces])
+        locations = self.get_ground_tsv_locations(tsv_box if tsv_box is not None else
+                                                  self.box.enlarged(-self.edge_from_tsv))
 
-        def filter_locations(filter_region, separation, input_locations):
-            sized_tsv = tsv_size_polygon.sized(separation / self.layout.dbu)
-            test_region = pya.Region([sized_tsv.moved(pos) for pos in input_locations])
-            test_region.merged_semantics = False
-            pass_region = test_region.outside(filter_region)
-            output_locations = [p.bbox().center() for p in pass_region]
-            return output_locations
+        # Produce TSV grid
+        if isinstance(locations, dict):
+            # TSVs are grouped by rotation
+            tsv_locations = []
+            for rotation, locs in locations.items():
+                tsv_locations += self.insert_filtered_elements(tsv, shape_layers, filter_regions, locs, rotation)
+        else:
+            # Use default rotation for all TSVs
+            tsv_locations = self.insert_filtered_elements(tsv, shape_layers, filter_regions, locations)
 
-        tsv = self.add_element(Tsv, n=self.n, face_ids=[self.face_ids[f_id] for f_id in face_id])
-
-        # Determine the shape of the tsv from its through_silicon_via layer. Assumes that when merged the tsv
-        # contains only one polygon.
-        tsv_size_polygon = next(pya.Region(tsv.begin_shapes_rec(self.get_layer("through_silicon_via", face_id[0])))
-                                .merged().each(), None)
-        if tsv_size_polygon is None:
-            tsv_size_polygon = next(pya.Region(tsv.begin_shapes_rec(self.get_layer("through_silicon_via", face_id[1])))
-                                    .merged().each(), None)
-            if tsv_size_polygon is None:
-                raise ValueError("No TSVs found on either face")
-
-        if tsv_box is None:
-            tsv_box = self.box.enlarged(pya.DVector(-self.edge_from_tsv, -self.edge_from_tsv))
-
-        locations = self.get_ground_tsv_locations(tsv_box)
-        locations_itype = [pya.Vector(pos.to_itype(self.layout.dbu)) for pos in locations]
-
-        locations_itype = filter_locations(avoidance_region, 0, locations_itype)
-        locations_itype = filter_locations(avoidance_existing_tsv_region,
-                                           self.tsv_edge_to_tsv_edge_separation, locations_itype)
-        locations_itype = filter_locations(avoidance_to_element_region,
-                                           self.tsv_edge_to_nearest_element, locations_itype)
-
-        tsv_locations = [pos.to_dtype(self.layout.dbu) for pos in locations_itype]
-
-        self.insert_tsvs(tsv, tsv_locations)
-
-        logging.info(f'Found {existing_tsv_count} existing TSVs and inserted {len(tsv_locations)} ground TSVs, '
-                        + f'totalling {existing_tsv_count + len(tsv_locations)} TSVs.')
-
+        logging.info(f'Found {existing_tsv_count} existing TSVs and inserted {len(tsv_locations)} TSVs on grid, '
+                     f'totalling {existing_tsv_count + len(tsv_locations)} TSVs.')
         return tsv_locations
