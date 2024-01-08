@@ -15,7 +15,7 @@ test:
   stage: test
   parallel:
     matrix:
-      - KLAYOUT_VERSION: [0.26.12, 0.27.13, 1.latest]
+      - KLAYOUT_VERSION: [0.28.1, 1.latest]
   script:
     - pip install --force-reinstall "klayout<=$KLAYOUT_VERSION"
     - tox -e matrix
@@ -113,8 +113,6 @@ check_copyright_headers:
   script:
     - >
       python ci/check_copyright_headers.py --exclude-paths
-      klayout_package/python/kqcircuits/_static_version.py
-      klayout_package/python/kqcircuits/_version.py
   only:
     refs:
       - merge_requests

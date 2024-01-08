@@ -59,7 +59,7 @@ class WaveguideCoplanar(Element):
         points = [pya.DPoint(point * self.layout.dbu) for point in self.shape.each_point()]
         self.path = pya.DPath(points, 1)
 
-    def transformation_from_shape_impl(self):
+    def transformation_from_shape_impl(self):  #pylint: disable=no-self-use
         return pya.Trans()
 
     def produce_waveguide(self):

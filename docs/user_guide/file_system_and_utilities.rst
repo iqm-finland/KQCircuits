@@ -55,7 +55,7 @@ Miscellaneous Utilities
 The ``util`` folder contains stand alone, self documenting scripts for various practical use cases:
 
     - ``check_layer_props`` Check or update the layer properties file against values taken from
-      KQCircuit's default_layers variable.
+      KQCircuits' default_layers variable.
     - ``create_element_from_path`` Create a KQCircuits element in KLayout by specifying the path to
       the file containing the element. This script can be used to integrate with external editors.
     - ``gdiff`` Compares a pair of .oas or .gds files or directories containing such files and

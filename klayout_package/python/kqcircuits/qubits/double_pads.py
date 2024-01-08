@@ -187,5 +187,5 @@ class DoublePads(Qubit):
         return island2_region + island2_taper
 
     @classmethod
-    def get_sim_ports(cls, simulation):
+    def get_sim_ports(cls, simulation):  #pylint: disable=unused-argument
         return [JunctionSimPort(), WaveguideToSimPort("port_cplr", side="top")]

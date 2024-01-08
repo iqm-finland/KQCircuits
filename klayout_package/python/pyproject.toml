@@ -1,0 +1,40 @@
+[project]
+name = "kqcircuits"
+dynamic = ["version", "dependencies", "optional-dependencies"]
+description = "KQCircuits is a KLayout/Python-based superconducting quantum circuit library developed by IQM."
+authors = [
+    {name = "IQM Finland Oy", email = "kqcircuits@meetiqm.com"},
+]
+requires-python = ">=3.6.9"
+readme = "README.md"
+license = {text = "GPL-3.0"}
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Intended Audience :: Science/Research",
+]
+
+[project.urls]
+Homepage = "https://iqm-finland.github.io/KQCircuits/"
+
+[project.scripts]
+kqc = "kqcircuits.run:run"
+
+[build-system]
+requires = ["setuptools>=64", "setuptools-git-versioning"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["kqcircuits*"]
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.in"] }
+optional-dependencies.docs = { file = ["doc-requirements.in"] }
+optional-dependencies.tests = { file = ["test-requirements.in"] }
+optional-dependencies.notebooks = { file = ["notebook-requirements.in"] }
+optional-dependencies.graphs = { file = ["graph-requirements.in"] }
+optional-dependencies.simulations = { file = ["sim-requirements.in"] }
+
+[tool.setuptools-git-versioning]
+enabled = true

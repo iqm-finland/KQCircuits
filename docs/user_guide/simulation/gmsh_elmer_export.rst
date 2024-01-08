@@ -41,7 +41,7 @@ capacitance matrix), and visualizes the results using Paraview.
 The simulations are executed by running the `.sh` file in the output folder (here `waveguides_sim_elmer`).
 
 Parallelization of the FEM computations has three levels:
-  1. independent processes, that are completely self consistent simulation processes that 
+  1. independent processes, that are completely self consistent simulation processes that
      do not need to communicate to other processes. This level of parallelism can be used with parameter sweeps
      where multiple Elmer simulations are needed. If the varied parameter does not affect meshing i.e. frequency
      or material parameters, the meshes will be only generated once for all simulations in the sweep.
@@ -124,7 +124,7 @@ Instead of forwarding the settings directly to ``sbatch`` command from ``workflo
 
 Additionally the account and partition info must be given:
 
-.. code-block:: 
+.. code-block::
 
     workflow['sbatch_parameters'] = {
         '--account':'project_0',    # <-- Remote account for billing
@@ -135,8 +135,8 @@ The account can alternatively be set with an environment variable ``KQC_REMOTE_A
 ``workflow['sbatch_parameters']`` starting with ``--`` are used directly in both parts of the simulation.
 However, note that the custom parameters might overwrite these. Keys without ``--``, which are none of the above are ignored.
 
-By running ``RES=$(sbatch ./simulation_meshes.sh) && sbatch -d afterok:${RES##* } ./simulation.sh``, the tasks will be sent to 
-Slurm workload manager such that the Elmer part will only start once processign the meshes is finished. 
+By running ``RES=$(sbatch ./simulation_meshes.sh) && sbatch -d afterok:${RES##* } ./simulation.sh``, the tasks will be sent to
+Slurm workload manager such that the Elmer part will only start once processing the meshes is finished.
 For running the simulations on a remote machine see :ref:`elmer_remote_workflow`.
 
 
@@ -156,8 +156,7 @@ Gmsh can also be parallelized using OpenMP:
 
 Please note that running the example requires the installation of
 
-* Gmsh python API
-  ``pip install gmsh``
+* Gmsh python API ``pip install gmsh`` or in secure mode ``pip-sync requirements.txt sim-requirements.txt [...]``
 * Elmerfem solver,
   see https://github.com/ElmerCSC/elmerfem
 * Paraview
@@ -167,5 +166,5 @@ Gmsh API suffices if one needs to only generate the mesh.
 
 .. note::
 
-        If one does not want to install all the software to their computer (for example Gmsh or Elmer), 
+        If one does not want to install all the software to their computer (for example Gmsh or Elmer),
         there is a possibility to use the `singularity` image. See :ref:`singularity_image`.

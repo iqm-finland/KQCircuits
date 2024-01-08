@@ -82,14 +82,14 @@ import sphinx_rtd_theme
 # -- Project information -----------------------------------------------------
 
 import re
-from kqcircuits._version import get_version
+from versiontag import get_version
 
 project = 'KQCircuits'
 copyright = '2021-2024, IQM'
 author = 'IQM'
 
 # Set supplied KQC version if found from Git tags
-matched_version = re.match(r'([0-9]+\.[0-9]+\.[0-9]+)\.', get_version())
+matched_version = re.match(r'([0-9]+\.[0-9]+\.[0-9]+)\.', get_version(pypi=True))
 if not matched_version:
     print(f'KQC version not matched for: {get_version()}')
 else:

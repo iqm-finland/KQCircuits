@@ -197,5 +197,5 @@ class Swissmon(Qubit):
         self.refpoints["probe_qb_c"] = probepoint
 
     @classmethod
-    def get_sim_ports(cls, simulation):
+    def get_sim_ports(cls, simulation):  #pylint: disable=unused-argument
         return [JunctionSimPort()]

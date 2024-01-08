@@ -21,7 +21,7 @@ import stat
 import json
 import logging
 
-from distutils.dir_util import copy_tree
+from shutil import copytree
 from pathlib import Path
 
 from kqcircuits.util.export_helper import write_commit_reference_file
@@ -41,7 +41,7 @@ def copy_ansys_scripts_to_directory(path: Path, import_script_folder='scripts'):
     """
     if path.exists() and path.is_dir():
         for script_path in ANSYS_SCRIPT_PATHS:
-            copy_tree(str(script_path), str(path.joinpath(import_script_folder)), update=1)
+            copytree(str(script_path), str(path.joinpath(import_script_folder)), dirs_exist_ok=True)
 
 
 def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',

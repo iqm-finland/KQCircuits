@@ -149,7 +149,7 @@ class CapacitiveXCoupler(Element):
         self.insert_cell(WaveguideComposite, nodes=nodes3)
 
     @classmethod
-    def get_sim_ports(cls, simulation):
+    def get_sim_ports(cls, simulation):  #pylint: disable=unused-argument
         return [RefpointToEdgePort('p11'),
                 RefpointToEdgePort('p21'),
                 RefpointToEdgePort('p31'),

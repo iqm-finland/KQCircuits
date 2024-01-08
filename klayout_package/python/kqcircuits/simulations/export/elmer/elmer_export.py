@@ -23,7 +23,7 @@ import json
 import argparse
 
 from pathlib import Path
-from distutils.dir_util import copy_tree
+from shutil import copytree
 from typing import Sequence
 
 from kqcircuits.simulations.export.util import export_layers
@@ -44,7 +44,7 @@ def copy_elmer_scripts_to_directory(path: Path):
     """
     if path.exists() and path.is_dir():
         for script_path in ELMER_SCRIPT_PATHS:
-            copy_tree(str(script_path), str(path), update=1)
+            copytree(str(script_path), str(path), dirs_exist_ok=True)
 
 
 def export_elmer_json(simulation,

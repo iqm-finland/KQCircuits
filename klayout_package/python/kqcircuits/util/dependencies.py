@@ -17,7 +17,7 @@
 
 from importlib import util, import_module
 
-# Record dependencies in setup.py too
+# Record dependencies in requirements.in too:
 kqc_python_dependencies = {
     "numpy": "numpy>=1.16",
     "scipy": "scipy>=1.2",
@@ -29,7 +29,7 @@ kqc_python_dependencies = {
 def install_kqc_dependencies():
     """Check KQCircuits' dependencies and install/upgrade if missing.
 
-    This is *only* for KLayout. Stand-alone mode needs manual pip install, preferably in a venv.
+    This is *only* for KLayout. Stand-alone mode needs manual pip install or pip-sync, preferably in a venv.
     This function should run only once at KLayout startup.
     """
     # pylint: disable=import-outside-toplevel

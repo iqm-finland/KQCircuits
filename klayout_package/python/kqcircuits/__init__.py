@@ -15,14 +15,8 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
-import sys
-
 from kqcircuits.util.dependencies import install_kqc_dependencies
 
-# pylint: disable=undefined-variable
-from ._version import __version__
-if hasattr(sys.modules[__name__], "_version"):
-    del _version  # remove to avoid confusion with __version__
 
 # Check for needed dependencies and install if missing.
 install_kqc_dependencies()

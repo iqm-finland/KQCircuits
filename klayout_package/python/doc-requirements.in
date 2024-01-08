@@ -1,0 +1,5 @@
+sphinx~=4.4
+sphinx-rtd-theme
+networkx<3.2
+matplotlib
+versiontag

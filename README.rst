@@ -43,7 +43,6 @@ export a set of files for a mask as needed for QPU fabrication.
    :alt: QPU design workflow
    :width: 700
 
-⠀
 
 .. image:: /docs/images/readme/single_xmons_chip_3.png
    :alt: Example layout
@@ -119,7 +118,7 @@ You may have to write ``python3`` or ``py`` instead of ``python`` depending on y
 just make sure that the command refers to Python 3. For further details see the `developer setup
 documentation <https://iqm-finland.github.io/KQCircuits/developer/setup.html>`__.
 
-For stand-alone mode run
+For *legacy , not secure* install in stand-alone mode you may run
 
 .. code-block:: console
 
@@ -127,6 +126,9 @@ For stand-alone mode run
 
 Then scripts may be run and documentation can be built. For further details see the `documentation
 <https://iqm-finland.github.io/KQCircuits/developer/setup.html>`__.
+
+For a secure and reproducible stand-alone environment see `documentation
+<https://iqm-finland.github.io/KQCircuits/developer/standalone.html>`__.
 
 Documentation
 -------------
