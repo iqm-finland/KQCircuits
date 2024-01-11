@@ -28,6 +28,8 @@ import ScriptEnv
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'util'))
 from geometry import create_box, create_rectangle, create_polygon, thicken_sheet, set_material, add_layer, subtract, \
     move_vertically, delete, objects_from_sheet_edges, add_material, set_color  # pylint: disable=wrong-import-position
+from field_calculation import add_squared_electric_field_expression,  add_energy_integral_expression \
+    # pylint: disable=wrong-import-position
 
 # Set up environment
 ScriptEnv.Initialize("Ansoft.ElectronicsDesktop")
@@ -373,105 +375,26 @@ elif ansys_tool == 'q3d':
 
 # Add field calculations
 if data.get('integrate_energies', False) and ansys_tool in {'hfss', 'eigenmode'}:
-    # Create term for squared E field and call it 'Esq'
+    # Create term for squared E fields
     oModule = oDesign.GetModule("FieldsReporter")
-    oModule.EnterQty("E")
-    oModule.CalcOp("CmplxMag")
-    oModule.CalcOp("Mag")
-    oModule.EnterScalar(2)
-    oModule.CalcOp("Pow")
-    oModule.AddNamedExpression("Esq", "Fields")
-
-    oModule.EnterQty("E")
-    oModule.CalcOp("ScalarZ")
-    oModule.CalcOp("VecZ")
-    oModule.AddNamedExpression("Ez", "Fields")
+    add_squared_electric_field_expression(oModule, "Esq", "Mag")
+    add_squared_electric_field_expression(oModule, "Ezsq", "ScalarZ")
 
     # Create energy integral terms for each object
-    total_solids = []
     epsilon_0 = 8.8541878128e-12
     for lname, ldata in layers.items():
         material = ldata.get('material', None)
-        if material is None:
-            material = ldata.get('sheet material', None)
-
         if material == 'pec':
             continue
 
-        permittivity = material_dict.get(material, {}).get('permittivity', 1.0)
-        epsilon = epsilon_0 * permittivity
-        sheet_thickness = ldata.get('sheet thickness', None)
-
-        # in case of non model sheets, we have to calculate the perpendicular field assuming
-        # d_sheet=epsilon_0 * epsilon_sheet * e_vac
-        # thus,
-        # energy = 0.5 * epsilon_0/epsilon_sheet e**2. * sheet_thickness
-        # and we can have an additional scalar
-        # sheet_thickness/epsilon_sheet
-        if sheet_thickness is not None:
-            sheet_thickness *= 1e-6 # thickness in um
-            parent_material_permittivity = 1  # assume that parent material is vacuum, which is incorrect for ms layer
-            ecorr = parent_material_permittivity / permittivity
-
-            oModule.EnterScalar(ecorr-1)
-            oModule.CopyNamedExprToStack("Ez")
-            oModule.CalcOp("*")
-            oModule.EnterQty("E")
-            oModule.CalcOp("+")
-            oModule.AddNamedExpression("Ecorr_"+lname, "Fields")
-
-            oModule.CopyNamedExprToStack("Ecorr_"+lname)
-            oModule.CalcOp("CmplxMag")
-            oModule.CalcOp("Mag")
-            oModule.EnterScalar(2)
-            oModule.CalcOp("Pow")
-            oModule.AddNamedExpression("Esqcorr_"+lname, "Fields")
-
         thickness = ldata.get('thickness', 0.0)
-        for n, oname in enumerate(objects[lname]):
-            if thickness == 0.0:
-                if sheet_thickness is not None:
-                    oModule.CopyNamedExprToStack("Esqcorr_"+lname)
-                else:
-                    oModule.CopyNamedExprToStack("Esq")
-                oModule.EnterSurf(oname)
-            else:
-                oModule.CopyNamedExprToStack("Esq")
-                sheet_thickness = 1
-                oModule.EnterVol(oname)
-            oModule.CalcOp("Integrate")
-            if n > 0:
-                oModule.CalcOp("+")
-
-        if objects[lname]:
-            oModule.EnterScalar(epsilon / 2 * sheet_thickness)
-            oModule.CalcOp("*")
-        else:
-            oModule.EnterScalar(0.0)
-        oModule.AddNamedExpression("E_{}".format(lname), "Fields")
-
-        if thickness != 0.0 and material is not None:
-            total_solids.append("E_{}".format(lname))
-
-    # Create term for total energy
-    for n, tname in enumerate(total_solids):
-        oModule.CopyNamedExprToStack(tname)
-        if n > 0:
-            oModule.CalcOp("+")
-    oModule.AddNamedExpression("total_energy", "Fields")
-
-    # Create term for partition region total energy
-    partition_regions = data.get('parameters', dict()).get('partition_regions', [])
-    part_names = {part.get('name', 'part') for part in partition_regions}
-    for part_name in part_names:
-        term_in_stack = False
-        for tname in total_solids:
-            if part_name in tname and not any(n in tname for n in part_names if part_name != n and part_name in n):
-                oModule.CopyNamedExprToStack(tname)
-                if term_in_stack:
-                    oModule.CalcOp("+")
-                term_in_stack = True
-        oModule.AddNamedExpression("total_{}_energy".format(part_name), "Fields")
+        if thickness == 0.0:
+            add_energy_integral_expression(oModule, "Ez_{}".format(lname), objects[lname], "Ezsq", 2, epsilon_0, "")
+            add_energy_integral_expression(oModule, "Exy_{}".format(lname), objects[lname], "Esq", 2, epsilon_0,
+                                           "Ez_{}".format(lname))
+        elif material is not None:
+            epsilon = epsilon_0 * material_dict.get(material, {}).get('permittivity', 1.0)
+            add_energy_integral_expression(oModule, "E_{}".format(lname), objects[lname], "Esq", 3, epsilon, "")
 
 # Manual mesh refinement
 for mesh_layer, mesh_length in mesh_size.items():

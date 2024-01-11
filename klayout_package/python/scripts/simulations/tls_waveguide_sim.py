@@ -24,6 +24,7 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.export.simulation_export import export_simulation_oas, sweep_simulation
 from kqcircuits.simulations.port import EdgePort
+from kqcircuits.simulations.post_process import PostProcess
 from kqcircuits.simulations.simulation import Simulation
 from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
     open_with_klayout_or_default_application
@@ -69,7 +70,12 @@ export_parameters = {
                   '1t1_layerMSmer': 0.5,
                   '1t1_layerSAmer': 0.5},
     'integrate_energies': True,
-    'post_process_script': 'export_epr.py',
+    'post_process': PostProcess('produce_epr_table.py',
+                                sheet_approximations={
+                                    'MA': {'thickness': 1e-8, 'eps_r': 8, 'background_eps_r': 1.0},
+                                    'SA': {'thickness': 1e-8, 'eps_r': 4, 'background_eps_r': 11.45},
+                                    'MS': {'thickness': 1e-8, 'eps_r': 11.4, 'background_eps_r': 11.45},
+                                }),
 }
 
 # Get layout

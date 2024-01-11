@@ -18,8 +18,45 @@
 import logging
 from itertools import product
 from pathlib import Path
+from shutil import copytree
 
 from kqcircuits.simulations.export.util import export_layers
+
+
+def copy_content_into_directory(source_paths: list, path: Path, folder):
+    """ Create a folder and copy the contents of the source folders into it
+
+    Arguments:
+        source_paths: list of source directories from which to copy content
+        path: path where the new folder will be created
+        folder: name of the new folder
+    """
+    if path.exists() and path.is_dir():
+        for source_path in source_paths:
+            copytree(str(source_path), str(path.joinpath(folder)), dirs_exist_ok=True)
+
+
+def get_post_process_command_lines(post_process, path, json_filenames):
+    """ Return post process command line calls as string. Can be used in construction of .bat or .sh script files.
+
+    Args:
+        post_process: List of PostProcess objects, a single PostProcess object, or None to be executed after simulations
+        path: simulation folder path
+        json_filenames: list of paths to simulation json files
+
+    Returns:
+        Command lines as string
+    """
+    if post_process is None:
+        return ""
+
+    commands = 'echo Post-process\n'
+    if isinstance(post_process, list):
+        for pp in post_process:
+            commands += pp.get_command_line(path, json_filenames)
+    else:
+        commands += post_process.get_command_line(path, json_filenames)
+    return commands
 
 
 def export_simulation_oas(simulations, path: Path, file_prefix='simulation'):

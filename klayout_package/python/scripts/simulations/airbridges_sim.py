@@ -23,6 +23,7 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.export.simulation_export import export_simulation_oas, cross_sweep_simulation
 from kqcircuits.simulations.airbridges_sim import AirbridgesSim
+from kqcircuits.simulations.post_process import PostProcess
 from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
     open_with_klayout_or_default_application
 
@@ -34,6 +35,7 @@ created_dir = create_or_empty_tmp_directory(dir_path)
 
 export_parameters = {
     'ansys_tool': 'q3d',
+    'post_process': PostProcess('produce_cmatrix_table.py'),
     'percent_error': 0.2,
     'minimum_converged_passes': 2,
     'maximum_passes': 40,

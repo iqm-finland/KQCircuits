@@ -25,6 +25,7 @@ from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.export.simulation_export import cross_sweep_simulation, export_simulation_oas
 
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
+from kqcircuits.simulations.post_process import PostProcess
 from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
 from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
     open_with_klayout_or_default_application
@@ -63,6 +64,7 @@ gap_parameters = {
 export_parameters = {
     'path': dir_path,
     'ansys_tool': 'q3d',
+    'post_process': PostProcess('produce_cmatrix_table.py'),
     'exit_after_run': True,
     'percent_error': 0.3,
     'minimum_converged_passes': 2,

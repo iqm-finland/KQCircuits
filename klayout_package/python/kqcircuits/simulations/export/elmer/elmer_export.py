@@ -23,9 +23,9 @@ import json
 import argparse
 
 from pathlib import Path
-from shutil import copytree
 from typing import Sequence
 
+from kqcircuits.simulations.export.simulation_export import copy_content_into_directory, get_post_process_command_lines
 from kqcircuits.simulations.export.util import export_layers
 from kqcircuits.util.export_helper import write_commit_reference_file
 from kqcircuits.defaults import ELMER_SCRIPT_PATHS, KQC_REMOTE_ACCOUNT
@@ -34,17 +34,6 @@ from kqcircuits.simulations.cross_section_simulation import CrossSectionSimulati
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
 
 import numpy as np
-
-def copy_elmer_scripts_to_directory(path: Path):
-    """
-    Copies Elmer scripts into directory path.
-
-    Args:
-        path: Location where to copy scripts folder.
-    """
-    if path.exists() and path.is_dir():
-        for script_path in ELMER_SCRIPT_PATHS:
-            copytree(str(script_path), str(path), dirs_exist_ok=True)
 
 
 def export_elmer_json(simulation,
@@ -64,7 +53,7 @@ def export_elmer_json(simulation,
                       max_outlier_fraction=1e-3,
                       maximum_passes=1,
                       minimum_passes=1,
-                      dielectric_surfaces=None,
+                      integrate_energies=False,
                       is_axisymmetric=False,
                       ):
     """
@@ -85,22 +74,7 @@ def export_elmer_json(simulation,
         max_outlier_fraction(float): Maximum fraction of outliers from the total number of elements
         maximum_passes(int): Maximum number of adaptive meshing iterations.
         minimum_passes(int): Minimum number of adaptive meshing iterations.
-        dielectric_surfaces: Loss tangents for dielectric interfaces, thickness and permittivity should be specified in
-            the simulation. The loss tangent is post-processed to the participation to get the quality factor.
-            Default is None. Input is of the form::
-
-                'substrate': {
-                    'tan_delta_surf': 5e-7
-                },
-                'layerMA': {  # metal–vacuum
-                    'tan_delta_surf': 0.001,  # loss tangent
-                },
-                'layerMS': { # metal–substrate
-                    'tan_delta_surf': 0.001,
-                },
-                'layerSA': { # substrate–vacuum
-                    'tan_delta_surf': 0.001,
-                }
+        integrate_energies: Calculate energy integrals over each object
         is_axisymmetric(bool): Simulate with Axi Symmetric coordinates along :math:`y\\Big|_{x=0}` (Default: False)
 
     Returns:
@@ -146,7 +120,7 @@ def export_elmer_json(simulation,
         'frequency_batch': frequency_batch,
         'sweep_type': sweep_type,
         'max_delta_s': max_delta_s,
-        **({} if dielectric_surfaces is None else {'dielectric_surfaces': dielectric_surfaces}),
+        'integrate_energies': integrate_energies,
         'linear_system_method': linear_system_method,
         'p_element_order': p_element_order,
         'is_axisymmetric': is_axisymmetric,
@@ -175,8 +149,8 @@ def export_elmer_script(json_filenames,
                         path: Path,
                         workflow=None,
                         file_prefix='simulation',
-                        script_file='scripts/run.py',
-                        post_process_script=None,
+                        execution_script='scripts/run.py',
+                        post_process=None,
                         n_simulations = 1
                         ):
     """
@@ -188,9 +162,9 @@ def export_elmer_script(json_filenames,
         path: Location where to write the script file.
         workflow(dict): Parameters for simulation workflow
         file_prefix: Name of the script file to be created.
-        script_file: Name of the script file to run.
+        execution_script: The script file to be executed.
         n_simulations: Total number of simulations
-        post_process_script: Name of post processing script file.
+        post_process: List of PostProcess objects, a single PostProcess object, or None to be executed after simulations
 
     Returns:
 
@@ -370,7 +344,7 @@ def export_elmer_script(json_filenames,
                     file.write('echo "Simulation {}/{} Gmsh"\n'.format(i + 1, len(json_filenames)))
                     file.write('srun -N 1 -n 1 -c {3} {2} "{0}" "{1}" --only-gmsh -q 2>&1 >> '\
                             '"log_files/{4}.Gmsh.log"\n'.format(
-                        script_file,
+                        execution_script,
                         Path(json_filename).relative_to(path),
                         python_executable,
                         str(gmsh_cpus_per_worker),
@@ -394,7 +368,7 @@ def export_elmer_script(json_filenames,
                     file.write('echo "Simulation {}/{} Write Elmer sif files"\n'.format(i + 1, len(json_filenames)))
                     file.write('srun -N 1 -n 1 -c {3} {2} "{0}" "{1}" --only-elmer-sifs '\
                                '2>&1 >> "log_files/{4}.Elmer_sifs.log"\n'.format(
-                        script_file,
+                        execution_script,
                         Path(json_filename).relative_to(path),
                         python_executable,
                         str(gmsh_cpus_per_worker),
@@ -451,7 +425,7 @@ def export_elmer_script(json_filenames,
                     file.write('echo "Simulation {}/{} write results json"\n'.format(i + 1, len(json_filenames)))
                     file.write('srun -N 1 -n 1 -c {3} {2} "{0}" "{1}" --write-project-results 2>&1 >> '\
                             'log_files/{4}.write_project_results.log\n'.format(
-                        script_file,
+                        execution_script,
                         Path(json_filename).relative_to(path),
                         python_executable,
                         1,
@@ -461,7 +435,7 @@ def export_elmer_script(json_filenames,
                     file.write('echo "Simulation {}/{} write versions json"\n'.format(i + 1, len(json_filenames)))
                     file.write('srun -N 1 -n 1 -c {3} {2} "{0}" "{1}" --write-versions-file 2>&1 >> '\
                             'log_files/{4}.write_versions_file.log\n'.format(
-                        script_file,
+                        execution_script,
                         Path(json_filename).relative_to(path),
                         python_executable,
                         1,
@@ -476,9 +450,8 @@ def export_elmer_script(json_filenames,
                 main_file.write('source "{}" &\n'.format(Path(script_filename).relative_to(path)))
                 if (i + 1) % n_workers_full == 0:
                     main_file.write('wait\n')
-            if post_process_script is not None:
-                main_file.write('echo "Running post process script \"scripts/{}\""\n'.format(post_process_script))
-                main_file.write('python scripts/{}\n'.format(post_process_script))
+
+            main_file.write(get_post_process_command_lines(post_process, path, json_filenames))
 
     else:
         n_workers = workflow.get('n_workers', 1)
@@ -506,34 +479,34 @@ def export_elmer_script(json_filenames,
                     file.write('#!/bin/bash\n')
                     file.write('echo "Simulation {}/{} Gmsh"\n'.format(i + 1, len(json_filenames)))
                     file.write('{2} "{0}" "{1}" --only-gmsh 2>&1 >> "log_files/{3}.Gmsh.log"\n'.format(
-                        script_file,
+                        execution_script,
                         Path(json_filename).relative_to(path),
                         python_executable,
                         simulation_name)
                     )
                     file.write('echo "Simulation {}/{} ElmerGrid"\n'.format(i + 1, len(json_filenames)))
                     file.write('{2} "{0}" "{1}" --only-elmergrid 2>&1 >> "log_files/{3}.ElmerGrid.log"\n'.format(
-                        script_file,
+                        execution_script,
                         Path(json_filename).relative_to(path),
                         python_executable,
                         simulation_name)
                     )
                     file.write('echo "Simulation {}/{} Write Elmer sif files"\n'.format(i + 1, len(json_filenames)))
                     file.write('{2} "{0}" "{1}" --only-elmer-sifs 2>&1 >> "log_files/{3}.Elmer_sifs.log"\n'.format(
-                        script_file,
+                        execution_script,
                         Path(json_filename).relative_to(path),
                         python_executable,
                         simulation_name)
                         )
                     file.write('echo "Simulation {}/{} Elmer"\n'.format(i + 1, len(json_filenames)))
                     file.write('{2} "{0}" "{1}" --only-elmer\n'.format(
-                        script_file,
+                        execution_script,
                         Path(json_filename).relative_to(path),
                         python_executable)
                     )
                     file.write('echo "Simulation {}/{} Paraview"\n'.format(i + 1, len(json_filenames)))
                     file.write('{2} "{0}" "{1}" --only-paraview\n'.format(
-                        script_file,
+                        execution_script,
                         Path(json_filename).relative_to(path),
                         python_executable)
                     )
@@ -541,7 +514,7 @@ def export_elmer_script(json_filenames,
                     file.write('echo "Simulation {}/{} write results json"\n'.format(i + 1, len(json_filenames)))
                     file.write('{2} "{0}" "{1}" --write-project-results 2>&1 >> '\
                             '"log_files/{3}_write_project_results.log"\n'.format(
-                        script_file,
+                        execution_script,
                         Path(json_filename).relative_to(path),
                         python_executable,
                         simulation_name)
@@ -549,7 +522,7 @@ def export_elmer_script(json_filenames,
 
                     file.write('echo "Simulation {}/{} write versions file"\n'.format(i + 1, len(json_filenames)))
                     file.write('{2} "{0}" "{1}" --write-versions-file\n'.format(
-                        script_file,
+                        execution_script,
                         Path(json_filename).relative_to(path),
                         python_executable)
                     )
@@ -565,9 +538,7 @@ def export_elmer_script(json_filenames,
                     main_file.write('echo "--------------------------------------------"\n')
                     main_file.write('"./{}"\n'.format(Path(script_filename).relative_to(path)))
 
-            if post_process_script is not None:
-                main_file.write('echo "Running post process script \"scripts/{}\""\n'.format(post_process_script))
-                main_file.write('python scripts/{}\n'.format(post_process_script))
+            main_file.write(get_post_process_command_lines(post_process, path, json_filenames))
 
     # change permission
     os.chmod(main_script_filename, os.stat(main_script_filename).st_mode | stat.S_IEXEC)
@@ -578,6 +549,7 @@ def export_elmer_script(json_filenames,
 def export_elmer(simulations: Sequence[Simulation],
                  path: Path,
                  tool='capacitance',
+                 script_folder='scripts',
                  linear_system_method='bicgstab',
                  p_element_order=3,
                  frequency=5,
@@ -585,7 +557,7 @@ def export_elmer(simulations: Sequence[Simulation],
                  sweep_type='explicit',
                  max_delta_s=0.01,
                  file_prefix='simulation',
-                 script_file='scripts/run.py',
+                 script_file='run.py',
                  mesh_size=None,
                  boundary_conditions=None,
                  workflow=None,
@@ -594,10 +566,10 @@ def export_elmer(simulations: Sequence[Simulation],
                  max_outlier_fraction=1e-3,
                  maximum_passes=1,
                  minimum_passes=1,
-                 dielectric_surfaces=None,
+                 integrate_energies=False,
                  is_axisymmetric=False,
                  skip_errors=False,
-                 post_process_script=None,
+                 post_process=None,
                  ):
     """
     Exports an elmer simulation model to the simulation path.
@@ -607,6 +579,7 @@ def export_elmer(simulations: Sequence[Simulation],
         simulations(list(Simulation)): list of all the simulations
         path(Path): Location where to output the simulation model
         tool(str): Available: "capacitance", "wave_equation" and "cross-section"
+        script_folder: Path to the Elmer-scripts folder.
         linear_system_method(str): Available: 'bicgstab', 'mg'
         p_element_order(int): polynomial order of p-elements
         frequency: Units are in GHz. To set up multifrequency analysis, use list of numbers.
@@ -620,22 +593,7 @@ def export_elmer(simulations: Sequence[Simulation],
         max_outlier_fraction(float): Maximum fraction of outliers from the total number of elements
         maximum_passes(int): Maximum number of adaptive meshing iterations.
         minimum_passes(int): Minimum number of adaptive meshing iterations.
-        dielectric_surfaces: Loss tangents for dielectric interfaces, thickness and permittivity should be specified in
-            the simulation. The loss tangent is post-processed to the participation to get the quality factor.
-            Default is None. Input is of the form::
-
-                'substrate': {
-                    'tan_delta_surf': 5e-7
-                },
-                'layerMA': {  # metal–vacuum
-                    'tan_delta_surf': 0.001,  # loss tangent
-                },
-                'layerMS': { # metal–substrate
-                    'tan_delta_surf': 0.001,
-                },
-                'layerSA': { # substrate–vacuum
-                    'tan_delta_surf': 0.001,
-                }
+        integrate_energies: Calculate energy integrals over each object
         is_axisymmetric(bool): Simulate with Axi Symmetric coordinates along :math:`y\\Big|_{x=0}` (Default: False)
         skip_errors(bool): Skip simulations that cause errors. (Default: False)
 
@@ -643,7 +601,7 @@ def export_elmer(simulations: Sequence[Simulation],
 
                **Use this carefully**, some of your simulations might not make sense physically and
                you might end up wasting time on bad simulations.
-        post_process_script: Name of post processing script file.
+        post_process: List of PostProcess objects, a single PostProcess object, or None to be executed after simulations
 
 
     Returns:
@@ -743,7 +701,7 @@ def export_elmer(simulations: Sequence[Simulation],
 
 
     write_commit_reference_file(path)
-    copy_elmer_scripts_to_directory(path)
+    copy_content_into_directory(ELMER_SCRIPT_PATHS, path, script_folder)
     json_filenames = []
     for simulation in simulations:
         try:
@@ -766,7 +724,7 @@ def export_elmer(simulations: Sequence[Simulation],
                     max_outlier_fraction=max_outlier_fraction,
                     maximum_passes=maximum_passes,
                     minimum_passes=minimum_passes,
-                    dielectric_surfaces=dielectric_surfaces,
+                    integrate_energies=integrate_energies,
                     is_axisymmetric=is_axisymmetric,
                 )
             )
@@ -788,6 +746,6 @@ def export_elmer(simulations: Sequence[Simulation],
                                path,
                                workflow,
                                file_prefix=file_prefix,
-                               script_file=script_file,
+                               execution_script=Path(script_folder).joinpath(script_file),
                                n_simulations=n_worker_lim,
-                               post_process_script=post_process_script)
+                               post_process=post_process)

@@ -14,7 +14,15 @@
 # The software distribution should follow IQM trademark policy for open-source software
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
+"""
+Executes pyEPR calculations on Ansys simulation tool.
+The geometry should be imported and Ansys project should be saved before calling this.
 
+Args:
+    sys.argv[1]: json file of the simulation
+    sys.argv[2]: parameter file for pyEPR calculations
+
+"""
 import sys
 import json
 
@@ -27,8 +35,8 @@ import qutip.fileio
 project_path = Path.cwd()
 project_name = str(Path(sys.argv[1]).stem if Path(sys.argv[1]).suffixes else Path(sys.argv[1])) + '_project'
 
-with open(sys.argv[1], 'r') as fp:
-    data = json.load(fp)
+with open(sys.argv[2], 'r') as fp:
+    pp_data = json.load(fp)
 
 try:
     # Nominal values, good for relative comparison
@@ -36,7 +44,7 @@ try:
         ## 3D, given in `pinfo.dissipative['dielectrics_bulk']`
         # integration to get participation ratio which is multiplied with the loss tangent, adds to Q as 1/(p tan_d)
         # loss tangent (currently does not support multiple different materials)
-        'tan_delta_sapp': data.get('substrate_loss_tangent', 1e-6),
+        'tan_delta_sapp': pp_data.get('substrate_loss_tangent', 1e-6),
 
         ## 2D, given in `pinfo.dissipative['dielectric_surfaces']`.
         # These values are not used if layer specific values for `dielectric_surfaces` are given in the JSON
@@ -66,7 +74,7 @@ try:
     ## Set dissipative elements
     # Ansys solids
     pinfo.dissipative['dielectrics_bulk'] = [e for e in pinfo.get_all_object_names() if e.startswith("Substrate")]
-    if data.get('dielectric_surfaces', None) is None:
+    if pp_data.get('dielectric_surfaces', None) is None:
         pinfo.dissipative['dielectric_surfaces'] = [  # Ansys sheets (exclude 3D volumes, ports, and junctions)
             e for e in pinfo.get_all_object_names()
             if not (e.startswith('Vacuum') or e.startswith("Substrate") or
@@ -74,7 +82,7 @@ try:
         ]
     else:
         pinfo.dissipative['dielectric_surfaces'] = {
-            e: v for e in pinfo.get_all_object_names() for k, v in data['dielectric_surfaces'].items() if k in e
+            e: v for e in pinfo.get_all_object_names() for k, v in pp_data['dielectric_surfaces'].items() if k in e
         }
 
     oEditor = oDesign.modeler._modeler

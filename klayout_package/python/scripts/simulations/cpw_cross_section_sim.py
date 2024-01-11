@@ -157,20 +157,6 @@ workflow = {
     'run_elmer': True,
     'run_paraview': False,
 }
-dielectric_surfaces = {
-    'substrate': {
-        'tan_delta_surf': 5e-7,
-    },
-    'ma_layer': {
-        'tan_delta_surf': 9.9e-3,
-    },
-    'ms_layer': {
-        'tan_delta_surf': 2.6e-3,
-    },
-    'sa_layer': {
-        'tan_delta_surf': 2.1e-3,
-    }
-}
 
 # Get layout
 logging.basicConfig(level=logging.WARN, stream=sys.stdout)
@@ -203,8 +189,7 @@ if is_axisymmetric:
 
 # Export simulation files
 export_elmer(simulations, dir_path, tool='cross-section', mesh_size=mesh_size, workflow=workflow,
-    dielectric_surfaces=dielectric_surfaces, p_element_order=args.p_element_order, linear_system_method='mg',
-    is_axisymmetric=is_axisymmetric)
+    p_element_order=args.p_element_order, linear_system_method='mg', is_axisymmetric=is_axisymmetric)
 
 # Write and open oas file
 open_with_klayout_or_default_application(export_simulation_oas(simulations, dir_path))

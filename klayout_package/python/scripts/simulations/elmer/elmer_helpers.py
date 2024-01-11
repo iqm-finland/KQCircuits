@@ -864,7 +864,7 @@ def sif_capacitance(json_data: dict, folder_path: Path, vtu_name: str,
     body_list = get_body_list(json_data, dim=dim, mesh_names=mesh_names)
     permittivity_list = get_permittivities(json_data, with_zero=with_zero, dim=dim, mesh_names=mesh_names)
 
-    if 'dielectric_surfaces' in json_data and not with_zero:  # no EPR for inductance
+    if json_data.get('integrate_energies', False) and not with_zero:  # no EPR for inductance
         solvers += get_save_energy_solver(ordinate=4,
                                           energy_file='energy.dat',
                                           bodies=body_list)

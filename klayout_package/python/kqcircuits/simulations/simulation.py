@@ -593,15 +593,11 @@ class Simulation:
                 layer_name = face_id + "_layer" + layer_id
                 layer_z = [z[face_id][1], z[face_id][0], z[face_id][0] - sign * self.vertical_over_etching][layer_num]
                 thickness = float(self.ith_value(self.tls_layer_thickness, layer_num))
-                sheet_thickness = float(self.ith_value(self.tls_layer_thickness, layer_num))
                 signed_thickness = [sign, -sign, -sign][layer_num] * thickness
                 material = self.ith_value(self.tls_layer_material, layer_num)
                 if self.tls_sheet_approximation:
                     params = {'z': layer_z + signed_thickness,
-                              'thickness': 0.0,
-                              'sheet thickness': sheet_thickness,
-                              **(dict() if material is None else {'sheet material': material})
-                              }
+                              'thickness': 0.0}
                 elif thickness != 0.0:
                     params = {'z': layer_z,
                               'thickness': signed_thickness,
@@ -622,8 +618,8 @@ class Simulation:
                     continue
 
                 # Insert layer
-                layer_region = [metal_region.sized(thickness / self.layout.dbu) & (metal_region + etch_region -
-                                                                                   bump_region - ab_pads_region),
+                layer_region = [metal_region if self.tls_sheet_approximation else metal_region.sized(
+                    thickness / self.layout.dbu) & (metal_region + etch_region - bump_region - ab_pads_region),
                                 metal_region, etch_region][layer_num]
                 self.insert_layer(non_part_region & layer_region, layer_name, **params)
                 for reg, part in reg_parts:

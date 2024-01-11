@@ -22,6 +22,7 @@ from pathlib import Path
 import numpy as np
 
 from kqcircuits.qubits.double_pads import DoublePads
+from kqcircuits.simulations.post_process import PostProcess
 from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
@@ -71,10 +72,7 @@ for sim_tool in sim_tools:
         'frequency': 0.5,  # minimum allowed eigenfrequency
         'simulation_flags': ['pyepr'],
 
-        # run T1 analysis with pyEPR between simulations
-        'intermediate_processing_command': 'python "scripts/t1_estimate.py"',
-
-        # The values here are taken from the following literature:
+        # The post-processing values are taken from the following literature:
         #
         # [1] J. Verjauw et al., ‘Investigation of Microwave Loss Induced by Oxide Regrowth in High-Q Niobium Resonators’,   # pylint: disable=line-too-long
         #     Phys. Rev. Applied, vol. 16, no. 1, p. 014018, Jul. 2021, doi: 10.1103/PhysRevApplied.16.014018.
@@ -86,24 +84,25 @@ for sim_tool in sim_tools:
         #     Appl. Phys. Lett., vol. 107, no. 16, p. 162601, Oct. 2015, doi: 10.1063/1.4934486.
         # [5] W. Woods et al., ‘Determining Interface Dielectric Losses in Superconducting Coplanar-Waveguide Resonators’,  # pylint: disable=line-too-long
         #     Phys. Rev. Applied, vol. 12, no. 1, p. 014012, Jul. 2019, doi: 10.1103/PhysRevApplied.12.014012.
-        'substrate_loss_tangent': 5e-7,  # [5]
-        'dielectric_surfaces': {
-            'layerMA': {
-                'tan_delta_surf': 9.9e-3,  # surface loss tangent [1]
-                'th': 4.8e-9,  # thickness, [2]
-                'eps_r': 8,  # relative permittivity, worst-case [3]
-            },
-            'layerMS': {
-                'tan_delta_surf': 2.6e-3,  # [4]
-                'th': 0.3e-9,  # estimate worst case, [2]
-                'eps_r': 11.4,  # estimate worst case (permittivity of Si)
-            },
-            'layerSA': {
-                'tan_delta_surf': 2.1e-3,  # [5, 1new]
-                'th': 2.4e-9,  # [2]
-                'eps_r': 4,  # [5]
-            }
-        },
+        'post_process': PostProcess("run_pyepr_t1_estimate.py", repeat_for_each=True,
+                                    substrate_loss_tangent=5e-7,
+                                    dielectric_surfaces={
+                                        'layerMA': {
+                                            'tan_delta_surf': 9.9e-3,  # surface loss tangent [1]
+                                            'th': 4.8e-9,  # thickness, [2]
+                                            'eps_r': 8,  # relative permittivity, worst-case [3]
+                                        },
+                                        'layerMS': {
+                                            'tan_delta_surf': 2.6e-3,  # [4]
+                                            'th': 0.3e-9,  # estimate worst case, [2]
+                                            'eps_r': 11.4,  # estimate worst case (permittivity of Si)
+                                        },
+                                        'layerSA': {
+                                            'tan_delta_surf': 2.1e-3,  # [5, 1new]
+                                            'th': 2.4e-9,  # [2]
+                                            'eps_r': 4,  # [5]
+                                        }
+                                    }),
     }
 
     export_parameters_ansys = {

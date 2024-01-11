@@ -51,7 +51,6 @@ export_parameters = {
     'n_modes': 2,  # eigenmodes to solve
     'frequency': 0.1,  # minimum allowed eigenmode frequency
     'simulation_flags': ['pyepr'],  # required for setting up pyepr specific stuff
-    'substrate_loss_tangent': 1e-6,  # Loss tangents for estimating quality factor
 }
 
 # Get layout

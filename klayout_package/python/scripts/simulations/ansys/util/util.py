@@ -97,38 +97,6 @@ def create_x_vs_y_plot(report_setup, plot_name, report_type, solution_name, cont
          ])
 
 
-def find_varied_parameters(json_files):
-    """Finds the parameters that vary between the definitions in the json files.
-
-    Args:
-        json_files: List of json file names
-
-    Returns:
-        tuple (list, dict)
-        - list of parameter names
-        - dictionary with json file prefix as key and list of parameter values as value
-    """
-    keys = [f.replace('.json', '') for f in json_files]
-    nominal = min(keys, key=len)
-
-    # Load data from json files
-    parameter_dict = {}
-    for key, json_file in zip(keys, json_files):
-        with open(json_file, 'r') as f:
-            definition = json.load(f)
-        parameter_dict[key] = definition['parameters']
-
-    # Find parameters that are varied
-    parameters = []
-    for parameter in parameter_dict[nominal]:
-        if not all(parameter_dict[key][parameter] == parameter_dict[nominal][parameter] for key in keys):
-            parameters.append(parameter)
-
-    # Return compressed parameter_dict including only varied parameters
-    parameter_values = {k: [v[p] for p in parameters] for k, v in parameter_dict.items()}
-    return parameters, parameter_values
-
-
 # Helper class to encode complex data in json output
 class ComplexEncoder(json.JSONEncoder):
     def default(self, o):

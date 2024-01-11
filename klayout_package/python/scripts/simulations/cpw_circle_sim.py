@@ -27,6 +27,7 @@ from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
 from kqcircuits.simulations.export.simulation_export import export_simulation_oas
 from kqcircuits.simulations.port import InternalPort
+from kqcircuits.simulations.post_process import PostProcess
 
 from kqcircuits.simulations.simulation import Simulation
 from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
@@ -105,6 +106,7 @@ else:
     export_parameters = {
         'path': dir_path,
         'ansys_tool': 'q3d',
+        'post_process': PostProcess('produce_cmatrix_table.py'),
         'exit_after_run': True,
         'percent_error': 0.1,
         'maximum_passes': 20,

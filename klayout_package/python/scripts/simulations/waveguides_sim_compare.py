@@ -23,6 +23,7 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.export.simulation_export import export_simulation_oas, sweep_simulation
 from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
+from kqcircuits.simulations.post_process import PostProcess
 from kqcircuits.simulations.waveguides_sim import WaveGuidesSim
 from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
     open_with_klayout_or_default_application
@@ -144,6 +145,7 @@ if use_elmer:
             'tool': 'capacitance',
             'linear_system_method': 'mg',
             'p_element_order': args.p_element_order,
+            'post_process': PostProcess('produce_cmatrix_table.py'),
         }
         if args.adaptive_remeshing:
             export_parameters_elmer.update(
@@ -221,6 +223,7 @@ else:
         export_parameters_ansys = {
             'path': path,
             'ansys_tool': 'q3d',
+            'post_process': PostProcess('produce_cmatrix_table.py'),
             'percent_error': 0.2,
             'minimum_converged_passes': 2,
             'maximum_passes': 40,

@@ -23,7 +23,7 @@ from gmsh_helpers import produce_mesh
 from elmer_helpers import produce_sif_files, write_project_results_json
 from run_helpers import run_elmer_grid, run_elmer_solver, run_paraview, write_simulation_machine_versions_file
 from cross_section_helpers import produce_cross_section_mesh, produce_cross_section_sif_files, \
-    get_cross_section_capacitance_and_inductance, get_interface_quality_factors
+    get_cross_section_capacitance_and_inductance, get_energy_integrals
 
 parser = argparse.ArgumentParser(description='Run script for Gmsh-Elmer workflow')
 parser.add_argument('json_filename', type=str, help='KQC simulation data')
@@ -142,8 +142,8 @@ if tool == 'cross-section':
 
     if args.write_project_results:
         res = get_cross_section_capacitance_and_inductance(json_data, path.joinpath(name))
-        if 'dielectric_surfaces' in json_data:  # Compute quality factors with energy participation ratio method
-            res = {**res, **get_interface_quality_factors(json_data, path.joinpath(name))}
+        if json_data.get('integrate_energies', False):  # Compute quality factors with energy participation ratio method
+            res = {**res, **get_energy_integrals(path.joinpath(name))}
 
         with open(path.joinpath(f'{name}_result.json'), 'w') as f:
             json.dump(res, f, indent=4)

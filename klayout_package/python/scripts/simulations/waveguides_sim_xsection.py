@@ -25,6 +25,7 @@ from kqcircuits.simulations.export.simulation_export import export_simulation_oa
 from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
 from kqcircuits.simulations.export.xsection.xsection_export import create_xsections_from_simulations, \
     separate_signal_layer_shapes
+from kqcircuits.simulations.post_process import PostProcess
 from kqcircuits.simulations.waveguides_sim import WaveGuidesSim
 from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
     open_with_klayout_or_default_application
@@ -37,7 +38,8 @@ parser.add_argument('--n-guides', nargs="+", default=[1, 2, 3],
 parser.add_argument('--p-element-order', default=3, type=int, help='Order of p-elements in the FEM computation')
 parser.add_argument('--london-penetration-depth', default=0.0, type=float,
                     help='London penetration depth of superconductor in [m]')
-parser.add_argument('--etch-opposite-face', action="store_true", help='If true, the top face metal will be etched away')
+parser.add_argument('--etch-whole-opposite-face', action="store_true",
+                    help='If true, the top face metal will be etched away')
 
 args, unknown = parser.parse_known_args()
 
@@ -99,7 +101,7 @@ simulations = sweep_simulation(layout, sim_class, sim_parameters, sweep_paramete
 for simulation in simulations:
     separate_signal_layer_shapes(simulation)
 
-# Create cross sections using xsection tool
+# Create cross-sections using xsection tool
 # Oxide layer permittivity and thickness values same as in double_pads_sim.py simulation
 xsection_simulations = create_xsections_from_simulations(simulations, path,
     (pya.DPoint(0, 150), pya.DPoint(0, -150)), # Cut coordinates
@@ -112,6 +114,14 @@ xsection_simulations = create_xsections_from_simulations(simulations, path,
     magnification_order=3, # Zoom to nanometers due to thin oxide layers
     london_penetration_depth=args.london_penetration_depth,
 )
+loss_tangents = {
+    'b_substrate': 5e-7,
+    'ma_layer': 9.9e-3,
+    'ms_layer': 2.6e-3,
+    'sa_layer': 2.1e-3,
+}
 open_with_klayout_or_default_application(export_simulation_oas(xsection_simulations, path))
 export_elmer(xsection_simulations, path, tool='cross-section', mesh_size=mesh_size, workflow=workflow,
-                           p_element_order=args.p_element_order, linear_system_method='mg')
+             p_element_order=args.p_element_order, linear_system_method='mg', integrate_energies=True,
+             post_process=[PostProcess('produce_q_factor_table.py', **loss_tangents),
+                           PostProcess('produce_epr_table.py', groups=['ma', 'ms', 'sa', 'substrate', 'vacuum'])])

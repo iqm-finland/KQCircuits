@@ -23,6 +23,7 @@ from pathlib import Path
 import numpy as np
 from kqcircuits.elements.smooth_capacitor import SmoothCapacitor
 from kqcircuits.pya_resolver import pya
+from kqcircuits.simulations.post_process import PostProcess
 from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.export.simulation_export import cross_sweep_simulation, export_simulation_oas
@@ -51,6 +52,7 @@ sim_parameters = {
 export_parameters = {
     'path': dir_path,
     'ansys_tool': 'q3d',
+    'post_process': PostProcess('produce_cmatrix_table.py'),
     'exit_after_run': True,
     'percent_error': 0.1,
     'minimum_converged_passes': 1,
@@ -67,7 +69,6 @@ b_def = [6]
 
 num = 4
 finger_numbers_comp = [round((5**(1/num))**i, 1) for i in range(-num,num+1)]
-print(finger_numbers_comp)
 chip_distances_comp = [4, 8, infinite]
 as_comp = [2,10,20]
 bs_comp = [2,6,18,32]

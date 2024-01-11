@@ -21,6 +21,7 @@ from pathlib import Path
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.elements.circular_capacitor import CircularCapacitor
+from kqcircuits.simulations.post_process import PostProcess
 from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.export.simulation_export import cross_sweep_simulation, export_simulation_oas
@@ -55,6 +56,7 @@ sim_parameters = {
 export_parameters = {
     'path': dir_path,
     'ansys_tool': 'q3d',
+    'post_process': PostProcess('produce_cmatrix_table.py'),
     'exit_after_run': True,
     'percent_error': 0.3,
     'minimum_converged_passes': 2,

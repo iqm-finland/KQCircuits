@@ -21,9 +21,9 @@ import stat
 import json
 import logging
 
-from shutil import copytree
 from pathlib import Path
 
+from kqcircuits.simulations.export.simulation_export import copy_content_into_directory, get_post_process_command_lines
 from kqcircuits.util.export_helper import write_commit_reference_file
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
 from kqcircuits.simulations.export.util import export_layers
@@ -31,27 +31,12 @@ from kqcircuits.defaults import ANSYS_EXECUTABLE, ANSYS_SCRIPT_PATHS
 from kqcircuits.simulations.simulation import Simulation
 
 
-def copy_ansys_scripts_to_directory(path: Path, import_script_folder='scripts'):
-    """
-    Copies Ansys scripts into directory path.
-
-    Arguments:
-        path: Location where to copy scripts folder.
-        import_script_folder: Name of the folder in its new location.
-    """
-    if path.exists() and path.is_dir():
-        for script_path in ANSYS_SCRIPT_PATHS:
-            copytree(str(script_path), str(path.joinpath(import_script_folder)), dirs_exist_ok=True)
-
-
 def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
                       frequency_units="GHz", frequency=5, max_delta_s=0.1, percent_error=1, percent_refinement=30,
                       maximum_passes=12, minimum_passes=1, minimum_converged_passes=1,
                       sweep_enabled=True, sweep_start=0, sweep_end=10, sweep_count=101, sweep_type='interpolating',
-                      max_delta_f=0.1, n_modes=2, mesh_size=None, substrate_loss_tangent=0,
-                      dielectric_surfaces=None, simulation_flags=None, ansys_project_template=None,
-                      integrate_energies=False, hfss_capacitance_export=False,
-                      mer_coefficients=None, mer_correction_path=None):
+                      max_delta_f=0.1, n_modes=2, mesh_size=None, simulation_flags=None, ansys_project_template=None,
+                      integrate_energies=False, hfss_capacitance_export=False):
     r"""
     Export Ansys simulation into json and gds files.
 
@@ -76,31 +61,10 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
         n_modes: Number of eigenmodes to solve. Used when ``ansys_tool`` is 'pyepr'.
         mesh_size(dict): Dictionary to determine manual mesh refinement on layers. Set key as the layer name and
             value as the maximal mesh element length inside the layer.
-        substrate_loss_tangent: Bulk loss tangent (:math:`\tan{\delta}`) material parameter. 0 is off.
-        dielectric_surfaces: Material parameters for TLS interfaces, used in post-processing field calculations
-            from the participation sheets. Default is None. Input is of the form::
-
-                'layerMA': {  # metal–vacuum
-                    'tan_delta_surf': 0.001,  # loss tangent
-                    'th': 4e-9,  # thickness
-                    'eps_r': 10  # relative permittivity
-                },
-                'layerMS': { # metal–substrate
-                    'tan_delta_surf': 0.001,
-                    'th': 2e-9,
-                    'eps_r': 10
-                },
-                'layerSA': { # substrate–vacuum
-                    'tan_delta_surf': 0.001,
-                    'th': 2e-9,
-                    'eps_r': 10
-                },
         simulation_flags: Optional export processing, given as list of strings
         ansys_project_template: path to the simulation template
         integrate_energies: Calculate energy integrals over each layer and save them into a file
         hfss_capacitance_export: If True, the capacitance matrices are exported from HFSS simulations
-        mer_coefficients: dict of coefficients to fix metal edge region participation ratios
-        mer_correction_path: path to metal edge region case that contains participation results
 
     Returns:
          Path to exported json file.
@@ -132,13 +96,9 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
             'n_modes': n_modes,
         },
         'mesh_size': {} if mesh_size is None else mesh_size,
-        'substrate_loss_tangent': substrate_loss_tangent,
-        'dielectric_surfaces': dielectric_surfaces,
         'simulation_flags': simulation_flags,
         'integrate_energies': integrate_energies,
         'hfss_capacitance_export': hfss_capacitance_export,
-        'mer_coefficients': mer_coefficients,
-        'mer_correction_path': mer_correction_path,
     }
 
     if ansys_project_template is not None:
@@ -160,9 +120,8 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
 
 
 def export_ansys_bat(json_filenames, path: Path, file_prefix='simulation', exit_after_run=False,
-                     import_script_folder='scripts', import_script='import_and_simulate.py',
-                     post_process_script='export_batch_results.py', intermediate_processing_command=None,
-                     use_rel_path=True):
+                     execution_script='scripts/import_and_simulate.py',
+                     post_process=None, use_rel_path=True):
     """
     Create a batch file for running one or more already exported simulations.
 
@@ -171,15 +130,8 @@ def export_ansys_bat(json_filenames, path: Path, file_prefix='simulation', exit_
         path: Location where to write the bat file.
         file_prefix: Name of the batch file to be created.
         exit_after_run: Defines if the Ansys Electronics Desktop is automatically closed after running the script.
-        import_script_folder: Path to the Ansys-scripts folder.
-        import_script: Name of import script file.
-        post_process_script: Name of post processing script file.
-        intermediate_processing_command: Command for intermediate steps between simulations.
-            Default is None, which doesn't enable any processing. An example argument is ``python scripts/script.py``,
-            which runs in the `.bat` as::
-
-                python scripts/script.py json_filename.json
-
+        execution_script: The script file to be executed.
+        post_process: List of PostProcess objects, a single PostProcess object, or None to be executed after simulations
         use_rel_path: Determines if to use relative paths.
 
     Returns:
@@ -210,22 +162,10 @@ def export_ansys_bat(json_filenames, path: Path, file_prefix='simulation', exit_
                 ANSYS_EXECUTABLE,
                 str(Path(json_filename).relative_to(path) if use_rel_path else json_filename),
                 run_cmd,
-                str(Path(import_script_folder).joinpath(import_script)))
+                str(execution_script))
             file.write(command)
-            # Possible processing between simulations
-            if intermediate_processing_command is not None:
-                command = '{} "{}"\n'.format(
-                    intermediate_processing_command,
-                    str(Path(json_filename).relative_to(path))
-                )
-                file.write(command)
 
-        # Post-process command
-        command = '"{}" -{} "{}"\n'.format(
-            ANSYS_EXECUTABLE,
-            run_cmd,
-            str(Path(import_script_folder).joinpath(post_process_script)))
-        file.write(command)
+        file.write(get_post_process_command_lines(post_process, path, json_filenames))
 
     # Make the bat file executable in linux
     os.chmod(bat_filename, os.stat(bat_filename).st_mode | stat.S_IEXEC)
@@ -233,16 +173,14 @@ def export_ansys_bat(json_filenames, path: Path, file_prefix='simulation', exit_
     return bat_filename
 
 
-def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folder='scripts', file_prefix='simulation',
+def export_ansys(simulations, path: Path, ansys_tool='hfss', script_folder='scripts', file_prefix='simulation',
                  frequency_units="GHz", frequency=5, max_delta_s=0.1, percent_error=1, percent_refinement=30,
                  maximum_passes=12, minimum_passes=1, minimum_converged_passes=1,
                  sweep_enabled=True, sweep_start=0, sweep_end=10, sweep_count=101, sweep_type='interpolating',
-                 max_delta_f=0.1, n_modes=2, mesh_size=None, substrate_loss_tangent=0,
-                 dielectric_surfaces=None, exit_after_run=False,
-                 import_script='import_and_simulate.py', post_process_script='export_batch_results.py',
-                 intermediate_processing_command=None, use_rel_path=True, simulation_flags=None,
+                 max_delta_f=0.1, n_modes=2, mesh_size=None, exit_after_run=False,
+                 import_script='import_and_simulate.py', post_process=None, use_rel_path=True, simulation_flags=None,
                  ansys_project_template=None, integrate_energies=False, hfss_capacitance_export=False,
-                 skip_errors=False, mer_coefficients=None, mer_correction_path=None):
+                 skip_errors=False):
     r"""
     Export Ansys simulations by writing necessary scripts and json, gds, and bat files.
 
@@ -250,7 +188,7 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
         simulations: List of simulations to be exported.
         path: Location where to write export files.
         ansys_tool: Determines whether to use HFSS ('hfss'), Q3D Extractor ('q3d') or HFSS eigenmode ('eigenmode').
-        import_script_folder: Path to the Ansys-scripts folder.
+        script_folder: Path to the Ansys-scripts folder.
         file_prefix: Name of the batch file to be created.
         frequency_units: Units of frequency.
         frequency: Frequency for mesh refinement. To set up multifrequency analysis in HFSS use list of numbers.
@@ -269,34 +207,9 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
         n_modes: Number of eigenmodes to solve. Used when ``ansys_tool`` is 'eigenmode'.
         mesh_size(dict): Dictionary to determine manual mesh refinement on layers. Set key as the layer name and
             value as the maximal mesh element length inside the layer.
-        substrate_loss_tangent: Bulk loss tangent (:math:`\tan{\delta}`) material parameter. 0 is off.
-        dielectric_surfaces: Material parameters for TLS interfaces, used in post-processing field calculations
-            from the participation sheets. Default is None. Input is of the form::
-
-                'layerMA': {  # metal–vacuum
-                    'tan_delta_surf': 0.001,  # loss tangent
-                    'th': 4e-9,  # thickness
-                    'eps_r': 10  # relative permittivity
-                },
-                'layerMS': { # metal–substrate
-                    'tan_delta_surf': 0.001,
-                    'th': 2e-9,
-                    'eps_r': 10
-                },
-                'layerSA': { # substrate–vacuum
-                    'tan_delta_surf': 0.001,
-                    'th': 2e-9,
-                    'eps_r': 10
-                },
-
         exit_after_run: Defines if the Ansys Electronics Desktop is automatically closed after running the script.
         import_script: Name of import script file.
-        post_process_script: Name of post processing script file.
-        intermediate_processing_command: Command for intermediate steps between simulations.
-            Default is None, which doesn't enable any processing. An example argument is ``python scripts/script.py``,
-            which runs in the `.bat` as::
-
-                python scripts/script.py json_filename.json
+        post_process: List of PostProcess objects, a single PostProcess object, or None to be executed after simulations
 
         use_rel_path: Determines if to use relative paths.
         simulation_flags: Optional export processing, given as list of strings. See Simulation Export in docs.
@@ -309,14 +222,12 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
 
                **Use this carefully**, some of your simulations might not make sense physically and
                you might end up wasting time on bad simulations.
-        mer_coefficients: dict of coefficients to fix metal edge region participation ratios
-        mer_correction_path: path to metal edge region case that contains participation results
 
     Returns:
         Path to exported bat file.
     """
     write_commit_reference_file(path)
-    copy_ansys_scripts_to_directory(path, import_script_folder=import_script_folder)
+    copy_content_into_directory(ANSYS_SCRIPT_PATHS, path, script_folder)
     json_filenames = []
     for simulation in simulations:
         try:
@@ -330,14 +241,10 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
                                             sweep_end=sweep_end, sweep_count=sweep_count, sweep_type=sweep_type,
                                             max_delta_f=max_delta_f, n_modes=n_modes,
                                             mesh_size=mesh_size,
-                                            substrate_loss_tangent=substrate_loss_tangent,
-                                            dielectric_surfaces=dielectric_surfaces,
                                             simulation_flags=simulation_flags,
                                             ansys_project_template=ansys_project_template,
                                             integrate_energies=integrate_energies,
                                             hfss_capacitance_export=hfss_capacitance_export,
-                                            mer_coefficients=mer_coefficients,
-                                            mer_correction_path=mer_correction_path,
                                             ))
         except (IndexError, ValueError, Exception) as e:  # pylint: disable=broad-except
             if skip_errors:
@@ -354,7 +261,5 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
                 ) from e
 
     return export_ansys_bat(json_filenames, path, file_prefix=file_prefix, exit_after_run=exit_after_run,
-                            import_script_folder=import_script_folder,
-                            import_script=import_script, post_process_script=post_process_script,
-                            intermediate_processing_command=intermediate_processing_command,
+                            execution_script=Path(script_folder).joinpath(import_script), post_process=post_process,
                             use_rel_path=use_rel_path)
