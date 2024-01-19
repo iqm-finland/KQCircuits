@@ -27,6 +27,7 @@ from kqcircuits.elements.airbridges.airbridge import Airbridge
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 from kqcircuits.pya_resolver import pya
+from kqcircuits.simulations.partition_region import PartitionRegion
 from kqcircuits.simulations.port import Port, InternalPort, EdgePort
 from kqcircuits.util.geometry_helper import region_with_merged_polygons, region_with_merged_points, \
     match_points_on_edges
@@ -161,13 +162,9 @@ class Simulation:
     vertical_over_etching = Param(pdt.TypeDouble, "Vertical over-etching into substrates at gaps.", 0, unit="μm")
     hollow_tsv = Param(pdt.TypeBoolean, "Make TSVs hollow with vacuum inside and thin metal boundary.", False)
 
-    metal_edge_region_dimensions = Param(pdt.TypeList, "Dimensions of metal edge region", [], unit="µm",
-                                         docstring="Metal edge region is disabled if the list is empty. The terms in "
-                                                   "the list correspond to expansion dimensions into direction of gap, "
-                                                   "vacuum, metal, and substrate, respectively. The implementation "
-                                                   "uses the modulo operator in indexing, so one can set the list as "
-                                                   "[r] meaning that r is the expansion to all directions, or set as "
-                                                   "[r_lat, r_vert] to separate lateral and vertical expansions.")
+    partition_regions = Param(pdt.TypeString, "Parameters of partition regions as list of dictionaries", [],
+                              docstring="See constructor of the PartitionRegion class for parameter definitions.")
+
     tls_layer_thickness = Param(pdt.TypeList, "Thickness of TLS interface layers (MA, MS, and SA, respectively)", [0.0],
                                 unit="µm")
     tls_layer_material = Param(pdt.TypeList, "Materials of TLS interface layers (MA, MS, and SA, respectively)", None,
@@ -466,6 +463,7 @@ class Simulation:
         polygons without holes.
         """
 
+        parts = [PartitionRegion(**(ast.literal_eval(r) if isinstance(r, str) else r)) for r in self.partition_regions]
         z = self.face_z_levels()
         face_stack = self.face_stack_list_of_lists()
         for i, face_ids in enumerate(face_stack):
@@ -579,15 +577,16 @@ class Simulation:
                 continue
             face_id = face_ids[0]
 
-            # Create metal edge region
+            # Create metal edge regions
             metal_region = signal_region + ground_region
-            me_region = pya.Region()
-            n_terms = len(self.metal_edge_region_dimensions)
-            if n_terms > 0:
-                r_gap = float(self.metal_edge_region_dimensions[0])
-                r_metal = float(self.metal_edge_region_dimensions[2 % n_terms])
-                me_region = (metal_region.sized(r_gap / self.layout.dbu) & etch_region.sized(r_metal / self.layout.dbu)
-                             & ground_box_region)
+            non_part_region = ground_box_region
+            reg_parts = []
+            for part in parts:
+                if part.covers_face(face_id):
+                    reg = part.get_partition_region(metal_region, etch_region, non_part_region, self.layout.dbu)
+                    if not reg.is_empty():
+                        reg_parts.append((reg, part))
+                        non_part_region -= reg
 
             # Insert TLS interface layers
             for layer_num, layer_id in enumerate(['MA', 'MS', 'SA']):
@@ -612,8 +611,13 @@ class Simulation:
                     wall_height = [z[face_id][0] - z[face_id][1], 0.0, sign * self.vertical_over_etching][layer_num]
                     if wall_height != 0.0:
                         wall_region = metal_region.sized(thickness / self.layout.dbu) & etch_region
-                        self.insert_layer(wall_region, layer_name + "wall", z=layer_z, thickness=wall_height,
+                        self.insert_layer(non_part_region & wall_region, layer_name + "wall", z=layer_z,
+                                          thickness=wall_height,
                                           **(dict() if material is None else {'material': material}))
+                        for reg, part in reg_parts:
+                            self.insert_layer(reg & wall_region, layer_name + "wall" + part.name, z=layer_z,
+                                              thickness=wall_height,
+                                              **(dict() if material is None else {'material': material}))
                 else:
                     continue
 
@@ -621,26 +625,22 @@ class Simulation:
                 layer_region = [metal_region.sized(thickness / self.layout.dbu) & (metal_region + etch_region -
                                                                                    bump_region - ab_pads_region),
                                 metal_region, etch_region][layer_num]
-                me_layer_region = me_region & layer_region
-                if me_layer_region.is_empty():
-                    self.insert_layer(layer_region, layer_name, **params)
-                else:
-                    self.insert_layer(me_layer_region, layer_name + "mer", **params)
-                    self.insert_layer(layer_region - me_region, layer_name, **params)
+                self.insert_layer(non_part_region & layer_region, layer_name, **params)
+                for reg, part in reg_parts:
+                    self.insert_layer(reg & layer_region, layer_name + part.name, **params)
 
-            # Insert substrate and vacuum inside metal edge region
-            if not me_region.is_empty():
-                r_vacuum = float(self.metal_edge_region_dimensions[1 % n_terms])
-                r_substrate = float(self.metal_edge_region_dimensions[3 % n_terms])
+            # Insert substrate and vacuum of metal edge regions
+            for reg, part in reg_parts:
+                r_substrate, r_vacuum = part.get_vertical_dimension()
 
                 if r_substrate != 0.0:
                     layers = ['_etch', '_through_silicon_via']
-                    cond_layers = ['_layerMSmer', '_layerSAmer']
+                    cond_layers = [n + part.name for n in ['_layerMS', '_layerSA']]
                     subtract = [k for k, v in self.layers.items() if face_id + '_' in k and
                                 (any(k.endswith(t) for t in layers) or
                                  (any(k.endswith(t) for t in cond_layers) and v.get('material', None) is not None))]
-                    self.insert_layer(me_region, face_id + "_substratemer", z=z[face_id][0] - sign * r_substrate,
-                                      thickness=sign * r_substrate,
+                    self.insert_layer(reg, face_id + "_substrate" + part.name,
+                                      z=z[face_id][0] - sign * r_substrate, thickness=sign * r_substrate,
                                       material=self.ith_value(self.substrate_material,
                                                               (i + int(self.lower_box_height <= 0)) // 2),
                                       **({'subtract': subtract} if subtract else dict()))
@@ -648,7 +648,7 @@ class Simulation:
                 if r_vacuum + r_substrate != 0.0:
                     subtract = [n for n, v in self.layers.items() if face_id + '_' in n and
                                 v.get('material', None) is not None and v.get('thickness', 0.0) != 0.0]
-                    self.insert_layer(me_region, face_id + "_vacuummer", z=z[face_id][0] - sign * r_substrate,
+                    self.insert_layer(reg, face_id + "_vacuum" + part.name, z=z[face_id][0] - sign * r_substrate,
                                       thickness=sign * (r_vacuum + r_substrate), material='vacuum',
                                       **({'subtract': subtract} if subtract else dict()))
 
@@ -663,7 +663,8 @@ class Simulation:
 
             # find layers to be subtracted from substrate
             layers = ['_etch', '_through_silicon_via']
-            cond_layers = ['_layerMS', '_layerSA', '_layerMSmer', '_layerSAmer', '_substratemer']
+            cond_layers = ['_layerMS', '_layerSA'] + [
+                s + part.name for s in ['_layerMS', '_layerSA', '_substrate'] for part in parts]
             subtract = [k for k, v in self.layers.items() if any(t + '_' in k for t in faces) and
                         (any(k.endswith(t) for t in layers) or
                          (any(k.endswith(t) for t in cond_layers) and v.get('material', None) is not None))]

@@ -51,7 +51,7 @@ sim_parameters = {
     'substrate_height': 50,  # limited simulation domain
     'upper_box_height': 50,  # limited simulation domain
     'metal_height': 0.2,
-    'metal_edge_region_dimensions': [1.0],
+    'partition_regions': [{'name': 'mer', 'metal_edge_dimensions': 1.0, 'vertical_dimensions': 1.0}],
     'tls_layer_thickness': 0.01,
     'tls_layer_material': ['oxideMA', 'oxideMS', 'oxideSA'],
     'material_dict': {**ast.literal_eval(Simulation.material_dict),

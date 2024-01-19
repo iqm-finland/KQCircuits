@@ -389,7 +389,6 @@ if data.get('integrate_energies', False) and ansys_tool in {'hfss', 'eigenmode'}
 
     # Create energy integral terms for each object
     total_solids = []
-    mer_total = []
     epsilon_0 = 8.8541878128e-12
     for lname, ldata in layers.items():
         material = ldata.get('material', None)
@@ -453,8 +452,6 @@ if data.get('integrate_energies', False) and ansys_tool in {'hfss', 'eigenmode'}
 
         if thickness != 0.0 and material is not None:
             total_solids.append("E_{}".format(lname))
-            if 'mer' in lname:
-                mer_total.append("E_{}".format(lname))
 
     # Create term for total energy
     for n, tname in enumerate(total_solids):
@@ -463,12 +460,18 @@ if data.get('integrate_energies', False) and ansys_tool in {'hfss', 'eigenmode'}
             oModule.CalcOp("+")
     oModule.AddNamedExpression("total_energy", "Fields")
 
-    # Create term for mer total energy
-    for n, tname in enumerate(mer_total):
-        oModule.CopyNamedExprToStack(tname)
-        if n > 0:
-            oModule.CalcOp("+")
-    oModule.AddNamedExpression("total_mer_energy", "Fields")
+    # Create term for partition region total energy
+    partition_regions = data.get('parameters', dict()).get('partition_regions', [])
+    part_names = {part.get('name', 'part') for part in partition_regions}
+    for part_name in part_names:
+        term_in_stack = False
+        for tname in total_solids:
+            if part_name in tname and not any(n in tname for n in part_names if part_name != n and part_name in n):
+                oModule.CopyNamedExprToStack(tname)
+                if term_in_stack:
+                    oModule.CalcOp("+")
+                term_in_stack = True
+        oModule.AddNamedExpression("total_{}_energy".format(part_name), "Fields")
 
 # Manual mesh refinement
 for mesh_layer, mesh_length in mesh_size.items():
