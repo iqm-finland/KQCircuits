@@ -63,7 +63,7 @@ if __name__ == "__main__":
         copyright_template = Template(template_file.read())
 
     files_without_copyright = file_paths_2
-    for copyright_year in [2021, 2022, 2023]:
+    for copyright_year in [2021, 2022, 2023, 2024]:
         copyright_string = copyright_template.substitute(year=copyright_year)
         files_without_copyright = [file for file in files_without_copyright
                                    if copyright_string not in open(file, encoding="utf-8").read()]
