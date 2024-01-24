@@ -26,6 +26,8 @@ test:
     - master
     - merge_requests
     - tags
+  except:
+    - schedules
 
 static_analysis:
   stage: test
@@ -46,6 +48,8 @@ static_analysis:
     - master
     - merge_requests
     - tags
+  except:
+    - schedules
 
 shell_check:
   stage: test
@@ -55,6 +59,8 @@ shell_check:
     - master
     - merge_requests
     - tags
+  except:
+    - schedules
 
 layer_properties:
   stage: test
@@ -64,6 +70,8 @@ layer_properties:
     - master
     - merge_requests
     - tags
+  except:
+    - schedules
 
 verify_documentation:
   stage: test
@@ -81,6 +89,8 @@ verify_documentation:
     when: always
   only:
     - merge_requests
+  except:
+    - schedules
 
 check_package_building:
   stage: test
@@ -91,6 +101,8 @@ check_package_building:
     - python3 -m twine check dist/*
   only:
     - merge_requests
+  except:
+    - schedules
 
 check_confidential_strings:
   stage: test
@@ -107,6 +119,8 @@ check_confidential_strings:
       - merge_requests
     variables:
       - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"
+  except:
+    - schedules
 
 check_copyright_headers:
   stage: test
@@ -118,6 +132,8 @@ check_copyright_headers:
       - merge_requests
     variables:
       - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"
+  except:
+    - schedules
 
 check_license:
   stage: test
@@ -128,6 +144,8 @@ check_license:
       - merge_requests
     variables:
       - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"
+  except:
+    - schedules
 
 pages:
   stage: deploy
@@ -142,6 +160,8 @@ pages:
     - public
   only:
     - master
+  except:
+    - schedules
 
 .kaniko:
   image:
@@ -172,6 +192,8 @@ deploy_image:
   only:
     - master
     - tags
+  except:
+    - schedules
 
 test_image:
   extends: .kaniko
@@ -192,3 +214,18 @@ test_image:
       - merge_requests
     variables:
       - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"
+  except:
+    - schedules
+
+copy_github_issues:
+  stage: test
+  before_script:
+    - pip install requests
+  script:
+    - python ci/copy_github_issues.py $ACCESS_TOKEN ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/issues $LABELS
+  only:
+    - schedules
+  except:
+    - master
+    - tags
+    - merge_requests
