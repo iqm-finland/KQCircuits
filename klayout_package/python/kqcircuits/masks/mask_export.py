@@ -35,6 +35,7 @@ from kqcircuits.util.geometry_helper import circle_polygon
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
 from kqcircuits.util.netlist_extraction import export_cell_netlist
 from kqcircuits.util.export_helper import export_drc_report
+from kqcircuits.util.replace_junctions import extract_junctions, get_tuned_junction_json
 
 
 def export_mask_set(mask_set, skip_extras=False):
@@ -67,6 +68,8 @@ def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc, alt_netlists
     dummy_cell = layout.create_cell(chip_name)
     dummy_cell.insert(pya.DCellInstArray(chip_cell.cell_index(), pya.DTrans()))
     _export_cell(chip_dir / f"{chip_name}_with_pcells.oas", dummy_cell, "all")
+    if not skip_extras:
+        export_junction_parameters(dummy_cell, chip_dir / f"{chip_name}_junction_parameters.json")
     dummy_cell.delete()
     static_cell = layout.cell(layout.convert_cell_to_static(chip_cell.cell_index()))
 
@@ -383,3 +386,13 @@ def _get_directory(directory):
 
 def get_mask_layout_full_name(mask_set, mask_layout):
     return f"{mask_set.name}_v{mask_set.version}-{mask_layout.face_id}{mask_layout.extra_id}"
+
+
+def export_junction_parameters(cell, path):
+    """Exports a json file containing all parameter values for each junction in the given chip (as cell)"""
+    junctions = extract_junctions(cell, {})
+    if len(junctions) > 0:
+        params_json = json.dumps(get_tuned_junction_json(junctions), indent=2)
+        with open(path, 'w') as file:
+            file.write(params_json)
+        logging.info(f"Exported tunable junction parameters to {path}")

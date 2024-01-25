@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <klayout-macro>
- <description>Probepoints in top cell to json</description>
+ <description>Exports junctions parameters</description>
  <version/>
  <category>pymacros</category>
  <prolog/>
@@ -16,7 +16,7 @@
  <interpreter>python</interpreter>
  <dsl-interpreter-name/>
  <text># This code is part of KQCircuits
-# Copyright (C) 2021 IQM Finland Oy
+# Copyright (C) 2024 IQM Finland Oy
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 # License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
@@ -33,28 +33,35 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-"""Prints the probepoints of a chip as JSON. Assumes that a single chip exists in the top cell."""
+"""Exports all current junnction parameter values for each junction in the PCell.
+
+Assumes that a single chip exists in the top cell, and it is a PCell.
+Results of this macro can be used to tune junctions for cells without PCell data.
+"""
 
 import json
 from kqcircuits.klayout_view import KLayoutView
-from kqcircuits.util.export_helper import generate_probepoints_json
+from kqcircuits.util.replace_junctions import extract_junctions, get_tuned_junction_json
 
 top_cell = KLayoutView(current=True).active_cell
 
-### Set file location, or leave empty to get probepoint JSON in the output
+### Set file location, or leave empty to get tuned junction JSON in the output
 FILE_LOCATION = ""
-### Action
-# See API docs on how to best call generate_probepoints_json for your purposes
-probepoint_json = generate_probepoints_json(top_cell,
-    face='1t1',
-    references=['nw'],
-    contact=None)
-json_str = json.dumps(probepoint_json, indent=2)
 
-if FILE_LOCATION:
-    with open(FILE_LOCATION, 'w') as file:
+try:
+  junctions = extract_junctions(top_cell, {})
+  if len(junctions) &gt; 0:
+    json_str = json.dumps(get_tuned_junction_json(junctions), indent=2)
+
+    if FILE_LOCATION:
+      with open(FILE_LOCATION, 'w') as file:
         file.write(json_str)
-else:
-    print(json_str)
+        print(f"Wrote junction parameters to {FILE_LOCATION}")
+    else:
+      print(json_str)
+  else:
+    print("No junctions detected")
+except ValueError:
+  raise ValueError("For this macro to work, the active layout must contain a chip PCell, for which PCell parameters are present")
 </text>
 </klayout-macro>

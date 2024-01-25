@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description>Exports junctions in given chip with tuned parameters</description>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <priority>0</priority>
+ <shortcut/>
+ <show-in-menu>false</show-in-menu>
+ <group-name/>
+ <menu-path/>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text># This code is part of KQCircuits
+# Copyright (C) 2024 IQM Finland Oy
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
+# License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program. If not, see
+# https://www.gnu.org/licenses/gpl-3.0.html.
+#
+# The software distribution should follow IQM trademark policy for open-source software
+# (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
+# for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
+
+
+"""Exports junctions of a chip to a separate file. Parameters of individual junctions may be tuned.
+
+Assumes that a single chip exists in the top cell.
+Will export a new .oas file in TMP path containing junctions of original cell,
+with possibly tuned junction parameters, and a "base_metal_gap" layer for reference.
+This new layout will also be opened in current KLayout session in new layout.
+Macro can be used on cells with or without PCell data.
+In the latter case the `tuned_junction_parameters` must include a value for every
+junction parameter of every junction in the cell.
+You can use "export_junction_parameters" macro on a PCell to get full listing of parameters,
+to later reuse on cells without PCell data.
+
+See kqcircuits.util.replace_junctions API docs for more technical details.
+"""
+
+import json
+from kqcircuits.defaults import TMP_PATH
+from kqcircuits.klayout_view import KLayoutView
+from kqcircuits.pya_resolver import pya
+from kqcircuits.util.replace_junctions import extract_junctions, place_junctions, copy_one_layer_of_cell
+
+top_cell = KLayoutView(current=True).active_cell
+
+# If there are too many parameters to tune (for example tuning junctions for file without PCells),
+# these can be written in a separate .json file and read from the macro
+EXTERNAL_TUNE_FILE = ""
+
+if EXTERNAL_TUNE_FILE:
+  with open(EXTERNAL_TUNE_FILE) as f:
+    tuned_junction_parameters = json.load(f)
+else:
+  # Or tuned parameters can be typed up here by hand
+  tuned_junction_parameters = {}
+  # Example: exaggerate junction width for qubit "qb_1" for "Single Xmons" PCell
+  # tuned_junction_parameters = {"qb_1": {"squid": {"junction_width": 2.0}}}
+
+junctions = extract_junctions(top_cell, tuned_junction_parameters)
+clean_cell_name = top_cell.basic_name().replace(" ", "").replace("*", "").split("$")[0]
+exported_file = str(TMP_PATH / f'tuned_junctions_{clean_cell_name}.oas')
+copy_one_layer_of_cell(exported_file, top_cell, junctions, "base_metal_gap")
+
+print(f"Extracted and tuned {len(junctions)} junctions")
+new_view = KLayoutView()
+new_view.layout.clear()
+new_view.layout.read(exported_file)
+top_cell = new_view.layout.top_cells()[-1]
+top_cell.flatten(True)
+place_junctions(top_cell, junctions)
+new_view.focus(top_cell)
+
+print(f"Saving tuned junctions to {exported_file}")
+svopt = pya.SaveLayoutOptions()
+svopt.set_format_from_filename(exported_file)
+new_view.layout.write(exported_file, svopt)
+</text>
+</klayout-macro>
