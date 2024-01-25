@@ -31,12 +31,6 @@ that you want to test for that method. For example, continuing to use
 would have a ``test_load_library.py`` module which may contain test cases such as
 ``test_invalid_name``.
 
-If your module contains a class, using the ``validate`` method in the ``Validator`` class
-within :git_url:`parameter_helper.py <klayout_package/python/kqcircuits/util/parameter_helper.py>`, then you would have a ``tests/util/parameter_helper`` folder
-and within it you would have a :git_url:`test_validator_validate.py <tests/util/parameter_helper/test_validator_validate.py>` module which may contain test
-cases such as ``test_type_boolean``. In this case, we form the test module name by
-a combination of the class and method names.
-
 The above approach helps us organize our test cases into files which can easily be located
 and do not get too large, while also producing pytest reports which are easy to understand.
 Unfortunately, the repetitive ``test`` prefixes are conventional and needed for pytest to find
