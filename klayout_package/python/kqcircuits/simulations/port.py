@@ -84,7 +84,7 @@ class EdgePort(Port):
     """Data structure for ports at the edge of the simulation area."""
     def __init__(self, number: int, signal_location: DPoint,
                  resistance: float = 50, reactance: float = 0, inductance: float = 0, capacitance: float = 0,
-                 deembed_len: float = None, face: int = 0, junction: bool = False):
+                 deembed_len: float = None, face: int = 0, junction: bool = False, size=None):
         """
         Args:
             number: Port number.
@@ -96,7 +96,10 @@ class EdgePort(Port):
             deembed_len: Port de-embedding length. Given in simulation units, usually microns (:math:`\\text{um}`).
             face: Integer-valued face index for the port.
             junction: Whether this port models a SQUID/Junction. Used in EPR calculations.
+            size: Width and height of the port to override Simulation.port_size. Optionally, the size can be set as a
+                list specifying the extensions from the center of the port to left, right, down and up, respectively.
         """
         super().__init__(number, resistance, reactance, inductance, capacitance, face, junction)
         self.signal_location = signal_location
         self.deembed_len = deembed_len
+        self.size = size

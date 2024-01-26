@@ -859,8 +859,8 @@ class Simulation:
                 # Define a 3D polygon for each port
                 if isinstance(port, EdgePort):
 
-                    ps = (simulation.port_size if isinstance(simulation.port_size, list)
-                          else [simulation.port_size / 2] * 4)
+                    port_size = simulation.port_size if port.size is None else port.size
+                    ps = port_size if isinstance(port_size, list) else [port_size / 2] * 4
 
                     port_z0 = max(z[face_id][0] - ps[2], z[0])
                     port_z1 = min(z[face_id][0] + ps[3], z[-1])
