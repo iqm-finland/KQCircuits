@@ -275,8 +275,8 @@ class MaskLayout:
                 if inst_cell.name.startswith("ChipLabels"):
                     labels_cells[submask_layout] = inst_cell
                     break
-
-        # find all unique x and y coords of chips and place them in the corresponding keys in chips_dict
+        # find all unique x and y coords of center points of chip bboxes and place them in the corresponding keys
+        # in chips_dict. These x and y coords are not used for anything else but to determine the content of labels
         chips_dict = {}  # {(pos_x, pos_y): chip_name, chip_pos (in submask coordinates), chip_inst, mask_layout}
         xvals = set()
         yvals = set()
@@ -284,19 +284,21 @@ class MaskLayout:
         # for each unique x- and y-coordinate, round the coordinates to the smallest chip dimensions.
         # This still guarantees that each chip gets unique chip position label, but rows that are closer
         # together than the smallest chip height will be assigned the same letter.
-        unit_x = min(bbox.p2.x - bbox.p1.x for _,_,bbox,_,_ in self.added_chips)
-        unit_y = min(bbox.p2.y - bbox.p1.y for _,_,bbox,_,_ in self.added_chips)
+        unit_x = round(min(bbox.p2.x - bbox.p1.x for _,_,bbox,_,_ in self.added_chips))
+        unit_y = round(min(bbox.p2.y - bbox.p1.y for _,_,bbox,_,_ in self.added_chips))
         for chip_name, pos, bbox, dtrans, position_label in self.added_chips:
-            pos_x = math.floor(pos.x / unit_x) * unit_x
-            pos_y = math.floor(pos.y / unit_y) * unit_y
+            center_point = dtrans * bbox.center()
+            pos_x = math.floor(round(center_point.x) / unit_x) * unit_x
+            pos_y = math.floor(round(center_point.y) / unit_y) * unit_y
             if not position_label:
                 xvals.add(pos_x)
                 yvals.add(pos_y)
             chips_dict[(pos_x, pos_y)] = chip_name, pos, bbox, dtrans, position_label, self
         for submask_layout, submask_pos in self.submasks:
             for chip_name, pos, bbox, dtrans, position_label in submask_layout.added_chips:
-                pos_x = math.floor((pos + submask_pos).x / unit_x) * unit_x
-                pos_y = math.floor((pos + submask_pos).y / unit_y) * unit_y
+                center_point = dtrans * bbox.center()
+                pos_x = math.floor(round((center_point + submask_pos).x) / unit_x) * unit_x
+                pos_y = math.floor(round((center_point + submask_pos).y) / unit_y) * unit_y
                 if not position_label:
                     xvals.add(pos_x)
                     yvals.add(pos_y)
