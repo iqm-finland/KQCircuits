@@ -116,7 +116,7 @@ class DoublePads(Qubit):
             (self.ground_gap_r + self.margin) / self.layout.dbu,
             self.n
         )
-        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(protection_region)
+        self.add_protection(protection_region)
 
         # Coupler port
         self.add_port("cplr", pya.DPoint(0, float(self.ground_gap[1]) / 2),

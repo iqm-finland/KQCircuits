@@ -272,7 +272,7 @@ class Manhattan(Squid):
         w = self.cell.dbbox().width()
         h = self.cell.dbbox().height()
         protection = pya.DBox(-w / 2 - self.margin, -2 - self.margin, w / 2 + self.margin, h - 2 + self.margin)
-        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(protection)
+        self.add_protection(protection)
 
     def _round_corners_and_append(self, polygon, polygon_list, rounding_params):
         """Rounds the corners of the polygon, converts it to integer coordinates, and adds it to the polygon list."""

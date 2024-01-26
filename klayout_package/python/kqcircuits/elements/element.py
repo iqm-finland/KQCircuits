@@ -110,7 +110,9 @@ class Element(pya.PCellDeclarationHelper):
     margin = Param(pdt.TypeDouble, "Margin of the protection layer", 5, unit="μm")
     face_ids = Param(pdt.TypeList, "Chip face IDs list", ["1t1", "2b1", "1b1", "2t1"])
     display_name = Param(pdt.TypeString, "Name displayed in GUI (empty for default)", "")
-    protect_opposite_face = Param(pdt.TypeBoolean, "Add opposite face protection too", False)
+    protect_opposite_face = Param(pdt.TypeBoolean, "Add ground grid avoidance on opposing face", False,
+                                  docstring="This applies only on signal carrying elements that typically include some "
+                                            "metal between gaps.")
     opposing_face_id_groups = Param(pdt.TypeList, "Opposing face ID groups (list of lists)", [["1t1", "2b1"]],
                                     hidden=True)
 
@@ -520,7 +522,9 @@ class Element(pya.PCellDeclarationHelper):
         raise ValueError(error_msg)
 
     def add_protection(self, shape, face_id=0):
-        """Add ground grid protection shape
+        """Add ground grid avoidance shape on given face (and on opposing face if self.protect_opposite_face is True).
+        Use this function to protect signal carrying elements that typically include some metal between gaps.
+        Do not use this function with pure flip-chip connectors, TSVs, or airbridges that doesn't include metal gaps.
 
         Args:
              shape: The shape (Region, DPolygon, etc.) to add to ground_grid_avoidance layer

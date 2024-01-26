@@ -82,7 +82,7 @@ class ConcentricTransmon(Qubit):
 
         # Protection region from the ground grid
         region_protection = self._get_protection_region(ground_region)
-        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(region_protection)
+        self.add_protection(region_protection)
 
         # Couplers and driveline ports
         self._add_ports()

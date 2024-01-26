@@ -42,7 +42,7 @@ class LauncherDC(Element):
 
         offset = (self.width + extra_width)/2 + self.margin
         shape = pya.Region((pya.DBox(-offset, -offset, offset, offset)).to_itype(self.layout.dbu))
-        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(shape)
+        self.add_protection(shape)
 
         # add reference point
         self.add_port("", pya.DPoint(0, 0))

@@ -65,4 +65,4 @@ class Sim(Junction):
         w = self.cell.dbbox().width()
         h = self.cell.dbbox().height()
         protection = pya.DBox(-w / 2 - self.margin, - self.margin, w / 2 + self.margin, h + self.margin)
-        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(trans*protection)
+        self.add_protection(trans * protection)

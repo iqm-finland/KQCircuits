@@ -58,7 +58,7 @@ class Fluxline(Element):
         # protection
         protection = pya.Region([p.to_itype(self.layout.dbu) for p in [right_gap, left_gap]]
                                 ).bbox().enlarged(self.margin/self.layout.dbu, self.margin/self.layout.dbu)
-        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(pya.Polygon(protection))
+        self.add_protection(pya.Polygon(protection))
 
     def _add_fluxline_refpoints(self, port_ref):
         """Adds refpoints for "port_flux" and "port_flux_corner".

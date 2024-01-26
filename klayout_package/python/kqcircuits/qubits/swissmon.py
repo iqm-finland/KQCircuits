@@ -124,8 +124,7 @@ class Swissmon(Qubit):
         if l > 0:
             protection = pya.DBox(-g - w - b - self.margin, -l - b - self.margin, g + w + b + self.margin,
                                   b + self.margin)
-            self.cell.shapes(self.get_layer("ground_grid_avoidance")).\
-                insert(protection.transformed((rotation * transf)))
+            self.add_protection(protection.transformed((rotation * transf)))
 
         # add ref point
         port_ref = pya.DPoint(0, b)
@@ -191,7 +190,7 @@ class Swissmon(Qubit):
             p + pya.DVector(math.copysign(max([sw, sn, se, ss]) + self.margin, p.x),
             math.copysign(max([sw, sn, se, ss]) + self.margin, p.y)) for p in cross_gap_points
         ])
-        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(cross_protection)
+        self.add_protection(cross_protection)
 
         # Probepoint
         probepoint = pya.DPoint(0, 0)
