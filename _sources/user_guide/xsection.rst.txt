@@ -5,6 +5,9 @@ Vertical cross-section images of layouts can be created using the
 `XSection plugin <https://klayoutmatthias.github.io/xsection/>`_ for KLayout.
 To use it, install the XSection plugin from ``KLayout -> Tools -> Manage packages``.
 
+.. note::
+   XSection only works with the default KLayout setup, secondary environments are not yet supported.
+
 KLayout GUI XSection tool
 -------------------------
 
