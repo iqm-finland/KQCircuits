@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Ansys export &mdash; KQCircuits  documentation</title>
+  <title>Export functions &mdash; KQCircuits  documentation</title>
   
 
   
@@ -39,7 +39,6 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -47,8 +46,8 @@
     <link rel="author" title="About these documents" href="../../about.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Sonnet export" href="sonnet_export.html" />
-    <link rel="prev" title="Simulation export settings" href="simulation_settings.html" /> 
+    <link rel="next" title="Simulation features" href="simulation_features.html" />
+    <link rel="prev" title="Simulation objects" href="simulation_objects.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -141,7 +140,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../python_workflow.html#refpoints">Refpoints</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../python_workflow.html#kqcircuit-s-layers">KQCircuit’s Layers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../python_workflow.html#kqcircuits-layers">KQCircuits’ Layers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../python_workflow.html#faces">Faces</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../python_workflow.html#layer-configuration-files">Layer configuration files</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../python_workflow.html#adding-a-new-face">Adding a new face</a></li>
@@ -175,20 +174,27 @@
 </ul>
 </li>
 <li class="toctree-l2 current"><a class="reference internal" href="../simulations.html">External simulation tools</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="simulation_object.html">Creating a simulation object</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="simulation_object.html#simulation-box">Simulation box</a></li>
-<li class="toctree-l4"><a class="reference internal" href="simulation_object.html#ports">Ports</a></li>
-<li class="toctree-l4"><a class="reference internal" href="simulation_object.html#example-simulation">Example simulation</a></li>
-<li class="toctree-l4"><a class="reference internal" href="simulation_object.html#simulation-scripts">Simulation scripts</a></li>
-<li class="toctree-l4"><a class="reference internal" href="simulation_object.html#geometry-from-klayout-gui">Geometry from Klayout GUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="simulation_objects.html">Simulation objects</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="simulation_objects.html#the-simulation-class">The Simulation class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simulation_objects.html#simulation-subclass">Simulation subclass</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simulation_objects.html#geometry-sweeps">Geometry sweeps</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="simulation_settings.html">Simulation export settings</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Ansys export</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#ansys-scripts">Ansys scripts</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Export functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ansys-export">Ansys export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#elmer-export">Elmer export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#geometry-from-klayout-gui">Geometry from Klayout GUI</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="sonnet_export.html">Sonnet export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="simulation_features.html">Simulation features</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="simulation_features.html#s-parameter-matrix">S-parameter matrix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simulation_features.html#capacitance-matrix">Capacitance matrix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simulation_features.html#eigenmode">Eigenmode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simulation_features.html#energy-integrals-and-participation-ratio">Energy integrals and participation ratio</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simulation_features.html#cross-sectional-simulations">Cross-sectional simulations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simulation_features.html#pyepr">pyEPR</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="export_and_run.html">Run and export in one line</a></li>
 <li class="toctree-l3"><a class="reference internal" href="elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
@@ -229,11 +235,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../../developer/standalone.html">KLayout Standalone Usage</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../developer/standalone.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../developer/standalone.html#installation">Installation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/standalone.html#standard-not-secure-installation">Standard, Not Secure Installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/standalone.html#reproducible-secure-installation">Reproducible, Secure Installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../developer/standalone.html#pypi-installation">PyPI Installation</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../developer/standalone.html#usage">Usage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../developer/standalone.html#jupyter-notebook-usage">Jupyter notebook usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/standalone.html#updating-the-required-dependencies">Updating the required dependencies</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../developer/containers.html">Containers</a><ul>
@@ -443,7 +452,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.merge.html">kqcircuits.util.merge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.netlist_extraction.html">kqcircuits.util.netlist_extraction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.plugin_startup.html">kqcircuits.util.plugin_startup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.refpoints.html">kqcircuits.util.refpoints</a></li>
@@ -456,6 +464,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../api/kqcircuits.klayout_view.html">kqcircuits.klayout_view</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/kqcircuits.layer_cluster.html">kqcircuits.layer_cluster</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/kqcircuits.pya_resolver.html">kqcircuits.pya_resolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/kqcircuits.run.html">kqcircuits.run</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/kqcircuits.html#module-kqcircuits">Module contents</a></li>
 </ul>
 </li>
@@ -515,14 +524,14 @@
         
           <li><a href="../simulations.html">External simulation tools</a> &raquo;</li>
         
-      <li>Ansys export</li>
+      <li>Export functions</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
             
-              <a href="https://github.com/iqm-finland/KQCircuits/blob/main/docs/user_guide/simulation/ansys_export.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/iqm-finland/KQCircuits/blob/main/docs/user_guide/simulation/simulation_scripts.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -536,94 +545,135 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="ansys-export">
-<h1>Ansys export<a class="headerlink" href="#ansys-export" title="Permalink to this headline">¶</a></h1>
-<p>Once the <code class="docutils literal notranslate"><span class="pre">simulation</span></code> object is created, call function <code class="docutils literal notranslate"><span class="pre">export_ansys_json</span></code> to export the geometry as GDSII file and meta-data in json format. Parameter <code class="docutils literal notranslate"><span class="pre">ansys_tool</span></code> determines whether to use HFSS (‘hfss’) or Q3D Extractor (‘q3d’).
-HFSS eigenmode simulations are done with ‘eigenmode’, this is used for <a class="reference internal" href="#py-epr"><span class="std std-ref">pyEPR</span></a> as well:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.ansys.ansys_export</span> <span class="kn">import</span> <span class="n">export_ansys_json</span><span class="p">,</span> <span class="n">copy_ansys_scripts_to_directory</span><span class="p">,</span> <span class="n">export_ansys_bat</span><span class="p">,</span> <span class="n">export_ansys</span>
-<span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;C:</span><span class="se">\\</span><span class="s2">Your</span><span class="se">\\</span><span class="s2">Path</span><span class="se">\\</span><span class="s2">Here</span><span class="se">\\</span><span class="s2">&quot;</span>
-<span class="n">json</span> <span class="o">=</span> <span class="n">export_ansys_json</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">ansys_tool</span><span class="o">=</span><span class="s1">&#39;hfss&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Performing simulations requires Ansys-scripts, which are located at <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys">scripts/simulations/ansys/</a>. Usually, it’s convenient to copy this folder to the export path by calling <code class="docutils literal notranslate"><span class="pre">copy_ansys_scripts_to_directory</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">copy_ansys_scripts_to_directory</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>You can create a Windows batch file for running multiple simulations in a row by calling function <code class="docutils literal notranslate"><span class="pre">export_ansys_bat</span></code>. The first argument is a list of exported json filenames:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bat</span> <span class="o">=</span> <span class="n">export_ansys_bat</span><span class="p">([</span><span class="n">json</span><span class="p">],</span> <span class="n">path</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Alternatively, you can call <code class="docutils literal notranslate"><span class="pre">export_ansys</span></code> to cover last three steps. This exports multiple simulations that are stored in a list, copies the Ansys-scripts into the folder, and creates the Windows batch file:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bat</span> <span class="o">=</span> <span class="n">export_ansys</span><span class="p">([</span><span class="n">simulation</span><span class="p">],</span> <span class="n">path</span><span class="p">,</span> <span class="n">ansys_tool</span><span class="o">=</span><span class="s1">&#39;hfss&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="section" id="ansys-scripts">
-<h2>Ansys scripts<a class="headerlink" href="#ansys-scripts" title="Permalink to this headline">¶</a></h2>
-<p>The folder <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys">scripts/simulations/ansys/</a> contains several IronPython scripts to run simulations in Ansys Electronics Desktop. Scripts support HFSS and Q3D Extractor frameworks.</p>
-<p>The scripts are developed and tested with Ansys Electronic Desktop 2022 R2 on Windows x64.</p>
-<p>The primary use case is to estimate capacitive couplings between different elements in the layout, where each element
-of interest has a port in the simulation. The capacitances are represented as a matrix, where the <em>Cij</em> is the
-capacitance between two ports <em>i</em> and <em>j</em>, and <em>Cii</em> is the capacitance between port <em>i</em> and ground.</p>
-<div class="section" id="main-scripts">
-<h3>Main scripts<a class="headerlink" href="#main-scripts" title="Permalink to this headline">¶</a></h3>
-<ul>
-<li><p><a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/import_simulation_geometry.py">import_simulation_geometry.py</a></p>
-<p>Argument: path to json file exported by <code class="docutils literal notranslate"><span class="pre">export_ansys_json</span></code>.</p>
-<p>Creates a new project, imports the geometry, defines ports/nets and materials, and sets up the analysis setup.</p>
-</li>
-<li><p><a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/create_capacitive_pi_model.py">create_capacitive_pi_model.py</a></p>
-<p>No argument.</p>
-<p>Adds solution variables and reports for a PI model between all ports/nets in the current design.</p>
-<p>The variables <code class="docutils literal notranslate"><span class="pre">yy_i_j</span></code> give the scalar admittance between port <code class="docutils literal notranslate"><span class="pre">i</span></code> and <code class="docutils literal notranslate"><span class="pre">j</span></code>, or the admittance from port <code class="docutils literal notranslate"><span class="pre">i</span></code> to
-ground if <code class="docutils literal notranslate"><span class="pre">i==j</span></code>. The <code class="docutils literal notranslate"><span class="pre">yy</span></code>-variables are created only in HFSS.</p>
-<p>Similarly, the variables <code class="docutils literal notranslate"><span class="pre">C_i_j</span></code> give the capacitance between ports and from ports to ground,
-assuming a purely capacitive model. This assumption is valid as long as the resulting <code class="docutils literal notranslate"><span class="pre">C_i_j</span></code> are constant over frequency.</p>
-</li>
-<li><p><a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/export_solution_data.py">export_solution_data.py</a></p>
-<p>No argument.</p>
-<p>Exports data from the solutions. <em>projectname_CMatrix.txt</em> contains the elements <code class="docutils literal notranslate"><span class="pre">C_i_j</span></code> in fF (at 1 GHz in HFSS).
-<em>projectname_results.json</em> contains all <code class="docutils literal notranslate"><span class="pre">C_i_j</span></code> and <code class="docutils literal notranslate"><span class="pre">yy_i_j</span></code> elements for all frequencies in the solution.
-In case of HFSS, <em>projectname_SMatrix.s2p</em> contains the S-parameters.</p>
-</li>
-<li><p><a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/import_and_simulate.py">import_and_simulate.py</a></p>
-<p>Argument: path to json file exported by <code class="docutils literal notranslate"><span class="pre">export_ansys_json</span></code>.</p>
-<p>Performs the full simulation sequence including running the three other scripts, saving the project, and running the simulation.</p>
-</li>
+  <div class="section" id="export-functions">
+<h1>Export functions<a class="headerlink" href="#export-functions" title="Permalink to this headline">¶</a></h1>
+<p>The export functions take the list of simulation objects, the simulation folder path, and several tool-specific
+arguments to produce files and scripts to run simulations in an external simulation software.
+For the details of the tool-specific arguments, please see the API of each function:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys" title="kqcircuits.simulations.export.ansys.ansys_export.export_ansys"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_ansys()</span></code></a>,</p></li>
+<li><p><a class="reference internal" href="../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer" title="kqcircuits.simulations.export.elmer.elmer_export.export_elmer"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_elmer()</span></code></a>,</p></li>
+<li><p><a class="reference internal" href="../../api/kqcircuits.simulations.export.sonnet.sonnet_export.html#kqcircuits.simulations.export.sonnet.sonnet_export.export_sonnet" title="kqcircuits.simulations.export.sonnet.sonnet_export.export_sonnet"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_sonnet()</span></code></a>.</p></li>
 </ul>
-<p>Additional scripts for use cases other than capacitive coupling exist.
-These are enabled in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/import_and_simulate.py">import_and_simulate.py</a> with a list of strings as parameters to <code class="docutils literal notranslate"><span class="pre">export_ansys</span></code>,
-e.g., to enable exporting Time Domain Reflectometry (TDR) and non-de-embedded Touchstone (<code class="docutils literal notranslate"><span class="pre">.sNp</span></code>) files:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export_ansys</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">simulation_flags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;tdr&#39;</span><span class="p">,</span> <span class="s1">&#39;snp_no_deembed&#39;</span><span class="p">])</span>
+</div></blockquote>
+<div class="section" id="ansys-export">
+<h2>Ansys export<a class="headerlink" href="#ansys-export" title="Permalink to this headline">¶</a></h2>
+<p>Before exporting the Ansys simulations make sure that the <code class="docutils literal notranslate"><span class="pre">ANSYS_EXECUTABLE</span></code> parameter in
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/defaults.py">kqcircuits/defaults.py</a> matches with your Ansys version and
+installation location.
+The Ansys simulations are developed and tested with both Windows and Linux installation of the latest
+<a class="reference external" href="https://www.ansys.com/products/electronics">Ansys Electronics desktop</a>.</p>
+<p>The following example script shows a typical usage of the
+<a class="reference internal" href="../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys" title="kqcircuits.simulations.export.ansys.ansys_export.export_ansys"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_ansys()</span></code></a> function.
+The script generates simulation subclass, creates a simulation object, exports Ansys scripts into a directory, and
+finally shows the simulation geometries in Klayout viewer.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kqcircuits.qubits.swissmon</span> <span class="kn">import</span> <span class="n">Swissmon</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.simulations.single_element_simulation</span> <span class="kn">import</span> <span class="n">get_single_element_sim_class</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.export_helper</span> <span class="kn">import</span> <span class="n">get_active_or_new_layout</span><span class="p">,</span> <span class="n">create_or_empty_tmp_directory</span><span class="p">,</span> \
+    <span class="n">open_with_klayout_or_default_application</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.simulation_export</span> <span class="kn">import</span> <span class="n">export_simulation_oas</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.ansys.ansys_export</span> <span class="kn">import</span> <span class="n">export_ansys</span>
+
+<span class="n">sim_class</span> <span class="o">=</span> <span class="n">get_single_element_sim_class</span><span class="p">(</span><span class="n">Swissmon</span><span class="p">)</span>  <span class="c1"># Builds a simulation class for Swissmon</span>
+
+<span class="n">layout</span> <span class="o">=</span> <span class="n">get_active_or_new_layout</span><span class="p">()</span>
+<span class="n">simulations</span> <span class="o">=</span> <span class="p">[</span><span class="n">sim_class</span><span class="p">(</span><span class="n">layout</span><span class="p">)]</span>  <span class="c1"># Generate the simulation with default parameters</span>
+
+<span class="c1"># Create an empty folder for simulations in KQCircuits/tmp/swissmon_simulation_output</span>
+<span class="n">dir_path</span> <span class="o">=</span> <span class="n">create_or_empty_tmp_directory</span><span class="p">(</span><span class="s2">&quot;swissmon_simulation_output&quot;</span><span class="p">)</span>
+
+<span class="c1"># Export simulations for external simulation software</span>
+<span class="n">export_parameters</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="n">dir_path</span><span class="p">,</span>  <span class="c1"># path for the directory is the only mandatory parameter for the export functions</span>
+<span class="p">}</span>
+<span class="n">export_ansys</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="o">**</span><span class="n">export_parameters</span><span class="p">)</span>
+
+<span class="c1"># Export the simulation geometries as OAS file and view in Klayout (optional)</span>
+<span class="n">open_with_klayout_or_default_application</span><span class="p">(</span><span class="n">export_simulation_oas</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="n">dir_path</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>The optional scripts are listed below.</p>
-</div>
-<div class="section" id="optional-scripts">
-<h3>Optional scripts<a class="headerlink" href="#optional-scripts" title="Permalink to this headline">¶</a></h3>
-<ul>
-<li><p><a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/export_snp_no_deembed.py">export_snp_no_deembed.py</a></p>
-<p>No argument.</p>
-<p>Disables de-embedding and exports the <span class="math notranslate nohighlight">\(S\)</span>-matrix network data to a Touchstone (<code class="docutils literal notranslate"><span class="pre">.sNp</span></code>) file.</p>
-<p>Works only in HFSS.</p>
-</li>
-<li><p><a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/export_tdr.py">export_tdr.py</a></p>
-<p>No argument.</p>
-<p>Creates a Time Domain Reflectometry report using <code class="docutils literal notranslate"><span class="pre">TDRZt(port)</span></code> for all ports and exports the data to a <code class="docutils literal notranslate"><span class="pre">.csv</span></code>.</p>
-<p>Works only in HFSS.</p>
-</li>
+<p>The above script can be run as a regular python script, or in the KLayout macro editor.
+After the execution, the output files are written to a folder in the KQCircuits <code class="docutils literal notranslate"><span class="pre">tmp</span></code> directory.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">export_ansys</span></code> function produces files and scripts needed to run Ansys simulations.
+It calls internally the following functions:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.copy_ansys_scripts_to_directory" title="kqcircuits.simulations.export.ansys.ansys_export.copy_ansys_scripts_to_directory"><code class="xref py py-func docutils literal notranslate"><span class="pre">copy_ansys_scripts_to_directory()</span></code></a>, which copies the folder
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys">scripts/simulations/ansys/</a> into the simulation
+directory. The folder contains needed IronPython scripts to run simulations in Ansys Electronics Desktop.</p></li>
+<li><p><a class="reference internal" href="../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys_json" title="kqcircuits.simulations.export.ansys.ansys_export.export_ansys_json"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_ansys_json()</span></code></a>, which exports x-y-shapes as GDSII file
+and other meta-data in json format for each simulation.</p></li>
+<li><p><a class="reference internal" href="../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys_bat" title="kqcircuits.simulations.export.ansys.ansys_export.export_ansys_bat"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_ansys_bat()</span></code></a>, which creates a batch file for running
+all simulations in series.</p></li>
 </ul>
+<p>The simulations can be run by executing the <code class="docutils literal notranslate"><span class="pre">simulation.bat</span></code> script file.</p>
+<p>More examples of simulation scripts are available in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations">klayout_package/python/scripts/simulations</a>.</p>
 </div>
-<div class="section" id="pyepr">
-<span id="py-epr"></span><h3>pyEPR<a class="headerlink" href="#pyepr" title="Permalink to this headline">¶</a></h3>
-<p><a class="reference external" href="https://github.com/zlatko-minev/pyEPR">pyEPR</a> is supported for HFSS eigenmode simulations.
-A simulation needs to be created with <code class="docutils literal notranslate"><span class="pre">ansys_tool=eigenmode</span></code> and <code class="docutils literal notranslate"><span class="pre">simulation_flags=['pyepr']</span></code>.
-An example simulation is found at <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/xmons_direct_coupling_pyepr.py">klayout_package/python/scripts/simulations/xmons_direct_coupling_pyepr.py</a>.
-See <a class="reference external" href="https://github.com/iqm-finland/KQCircuits-Examples/blob/main/notebooks/pyEPR_example.ipynb">pyEPR_example.ipynb</a> in the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits-Examples/">KQCircuits-Examples</a> repository for an example on using pyEPR itself.</p>
-<div class="section" id="tls-limited-t-1-estimation-with-epr">
-<h4>TLS-limited <span class="math notranslate nohighlight">\(T_1\)</span> estimation with EPR<a class="headerlink" href="#tls-limited-t-1-estimation-with-epr" title="Permalink to this headline">¶</a></h4>
-<p>Do as in <cite>pyEPR</cite> but additionally include <code class="docutils literal notranslate"><span class="pre">intermediate_processing_command='python</span> <span class="pre">&quot;scripts/t1_estimate.py&quot;'</span></code>. This will run <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/t1_estimate.py">t1_estimate.py</a> between queued simulations and compute the electrical participations in the lossy interfaces. See <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/double_pads_sim.py">double_pads_sim.py</a> for an example and <cite>N. Savola, ‘Design and modelling of long-coherence qubits using energy participation ratios’, Master’s thesis, Aalto University, 2023</cite>, for details on the method.</p>
+<div class="section" id="elmer-export">
+<h2>Elmer export<a class="headerlink" href="#elmer-export" title="Permalink to this headline">¶</a></h2>
+<p>The Elmer simulations are developed and tested with Linux systems.
+Running the simulations requires installation of</p>
+<ul class="simple">
+<li><p>Gmsh python API <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">gmsh</span></code></p></li>
+<li><p>Elmerfem solver, see <a class="reference external" href="https://github.com/ElmerCSC/elmerfem">https://github.com/ElmerCSC/elmerfem</a></p></li>
+<li><p>Paraview <a class="reference external" href="https://www.paraview.org/">https://www.paraview.org/</a></p></li>
+</ul>
+<p>The usage of Elmer simulation export is very similar to Ansys export.
+In the above export script, the only change is to replace “ansys” with “elmer” in all occurrence, that is, in these
+two lines:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.elmer.elmer_export</span> <span class="kn">import</span> <span class="n">export_elmer</span>
+<span class="n">export_elmer</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="o">**</span><span class="n">export_parameters</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Similarly to <code class="docutils literal notranslate"><span class="pre">export_ansys</span></code>, the <code class="docutils literal notranslate"><span class="pre">export_elmer</span></code> calls internally the following functions:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.copy_elmer_scripts_to_directory" title="kqcircuits.simulations.export.elmer.elmer_export.copy_elmer_scripts_to_directory"><code class="xref py py-func docutils literal notranslate"><span class="pre">copy_elmer_scripts_to_directory()</span></code></a>, which copies the Gmsh and
+Elmer script folder
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/elmer/scripts">scripts/simulations/elmer/scripts/</a> into the
+simulation directory.</p></li>
+<li><p><a class="reference internal" href="../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer_json" title="kqcircuits.simulations.export.elmer.elmer_export.export_elmer_json"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_elmer_json()</span></code></a>, which exports x-y-shapes as GDSII file
+and other meta-data in json format for each simulation.</p></li>
+<li><p><a class="reference internal" href="../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer_script" title="kqcircuits.simulations.export.elmer.elmer_export.export_elmer_script"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_elmer_script()</span></code></a>, which creates a script file for
+running all simulations in series.</p></li>
+</ul>
+<p>The Elmer simulations can be run by executing the <code class="docutils literal notranslate"><span class="pre">simulation.sh</span></code> script file.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">export_elmer</span></code> and <code class="docutils literal notranslate"><span class="pre">export_ansys</span></code> functions take different set of arguments, so the
+<code class="docutils literal notranslate"><span class="pre">export_parameters</span></code> must be specified for the functions separately.
+The list of simulations and <code class="docutils literal notranslate"><span class="pre">path</span></code> are the only common arguments for all export functions.
+More details of Gmsh and Elmer parameterization and simulations are explained in <a class="reference internal" href="gmsh_elmer_export.html#gmsh-elmer-export"><span class="std std-ref">Gmsh/Elmer export</span></a>.</p>
+</div>
+<div class="section" id="sonnet-export">
+<h3>Sonnet export<a class="headerlink" href="#sonnet-export" title="Permalink to this headline">¶</a></h3>
+<p>The Sonnet export is incomplete, but there is a possibility to export limited geometries for Sonnet simulations.
+Once the simulation objects are created, the function <code class="docutils literal notranslate"><span class="pre">export_sonnet</span></code> can be called in very similar manner to
+the other export functions.</p>
+<p>For example in the above Ansys export script, replace “ansys” with “sonnet” in all occurrence, which is these two
+lines:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.sonnet.sonnet_export</span> <span class="kn">import</span> <span class="n">export_sonnet</span>
+<span class="n">export_sonnet</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="o">**</span><span class="n">export_parameters</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">export_sonnet</span></code> function internally calls function <code class="docutils literal notranslate"><span class="pre">export_sonnet_son</span></code> for all simulation objects.
+This exports each simulation into a <code class="docutils literal notranslate"><span class="pre">.son</span></code> file.
+For more information, we refer API for <a class="reference internal" href="../../api/kqcircuits.simulations.export.sonnet.sonnet_export.html#kqcircuits.simulations.export.sonnet.sonnet_export.export_sonnet" title="kqcircuits.simulations.export.sonnet.sonnet_export.export_sonnet"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_sonnet()</span></code></a>.</p>
 </div>
 </div>
+<div class="section" id="geometry-from-klayout-gui">
+<span id="id1"></span><h2>Geometry from Klayout GUI<a class="headerlink" href="#geometry-from-klayout-gui" title="Permalink to this headline">¶</a></h2>
+<p>An alternative way to export simulations is to draw the geometry (place elements or draw manually) in
+KLayout, and run one of the following macros.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/macros/export/export_ansys.lym">scripts/macros/export/export_ansys.lym</a></p></li>
+<li><p><a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/macros/export/export_sonnet.lym">scripts/macros/export/export_sonnet.lym</a></p></li>
+</ul>
+<p>Similarly, the simulation instances can be created from an existing KLayout Cell <code class="docutils literal notranslate"><span class="pre">cell</span></code> in code:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">simulation</span> <span class="o">=</span> <span class="n">Simulation</span><span class="o">.</span><span class="n">from_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Dev&#39;</span><span class="p">,</span> <span class="n">margin</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>These methods export the geometry, but do not add any ports to the simulation.
+Hence, this can be useful if you want to manually create ports or make other changes for example in Ansys.</p>
 </div>
 </div>
 
@@ -633,15 +683,15 @@ See <a class="reference external" href="https://github.com/iqm-finland/KQCircuit
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="sonnet_export.html" class="btn btn-neutral float-right" title="Sonnet export" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="simulation_settings.html" class="btn btn-neutral float-left" title="Simulation export settings" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="simulation_features.html" class="btn btn-neutral float-right" title="Simulation features" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="simulation_objects.html" class="btn btn-neutral float-left" title="Simulation objects" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021-2023, IQM.
+        &#169; Copyright 2021-2024, IQM.
 
     </p>
   </div>

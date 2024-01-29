@@ -140,7 +140,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#refpoints">Refpoints</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#kqcircuit-s-layers">KQCircuit’s Layers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#kqcircuits-layers">KQCircuits’ Layers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#faces">Faces</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../user_guide/python_workflow.html#layer-configuration-files">Layer configuration files</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../user_guide/python_workflow.html#adding-a-new-face">Adding a new face</a></li>
@@ -174,20 +174,27 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/simulations.html">External simulation tools</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/simulation_object.html">Creating a simulation object</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_object.html#simulation-box">Simulation box</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_object.html#ports">Ports</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_object.html#example-simulation">Example simulation</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_object.html#simulation-scripts">Simulation scripts</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_object.html#geometry-from-klayout-gui">Geometry from Klayout GUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/simulation_objects.html">Simulation objects</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_objects.html#the-simulation-class">The Simulation class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_objects.html#simulation-subclass">Simulation subclass</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_objects.html#geometry-sweeps">Geometry sweeps</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/simulation_settings.html">Simulation export settings</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/ansys_export.html">Ansys export</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/ansys_export.html#ansys-scripts">Ansys scripts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/simulation_scripts.html">Export functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_scripts.html#ansys-export">Ansys export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_scripts.html#elmer-export">Elmer export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_scripts.html#geometry-from-klayout-gui">Geometry from Klayout GUI</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/sonnet_export.html">Sonnet export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/simulation_features.html">Simulation features</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_features.html#s-parameter-matrix">S-parameter matrix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_features.html#capacitance-matrix">Capacitance matrix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_features.html#eigenmode">Eigenmode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_features.html#energy-integrals-and-participation-ratio">Energy integrals and participation ratio</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_features.html#cross-sectional-simulations">Cross-sectional simulations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_features.html#pyepr">pyEPR</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/export_and_run.html">Run and export in one line</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
@@ -228,11 +235,14 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">KLayout Standalone Usage</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#installation">Installation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#standard-not-secure-installation">Standard, Not Secure Installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#reproducible-secure-installation">Reproducible, Secure Installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pypi-installation">PyPI Installation</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#usage">Usage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#jupyter-notebook-usage">Jupyter notebook usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updating-the-required-dependencies">Updating the required dependencies</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="containers.html">Containers</a><ul>
@@ -442,7 +452,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.merge.html">kqcircuits.util.merge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.netlist_extraction.html">kqcircuits.util.netlist_extraction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.plugin_startup.html">kqcircuits.util.plugin_startup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.refpoints.html">kqcircuits.util.refpoints</a></li>
@@ -455,6 +464,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/kqcircuits.klayout_view.html">kqcircuits.klayout_view</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/kqcircuits.layer_cluster.html">kqcircuits.layer_cluster</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/kqcircuits.pya_resolver.html">kqcircuits.pya_resolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/kqcircuits.run.html">kqcircuits.run</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/kqcircuits.html#module-kqcircuits">Module contents</a></li>
 </ul>
 </li>
@@ -548,7 +558,7 @@ also be visualized using any suitable viewer or library during development.</p>
 Python 3 and <code class="docutils literal notranslate"><span class="pre">pip</span></code> installed.</p>
 <p>Successfully tested with</p>
 <ul class="simple">
-<li><p>Python 3.7.6, 3.8.5</p></li>
+<li><p>Python 3.7.6, 3.8.5, 3.10.12</p></li>
 </ul>
 <p>Older versions of klayout (&lt;0.28) do not support certain new features of
 KQCircuits. If you want to use older klayout you may need to check out a
@@ -558,25 +568,57 @@ KLayout.</p>
 </div>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>Set up a Python virtual environment, “venv”.</p>
 <p>If you have not yet done so, <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span></code> the KQCircuits source code from
 <a class="reference external" href="https://github.com/iqm-finland/KQCircuits">https://github.com/iqm-finland/KQCircuits</a> to a location of your choice.</p>
 <p>This section explains how to install KQC in “development mode”, so that a
 link to your local KQC repo is added to the python environment. When using
 KQC installed in this way, the version in your local repo is thus used.</p>
+<div class="section" id="standard-not-secure-installation">
+<h3>Standard, Not Secure Installation<a class="headerlink" href="#standard-not-secure-installation" title="Permalink to this headline">¶</a></h3>
 <p>To do this, activate your python environment and write in command prompt /
 terminal:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="n">klayout_package</span><span class="o">/</span><span class="n">python</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pip install -e klayout_package/python</span>
 </pre></div>
 </div>
 <p>The previous command installs only the packages which are always required
 when using KQC. Other packages may be required for specific purposes, and
 these can be installed by using instead a command like:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="s2">&quot;klayout_package/python[docs,tests,notebooks,simulations]&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pip install -e &quot;klayout_package/python[docs,tests,notebooks,simulations]&quot;</span>
 </pre></div>
 </div>
 <p>You can choose for which purposes you want to install the requirements by
 modifying the text in the square brackets. Note that there should not be any
 spaces within the brackets.</p>
+</div>
+<div class="section" id="reproducible-secure-installation">
+<h3>Reproducible, Secure Installation<a class="headerlink" href="#reproducible-secure-installation" title="Permalink to this headline">¶</a></h3>
+<p>This is just like the standard installation but with pinned and hashed
+dependencies resulting in a more secure and reproducible environment. You’ll
+need <code class="docutils literal notranslate"><span class="pre">pip-tools</span></code> installed for this.</p>
+<p>First install KQCircuits’ dependencies and any other set of requirements you
+may need. This needs to be done only once per venv at initial setup time or
+when any of the used <code class="docutils literal notranslate"><span class="pre">*requirements.txt</span></code> files change. In this example we
+only install KQCircuits’, documentation building’s and pytest’s dependencies:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd klayout_package/python</span>
+<span class="go">pip-sync requirements.txt doc-requirements.txt test-requirements.txt</span>
+</pre></div>
+</div>
+<p>Note the other <code class="docutils literal notranslate"><span class="pre">*requirement.txt</span></code> files in this folder. Any combination of them
+is allowed but KQCircuits’ requirements  (<code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code>) are always needed.</p>
+<p>Also note the OS-prefixes, <code class="docutils literal notranslate"><span class="pre">win-</span></code> or <code class="docutils literal notranslate"><span class="pre">mac-</span></code>, you are supposed to use these
+when running on Windows or Mac. The prefixless files are for Linux and also for
+other platforms when the platform specific version is not present.</p>
+<p>Finally install KQCircuits itself in editable mode and without dependencies, as
+they are already present:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install --no-deps -e .</span>
+</pre></div>
+</div>
+<p>or from the top level:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install --no-deps -e klayout_package/python/</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="pypi-installation">
 <h3>PyPI Installation<a class="headerlink" href="#pypi-installation" title="Permalink to this headline">¶</a></h3>
 <p>If you do not need all KQCircuits sources but only the core KQC classes you may simply run <code class="docutils literal notranslate"><span class="pre">pip</span>
@@ -598,12 +640,12 @@ debuggers and automated testing (see <a class="reference internal" href="testing
 not be possible without the standalone KLayout module.</p>
 <p>It is possible to generate masks, run simulation scripts or even the actual simulations on the
 command line:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">klayout_package</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">masks</span><span class="o">/</span><span class="n">quick_demo</span><span class="o">.</span><span class="n">py</span>
-<span class="n">python</span> <span class="n">klayout_package</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">simulations</span><span class="o">/</span><span class="n">double_pads_sim</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">q</span>
-<span class="n">kqc</span> <span class="n">sim</span> <span class="n">waveguides_sim_compare</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">q</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python klayout_package/python/scripts/masks/quick_demo.py</span>
+<span class="go">python klayout_package/python/scripts/simulations/double_pads_sim.py -q</span>
+<span class="go">kqc sim waveguides_sim_compare.py -q</span>
 </pre></div>
 </div>
-<p>The output of the above commands will be in the automaticaly created <code class="docutils literal notranslate"><span class="pre">tmp</span></code> directory. If you
+<p>The output of the above commands will be in the automatically created <code class="docutils literal notranslate"><span class="pre">tmp</span></code> directory. If you
 desire the outputs elsewhere set the <code class="docutils literal notranslate"><span class="pre">KQC_TMP_PATH</span></code> environment variable to some other path.</p>
 <p>The preferred way to instantiate a drawing environment in standalone mode is with the <a class="reference internal" href="../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView" title="kqcircuits.klayout_view.KLayoutView"><code class="xref py py-class docutils literal notranslate"><span class="pre">KLayoutView</span></code></a> object:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kqcircuits.klayout_view</span> <span class="kn">import</span> <span class="n">KLayoutView</span>
@@ -625,9 +667,26 @@ individual cells are used.</p>
 <p>There is an example Jupyter notebook <a class="reference external" href="https://github.com/iqm-finland/KQCircuits-Examples/blob/main/notebooks/viewer.ipynb">KQCircuits-Examples/notebooks/viewer.ipynb</a> in the notebooks
 folder, which shows how to create and visualize KQCircuits elements with the
 standalone KLayout module. Run it like:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">jupyter</span><span class="o">-</span><span class="n">notebook</span> <span class="n">notebooks</span><span class="o">/</span><span class="n">viewer</span><span class="o">.</span><span class="n">ipynb</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">jupyter-notebook notebooks/viewer.ipynb</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="updating-the-required-dependencies">
+<h2>Updating the required dependencies<a class="headerlink" href="#updating-the-required-dependencies" title="Permalink to this headline">¶</a></h2>
+<p>Don’t do it unless absolutely necessary! The security model (TOFU) works best if
+dependencies are rarely changed. When updating dependencies try to verify that
+the new versions are legitimate.</p>
+<p>Edit the <code class="docutils literal notranslate"><span class="pre">*requirements.in</span></code> files according to your needs. Try to keep &gt;=, &lt;=
+and == version constraints to a minimum. Try to improve other dependencies too,
+not only the ones your need.</p>
+<p>Compile the new <code class="docutils literal notranslate"><span class="pre">*requirements.txt</span></code> files:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip-compile --generate-hashes requirements.in &gt; requirements.txt</span>
+<span class="go">pip-compile --generate-hashes doc-requirements.in &gt; doc-requirements.txt</span>
+<span class="go">[...]</span>
+</pre></div>
+</div>
+<p>You’ll need to compile the Windows and Mac versions too. If they are different
+from the common (Linux) versions then remember to commit those files too.</p>
 </div>
 </div>
 
@@ -645,7 +704,7 @@ standalone KLayout module. Run it like:</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021-2023, IQM.
+        &#169; Copyright 2021-2024, IQM.
 
     </p>
   </div>

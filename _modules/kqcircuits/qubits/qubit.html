@@ -138,7 +138,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#refpoints">Refpoints</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#kqcircuit-s-layers">KQCircuit’s Layers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#kqcircuits-layers">KQCircuits’ Layers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#faces">Faces</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../user_guide/python_workflow.html#layer-configuration-files">Layer configuration files</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../user_guide/python_workflow.html#adding-a-new-face">Adding a new face</a></li>
@@ -172,20 +172,27 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../user_guide/simulations.html">External simulation tools</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/simulation_object.html">Creating a simulation object</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/simulation_object.html#simulation-box">Simulation box</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/simulation_object.html#ports">Ports</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/simulation_object.html#example-simulation">Example simulation</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/simulation_object.html#simulation-scripts">Simulation scripts</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/simulation_object.html#geometry-from-klayout-gui">Geometry from Klayout GUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/simulation_objects.html">Simulation objects</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/simulation_objects.html#the-simulation-class">The Simulation class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/simulation_objects.html#simulation-subclass">Simulation subclass</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/simulation_objects.html#geometry-sweeps">Geometry sweeps</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/simulation_settings.html">Simulation export settings</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/ansys_export.html">Ansys export</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/ansys_export.html#ansys-scripts">Ansys scripts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/simulation_scripts.html">Export functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/simulation_scripts.html#ansys-export">Ansys export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/simulation_scripts.html#elmer-export">Elmer export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/simulation_scripts.html#geometry-from-klayout-gui">Geometry from Klayout GUI</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/sonnet_export.html">Sonnet export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/simulation_features.html">Simulation features</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/simulation_features.html#s-parameter-matrix">S-parameter matrix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/simulation_features.html#capacitance-matrix">Capacitance matrix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/simulation_features.html#eigenmode">Eigenmode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/simulation_features.html#energy-integrals-and-participation-ratio">Energy integrals and participation ratio</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/simulation_features.html#cross-sectional-simulations">Cross-sectional simulations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/simulation_features.html#pyepr">pyEPR</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/export_and_run.html">Run and export in one line</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
@@ -226,11 +233,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../developer/standalone.html">KLayout Standalone Usage</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#installation">Installation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../developer/standalone.html#standard-not-secure-installation">Standard, Not Secure Installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../developer/standalone.html#reproducible-secure-installation">Reproducible, Secure Installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../developer/standalone.html#pypi-installation">PyPI Installation</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#usage">Usage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#jupyter-notebook-usage">Jupyter notebook usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#updating-the-required-dependencies">Updating the required dependencies</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../developer/containers.html">Containers</a><ul>
@@ -440,7 +450,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.merge.html">kqcircuits.util.merge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.netlist_extraction.html">kqcircuits.util.netlist_extraction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.plugin_startup.html">kqcircuits.util.plugin_startup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.refpoints.html">kqcircuits.util.refpoints</a></li>
@@ -453,6 +462,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.klayout_view.html">kqcircuits.klayout_view</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.layer_cluster.html">kqcircuits.layer_cluster</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.pya_resolver.html">kqcircuits.pya_resolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.run.html">kqcircuits.run</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.html#module-kqcircuits">Module contents</a></li>
 </ul>
 </li>
@@ -665,7 +675,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021-2023, IQM.
+        &#169; Copyright 2021-2024, IQM.
 
     </p>
   </div>

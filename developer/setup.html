@@ -140,7 +140,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#refpoints">Refpoints</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#kqcircuit-s-layers">KQCircuit’s Layers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#kqcircuits-layers">KQCircuits’ Layers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#faces">Faces</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../user_guide/python_workflow.html#layer-configuration-files">Layer configuration files</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../user_guide/python_workflow.html#adding-a-new-face">Adding a new face</a></li>
@@ -174,20 +174,27 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/simulations.html">External simulation tools</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/simulation_object.html">Creating a simulation object</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_object.html#simulation-box">Simulation box</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_object.html#ports">Ports</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_object.html#example-simulation">Example simulation</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_object.html#simulation-scripts">Simulation scripts</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_object.html#geometry-from-klayout-gui">Geometry from Klayout GUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/simulation_objects.html">Simulation objects</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_objects.html#the-simulation-class">The Simulation class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_objects.html#simulation-subclass">Simulation subclass</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_objects.html#geometry-sweeps">Geometry sweeps</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/simulation_settings.html">Simulation export settings</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/ansys_export.html">Ansys export</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/ansys_export.html#ansys-scripts">Ansys scripts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/simulation_scripts.html">Export functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_scripts.html#ansys-export">Ansys export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_scripts.html#elmer-export">Elmer export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_scripts.html#geometry-from-klayout-gui">Geometry from Klayout GUI</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/sonnet_export.html">Sonnet export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/simulation_features.html">Simulation features</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_features.html#s-parameter-matrix">S-parameter matrix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_features.html#capacitance-matrix">Capacitance matrix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_features.html#eigenmode">Eigenmode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_features.html#energy-integrals-and-participation-ratio">Energy integrals and participation ratio</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_features.html#cross-sectional-simulations">Cross-sectional simulations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_features.html#pyepr">pyEPR</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/export_and_run.html">Run and export in one line</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
@@ -228,11 +235,14 @@
 <li class="toctree-l2"><a class="reference internal" href="standalone.html">KLayout Standalone Usage</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="standalone.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="standalone.html#installation">Installation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="standalone.html#standard-not-secure-installation">Standard, Not Secure Installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="standalone.html#reproducible-secure-installation">Reproducible, Secure Installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="standalone.html#pypi-installation">PyPI Installation</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="standalone.html#usage">Usage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="standalone.html#jupyter-notebook-usage">Jupyter notebook usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="standalone.html#updating-the-required-dependencies">Updating the required dependencies</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="containers.html">Containers</a><ul>
@@ -442,7 +452,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.merge.html">kqcircuits.util.merge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.netlist_extraction.html">kqcircuits.util.netlist_extraction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.plugin_startup.html">kqcircuits.util.plugin_startup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.refpoints.html">kqcircuits.util.refpoints</a></li>
@@ -455,6 +464,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/kqcircuits.klayout_view.html">kqcircuits.klayout_view</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/kqcircuits.layer_cluster.html">kqcircuits.layer_cluster</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/kqcircuits.pya_resolver.html">kqcircuits.pya_resolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/kqcircuits.run.html">kqcircuits.run</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/kqcircuits.html#module-kqcircuits">Module contents</a></li>
 </ul>
 </li>
@@ -548,8 +558,8 @@ you may have to install it. If your Python installation does not already contain
 manager, you have to also install that.</p>
 <p>Successfully tested versions:</p>
 <ul class="simple">
-<li><p>Ubuntu 18.04 and 20.04 LTS with Python 3.6.9 and Python 3.8.5</p></li>
-<li><p>Windows: Python 3.7.6, 3.8.5</p></li>
+<li><p>Ubuntu 18.04, 20.04 and 22.04 LTS with Python 3.6.9, 3.8.5 and 3.10.12</p></li>
+<li><p>Windows: Python 3.7.6, 3.8.5, 3.11</p></li>
 </ul>
 </div>
 </div>
@@ -590,7 +600,7 @@ problem with the specific KLayout version/build you are using, see
 </div>
 <div class="section" id="unlinking">
 <h2>Unlinking<a class="headerlink" href="#unlinking" title="Permalink to this headline">¶</a></h2>
-<p>Installation command links your KQCircuits installation with your Klayout
+<p>Installation command links your KQCircuits installation with your KLayout
 installation automatically. If you wish to unlink, then write in your terminal:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="n">setup_within_klayout</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">unlink</span>
 </pre></div>
@@ -600,12 +610,12 @@ installation automatically. If you wish to unlink, then write in your terminal:<
 <h2>Update<a class="headerlink" href="#update" title="Permalink to this headline">¶</a></h2>
 <p>Updating an existing KQCircuits setup is easy. After updating KQCircuits code itself with <code class="docutils literal notranslate"><span class="pre">git</span>
 <span class="pre">pull</span></code> just run <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/setup_within_klayout.py">setup_within_klayout.py</a> again. This will take care of upgrading (or downgrading)
-KQCircuit’s Python dependencies and installing new ones, as needed. Running KLayout will similarly
+KQCircuits’ Python dependencies and installing new ones, as needed. Running KLayout will similarly
 update KQCircuits’ dependencies in its own Python environment.</p>
 <p>If the above didn’t work (usually in case of downgrading dependencies), there is an alternative way.
 If you see warnings displaying
 <code class="docutils literal notranslate"><span class="pre">WARNING:</span> <span class="pre">Target</span> <span class="pre">directory</span> <span class="pre">xyz</span> <span class="pre">already</span> <span class="pre">exists.</span> <span class="pre">Specify</span> <span class="pre">--upgrade</span> <span class="pre">to</span> <span class="pre">force</span> <span class="pre">replacement.</span></code>,
-this usually indicates that KQCircuits’s Python dependencies were not properly upgraded (or downgraded).
+this usually indicates that KQCircuits’ Python dependencies were not properly upgraded (or downgraded).
 In that case run the following:</p>
 <blockquote>
 <div><p>python3 setup_within_klayout.py –force-package-reinstall</p>
@@ -701,7 +711,7 @@ is already included with KLayout, so this shouldn’t be a problem.</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021-2023, IQM.
+        &#169; Copyright 2021-2024, IQM.
 
     </p>
   </div>

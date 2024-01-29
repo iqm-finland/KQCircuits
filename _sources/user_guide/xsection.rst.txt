@@ -1,3 +1,5 @@
+.. _Creating cross section images:
+
 Creating cross section images
 =============================
 
@@ -26,7 +28,7 @@ XSection call in KQC code
 
 XSection plugin can be called from python code to automate cross-section geometry
 generation for simulation files.
-:git_url:`klayout_package/python/kqcircuits/export/xsection_export.py` includes
+:git_url:`klayout_package/python/kqcircuits/simulations/export/xsection/xsection_export.py` includes
 
    -  ``create_xsections_from_simulations``, a high level method to take a cross-section
       for each simulation object using two ``DPoint`` values

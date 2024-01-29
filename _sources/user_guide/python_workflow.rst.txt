@@ -321,7 +321,7 @@ refpoints. If there are many overlapping refpoints the texts can be hard to read
 top cell by right clicking the chip in the cell view of KLayout and selecting "Show As New Top".
 This can be very useful to see "chip-level" refpoints only.
 
-KQCircuit's Layers
+KQCircuits' Layers
 ------------------
 
 KLayout's right panel shows a layer tree. Layers containing meaningful device geometry are grouped

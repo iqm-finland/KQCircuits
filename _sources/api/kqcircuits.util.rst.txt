@@ -23,7 +23,6 @@ kqcircuits.util
    kqcircuits.util.merge
    kqcircuits.util.netlist_extraction
    kqcircuits.util.netlist_graph
-   kqcircuits.util.parameter_helper
    kqcircuits.util.parameters
    kqcircuits.util.plugin_startup
    kqcircuits.util.refpoints

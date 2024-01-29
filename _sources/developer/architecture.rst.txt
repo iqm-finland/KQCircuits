@@ -33,10 +33,9 @@ things should be taken into account when writing new elements:
 #.  PCells in Python code have corresponding objects living in the C++-side of
     KLayout. This means that you should not instantiate any elements like a
     normal class, but instead use the ``add_element`` or ``create`` method of the
-    element, which are wrappers for KLayout's ``layout.create_cell``.  These
-    wrappers are used to validate the parameters using the ``Validator`` in
-    :git_url:`parameter_helper.py <klayout_package/python/kqcircuits/util/parameter_helper.py>`. The C++-object is created properly only if you use
-    these wrappers (or if a new PCell is added to a layout in KLayout GUI).
+    element, which are wrappers for KLayout's ``layout.create_cell``. The
+    C++-object is created properly only if you use these wrappers (or if a new
+    PCell is added to a layout in KLayout GUI).
 
 #.  In code ``add_element`` or ``insert_cell`` is the preferred method of adding
     a new (sub)cell. The ``create`` method is a ``@classmethod`` that is useful

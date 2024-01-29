@@ -19,7 +19,7 @@ Python 3 and ``pip`` installed.
 
 Successfully tested with
 
-- Python 3.7.6, 3.8.5
+- Python 3.7.6, 3.8.5, 3.10.12
 
 Older versions of klayout (<0.28) do not support certain new features of
 KQCircuits. If you want to use older klayout you may need to check out a
@@ -30,6 +30,8 @@ KLayout.
 Installation
 -------------
 
+Set up a Python virtual environment, "venv".
+
 If you have not yet done so, ``git clone`` the KQCircuits source code from
 https://github.com/iqm-finland/KQCircuits to a location of your choice.
 
@@ -37,20 +39,64 @@ This section explains how to install KQC in "development mode", so that a
 link to your local KQC repo is added to the python environment. When using
 KQC installed in this way, the version in your local repo is thus used.
 
+Standard, Not Secure Installation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 To do this, activate your python environment and write in command prompt /
-terminal::
+terminal:
+
+.. code-block:: console
 
     python -m pip install -e klayout_package/python
 
 The previous command installs only the packages which are always required
 when using KQC. Other packages may be required for specific purposes, and
-these can be installed by using instead a command like::
+these can be installed by using instead a command like:
+
+.. code-block:: console
 
     python -m pip install -e "klayout_package/python[docs,tests,notebooks,simulations]"
 
 You can choose for which purposes you want to install the requirements by
 modifying the text in the square brackets. Note that there should not be any
 spaces within the brackets.
+
+Reproducible, Secure Installation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This is just like the standard installation but with pinned and hashed
+dependencies resulting in a more secure and reproducible environment. You'll
+need ``pip-tools`` installed for this.
+
+First install KQCircuits' dependencies and any other set of requirements you
+may need. This needs to be done only once per venv at initial setup time or
+when any of the used ``*requirements.txt`` files change. In this example we
+only install KQCircuits', documentation building's and pytest's dependencies:
+
+.. code-block:: console
+
+    cd klayout_package/python
+    pip-sync requirements.txt doc-requirements.txt test-requirements.txt
+
+Note the other ``*requirement.txt`` files in this folder. Any combination of them
+is allowed but KQCircuits' requirements  (``requirements.txt``) are always needed.
+
+Also note the OS-prefixes, ``win-`` or ``mac-``, you are supposed to use these
+when running on Windows or Mac. The prefixless files are for Linux and also for
+other platforms when the platform specific version is not present.
+
+Finally install KQCircuits itself in editable mode and without dependencies, as
+they are already present:
+
+.. code-block:: console
+
+    pip install --no-deps -e .
+
+or from the top level:
+
+.. code-block:: console
+
+    pip install --no-deps -e klayout_package/python/
 
 PyPI Installation
 ^^^^^^^^^^^^^^^^^
@@ -75,13 +121,15 @@ debuggers and automated testing (see :ref:`testing`) can be done, which would
 not be possible without the standalone KLayout module.
 
 It is possible to generate masks, run simulation scripts or even the actual simulations on the
-command line::
+command line:
+
+.. code-block:: console
 
     python klayout_package/python/scripts/masks/quick_demo.py
     python klayout_package/python/scripts/simulations/double_pads_sim.py -q
     kqc sim waveguides_sim_compare.py -q
 
-The output of the above commands will be in the automaticaly created ``tmp`` directory. If you
+The output of the above commands will be in the automatically created ``tmp`` directory. If you
 desire the outputs elsewhere set the ``KQC_TMP_PATH`` environment variable to some other path.
 
 The preferred way to instantiate a drawing environment in standalone mode is with the :class:`.KLayoutView` object::
@@ -101,6 +149,31 @@ Jupyter notebook usage
 
 There is an example Jupyter notebook `KQCircuits-Examples/notebooks/viewer.ipynb <https://github.com/iqm-finland/KQCircuits-Examples/blob/main/notebooks/viewer.ipynb>`__ in the notebooks
 folder, which shows how to create and visualize KQCircuits elements with the
-standalone KLayout module. Run it like::
+standalone KLayout module. Run it like:
+
+.. code-block:: console
 
     jupyter-notebook notebooks/viewer.ipynb
+
+
+Updating the required dependencies
+----------------------------------
+
+Don't do it unless absolutely necessary! The security model (TOFU) works best if
+dependencies are rarely changed. When updating dependencies try to verify that
+the new versions are legitimate.
+
+Edit the ``*requirements.in`` files according to your needs. Try to keep >=, <=
+and == version constraints to a minimum. Try to improve other dependencies too,
+not only the ones your need.
+
+Compile the new ``*requirements.txt`` files:
+
+.. code-block:: console
+
+    pip-compile --generate-hashes requirements.in > requirements.txt
+    pip-compile --generate-hashes doc-requirements.in > doc-requirements.txt
+    [...]
+
+You'll need to compile the Windows and Mac versions too. If they are different
+from the common (Linux) versions then remember to commit those files too.

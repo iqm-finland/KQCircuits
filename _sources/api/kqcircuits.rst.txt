@@ -19,6 +19,7 @@ API documentation
    kqcircuits.klayout_view
    kqcircuits.layer_cluster
    kqcircuits.pya_resolver
+   kqcircuits.run
 
 Module contents
 ---------------

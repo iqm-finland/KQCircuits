@@ -21,8 +21,8 @@ manager, you have to also install that.
 
 Successfully tested versions:
 
-- Ubuntu 18.04 and 20.04 LTS with Python 3.6.9 and Python 3.8.5
-- Windows: Python 3.7.6, 3.8.5
+- Ubuntu 18.04, 20.04 and 22.04 LTS with Python 3.6.9, 3.8.5 and 3.10.12
+- Windows: Python 3.7.6, 3.8.5, 3.11
 
 Sources
 -------
@@ -70,7 +70,7 @@ libpython*.dll on Windows.
 Unlinking
 ---------
 
-Installation command links your KQCircuits installation with your Klayout
+Installation command links your KQCircuits installation with your KLayout
 installation automatically. If you wish to unlink, then write in your terminal::
 
     python3 setup_within_klayout.py --unlink
@@ -80,13 +80,13 @@ Update
 
 Updating an existing KQCircuits setup is easy. After updating KQCircuits code itself with ``git
 pull`` just run :git_url:`setup_within_klayout.py` again. This will take care of upgrading (or downgrading)
-KQCircuit's Python dependencies and installing new ones, as needed. Running KLayout will similarly
+KQCircuits' Python dependencies and installing new ones, as needed. Running KLayout will similarly
 update KQCircuits' dependencies in its own Python environment.
 
 If the above didn't work (usually in case of downgrading dependencies), there is an alternative way.
 If you see warnings displaying
 ``WARNING: Target directory xyz already exists. Specify --upgrade to force replacement.``,
-this usually indicates that KQCircuits's Python dependencies were not properly upgraded (or downgraded).
+this usually indicates that KQCircuits' Python dependencies were not properly upgraded (or downgraded).
 In that case run the following:
 
     python3 setup_within_klayout.py --force-package-reinstall
