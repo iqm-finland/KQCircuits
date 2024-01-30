@@ -92,6 +92,12 @@ def insert_cell_into(target_cell, cell, trans=None, inst_name=None, label_trans=
             cell_inst.set_property("label_trans", label_trans_str)
     return cell_inst, refpoints_abs
 
+def _resolve_face(face_id, face_ids):
+    """Returns face_id if the parameter is given as string or face_ids[face_id] otherwise.
+    The face_id as a string must be a key in default_faces but does not necessarily need to be in face_ids.
+    """
+    return face_id if isinstance(face_id, str) else face_ids[face_id]
+
 class Element(pya.PCellDeclarationHelper):
     """Element PCell declaration.
 
@@ -284,12 +290,6 @@ class Element(pya.PCellDeclarationHelper):
                 self.refpoints[new_name] = pos
         return cell_inst, refpoints_abs
 
-    def _resolve_face(self, face_id):
-        """Returns face_id if the parameter is given as string or self.face_ids[face_id] otherwise.
-        The face_id as a string must be a key in default_faces but does not necessarily need to be in self.face_ids.
-        """
-        return face_id if isinstance(face_id, str) else self.face_ids[face_id]
-
     def face(self, face_id=0):
         """Returns the face dictionary corresponding to face_id.
 
@@ -298,7 +298,7 @@ class Element(pya.PCellDeclarationHelper):
         Args:
             face_id: name or index of the face, default=0
         """
-        return default_faces[self._resolve_face(face_id)]
+        return default_faces[_resolve_face(face_id, self.face_ids)]
 
     def pcell_params_by_name(self, cls=None, **parameters):
         """Give PCell parameters as a dictionary.
@@ -530,7 +530,7 @@ class Element(pya.PCellDeclarationHelper):
              shape: The shape (Region, DPolygon, etc.) to add to ground_grid_avoidance layer
              face_id: Name or index of the primary face of ground_grid_avoidance layer, default=0
         """
-        face = self._resolve_face(face_id)
+        face = _resolve_face(face_id, self.face_ids)
         self.cell.shapes(self.get_layer("ground_grid_avoidance", face)).insert(shape)
         if self.protect_opposite_face:
             for group in self.opposing_face_id_groups:
