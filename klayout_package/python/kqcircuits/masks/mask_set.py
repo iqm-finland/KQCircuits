@@ -311,11 +311,12 @@ class MaskSet:
 
             labels_cell = mask_layout.layout.create_cell("ChipLabels")
             mask_layout.top_cell.insert(pya.DCellInstArray(labels_cell.cell_index(), pya.DTrans(pya.DVector(0, 0))))
-
             if mask_layout not in submask_layouts:
-                mask_layout.insert_chip_copy_labels(labels_cell, chip_copy_label_layers)
+                chips_dict = mask_layout.insert_chip_copy_labels(labels_cell, chip_copy_label_layers)
+                mask_layout.overwrite_chips_by_position_label(chips_dict)
                 # remove "$1" or similar unnecessary postfix from cell name
                 mask_layout.top_cell.name = f"{mask_layout.name}"
+                mask_layout.insert_chips()
 
         # populate used_chips with chips which exist in some mask_layout
         for chip_name, cell in self.chips_map_legend.items():
