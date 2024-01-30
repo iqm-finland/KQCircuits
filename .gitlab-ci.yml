@@ -226,6 +226,5 @@ copy_github_issues:
   only:
     - schedules
   except:
-    - master
     - tags
     - merge_requests
