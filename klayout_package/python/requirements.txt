@@ -116,3 +116,7 @@ tqdm==4.66.1 \
     --hash=sha256:d302b3c5b53d47bce91fea46679d9c3c6508cf6332229aa1e7d8653723793386 \
     --hash=sha256:d88e651f9db8d8551a62556d3cff9e3034274ca5d66e93197cf2490e2dcb69c7
     # via -r requirements.in
+versiontag==1.2.0 \
+    --hash=sha256:5568cae59135aaca172ed7c01a1c9b20785890211e3146adcb12142228d1216a \
+    --hash=sha256:f0732276baaf0acf4368a3f9a902d65a847da25105a1ec3669ff2ad770b5d5e0
+    # via -r requirements.in

@@ -605,7 +605,3 @@ urllib3==2.1.0 \
     --hash=sha256:55901e917a5896a349ff771be919f8bd99aff50b79fe58fec595eb37bbc56bb3 \
     --hash=sha256:df7aa8afb0148fa78488e7899b2c59b5f4ffcfa82e6c54ccb9dd37c1d7b52d54
     # via requests
-versiontag==1.2.0 \
-    --hash=sha256:5568cae59135aaca172ed7c01a1c9b20785890211e3146adcb12142228d1216a \
-    --hash=sha256:f0732276baaf0acf4368a3f9a902d65a847da25105a1ec3669ff2ad770b5d5e0
-    # via -r doc-requirements.in
