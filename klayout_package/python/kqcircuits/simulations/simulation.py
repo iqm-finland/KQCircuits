@@ -328,7 +328,7 @@ class Simulation:
                     dielectric_z = z + float(self.ith_value(dielectric_heights, j))
                     metal_z = dielectric_z + float(self.ith_value(metal_heights, j))
                     z_dict[face_id] = [metal_z, dielectric_z, z]
-                    z = dielectric_z
+                    z = metal_z
                 z_list.append(z)
                 z += float(self.ith_value(self.substrate_height, (i + 1) // 2))
         z_list.append(z)
