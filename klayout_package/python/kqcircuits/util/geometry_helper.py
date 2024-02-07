@@ -216,8 +216,9 @@ def region_with_merged_polygons(region, tolerance, expansion=0.0):
     return new_region
 
 
-def match_points_on_edges(cell, layout, layers):
-    """ Goes through each polygon edge and splits the edge whenever it passes through a point of another polygon.
+def match_points_on_layers(cell, layout, layers):
+    """ Merges adjacent points of layers.
+    Also goes through each polygon edge and splits the edge whenever it passes close to existing point.
 
     This function can eliminate gaps and overlaps caused by transformation to simple_polygon.
 
@@ -226,6 +227,39 @@ def match_points_on_edges(cell, layout, layers):
         layout: A layout object
         layers: List of layers to be considered and modified
     """
+
+    def fixed_polygon(poly, mod_pts):
+        """Recursively fixes and possibly splits the polygon near modified points. Returns list of polygons.
+        - removes consecutive duplicate points
+        - removes spikes of overlapping edges
+        - splits polygon if parts of it are connected with overlapping edges
+        """
+        if not mod_pts:
+            return [poly]
+
+        pts = list(poly.each_point())
+        instances = [i for i in range(len(pts)) if pts[i] == mod_pts[0]]
+        for i0 in instances:
+            post_pt = pts[(i0 + 1) % len(pts)]
+            if post_pt == mod_pts[0]:
+                return fixed_polygon(pya.SimplePolygon([pts[i] for i in range(len(pts)) if i != i0], True), mod_pts)
+            for i1 in instances:
+                if post_pt == pts[i1 - 1]:
+                    polys = []
+                    pts0 = [pts[i % len(pts)] for i in range(i0 + 1, i1 - 1 + int(i0 >= i1) * len(pts))]
+                    if len(pts0) >= 3:
+                        polys.append(pya.SimplePolygon(pts0, True))
+                        if polys[-1].inside(mod_pts[0]):
+                            break
+                    pts1 = [pts[i % len(pts)] for i in range(i1, i0 + int(i0 < i1) * len(pts))]
+                    if len(pts1) >= 3:
+                        polys.append(pya.SimplePolygon(pts1, True))
+                        if polys[-1].inside(post_pt):
+                            break
+                    return [s for p in polys for s in fixed_polygon(p, mod_pts)]
+
+        return fixed_polygon(poly, mod_pts[1:])
+
     # Gather points from layers to `all_points` dictionary. This ignores duplicate points.
     all_points = dict()
     for layer in layers:
@@ -236,18 +270,45 @@ def match_points_on_edges(cell, layout, layers):
         return  # nothing is done if no points exist
 
     # For each point, assign a list of surrounding points using Voronoi diagram
+    # Create point sets to merge adjacent points into single point
+    merge_sets = []
     point_list = list(all_points)
     vor = spatial.Voronoi([(p.x, p.y) for p in point_list])
     for link in vor.ridge_points:
-        all_points[point_list[link[0]]].append(point_list[link[1]])
-        all_points[point_list[link[1]]].append(point_list[link[0]])
+        p = [point_list[i] for i in link]
+        all_points[p[0]].append(p[1])
+        all_points[p[1]].append(p[0])
+        if p[0].sq_distance(p[1]) <= 4:
+            current_set = set(link)
+            other_sets = []
+            for merge_set in merge_sets:
+                if current_set.intersection(merge_set):
+                    current_set.update(merge_set)
+                else:
+                    other_sets.append(merge_set)
+            merge_sets = [current_set] + other_sets
 
-    # Travel through polygon edges and split edge whenever it passes through a point
+    # Create dictionary of moved points: includes the point to be moved as key and the new position as value
+    moved = dict()
+    if merge_sets:
+        for merge_set in merge_sets:
+            average = pya.Point()
+            for i in merge_set:
+                average += point_list[i]
+            average /= len(merge_set)
+            for i in merge_set:
+                if point_list[i] != average:
+                    moved[point_list[i]] = average
+
+    # Travel through polygon edges and split edge whenever it passes close to a point
+    # Possibly move some points into new location
     for layer in layers:
         shapes = cell.shapes(layout.layer(layer))
+        polygons = []
         for shape in shapes:
             points = list(shape.simple_polygon.each_point())
             new_points = []
+            modified_points = set()
             for i, p1 in enumerate(points):
                 p0 = points[i - 1]
                 edge = pya.Edge(p0, p1)
@@ -259,14 +320,21 @@ def match_points_on_edges(cell, layout, layers):
                     if p_on_edge:
                         # Update p0 to be the point on edge towards p1 that is furthest from p1
                         p0 = max(p_on_edge, key=lambda x, y=p1: x.sq_distance(y))
-                        new_points.append(p0)  # Add the point to the polygon. Finally, p0 is equal to p1 here.
+                        # Add the point to the polygon. Finally, p0 is equal to p1 here.
+                        new_points.append(moved[p0] if p0 in moved else p0)
+                        if new_points[-1] != p1:
+                            modified_points.add(new_points[-1])
                     else:
                         # Update p0 to be the neighbour closest to p1
                         p0 = min(all_points[p0], key=lambda x, y=p1: x.sq_distance(y))
 
-            # Replace polygon if any points are added
-            if len(new_points) != len(points):
-                shapes.replace(shape, pya.SimplePolygon(new_points, True))
+            # Fix polygon if points are modified and update list of polygons
+            polygons += fixed_polygon(pya.SimplePolygon(new_points, True), list(modified_points))
+
+        # Replace shapes with list of polygons
+        shapes.clear()
+        for new_polygon in polygons:
+            shapes.insert(new_polygon)
 
 
 def is_clockwise(polygon_points):

@@ -30,7 +30,7 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.partition_region import PartitionRegion
 from kqcircuits.simulations.port import Port, InternalPort, EdgePort
 from kqcircuits.util.geometry_helper import region_with_merged_polygons, region_with_merged_points, \
-    match_points_on_edges
+    match_points_on_layers
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.simulations.export.util import find_edge_from_point_in_cell
 from kqcircuits.simulations.export.util import get_enclosing_polygon
@@ -682,7 +682,7 @@ class Simulation:
                           material='vacuum', **({'subtract': subtract} if subtract else dict()))
 
         # Eliminate gaps and overlaps caused by transformation to simple_polygon
-        match_points_on_edges(self.cell, self.layout, [get_simulation_layer_by_name(n) for n in self.layers])
+        match_points_on_layers(self.cell, self.layout, [get_simulation_layer_by_name(n) for n in self.layers])
 
     def ground_grid_region(self, face_id):
         """Returns region of ground grid for the given face id."""
