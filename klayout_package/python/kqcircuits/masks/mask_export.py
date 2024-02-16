@@ -68,7 +68,7 @@ def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc, alt_netlists
     dummy_cell = layout.create_cell(chip_name)
     dummy_cell.insert(pya.DCellInstArray(chip_cell.cell_index(), pya.DTrans()))
     _export_cell(chip_dir / f"{chip_name}_with_pcells.oas", dummy_cell, "all")
-    if not skip_extras:
+    if not skip_extras and is_pcell:    # Don't export junction parameters list if chip_cell is not pcell
         export_junction_parameters(dummy_cell, chip_dir / f"{chip_name}_junction_parameters.json")
     dummy_cell.delete()
     static_cell = layout.cell(layout.convert_cell_to_static(chip_cell.cell_index()))
