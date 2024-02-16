@@ -675,8 +675,15 @@ position_label is an optional string that overrides the automatic chip position 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="kqcircuits.masks.mask_layout.MaskLayout.added_chips">
 <span class="sig-name descname"><span class="pre">added_chips</span></span><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.added_chips" title="Permalink to this definition"></a></dt>
-<dd><p>List of (chip name, chip position, chip bounding box, chip dtrans, position_label)
+<dd><p>List of (chip name, chip_cell, chip position, chip bounding box, chip dtrans, position_label)
 populated by chips added during build()</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.masks.mask_layout.MaskLayout.chips_placed_by_position_label">
+<span class="sig-name descname"><span class="pre">chips_placed_by_position_label</span></span><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.chips_placed_by_position_label" title="Permalink to this definition"></a></dt>
+<dd><p>Dictionary of <code class="docutils literal notranslate"><span class="pre">{position_label:</span> <span class="pre">chip_name}</span></code> where the chip exists in
+chips_map_legend and will be placed according to the position_label</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -731,6 +738,25 @@ area covered by the mask.</p>
 <dd class="field-odd"><p><strong>chips_map_legend</strong> – Dictionary where keys are chip names, values are chip cells</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.masks.mask_layout.MaskLayout.overwrite_chips_by_position_label">
+<span class="sig-name descname"><span class="pre">overwrite_chips_by_position_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chips_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/masks/mask_layout.html#MaskLayout.overwrite_chips_by_position_label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.overwrite_chips_by_position_label" title="Permalink to this definition"></a></dt>
+<dd><p>Overwrites chips with ones configured to be placed at specific label positions.</p>
+<p>Chips specified in the chips_placed_by_position_label dictionary replace existing chips with the same position
+label</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>chips_dict</strong> – {(x, y): (chip_name, _, bbox, dtrans, position_label, mask_layout)}</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.masks.mask_layout.MaskLayout.insert_chips">
+<span class="sig-name descname"><span class="pre">insert_chips</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/masks/mask_layout.html#MaskLayout.insert_chips"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.insert_chips" title="Permalink to this definition"></a></dt>
+<dd><p>Insert chips after resolving their position labels</p>
 </dd></dl>
 
 <dl class="py method">
