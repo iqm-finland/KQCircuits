@@ -27,7 +27,7 @@ from kqcircuits.junctions.squid import Squid
 from kqcircuits.junctions.sim import Sim
 
 
-@add_parameters_from(Fluxline, "fluxline_gap_width", "fluxline_type", "fluxline_parameters", "_fluxline_parameters")
+@add_parameters_from(Fluxline, "fluxline_type", "fluxline_parameters", "_fluxline_parameters")
 @add_parameters_from(Squid, "junction_width", "loop_area", "junction_type",
                      "junction_parameters", "_junction_parameters")
 @add_parameters_from(Sim, "junction_total_length")
