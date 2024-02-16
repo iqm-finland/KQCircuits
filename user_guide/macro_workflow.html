@@ -1,48 +1,24 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>Macro development &mdash; KQCircuits  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
-
-  
-  
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="shortcut icon" href="../_static/logo.svg"/>
-  
-
-  
-  
-
-  
-
-  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
+    <script src="../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -50,48 +26,26 @@
     <link rel="prev" title="Python workflow tutorial" href="python_workflow.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-          
 
           
-            <a href="../index.html">
           
-
-          
+          <a href="../index.html">
             
-            <img src="../_static/logo-small.png" class="logo" alt="Logo"/>
-          
+              <img src="../_static/logo-small.png" class="logo" alt="Logo"/>
           </a>
-
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../installation.html#klayout">KLayout</a></li>
@@ -474,85 +428,41 @@
 <li class="toctree-l1"><a class="reference internal" href="../about.html">About</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">KQCircuits</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="index.html">User Guide</a> &raquo;</li>
-        
-      <li>Macro development</li>
-    
-    
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">User Guide</a></li>
+      <li class="breadcrumb-item active">Macro development</li>
       <li class="wy-breadcrumbs-aside">
-        
-          
-            
               <a href="https://github.com/iqm-finland/KQCircuits/blob/main/docs/user_guide/macro_workflow.rst" class="fa fa-github"> Edit on GitHub</a>
-            
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="macro-development">
-<h1>Macro development<a class="headerlink" href="#macro-development" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="macro-development">
+<h1>Macro development<a class="headerlink" href="#macro-development" title="Permalink to this headline"></a></h1>
 <p>KLayout macros are Python scripts which can be run inside KLayout Editor.
 They can be used, for example, to create or modify elements in the layout,
 measure properties of cells, or export data from the layout. See also the
 KLayout documentation about <a class="reference external" href="https://www.klayout.de/doc-qt5/about/macro_editor.html">macro development</a> and
 <a class="reference external" href="https://www.klayout.de/doc-qt5/programming/index.html">programming scripts</a>
 , and the <a class="reference external" href="https://www.klayout.de/doc-qt5/code/index.html">KLayout API documentation</a>.</p>
-<div class="section" id="running-the-first-example">
-<h2>Running the first example<a class="headerlink" href="#running-the-first-example" title="Permalink to this headline">¶</a></h2>
+<section id="running-the-first-example">
+<h2>Running the first example<a class="headerlink" href="#running-the-first-example" title="Permalink to this headline"></a></h2>
 <p>To get started, follow the steps below to run a demo macro. The comments in the macro explain what is going on step by
 step.</p>
 <ol class="arabic simple">
@@ -566,34 +476,34 @@ directory</p></li>
 from the current tab”), or use Shift+F5.</p></li>
 <li><p>A chip cell should appear in the main KLayout window.</p></li>
 </ol>
-</div>
-<div class="section" id="interacting-with-the-klayout-application">
-<h2>Interacting with the KLayout application<a class="headerlink" href="#interacting-with-the-klayout-application" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="interacting-with-the-klayout-application">
+<h2>Interacting with the KLayout application<a class="headerlink" href="#interacting-with-the-klayout-application" title="Permalink to this headline"></a></h2>
 <p>KLayout organizes layouts in <em>Panels</em>, which show as tabs in the application if more than one panel is open.
 In code, the panel is represented by a <code class="docutils literal notranslate"><span class="pre">LayoutView</span></code> object. Inside each panel there can be one or more
 layouts loaded, for example with the <em>File</em>, <em>Open in Same Panel</em> command. Each layout is represented by a
 <code class="docutils literal notranslate"><span class="pre">CellView</span></code> object and a <code class="docutils literal notranslate"><span class="pre">Layout</span></code> object. The <code class="docutils literal notranslate"><span class="pre">Layout</span></code> contains all the actual cells, layers and shapes.</p>
 <p>As shown by the above, to work with the KLayout display in macro code we need access to at least three objects.
 To help in managing this, KQCircuits provides the class <a class="reference internal" href="../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView" title="kqcircuits.klayout_view.KLayoutView"><code class="xref py py-class docutils literal notranslate"><span class="pre">KLayoutView</span></code></a>.</p>
-<div class="section" id="creating-a-new-panel">
-<h3>Creating a new panel<a class="headerlink" href="#creating-a-new-panel" title="Permalink to this headline">¶</a></h3>
+<section id="creating-a-new-panel">
+<h3>Creating a new panel<a class="headerlink" href="#creating-a-new-panel" title="Permalink to this headline"></a></h3>
 <p>Often, in a macro you want to start with a new layout in a new panel, which can be created as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kqcircuits.klayout_view</span> <span class="kn">import</span> <span class="n">KLayoutView</span>
 <span class="n">view</span> <span class="o">=</span> <span class="n">KLayoutView</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>This code creates a panel, cell view and layout, and initializes these with the layers used by KQCircuits.</p>
-</div>
-<div class="section" id="accessing-the-currently-active-panel">
-<h3>Accessing the currently active panel<a class="headerlink" href="#accessing-the-currently-active-panel" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="accessing-the-currently-active-panel">
+<h3>Accessing the currently active panel<a class="headerlink" href="#accessing-the-currently-active-panel" title="Permalink to this headline"></a></h3>
 <p>In some macros you may want to interact with the layout that is currently visible. In this case, use:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kqcircuits.klayout_view</span> <span class="kn">import</span> <span class="n">KLayoutView</span>
 <span class="n">view</span> <span class="o">=</span> <span class="n">KLayoutView</span><span class="p">(</span><span class="n">current</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="using-klayoutview">
-<h3>Using <code class="docutils literal notranslate"><span class="pre">KLayoutView</span></code><a class="headerlink" href="#using-klayoutview" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="using-klayoutview">
+<h3>Using <code class="docutils literal notranslate"><span class="pre">KLayoutView</span></code><a class="headerlink" href="#using-klayoutview" title="Permalink to this headline"></a></h3>
 <p>Once created, <a class="reference internal" href="../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView" title="kqcircuits.klayout_view.KLayoutView"><code class="xref py py-class docutils literal notranslate"><span class="pre">KLayoutView</span></code></a> exposes methods for the most common tasks to do with a layout:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">insert_cell</span></code> places KQCircuits elements into the top cell, similar to <code class="docutils literal notranslate"><span class="pre">Element.insert_cell</span></code>.</p></li>
@@ -617,10 +527,10 @@ Usually we place elements in this cell.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">active_cell</span></code>: A reference to the currently active cell. This is the cell which is shown in bold in the cell
 window, and can be changed in KLayout by right-clicking a cell and choosing <em>Show As New Top</em>.</p></li>
 </ul>
-</div>
-</div>
-<div class="section" id="debugger">
-<h2>Debugger<a class="headerlink" href="#debugger" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="debugger">
+<h2>Debugger<a class="headerlink" href="#debugger" title="Permalink to this headline"></a></h2>
 <p>KLayout macros can be debugged using the debugger in the macro IDE. The
 debugger can be toggled on/off using the “bug icon” at the top.</p>
 <ul>
@@ -665,9 +575,9 @@ time it is created.</p></li>
 <p>The debugger will slow down code execution, so it can make sense
 to disable it when running heavy macros.</p>
 </div>
-</div>
-<div class="section" id="reloading-libraries">
-<h2>Reloading libraries<a class="headerlink" href="#reloading-libraries" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="reloading-libraries">
+<h2>Reloading libraries<a class="headerlink" href="#reloading-libraries" title="Permalink to this headline"></a></h2>
 <ul class="simple">
 <li><p>Even though you have changed some line inside a PCell file, if
 nothing changes on the generated design inside the editor, you have to re-run
@@ -677,9 +587,9 @@ changes to be updated. The reload macro can also be run from
 <li><p>The libraries are automatically reloaded whenever you restart KLayout, so
 in that case there is no need to run the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/macros/reload.lym">reload</a> macro to see changes.</p></li>
 </ul>
-</div>
-<div class="section" id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline"></a></h2>
 <ul class="simple">
 <li><p>Locate the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/macros/generate/demo_placing_a_pcell.lym">demo_placing_a_pcell</a>
 and <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/macros/generate/demo_pya_basics.lym">demo_pya_basic</a> tutorials under
@@ -689,55 +599,38 @@ about KLayout Editor and macro generation concept.</p></li>
 <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/macros/generate/test_wgc_airbridge.lym">test_wgc_airbridge</a>, can be useful to learn more about specific KQC
 elements.</p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="mask_export.html" class="btn btn-neutral float-right" title="Mask export" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="python_workflow.html" class="btn btn-neutral float-left" title="Python workflow tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="mask_export.html" class="btn btn-neutral float-right" title="Mask export" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2021-2024, IQM.
-
-    </p>
+    <p>&#169; Copyright 2021-2024, IQM.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

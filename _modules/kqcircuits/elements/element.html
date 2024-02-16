@@ -1,95 +1,48 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>kqcircuits.elements.element &mdash; KQCircuits  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
-
-  
-  
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="shortcut icon" href="../../../_static/logo.svg"/>
-  
-
-  
-  
-
-  
-
-  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-
-    
+    <script src="../../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../../about.html" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-          
 
           
-            <a href="../../../index.html">
           
-
-          
+          <a href="../../../index.html">
             
-            <img src="../../../_static/logo-small.png" class="logo" alt="Logo"/>
-          
+              <img src="../../../_static/logo-small.png" class="logo" alt="Logo"/>
           </a>
-
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../installation.html#klayout">KLayout</a></li>
@@ -472,69 +425,30 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../about.html">About</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">KQCircuits</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-        
-      <li>kqcircuits.elements.element</li>
-    
-    
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">kqcircuits.elements.element</li>
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <h1>Source code for kqcircuits.elements.element</h1><div class="highlight"><pre>
 <span></span><span class="c1"># This code is part of KQCircuits</span>
 <span class="c1"># Copyright (C) 2021 IQM Finland Oy</span>
@@ -630,6 +544,12 @@
             <span class="n">cell_inst</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s2">&quot;label_trans&quot;</span><span class="p">,</span> <span class="n">label_trans_str</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">cell_inst</span><span class="p">,</span> <span class="n">refpoints_abs</span></div>
 
+<span class="k">def</span> <span class="nf">_resolve_face</span><span class="p">(</span><span class="n">face_id</span><span class="p">,</span> <span class="n">face_ids</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns face_id if the parameter is given as string or face_ids[face_id] otherwise.</span>
+<span class="sd">    The face_id as a string must be a key in default_faces but does not necessarily need to be in face_ids.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">face_id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">face_id</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">face_ids</span><span class="p">[</span><span class="n">face_id</span><span class="p">]</span>
+
 <div class="viewcode-block" id="Element"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element">[docs]</a><span class="k">class</span> <span class="nc">Element</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">PCellDeclarationHelper</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Element PCell declaration.</span>
 
@@ -648,9 +568,13 @@
     <span class="n">margin</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Margin of the protection layer&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
     <span class="n">face_ids</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Chip face IDs list&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;1t1&quot;</span><span class="p">,</span> <span class="s2">&quot;2b1&quot;</span><span class="p">,</span> <span class="s2">&quot;1b1&quot;</span><span class="p">,</span> <span class="s2">&quot;2t1&quot;</span><span class="p">])</span>
     <span class="n">display_name</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;Name displayed in GUI (empty for default)&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-    <span class="n">protect_opposite_face</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Add opposite face protection too&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">protect_opposite_face</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Add ground grid avoidance on opposing face&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span>
+                                  <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;This applies only on signal carrying elements that typically include some &quot;</span>
+                                            <span class="s2">&quot;metal between gaps.&quot;</span><span class="p">)</span>
     <span class="n">opposing_face_id_groups</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Opposing face ID groups (list of lists)&quot;</span><span class="p">,</span> <span class="p">[[</span><span class="s2">&quot;1t1&quot;</span><span class="p">,</span> <span class="s2">&quot;2b1&quot;</span><span class="p">]],</span>
                                     <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">etch_opposite_face</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Etch avoidance shaped gap on the opposite face too&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">etch_opposite_face_margin</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Margin of the opposite face etch shape&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="s2">&quot;&quot;</span>
@@ -820,12 +744,6 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="n">new_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">pos</span>
         <span class="k">return</span> <span class="n">cell_inst</span><span class="p">,</span> <span class="n">refpoints_abs</span></div>
 
-    <span class="k">def</span> <span class="nf">_resolve_face</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face_id</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns face_id if the parameter is given as string or self.face_ids[face_id] otherwise.</span>
-<span class="sd">        The face_id as a string must be a key in default_faces but does not necessarily need to be in self.face_ids.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">face_id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">face_id</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="n">face_id</span><span class="p">]</span>
-
 <div class="viewcode-block" id="Element.face"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.face">[docs]</a>    <span class="k">def</span> <span class="nf">face</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the face dictionary corresponding to face_id.</span>
 
@@ -834,7 +752,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            face_id: name or index of the face, default=0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">default_faces</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_resolve_face</span><span class="p">(</span><span class="n">face_id</span><span class="p">)]</span></div>
+        <span class="k">return</span> <span class="n">default_faces</span><span class="p">[</span><span class="n">_resolve_face</span><span class="p">(</span><span class="n">face_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">)]</span></div>
 
 <div class="viewcode-block" id="Element.pcell_params_by_name"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.pcell_params_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">pcell_params_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Give PCell parameters as a dictionary.</span>
@@ -945,11 +863,26 @@
             <span class="n">text</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DText</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">refpoint</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">refpoint</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;refpoints&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
 
+    <span class="k">def</span> <span class="nf">_etch_opposite_face</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add opposite face etching, if enabled.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">etch_opposite_face</span><span class="p">:</span>
+            <span class="n">etch_shape</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">begin_shapes_rec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">)))</span><span class="o">.</span><span class="n">merged</span><span class="p">()</span>
+            <span class="n">etch_shape</span><span class="o">.</span><span class="n">size</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">etch_opposite_face_margin</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
+            <span class="n">protection</span> <span class="o">=</span> <span class="n">etch_shape</span><span class="o">.</span><span class="n">sized</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">margin</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
+            <span class="n">face</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">opposing_face_id_groups</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">group</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">other_face</span> <span class="ow">in</span> <span class="n">group</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">other_face</span> <span class="o">!=</span> <span class="n">face</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">,</span> <span class="n">other_face</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">etch_shape</span><span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">,</span> <span class="n">other_face</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">protection</span><span class="p">)</span>
+
 <div class="viewcode-block" id="Element.build"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Child classes re-define this method to build the PCell.&quot;&quot;&quot;</span></div>
 
 <div class="viewcode-block" id="Element.post_build"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.post_build">[docs]</a>    <span class="k">def</span> <span class="nf">post_build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Child classes re-define this method for post-build operations&quot;&quot;&quot;</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Child classes may re-define this method for post-build operations.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_etch_opposite_face</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Element.display_text_impl"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.display_text_impl">[docs]</a>    <span class="k">def</span> <span class="nf">display_text_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="p">:</span>
@@ -1058,13 +991,15 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Element.add_protection"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.add_protection">[docs]</a>    <span class="k">def</span> <span class="nf">add_protection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add ground grid protection shape</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add ground grid avoidance shape on given face (and on opposing face if self.protect_opposite_face is True).</span>
+<span class="sd">        Use this function to protect signal carrying elements that typically include some metal between gaps.</span>
+<span class="sd">        Do not use this function with pure flip-chip connectors, TSVs, or airbridges that doesn&#39;t include metal gaps.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">             shape: The shape (Region, DPolygon, etc.) to add to ground_grid_avoidance layer</span>
 <span class="sd">             face_id: Name or index of the primary face of ground_grid_avoidance layer, default=0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">face</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_face</span><span class="p">(</span><span class="n">face_id</span><span class="p">)</span>
+        <span class="n">face</span> <span class="o">=</span> <span class="n">_resolve_face</span><span class="p">(</span><span class="n">face_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">,</span> <span class="n">face</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">protect_opposite_face</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">opposing_face_id_groups</span><span class="p">:</span>
@@ -1182,46 +1117,30 @@
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2021-2024, IQM.
-
-    </p>
+    <p>&#169; Copyright 2021-2024, IQM.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

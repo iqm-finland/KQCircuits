@@ -1,48 +1,24 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>Python workflow tutorial &mdash; KQCircuits  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
-
-  
-  
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="shortcut icon" href="../_static/logo.svg"/>
-  
-
-  
-  
-
-  
-
-  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
+    <script src="../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -50,48 +26,26 @@
     <link rel="prev" title="Point-and-click workflow tutorial" href="gui_workflow.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-          
 
           
-            <a href="../index.html">
           
-
-          
+          <a href="../index.html">
             
-            <img src="../_static/logo-small.png" class="logo" alt="Logo"/>
-          
+              <img src="../_static/logo-small.png" class="logo" alt="Logo"/>
           </a>
-
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../installation.html#klayout">KLayout</a></li>
@@ -474,77 +428,33 @@
 <li class="toctree-l1"><a class="reference internal" href="../about.html">About</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">KQCircuits</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="index.html">User Guide</a> &raquo;</li>
-        
-      <li>Python workflow tutorial</li>
-    
-    
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">User Guide</a></li>
+      <li class="breadcrumb-item active">Python workflow tutorial</li>
       <li class="wy-breadcrumbs-aside">
-        
-          
-            
               <a href="https://github.com/iqm-finland/KQCircuits/blob/main/docs/user_guide/python_workflow.rst" class="fa fa-github"> Edit on GitHub</a>
-            
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="python-workflow-tutorial">
-<span id="python-workflow"></span><h1>Python workflow tutorial<a class="headerlink" href="#python-workflow-tutorial" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="python-workflow-tutorial">
+<span id="python-workflow"></span><h1>Python workflow tutorial<a class="headerlink" href="#python-workflow-tutorial" title="Permalink to this headline"></a></h1>
 <p>This is a collection of tips and tricks about the “Python workflow”.</p>
 <p>To unlock the full potential of KQCircuits the user often needs to define new Chips and Elements,
 which is done by writing Python code. This can be done in the Macro Editor included in KLayout, or
@@ -552,8 +462,8 @@ using any external code editor. To start working with the KQCircuits code base d
 <a class="reference internal" href="../developer/setup.html#developer-setup"><span class="std std-ref">Developer Setup</span></a>. In addition to KQCircuits documentation it is useful
 to check the <a class="reference external" href="https://www.klayout.de/doc.html">KLayout documentation</a> when
 writing Python code for new elements.</p>
-<div class="section" id="file-system-hierarchy">
-<h2>File system hierarchy<a class="headerlink" href="#file-system-hierarchy" title="Permalink to this headline">¶</a></h2>
+<section id="file-system-hierarchy">
+<h2>File system hierarchy<a class="headerlink" href="#file-system-hierarchy" title="Permalink to this headline"></a></h2>
 <p>In the KQCircuits root folder the most important folder for most users is the
 <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package">klayout_package</a> folder, which is also all that is included in the Salt
 package. Other folders are mainly for automatic tests and documentation.
@@ -570,11 +480,11 @@ scripts for generating simulation files or mask files. Usually, these files are
 not meant to be imported in other Python files. The outputs of
 simulation or mask scripts can be found in the <code class="docutils literal notranslate"><span class="pre">tmp</span></code> folder below the main
 KQCircuits folder.</p>
-</div>
-<div class="section" id="structure-of-element-code">
-<h2>Structure of Element code<a class="headerlink" href="#structure-of-element-code" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="element-class">
-<h3><a class="reference internal" href="../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a> class<a class="headerlink" href="#element-class" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="structure-of-element-code">
+<h2>Structure of Element code<a class="headerlink" href="#structure-of-element-code" title="Permalink to this headline"></a></h2>
+<section id="element-class">
+<h3><a class="reference internal" href="../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a> class<a class="headerlink" href="#element-class" title="Permalink to this headline"></a></h3>
 <p>Any KQCircuits Elements must be derived from the <a class="reference internal" href="../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a> class, and we
 call them “elements”. For example, to define a new element <code class="docutils literal notranslate"><span class="pre">MyElement</span></code> you
 would start the code with:</p>
@@ -593,9 +503,9 @@ and for using layers, a refpoint system for positioning elements, nicer
 parameter syntax, automatic loading into a library, and more.
 Further details about the code architecture of KQCircuits elements can be
 found in <a class="reference internal" href="../developer/architecture.html#architecture-elements"><span class="std std-ref">Elements</span></a>.</p>
-</div>
-<div class="section" id="libraries">
-<h3>Libraries<a class="headerlink" href="#libraries" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="libraries">
+<h3>Libraries<a class="headerlink" href="#libraries" title="Permalink to this headline"></a></h3>
 <p>There are separate libraries in KQCircuits for certain kinds of
 elements, such as qubits or chips. To add your element into a specific
 library, it must be put in the corresponding subfolder (or its subfolders) in
@@ -613,9 +523,9 @@ libraries see the KLayout documentation pages
 <a class="reference external" href="https://www.klayout.de/doc-qt5/about/about_libraries.html">About Libraries</a>,
 <a class="reference external" href="https://www.klayout.de/doc-qt5/code/class_Library.html">Class Library</a>, and
 <a class="reference external" href="https://www.klayout.de/doc-qt5/programming/ruby_pcells.html#h2-426">Coding PCells In Ruby</a> (in Ruby).</p>
-</div>
-<div class="section" id="parameters">
-<span id="python-workflow-parameters"></span><h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="parameters">
+<span id="python-workflow-parameters"></span><h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline"></a></h3>
 <p>Different element instances with varying features can be created by setting different parameters.
 Parameters can be modified in GUI or when creating the instance in code.
 The parameters of a KQCircuits element are defined using <code class="docutils literal notranslate"><span class="pre">Param</span></code>
@@ -627,16 +537,16 @@ objects as class-level variables, for example:</p>
 optionally some other information such as the unit or <code class="docutils literal notranslate"><span class="pre">hidden=True</span></code> to hide
 it from GUI. More information about parameters can be found in
 <a class="reference internal" href="../developer/architecture.html#architecture-parameters"><span class="std std-ref">PCell parameters</span></a> section.</p>
-</div>
-<div class="section" id="build">
-<h3>Build<a class="headerlink" href="#build" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="build">
+<h3>Build<a class="headerlink" href="#build" title="Permalink to this headline"></a></h3>
 <p>The geometry for any KQCircuit element is created in the <code class="docutils literal notranslate"><span class="pre">build</span></code> method, so
 generally you should define at least that method in your element classes. See
 <a class="reference internal" href="../developer/architecture.html#architecture-elements"><span class="std std-ref">Elements</span></a> section for more details about how this works.</p>
-</div>
-</div>
-<div class="section" id="example-of-defining-an-element-class">
-<h2>Example of defining an <a class="reference internal" href="../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a> class<a class="headerlink" href="#example-of-defining-an-element-class" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="example-of-defining-an-element-class">
+<h2>Example of defining an <a class="reference internal" href="../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a> class<a class="headerlink" href="#example-of-defining-an-element-class" title="Permalink to this headline"></a></h2>
 <p>In Elements, one often uses the <a class="reference external" href="https://www.klayout.de/doc-qt5/code/module_db.html">KLayout geometry API</a> to define
 shapes (such as <code class="docutils literal notranslate"><span class="pre">DBox</span></code> and <code class="docutils literal notranslate"><span class="pre">DPolygon</span></code>), and insert the shapes into the appropriate KQCircuits layers.</p>
 <p>Here is an example of defining a new element, with code comments explaining the different parts:</p>
@@ -686,9 +596,9 @@ shapes (such as <code class="docutils literal notranslate"><span class="pre">DBo
 new Python-file <code class="docutils literal notranslate"><span class="pre">simple_cross.py</span></code> in the
 <code class="docutils literal notranslate"><span class="pre">klayout_package/python/kqcircuits/elements</span></code> folder, or in the corresponding folder in your user package if you are
 using the Salt installation. After reloading the libraries, <code class="docutils literal notranslate"><span class="pre">SimpleCross</span></code> can be used like any other KQCircuits element.</p>
-</div>
-<div class="section" id="example-of-defining-a-chip-and-inserting-elements-into-it">
-<h2>Example of defining a Chip and inserting elements into it<a class="headerlink" href="#example-of-defining-a-chip-and-inserting-elements-into-it" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="example-of-defining-a-chip-and-inserting-elements-into-it">
+<h2>Example of defining a Chip and inserting elements into it<a class="headerlink" href="#example-of-defining-a-chip-and-inserting-elements-into-it" title="Permalink to this headline"></a></h2>
 <p>Many elements not only create their own geometry from scratch, but also
 include other elements as subcells. This is especially true for chips, which
 typically use existing elements as building blocks instead of producing shapes
@@ -734,8 +644,8 @@ element created in the previous section into a new chip:</p>
 <p>This code can be copied to a new Python-file <code class="docutils literal notranslate"><span class="pre">new_chip1.py</span></code> in the
 <code class="docutils literal notranslate"><span class="pre">klayout_package/python/kqcircuits/chips</span></code> folder to make it visible in the
 KQCircuits chip library.</p>
-<div class="section" id="defining-sampleholder-types">
-<h3>Defining sampleholder types<a class="headerlink" href="#defining-sampleholder-types" title="Permalink to this headline">¶</a></h3>
+<section id="defining-sampleholder-types">
+<h3>Defining sampleholder types<a class="headerlink" href="#defining-sampleholder-types" title="Permalink to this headline"></a></h3>
 <p>In the previous example we used:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">produce_launchers</span><span class="p">(</span><span class="s2">&quot;SMA8&quot;</span><span class="p">)</span>
 </pre></div>
@@ -762,10 +672,10 @@ example:</p>
 </div>
 <p>A quick way to check all available sampleholder types is to use the
 <a class="reference internal" href="../api/kqcircuits.chips.launchers.html#kqcircuits.chips.launchers.Launchers" title="kqcircuits.chips.launchers.Launchers"><code class="xref py py-class docutils literal notranslate"><span class="pre">Launchers</span></code></a> chip and change its <code class="docutils literal notranslate"><span class="pre">sampleholder_type</span></code> parameter.</p>
-</div>
-</div>
-<div class="section" id="refpoints">
-<span id="python-workflow-refpoints"></span><h2>Refpoints<a class="headerlink" href="#refpoints" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="refpoints">
+<span id="python-workflow-refpoints"></span><h2>Refpoints<a class="headerlink" href="#refpoints" title="Permalink to this headline"></a></h2>
 <p>In an Element definition <code class="docutils literal notranslate"><span class="pre">refpoints</span></code> is just a dictionary of points. You can add to it by
 assigning a point to a name, <code class="docutils literal notranslate"><span class="pre">self.refpoints['name']</span> <span class="pre">=</span> <span class="pre">pya.DPoint(...)</span></code>.</p>
 <p>There are several ways the refpoints are used:</p>
@@ -838,9 +748,9 @@ refpoints. If there are many overlapping refpoints the texts can be hard to read
 <code class="docutils literal notranslate"><span class="pre">texts/top</span> <span class="pre">refpoints</span></code> layer may be used to see only the top-level refpoints. For this choose a new
 top cell by right clicking the chip in the cell view of KLayout and selecting “Show As New Top”.
 This can be very useful to see “chip-level” refpoints only.</p>
-</div>
-<div class="section" id="kqcircuits-layers">
-<h2>KQCircuits’ Layers<a class="headerlink" href="#kqcircuits-layers" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="kqcircuits-layers">
+<h2>KQCircuits’ Layers<a class="headerlink" href="#kqcircuits-layers" title="Permalink to this headline"></a></h2>
 <p>KLayout’s right panel shows a layer tree. Layers containing meaningful device geometry are grouped
 by faces: <code class="docutils literal notranslate"><span class="pre">1t1-face</span></code>, <code class="docutils literal notranslate"><span class="pre">2b1-face</span></code> and <code class="docutils literal notranslate"><span class="pre">2t1-face</span></code>. By default layer numbers 0-127 are used for
 the bottom face of the chips and 128-255 are used for the top face, and the data type indicates the
@@ -867,9 +777,9 @@ in the geometry are also automatically resolved, such that elements that should 
 Hidden by default.</p></li>
 </ul>
 <p>Find more details in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/defaults.py">defaults.py</a>.</p>
-</div>
-<div class="section" id="faces">
-<h2>Faces<a class="headerlink" href="#faces" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="faces">
+<h2>Faces<a class="headerlink" href="#faces" title="Permalink to this headline"></a></h2>
 <p>KQCircuit layers are grouped by faces and functionality. A chip’s “face” intuitively means the
 bottom or top sides of it. To identify faces in multi chip configurations we number the chips from
 “1”. For technical reasons we permit multiple faces in a particular side. For example “2b1” denotes
@@ -897,8 +807,8 @@ placed in:</p>
 <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">FlipChipConnectorRf</span><span class="p">,</span> <span class="n">face_ids</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 </pre></div>
 </div>
-<div class="section" id="layer-configuration-files">
-<h3>Layer configuration files<a class="headerlink" href="#layer-configuration-files" title="Permalink to this headline">¶</a></h3>
+<section id="layer-configuration-files">
+<h3>Layer configuration files<a class="headerlink" href="#layer-configuration-files" title="Permalink to this headline"></a></h3>
 <p>Layer configuration files are used to define the names of layers and faces, and
 many other values related to them. The <code class="docutils literal notranslate"><span class="pre">layer_config_path</span></code> variable in
 <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/defaults.py">defaults.py</a>
@@ -915,9 +825,9 @@ directory. Currently included are
 <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/layer_config/example_layer_config.py">example_layer_config.py</a>
 which may be useful as a starting point to define your own layer
 configuration file.</p>
-</div>
-<div class="section" id="adding-a-new-face">
-<h3>Adding a new face<a class="headerlink" href="#adding-a-new-face" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="adding-a-new-face">
+<h3>Adding a new face<a class="headerlink" href="#adding-a-new-face" title="Permalink to this headline"></a></h3>
 <p>New layers and new faces can be added in
 <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/defaults.py">defaults.py</a>
 by modifying <code class="docutils literal notranslate"><span class="pre">default_layers</span></code> and <code class="docutils literal notranslate"><span class="pre">default_faces</span></code>. As an example, let’s
@@ -953,10 +863,10 @@ configuration file) must be modified or another layer properties file must be
 set as default in KLayout Setup menu. The layer properties file can be edited
 directly or by modifying the layers list in GUI and saving them using KLayout
 <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">-&gt;</span> <span class="pre">Save</span> <span class="pre">Layer</span> <span class="pre">Properties</span></code>.</p>
-</div>
-</div>
-<div class="section" id="opening-element-or-chip-from-an-ide">
-<h2>Opening <a class="reference internal" href="../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a> or <a class="reference internal" href="../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip" title="kqcircuits.chips.chip.Chip"><code class="xref py py-class docutils literal notranslate"><span class="pre">Chip</span></code></a> from an IDE<a class="headerlink" href="#opening-element-or-chip-from-an-ide" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="opening-element-or-chip-from-an-ide">
+<h2>Opening <a class="reference internal" href="../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a> or <a class="reference internal" href="../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip" title="kqcircuits.chips.chip.Chip"><code class="xref py py-class docutils literal notranslate"><span class="pre">Chip</span></code></a> from an IDE<a class="headerlink" href="#opening-element-or-chip-from-an-ide" title="Permalink to this headline"></a></h2>
 <p>You can use <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/util/create_element_from_path.py">util/create_element_from_path.py</a> to open a
 <a class="reference internal" href="../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a> or <a class="reference internal" href="../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip" title="kqcircuits.chips.chip.Chip"><code class="xref py py-class docutils literal notranslate"><span class="pre">Chip</span></code></a> in KLayout from your IDE (or just straight from the
 command-line).  The script is used as:</p>
@@ -969,55 +879,38 @@ as a file path that starts from <cite>*Circuits</cite> or <cite>klayout_package/
 The <code class="docutils literal notranslate"><span class="pre">element_path</span></code> argument can also be given as an absolute path as long as it has
 <cite>*Circuits/klayout_package/python</cite> in the path.
 Use what is easiest to implement for your workflow.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="macro_workflow.html" class="btn btn-neutral float-right" title="Macro development" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="gui_workflow.html" class="btn btn-neutral float-left" title="Point-and-click workflow tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="macro_workflow.html" class="btn btn-neutral float-right" title="Macro development" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2021-2024, IQM.
-
-    </p>
+    <p>&#169; Copyright 2021-2024, IQM.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>
