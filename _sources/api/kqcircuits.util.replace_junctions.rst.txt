@@ -1,0 +1,10 @@
+kqcircuits.util.replace\_junctions
+==================================
+
+.. automodule:: kqcircuits.util.replace_junctions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.util.replace_junctions
+.. image:: ../pcell_images/kqcircuits.util.replace_junctions.png

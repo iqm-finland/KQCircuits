@@ -389,6 +389,7 @@
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.count_instances.html">kqcircuits.util.count_instances</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.coupler_lib.html">kqcircuits.util.coupler_lib</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.deep_delete.html">kqcircuits.util.deep_delete</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.defaults_helper.html">kqcircuits.util.defaults_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.export_helper.html">kqcircuits.util.export_helper</a></li>
@@ -407,7 +408,7 @@
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.plugin_startup.html">kqcircuits.util.plugin_startup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.refpoints.html">kqcircuits.util.refpoints</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.replace_squids.html">kqcircuits.util.replace_squids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.replace_junctions.html">kqcircuits.util.replace_junctions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.symmetric_polygons.html">kqcircuits.util.symmetric_polygons</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.html#module-kqcircuits.util">Module contents</a></li>
 </ul>
@@ -811,15 +812,17 @@
 </li>
       <li><a href="api/kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.convert_cells_to_code">convert_cells_to_code() (in module kqcircuits.util.layout_to_code)</a>
 </li>
+      <li><a href="api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.convert_cells_to_static">convert_cells_to_static() (in module kqcircuits.util.replace_junctions)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/kqcircuits.util.replace_squids.html#kqcircuits.util.replace_squids.convert_cells_to_static">convert_cells_to_static() (in module kqcircuits.util.replace_squids)</a>
-</li>
       <li><a href="api/kqcircuits.util.merge.html#kqcircuits.util.merge.convert_child_instances_to_static">convert_child_instances_to_static() (in module kqcircuits.util.merge)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.copy_ansys_scripts_to_directory">copy_ansys_scripts_to_directory() (in module kqcircuits.simulations.export.ansys.ansys_export)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.copy_elmer_scripts_to_directory">copy_elmer_scripts_to_directory() (in module kqcircuits.simulations.export.elmer.elmer_export)</a>
+</li>
+      <li><a href="api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.copy_one_layer_of_cell">copy_one_layer_of_cell() (in module kqcircuits.util.replace_junctions)</a>
 </li>
       <li><a href="api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.copy_port">copy_port() (kqcircuits.elements.element.Element method)</a>
 </li>
@@ -1011,10 +1014,10 @@
 </li>
       <li><a href="api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_docs">export_docs() (in module kqcircuits.masks.mask_export)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.export_drc">export_drc (kqcircuits.masks.mask_set.MaskSet attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.export_drc_report">export_drc_report() (in module kqcircuits.util.export_helper)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer">export_elmer() (in module kqcircuits.simulations.export.elmer.elmer_export)</a>
@@ -1022,6 +1025,8 @@
       <li><a href="api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer_json">export_elmer_json() (in module kqcircuits.simulations.export.elmer.elmer_export)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer_script">export_elmer_script() (in module kqcircuits.simulations.export.elmer.elmer_export)</a>
+</li>
+      <li><a href="api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_junction_parameters">export_junction_parameters() (in module kqcircuits.masks.mask_export)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.export.util.html#kqcircuits.simulations.export.util.export_layers">export_layers() (in module kqcircuits.simulations.export.util)</a>
 </li>
@@ -1052,6 +1057,8 @@
       <li><a href="api/kqcircuits.layer_cluster.html#kqcircuits.layer_cluster.LayerCluster.extra_layers">extra_layers (kqcircuits.layer_cluster.LayerCluster attribute)</a>
 </li>
       <li><a href="api/kqcircuits.util.netlist_extraction.html#kqcircuits.util.netlist_extraction.extract_circuits">extract_circuits() (in module kqcircuits.util.netlist_extraction)</a>
+</li>
+      <li><a href="api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.extract_junctions">extract_junctions() (in module kqcircuits.util.replace_junctions)</a>
 </li>
       <li><a href="api/kqcircuits.util.netlist_extraction.html#kqcircuits.util.netlist_extraction.extract_nets">extract_nets() (in module kqcircuits.util.netlist_extraction)</a>
 </li>
@@ -1093,12 +1100,14 @@
 </li>
       <li><a href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.face_z_levels">face_z_levels() (kqcircuits.simulations.simulation.Simulation method)</a>
 </li>
-      <li><a href="api/kqcircuits.simulations.export.util.html#kqcircuits.simulations.export.util.find_edge_from_point_in_cell">find_edge_from_point_in_cell() (in module kqcircuits.simulations.export.util)</a>
+      <li><a href="api/kqcircuits.util.defaults_helper.html#kqcircuits.util.defaults_helper.find_ansys_executable">find_ansys_executable() (in module kqcircuits.util.defaults_helper)</a>
 </li>
-      <li><a href="api/kqcircuits.simulations.export.util.html#kqcircuits.simulations.export.util.find_edge_from_point_in_polygons">find_edge_from_point_in_polygons() (in module kqcircuits.simulations.export.util)</a>
+      <li><a href="api/kqcircuits.simulations.export.util.html#kqcircuits.simulations.export.util.find_edge_from_point_in_cell">find_edge_from_point_in_cell() (in module kqcircuits.simulations.export.util)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/kqcircuits.simulations.export.util.html#kqcircuits.simulations.export.util.find_edge_from_point_in_polygons">find_edge_from_point_in_polygons() (in module kqcircuits.simulations.export.util)</a>
+</li>
       <li><a href="api/kqcircuits.simulations.export.xsection.xsection_export.html#kqcircuits.simulations.export.xsection.xsection_export.find_layer_by_name">find_layer_by_name() (in module kqcircuits.simulations.export.xsection.xsection_export)</a>
 </li>
       <li><a href="api/kqcircuits.elements.finger_capacitor_square.html#kqcircuits.elements.finger_capacitor_square.FingerCapacitorSquare.finger_area_length">finger_area_length() (kqcircuits.elements.finger_capacitor_square.FingerCapacitorSquare method)</a>
@@ -1205,10 +1214,10 @@
 </li>
       <li><a href="api/kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.get_node_params">get_node_params() (in module kqcircuits.util.layout_to_code)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.util.gui_helper.html#kqcircuits.util.gui_helper.get_nodes_near_position">get_nodes_near_position() (in module kqcircuits.util.gui_helper)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.get_object_path_length">get_object_path_length() (in module kqcircuits.util.geometry_helper)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_parameters">get_parameters() (kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation method)</a>
@@ -1278,6 +1287,8 @@
       <li><a href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.get_simulation_layer_by_name">get_simulation_layer_by_name() (in module kqcircuits.simulations.simulation)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.single_element_simulation.html#kqcircuits.simulations.single_element_simulation.get_single_element_sim_class">get_single_element_sim_class() (in module kqcircuits.simulations.single_element_simulation)</a>
+</li>
+      <li><a href="api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.get_tuned_junction_json">get_tuned_junction_json() (in module kqcircuits.util.replace_junctions)</a>
 </li>
       <li><a href="api/kqcircuits.util.gui_helper.html#kqcircuits.util.gui_helper.get_valid_node_elements">get_valid_node_elements() (in module kqcircuits.util.gui_helper)</a>
 </li>
@@ -1349,12 +1360,14 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.junctions.junction.html#kqcircuits.junctions.junction.Junction">Junction (class in kqcircuits.junctions.junction)</a>
 </li>
-      <li><a href="api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.JunctionSimPort">JunctionSimPort (class in kqcircuits.util.refpoints)</a>
+      <li><a href="api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.JunctionEntry">JunctionEntry (class in kqcircuits.util.replace_junctions)</a>
 </li>
-      <li><a href="api/kqcircuits.chips.junction_test.html#kqcircuits.chips.junction_test.JunctionTest">JunctionTest (class in kqcircuits.chips.junction_test)</a>
+      <li><a href="api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.JunctionSimPort">JunctionSimPort (class in kqcircuits.util.refpoints)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/kqcircuits.chips.junction_test.html#kqcircuits.chips.junction_test.JunctionTest">JunctionTest (class in kqcircuits.chips.junction_test)</a>
+</li>
       <li><a href="api/kqcircuits.chips.junction_test2.html#kqcircuits.chips.junction_test2.JunctionTest2">JunctionTest2 (class in kqcircuits.chips.junction_test2)</a>
 </li>
       <li><a href="api/kqcircuits.test_structures.junction_test_pads.junction_test_pads.html#kqcircuits.test_structures.junction_test_pads.junction_test_pads.JunctionTestPads">JunctionTestPads (class in kqcircuits.test_structures.junction_test_pads.junction_test_pads)</a>
@@ -2307,6 +2320,13 @@
 </li>
       </ul></li>
       <li>
+    kqcircuits.util.defaults_helper
+
+      <ul>
+        <li><a href="api/kqcircuits.util.defaults_helper.html#module-kqcircuits.util.defaults_helper">module</a>
+</li>
+      </ul></li>
+      <li>
     kqcircuits.util.dependencies
 
       <ul>
@@ -2433,10 +2453,10 @@
 </li>
       </ul></li>
       <li>
-    kqcircuits.util.replace_squids
+    kqcircuits.util.replace_junctions
 
       <ul>
-        <li><a href="api/kqcircuits.util.replace_squids.html#module-kqcircuits.util.replace_squids">module</a>
+        <li><a href="api/kqcircuits.util.replace_junctions.html#module-kqcircuits.util.replace_junctions">module</a>
 </li>
       </ul></li>
       <li>
@@ -2874,6 +2894,8 @@
 </li>
         <li><a href="api/kqcircuits.util.deep_delete.html#module-kqcircuits.util.deep_delete">kqcircuits.util.deep_delete</a>
 </li>
+        <li><a href="api/kqcircuits.util.defaults_helper.html#module-kqcircuits.util.defaults_helper">kqcircuits.util.defaults_helper</a>
+</li>
         <li><a href="api/kqcircuits.util.dependencies.html#module-kqcircuits.util.dependencies">kqcircuits.util.dependencies</a>
 </li>
         <li><a href="api/kqcircuits.util.edit_node_plugin.html#module-kqcircuits.util.edit_node_plugin">kqcircuits.util.edit_node_plugin</a>
@@ -2910,7 +2932,7 @@
 </li>
         <li><a href="api/kqcircuits.util.refpoints.html#module-kqcircuits.util.refpoints">kqcircuits.util.refpoints</a>
 </li>
-        <li><a href="api/kqcircuits.util.replace_squids.html#module-kqcircuits.util.replace_squids">kqcircuits.util.replace_squids</a>
+        <li><a href="api/kqcircuits.util.replace_junctions.html#module-kqcircuits.util.replace_junctions">kqcircuits.util.replace_junctions</a>
 </li>
         <li><a href="api/kqcircuits.util.symmetric_polygons.html#module-kqcircuits.util.symmetric_polygons">kqcircuits.util.symmetric_polygons</a>
 </li>
@@ -2990,6 +3012,8 @@
 </li>
       </ul></li>
       <li><a href="api/kqcircuits.util.parameters.html#kqcircuits.util.parameters.pdt">pdt (class in kqcircuits.util.parameters)</a>
+</li>
+      <li><a href="api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.place_junctions">place_junctions() (in module kqcircuits.util.replace_junctions)</a>
 </li>
       <li><a href="api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.point_shift_along_vector">point_shift_along_vector() (in module kqcircuits.util.geometry_helper)</a>
 </li>
@@ -3259,9 +3283,9 @@
 </li>
       <li><a href="api/kqcircuits.util.gui_helper.html#kqcircuits.util.gui_helper.replace_node">replace_node() (in module kqcircuits.util.gui_helper)</a>
 </li>
-      <li><a href="api/kqcircuits.util.replace_squids.html#kqcircuits.util.replace_squids.replace_squid">replace_squid() (in module kqcircuits.util.replace_squids)</a>
+      <li><a href="api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.replace_squid">replace_squid() (in module kqcircuits.util.replace_junctions)</a>
 </li>
-      <li><a href="api/kqcircuits.util.replace_squids.html#kqcircuits.util.replace_squids.replace_squids">replace_squids() (in module kqcircuits.util.replace_squids)</a>
+      <li><a href="api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.replace_squids">replace_squids() (in module kqcircuits.util.replace_junctions)</a>
 </li>
       <li><a href="api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.resolve_default_layer_info">resolve_default_layer_info() (in module kqcircuits.klayout_view)</a>
 </li>
