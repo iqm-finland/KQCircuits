@@ -360,6 +360,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.airbridges_sim.html">kqcircuits.simulations.airbridges_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.cross_section_simulation.html">kqcircuits.simulations.cross_section_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.partition_region.html">kqcircuits.simulations.partition_region</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.port.html">kqcircuits.simulations.port</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.simulation.html">kqcircuits.simulations.simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.single_element_simulation.html">kqcircuits.simulations.single_element_simulation</a></li>
@@ -458,13 +459,79 @@
 <span id="kqcircuits-util-export-helper"></span><h1>kqcircuits.util.export_helper<a class="headerlink" href="#module-kqcircuits.util.export_helper" title="Permalink to this headline"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.util.export_helper.generate_probepoints_json">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.export_helper.</span></span><span class="sig-name descname"><span class="pre">generate_probepoints_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1t1'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/export_helper.html#generate_probepoints_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.export_helper.generate_probepoints_json" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.export_helper.</span></span><span class="sig-name descname"><span class="pre">generate_probepoints_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">klayout.dbcore.Cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'1t1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flip_face</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">references</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['nw']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contact</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">klayout.dbcore.DPoint</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">klayout.dbcore.DPoint</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">klayout.dbcore.DPoint</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">klayout.dbcore.DPoint</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="../_modules/kqcircuits/util/export_helper.html#generate_probepoints_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.export_helper.generate_probepoints_json" title="Permalink to this definition"></a></dt>
+<dd><p>For given cell, collects probepoints from cell’s refpoints into a json Dict.</p>
+<p>A refpoint is a probepoint if it</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>contains some string from <code class="docutils literal notranslate"><span class="pre">default_probe_types</span></code> and</p></li>
+<li><p>has a suffix from <code class="docutils literal notranslate"><span class="pre">default_probe_suffixes</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>Json format consists of {‘x’: x, ‘y’: y} type 2d points, in millimeter units.
+The returned json object consists of:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>an ‘alignment’ point, which tells the position of the reference marker defined in references marker and</p></li>
+<li><p>‘sites’ list. Each entry of the list has a ‘west’ and ‘east’ point, and also a unique ‘id’ as string</p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cell</strong> (<em>*</em>) – cell from which to collect probepoints</p></li>
+<li><p><strong>face</strong> (<em>*</em>) – name of the face from where to collect probepoints</p></li>
+<li><p><strong>flip_face</strong> (<em>*</em>) – explicitly specifies if the points should be flipped around the y-axis.
+Can be set to None, in which case will infer whether to flip points from the <code class="docutils literal notranslate"><span class="pre">face</span></code> arg</p></li>
+<li><p><strong>references</strong> (<em>*</em>) – a list of markers to use as alignment references. String values are one of
+“nw”, “ne”, “sw”, “se”. If multiple values supplied, the resulting json will have
+“groups” key on top level, with each group containing the marker string as ‘id’
+and its own ‘alignment’ and ‘sites’ values, grouping each site to its closest marker.</p></li>
+<li><p><strong>contact</strong> (<em>*</em>) – a manually defined contact probe, a tuple of two DPoints.
+Can be None so no “contact” site is added, or can be a list if a different “contact”
+site is needed for each reference</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="kqcircuits.util.export_helper.flip">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.export_helper.</span></span><span class="sig-name descname"><span class="pre">flip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/export_helper.html#flip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.export_helper.flip" title="Permalink to this definition"></a></dt>
-<dd><p>Gets correct flip chip coordinates by setting a new origin and mirroring <code class="docutils literal notranslate"><span class="pre">point</span></code> by the y-axis.</p>
+<dt class="sig sig-object py" id="kqcircuits.util.export_helper.generate_probepoints_from_file">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.export_helper.</span></span><span class="sig-name descname"><span class="pre">generate_probepoints_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'1t1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flip_face</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">references</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['nw']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contact</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">klayout.dbcore.DPoint</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">klayout.dbcore.DPoint</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">klayout.dbcore.DPoint</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">klayout.dbcore.DPoint</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="../_modules/kqcircuits/util/export_helper.html#generate_probepoints_from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.export_helper.generate_probepoints_from_file" title="Permalink to this definition"></a></dt>
+<dd><p>For an OAS and GDS file containing a chip at its top cell,
+collects probepoints from cell’s refpoints into a json Dict.
+A refpoint is a probepoint if it</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>contains some string from <code class="docutils literal notranslate"><span class="pre">default_probe_types</span></code> and</p></li>
+<li><p>has a suffix from <code class="docutils literal notranslate"><span class="pre">default_probe_suffixes</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>Json format consists of {‘x’: x, ‘y’: y} type 2d points, in millimeter units.
+The returned json object consists of:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>an ‘alignment’ point, which tells the position of the reference marker defined in references marker and</p></li>
+<li><p>‘sites’ list. Each entry of the list has a ‘west’ and ‘east’ point, and also a unique ‘id’ as string</p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cell_file</strong> (<em>*</em>) – file path to the OAS or GDS file containing a chip at its top cell</p></li>
+<li><p><strong>face</strong> (<em>*</em>) – name of the face from where to collect probepoints</p></li>
+<li><p><strong>flip_face</strong> (<em>*</em>) – explicitly specifies if the points should be flipped around the y-axis.
+Can be set to None, in which case will infer whether to flip points from the <code class="docutils literal notranslate"><span class="pre">face</span></code> arg</p></li>
+<li><p><strong>references</strong> (<em>*</em>) – a list of markers to use as alignment references. String values are one of
+“nw”, “ne”, “sw”, “se”. If multiple values supplied, the resulting json will have
+“groups” key on top level, with each group containing the marker string as ‘id’
+and its own ‘alignment’ and ‘sites’ values, grouping each site to its closest marker.</p></li>
+<li><p><strong>contact</strong> (<em>*</em>) – a manually defined contact probe, a tuple of two DPoints.
+Can be None so no “contact” site is added, or can be a list if a different “contact”
+site is needed for each reference</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">

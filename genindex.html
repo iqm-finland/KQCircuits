@@ -357,6 +357,7 @@
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.simulations.airbridges_sim.html">kqcircuits.simulations.airbridges_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.simulations.cross_section_simulation.html">kqcircuits.simulations.cross_section_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.simulations.partition_region.html">kqcircuits.simulations.partition_region</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.simulations.port.html">kqcircuits.simulations.port</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.simulations.simulation.html">kqcircuits.simulations.simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.simulations.single_element_simulation.html">kqcircuits.simulations.single_element_simulation</a></li>
@@ -826,6 +827,8 @@
 </li>
       <li><a href="api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.covered_region_excluded_layers">covered_region_excluded_layers (kqcircuits.masks.mask_layout.MaskLayout attribute)</a>
 </li>
+      <li><a href="api/kqcircuits.simulations.partition_region.html#kqcircuits.simulations.partition_region.PartitionRegion.covers_face">covers_face() (kqcircuits.simulations.partition_region.PartitionRegion method)</a>
+</li>
       <li><a href="api/kqcircuits.elements.airbridges.airbridge.html#kqcircuits.elements.airbridges.airbridge.Airbridge.create">create() (kqcircuits.elements.airbridges.airbridge.Airbridge class method)</a>
 
       <ul>
@@ -1106,8 +1109,6 @@
 </li>
       <li><a href="api/kqcircuits.elements.finger_capacitor_taper.html#kqcircuits.elements.finger_capacitor_taper.FingerCapacitorTaper">FingerCapacitorTaper (class in kqcircuits.elements.finger_capacitor_taper)</a>
 </li>
-      <li><a href="api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.flip">flip() (in module kqcircuits.util.export_helper)</a>
-</li>
       <li><a href="api/kqcircuits.elements.flip_chip_connectors.flip_chip_connector.html#kqcircuits.elements.flip_chip_connectors.flip_chip_connector.FlipChipConnector">FlipChipConnector (class in kqcircuits.elements.flip_chip_connectors.flip_chip_connector)</a>
 </li>
       <li><a href="api/kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc.html#kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc.FlipChipConnectorDc">FlipChipConnectorDc (class in kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc)</a>
@@ -1132,6 +1133,8 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.generate_probepoints_from_file">generate_probepoints_from_file() (in module kqcircuits.util.export_helper)</a>
+</li>
       <li><a href="api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.generate_probepoints_json">generate_probepoints_json() (in module kqcircuits.util.export_helper)</a>
 </li>
       <li><a href="api/kqcircuits.util.geometry_json_encoder.html#kqcircuits.util.geometry_json_encoder.GeometryJsonDecoder">GeometryJsonDecoder (class in kqcircuits.util.geometry_json_encoder)</a>
@@ -1214,6 +1217,8 @@
         <li><a href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.get_parameters">(kqcircuits.simulations.simulation.Simulation method)</a>
 </li>
       </ul></li>
+      <li><a href="api/kqcircuits.simulations.partition_region.html#kqcircuits.simulations.partition_region.PartitionRegion.get_partition_region">get_partition_region() (kqcircuits.simulations.partition_region.PartitionRegion method)</a>
+</li>
       <li><a href="api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.get_pixels">get_pixels() (kqcircuits.klayout_view.KLayoutView method)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.get_port_data">get_port_data() (kqcircuits.simulations.simulation.Simulation method)</a>
@@ -1275,6 +1280,8 @@
       <li><a href="api/kqcircuits.simulations.single_element_simulation.html#kqcircuits.simulations.single_element_simulation.get_single_element_sim_class">get_single_element_sim_class() (in module kqcircuits.simulations.single_element_simulation)</a>
 </li>
       <li><a href="api/kqcircuits.util.gui_helper.html#kqcircuits.util.gui_helper.get_valid_node_elements">get_valid_node_elements() (in module kqcircuits.util.gui_helper)</a>
+</li>
+      <li><a href="api/kqcircuits.simulations.partition_region.html#kqcircuits.simulations.partition_region.PartitionRegion.get_vertical_dimension">get_vertical_dimension() (kqcircuits.simulations.partition_region.PartitionRegion method)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.ground_grid_region">ground_grid_region() (kqcircuits.simulations.simulation.Simulation method)</a>
 </li>
@@ -1891,8 +1898,6 @@
         <li><a href="api/kqcircuits.layer_cluster.html#module-kqcircuits.layer_cluster">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     kqcircuits.layer_config
 
@@ -1900,6 +1905,8 @@
         <li><a href="api/kqcircuits.layer_config.html#module-kqcircuits.layer_config">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     kqcircuits.layer_config.default_layer_config
 
@@ -2136,6 +2143,13 @@
 
       <ul>
         <li><a href="api/kqcircuits.simulations.export.xsection.xsection_export.html#module-kqcircuits.simulations.export.xsection.xsection_export">module</a>
+</li>
+      </ul></li>
+      <li>
+    kqcircuits.simulations.partition_region
+
+      <ul>
+        <li><a href="api/kqcircuits.simulations.partition_region.html#module-kqcircuits.simulations.partition_region">module</a>
 </li>
       </ul></li>
       <li>
@@ -2814,6 +2828,8 @@
 </li>
         <li><a href="api/kqcircuits.simulations.export.xsection.xsection_export.html#module-kqcircuits.simulations.export.xsection.xsection_export">kqcircuits.simulations.export.xsection.xsection_export</a>
 </li>
+        <li><a href="api/kqcircuits.simulations.partition_region.html#module-kqcircuits.simulations.partition_region">kqcircuits.simulations.partition_region</a>
+</li>
         <li><a href="api/kqcircuits.simulations.port.html#module-kqcircuits.simulations.port">kqcircuits.simulations.port</a>
 </li>
         <li><a href="api/kqcircuits.simulations.simulation.html#module-kqcircuits.simulations.simulation">kqcircuits.simulations.simulation</a>
@@ -2965,6 +2981,8 @@
         <li><a href="api/kqcircuits.elements.waveguide_coplanar.html#kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.parameters_from_shape_impl">(kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar method)</a>
 </li>
       </ul></li>
+      <li><a href="api/kqcircuits.simulations.partition_region.html#kqcircuits.simulations.partition_region.PartitionRegion">PartitionRegion (class in kqcircuits.simulations.partition_region)</a>
+</li>
       <li><a href="api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.pcell_params_by_name">pcell_params_by_name() (kqcircuits.elements.element.Element method)</a>
 
       <ul>
@@ -3059,10 +3077,10 @@
         <li><a href="api/kqcircuits.qubits.qubit.html#kqcircuits.qubits.qubit.Qubit.produce_fluxline">(kqcircuits.qubits.qubit.Qubit method)</a>
 </li>
       </ul></li>
-      <li><a href="api/kqcircuits.test_structures.test_structure.html#kqcircuits.test_structures.test_structure.TestStructure.produce_four_point_pads">produce_four_point_pads() (kqcircuits.test_structures.test_structure.TestStructure method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/kqcircuits.test_structures.test_structure.html#kqcircuits.test_structures.test_structure.TestStructure.produce_four_point_pads">produce_four_point_pads() (kqcircuits.test_structures.test_structure.TestStructure method)</a>
+</li>
       <li><a href="api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.produce_frame">produce_frame() (kqcircuits.chips.chip.Chip method)</a>
 </li>
       <li><a href="api/kqcircuits.elements.markers.marker.html#kqcircuits.elements.markers.marker.Marker.produce_geometry">produce_geometry() (kqcircuits.elements.markers.marker.Marker method)</a>

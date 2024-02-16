@@ -1,0 +1,10 @@
+kqcircuits.simulations.partition\_region
+========================================
+
+.. automodule:: kqcircuits.simulations.partition_region
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.simulations.partition_region
+.. image:: ../pcell_images/kqcircuits.simulations.partition_region.png
