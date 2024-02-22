@@ -25,7 +25,7 @@ import ScriptEnv
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "util"))
 # fmt: off
-from util import get_enabled_setup, get_enabled_sweep, create_x_vs_y_plot \
+from util import get_enabled_setup, get_enabled_sweep, create_x_vs_y_plot, get_quantities \
                  # pylint: disable=wrong-import-position,no-name-in-module
 # fmt: on
 
@@ -71,9 +71,14 @@ if design_type == "HFSS":
 
         # Create S vs frequency and S convergence reports
         unique_elements_s = [
-            "dB(St(%s,%s))" % (port_i, ports[j]) for i, port_i in enumerate(ports) for j in range(i, len(ports))
+            "St(%s,%s)" % (port_i, ports[j]) for i, port_i in enumerate(ports) for j in range(i, len(ports))
         ]  # The unique elements (half matrix), used for plotting S-matrix
-        if unique_elements_s:
+        unique_output_s = [
+            "dB(%s)" % e
+            for e in unique_elements_s
+            if e in get_quantities(oReportSetup, "Terminal Solution Data", solution, context, "Terminal S Parameter")
+        ]
+        if unique_output_s:
             create_x_vs_y_plot(
                 oReportSetup,
                 "S vs Frequency",
@@ -83,7 +88,7 @@ if design_type == "HFSS":
                 ["Freq:=", ["All"]],
                 "Freq",
                 "S [dB]",
-                unique_elements_s,
+                unique_output_s,
             )
             create_x_vs_y_plot(
                 oReportSetup,
@@ -94,13 +99,13 @@ if design_type == "HFSS":
                 ["Pass:=", ["All"], "Freq:=", ["All"]],
                 "Pass",
                 "S [dB]",
-                unique_elements_s,
+                unique_output_s,
             )
 
     elif oDesign.GetSolutionType() == "Eigenmode":
         # Create eigenmode convergence report
         solution = setup + " : AdaptivePass"
-        modes = oReportSetup.GetAllQuantities("Eigenmode Parameters", "Rectangular Plot", solution, [], "Eigen Modes")
+        modes = get_quantities(oReportSetup, "Eigenmode Parameters", solution, [], "Eigen Modes")
         create_x_vs_y_plot(
             oReportSetup,
             "Solution Convergence",
@@ -113,12 +118,26 @@ if design_type == "HFSS":
             ["re({})".format(m) for m in modes],
         )
 
-    # Create energy integral report
+    # Create integral reports
     solution = setup + " : LastAdaptive"
-    energies = oReportSetup.GetAllQuantities("Fields", "Rectangular Plot", solution, [], "Calculator Expressions")
+    integrals = get_quantities(oReportSetup, "Fields", solution, [], "Calculator Expressions")
+    energies = [e for e in integrals if e.startswith("E_") or e.startswith("Ez_") or e.startswith("Exy_")]
     if energies:
         create_x_vs_y_plot(
             oReportSetup, "Energy Integrals", "Fields", solution, [], ["Phase:=", ["0deg"]], "Phase", "E [J]", energies
+        )
+    fluxes = [e for e in integrals if e.startswith("flux_")]
+    if fluxes:
+        create_x_vs_y_plot(
+            oReportSetup,
+            "Magnetic Fluxes",
+            "Fields",
+            solution,
+            [],
+            ["Phase:=", ["0deg"]],
+            "Phase",
+            "Magnetic flux quanta",
+            fluxes,
         )
 
 elif design_type == "Q3D Extractor":

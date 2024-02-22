@@ -29,8 +29,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "util"))
 # fmt: off
 from geometry import create_box, create_rectangle, create_polygon, thicken_sheet, set_material, add_layer, subtract, \
     move_vertically, delete, objects_from_sheet_edges, add_material, set_color  # pylint: disable=wrong-import-position
-from field_calculation import add_squared_electric_field_expression,  add_energy_integral_expression \
-    # pylint: disable=wrong-import-position
+from field_calculation import add_squared_electric_field_expression,  add_energy_integral_expression, \
+    add_magnetic_flux_integral_expression  # pylint: disable=wrong-import-position
 # fmt: on
 
 # Set up environment
@@ -61,11 +61,13 @@ oDesktop.RestoreWindow()
 oProject = oDesktop.NewProject()
 oDefinitionManager = oProject.GetDefinitionManager()
 
-if ansys_tool == "hfss":
-    oProject.InsertDesign("HFSS", "HFSSDesign1", "HFSS Terminal Network", "")
-    oDesign = oProject.SetActiveDesign("HFSSDesign1")
-elif ansys_tool == "eigenmode":
+hfss_tools = {"hfss", "current", "eigenmode"}
+
+if ansys_tool == "eigenmode":
     oProject.InsertDesign("HFSS", "HFSSDesign1", "Eigenmode", "")
+    oDesign = oProject.SetActiveDesign("HFSSDesign1")
+elif ansys_tool in hfss_tools:
+    oProject.InsertDesign("HFSS", "HFSSDesign1", "HFSS Terminal Network", "")
     oDesign = oProject.SetActiveDesign("HFSSDesign1")
 elif ansys_tool == "q3d":
     oProject.InsertDesign("Q3D Extractor", "Q3DDesign1", "", "")
@@ -172,9 +174,9 @@ for lname, ldata in layers.items():
     # Set material
     material = ldata.get("material", None)
     if thickness != 0.0:
-        # Solve Inside parameter must be set in 'hfss' and 'eigenmode' simulations to avoid warnings.
+        # Solve Inside parameter must be set in hfss_tools simulations to avoid warnings.
         # Solve Inside doesn't exist in 'q3d', so we use None to ignore the parameter.
-        solve_inside = material != "pec" if ansys_tool in ["hfss", "eigenmode"] else None
+        solve_inside = material != "pec" if ansys_tool in hfss_tools else None
         set_material(oEditor, objects[lname], material, solve_inside)
         set_color(oEditor, objects[lname], *color_by_material(material))
     elif material == "pec":
@@ -187,7 +189,7 @@ for lname, ldata in layers.items():
 # Assign perfect electric conductor to metal sheets
 if pec_sheets:
     set_color(oEditor, pec_sheets, *color_by_material("pec", True))
-    if ansys_tool in {"hfss", "eigenmode"}:
+    if ansys_tool in hfss_tools:
         oBoundarySetup.AssignPerfectE(["NAME:PerfE1", "Objects:=", pec_sheets, "InfGroundPlane:=", False])
     elif ansys_tool == "q3d":
         oBoundarySetup.AssignThinConductor(
@@ -212,7 +214,7 @@ for lname, ldata in layers.items():
 # Create ports or nets
 signal_objects = [o for n, v in objects.items() if "_signal" in n for o in v]
 ground_objects = [o for n, v in objects.items() if "_ground" in n for o in v]
-if ansys_tool in {"hfss", "eigenmode"}:
+if ansys_tool in hfss_tools:
     ports = sorted(data["ports"], key=lambda k: k["number"])
     for port in ports:
         is_wave_port = port["type"] == "EdgePort"
@@ -226,15 +228,15 @@ if ansys_tool in {"hfss", "eigenmode"}:
             create_polygon(oEditor, polyname, [list(p) for p in port["polygon"]], units)
             set_color(oEditor, [polyname], 240, 180, 180, 0.8)
 
-            oBoundarySetup.AutoIdentifyPorts(
-                ["NAME:Faces", int(oEditor.GetFaceIDs(polyname)[0])],
-                is_wave_port,
-                ["NAME:ReferenceConductors"] + ground_objects,
-                str(port["number"]),
-                False,
-            )
-
             if ansys_tool == "hfss":
+                oBoundarySetup.AutoIdentifyPorts(
+                    ["NAME:Faces", int(oEditor.GetFaceIDs(polyname)[0])],
+                    is_wave_port,
+                    ["NAME:ReferenceConductors"] + ground_objects,
+                    str(port["number"]),
+                    False,
+                )
+
                 renorm = port.get("renormalization", None)
                 oBoundarySetup.SetTerminalReferenceImpedances(
                     "" if renorm is None else "{}ohm".format(renorm), str(port["number"]), renorm is not None
@@ -253,8 +255,25 @@ if ansys_tool in {"hfss", "eigenmode"}:
                         ],
                     )
 
-            # Turn junctions to lumped RLC
-            if port["junction"] and ansys_tool == "eigenmode":
+            elif ansys_tool == "current":
+                oBoundarySetup.AssignCurrent(
+                    [
+                        "NAME:{}".format(polyname),
+                        "Objects:=",
+                        [polyname],
+                        [
+                            "NAME:Direction",
+                            "Coordinate System:=",
+                            "Global",
+                            "Start:=",
+                            ["%.32e%s" % (p, units) for p in port["signal_location"]],
+                            "End:=",
+                            ["%.32e%s" % (p, units) for p in port["ground_location"]],
+                        ],
+                    ]
+                )
+
+            elif port["junction"] and ansys_tool == "eigenmode":
                 # add junction inductance variable
                 oDesign.ChangeProperty(
                     [
@@ -300,10 +319,10 @@ if ansys_tool in {"hfss", "eigenmode"}:
                     ]
                 )
 
+                # Turn junctions to lumped RLC
                 current_start = ["%.32e%s" % (p, units) for p in port["signal_location"]]
                 current_end = ["%.32e%s" % (p, units) for p in port["ground_location"]]
-
-                oDesign.GetModule("BoundarySetup").AssignLumpedRLC(
+                oBoundarySetup.AssignLumpedRLC(
                     [
                         "NAME:LumpRLC_jj_%d" % port["number"],
                         "Objects:=",
@@ -422,9 +441,6 @@ if ansys_tool in {"hfss", "eigenmode"}:
                         ]
                     )
 
-    if ansys_tool == "eigenmode":
-        oBoundarySetup.DeleteAllExcitations()
-
 
 elif ansys_tool == "q3d":
     port_objects = []  # signal objects to be assigned as SignalNets
@@ -464,7 +480,7 @@ elif ansys_tool == "q3d":
 
 
 # Add field calculations
-if data.get("integrate_energies", False) and ansys_tool in {"hfss", "eigenmode"}:
+if data.get("integrate_energies", False) and ansys_tool in hfss_tools:
     # Create term for squared E fields
     oModule = oDesign.GetModule("FieldsReporter")
     add_squared_electric_field_expression(oModule, "Esq", "Mag")
@@ -486,6 +502,14 @@ if data.get("integrate_energies", False) and ansys_tool in {"hfss", "eigenmode"}
         elif material is not None:
             epsilon = epsilon_0 * material_dict.get(material, {}).get("permittivity", 1.0)
             add_energy_integral_expression(oModule, "E_{}".format(lname), objects[lname], "Esq", 3, epsilon, "")
+
+if data.get("integrate_magnetic_flux", False) and ansys_tool in hfss_tools:
+    oModule = oDesign.GetModule("FieldsReporter")
+    for lname, ldata in layers.items():
+        if ldata.get("thickness", 0.0) != 0.0 or ldata.get("material", None) == "pec":
+            continue
+
+        add_magnetic_flux_integral_expression(oModule, "flux_{}".format(lname), objects[lname])
 
 # Manual mesh refinement
 for mesh_layer, mesh_length in mesh_size.items():
@@ -632,6 +656,70 @@ if not ansys_project_template:
                 0.0001,
                 "EnforceCausality:=",
                 False,
+            ],
+        )
+    elif ansys_tool == "current":
+        oAnalysisSetup.InsertSetup(
+            "HfssDriven",
+            [
+                "NAME:Setup1",
+                "SolveType:=",
+                "Single",
+                "Frequency:=",
+                str(setup["frequency"]) + setup["frequency_units"],
+                "MaxDeltaE:=",
+                setup["max_delta_e"],
+                "MaximumPasses:=",
+                setup["maximum_passes"],
+                "MinimumPasses:=",
+                setup["minimum_passes"],
+                "MinimumConvergedPasses:=",
+                setup["minimum_converged_passes"],
+                "PercentRefinement:=",
+                setup["percent_refinement"],
+                "IsEnabled:=",
+                True,
+                ["NAME:MeshLink", "ImportMesh:=", False],
+                "BasisOrder:=",
+                1,
+                "DoLambdaRefine:=",
+                True,
+                "DoMaterialLambda:=",
+                True,
+                "SetLambdaTarget:=",
+                False,
+                "Target:=",
+                0.3333,
+                "UseMaxTetIncrease:=",
+                False,
+                "DrivenSolverType:=",
+                "Direct Solver",
+                "EnhancedLowFreqAccuracy:=",
+                False,
+                "SaveRadFieldsOnly:=",
+                False,
+                "SaveAnyFields:=",
+                True,
+                "IESolverType:=",
+                "Auto",
+                "LambdaTargetForIESolver:=",
+                0.15,
+                "UseDefaultLambdaTgtForIESolver:=",
+                True,
+                "IE Solver Accuracy:=",
+                "Balanced",
+                "InfiniteSphereSetup:=",
+                "",
+                "MaxPass:=",
+                10,
+                "MinPass:=",
+                1,
+                "MinConvPass:=",
+                1,
+                "PerError:=",
+                1,
+                "PerRefine:=",
+                30,
             ],
         )
     elif ansys_tool == "q3d":

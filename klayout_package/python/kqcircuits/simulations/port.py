@@ -79,6 +79,7 @@ class InternalPort(Port):
         face: int = 0,
         junction: bool = False,
         signal_layer: str = "signal",
+        etch_width: float = None,
     ):
         """
         Args:
@@ -93,12 +94,27 @@ class InternalPort(Port):
             junction: Whether this port models a SQUID/Junction. Used in EPR calculations.
             signal_layer: Manual override for simulation signal layer.
                 May be used to set ports across the ground layer with ``ground``.
+            etch_width: Width of a trace between signal_location and ground_location, on which the metal is etched away.
+                Useful when adding a lumped port on a waveguide.
         """
         super().__init__(number, resistance, reactance, inductance, capacitance, face, junction)
         self.signal_location = signal_location
         self.signal_layer = signal_layer
         if ground_location is not None:
             self.ground_location = ground_location
+        if etch_width is not None:
+            self.etch_width = etch_width
+
+    def get_etch_polygon(self):
+        """Returns polygon under which the metal should be etched away"""
+        try:
+            d = self.signal_location - self.ground_location
+            v = (0.5 * self.etch_width / d.length()) * pya.DVector(-d.y, d.x)
+            return pya.DPolygon(
+                [self.signal_location - v, self.signal_location + v, self.ground_location + v, self.ground_location - v]
+            )
+        except AttributeError:
+            return pya.DPolygon()
 
 
 class EdgePort(Port):

@@ -26,9 +26,10 @@ import ScriptEnv
 # TODO: Figure out how to set the python path for the HFSS internal IronPython
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "util"))
 # fmt: off
-from util import get_enabled_setup, get_enabled_sweep, get_solution_data, \
+from util import get_enabled_setup, get_enabled_sweep, get_solution_data, get_quantities, \
     ComplexEncoder  # pylint: disable=wrong-import-position,no-name-in-module
 # fmt on
+
 
 def save_capacitance_matrix(file_name, c_matrix, detail=""):
     """Save capacitance matrix in readable format."""
@@ -61,6 +62,7 @@ matrix_filename = os.path.join(path, basename + "_CMatrix.txt")
 json_filename = os.path.join(path, basename + "_results.json")
 eig_filename = os.path.join(path, basename + "_modes.eig")
 energy_filename = os.path.join(path, basename + "_energy.csv")
+flux_filename = os.path.join(path, basename + "_flux.csv")
 
 # Export solution data separately for HFSS and Q3D
 design_type = oDesign.GetDesignType()
@@ -136,33 +138,25 @@ if design_type == "HFSS":
 
         # S-parameter export
         solution = setup + (" : LastAdaptive" if sweep is None else " : " + sweep)
-        file_format = 3  # 2 = Tab delimited (.tab), 3 = Touchstone (.sNp), 4 = CitiFile (.cit), 7 = Matlab  (.m), ...
-        file_name = os.path.join(path, basename + "_SMatrix.s{}p".format(len(ports)))
-        frequencies = ["All"]
-        do_renormalize = False
-        renorm_impedance = 50
-        data_type = "S"
-        pass_number = -1  # -1 = all passes
-        complex_format = 0  # 0 = magnitude/phase, 1 = real/imag, 2 = dB/phase
-        precision = 8
-        show_gamma_and_impedance = False
-
-        oSolutions.ExportNetworkData(
-            "",
-            solution,
-            file_format,
-            file_name,
-            frequencies,
-            do_renormalize,
-            renorm_impedance,
-            data_type,
-            pass_number,
-            complex_format,
-            precision,
-            True,
-            show_gamma_and_impedance,
-            True,
-        )
+        context = [] if sweep is None else ["Domain:=", "Sweep"]
+        if get_quantities(oReportSetup, "Terminal Solution Data", solution, context, "Terminal S Parameter"):
+            file_name = os.path.join(path, basename + "_SMatrix.s{}p".format(len(ports)))
+            oSolutions.ExportNetworkData(
+                "",  # Design variation key. Pass empty string for the current nominal variation.
+                solution,  # Selected solutions
+                3,  # File format: 2 = Tab delimited (.tab), 3 = Touchstone (.sNp), 4 = CitiFile (.cit), 7 = Matlab (.m)
+                file_name,  # Full path to the file to write out
+                ["All"],  # The frequencies to export. Use ["All"] to export all available frequencies
+                False,  # Specifies whether to renormalize the data before export
+                50,  # Real impedance value in ohms, for renormalization
+                "S",  # The matrix to export. "S", "Y", or "Z"
+                -1,  # The pass to export. Specifying -1 gets all available passes
+                0,  # Format of complex numbers: 0 = magnitude/phase, 1 = real/imag, 2 = dB/phase
+                15,  # Touchstone number of digits precision
+                True,  # Specifies whether to use export frequencies
+                False,  # Specifies whether to include Gamma and Impedance comments
+                True,  # Specifies whether to support non-standard Touchstone extensions for mixed reference impedance
+            )
 
     elif oDesign.GetSolutionType() == "Eigenmode":
         solution = setup + " : LastAdaptive"
@@ -172,6 +166,11 @@ if design_type == "HFSS":
     report_names = oReportSetup.GetAllReportNames()
     if "Energy Integrals" in report_names:
         oReportSetup.ExportToFile("Energy Integrals", energy_filename, False)
+
+    # Save magnetic flux integrals
+    report_names = oReportSetup.GetAllReportNames()
+    if "Magnetic Fluxes" in report_names:
+        oReportSetup.ExportToFile("Magnetic Fluxes", flux_filename, False)
 
 elif design_type == "Q3D Extractor":
     setup = get_enabled_setup(oDesign, tab="General")

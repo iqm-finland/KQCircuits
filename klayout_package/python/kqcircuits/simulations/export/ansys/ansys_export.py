@@ -38,6 +38,7 @@ def export_ansys_json(
     frequency_units="GHz",
     frequency=5,
     max_delta_s=0.1,
+    max_delta_e=0.1,
     percent_error=1,
     percent_refinement=30,
     maximum_passes=12,
@@ -54,6 +55,7 @@ def export_ansys_json(
     simulation_flags=None,
     ansys_project_template=None,
     integrate_energies=False,
+    integrate_magnetic_flux=False,
     hfss_capacitance_export=False,
 ):
     r"""
@@ -62,10 +64,11 @@ def export_ansys_json(
     Arguments:
         simulation: The simulation to be exported.
         path: Location where to write json and gds files.
-        ansys_tool: Determines whether to use HFSS ('hfss') or Q3D Extractor ('q3d').
+        ansys_tool: Determines whether to use 'hfss' (s-parameters), 'q3d', 'current', or 'eigenmode'.
         frequency_units: Units of frequency.
         frequency: Frequency for mesh refinement. To set up multifrequency analysis in HFSS use list of numbers.
         max_delta_s: Stopping criterion in HFSS simulation.
+        max_delta_e: Stopping criterion in current excitation simulation.
         percent_error: Stopping criterion in Q3D simulation.
         percent_refinement: Percentage of mesh refinement on each iteration.
         maximum_passes: Maximum number of iterations in simulation.
@@ -83,6 +86,7 @@ def export_ansys_json(
         simulation_flags: Optional export processing, given as list of strings
         ansys_project_template: path to the simulation template
         integrate_energies: Calculate energy integrals over each layer and save them into a file
+        integrate_magnetic_flux: Integrate magnetic fluxes through each non-pec sheet and save them into a file
         hfss_capacitance_export: If True, the capacitance matrices are exported from HFSS simulations
 
     Returns:
@@ -101,6 +105,7 @@ def export_ansys_json(
             "frequency_units": frequency_units,
             "frequency": frequency,
             "max_delta_s": max_delta_s,  # stopping criterion for HFSS
+            "max_delta_e": max_delta_e,  # stopping criterion for current excitation simulation
             "percent_error": percent_error,  # stopping criterion for Q3D
             "percent_refinement": percent_refinement,
             "maximum_passes": maximum_passes,
@@ -117,6 +122,7 @@ def export_ansys_json(
         "mesh_size": {} if mesh_size is None else mesh_size,
         "simulation_flags": simulation_flags,
         "integrate_energies": integrate_energies,
+        "integrate_magnetic_flux": integrate_magnetic_flux,
         "hfss_capacitance_export": hfss_capacitance_export,
     }
 
@@ -206,6 +212,7 @@ def export_ansys(
     frequency_units="GHz",
     frequency=5,
     max_delta_s=0.1,
+    max_delta_e=0.1,
     percent_error=1,
     percent_refinement=30,
     maximum_passes=12,
@@ -226,6 +233,7 @@ def export_ansys(
     simulation_flags=None,
     ansys_project_template=None,
     integrate_energies=False,
+    integrate_magnetic_flux=False,
     hfss_capacitance_export=False,
     skip_errors=False,
 ):
@@ -235,12 +243,13 @@ def export_ansys(
     Arguments:
         simulations: List of simulations to be exported.
         path: Location where to write export files.
-        ansys_tool: Determines whether to use HFSS ('hfss'), Q3D Extractor ('q3d') or HFSS eigenmode ('eigenmode').
+        ansys_tool: Determines whether to use 'hfss' (s-parameters), 'q3d', 'current', or 'eigenmode'.
         script_folder: Path to the Ansys-scripts folder.
         file_prefix: Name of the batch file to be created.
         frequency_units: Units of frequency.
         frequency: Frequency for mesh refinement. To set up multifrequency analysis in HFSS use list of numbers.
         max_delta_s: Stopping criterion in HFSS simulation.
+        max_delta_e: Stopping criterion in current excitation simulation.
         percent_error: Stopping criterion in Q3D simulation.
         percent_refinement: Percentage of mesh refinement on each iteration.
         maximum_passes: Maximum number of iterations in simulation.
@@ -263,6 +272,7 @@ def export_ansys(
         simulation_flags: Optional export processing, given as list of strings. See Simulation Export in docs.
         ansys_project_template: path to the simulation template
         integrate_energies: Calculate energy integrals over each layer and save them into a file
+        integrate_magnetic_flux: Integrate magnetic fluxes through each non-pec sheet and save them into a file
         hfss_capacitance_export: If True, the capacitance matrices are exported from HFSS simulations
         skip_errors: Skip simulations that cause errors. Default is False.
 
@@ -287,6 +297,7 @@ def export_ansys(
                     frequency_units=frequency_units,
                     frequency=frequency,
                     max_delta_s=max_delta_s,
+                    max_delta_e=max_delta_e,
                     percent_error=percent_error,
                     percent_refinement=percent_refinement,
                     maximum_passes=maximum_passes,
@@ -303,6 +314,7 @@ def export_ansys(
                     simulation_flags=simulation_flags,
                     ansys_project_template=ansys_project_template,
                     integrate_energies=integrate_energies,
+                    integrate_magnetic_flux=integrate_magnetic_flux,
                     hfss_capacitance_export=hfss_capacitance_export,
                 )
             )

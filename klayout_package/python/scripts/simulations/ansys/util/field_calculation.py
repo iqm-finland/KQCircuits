@@ -46,3 +46,21 @@ def add_energy_integral_expression(oModule, name, objects, field_expr, dim, epsi
         oModule.CopyNamedExprToStack(subtraction_field)
         oModule.CalcOp("-")
     oModule.AddNamedExpression(name, "Fields")
+
+
+def add_magnetic_flux_integral_expression(oModule, name, objects):
+    """Adds magnetic flux integral expression to field calculation. Will be in units of magnetic flux quanta."""
+    for i, obj in enumerate(objects):
+        oModule.EnterQty("H")
+        oModule.CalcOp("ScalarZ")
+        oModule.CalcOp("Real")
+        oModule.EnterSurf(obj)
+        oModule.CalcOp("Integrate")
+        if i > 0:
+            oModule.CalcOp("+")
+    if objects:
+        oModule.EnterScalar(607706979.4822713)  # 2 * mu_0 * elementary_charge / Planck
+        oModule.CalcOp("*")  # Transform flux into unit of magnetic flux quanta.
+    else:
+        oModule.EnterScalar(0.0)
+    oModule.AddNamedExpression(name, "Fields")

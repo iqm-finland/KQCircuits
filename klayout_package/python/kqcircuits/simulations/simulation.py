@@ -564,7 +564,16 @@ class Simulation:
             for j, face_id in enumerate(face_ids):
                 metal_gap_region = self.region_from_layer(face_id, "base_metal_gap_wo_grid")
                 metal_add_region = self.region_from_layer(face_id, "base_metal_addition")
-                lithography_region = self.simplified_region(metal_gap_region - metal_add_region, self.over_etching)
+
+                if self.over_etching >= 0:
+                    lithography_region = self.simplified_region(metal_gap_region - metal_add_region, self.over_etching)
+                else:
+                    lithography_region = ground_box_region - self.simplified_region(
+                        ground_box_region - (metal_gap_region - metal_add_region), -self.over_etching
+                    )
+                for port in self.ports:
+                    if resolve_face(port.face, self.face_ids) == face_id and hasattr(port, "get_etch_polygon"):
+                        lithography_region += pya.Region(port.get_etch_polygon().to_itype(self.layout.dbu))
 
                 if lithography_region.is_empty():
                     signal_region = pya.Region()
@@ -903,10 +912,10 @@ class Simulation:
         turn_radius=None,
         a=None,
         b=None,
-        over_etching=None,
         airbridge=False,
         face=0,
         etch_opposite_face=False,
+        **port_kwargs,
     ):
         """Create a waveguide connection from some `location` to a port, and add the corresponding port to
         `simulation.ports`.
@@ -916,25 +925,24 @@ class Simulation:
             towards (pya.DPoint): Point that sets the direction of the waveguide.
                 The waveguide will start from `location` and go towards `towards`
             port_nr (int): Port index for the simulation engine starting from 1
-            side (str): Indicate on which edge the port should be located. Ignored for internal ports.
-                Must be one of `left`, `right`, `top` or `bottom`. If `None` then direction is inferred from `towards`.
-            use_internal_ports (bool, optional): if True, ports will be inside the simulation. If False, ports will be
-                brought out to an edge of the box, determined by `side`.
-                Defaults to the value of the `use_internal_ports` parameter
-            waveguide_length (float, optional): length of the waveguide (μm), used only for internal ports
-                Defaults to the value of the `waveguide_length` parameter
+            side (str): Indicate on which edge the waveguide is routed to, either `left`, `right`, `top` or `bottom`.
+                Ignored when use_internal_ports=True. If `None` then the edge is inferred from waveguide direction.
+            use_internal_ports: If True, a lumped port is placed at the end of straight waveguide segment. If False,
+                the waveguide is brought out to a wave port at the edge of the box, determined by `side`.
+                If the value is a string 'at_edge', then a lumped port will be placed next to the edge.
+                Defaults to the value of the `use_internal_ports` parameter.
+            waveguide_length (float, optional): length of the straight waveguide starting from `location` (μm).
+                Defaults to the value of the `waveguide_length` parameter.
             term1 (float, optional): Termination gap (μm) at `location`. Default 0
-            turn_radius (float, optional): Turn radius of the waveguide. Not relevant for internal ports.
-                Defaults to the value of the `r` parameter
+            turn_radius (float, optional): Turn radius of the waveguide. Defaults to the value of the `r` parameter.
             a (float, optional): Center conductor width. Defaults to the value of the `a` parameter
             b (float, optional): Conductor gap width. Defaults to the value of the `b` parameter
-            over_etching (float, optional): Expansion of gaps. Defaults to the value of the `over_etching` parameter
             airbridge (bool, optional): if True, an airbridge will be inserted at `location`. Default False.
             face: face to place waveguide and port on. Either 0 (default) or 1, for bottom or top face.
+            etch_opposite_face: If true, the metal on opposite face of the waveguide is etched away.
+            port_kwargs: keyword arguments passed for port
         """
 
-        waveguide_safety_overlap = 0.005  # Extend waveguide by this amount to avoid gaps due to nm-scale rounding
-        # errors
         waveguide_gap_extension = 1  # Extend gaps beyond waveguides into ground plane to define the ground port edge
 
         if turn_radius is None:
@@ -943,16 +951,10 @@ class Simulation:
             a = self.a
         if b is None:
             b = self.b
-        if over_etching is None:
-            over_etching = self.over_etching
         if use_internal_ports is None:
             use_internal_ports = self.use_internal_ports
         if waveguide_length is None:
             waveguide_length = self.waveguide_length
-
-        # Create a new path in the direction of path but with length waveguide_length
-        direction = towards - location
-        direction = direction / direction.length()
 
         waveguide_a = a
         waveguide_b = b
@@ -964,35 +966,48 @@ class Simulation:
         else:
             first_node = Node(location)
 
-        if use_internal_ports:
-            signal_point = location + (waveguide_length + over_etching) * direction
-            ground_point = location + (waveguide_length + a - 3 * over_etching) * direction
-
-            nodes = [
-                first_node,
-                Node(signal_point + waveguide_safety_overlap * direction),
-            ]
-            port = InternalPort(port_nr, *self.etched_line(signal_point, ground_point), face=face)
-
-            extension_nodes = [Node(ground_point), Node(ground_point + waveguide_gap_extension * direction)]
-        else:
-            corner_point = location + (waveguide_length + turn_radius) * direction
-            if side is None:  # infer EdgePort location if not given
-                d = towards - location
+        d = towards - location
+        direction = d / d.length()
+        internal_port_length = a - 2 * self.over_etching  # compensated with over etching
+        if use_internal_ports in [False, "at_edge"]:  # edge port or internal port next to edge
+            if side is None:
                 side = (("left", "right"), ("bottom", "top"))[abs(d.x) < abs(d.y)][d.x + d.y > 0]
+            out_direction = {
+                "left": pya.DVector(-1, 0),
+                "right": pya.DVector(1, 0),
+                "top": pya.DVector(0, 1),
+                "bottom": pya.DVector(0, -1),
+            }[side]
+            turn_length = turn_radius * abs(out_direction.vprod(direction)) / (1 + out_direction.sprod(direction))
+            corner_point = location + (waveguide_length + turn_length) * direction
             port_edge_point = {
                 "left": pya.DPoint(self.box.left, corner_point.y),
                 "right": pya.DPoint(self.box.right, corner_point.y),
                 "top": pya.DPoint(corner_point.x, self.box.top),
                 "bottom": pya.DPoint(corner_point.x, self.box.bottom),
             }[side]
-
             nodes = [
                 first_node,
                 Node(corner_point),
                 Node(port_edge_point),
             ]
-            port = EdgePort(port_nr, port_edge_point, face=face)
+
+            if use_internal_ports == "at_edge":
+                signal_point = port_edge_point - waveguide_gap_extension * out_direction
+                ground_point = signal_point - internal_port_length * out_direction
+                port = InternalPort(port_nr, signal_point, ground_point, face=face, etch_width=a + b, **port_kwargs)
+            else:
+                port = EdgePort(port_nr, port_edge_point, face=face)
+
+        else:  # internal port at the end of straight waveguide segment
+            signal_point = location + waveguide_length * direction
+            ground_point = signal_point + internal_port_length * direction
+
+            nodes = [
+                first_node,
+                Node(ground_point + (waveguide_gap_extension - self.over_etching) * direction),
+            ]
+            port = InternalPort(port_nr, signal_point, ground_point, face=face, etch_width=a + b, **port_kwargs)
 
         tl = self.add_element(
             WaveguideComposite,
@@ -1007,22 +1022,8 @@ class Simulation:
         )
 
         self.cell.insert(pya.DCellInstArray(tl.cell_index(), pya.DTrans()))
-        feedline_length = tl.length()
-
-        if use_internal_ports:
-            port_end_piece = self.add_element(
-                WaveguideComposite,
-                nodes=extension_nodes,
-                a=a,
-                b=b,
-                term1=a - 4 * over_etching,
-                term2=0,
-                etch_opposite_face=etch_opposite_face,
-                face_ids=[self.face_ids[face]],
-            )
-            self.cell.insert(pya.DCellInstArray(port_end_piece.cell_index(), pya.DTrans()))
-        else:
-            port.deembed_len = feedline_length
+        if not use_internal_ports:
+            port.deembed_len = tl.length()
 
         self.ports.append(port)
 

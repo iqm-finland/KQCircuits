@@ -66,6 +66,11 @@ def get_solution_data(report_setup, report_type, solution_name, context_array, f
     return result
 
 
+def get_quantities(report_setup, report_type, solution_name, context_array, category_name):
+    """Returns the available quantities in given category"""
+    return report_setup.GetAllQuantities(report_type, "Rectangular Plot", solution_name, context_array, category_name)
+
+
 def create_x_vs_y_plot(
     report_setup,
     plot_name,
