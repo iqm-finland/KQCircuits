@@ -1062,7 +1062,7 @@ class Simulation:
         if simulation.use_ports:
             for port in simulation.ports:
                 # Basic data from Port
-                p_data = port.as_dict()
+                p_data = {**port.as_dict()}  # Shallow copy to not modify the ports
 
                 face_id = self.face_ids[port.face]
 
@@ -1157,13 +1157,11 @@ class Simulation:
     def get_simulation_data(self):
         """Return the simulation data in dictionary form. Contains following:
 
-        * gds_file: name of gds file to include geometry layers,
         * units: length unit in simulations, 'um',
         * layers: geometry data,
         * material_dict: Dictionary of dielectric materials,
         * box: Boundary box,
         * ports: Port data in dictionary form, see self.get_port_data(),
-        * parameters: All Simulation class parameters in dictionary form,
         """
         # check that materials are defined in material_dict
         materials = [layer["material"] for layer in self.layers.values() if "material" in layer]
@@ -1173,13 +1171,11 @@ class Simulation:
                 raise ValueError("Material '{}' used but not defined in Simulation.material_dict".format(name))
 
         return {
-            "gds_file": self.name + ".gds",
             "units": "um",  # hardcoded assumption in multiple places
             "layers": self.layers,
             "material_dict": mater_dict,
             "box": self.box,
             "ports": self.get_port_data(),
-            "parameters": self.get_parameters(),
         }
 
     def get_layers(self):

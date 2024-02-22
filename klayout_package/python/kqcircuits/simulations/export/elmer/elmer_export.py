@@ -90,7 +90,7 @@ def export_elmer_json(
     if is_cross_section:
         layers = simulation.layer_dict
 
-    sim_data = simulation.get_simulation_data()
+    sim_data = {**simulation.get_simulation_data(), "parameters": simulation.get_parameters()}
     simname = sim_data["parameters"]["name"]
     if is_cross_section:
         if sim_data.get("london_penetration_depth", 0.0) > 0:
@@ -105,6 +105,7 @@ def export_elmer_json(
     else:
         sif_names = [simname]
 
+    gds_file = simulation.name + ".gds"
     json_data = {
         "tool": tool,
         **sim_data,
@@ -126,6 +127,7 @@ def export_elmer_json(
         "p_element_order": p_element_order,
         "is_axisymmetric": is_axisymmetric,
         "sif_names": sif_names,
+        "gds_file": gds_file,
     }
 
     # write .json file
@@ -134,7 +136,7 @@ def export_elmer_json(
         json.dump(json_data, fp, cls=GeometryJsonEncoder, indent=4)
 
     # write .gds file
-    gds_filename = str(path.joinpath(simulation.name + ".gds"))
+    gds_filename = str(path.joinpath(gds_file))
     export_layers(
         gds_filename,
         simulation.layout,

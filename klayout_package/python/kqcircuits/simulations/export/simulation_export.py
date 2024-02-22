@@ -23,6 +23,18 @@ from shutil import copytree
 from kqcircuits.simulations.export.util import export_layers
 
 
+def get_combined_parameters(simulation, solution):
+    """Return parameters of Simulation and Solution in a combined dictionary.
+    In case of common keys, 'simulation.' and 'solution.' prefixes are added.
+    """
+    sim_dict = simulation.get_parameters()
+    sol_dict = solution.__dict__
+    return {
+        **{f"simulation.{k}" if k in sol_dict else k: v for k, v in sim_dict.items()},
+        **{f"solution.{k}" if k in sim_dict else k: v for k, v in sol_dict.items()},
+    }
+
+
 def copy_content_into_directory(source_paths: list, path: Path, folder):
     """Create a folder and copy the contents of the source folders into it
 
@@ -63,6 +75,7 @@ def export_simulation_oas(simulations, path: Path, file_prefix="simulation"):
     """
     Write single OASIS file containing all simulations in list.
     """
+    simulations = [simulation[0] if isinstance(simulation, tuple) else simulation for simulation in simulations]
     unique_layouts = {simulation.layout for simulation in simulations}
     if len(unique_layouts) != 1:
         raise ValueError("Cannot write batch OASIS file since not all simulations are on the same layout.")
@@ -83,9 +96,9 @@ def sweep_simulation(layout, sim_class, sim_parameters, sweeps):
             parameters = {
                 **sim_parameters,
                 param: value,
-                "name": "{}_{}_{}".format(sim_parameters["name"], param, str(value)),
+                "name": "{}_{}_{}".format(sim_parameters.get("name", ""), param, str(value)),
             }
-            simulations.append(sim_class(layout, **parameters))
+            simulations.append(sim_class(**parameters) if layout is None else sim_class(layout, **parameters))
     return simulations
 
 
@@ -99,6 +112,6 @@ def cross_sweep_simulation(layout, sim_class, sim_parameters, sweeps):
         parameters = {**sim_parameters}
         for i, key in enumerate(keys):
             parameters[key] = values[i]
-        parameters["name"] = sim_parameters["name"] + "_" + "_".join([str(value) for value in values])
-        simulations.append(sim_class(layout, **parameters))
+        parameters["name"] = sim_parameters.get("name", "") + "_" + "_".join([str(value) for value in values])
+        simulations.append(sim_class(**parameters) if layout is None else sim_class(layout, **parameters))
     return simulations

@@ -23,7 +23,12 @@ import logging
 
 from pathlib import Path
 
-from kqcircuits.simulations.export.simulation_export import copy_content_into_directory, get_post_process_command_lines
+from kqcircuits.simulations.export.ansys.ansys_solution import AnsysSolution
+from kqcircuits.simulations.export.simulation_export import (
+    copy_content_into_directory,
+    get_post_process_command_lines,
+    get_combined_parameters,
+)
 from kqcircuits.util.export_helper import write_commit_reference_file
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
 from kqcircuits.simulations.export.util import export_layers
@@ -31,116 +36,43 @@ from kqcircuits.defaults import ANSYS_EXECUTABLE, ANSYS_SCRIPT_PATHS
 from kqcircuits.simulations.simulation import Simulation
 
 
-def export_ansys_json(
-    simulation: Simulation,
-    path: Path,
-    ansys_tool="hfss",
-    frequency_units="GHz",
-    frequency=5,
-    max_delta_s=0.1,
-    max_delta_e=0.1,
-    percent_error=1,
-    percent_refinement=30,
-    maximum_passes=12,
-    minimum_passes=1,
-    minimum_converged_passes=1,
-    sweep_enabled=True,
-    sweep_start=0,
-    sweep_end=10,
-    sweep_count=101,
-    sweep_type="interpolating",
-    max_delta_f=0.1,
-    n_modes=2,
-    mesh_size=None,
-    simulation_flags=None,
-    ansys_project_template=None,
-    integrate_energies=False,
-    integrate_magnetic_flux=False,
-    hfss_capacitance_export=False,
-):
-    r"""
+def export_ansys_json(simulation: Simulation, solution: AnsysSolution, path: Path):
+    """
     Export Ansys simulation into json and gds files.
 
     Arguments:
         simulation: The simulation to be exported.
+        solution: The solution to be exported.
         path: Location where to write json and gds files.
-        ansys_tool: Determines whether to use 'hfss' (s-parameters), 'q3d', 'current', 'voltage', or 'eigenmode'.
-        frequency_units: Units of frequency.
-        frequency: Frequency for mesh refinement. To set up multifrequency analysis in HFSS use list of numbers.
-        max_delta_s: Stopping criterion in HFSS simulation.
-        max_delta_e: Stopping criterion in current or voltage excitation simulation.
-        percent_error: Stopping criterion in Q3D simulation.
-        percent_refinement: Percentage of mesh refinement on each iteration.
-        maximum_passes: Maximum number of iterations in simulation.
-        minimum_passes: Minimum number of iterations in simulation.
-        minimum_converged_passes: Determines how many iterations have to meet the stopping criterion to stop simulation.
-        sweep_enabled: Determines if HFSS frequency sweep is enabled.
-        sweep_start: The lowest frequency in the sweep.
-        sweep_end: The highest frequency in the sweep.
-        sweep_count: Number of frequencies in the sweep.
-        sweep_type: choices are "interpolating", "discrete" or "fast"
-        max_delta_f: Maximum allowed relative difference in eigenfrequency (%). Used when ``ansys_tool`` is *eigenmode*.
-        n_modes: Number of eigenmodes to solve. Used when ``ansys_tool`` is 'pyepr'.
-        mesh_size(dict): Dictionary to determine manual mesh refinement on layers. Set key as the layer name and
-            value as the maximal mesh element length inside the layer.
-        simulation_flags: Optional export processing, given as list of strings
-        ansys_project_template: path to the simulation template
-        integrate_energies: Calculate energy integrals over each layer and save them into a file
-        integrate_magnetic_flux: Integrate magnetic fluxes through each non-pec sheet and save them into a file
-        hfss_capacitance_export: If True, the capacitance matrices are exported from HFSS simulations
 
     Returns:
          Path to exported json file.
     """
     if simulation is None or not isinstance(simulation, Simulation):
         raise ValueError("Cannot export without simulation")
-    if simulation_flags is None:
-        simulation_flags = []
+
+    # write .gds file
+    gds_file = simulation.name + ".gds"
+    gds_file_path = str(path.joinpath(gds_file))
+    if not Path(gds_file_path).exists():
+        export_layers(
+            gds_file_path, simulation.layout, [simulation.cell], output_format="GDS2", layers=simulation.get_layers()
+        )
 
     # collect data for .json file
     json_data = {
-        "ansys_tool": ansys_tool,
+        **solution.get_solution_data(),
         **simulation.get_simulation_data(),
-        "analysis_setup": {
-            "frequency_units": frequency_units,
-            "frequency": frequency,
-            "max_delta_s": max_delta_s,  # stopping criterion for HFSS
-            "max_delta_e": max_delta_e,  # stopping criterion for current or voltage excitation simulation
-            "percent_error": percent_error,  # stopping criterion for Q3D
-            "percent_refinement": percent_refinement,
-            "maximum_passes": maximum_passes,
-            "minimum_passes": minimum_passes,
-            "minimum_converged_passes": minimum_converged_passes,
-            "sweep_enabled": sweep_enabled,
-            "sweep_start": sweep_start,
-            "sweep_end": sweep_end,
-            "sweep_count": sweep_count,
-            "sweep_type": sweep_type,
-            "max_delta_f": max_delta_f,
-            "n_modes": n_modes,
-        },
-        "mesh_size": {} if mesh_size is None else mesh_size,
-        "simulation_flags": simulation_flags,
-        "integrate_energies": integrate_energies,
-        "integrate_magnetic_flux": integrate_magnetic_flux,
-        "hfss_capacitance_export": hfss_capacitance_export,
+        "gds_file": gds_file,
+        "parameters": get_combined_parameters(simulation, solution),
     }
 
-    if ansys_project_template is not None:
-        json_data["ansys_project_template"] = ansys_project_template
-
     # write .json file
-    json_filename = str(path.joinpath(simulation.name + ".json"))
-    with open(json_filename, "w") as fp:
+    json_file_path = str(path.joinpath(simulation.name + solution.name + ".json"))
+    with open(json_file_path, "w") as fp:
         json.dump(json_data, fp, cls=GeometryJsonEncoder, indent=4)
 
-    # write .gds file
-    gds_filename = str(path.joinpath(simulation.name + ".gds"))
-    export_layers(
-        gds_filename, simulation.layout, [simulation.cell], output_format="GDS2", layers=simulation.get_layers()
-    )
-
-    return json_filename
+    return json_file_path
 
 
 def export_ansys_bat(
@@ -206,80 +138,34 @@ def export_ansys_bat(
 def export_ansys(
     simulations,
     path: Path,
-    ansys_tool="hfss",
     script_folder="scripts",
     file_prefix="simulation",
-    frequency_units="GHz",
-    frequency=5,
-    max_delta_s=0.1,
-    max_delta_e=0.1,
-    percent_error=1,
-    percent_refinement=30,
-    maximum_passes=12,
-    minimum_passes=1,
-    minimum_converged_passes=1,
-    sweep_enabled=True,
-    sweep_start=0,
-    sweep_end=10,
-    sweep_count=101,
-    sweep_type="interpolating",
-    max_delta_f=0.1,
-    n_modes=2,
-    mesh_size=None,
     exit_after_run=False,
     import_script="import_and_simulate.py",
     post_process=None,
     use_rel_path=True,
-    simulation_flags=None,
-    ansys_project_template=None,
-    integrate_energies=False,
-    integrate_magnetic_flux=False,
-    hfss_capacitance_export=False,
     skip_errors=False,
+    **solution_params,
 ):
-    r"""
+    """
     Export Ansys simulations by writing necessary scripts and json, gds, and bat files.
 
     Arguments:
-        simulations: List of simulations to be exported.
+        simulations: List of Simulation objects or tuples containing Simulation and Solution objects.
         path: Location where to write export files.
-        ansys_tool: Determines whether to use 'hfss' (s-parameters), 'q3d', 'current', 'voltage', or 'eigenmode'.
         script_folder: Path to the Ansys-scripts folder.
         file_prefix: Name of the batch file to be created.
-        frequency_units: Units of frequency.
-        frequency: Frequency for mesh refinement. To set up multifrequency analysis in HFSS use list of numbers.
-        max_delta_s: Stopping criterion in HFSS simulation.
-        max_delta_e: Stopping criterion in current or voltage excitation simulation.
-        percent_error: Stopping criterion in Q3D simulation.
-        percent_refinement: Percentage of mesh refinement on each iteration.
-        maximum_passes: Maximum number of iterations in simulation.
-        minimum_passes: Minimum number of iterations in simulation.
-        minimum_converged_passes: Determines how many iterations have to meet the stopping criterion to stop simulation.
-        sweep_enabled: Determines if HFSS frequency sweep is enabled.
-        sweep_start: The lowest frequency in the sweep.
-        sweep_end: The highest frequency in the sweep.
-        sweep_count: Number of frequencies in the sweep.
-        sweep_type: choices are "interpolating", "discrete" or "fast"
-        max_delta_f: Maximum allowed relative difference in eigenfrequency (%). Used when ``ansys_tool`` is *eigenmode*.
-        n_modes: Number of eigenmodes to solve. Used when ``ansys_tool`` is 'eigenmode'.
-        mesh_size(dict): Dictionary to determine manual mesh refinement on layers. Set key as the layer name and
-            value as the maximal mesh element length inside the layer.
         exit_after_run: Defines if the Ansys Electronics Desktop is automatically closed after running the script.
         import_script: Name of import script file.
         post_process: List of PostProcess objects, a single PostProcess object, or None to be executed after simulations
-
         use_rel_path: Determines if to use relative paths.
-        simulation_flags: Optional export processing, given as list of strings. See Simulation Export in docs.
-        ansys_project_template: path to the simulation template
-        integrate_energies: Calculate energy integrals over each layer and save them into a file
-        integrate_magnetic_flux: Integrate magnetic fluxes through each non-pec sheet and save them into a file
-        hfss_capacitance_export: If True, the capacitance matrices are exported from HFSS simulations
         skip_errors: Skip simulations that cause errors. Default is False.
 
             .. warning::
 
                **Use this carefully**, some of your simulations might not make sense physically and
                you might end up wasting time on bad simulations.
+        solution_params: AnsysSolution parameters if simulations is a list of Simulation objects.
 
     Returns:
         Path to exported bat file.
@@ -287,37 +173,15 @@ def export_ansys(
     write_commit_reference_file(path)
     copy_content_into_directory(ANSYS_SCRIPT_PATHS, path, script_folder)
     json_filenames = []
-    for simulation in simulations:
+    for sim_sol in simulations:
+        if isinstance(sim_sol, tuple):
+            simulation, solution = sim_sol
+        else:
+            simulation = sim_sol
+            solution = AnsysSolution(**solution_params)
+
         try:
-            json_filenames.append(
-                export_ansys_json(
-                    simulation,
-                    path,
-                    ansys_tool=ansys_tool,
-                    frequency_units=frequency_units,
-                    frequency=frequency,
-                    max_delta_s=max_delta_s,
-                    max_delta_e=max_delta_e,
-                    percent_error=percent_error,
-                    percent_refinement=percent_refinement,
-                    maximum_passes=maximum_passes,
-                    minimum_passes=minimum_passes,
-                    minimum_converged_passes=minimum_converged_passes,
-                    sweep_enabled=sweep_enabled,
-                    sweep_start=sweep_start,
-                    sweep_end=sweep_end,
-                    sweep_count=sweep_count,
-                    sweep_type=sweep_type,
-                    max_delta_f=max_delta_f,
-                    n_modes=n_modes,
-                    mesh_size=mesh_size,
-                    simulation_flags=simulation_flags,
-                    ansys_project_template=ansys_project_template,
-                    integrate_energies=integrate_energies,
-                    integrate_magnetic_flux=integrate_magnetic_flux,
-                    hfss_capacitance_export=hfss_capacitance_export,
-                )
-            )
+            json_filenames.append(export_ansys_json(simulation, solution, path))
         except (IndexError, ValueError, Exception) as e:  # pylint: disable=broad-except
             if skip_errors:
                 logging.warning(

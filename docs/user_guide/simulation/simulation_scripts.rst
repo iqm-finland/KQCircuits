@@ -52,15 +52,13 @@ The above script can be run as a regular python script, or in the KLayout macro 
 After the execution, the output files are written to a folder in the KQCircuits ``tmp`` directory.
 
 The ``export_ansys`` function produces files and scripts needed to run Ansys simulations.
-It calls internally the following functions:
-
-* :func:`~kqcircuits.simulations.export.ansys.ansys_export.copy_ansys_scripts_to_directory`, which copies the folder
-  :git_url:`scripts/simulations/ansys/ <klayout_package/python/scripts/simulations/ansys>` into the simulation
-  directory. The folder contains needed IronPython scripts to run simulations in Ansys Electronics Desktop.
-* :func:`~kqcircuits.simulations.export.ansys.ansys_export.export_ansys_json`, which exports x-y-shapes as GDSII file
-  and other meta-data in json format for each simulation.
-* :func:`~kqcircuits.simulations.export.ansys.ansys_export.export_ansys_bat`, which creates a batch file for running
-  all simulations in series.
+First, it copies the folders :git_url:`scripts/simulations/ansys/ <klayout_package/python/scripts/simulations/ansys>`
+and :git_url:`scripts/simulations/post_process/ <klayout_package/python/scripts/simulations/post_process>` into the simulation
+directory.
+The first folder contains needed IronPython scripts to run simulations in Ansys Electronics Desktop and the second
+includes post processing scripts that can be run after the simulations.
+Then it exports x-y-shapes as GDSII file and other meta-data in json format for each simulation.
+Finally, it creates a batch file for running all simulations in series.
 
 The simulations can be run by executing the ``simulation.bat`` script file.
 
@@ -83,16 +81,12 @@ two lines::
     from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
     export_elmer(simulations, **export_parameters)
 
-Similarly to ``export_ansys``, the ``export_elmer`` calls internally the following functions:
-
-* :func:`~kqcircuits.simulations.export.elmer.elmer_export.copy_elmer_scripts_to_directory`, which copies the Gmsh and
-  Elmer script folder
-  :git_url:`scripts/simulations/elmer/scripts/ <klayout_package/python/scripts/simulations/elmer/scripts>` into the
-  simulation directory.
-* :func:`~kqcircuits.simulations.export.elmer.elmer_export.export_elmer_json`, which exports x-y-shapes as GDSII file
-  and other meta-data in json format for each simulation.
-* :func:`~kqcircuits.simulations.export.elmer.elmer_export.export_elmer_script`, which creates a script file for
-  running all simulations in series.
+Similarly to ``export_ansys``, the ``export_elmer`` copies the Gmsh and Elmer script folder
+:git_url:`scripts/simulations/elmer/ <klayout_package/python/scripts/simulations/elmer>` and post-processing
+script folder :git_url:`scripts/simulations/post_process/ <klayout_package/python/scripts/simulations/post_process>`
+into the simulation directory.
+It exports x-y-shapes as GDSII file and other meta-data in json format for each simulation and
+creates a script file for running all simulations in series.
 
 The Elmer simulations can be run by executing the ``simulation.sh`` script file.
 

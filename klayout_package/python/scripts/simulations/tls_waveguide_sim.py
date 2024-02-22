@@ -17,11 +17,13 @@
 import ast
 import logging
 import sys
+from itertools import product
 from pathlib import Path
 
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
+from kqcircuits.simulations.export.ansys.ansys_solution import AnsysSolution
 from kqcircuits.simulations.export.simulation_export import export_simulation_oas, sweep_simulation
 from kqcircuits.simulations.port import EdgePort
 from kqcircuits.simulations.post_process import PostProcess
@@ -69,13 +71,15 @@ sim_parameters = {
         "oxideSA": {"permittivity": 4},
     },
 }
-export_parameters = {
-    "path": dir_path,
+sol_parameters = {
     "ansys_tool": "hfss",
     "sweep_enabled": False,
-    "exit_after_run": True,
     "mesh_size": {"1t1_layerMAwallmer": 0.15, "1t1_layerMAmer": 0.5, "1t1_layerMSmer": 0.5, "1t1_layerSAmer": 0.5},
     "integrate_energies": True,
+}
+export_parameters = {
+    "path": dir_path,
+    "exit_after_run": True,
     "post_process": PostProcess(
         "produce_epr_table.py",
         sheet_approximations={
@@ -90,11 +94,18 @@ export_parameters = {
 logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 layout = get_active_or_new_layout()
 
-# Fixed geometry simulation
-simulations = sweep_simulation(layout, sim_class, sim_parameters, {"a": [2, 10]})
-
-# Export Ansys files
+# Cross sweep simulation and solution parameters using product
+simulations = list(
+    product(
+        sweep_simulation(layout, sim_class, sim_parameters, {"a": [2, 10]}),
+        sweep_simulation(None, AnsysSolution, sol_parameters, {"frequency": [2, 10]}),
+    )
+)
 export_ansys(simulations, **export_parameters)
+
+# Alternatively, sweep only simulation parameters
+# simulations = sweep_simulation(layout, sim_class, sim_parameters, {"a": [2, 10]})
+# export_ansys(simulations, **sol_parameters, **export_parameters)
 
 # Write and open oas file
 open_with_klayout_or_default_application(export_simulation_oas(simulations, dir_path))

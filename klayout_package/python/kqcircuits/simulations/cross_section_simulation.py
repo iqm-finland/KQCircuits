@@ -145,11 +145,9 @@ class CrossSectionSimulation:
             dictionary of relevant parameters for simulation
         """
         simulation_data = {
-            "gds_file": self.name + ".gds",
             "units": self.units,
             "box": self.box,
             "london_penetration_depth": self.london_penetration_depth,
             **{"{}_permittivity".format(k): v for k, v in self.permittivity_dict.items()},
-            "parameters": self.get_parameters(),
         }
         return simulation_data
