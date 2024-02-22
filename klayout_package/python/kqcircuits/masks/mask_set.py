@@ -62,7 +62,7 @@ class MaskSet:
         name: Name of the mask set
         version: Version of the mask set
         with_grid: Boolean determining if ground grid is generated
-        export_drc: Boolean determining if DRC report is exported
+        export_drc: String specifying the DRC file used for exporting the report. Use empty string to ignore DRC report.
         chips_map_legend: Dictionary where keys are chip names, values are chip cells
         mask_layouts: list of MaskLayout objects in this mask set
         mask_export_layers: list of names of the layers which are exported for each MaskLayout
@@ -76,7 +76,7 @@ class MaskSet:
         name="MaskSet",
         version=1,
         with_grid=False,
-        export_drc=False,
+        export_drc="",
         mask_export_layers=None,
         export_path=TMP_PATH,
         add_mask_name_to_chips=False,

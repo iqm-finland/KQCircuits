@@ -133,7 +133,7 @@ def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc, alt_netlists
 
         # export drc report for the chip
         if export_drc:
-            export_drc_report(chip_name, chip_dir)
+            export_drc_report(chip_name, chip_dir, export_drc)
 
     # delete the static cell which was only needed for export
     if static_cell.cell_index() != chip_cell.cell_index():

@@ -96,8 +96,6 @@ default_marker_type = "Marker Standard"
 default_junction_test_pads_type = "Junction Test Pads Simple"
 default_tsv_type = "Tsv Standard"
 
-default_drc_runset = "example.lydrc"
-
 # Default list of Elements to break down before netlist export.
 default_netlist_breakdown = [
     "Waveguide Composite",

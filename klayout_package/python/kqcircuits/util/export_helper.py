@@ -35,7 +35,6 @@ from kqcircuits.defaults import (
     default_probe_suffixes,
     recommended_probe_suffix_mapping,
     VERSION_PATHS,
-    default_drc_runset,
     DRC_PATH,
 )
 from kqcircuits.klayout_view import KLayoutView, MissingUILibraryException
@@ -452,7 +451,7 @@ def get_klayout_version():
         return pya.Application.instance().version()
 
 
-def export_drc_report(name, path, drc_script=default_drc_runset):
+def export_drc_report(name, path, drc_script):
     """Run a DRC script on ``path/name.oas`` and export results in ``path/name_drc_report.lyrdb``."""
 
     drc_runset_path = os.path.join(DRC_PATH, drc_script)
