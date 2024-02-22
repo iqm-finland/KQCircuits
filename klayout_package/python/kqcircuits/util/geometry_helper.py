@@ -217,7 +217,7 @@ def region_with_merged_polygons(region, tolerance, expansion=0.0):
     return new_region
 
 
-def merge_points_and_match_on_edges(cell, layout, layers, tolerance=3):
+def merge_points_and_match_on_edges(cell, layout, layers, tolerance=2):
     """Merges adjacent points of layers.
     Also goes through each polygon edge and splits the edge whenever it passes close to existing point.
 
@@ -230,37 +230,44 @@ def merge_points_and_match_on_edges(cell, layout, layers, tolerance=3):
         tolerance: Tolerance in pixels
     """
 
-    def fixed_polygon(poly, mod_pts):
-        """Recursively fixes and possibly splits the polygon near modified points. Returns list of polygons.
-        - removes consecutive duplicate points
+    def fixed_polygon(pts):
+        """Recursively fixes and possibly splits the polygon. Returns list of polygons.
+        Assumes that len(pts) >= 3 and consecutive points are not duplicates.
         - removes spikes of overlapping edges
         - splits polygon if parts of it are connected with overlapping edges
         """
-        if not mod_pts:
-            return [poly]
+        # Create mapping from point to list of indices
+        instance_map = {p: [] for p in pts}
+        for i, p in enumerate(pts):
+            instance_map[p].append(i)
 
-        pts = list(poly.each_point())
-        instances = [i for i in range(len(pts)) if pts[i] == mod_pts[0]]
-        for i0 in instances:
-            post_pt = pts[(i0 + 1) % len(pts)]
-            if post_pt == mod_pts[0]:
-                return fixed_polygon(pya.SimplePolygon([pts[i] for i in range(len(pts)) if i != i0], True), mod_pts)
-            for i1 in instances:
-                if post_pt == pts[i1 - 1]:
-                    polys = []
-                    pts0 = [pts[i % len(pts)] for i in range(i0 + 1, i1 - 1 + int(i0 >= i1) * len(pts))]
-                    if len(pts0) >= 3:
-                        polys.append(pya.SimplePolygon(pts0, True))
-                        if polys[-1].inside(mod_pts[0]):
-                            break
-                    pts1 = [pts[i % len(pts)] for i in range(i1, i0 + int(i0 < i1) * len(pts))]
-                    if len(pts1) >= 3:
-                        polys.append(pya.SimplePolygon(pts1, True))
-                        if polys[-1].inside(post_pt):
-                            break
-                    return [s for p in polys for s in fixed_polygon(p, mod_pts)]
-
-        return fixed_polygon(poly, mod_pts[1:])
+        # Go through all points. If same point has 2 or more instances, then possibly split polygon into smaller pieces.
+        valid = -1  # polygon is valid if there are no duplicate instances or there is a crossing next to any duplicate
+        for p, instances in instance_map.items():
+            if len(instances) < 2:
+                continue
+            valid = max(valid, 0)  # duplicate instance exists
+            for i0 in instances:
+                for i1 in instances:
+                    if i0 == i1:
+                        continue
+                    p0 = pts[i0 - 1]
+                    p1 = pts[(i1 + 1) % len(pts)]
+                    if p0 == p1:
+                        continue
+                    valid = 1  # crossing next to duplicate
+                    p2 = pts[i1 - 1]
+                    if pya.Edge(p0, p).side_of(p2) + pya.Edge(p, p1).side_of(p2) < pya.Edge(p0, p).side_of(p1):
+                        continue  # detected a hole connection at p
+                    poly = fixed_polygon([pts[i % len(pts)] for i in range(i1, i0 + int(i0 < i1) * len(pts))])
+                    j0, j1 = i0, i1 + int(i0 > i1) * len(pts)
+                    while j1 - j0 >= 3:
+                        if pts[(j0 + 1) % len(pts)] != pts[(j1 - 1) % len(pts)]:
+                            return poly + fixed_polygon([pts[i % len(pts)] for i in range(j0, j1)])
+                        j0 += 1
+                        j1 -= 1
+                    return poly
+        return [pya.SimplePolygon(pts, True)] if valid else []
 
     # Gather points from layers to `all_points` dictionary. This ignores duplicate points.
     all_points = dict()
@@ -310,29 +317,30 @@ def merge_points_and_match_on_edges(cell, layout, layers, tolerance=3):
         for shape in shapes.each():
             points = list(shape.simple_polygon.each_point())
             new_points = []
-            modified_points = set()
             for i, p1 in enumerate(points):
                 p0 = points[i - 1]
                 edge = pya.Edge(p0, p1)
                 # Travel from p0 to p1 in Voronoi diagram
                 while p0 != p1:
-                    # List points that are on the edge towards p1
-                    sq_dist = p0.sq_distance(p1)
-                    forward_points = [p for p in all_points[p0] if p.sq_distance(p1) < sq_dist]
-                    p_on_edge = [p for p in forward_points if edge.distance_abs(p) <= tolerance]
-                    if p_on_edge:
-                        # Update p0 to be the point on edge towards p1 that is furthest from p1
-                        p0 = max(p_on_edge, key=lambda x, y=p1: x.sq_distance(y))
-                        # Add the point to the polygon. Finally, p0 is equal to p1 here.
+                    # Find the next Voronoi cell through which the edge passes
+                    next_cell = []
+                    for p in all_points[p0]:
+                        dot = edge.d().sprod(p - p0)  # dot product between the edge vector and (p - p0)
+                        if dot <= 0.0:
+                            continue
+                        t = (p.sq_distance(edge.p1) - p0.sq_distance(edge.p1)) / dot  # distance to the Voronoi cell
+                        if not next_cell or t < next_cell[1]:
+                            next_cell = [p, t]
+                    # The next_cell is found unless the Voronoi diagram is badly broken
+                    p0 = next_cell[0]
+                    if edge.distance_abs(p0) <= tolerance:
+                        # Point is close to edge, so add the point to the polygon. Finally, p0 is equal to p1 here.
                         new_points.append(moved[p0] if p0 in moved else p0)
-                        if new_points[-1] != p1:
-                            modified_points.add(new_points[-1])
-                    else:
-                        # Update p0 to be the forward neighbour closest to edge
-                        p0 = min(forward_points, key=lambda x, y=edge: y.distance_abs(x))
 
-            # Fix polygon if points are modified and update list of polygons
-            polygons += fixed_polygon(pya.SimplePolygon(new_points, True), list(modified_points))
+            # Remove consecutive duplicate points and update list of polygons by fixed polygons
+            new_points_no_duplicates = [p for i, p in enumerate(new_points) if p != new_points[i - 1]]
+            if len(new_points_no_duplicates) >= 3:
+                polygons += fixed_polygon(new_points_no_duplicates)
 
         # Replace shapes with list of polygons
         shapes.clear()
