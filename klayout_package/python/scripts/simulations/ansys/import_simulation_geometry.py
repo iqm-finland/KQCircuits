@@ -61,7 +61,7 @@ oDesktop.RestoreWindow()
 oProject = oDesktop.NewProject()
 oDefinitionManager = oProject.GetDefinitionManager()
 
-hfss_tools = {"hfss", "current", "eigenmode"}
+hfss_tools = {"hfss", "current", "voltage", "eigenmode"}
 
 if ansys_tool == "eigenmode":
     oProject.InsertDesign("HFSS", "HFSSDesign1", "Eigenmode", "")
@@ -257,6 +257,23 @@ if ansys_tool in hfss_tools:
 
             elif ansys_tool == "current":
                 oBoundarySetup.AssignCurrent(
+                    [
+                        "NAME:{}".format(polyname),
+                        "Objects:=",
+                        [polyname],
+                        [
+                            "NAME:Direction",
+                            "Coordinate System:=",
+                            "Global",
+                            "Start:=",
+                            ["%.32e%s" % (p, units) for p in port["signal_location"]],
+                            "End:=",
+                            ["%.32e%s" % (p, units) for p in port["ground_location"]],
+                        ],
+                    ]
+                )
+            elif ansys_tool == "voltage":
+                oBoundarySetup.AssignVoltage(
                     [
                         "NAME:{}".format(polyname),
                         "Objects:=",
@@ -658,7 +675,7 @@ if not ansys_project_template:
                 False,
             ],
         )
-    elif ansys_tool == "current":
+    elif ansys_tool in ["current", "voltage"]:
         oAnalysisSetup.InsertSetup(
             "HfssDriven",
             [
@@ -710,16 +727,6 @@ if not ansys_project_template:
                 "Balanced",
                 "InfiniteSphereSetup:=",
                 "",
-                "MaxPass:=",
-                10,
-                "MinPass:=",
-                1,
-                "MinConvPass:=",
-                1,
-                "PerError:=",
-                1,
-                "PerRefine:=",
-                30,
             ],
         )
     elif ansys_tool == "q3d":

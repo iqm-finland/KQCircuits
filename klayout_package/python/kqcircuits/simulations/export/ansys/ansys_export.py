@@ -64,11 +64,11 @@ def export_ansys_json(
     Arguments:
         simulation: The simulation to be exported.
         path: Location where to write json and gds files.
-        ansys_tool: Determines whether to use 'hfss' (s-parameters), 'q3d', 'current', or 'eigenmode'.
+        ansys_tool: Determines whether to use 'hfss' (s-parameters), 'q3d', 'current', 'voltage', or 'eigenmode'.
         frequency_units: Units of frequency.
         frequency: Frequency for mesh refinement. To set up multifrequency analysis in HFSS use list of numbers.
         max_delta_s: Stopping criterion in HFSS simulation.
-        max_delta_e: Stopping criterion in current excitation simulation.
+        max_delta_e: Stopping criterion in current or voltage excitation simulation.
         percent_error: Stopping criterion in Q3D simulation.
         percent_refinement: Percentage of mesh refinement on each iteration.
         maximum_passes: Maximum number of iterations in simulation.
@@ -105,7 +105,7 @@ def export_ansys_json(
             "frequency_units": frequency_units,
             "frequency": frequency,
             "max_delta_s": max_delta_s,  # stopping criterion for HFSS
-            "max_delta_e": max_delta_e,  # stopping criterion for current excitation simulation
+            "max_delta_e": max_delta_e,  # stopping criterion for current or voltage excitation simulation
             "percent_error": percent_error,  # stopping criterion for Q3D
             "percent_refinement": percent_refinement,
             "maximum_passes": maximum_passes,
@@ -243,13 +243,13 @@ def export_ansys(
     Arguments:
         simulations: List of simulations to be exported.
         path: Location where to write export files.
-        ansys_tool: Determines whether to use 'hfss' (s-parameters), 'q3d', 'current', or 'eigenmode'.
+        ansys_tool: Determines whether to use 'hfss' (s-parameters), 'q3d', 'current', 'voltage', or 'eigenmode'.
         script_folder: Path to the Ansys-scripts folder.
         file_prefix: Name of the batch file to be created.
         frequency_units: Units of frequency.
         frequency: Frequency for mesh refinement. To set up multifrequency analysis in HFSS use list of numbers.
         max_delta_s: Stopping criterion in HFSS simulation.
-        max_delta_e: Stopping criterion in current excitation simulation.
+        max_delta_e: Stopping criterion in current or voltage excitation simulation.
         percent_error: Stopping criterion in Q3D simulation.
         percent_refinement: Percentage of mesh refinement on each iteration.
         maximum_passes: Maximum number of iterations in simulation.
