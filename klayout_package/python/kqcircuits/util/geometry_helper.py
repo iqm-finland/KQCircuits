@@ -217,7 +217,7 @@ def region_with_merged_polygons(region, tolerance, expansion=0.0):
     return new_region
 
 
-def match_points_on_layers(cell, layout, layers):
+def merge_points_and_match_on_edges(cell, layout, layers, tolerance=3):
     """Merges adjacent points of layers.
     Also goes through each polygon edge and splits the edge whenever it passes close to existing point.
 
@@ -227,6 +227,7 @@ def match_points_on_layers(cell, layout, layers):
         cell: A cell object.
         layout: A layout object
         layers: List of layers to be considered and modified
+        tolerance: Tolerance in pixels
     """
 
     def fixed_polygon(poly, mod_pts):
@@ -279,7 +280,7 @@ def match_points_on_layers(cell, layout, layers):
         p = [point_list[i] for i in link]
         all_points[p[0]].append(p[1])
         all_points[p[1]].append(p[0])
-        if p[0].sq_distance(p[1]) <= 4:
+        if p[0].sq_distance(p[1]) <= tolerance**2:
             current_set = set(link)
             other_sets = []
             for merge_set in merge_sets:
@@ -317,7 +318,8 @@ def match_points_on_layers(cell, layout, layers):
                 while p0 != p1:
                     # List points that are on the edge towards p1
                     sq_dist = p0.sq_distance(p1)
-                    p_on_edge = [p for p in all_points[p0] if edge.contains(p) and p.sq_distance(p1) < sq_dist]
+                    forward_points = [p for p in all_points[p0] if p.sq_distance(p1) < sq_dist]
+                    p_on_edge = [p for p in forward_points if edge.distance_abs(p) <= tolerance]
                     if p_on_edge:
                         # Update p0 to be the point on edge towards p1 that is furthest from p1
                         p0 = max(p_on_edge, key=lambda x, y=p1: x.sq_distance(y))
@@ -326,8 +328,8 @@ def match_points_on_layers(cell, layout, layers):
                         if new_points[-1] != p1:
                             modified_points.add(new_points[-1])
                     else:
-                        # Update p0 to be the neighbour closest to p1
-                        p0 = min(all_points[p0], key=lambda x, y=p1: x.sq_distance(y))
+                        # Update p0 to be the forward neighbour closest to edge
+                        p0 = min(forward_points, key=lambda x, y=edge: y.distance_abs(x))
 
             # Fix polygon if points are modified and update list of polygons
             polygons += fixed_polygon(pya.SimplePolygon(new_points, True), list(modified_points))

@@ -14,75 +14,103 @@
 # The software distribution should follow IQM trademark policy for open-source software
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
-
 from kqcircuits.pya_resolver import pya
+
+
+def get_list_of_two(dims):
+    """Returns list of two terms when 'dims' is given as a scalar or list."""
+    if isinstance(dims, list):
+        return [dims[0], dims[1]]
+    return [dims, dims]
 
 
 class PartitionRegion:
     """Class to enable partitioning of simulation geometry into sub-regions"""
 
-    def __init__(self, name="part", vertical_dimensions=1.0, metal_edge_dimensions=None, region=None, face_ids=None):
+    def __init__(
+        self,
+        name="part",
+        region=None,
+        z=None,
+        face=None,
+        vertical_dimensions=None,
+        metal_edge_dimensions=None,
+    ):
         """
         Args:
             name: Suffix of the partition layers. Must not end with a number.
-            vertical_dimensions: Vertical dimensions of the partition region as scalar or list. The terms in the list
-                correspond to expansion dimensions into directions of substrate and vacuum, respectively. Scalar means
-                the substrate and vacuum expansions are equal.
-            metal_edge_dimensions: Lateral dimensions to limit the partition region next to the metal edges. If given as
-                list, the terms correspond to expansions into directions of gap and metal, respectively. If given as
-                scalar, the gap and metal expansions are equal. Use None to disable the metal edge limitation.
             region: Area to which the partition region is limited. Can be given as pya.DBox, pya.DPolygon, or list of
                 pya.DPolygons. Use None to cover full domain.
-            face_ids: List of face names to which the partition region is applied. Use None to apply on all faces.
+            z: Lower and upper bound for the partition region as scalar or list. Use None to cover full height.
+            face: The face name to which the partition region is applied. If this is used, the vertical_dimensions
+                and metal_edge_dimensions are applied.
+            vertical_dimensions: Vertical dimensions of the partition region on face as scalar or list. The terms in the
+                list correspond to expansion dimensions into directions of substrate and vacuum, respectively. Scalar
+                means the substrate and vacuum expansions are equal. This is applied only if face is given.
+            metal_edge_dimensions: Lateral dimensions to limit the partition region next to the metal edges. If given as
+                list, the terms correspond to expansions into directions of gap and metal, respectively. If given as
+                scalar, the gap and metal expansions are equal. Use None to disable the metal edge limitation. This is
+                applied only if face is given.
         """
         if name[-1] in "0123456789":
             raise ValueError(f"PartitionRegion name must not end with a number, but {name} is given.")
         if name == "":
             raise ValueError("PartitionRegion name must not be an empty string.")
         self.name = name
+        self.region = region
+        self.z = z
+        self.face = face
         self.vertical_dimensions = vertical_dimensions
         self.metal_edge_dimensions = metal_edge_dimensions
-        self.region = region
-        self.face_ids = face_ids
 
-    def get_vertical_dimension(self):
-        """Returns the partition region expansion dimensions towards substrate and vacuum, respectively."""
-        if isinstance(self.vertical_dimensions, list):
-            return self.vertical_dimensions[0], self.vertical_dimensions[1]
-        return self.vertical_dimensions, self.vertical_dimensions
-
-    def covers_face(self, face_id):
-        """Returns True only if the metal edge region covers given face name.
+    def limit_box(self, bottom, top, box, dbu):
+        """Limits the region and z-levels into simulation dimensions.
 
         Args:
-            face_id: name of the face as string
-        """
-        if self.face_ids is None:
-            return True
-        return face_id in self.face_ids
-
-    def get_partition_region(self, metal_region, etch_region, full_region, dbu):
-        """Returns the region of the partitioning.
-
-        Args:
-            metal_region: metallization area
-            etch_region: area where metal is etched away
-            full_region: full area where partition region can be applied
+            bottom: bottom of the simulation domain.
+            top: top of the simulation domain.
+            box: lateral dimensions of simulation domain as pya.DBox.
             dbu: layout database unit
         """
+        # update self.z using bottom and top
+        self.z = get_list_of_two(self.z)
+        if self.z[0] is None or self.z[0] < bottom:
+            self.z[0] = bottom
+        if self.z[1] is None or top < self.z[1]:
+            self.z[1] = top
+
+        # update self.region using box
+        box_region = pya.Region(box.to_itype(dbu))
         if self.region is None:
-            limited_region = full_region
+            self.region = box_region
         elif isinstance(self.region, list):
-            limited_region = pya.Region([r.to_itype(dbu) for r in self.region]) & full_region
+            self.region = pya.Region([r.to_itype(dbu) for r in self.region]) & box_region
         else:
-            limited_region = pya.Region(self.region.to_itype(dbu)) & full_region
+            self.region = pya.Region(self.region.to_itype(dbu)) & box_region
 
-        if self.metal_edge_dimensions is None:
-            return limited_region
+    def limit_face(self, z, sign, metal_region, etch_region, dbu):
+        """Limits the region and z-levels on face. Function limit_box should be called once before this.
 
-        if isinstance(self.metal_edge_dimensions, list):
-            dim_gap = self.metal_edge_dimensions[0]
-            dim_metal = self.metal_edge_dimensions[1]
-        else:
-            dim_gap = dim_metal = self.metal_edge_dimensions
-        return metal_region.sized(dim_gap / dbu) & etch_region.sized(dim_metal / dbu) & limited_region
+        Args:
+            z: z-level of the face
+            sign: 1 if substrate is below vacuum, -1 otherwise
+            metal_region: metallization area as pya.Region
+            etch_region: area where metal is etched away as pya.Region
+            dbu: layout database unit
+        """
+        # Reset face to indicate that face limitation is applied
+        self.face = None
+
+        # update self.z using self.vertical_dimensions
+        vd = get_list_of_two(self.vertical_dimensions)
+        if vd[sign < 0] is not None and self.z[0] < z - vd[sign < 0]:
+            self.z[0] = z - vd[sign < 0]
+        if vd[sign > 0] is not None and z + vd[sign > 0] < self.z[1]:
+            self.z[1] = z + vd[sign > 0]
+
+        # update self.region using self.metal_edge_dimensions
+        ed = get_list_of_two(self.metal_edge_dimensions)
+        if ed[0] is not None:
+            self.region &= metal_region.sized(ed[0] / dbu)
+        if ed[1] is not None:
+            self.region &= etch_region.sized(ed[1] / dbu)

@@ -102,7 +102,7 @@ def insert_cell_into(
     return cell_inst, refpoints_abs
 
 
-def _resolve_face(face_id, face_ids):
+def resolve_face(face_id, face_ids):
     """Returns face_id if the parameter is given as string or face_ids[face_id] otherwise.
     The face_id as a string must be a key in default_faces but does not necessarily need to be in face_ids.
     """
@@ -318,7 +318,7 @@ class Element(pya.PCellDeclarationHelper):
         Args:
             face_id: name or index of the face, default=0
         """
-        return default_faces[_resolve_face(face_id, self.face_ids)]
+        return default_faces[resolve_face(face_id, self.face_ids)]
 
     def pcell_params_by_name(self, cls=None, **parameters):
         """Give PCell parameters as a dictionary.
@@ -578,7 +578,7 @@ class Element(pya.PCellDeclarationHelper):
              shape: The shape (Region, DPolygon, etc.) to add to ground_grid_avoidance layer
              face_id: Name or index of the primary face of ground_grid_avoidance layer, default=0
         """
-        face = _resolve_face(face_id, self.face_ids)
+        face = resolve_face(face_id, self.face_ids)
         self.cell.shapes(self.get_layer("ground_grid_avoidance", face)).insert(shape)
         if self.protect_opposite_face:
             for group in self.opposing_face_id_groups:

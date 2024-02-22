@@ -59,7 +59,7 @@ sim_parameters = {
     "substrate_height": 50,  # limited simulation domain
     "upper_box_height": 50,  # limited simulation domain
     "metal_height": 0.2,
-    "partition_regions": [{"name": "mer", "metal_edge_dimensions": 1.0, "vertical_dimensions": 1.0}],
+    "partition_regions": [{"name": "mer", "metal_edge_dimensions": 1.0, "vertical_dimensions": 1.0, "face": "1t1"}],
     "tls_layer_thickness": 0.01,
     "tls_layer_material": ["oxideMA", "oxideMS", "oxideSA"],
     "material_dict": {
@@ -74,7 +74,7 @@ export_parameters = {
     "ansys_tool": "hfss",
     "sweep_enabled": False,
     "exit_after_run": True,
-    "mesh_size": {"1t1_layerMAwall": 0.15, "1t1_layerMAmer": 0.5, "1t1_layerMSmer": 0.5, "1t1_layerSAmer": 0.5},
+    "mesh_size": {"1t1_layerMAwallmer": 0.15, "1t1_layerMAmer": 0.5, "1t1_layerMSmer": 0.5, "1t1_layerSAmer": 0.5},
     "integrate_energies": True,
     "post_process": PostProcess(
         "produce_epr_table.py",
