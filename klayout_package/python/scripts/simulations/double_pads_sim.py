@@ -55,6 +55,7 @@ for sim_tool in sim_tools:
     dir_path = create_or_empty_tmp_directory(Path(__file__).stem + f"_output_{sim_tool}")
 
     # Add eigenmode and Q3D specific settings
+    # fmt: off
     export_parameters_ansys = {
         'percent_error': 0.2,
         'maximum_passes': 18,
@@ -106,6 +107,7 @@ for sim_tool in sim_tools:
                                         }
                                     }),
     }
+    # fmt: on
 
     export_parameters_ansys = {
         "ansys_tool": sim_tool,

@@ -23,10 +23,10 @@ import json
 import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "util"))
-from post_process_helpers import (
+from post_process_helpers import (  # pylint: disable=wrong-import-position, no-name-in-module
     find_varied_parameters,
     tabulate_into_csv,
-)  # pylint: disable=wrong-import-position, no-name-in-module
+)
 
 # Find data files
 path = os.path.curdir

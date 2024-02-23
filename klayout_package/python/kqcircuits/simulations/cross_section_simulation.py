@@ -56,7 +56,7 @@ class CrossSectionSimulation:
         pdt.TypeNone,
         "Simulation class XSection tool was used on",
         None,
-        docstring="Class from which the simulation was generated from using the XSection tool. Used to get the correct schema.",
+        docstring="Class from which the simulation was generated using the XSection tool. Used to get the schema.",
     )
 
     def __init__(self, layout, **kwargs):

@@ -110,7 +110,7 @@ default_netlist_ignore_connections = [
 
 # default progress bar formatting with tqdm
 default_bar_format = (
-    "{l_bar}{bar}| {n_fmt}/{total_fmt} [Elapsed: {elapsed}, Left (eta): {remaining}, {rate_inv_fmt}" "{postfix}]"
+    "{l_bar}{bar}| {n_fmt}/{total_fmt} [Elapsed: {elapsed}, Left (eta): {remaining}, {rate_inv_fmt} {postfix}]"
 )
 
 # refpoint is extracted as probepoint if it contains some string from default_probe_types and

@@ -122,6 +122,7 @@ try:
         # older versions of qutip require str path
         qutip.fileio.qsave(hamiltonian, str(project_path / f"Hamiltonian_{project_name}_{variation}.qu"))
 
+        # fmt: off
         df = pd.concat([df, pd.DataFrame({
             'variation': eprh.get_variation_string(variation),
 
@@ -160,6 +161,7 @@ try:
             'f_ND': f_ND,
             # 'n_zpf': ZPF from capacitive participation, small compared to inductive
         }).rename_axis('mode')])
+        # fmt: on
 
         # Total quality factor (harmonic sum) after corrected values
         df["Q_total"] = (1 / (1 / df.filter(regex="^Q(dielectric|surf).*")).sum(axis=1)).values.flatten()

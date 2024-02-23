@@ -31,10 +31,10 @@ import csv
 from pathlib import Path
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "util"))
-from post_process_helpers import (
+from post_process_helpers import (  # pylint: disable=wrong-import-position, no-name-in-module
     find_varied_parameters,
     tabulate_into_csv,
-)  # pylint: disable=wrong-import-position, no-name-in-module
+)
 
 pp_data = dict()
 if len(sys.argv) > 1:

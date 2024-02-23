@@ -5,3 +5,4 @@ pytest-xdist
 tox
 pylint==2.9
 matplotlib
+black

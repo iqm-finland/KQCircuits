@@ -38,3 +38,7 @@ optional-dependencies.simulations = { file = ["sim-requirements.in"] }
 
 [tool.setuptools-git-versioning]
 enabled = true
+
+[tool.black]
+line-length = 120
+target-version = ["py38", "py39", "py310", "py311"]

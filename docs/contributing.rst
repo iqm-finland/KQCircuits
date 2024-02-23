@@ -14,8 +14,7 @@ IQM developers will carefully review, approve and merge your PR. We use fast-for
 to maintain a linear history. Please organize your code into a small number of commits with
 meaningful commit messages.
 
-We try to adhere to the PEP 8 style guide with 120 character long code lines permitted. See
-:ref:`style`.
+We use Black coding style with 120 character long lines permitted. See :ref:`style`.
 
 Versioning
 ^^^^^^^^^^

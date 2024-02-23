@@ -122,6 +122,7 @@ if use_elmer:
             "p_element_order": 3,
         }
 
+    # fmt: off
     workflow = {
         'run_gmsh_gui': False,  # For GMSH: if true, the mesh is shown after it is done
                                # (for large meshes this can take a long time)
@@ -173,6 +174,7 @@ if use_elmer:
             'gmsh_mem':'32G',           # <-- Allocated memory per simulation
             'gmsh_time':'00:10:00',     # <-- Maximum time per simulation
         }
+    # fmt: on
 
 else:
     if wave_equation:

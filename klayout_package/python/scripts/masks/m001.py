@@ -47,6 +47,7 @@ mask_map = [
 
 m001.add_mask_layout(MaskSet.chips_map_from_box_map(box_map, mask_map))
 
+# fmt: off
 parameters_qd = {
     "res_lengths": [4649.6, 4743.3, 4869.9, 4962.9, 5050.7, 5138.7, 5139., 5257., 5397.4, 5516.8, 5626.6, 5736.2,
                     5742.9, 5888.7, 6058.3, 6202.5, 6350., 6489.4],
@@ -60,6 +61,7 @@ parameters_qd = {
     "res_a": [10] * 18,
     "res_b": [6] * 18
 }
+# fmt: on
 
 parameters_qs = {
     "res_lengths": [4649.6, 4908.9, 5208.5, 5516.8, 5848.9, 6217.4],
