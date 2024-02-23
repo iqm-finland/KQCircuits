@@ -21,11 +21,13 @@ from kqcircuits.masks.mask_set import MaskSet
 
 def test_box_map_identical_boxes():
 
-    box_map = {"A": [
-        ["A", "B", "C"],
-        ["D", "E", "F"],
-        ["G", "H", "I"],
-    ]}
+    box_map = {
+        "A": [
+            ["A", "B", "C"],
+            ["D", "E", "F"],
+            ["G", "H", "I"],
+        ]
+    }
 
     mask_map = [
         ["A", "A", "A", "A", "A"],
@@ -70,7 +72,7 @@ def test_box_map_different_boxes():
             ["1", "2", "3"],
             ["4", "5", "6"],
             ["7", "8", "9"],
-        ]
+        ],
     }
 
     mask_map = [

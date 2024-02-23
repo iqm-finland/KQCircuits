@@ -27,12 +27,23 @@ class AirbridgesSim(Simulation):
     n_bridges = Param(pdt.TypeInt, "Number of bridges in series", 5)
 
     def build(self):
-        ab_cell = self.add_element(Airbridge, bridge_length=2*self.b + self.a + 24)
+        ab_cell = self.add_element(Airbridge, bridge_length=2 * self.b + self.a + 24)
         line_length = 800
-        bridge_spacing = (line_length) / (self.n_bridges+1)
+        bridge_spacing = (line_length) / (self.n_bridges + 1)
         for n in range(self.n_bridges):
-            self.insert_cell(ab_cell, pya.DTrans(2, False,
-                                                 point_shift_along_vector(pya.DPoint(100, 250), pya.DPoint(150, 250),
-                                                                          (n+1) * bridge_spacing)))
-        self.produce_waveguide_to_port(pya.DPoint(100, 250), pya.DPoint(150, 250), 1, use_internal_ports=True,
-                                       waveguide_length=line_length, term1=6)
+            self.insert_cell(
+                ab_cell,
+                pya.DTrans(
+                    2,
+                    False,
+                    point_shift_along_vector(pya.DPoint(100, 250), pya.DPoint(150, 250), (n + 1) * bridge_spacing),
+                ),
+            )
+        self.produce_waveguide_to_port(
+            pya.DPoint(100, 250),
+            pya.DPoint(150, 250),
+            1,
+            use_internal_ports=True,
+            waveguide_length=line_length,
+            term1=6,
+        )

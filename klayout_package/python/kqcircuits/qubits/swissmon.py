@@ -36,7 +36,7 @@ class Swissmon(Qubit):
     .. MARKERS_FOR_PNG 56,-61 140,0 0,175 -64,117
     """
 
-    arm_length = Param(pdt.TypeList, "Arm length (um, WNES))", [300. / 2] * 4)
+    arm_length = Param(pdt.TypeList, "Arm length (um, WNES))", [300.0 / 2] * 4)
     arm_width = Param(pdt.TypeList, "Arm metal width (um, WNES)", [24, 24, 24, 24])
     gap_width = Param(pdt.TypeList, "Arm gap width (um, WNES)", [12, 12, 12, 12])
     cpl_width = Param(pdt.TypeList, "Coupler width (um, WNE)", [24, 24, 24])
@@ -92,7 +92,7 @@ class Swissmon(Qubit):
                 pya.DPoint(-g, -l),
                 pya.DPoint(-g - w, -l),
                 pya.DPoint(-g - w, 0),
-                pya.DPoint(-a, 0)
+                pya.DPoint(-a, 0),
             ]
             shoe = pya.DPolygon(shoe_points)
             shoe.size(b)
@@ -109,26 +109,27 @@ class Swissmon(Qubit):
         transf = pya.DCplxTrans(1, 0, False, pya.DVector(0, shift_up))
 
         # rotate to the correct direction
-        rotation = [
-            pya.DCplxTrans.R90, pya.DCplxTrans.R0, pya.DCplxTrans.R270
-        ][cpl_nr]
+        rotation = [pya.DCplxTrans.R90, pya.DCplxTrans.R0, pya.DCplxTrans.R270][cpl_nr]
 
         # draw
         if l > 0:
             self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(
-                shoe_region2.transformed((rotation * transf).to_itrans(self.layout.dbu)))
+                shoe_region2.transformed((rotation * transf).to_itrans(self.layout.dbu))
+            )
         self.cell.shapes(self.get_layer("waveguide_path")).insert(
-            port_region.transformed((rotation * transf).to_itrans(self.layout.dbu)))
+            port_region.transformed((rotation * transf).to_itrans(self.layout.dbu))
+        )
 
         # protection
         if l > 0:
-            protection = pya.DBox(-g - w - b - self.margin, -l - b - self.margin, g + w + b + self.margin,
-                                  b + self.margin)
+            protection = pya.DBox(
+                -g - w - b - self.margin, -l - b - self.margin, g + w + b + self.margin, b + self.margin
+            )
             self.add_protection(protection.transformed((rotation * transf)))
 
         # add ref point
         port_ref = pya.DPoint(0, b)
-        self.add_port("cplr{}".format(cpl_nr), (rotation * transf).trans(port_ref), rotation*pya.DVector(0, 1))
+        self.add_port("cplr{}".format(cpl_nr), (rotation * transf).trans(port_ref), rotation * pya.DVector(0, 1))
 
     def _produce_cross_and_squid(self):
         """Produces the cross and squid for the Swissmon."""
@@ -186,10 +187,16 @@ class Swissmon(Qubit):
         self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(region_etch)
 
         # Protection
-        cross_protection = pya.DPolygon([
-            p + pya.DVector(math.copysign(max([sw, sn, se, ss]) + self.margin, p.x),
-            math.copysign(max([sw, sn, se, ss]) + self.margin, p.y)) for p in cross_gap_points
-        ])
+        cross_protection = pya.DPolygon(
+            [
+                p
+                + pya.DVector(
+                    math.copysign(max([sw, sn, se, ss]) + self.margin, p.x),
+                    math.copysign(max([sw, sn, se, ss]) + self.margin, p.y),
+                )
+                for p in cross_gap_points
+            ]
+        )
         self.add_protection(cross_protection)
 
         # Probepoint
@@ -197,5 +204,5 @@ class Swissmon(Qubit):
         self.refpoints["probe_qb_c"] = probepoint
 
     @classmethod
-    def get_sim_ports(cls, simulation):  #pylint: disable=unused-argument
+    def get_sim_ports(cls, simulation):  # pylint: disable=unused-argument
         return [JunctionSimPort()]

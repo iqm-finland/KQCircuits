@@ -35,20 +35,28 @@ class AirbridgeCrossings(Chip):
     airbridges with different lengths and widths.
     """
 
-    crossings = Param(pdt.TypeInt, "Number of double crossings", 10,
-        docstring="Number of pairs of airbridge crossings")
-    b_number = Param(pdt.TypeInt, "Number of bridges", 5,
-        docstring="Number of airbridges in one element of the mechanical test array")
+    crossings = Param(pdt.TypeInt, "Number of double crossings", 10, docstring="Number of pairs of airbridge crossings")
+    b_number = Param(
+        pdt.TypeInt,
+        "Number of bridges",
+        5,
+        docstring="Number of airbridges in one element of the mechanical test array",
+    )
 
     def build(self):
 
-        launchers = self.produce_launchers("SMA8",
+        launchers = self.produce_launchers(
+            "SMA8",
             launcher_assignments={
-                1: "PL-1-IN", 2: "PL-2-IN",
-                3: "PL-4-IN", 4: "PL-4-OUT",
-                5: "PL-2-OUT", 6: "PL-1-OUT",
-                7: "PL-3-OUT", 8: "PL-3-IN"
-            }
+                1: "PL-1-IN",
+                2: "PL-2-IN",
+                3: "PL-4-IN",
+                4: "PL-4-OUT",
+                5: "PL-2-OUT",
+                6: "PL-1-OUT",
+                7: "PL-3-OUT",
+                8: "PL-3-IN",
+            },
         )
         self._produce_transmission_lines(launchers)
         self._produce_mechanical_test_array()
@@ -56,20 +64,10 @@ class AirbridgeCrossings(Chip):
     def _produce_transmission_lines(self, launchers):
 
         # Left transmission line
-        self.insert_cell(WaveguideCoplanar,
-            path=pya.DPath([
-                launchers["PL-1-IN"][0],
-                launchers["PL-1-OUT"][0]
-            ], 1)
-        )
+        self.insert_cell(WaveguideCoplanar, path=pya.DPath([launchers["PL-1-IN"][0], launchers["PL-1-OUT"][0]], 1))
 
         # Right transmission line
-        self.insert_cell(WaveguideCoplanar,
-            path=pya.DPath([
-                launchers["PL-2-IN"][0],
-                launchers["PL-2-OUT"][0]
-            ], 1)
-        )
+        self.insert_cell(WaveguideCoplanar, path=pya.DPath([launchers["PL-2-IN"][0], launchers["PL-2-OUT"][0]], 1))
 
         # Crossing transmission line
         nodes = [Node(launchers["PL-3-IN"][0])]
@@ -117,7 +115,7 @@ class AirbridgeCrossings(Chip):
             for j, width in enumerate(range(5, 20, 2)):
                 for k, distance in enumerate(range(2, 22, 5)):
                     loc = p_test_origin + v_length_step * i + v_width_step * j + v_distance_step * k
-                    create_airbridges = ((i + k) % 2 == 1)  # airbridges only at every second row
+                    create_airbridges = (i + k) % 2 == 1  # airbridges only at every second row
                     self._produce_mechanical_test(loc, distance, self.b_number, length, width, create_airbridges)
 
     def _produce_mechanical_test(self, loc, distance, number, length, width, create_airbridges):
@@ -127,7 +125,8 @@ class AirbridgeCrossings(Chip):
         wg_end = loc + pya.DVector(+wg_len / 2, 0)
         # v_step = pya.DVector((distance + width) * 2, 0)
 
-        ab = self.add_element(Airbridge,
+        ab = self.add_element(
+            Airbridge,
             # pad_length=1 * width,
             # bridge_length=length,
             # bridge_width=width,
@@ -136,11 +135,9 @@ class AirbridgeCrossings(Chip):
             # ab_trans = pya.DCplxTrans(1, 0, False, wg_start + v_step * (i + 0.5))
             # self.insert_cell(ab, ab_trans)
             if 1000 < loc.y < 9000 and create_airbridges:
-                ab_trans = pya.DCplxTrans(1, 0, False, loc + pya.DVector(50*(i - (number-1)/2), 0))
+                ab_trans = pya.DCplxTrans(1, 0, False, loc + pya.DVector(50 * (i - (number - 1) / 2), 0))
                 self.insert_cell(ab, ab_trans)
 
         # waveguide
-        wg = self.add_element(WaveguideCoplanar,
-            path=pya.DPath([wg_start, wg_end], 1)
-        )
+        wg = self.add_element(WaveguideCoplanar, path=pya.DPath([wg_start, wg_end], 1))
         self.insert_cell(wg)

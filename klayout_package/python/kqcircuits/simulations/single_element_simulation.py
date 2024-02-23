@@ -23,10 +23,12 @@ from kqcircuits.simulations.port import InternalPort, EdgePort
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.util.refpoints import RefpointToInternalPort, RefpointToEdgePort, WaveguideToSimPort, JunctionSimPort
 
+
 def _get_build_function(element_class, ignore_ports, transformation_from_center):
     def _build_for_element_class(self):
-        simulation_cell = self.add_element(element_class,
-            **{**self.get_parameters(), "junction_type": "Sim", "fluxline_type": "none"})
+        simulation_cell = self.add_element(
+            element_class, **{**self.get_parameters(), "junction_type": "Sim", "fluxline_type": "none"}
+        )
 
         element_trans = pya.DTrans(0, False, self.box.center())
         if transformation_from_center is not None:
@@ -40,23 +42,52 @@ def _get_build_function(element_class, ignore_ports, transformation_from_center)
                 continue
 
             if isinstance(port, RefpointToInternalPort):
-                self.ports.append(InternalPort((port_i := port_i + 1), refp[port.refpoint], refp[port.ground_refpoint],
-                                               port.resistance, port.reactance, port.inductance, port.capacitance,
-                                               port.face, port.junction, port.signal_layer))
+                self.ports.append(
+                    InternalPort(
+                        (port_i := port_i + 1),
+                        refp[port.refpoint],
+                        refp[port.ground_refpoint],
+                        port.resistance,
+                        port.reactance,
+                        port.inductance,
+                        port.capacitance,
+                        port.face,
+                        port.junction,
+                        port.signal_layer,
+                    )
+                )
             elif isinstance(port, RefpointToEdgePort):
-                self.ports.append(EdgePort((port_i := port_i + 1), refp[port.refpoint],
-                                           port.resistance, port.reactance, port.inductance, port.capacitance,
-                                           port.deembed_len, port.face, port.junction))
+                self.ports.append(
+                    EdgePort(
+                        (port_i := port_i + 1),
+                        refp[port.refpoint],
+                        port.resistance,
+                        port.reactance,
+                        port.inductance,
+                        port.capacitance,
+                        port.deembed_len,
+                        port.face,
+                        port.junction,
+                    )
+                )
             elif isinstance(port, WaveguideToSimPort):
                 towards = port.towards
                 if port.towards is None:
                     towards = f"{port.refpoint}_corner"
-                self.produce_waveguide_to_port(refp[port.refpoint], refp[towards], (port_i := port_i + 1),
-                                               side=port.side, a=port.a, b=port.b,
-                                               term1=port.term1, turn_radius=port.turn_radius,
-                                               use_internal_ports=port.use_internal_ports,
-                                               waveguide_length=port.waveguide_length, face=port.face,
-                                               airbridge=port.airbridge)
+                self.produce_waveguide_to_port(
+                    refp[port.refpoint],
+                    refp[towards],
+                    (port_i := port_i + 1),
+                    side=port.side,
+                    a=port.a,
+                    b=port.b,
+                    term1=port.term1,
+                    turn_radius=port.turn_radius,
+                    use_internal_ports=port.use_internal_ports,
+                    waveguide_length=port.waveguide_length,
+                    face=port.face,
+                    airbridge=port.airbridge,
+                )
 
             elif isinstance(port, JunctionSimPort):
                 if self.separate_island_internal_ports:
@@ -64,19 +95,24 @@ def _get_build_function(element_class, ignore_ports, transformation_from_center)
                     self.ports.append(InternalPort((port_i := port_i + 1), refp[port.other_refpoint], face=port.face))
                 else:  # Junction between the islands
                     self.ports.append(
-                        InternalPort((port_i := port_i + 1),
-                                     *self.etched_line(refp[port.refpoint], refp[port.other_refpoint]),
-                                     face=port.face, inductance=self.junction_inductance,
-                                     capacitance=self.junction_capacitance, junction=True
+                        InternalPort(
+                            (port_i := port_i + 1),
+                            *self.etched_line(refp[port.refpoint], refp[port.other_refpoint]),
+                            face=port.face,
+                            inductance=self.junction_inductance,
+                            capacitance=self.junction_capacitance,
+                            junction=True,
                         )
                     )
 
     return _build_for_element_class
 
-def get_single_element_sim_class(element_class: Element,
-                                 ignore_ports: Optional[List[str]] = None,
-                                 transformation_from_center: Optional[Callable[[pya.Cell], pya.DTrans]] = None) \
-      -> Type[Simulation]:
+
+def get_single_element_sim_class(
+    element_class: Element,
+    ignore_ports: Optional[List[str]] = None,
+    transformation_from_center: Optional[Callable[[pya.Cell], pya.DTrans]] = None,
+) -> Type[Simulation]:
     """Formulates a simulation class containing a single cell of a given Element class
 
     Args:
@@ -89,13 +125,19 @@ def get_single_element_sim_class(element_class: Element,
             after placing it in the middle of simulation's box.
             The function should not cause any side-effects, i.e. change the cell parameters
     """
-    element_sim_class = type(f"SingleElementSimulationClassFor{element_class.__name__}", (Simulation, ), {
-        "separate_island_internal_ports": Param(pdt.TypeBoolean,
-                            "Add InternalPorts on both islands (if applicable). Use for capacitive simulations", False),
-        "junction_inductance": Param(pdt.TypeList, "Junction inductance (if junction exists)", 11.497e-9, unit="H"),
-        "junction_capacitance": Param(pdt.TypeList, "Junction capacitance (if junction exists)", 0.1e-15, unit="F"),
-
-        "build": _get_build_function(element_class, ignore_ports, transformation_from_center)
-    })
+    element_sim_class = type(
+        f"SingleElementSimulationClassFor{element_class.__name__}",
+        (Simulation,),
+        {
+            "separate_island_internal_ports": Param(
+                pdt.TypeBoolean,
+                "Add InternalPorts on both islands (if applicable). Use for capacitive simulations",
+                False,
+            ),
+            "junction_inductance": Param(pdt.TypeList, "Junction inductance (if junction exists)", 11.497e-9, unit="H"),
+            "junction_capacitance": Param(pdt.TypeList, "Junction capacitance (if junction exists)", 0.1e-15, unit="F"),
+            "build": _get_build_function(element_class, ignore_ports, transformation_from_center),
+        },
+    )
     add_parameters_from(element_class)(element_sim_class)
     return element_sim_class

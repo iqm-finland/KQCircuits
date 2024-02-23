@@ -20,8 +20,10 @@ from tests.chips.chip_test_helpers import errors_test, box_existence_test
 
 from kqcircuits.chips.quality_factor_twoface import QualityFactorTwoface
 
+
 def test_errors(capfd):
     errors_test(capfd, QualityFactorTwoface)
+
 
 def test_box_existence():
     box_existence_test(QualityFactorTwoface)

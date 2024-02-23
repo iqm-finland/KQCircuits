@@ -30,17 +30,17 @@ def test_generate_quick_demo(tmp_path):
 
     _run_mask("masks/quick_demo.py", tmp_path)
 
-    mask_path = tmp_path.joinpath('Quick_v1/Quick_v1-1t1')
-    chips_path = tmp_path.joinpath('Quick_v1/Chips')
+    mask_path = tmp_path.joinpath("Quick_v1/Quick_v1-1t1")
+    chips_path = tmp_path.joinpath("Quick_v1/Chips")
 
-    assert chips_path.joinpath('DE1').exists()
-    assert chips_path.joinpath('DE1/DE1.png').exists()
-    assert chips_path.joinpath('DE1/DE1.oas').exists()
-    assert chips_path.joinpath('CH1').exists()
-    assert chips_path.joinpath('CH1/CH1.png').exists()
-    assert chips_path.joinpath('CH1/CH1.oas').exists()
-    assert mask_path.joinpath('Quick_v1-1t1.oas').exists()
-    assert mask_path.joinpath('Quick_v1-1t1.png').exists()
+    assert chips_path.joinpath("DE1").exists()
+    assert chips_path.joinpath("DE1/DE1.png").exists()
+    assert chips_path.joinpath("DE1/DE1.oas").exists()
+    assert chips_path.joinpath("CH1").exists()
+    assert chips_path.joinpath("CH1/CH1.png").exists()
+    assert chips_path.joinpath("CH1/CH1.oas").exists()
+    assert mask_path.joinpath("Quick_v1-1t1.oas").exists()
+    assert mask_path.joinpath("Quick_v1-1t1.png").exists()
 
 
 def _run_mask(path, tmp_path):
@@ -49,6 +49,6 @@ def _run_mask(path, tmp_path):
     with open(file, "r") as fp:
         code = fp.read()
 
-    code = code.replace('MaskSet(name=', 'MaskSet(export_path=tmp_path, name=')
+    code = code.replace("MaskSet(name=", "MaskSet(export_path=tmp_path, name=")
 
     exec(code, globals(), _locals)  # pylint: disable=exec-used

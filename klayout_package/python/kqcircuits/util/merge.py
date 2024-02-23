@@ -63,8 +63,9 @@ def merge_layout_layers_on_face(layout, cell, face, tolerance=0.004):
     res.insert(grid)
 
 
-def convert_child_instances_to_static(layout: pya.Layout, cell: pya.Cell, only_elements: bool = True,
-                                      prune: bool = True):
+def convert_child_instances_to_static(
+    layout: pya.Layout, cell: pya.Cell, only_elements: bool = True, prune: bool = True
+):
     """Convert child instances of a cell to static.
 
     This function avoids duplicating cells: in case there are multiple instances pointing to the same PCell, only

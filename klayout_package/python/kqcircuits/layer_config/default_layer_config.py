@@ -55,12 +55,10 @@ from kqcircuits.layer_cluster import LayerCluster
 _common_layers = {
     # Metal etching layers for front face (facing towards bottom chip)
     "base_metal_gap": (1, 1),
-
     # merged etching layer with grid  (layers 11 & 13) that defines microscopic structures such as waveguides, launchers
     "base_metal_gap_wo_grid": (2, 1),  # etching layer without grid
     "base_metal_addition": (3, 1),  # Features subtracted from layer 11 , only used during the design.
     "ground_grid": (4, 1),  # A subset of structures combined into layer 10 (e.g. ground plane perforations)
-
     # Occupy the area where there should be no grids, only used during the design.
     "ground_grid_avoidance": (5, 1),
 }
@@ -68,30 +66,25 @@ _common_layers = {
 # common layers in b and t
 _common_b_t_layers = {
     **_common_layers,
-
     "base_metal_gap_for_EBL": (6, 1),  # Features of layer 41 that are needed for EBL
     "waveguide_path": (7, 1),  # Waveguide's metal part, used with waveguide length and DRC calculations
-
     # Junction layer
     "SIS_junction": (8, 1),  # Josephson junction evaporation opening
     "SIS_shadow": (9, 1),  # Josephson junction resist undercut
     "SIS_junction_2": (11, 1),
-
     # Airbridge layers -- potentially obsolete
     "airbridge_pads": (18, 1),  #
     "airbridge_flyover": (19, 1),  #
-
     "chip_dicing": (30, 1),
-
     # 3D integration layers
     "underbump_metallization": (20, 1),  # flip-chip bonding
     "indium_bump": (21, 1),  # flip-chip bonding
     "through_silicon_via": (22, 1),  # TSV
     "through_silicon_via_avoidance": (25, 1),  # TSV
-
     # Netlist
     "ports": (26, 1),  # Considered conductive in the netlist extraction
 }
+
 
 def _shift_layers(layers, shift_ID, shift_data_type):
     """Add a number to replicate a group of layers on a different face.
@@ -101,25 +94,26 @@ def _shift_layers(layers, shift_ID, shift_data_type):
     """
     return {n: (v[0] + shift_ID, v[1] + shift_data_type) for n, v in layers.items()}
 
-# organizer layers into faces
-_face_layers = {}   # layer descriptions per every chip face
 
-_face_layers['1b1'] = {
+# organizer layers into faces
+_face_layers = {}  # layer descriptions per every chip face
+
+_face_layers["1b1"] = {
     **_common_b_t_layers,
 }
 
-_face_layers['1t1'] = {
+_face_layers["1t1"] = {
     **_shift_layers(_common_b_t_layers, 128, 0),
 }
 
 # Top face layers
-_face_layers['2b1'] = {
-    **_shift_layers(_common_b_t_layers, 0, 1),    # common layers at the "top"
+_face_layers["2b1"] = {
+    **_shift_layers(_common_b_t_layers, 0, 1),  # common layers at the "top"
 }
 
 # Ceiling face layers
-_face_layers['2t1'] = {
-    **_shift_layers(_common_b_t_layers, 128, 1),     # same common layers at the "ceiling"
+_face_layers["2t1"] = {
+    **_shift_layers(_common_b_t_layers, 128, 1),  # same common layers at the "ceiling"
 }
 
 # Other auxiliary layers [Layer 220-229]
@@ -139,16 +133,16 @@ _aux_layers_dict = {
 #   - for all the available layers in that face: key "Layer_name", value pya.LayerInfo object for that layer
 #
 default_faces = {}
-for f in ('1t1', '2b1', '1b1', '2t1'):
-    default_faces[f] = {n: pya.LayerInfo(i[0], i[1], f'{f}_{n}') for n, i in _face_layers[f].items()}
+for f in ("1t1", "2b1", "1b1", "2t1"):
+    default_faces[f] = {n: pya.LayerInfo(i[0], i[1], f"{f}_{n}") for n, i in _face_layers[f].items()}
 
 # pya layer information
 default_layers = {n: pya.LayerInfo(i[0], i[1], n) for n, i in _aux_layers_dict.items()}
 for face, layers in default_faces.items():
-    default_layers.update({f'{face}_{name}': li for name, li in layers.items()})
+    default_layers.update({f"{face}_{name}": li for name, li in layers.items()})
 
-for f in ('1t1', '2b1', '1b1', '2t1'):
-    default_faces[f]['id'] = f
+for f in ("1t1", "2b1", "1b1", "2t1"):
+    default_faces[f]["id"] = f
 
 default_face_id = "1t1"  # face_id of the face that is used by default in some contexts
 
@@ -161,11 +155,7 @@ default_mask_export_layers = [
 ]
 
 # Layer names (without face prefix) with mask label postfix for mask label and mask covered region creation.
-default_layers_to_mask = {
-    "base_metal_gap_wo_grid": "1",
-    "airbridge_pads": "2",
-    "airbridge_flyover": "3"
-}
+default_layers_to_mask = {"base_metal_gap_wo_grid": "1", "airbridge_pads": "2", "airbridge_flyover": "3"}
 
 # Layer names (without face prefix) in `layers_to_mask` for which mask covered region is not created.
 default_covered_region_excluded_layers = [
@@ -207,20 +197,26 @@ all_layers_bitmap_hide_layers = [default_layers[l] for l in _aux_layers_dict] + 
 # Dictionary with items "cluster name: LayerCluster".
 chip_export_layer_clusters = {
     # 1b1-face
-    "SIS-1b1": LayerCluster(["1b1_SIS_junction", "1b1_SIS_shadow", "1b1_SIS_junction_2"],
-                            ["1b1_base_metal_gap_for_EBL"], "1b1"),
-    "airbridges-1b1": LayerCluster(["1b1_airbridge_pads", "1b1_airbridge_flyover"],
-                                   ["1b1_base_metal_gap_wo_grid"], "1b1"),
+    "SIS-1b1": LayerCluster(
+        ["1b1_SIS_junction", "1b1_SIS_shadow", "1b1_SIS_junction_2"], ["1b1_base_metal_gap_for_EBL"], "1b1"
+    ),
+    "airbridges-1b1": LayerCluster(
+        ["1b1_airbridge_pads", "1b1_airbridge_flyover"], ["1b1_base_metal_gap_wo_grid"], "1b1"
+    ),
     # 1t1-face
-    "SIS-1t1": LayerCluster(["1t1_SIS_junction", "1t1_SIS_shadow", "1t1_SIS_junction_2"],
-                            ["1t1_base_metal_gap_for_EBL"], "1t1"),
-    "airbridges-1t1": LayerCluster(["1t1_airbridge_pads", "1t1_airbridge_flyover"],
-                                   ["1t1_base_metal_gap_wo_grid"], "1t1"),
+    "SIS-1t1": LayerCluster(
+        ["1t1_SIS_junction", "1t1_SIS_shadow", "1t1_SIS_junction_2"], ["1t1_base_metal_gap_for_EBL"], "1t1"
+    ),
+    "airbridges-1t1": LayerCluster(
+        ["1t1_airbridge_pads", "1t1_airbridge_flyover"], ["1t1_base_metal_gap_wo_grid"], "1t1"
+    ),
     # 2b1-face
-    "SIS-2b1": LayerCluster(["2b1_SIS_junction", "2b1_SIS_shadow", "2b1_SIS_junction_2"],
-                            ["2b1_base_metal_gap_for_EBL"], "2b1"),
-    "airbridges-2b1": LayerCluster(["2b1_airbridge_pads", "2b1_airbridge_flyover"],
-                                   ["2b1_base_metal_gap_wo_grid"], "2b1"),
+    "SIS-2b1": LayerCluster(
+        ["2b1_SIS_junction", "2b1_SIS_shadow", "2b1_SIS_junction_2"], ["2b1_base_metal_gap_for_EBL"], "2b1"
+    ),
+    "airbridges-2b1": LayerCluster(
+        ["2b1_airbridge_pads", "2b1_airbridge_flyover"], ["2b1_base_metal_gap_wo_grid"], "2b1"
+    ),
 }
 
 # default layers to use for calculating cell path lengths with get_cell_path_length()
@@ -229,7 +225,7 @@ default_path_length_layers = [
     "1t1_waveguide_path",
     "2b1_waveguide_path",
     "2t1_waveguide_path",
-    "waveguide_length"  # AirbridgeConnection uses this
+    "waveguide_length",  # AirbridgeConnection uses this
 ]
 
 # default mask parameters for each face
@@ -278,12 +274,12 @@ default_mask_parameters = {
         "text_margin": 100,
         "mask_text_scale": 0.7,
         "mask_marker_offset": 50000,
-    }
+    },
 }
 
 default_parameter_values = {}
 
-default_layer_props = str(Path(__file__).resolve().parent.parent/"layer_config"/"default_layer_props.lyp")
+default_layer_props = str(Path(__file__).resolve().parent.parent / "layer_config" / "default_layer_props.lyp")
 
 default_chip_label_face_prefixes = {
     "1b1": "h",

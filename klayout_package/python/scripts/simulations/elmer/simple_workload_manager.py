@@ -26,14 +26,11 @@ This means that N workers are created to run the given simulations, which themse
 For example, with n_workers=4 and elmer_n_processes=2 in the workflow settings, up to 8 processes are used.
 """
 
-parser = argparse.ArgumentParser(description=_description, epilog='A progress bar is shown if `tqdm` is installed.')
-parser.add_argument('n_workers', metavar='n_workers', type=int, help='Number of workers to use')
-parser.add_argument('simulations', metavar='sim', type=str, nargs='+', help='All simulations to simulate (`.sh` file)')
+parser = argparse.ArgumentParser(description=_description, epilog="A progress bar is shown if `tqdm` is installed.")
+parser.add_argument("n_workers", metavar="n_workers", type=int, help="Number of workers to use")
+parser.add_argument("simulations", metavar="sim", type=str, nargs="+", help="All simulations to simulate (`.sh` file)")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     args = parser.parse_args()
     env = os.environ.copy()
-    pool_run_cmds(args.n_workers,
-                  args.simulations,
-                  env=env,
-                  cwd=os.getcwd())
+    pool_run_cmds(args.n_workers, args.simulations, env=env, cwd=os.getcwd())

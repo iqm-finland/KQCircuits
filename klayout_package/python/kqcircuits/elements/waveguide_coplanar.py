@@ -49,8 +49,13 @@ class WaveguideCoplanar(Element):
     path = Param(pdt.TypeShape, "TLine", pya.DPath([pya.DPoint(0, 0), pya.DPoint(100, 0)], 0))
     term1 = Param(pdt.TypeDouble, "Termination length start", 0, unit="μm")
     term2 = Param(pdt.TypeDouble, "Termination length end", 0, unit="μm")
-    corner_safety_overlap = Param(pdt.TypeDouble, "Extend straight sections near corners", 0.001, unit="μm",
-        docstring="Extend straight sections near corners by this amount (μm) to ensure all sections overlap")
+    corner_safety_overlap = Param(
+        pdt.TypeDouble,
+        "Extend straight sections near corners",
+        0.001,
+        unit="μm",
+        docstring="Extend straight sections near corners by this amount (μm) to ensure all sections overlap",
+    )
 
     def can_create_from_shape_impl(self):
         return self.shape.is_path()
@@ -59,7 +64,7 @@ class WaveguideCoplanar(Element):
         points = [pya.DPoint(point * self.layout.dbu) for point in self.shape.each_point()]
         self.path = pya.DPath(points, 1)
 
-    def transformation_from_shape_impl(self):  #pylint: disable=no-self-use
+    def transformation_from_shape_impl(self):  # pylint: disable=no-self-use
         return pya.Trans()
 
     def produce_waveguide(self):
@@ -69,8 +74,9 @@ class WaveguideCoplanar(Element):
             points = list(self.path.each_point())
 
         if len(points) < 2:
-            self.raise_error_on_cell("Need at least 2 points for a waveguide.",
-                                     points[0] if len(points) == 1 else pya.DPoint())
+            self.raise_error_on_cell(
+                "Need at least 2 points for a waveguide.", points[0] if len(points) == 1 else pya.DPoint()
+            )
 
         # distance between points[0] and beginning of the straight
         last_cut_dist = 0.0 if self.term1 == 0 else -self.corner_safety_overlap
@@ -84,8 +90,9 @@ class WaveguideCoplanar(Element):
             cut_dist = self.r * math.tan(abs(alpha) / 2) - self.corner_safety_overlap
             straight_length = v1.length() - last_cut_dist - cut_dist
             if straight_length < 0:
-                self.raise_error_on_cell("Straight segment cannot fit. Try decreasing the turn radius.",
-                                         points[i] + v1 / 2)
+                self.raise_error_on_cell(
+                    "Straight segment cannot fit. Try decreasing the turn radius.", points[i] + v1 / 2
+                )
 
             # Straight segment before corner
             if straight_length > self.corner_safety_overlap:
@@ -108,8 +115,9 @@ class WaveguideCoplanar(Element):
         cut_dist = 0.0 if self.term2 == 0 else -self.corner_safety_overlap
         straight_length = v1.length() - last_cut_dist - cut_dist
         if straight_length < 0:
-            self.raise_error_on_cell("Straight segment cannot fit. Try decreasing the turn radius.",
-                                     points[-2] + v1 / 2)
+            self.raise_error_on_cell(
+                "Straight segment cannot fit. Try decreasing the turn radius.", points[-2] + v1 / 2
+            )
 
         # Straight segment at the end
         if straight_length > self.corner_safety_overlap:
@@ -156,7 +164,7 @@ class WaveguideCoplanar(Element):
         alpha = (alpha2 - alpha1 + math.pi) % (2 * math.pi) - math.pi  # turn angle (between -pi and pi) in radians
         alphacorner = alpha1 + (alpha + math.pi) / 2  # corner middle angle plus 90 degrees
         distcorner = (r if alpha > 0 else -r) / math.cos(alpha / 2)
-        corner_pos = point2 + pya.DVector(math.cos(alphacorner)*distcorner, math.sin(alphacorner)*distcorner)
+        corner_pos = point2 + pya.DVector(math.cos(alphacorner) * distcorner, math.sin(alphacorner) * distcorner)
         return v1, v2, alpha1, alpha2, corner_pos
 
     @staticmethod
@@ -177,24 +185,33 @@ class WaveguideCoplanar(Element):
         a = elem.a
         b = elem.b
 
-        v = (point_2 - point_1)*(1/point_1.distance(point_2))
+        v = (point_2 - point_1) * (1 / point_1.distance(point_2))
         u = pya.DTrans.R270.trans(v)
         shift_start = pya.DTrans(pya.DVector(point_2))
 
         if term_len > 0:
-            poly = pya.DPolygon([pya.DPoint(u*(a/2 + b)),
-                                 pya.DPoint(u*(a/2 + b) + v*term_len),
-                                 pya.DPoint(u*(-a/2 - b) + v*term_len),
-                                 pya.DPoint(u*(-a/2 - b))])
+            poly = pya.DPolygon(
+                [
+                    pya.DPoint(u * (a / 2 + b)),
+                    pya.DPoint(u * (a / 2 + b) + v * term_len),
+                    pya.DPoint(u * (-a / 2 - b) + v * term_len),
+                    pya.DPoint(u * (-a / 2 - b)),
+                ]
+            )
             elem.cell.shapes(elem.layout.layer(elem.face(face_index)["base_metal_gap_wo_grid"])).insert(
-                poly.transform(shift_start))
+                poly.transform(shift_start)
+            )
 
         # protection
         term_len += elem.margin
-        poly2 = pya.DPolygon([pya.DPoint(u*(a/2 + b + elem.margin)),
-                              pya.DPoint(u*(a/2 + b + elem.margin) + v*term_len),
-                              pya.DPoint(u*(-a/2 - b - elem.margin) + v*term_len),
-                              pya.DPoint(u*(-a/2 - b - elem.margin))])
+        poly2 = pya.DPolygon(
+            [
+                pya.DPoint(u * (a / 2 + b + elem.margin)),
+                pya.DPoint(u * (a / 2 + b + elem.margin) + v * term_len),
+                pya.DPoint(u * (-a / 2 - b - elem.margin) + v * term_len),
+                pya.DPoint(u * (-a / 2 - b - elem.margin)),
+            ]
+        )
         elem.add_protection(poly2.transform(shift_start), face_index)
 
     @staticmethod
@@ -246,8 +263,9 @@ class WaveguideCoplanar(Element):
 
                 for j in range(num_segments):
                     # pylint: disable=cell-var-from-loop
-                    if i != j and (point.distance(endpoints[j][1]) < tolerance
-                                   or point.distance(endpoints[j][0]) < tolerance):
+                    if i != j and (
+                        point.distance(endpoints[j][1]) < tolerance or point.distance(endpoints[j][0]) < tolerance
+                    ):
                         # print("{} | {} | {}".format(point, endpoints[j][1], endpoints[j][0]))
                         found_connected_point = True
                         break

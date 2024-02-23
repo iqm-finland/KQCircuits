@@ -64,7 +64,7 @@ class Manhattan(Squid):
         }
 
         # convenience variables
-        delta_j = self.loop_area / big_loop_height # junction distance, a.k.a. loop width
+        delta_j = self.loop_area / big_loop_height  # junction distance, a.k.a. loop width
         tp_height = self.height - loop_bottom_y - big_loop_height  # top pad height
         bp_gap_x = -self.width / 2 + (self.width - delta_j) / 2  # bottom gap left edge x-coordinate
         bp_gap_x_min = -self.width / 2 + 7  # fixed at minimum size
@@ -81,9 +81,18 @@ class Manhattan(Squid):
         shadow_shapes = []
 
         # create rounded bottom part and top parts
-        self.produce_contact_pads(top_pad_layer, bp_height, bp_gap_x, tp_height, tp_width,
-                                  big_loop_height, junction_shapes_bottom, rounding_params,
-                                  shadow_shapes, junction_shapes_top)
+        self.produce_contact_pads(
+            top_pad_layer,
+            bp_height,
+            bp_gap_x,
+            tp_height,
+            tp_width,
+            big_loop_height,
+            junction_shapes_bottom,
+            rounding_params,
+            shadow_shapes,
+            junction_shapes_top,
+        )
 
         # create rectangular junction-support structures and junctions
         if small_loop:
@@ -91,7 +100,7 @@ class Manhattan(Squid):
                 pya.DPoint(-small_hat_width / 2, self.height - tp_height),
                 pya.DPoint(-small_hat_width / 2, small_loop_height + loop_bottom_y + brim_height),
                 pya.DPoint(-delta_j / 2 - finger_margin, small_loop_height + loop_bottom_y + brim_height),
-                pya.DPoint(-delta_j / 2 - finger_margin, small_loop_height + loop_bottom_y)
+                pya.DPoint(-delta_j / 2 - finger_margin, small_loop_height + loop_bottom_y),
             ]
             junction_shapes_top.append(polygon_with_vsym(small_hat).to_itype(self.layout.dbu))
             if top_pad_layer != "SIS_junction":
@@ -108,7 +117,7 @@ class Manhattan(Squid):
         else:
             tp_brim_left = [
                 pya.DPoint(-delta_j / 2 - finger_margin, self.height - tp_height + brim_height),
-                pya.DPoint(-delta_j / 2 - finger_margin, self.height - tp_height)
+                pya.DPoint(-delta_j / 2 - finger_margin, self.height - tp_height),
             ]
             junction_shapes_top.append(polygon_with_vsym(tp_brim_left).to_itype(self.layout.dbu))
             if top_pad_layer != "SIS_junction":
@@ -128,14 +137,25 @@ class Manhattan(Squid):
         self._produce_ground_metal_shapes()
         self._add_refpoints()
 
-    def produce_contact_pads(self,top_pad_layer, bp_height, bp_gap_x, tp_height,tp_width, big_loop_height,
-                             junction_shapes_bottom, rounding_params, shadow_shapes, junction_shapes_top):
+    def produce_contact_pads(
+        self,
+        top_pad_layer,
+        bp_height,
+        bp_gap_x,
+        tp_height,
+        tp_width,
+        big_loop_height,
+        junction_shapes_bottom,
+        rounding_params,
+        shadow_shapes,
+        junction_shapes_top,
+    ):
 
         bp_pts_left = [
             pya.DPoint(-self.width / 2, -0.5),
             pya.DPoint(-self.width / 2, bp_height),
             pya.DPoint(bp_gap_x, bp_height),
-            pya.DPoint(bp_gap_x, self.height - tp_height - big_loop_height)
+            pya.DPoint(bp_gap_x, self.height - tp_height - big_loop_height),
         ]
         bp_shape = polygon_with_vsym(bp_pts_left)
         self._round_corners_and_append(bp_shape, junction_shapes_bottom, rounding_params)
@@ -204,21 +224,24 @@ class Manhattan(Squid):
                 (pya.DTrans(3, False, jx - finger_margin, jy) * finger_bottom).to_itype(self.layout.dbu),
             ]
             # place refpoints at the middle of the junction. In this case, "l" and "r" coincide.
-            self.refpoints["l"] = pya.DPoint(jx - fo - finger_margin + self.finger_overshoot * squa,
-                                            jy - fo + self.finger_overshoot * squa)
+            self.refpoints["l"] = pya.DPoint(
+                jx - fo - finger_margin + self.finger_overshoot * squa, jy - fo + self.finger_overshoot * squa
+            )
             self.refpoints["r"] = self.refpoints["l"]
         else:
             junction_shapes = [
                 (pya.DTrans(jx - finger_margin, jy) * finger_top).to_itype(self.layout.dbu),
                 (pya.DTrans(0, False, jx - 2 * top_corner.x, jy) * finger_top).to_itype(self.layout.dbu),
                 (pya.DTrans(3, False, jx - finger_margin, jy) * finger_bottom).to_itype(self.layout.dbu),
-                (pya.DTrans(3, False, jx - 2 * top_corner.x, jy) * finger_bottom).to_itype(self.layout.dbu)
+                (pya.DTrans(3, False, jx - 2 * top_corner.x, jy) * finger_bottom).to_itype(self.layout.dbu),
             ]
             # place refpoints at the middle of the left and right junctions
-            self.refpoints["l"] = pya.DPoint(jx - fo - finger_margin + self.finger_overshoot * squa,
-                                            jy - fo + self.finger_overshoot * squa)
-            self.refpoints["r"] = pya.DPoint(jx - fo - 2 * top_corner.x + self.finger_overshoot * squa,
-                                            jy - fo + self.finger_overshoot * squa)
+            self.refpoints["l"] = pya.DPoint(
+                jx - fo - finger_margin + self.finger_overshoot * squa, jy - fo + self.finger_overshoot * squa
+            )
+            self.refpoints["r"] = pya.DPoint(
+                jx - fo - 2 * top_corner.x + self.finger_overshoot * squa, jy - fo + self.finger_overshoot * squa
+            )
 
         junction_region = pya.Region(junction_shapes).merged()
         layer_name = "SIS_junction_2" if self.separate_junctions else "SIS_junction"
@@ -245,7 +268,7 @@ class Manhattan(Squid):
             pya.DPoint(x0 - 5, y0 + 2),
             pya.DPoint(x0 - 5, y0 + 5),
             pya.DPoint(x0, y0 + 5),
-            pya.DPoint(x0, y0 + 1)
+            pya.DPoint(x0, y0 + 1),
         ]
         shape = polygon_with_vsym(bottom_pts)
         self.cell.shapes(self.get_layer("base_metal_addition")).insert(shape)

@@ -33,69 +33,72 @@ import pyEPR as epr
 import qutip.fileio
 
 project_path = Path.cwd()
-project_name = str(Path(sys.argv[1]).stem if Path(sys.argv[1]).suffixes else Path(sys.argv[1])) + '_project'
+project_name = str(Path(sys.argv[1]).stem if Path(sys.argv[1]).suffixes else Path(sys.argv[1])) + "_project"
 
-with open(sys.argv[2], 'r') as fp:
+with open(sys.argv[2], "r") as fp:
     pp_data = json.load(fp)
 
 try:
     # Nominal values, good for relative comparison
-    epr.config['dissipation'].update({
-        ## 3D, given in `pinfo.dissipative['dielectrics_bulk']`
-        # integration to get participation ratio which is multiplied with the loss tangent, adds to Q as 1/(p tan_d)
-        # loss tangent (currently does not support multiple different materials)
-        'tan_delta_sapp': pp_data.get('substrate_loss_tangent', 1e-6),
-
-        ## 2D, given in `pinfo.dissipative['dielectric_surfaces']`.
-        # These values are not used if layer specific values for `dielectric_surfaces` are given in the JSON
-        # Approximates having the surface energy on a thin dielectric layer with
-        'tan_delta_surf': 0.001,  # loss tangent
-        'th': 3e-9,  # thickness
-        'eps_r': 10,  # relative permittivity
-    })
+    epr.config["dissipation"].update(
+        {
+            ## 3D, given in `pinfo.dissipative['dielectrics_bulk']`
+            # integration to get participation ratio which is multiplied with the loss tangent, adds to Q as 1/(p tan_d)
+            # loss tangent (currently does not support multiple different materials)
+            "tan_delta_sapp": pp_data.get("substrate_loss_tangent", 1e-6),
+            ## 2D, given in `pinfo.dissipative['dielectric_surfaces']`.
+            # These values are not used if layer specific values for `dielectric_surfaces` are given in the JSON
+            # Approximates having the surface energy on a thin dielectric layer with
+            "tan_delta_surf": 0.001,  # loss tangent
+            "th": 3e-9,  # thickness
+            "eps_r": 10,  # relative permittivity
+        }
+    )
 
     # Rough correction factors from comparing to cross-section EPR. For more info, see Niko Savola M.Sc. thesis
     correction_factor = {
-        'layerMA': 1 / 2.5,
-        'layerMS': 1 / 0.35,
-        'layerSA': 1 / 0.7,
+        "layerMA": 1 / 2.5,
+        "layerMS": 1 / 0.35,
+        "layerSA": 1 / 0.7,
     }
 
     pinfo = epr.ProjectInfo(
-        project_path = project_path,
-        project_name = project_name,
-        design_name  = 'HFSSDesign1',
+        project_path=project_path,
+        project_name=project_name,
+        design_name="HFSSDesign1",
     )
     oDesign = pinfo.design
 
-
-    junction_numbers = [int(e.split('Junction')[-1]) for e in pinfo.get_all_object_names() if 'Junction' in e]
+    junction_numbers = [int(e.split("Junction")[-1]) for e in pinfo.get_all_object_names() if "Junction" in e]
 
     ## Set dissipative elements
     # Ansys solids
-    pinfo.dissipative['dielectrics_bulk'] = [e for e in pinfo.get_all_object_names() if e.startswith("Substrate")]
-    if pp_data.get('dielectric_surfaces', None) is None:
-        pinfo.dissipative['dielectric_surfaces'] = [  # Ansys sheets (exclude 3D volumes, ports, and junctions)
-            e for e in pinfo.get_all_object_names()
-            if not (e.startswith('Vacuum') or e.startswith("Substrate") or
-                    any(e in [f'Port{i}', f'Junction{i}'] for i in junction_numbers))
+    pinfo.dissipative["dielectrics_bulk"] = [e for e in pinfo.get_all_object_names() if e.startswith("Substrate")]
+    if pp_data.get("dielectric_surfaces", None) is None:
+        pinfo.dissipative["dielectric_surfaces"] = [  # Ansys sheets (exclude 3D volumes, ports, and junctions)
+            e
+            for e in pinfo.get_all_object_names()
+            if not (
+                e.startswith("Vacuum")
+                or e.startswith("Substrate")
+                or any(e in [f"Port{i}", f"Junction{i}"] for i in junction_numbers)
+            )
         ]
     else:
-        pinfo.dissipative['dielectric_surfaces'] = {
-            e: v for e in pinfo.get_all_object_names() for k, v in pp_data['dielectric_surfaces'].items() if k in e
+        pinfo.dissipative["dielectric_surfaces"] = {
+            e: v for e in pinfo.get_all_object_names() for k, v in pp_data["dielectric_surfaces"].items() if k in e
         }
 
     oEditor = oDesign.modeler._modeler
     for j in junction_numbers:
-        pinfo.junctions[f'j{j}'] = {
-            'Lj_variable' : f'Lj_{j}',  # junction inductance Lj
-            'rect'        : f'Port{j}',  # rectangle on which lumped boundary condition is specified
-            'line'        : (name := f'Junction{j}'),  # polyline spanning the length of the rectangle
-            'Cj_variable' : f'Cj_{j}',  # junction capacitance Cj (optional but needed for dissipation)
-            'length'      : f"{oEditor.GetEdgeLength(oEditor.GetEdgeIDsFromObject(name)[0])}{oEditor.GetModelUnits()}"
+        pinfo.junctions[f"j{j}"] = {
+            "Lj_variable": f"Lj_{j}",  # junction inductance Lj
+            "rect": f"Port{j}",  # rectangle on which lumped boundary condition is specified
+            "line": (name := f"Junction{j}"),  # polyline spanning the length of the rectangle
+            "Cj_variable": f"Cj_{j}",  # junction capacitance Cj (optional but needed for dissipation)
+            "length": f"{oEditor.GetEdgeLength(oEditor.GetEdgeIDsFromObject(name)[0])}{oEditor.GetModelUnits()}",
         }
     pinfo.validate_junction_info()
-
 
     # Simulate
     if pinfo.setup.solution_name:
@@ -111,13 +114,13 @@ try:
     for variation, data in epr_results.items():
 
         f_ND, chi_ND, hamiltonian = epr.calcs.back_box_numeric.epr_numerical_diagonalization(
-            data['f_0'] / 1e3,  # in GHz
-            data['Ljs'],  # in H
-            data['ZPF'],  # in units of reduced flux quantum
-            return_H=True
+            data["f_0"] / 1e3,  # in GHz
+            data["Ljs"],  # in H
+            data["ZPF"],  # in units of reduced flux quantum
+            return_H=True,
         )
         # older versions of qutip require str path
-        qutip.fileio.qsave(hamiltonian, str(project_path / f'Hamiltonian_{project_name}_{variation}.qu'))
+        qutip.fileio.qsave(hamiltonian, str(project_path / f"Hamiltonian_{project_name}_{variation}.qu"))
 
         df = pd.concat([df, pd.DataFrame({
             'variation': eprh.get_variation_string(variation),
@@ -159,13 +162,11 @@ try:
         }).rename_axis('mode')])
 
         # Total quality factor (harmonic sum) after corrected values
-        df['Q_total'] = (1 / (1 / df.filter(regex='^Q(dielectric|surf).*')).sum(axis=1)).values.flatten()
-
+        df["Q_total"] = (1 / (1 / df.filter(regex="^Q(dielectric|surf).*")).sum(axis=1)).values.flatten()
 
     # Convert to multi-index
-    df.set_index(['variation', df.index], inplace=True)
-    df.to_csv(project_path / f'QData_{project_name}.csv', index_label=['variation', 'mode'])
-
+    df.set_index(["variation", df.index], inplace=True)
+    df.to_csv(project_path / f"QData_{project_name}.csv", index_label=["variation", "mode"])
 
     # Save HFSS project file
     pinfo.project.save()

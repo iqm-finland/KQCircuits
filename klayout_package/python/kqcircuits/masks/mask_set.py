@@ -70,10 +70,18 @@ class MaskSet:
         export_path: The folder for mask files will be generated under this. TMP_PATH by default.
     """
 
-    def __init__(self, view=None, name="MaskSet", version=1, with_grid=False, export_drc=False,
-                 mask_export_layers=None, export_path=TMP_PATH):
+    def __init__(
+        self,
+        view=None,
+        name="MaskSet",
+        version=1,
+        with_grid=False,
+        export_drc=False,
+        mask_export_layers=None,
+        export_path=TMP_PATH,
+    ):
 
-        self._time = {"INIT": perf_counter(), "ADD_CHIPS": 0,  "BUILD": 0, 'EXPORT': 0, 'END': 0}
+        self._time = {"INIT": perf_counter(), "ADD_CHIPS": 0, "BUILD": 0, "EXPORT": 0, "END": 0}
 
         if view is None:
             self.view = KLayoutView()
@@ -88,19 +96,19 @@ class MaskSet:
         self.mask_export_layers = mask_export_layers if mask_export_layers is not None else []
         self.used_chips = {}
         self._extra_params = {}
-        self._mask_set_dir = Path(export_path)/f"{name}_v{version}"
+        self._mask_set_dir = Path(export_path) / f"{name}_v{version}"
 
         self._mask_set_dir.mkdir(parents=True, exist_ok=True)
 
-        self._extra_params["enable_debug"] = '-d' in argv
+        self._extra_params["enable_debug"] = "-d" in argv
         self._single_process = self._extra_params["enable_debug"] or not is_standalone_session()
 
-        self._extra_params["mock_chips"] = '-m' in argv
-        self._extra_params["skip_extras"] = '-s' in argv
+        self._extra_params["mock_chips"] = "-m" in argv
+        self._extra_params["skip_extras"] = "-s" in argv
 
         self._cpu_override = 0
-        if '-c' in argv and len(argv) > argv.index('-c') + 1:
-            self._cpu_override = int(argv[argv.index('-c') + 1])
+        if "-c" in argv and len(argv) > argv.index("-c") + 1:
+            self._cpu_override = int(argv[argv.index("-c") + 1])
 
     def add_mask_layout(self, chips_map, face_id=default_face_id, mask_layout_type=MaskLayout, **kwargs):
         """Creates a mask layout from chips_map and adds it to self.mask_layouts.
@@ -117,13 +125,15 @@ class MaskSet:
         if ("mask_export_layers" not in kwargs) and self.mask_export_layers:
             kwargs["mask_export_layers"] = self.mask_export_layers
 
-        mask_layout = mask_layout_type(self.layout, self.name, self.version, self.with_grid, chips_map, face_id,
-                                       **kwargs)
+        mask_layout = mask_layout_type(
+            self.layout, self.name, self.version, self.with_grid, chips_map, face_id, **kwargs
+        )
         self.mask_layouts.append(mask_layout)
         return mask_layout
 
-    def add_multi_face_mask_layout(self, face_ids, chips_map=None, extra_face_params=None, mask_layout_type=MaskLayout,
-                                   **kwargs):
+    def add_multi_face_mask_layout(
+        self, face_ids, chips_map=None, extra_face_params=None, mask_layout_type=MaskLayout, **kwargs
+    ):
         """Create a multi face mask layout, which can be used to make masks with matching chip maps on multiple faces.
 
         A ``MaskLayout`` is created of each face in ``face_ids``. By default, the individual mask layouts all have
@@ -144,8 +154,17 @@ class MaskSet:
         if ("mask_export_layers" not in kwargs) and self.mask_export_layers:
             kwargs["mask_export_layers"] = self.mask_export_layers
 
-        mfml = MultiFaceMaskLayout(self.layout, self.name, self.version, self.with_grid, face_ids,
-                                   chips_map, extra_face_params, mask_layout_type, **kwargs)
+        mfml = MultiFaceMaskLayout(
+            self.layout,
+            self.name,
+            self.version,
+            self.with_grid,
+            face_ids,
+            chips_map,
+            extra_face_params,
+            mask_layout_type,
+            **kwargs,
+        )
         for face_id in mfml.face_ids:
             self.mask_layouts.append(mfml.mask_layouts[face_id])
         return mfml
@@ -168,7 +187,7 @@ class MaskSet:
                   or the number of chips, whichever is smaller.
             **parameters: Any parameters passed to the a single chip PCell.
         """
-        self._time['ADD_CHIPS'] = perf_counter()
+        self._time["ADD_CHIPS"] = perf_counter()
 
         if not isinstance(chips, list):  # only one chip
             cpus = 1
@@ -192,7 +211,7 @@ class MaskSet:
                 file_names += pool.map(self._create_chip, chip_args)
 
         # import chip cells exported by the parallel processes into the mask
-        for variant, file_name in tqdm(file_names, desc='Add chips into mask', bar_format=default_bar_format):
+        for variant, file_name in tqdm(file_names, desc="Add chips into mask", bar_format=default_bar_format):
             self._load_chip_into_mask(file_name, variant)
 
     @staticmethod
@@ -205,37 +224,39 @@ class MaskSet:
         chip_params = chip_params[0] if chip_params else {}
         alt_netlists = chip_params.pop("alt_netlists", None)
 
-        chip_path = _mask_set_dir/"Chips"/f"{variant_name}"
+        chip_path = _mask_set_dir / "Chips" / f"{variant_name}"
         chip_path.mkdir(parents=True, exist_ok=True)
 
         logging.basicConfig(level=logging.DEBUG, force=True)  # this level is NOT actually used
-        route_log(filename=chip_path/f"{variant_name}.log", stdout=_extra_params["enable_debug"])
+        route_log(filename=chip_path / f"{variant_name}.log", stdout=_extra_params["enable_debug"])
 
-        mock_chips = _extra_params['mock_chips']
-        skip_extras = _extra_params['skip_extras']
+        mock_chips = _extra_params["mock_chips"]
+        skip_extras = _extra_params["skip_extras"]
 
         view = KLayoutView()
         layout = view.layout
 
         if isclass(chip_class):
             params = {
-                'name_chip': variant_name,
-                'name_mask': name,
-                'with_grid': with_grid,
-                'merge_base_metal_gap': True,
-                'display_name': variant_name,
-                'name_copy': None,
+                "name_chip": variant_name,
+                "name_mask": name,
+                "with_grid": with_grid,
+                "merge_base_metal_gap": True,
+                "display_name": variant_name,
+                "name_copy": None,
             }
             if mock_chips:
                 mock_params = chip_class().pcell_params_by_name(Chip, **params)
                 if chip_params:
                     # Pass through parameters only if they exist in Chip
                     mock_params.update({k: v for k, v in chip_params.items() if k in mock_params})
-                mock_params.update({
-                    'with_grid': False,
-                    'with_gnd_bumps': False,
-                    'with_gnd_tsvs': False,
-                })
+                mock_params.update(
+                    {
+                        "with_grid": False,
+                        "with_gnd_bumps": False,
+                        "with_gnd_tsvs": False,
+                    }
+                )
                 cell = Chip.create(layout, **mock_params)
             else:
                 if chip_params:
@@ -263,7 +284,7 @@ class MaskSet:
             remove_guiding_shapes (Boolean): determines if the guiding shapes are removed
 
         """
-        self._time['BUILD'] = perf_counter()
+        self._time["BUILD"] = perf_counter()
         # build mask layouts (without chip copy labels)
         for mask_layout in self.mask_layouts:
             # include face_id in mask_layout.name only for multi-face masks
@@ -271,11 +292,7 @@ class MaskSet:
                 mask_layout.name += "-" + mask_layout.face_id
             mask_layout.build(self.chips_map_legend)
 
-        chip_copy_label_layers = [
-            "base_metal_gap",
-            "base_metal_gap_wo_grid",
-            "base_metal_gap_for_EBL"
-        ]
+        chip_copy_label_layers = ["base_metal_gap", "base_metal_gap_wo_grid", "base_metal_gap_for_EBL"]
 
         # Insert submask cells to different cell instances, so that these cells can have different chip labels even if
         # the original submask cells are identical. Also copy the MaskLayout objects of identical submasks into separate
@@ -291,8 +308,10 @@ class MaskSet:
                 new_sm_layout.top_cell = self.layout.create_cell(f"{new_sm_layout.name}{new_sm_layout.extra_id}")
                 new_sm_layout.top_cell.insert(pya.DCellInstArray(old_top_cell.cell_index(), pya.DTrans()))
                 mask_layout.top_cell.insert(
-                    pya.DCellInstArray(new_sm_layout.top_cell.cell_index(),
-                                       pya.DTrans(sm_pos - sm_layout.wafer_center + mask_layout.wafer_center))
+                    pya.DCellInstArray(
+                        new_sm_layout.top_cell.cell_index(),
+                        pya.DTrans(sm_pos - sm_layout.wafer_center + mask_layout.wafer_center),
+                    )
                 )
                 mask_layout.submasks[i] = (new_sm_layout, sm_pos)
                 submask_layouts.append(new_sm_layout)
@@ -300,14 +319,15 @@ class MaskSet:
                 # Make sure that layers are only exported once if there are multiple identical submasks
                 if sm_layout in submask_layouts_with_exported_layers:
                     # only export layers where chip copy labels are since they are different even for identical submasks
-                    new_sm_layout.mask_export_layers = \
-                        [layer for layer in chip_copy_label_layers if layer in new_sm_layout.mask_export_layers]
+                    new_sm_layout.mask_export_layers = [
+                        layer for layer in chip_copy_label_layers if layer in new_sm_layout.mask_export_layers
+                    ]
                 else:
                     submask_layouts_with_exported_layers.add(sm_layout)
         self.mask_layouts = submask_layouts + [ml for ml in self.mask_layouts if ml not in mask_layouts_to_remove]
 
         # add chip copy labels for every mask layout
-        for mask_layout in tqdm(self.mask_layouts, desc='Adding chip copy labels', bar_format=default_bar_format):
+        for mask_layout in tqdm(self.mask_layouts, desc="Adding chip copy labels", bar_format=default_bar_format):
 
             labels_cell = mask_layout.layout.create_cell("ChipLabels")
             mask_layout.top_cell.insert(pya.DCellInstArray(labels_cell.cell_index(), pya.DTrans(pya.DVector(0, 0))))
@@ -334,18 +354,20 @@ class MaskSet:
 
         Assumes that self.build() has been called before.
         """
-        self._time['EXPORT'] = perf_counter()
+        self._time["EXPORT"] = perf_counter()
 
         print("Exporting mask set...")
         export_mask_set(self, self._extra_params["skip_extras"])
 
-        self._time['END'] = perf_counter()
+        self._time["END"] = perf_counter()
 
         def tdiff(a, b):  # get elapsed time from "a" to "b"
-            return f'{self._time[b] - self._time[a]:.1f}s' if self._time[a] and self._time[b] else 'n/a'
+            return f"{self._time[b] - self._time[a]:.1f}s" if self._time[a] and self._time[b] else "n/a"
 
-        print(f"Runtime: {tdiff('INIT', 'END')} (add chips: {tdiff('ADD_CHIPS', 'BUILD')}, "
-              f"build: {tdiff('BUILD', 'EXPORT')}, export: {tdiff('EXPORT', 'END')})")
+        print(
+            f"Runtime: {tdiff('INIT', 'END')} (add chips: {tdiff('ADD_CHIPS', 'BUILD')}, "
+            f"build: {tdiff('BUILD', 'EXPORT')}, export: {tdiff('EXPORT', 'END')})"
+        )
 
     @staticmethod
     def chips_map_from_box_map(box_map, mask_map):
@@ -362,15 +384,15 @@ class MaskSet:
         """
         num_box_map_rows = len(list(box_map.values())[0])
         num_mask_map_rows = len(mask_map)
-        num_chip_rows = num_box_map_rows*num_mask_map_rows
+        num_chip_rows = num_box_map_rows * num_mask_map_rows
 
         chips_map = [["" for _ in range(num_chip_rows)] for _ in range(num_chip_rows)]
-        for (k, box_row) in enumerate(mask_map):
-            for (l, box) in enumerate(box_row):
+        for k, box_row in enumerate(mask_map):
+            for l, box in enumerate(box_row):
                 if box in box_map:
-                    for (i, row) in enumerate(box_map[box]):
-                        for (j, slot) in enumerate(row):
-                            chips_map[k*num_box_map_rows + i][l*num_box_map_rows + j] = slot
+                    for i, row in enumerate(box_map[box]):
+                        for j, slot in enumerate(row):
+                            chips_map[k * num_box_map_rows + i][l * num_box_map_rows + j] = slot
 
         return chips_map
 

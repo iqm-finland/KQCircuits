@@ -50,50 +50,63 @@ class FingerCapacitorTaper(Element):
         a = self.a
         b = self.b
 
-        region_ground = pya.Region(pya.DPolygon([
-            pya.DPoint((l + g) / 2, total_width * (b / a) + total_width / 2),
-            pya.DPoint((l + g) / 2 + t, b + a / 2),
-            pya.DPoint((l + g) / 2 + t, -b - a / 2),
-            pya.DPoint((l + g) / 2, -total_width * (b / a) - total_width / 2),
-            pya.DPoint(-(l + g) / 2, -total_width * (b / a) - total_width / 2),
-            pya.DPoint(-(l + g) / 2 - t, -b - a / 2),
-            pya.DPoint(-(l + g) / 2 - t, b + a / 2),
-            pya.DPoint(-(l + g) / 2, total_width * (b / a) + total_width / 2),
+        region_ground = pya.Region(
+            pya.DPolygon(
+                [
+                    pya.DPoint((l + g) / 2, total_width * (b / a) + total_width / 2),
+                    pya.DPoint((l + g) / 2 + t, b + a / 2),
+                    pya.DPoint((l + g) / 2 + t, -b - a / 2),
+                    pya.DPoint((l + g) / 2, -total_width * (b / a) - total_width / 2),
+                    pya.DPoint(-(l + g) / 2, -total_width * (b / a) - total_width / 2),
+                    pya.DPoint(-(l + g) / 2 - t, -b - a / 2),
+                    pya.DPoint(-(l + g) / 2 - t, b + a / 2),
+                    pya.DPoint(-(l + g) / 2, total_width * (b / a) + total_width / 2),
+                ]
+            ).to_itype(self.layout.dbu)
+        )
 
-        ]).to_itype(self.layout.dbu))
-
-        region_taper_right = pya.Region(pya.DPolygon([
-            pya.DPoint((l + g) / 2, total_width / 2),
-            pya.DPoint((l + g) / 2 + t, a / 2),
-            pya.DPoint((l + g) / 2 + t, -a / 2),
-            pya.DPoint((l + g) / 2, -total_width / 2)
-        ]).to_itype(self.layout.dbu))
+        region_taper_right = pya.Region(
+            pya.DPolygon(
+                [
+                    pya.DPoint((l + g) / 2, total_width / 2),
+                    pya.DPoint((l + g) / 2 + t, a / 2),
+                    pya.DPoint((l + g) / 2 + t, -a / 2),
+                    pya.DPoint((l + g) / 2, -total_width / 2),
+                ]
+            ).to_itype(self.layout.dbu)
+        )
         region_taper_left = region_taper_right.transformed(pya.Trans().M90)
 
         polys_fingers = []
-        poly_finger = pya.DPolygon([
-            pya.DPoint(l / 2, w),
-            pya.DPoint(l / 2, 0),
-            pya.DPoint(-l / 2, 0),
-            pya.DPoint(-l / 2, w)
-        ])
+        poly_finger = pya.DPolygon(
+            [pya.DPoint(l / 2, w), pya.DPoint(l / 2, 0), pya.DPoint(-l / 2, 0), pya.DPoint(-l / 2, w)]
+        )
         for i in range(0, n):
-            trans = pya.DTrans(pya.DVector(g / 2, i * (g + w) - total_width / 2)) if i % 2 else pya.DTrans(
-                pya.DVector(-g / 2, i * (g + w) - total_width / 2))
+            trans = (
+                pya.DTrans(pya.DVector(g / 2, i * (g + w) - total_width / 2))
+                if i % 2
+                else pya.DTrans(pya.DVector(-g / 2, i * (g + w) - total_width / 2))
+            )
             polys_fingers.append(trans * poly_finger)
 
-        region_fingers = pya.Region([
-            poly.to_itype(self.layout.dbu) for poly in polys_fingers
-        ])
+        region_fingers = pya.Region([poly.to_itype(self.layout.dbu) for poly in polys_fingers])
         region_etch = region_taper_left + region_taper_right + region_fingers
         region_etch.round_corners(self.corner_r / self.layout.dbu, self.corner_r / self.layout.dbu, self.n)
 
-        region_taper_right_small = pya.Region(pya.DPolygon([
-            pya.DPoint((l + g) / 2 + self.corner_r, (total_width / 2 - a / 2) * (t - 2 * self.corner_r) / t + a / 2),
-            pya.DPoint((l + g) / 2 + t, a / 2),
-            pya.DPoint((l + g) / 2 + t, -a / 2),
-            pya.DPoint((l + g) / 2 + self.corner_r, -(total_width / 2 - a / 2) * (t - 2 * self.corner_r) / t - a / 2)
-        ]).to_itype(self.layout.dbu))
+        region_taper_right_small = pya.Region(
+            pya.DPolygon(
+                [
+                    pya.DPoint(
+                        (l + g) / 2 + self.corner_r, (total_width / 2 - a / 2) * (t - 2 * self.corner_r) / t + a / 2
+                    ),
+                    pya.DPoint((l + g) / 2 + t, a / 2),
+                    pya.DPoint((l + g) / 2 + t, -a / 2),
+                    pya.DPoint(
+                        (l + g) / 2 + self.corner_r, -(total_width / 2 - a / 2) * (t - 2 * self.corner_r) / t - a / 2
+                    ),
+                ]
+            ).to_itype(self.layout.dbu)
+        )
         region_taper_left_small = region_taper_right_small.transformed(pya.Trans().M90)
 
         region = (region_ground - region_etch) - region_taper_right_small - region_taper_left_small

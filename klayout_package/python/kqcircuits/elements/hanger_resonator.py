@@ -27,6 +27,7 @@ class HangerResonator(Element):
     """
     Hanger Resonator
     """
+
     coupling_length = Param(pdt.TypeDouble, "Length of the resonator center part (coupling)", 500, unit="μm")
     head_length = Param(pdt.TypeDouble, "Length of the resonator left waveguide (head) ", 300, unit="μm")
     resonator_length = Param(pdt.TypeDouble, "Total length of the resonator", 1000, unit="μm")
@@ -40,7 +41,7 @@ class HangerResonator(Element):
 
         # If turn radius is smaller than half of the trace width it will create some overlapping masks and sharp angles
         if self.r < self.res_a / 2:
-            self.raise_error_on_cell(f'Turn radius must be at least res_a/2, now r={self.r}, res_a/2={self.res_a/2}')
+            self.raise_error_on_cell(f"Turn radius must be at least res_a/2, now r={self.r}, res_a/2={self.res_a/2}")
 
         # probe line, origin at the center of the trace
         points_pl = [pya.DPoint(0, 0)]
@@ -51,7 +52,7 @@ class HangerResonator(Element):
         # x distance from pl port to center trace of vertical waveguides
         corner_x = self.r
         # corner arc length
-        corner_length = pi * self.r/2
+        corner_length = pi * self.r / 2
         head_length_down = self.head_length - corner_length
 
         points = []
@@ -69,12 +70,11 @@ class HangerResonator(Element):
         # If head lenght is too small don't create the curve on left side
         else:
             # Add a stub corresponding to head length if head length is shorter than the corner
-            p2 = pya.DPoint(-max(self.head_length, 0), wg_start_height - self.res_a/2)
+            p2 = pya.DPoint(-max(self.head_length, 0), wg_start_height - self.res_a / 2)
 
             length_without_tail = self.coupling_length + corner_length
 
         points.append(p2)
-
 
         # If given resonator length is too small, don't create downwards tail
         if length_without_tail >= self.resonator_length:
@@ -108,7 +108,9 @@ class HangerResonator(Element):
 
     @classmethod
     def get_sim_ports(cls, simulation):
-        return [WaveguideToSimPort("port_sim_a", use_internal_ports=False, a=simulation.a, b=simulation.b),
-                WaveguideToSimPort("port_sim_b", use_internal_ports=False, a=simulation.a, b=simulation.b),
-                WaveguideToSimPort("port_resonator_a", a=simulation.res_a, b=simulation.res_b),
-                WaveguideToSimPort("port_resonator_b", a=simulation.res_a, b=simulation.res_b)]
+        return [
+            WaveguideToSimPort("port_sim_a", use_internal_ports=False, a=simulation.a, b=simulation.b),
+            WaveguideToSimPort("port_sim_b", use_internal_ports=False, a=simulation.a, b=simulation.b),
+            WaveguideToSimPort("port_resonator_a", a=simulation.res_a, b=simulation.res_b),
+            WaveguideToSimPort("port_resonator_b", a=simulation.res_a, b=simulation.res_b),
+        ]

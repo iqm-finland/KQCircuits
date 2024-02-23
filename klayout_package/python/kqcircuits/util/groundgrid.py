@@ -33,7 +33,8 @@ def make_grid(boundbox, avoid_region, grid_step=10, grid_size=5, group_n=10):
 
     Returns:
         grid region
-  """
+    """
+
     def grid_region(box, step, size):
         square = pya.Box(0, 0, size, size)
         x_region = pya.Region()

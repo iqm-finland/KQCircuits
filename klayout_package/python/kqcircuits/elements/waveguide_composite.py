@@ -28,8 +28,13 @@ from kqcircuits.defaults import node_editor_layer_changing_elements
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.util.library_helper import element_by_class_name
-from kqcircuits.util.geometry_helper import vector_length_and_direction, point_shift_along_vector, \
-    get_cell_path_length, get_angle, get_direction
+from kqcircuits.util.geometry_helper import (
+    vector_length_and_direction,
+    point_shift_along_vector,
+    get_cell_path_length,
+    get_angle,
+    get_direction,
+)
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.airbridges.airbridge import Airbridge
 from kqcircuits.elements.airbridge_connection import AirbridgeConnection
@@ -72,8 +77,17 @@ class Node:
     length_before: float
     length_increment: float
 
-    def __init__(self, position, element=None, inst_name=None, align=tuple(), angle=None, length_before=None,
-                 length_increment=None, **params):
+    def __init__(
+        self,
+        position,
+        element=None,
+        inst_name=None,
+        align=tuple(),
+        angle=None,
+        length_before=None,
+        length_increment=None,
+        **params,
+    ):
         if isinstance(position, tuple):
             self.position = pya.DPoint(position[0], position[1])
         else:
@@ -99,15 +113,15 @@ class Node:
 
         magic_params = {}
         if self.align:
-            magic_params['align'] = self.align
+            magic_params["align"] = self.align
         if self.inst_name:
-            magic_params['inst_name'] = self.inst_name
+            magic_params["inst_name"] = self.inst_name
         if self.angle is not None:
-            magic_params['angle'] = self.angle
+            magic_params["angle"] = self.angle
         if self.length_before is not None:
-            magic_params['length_before'] = self.length_before
+            magic_params["length_before"] = self.length_before
         if self.length_increment is not None:
-            magic_params['length_increment'] = self.length_increment
+            magic_params["length_increment"] = self.length_increment
 
         all_params = {**self.params, **magic_params}
         if all_params:
@@ -148,11 +162,11 @@ class Node:
                 element = element_by_class_name(element)
 
         # re-create DPoint from tuple
-        magic_params = ('align', 'inst_name', 'angle')
+        magic_params = ("align", "inst_name", "angle")
         for pn, pv in params.items():
             if isinstance(pv, tuple) and pn not in magic_params:
                 if len(pv) < 2:
-                    raise ValueError(f'Point parameter {pn} should have two elements')
+                    raise ValueError(f"Point parameter {pn} should have two elements")
                 params[pn] = pya.DPoint(float(pv[0]), float(pv[1]))
 
         return cls(pya.DPoint(x, y), element, **params)
@@ -228,8 +242,12 @@ class WaveguideComposite(Element):
     nodes = Param(pdt.TypeString, "List of Nodes for the waveguide", "(0, 0, 'Airbridge'), (200, 0)")
     enable_gui_editing = Param(pdt.TypeBoolean, "Enable GUI editing of the waveguide path", True)
     gui_path = Param(pdt.TypeShape, "", pya.DPath([pya.DPoint(0, 0), pya.DPoint(200, 0)], 1))
-    gui_path_shadow = Param(pdt.TypeShape, "Hidden path to detect GUI operations",
-                            pya.DPath([pya.DPoint(0, 0), pya.DPoint(200, 0)], 1), hidden=True)
+    gui_path_shadow = Param(
+        pdt.TypeShape,
+        "Hidden path to detect GUI operations",
+        pya.DPath([pya.DPoint(0, 0), pya.DPoint(200, 0)], 1),
+        hidden=True,
+    )
     tight_routing = Param(pdt.TypeBoolean, "Tight routing for corners", False)
     ab_to_ab_spacing = Param(pdt.TypeDouble, "Spacing between consecutive airbridges", 500, unit="μm")
     ab_to_node_clearance = Param(pdt.TypeDouble, "Spacing between an airbridge and a node", 100, unit="μm")
@@ -291,7 +309,7 @@ class WaveguideComposite(Element):
 
     @staticmethod
     def get_segment_lengths(cell):
-        """ Retrieves the segment lengths of each waveguide segment in a WaveguideComposite cell.
+        """Retrieves the segment lengths of each waveguide segment in a WaveguideComposite cell.
 
         Waveguide segments are ``WaveguideCoplanar``, ``WaveguideCoplanarTaper`` and ``Meander`` subcells.
         This method returns a list with the same length as the ``nodes`` parameter, where each element is the total
@@ -317,7 +335,7 @@ class WaveguideComposite(Element):
 
         segment_lengths = [0] * (segment_data[-1][0] + 1)
         for node_index, child_cell in segment_data:
-            if child_cell.name.split('$')[0] in waveguide_segment_types:
+            if child_cell.name.split("$")[0] in waveguide_segment_types:
                 segment_lengths[node_index] += get_cell_path_length(child_cell)
 
         return segment_lengths
@@ -342,14 +360,22 @@ class WaveguideComposite(Element):
         Returns: The waveguide instance, refpoints and the final length
         """
 
-        wg_tmp = chip.add_element(WaveguideComposite, nodes=[
-            *route_function(initial_guess),
-        ], **waveguide_params)
+        wg_tmp = chip.add_element(
+            WaveguideComposite,
+            nodes=[
+                *route_function(initial_guess),
+            ],
+            **waveguide_params,
+        )
         offset_length = wg_tmp.length()
         correction = length - offset_length
-        wg = chip.add_element(WaveguideComposite, nodes=[
-            *route_function(correction+initial_guess),
-        ], **waveguide_params)
+        wg = chip.add_element(
+            WaveguideComposite,
+            nodes=[
+                *route_function(correction + initial_guess),
+            ],
+            **waveguide_params,
+        )
         inst, ref = chip.insert_cell(wg)
         return inst, ref, wg.length()
 
@@ -439,30 +465,34 @@ class WaveguideComposite(Element):
         self._nodes = Node.nodes_from_string(self.nodes)
         self._child_refpoints = {}
         if len(self._nodes) < 2:
-            self.raise_error_on_cell("Need at least 2 Nodes for a WaveguideComposite.",
-                                     self._nodes[0].position if len(self._nodes) == 1 else pya.DPoint())
+            self.raise_error_on_cell(
+                "Need at least 2 Nodes for a WaveguideComposite.",
+                self._nodes[0].position if len(self._nodes) == 1 else pya.DPoint(),
+            )
 
-        self._wg_start_idx = 0      # next waveguide starts here
+        self._wg_start_idx = 0  # next waveguide starts here
         self._wg_start_pos = self._nodes[0].position
         self._wg_start_dir = self._node_entrance_direction(0)
 
         self.old_id = self.face_ids[0]
 
         for i, node in enumerate(self._nodes):
-            logging.debug(f' Node #{i}: ({node.position.x:.2f}, {node.position.y:.2f}), {node.element.__class__},'
-                             f' {node.params}')
-            if 'face_id' in node.params:
-                self.new_id = node.params['face_id']
+            logging.debug(
+                f" Node #{i}: ({node.position.x:.2f}, {node.position.y:.2f}), {node.element.__class__},"
+                f" {node.params}"
+            )
+            if "face_id" in node.params:
+                self.new_id = node.params["face_id"]
             else:
                 self.new_id = self.old_id
 
-            if 'add_metal' in node.params:
-                self.add_metal = node.params['add_metal']
+            if "add_metal" in node.params:
+                self.add_metal = node.params["add_metal"]
 
             if node.element is None:
                 if self.new_id != self.old_id:
                     self._add_layer_changing_element(i)
-                elif 'a' in node.params or 'b' in node.params:
+                elif "a" in node.params or "b" in node.params:
                     self._add_taper(i)
             else:
                 self.check_node_type(node, i)
@@ -478,14 +508,13 @@ class WaveguideComposite(Element):
         # Create airbridge on each node that has `ab_across=True` in params
         for i, node in enumerate(self._nodes):
             if "ab_across" in node.params and node.params["ab_across"]:
-                ab_len = node.params['bridge_length'] if "bridge_length" in node.params else None
+                ab_len = node.params["bridge_length"] if "bridge_length" in node.params else None
                 self._ab_across(node.position - self._node_entrance_direction(i), node.position, 0, ab_len)
 
         # Reference points
         self.refpoints.update(self._child_refpoints)
         self.add_port("a", self._nodes[0].position, -self._node_entrance_direction(0))
         self.add_port("b", self._wg_start_pos, self._wg_start_dir)
-
 
     def check_node_type(self, node, i):
         """Iterate over supported Node types and run approriate function"""
@@ -509,15 +538,15 @@ class WaveguideComposite(Element):
         node = self._nodes[ind]
 
         params = {**self.pcell_params_by_name(WaveguideCoplanarTaper), **node.params}
-        a, b = params.pop('a', self.a), params.pop('b', self.b)
-        if self.a == a and self.b == b: # no change, just a Node
+        a, b = params.pop("a", self.a), params.pop("b", self.b)
+        if self.a == a and self.b == b:  # no change, just a Node
             return
 
-        taper_cell = self.add_element(WaveguideCoplanarTaper, **{**params, 'a2': a, 'b2': b, 'm2': self.margin})
+        taper_cell = self.add_element(WaveguideCoplanarTaper, **{**params, "a2": a, "b2": b, "m2": self.margin})
         self._insert_cell_and_waveguide(ind, taper_cell)
 
-        if 'r' in node.params:
-            self.r = params['r']
+        if "r" in node.params:
+            self.r = params["r"]
 
         self.a = a
         self.b = b
@@ -530,49 +559,54 @@ class WaveguideComposite(Element):
         if self.new_id == self.old_id:  # no change, just a Node
             return
 
-        params['face_ids'] = [self.old_id, self.new_id]
+        params["face_ids"] = [self.old_id, self.new_id]
 
         # Allow face changing elements to change waveguide widths
-        new_a, new_b = params.get('a', self.a), params.get('b', self.b)
+        new_a, new_b = params.get("a", self.a), params.get("b", self.b)
         if not (new_a == self.a and new_b == self.b):
-            params['a2'], params['b2'] = new_a, new_b
-            params['a'], params['b'] = self.a, self.b
+            params["a2"], params["b2"] = new_a, new_b
+            params["a"], params["b"] = self.a, self.b
 
         fc_cell = self.add_element(element, **params)
 
-        self._insert_cell_and_waveguide(ind, fc_cell, before=f'{self.old_id}_port', after=f'{self.new_id}_port')
+        self._insert_cell_and_waveguide(ind, fc_cell, before=f"{self.old_id}_port", after=f"{self.new_id}_port")
 
         self.a, self.b = new_a, new_b
         self.face_ids = [self.new_id]
 
-        if 'r' in node.params:
-            self.r = params['r']
+        if "r" in node.params:
+            self.r = params["r"]
 
     def _add_airbridge(self, ind, **kwargs):
         """Add an airbridge with tapers at both sides and change default a/b if required."""
 
         node = self._nodes[ind]
-        params = {**self.pcell_params_by_name(AirbridgeConnection), **kwargs,
-                  'a2': self.a, 'b2': self.b, 'm2': self.margin,
-                  'taper_length': AirbridgeConnection.taper_length,
-                  **node.params}
+        params = {
+            **self.pcell_params_by_name(AirbridgeConnection),
+            **kwargs,
+            "a2": self.a,
+            "b2": self.b,
+            "m2": self.margin,
+            "taper_length": AirbridgeConnection.taper_length,
+            **node.params,
+        }
 
-        a, b = params.pop('a', self.a), params.pop('b', self.b)
+        a, b = params.pop("a", self.a), params.pop("b", self.b)
 
         if ind == 0:  # set temporary private variables used in _terminator()
             self._ta, self._tb = self.a, self.b
 
-        if {'a', 'b'} & set(node.params):
-            params['a2'], params['b2'] = a, b
+        if {"a", "b"} & set(node.params):
+            params["a2"], params["b2"] = a, b
 
         if ind == len(self._nodes) - 1:
-            self._ta, self._tb = params['a2'], params['b2']
+            self._ta, self._tb = params["a2"], params["b2"]
 
         cell = self.add_element(AirbridgeConnection, **params)
         self._insert_cell_and_waveguide(ind, cell)
 
-        if 'r' in node.params:
-            self.r = params['r']
+        if "r" in node.params:
+            self.r = params["r"]
 
         self.a, self.b = a, b
 
@@ -580,13 +614,13 @@ class WaveguideComposite(Element):
         """Add any other simple Element, that has port_a and port_b."""
 
         node = self._nodes[ind]
-        params = {**self.pcell_params_by_name(node.element), 'taper_length': self.taper_length, **node.params}
+        params = {**self.pcell_params_by_name(node.element), "taper_length": self.taper_length, **node.params}
 
         cell = self.add_element(node.element, **params)
         self._insert_cell_and_waveguide(ind, cell, node.inst_name, *node.align)
 
-        if 'r' in node.params and not node.element is WaveguideCoplanarSplitter:
-            self.r = params['r']
+        if "r" in node.params and not node.element is WaveguideCoplanarSplitter:
+            self.r = params["r"]
 
     def _insert_cell_and_waveguide(self, ind, cell, inst_name=None, before="port_a", after="port_b"):
         """Place a cell and create the preceding waveguide.
@@ -599,8 +633,8 @@ class WaveguideComposite(Element):
         used to determine the entry and exit directions of the ports. If these points do not exist, the waveguides will
         extend the line through ``before`` and ``after``.
         """
-        before_corner = before + '_corner'
-        after_corner = after + '_corner'
+        before_corner = before + "_corner"
+        after_corner = after + "_corner"
 
         # Compute cell relative entrance direction
         rel_ref = self.get_refpoints(cell, rec_levels=0)
@@ -620,7 +654,7 @@ class WaveguideComposite(Element):
         cell_inst.set_property("waveguide_composite_node_index", ind)
         if inst_name is not None:
             for name, value in ref.items():
-                self._child_refpoints[f'{inst_name}_{name}'] = value
+                self._child_refpoints[f"{inst_name}_{name}"] = value
 
         # Add waveguide from previous element until this element
         self._add_waveguide(ind, ref[before], waveguide_dir)
@@ -647,9 +681,9 @@ class WaveguideComposite(Element):
             return
         params.update({**self.pcell_params_by_name(WaveguideCoplanar), "path": points})
         if start_index != 0 or self._nodes[start_index].element:
-            params['term1'] = 0
+            params["term1"] = 0
         if end_index != len(self._nodes) - 1 or self._nodes[end_index].element:
-            params['term2'] = 0
+            params["term2"] = 0
         wg_cell = self.add_element(WaveguideCoplanar, **params)
         cell_inst, _ = self.insert_cell(wg_cell)
         cell_inst.set_property("waveguide_composite_node_index", end_index)
@@ -714,7 +748,7 @@ class WaveguideComposite(Element):
             """Returns curve length, curve start point, and curve end point, for given point pnts[p] in list pnts."""
             if p == 0 or p + 1 >= len(pnts):
                 return 0.0, pnts[p], pnts[p]
-            v1, v2, alpha1, alpha2, _ = WaveguideCoplanar.get_corner_data(pnts[p-1], pnts[p], pnts[p+1], self.r)
+            v1, v2, alpha1, alpha2, _ = WaveguideCoplanar.get_corner_data(pnts[p - 1], pnts[p], pnts[p + 1], self.r)
             abs_turn = pi - abs(pi - abs(alpha2 - alpha1))
             cut_dist = self.r * tan(abs_turn / 2)
             return self.r * abs_turn, pnts[p] + (-cut_dist / v1.length()) * v1, pnts[p] + (cut_dist / v2.length()) * v2
@@ -728,11 +762,17 @@ class WaveguideComposite(Element):
 
             # Determine segment endpoint positions
             pos0 = self._wg_start_pos if i == start_index else node0.position
-            dir0 = self._wg_start_dir if i == start_index else \
-                pya.DVector() if node0.angle is None else get_direction(node0.angle)
+            dir0 = (
+                self._wg_start_dir
+                if i == start_index
+                else pya.DVector() if node0.angle is None else get_direction(node0.angle)
+            )
             pos1 = end_pos if i + 1 == end_index and end_pos is not None else node1.position
-            dir1 = end_dir if i + 1 == end_index and end_dir is not None else \
-                pya.DVector() if node1.angle is None else get_direction(node1.angle)
+            dir1 = (
+                end_dir
+                if i + 1 == end_index and end_dir is not None
+                else pya.DVector() if node1.angle is None else get_direction(node1.angle)
+            )
 
             # Add corner points
             len0, len1 = get_corner_lengths(pos1 - pos0, dir0, dir1)
@@ -754,7 +794,7 @@ class WaveguideComposite(Element):
         for n1, p1 in straights.items():
             node1 = self._nodes[n1]
             if node1.length_before is not None or node1.length_increment is not None:
-                start_len, turn_start, meander_start = curve_length_and_end_points(points, p1-1)
+                start_len, turn_start, meander_start = curve_length_and_end_points(points, p1 - 1)
                 end_len, meander_end, turn_end = curve_length_and_end_points(points, p1)
                 if node1.length_increment is not None:
                     meander_len = (meander_end - meander_start).length() + node1.length_increment
@@ -768,14 +808,19 @@ class WaveguideComposite(Element):
                         meander_len -= end_len + (node1.position - turn_end).length()
                     if n1 - 1 == start_index:
                         meander_len -= start_len + (points[0] - turn_start).length()
-                    elif self._nodes[n1-1].angle is None:
+                    elif self._nodes[n1 - 1].angle is None:
                         meander_len -= start_len / 2
                     else:
-                        meander_len -= start_len + (self._nodes[n1-1].position - turn_start).length()
+                        meander_len -= start_len + (self._nodes[n1 - 1].position - turn_start).length()
 
                 params = {**node1.params, "a": self.a, "b": self.b}
-                cell_inst, _ = self.insert_cell(Meander, start=[meander_start.x, meander_start.y],
-                                                end=[meander_end.x, meander_end.y], length=meander_len, **params)
+                cell_inst, _ = self.insert_cell(
+                    Meander,
+                    start=[meander_start.x, meander_start.y],
+                    end=[meander_end.x, meander_end.y],
+                    length=meander_len,
+                    **params,
+                )
                 cell_inst.set_property("waveguide_composite_node_index", end_index)
                 wg_points = point0 + points[p0:p1] + ([] if start_len < 1e-4 else [meander_start])
                 self._insert_wg_cell(wg_points, n0, n1)
@@ -783,8 +828,8 @@ class WaveguideComposite(Element):
                 p0 = p1
                 point0 = [] if end_len < 1e-4 else [meander_end]
             elif "n_bridges" in node1.params and node1.params["n_bridges"] != 0:
-                ab_len = node1.params['bridge_length'] if "bridge_length" in node1.params else None
-                self._ab_across(points[p1-1], points[p1], node1.params["n_bridges"], ab_len)
+                ab_len = node1.params["bridge_length"] if "bridge_length" in node1.params else None
+                self._ab_across(points[p1 - 1], points[p1], node1.params["n_bridges"], ab_len)
 
         self._insert_wg_cell(point0 + points[p0:], n0, end_index, **node1.params)
 
@@ -817,9 +862,9 @@ class WaveguideComposite(Element):
             xs = [(self.ab_to_node_clearance + i * self.ab_to_ab_spacing) / v_length for i in range(final_num)]
 
         # add airbridges
-        params = {'airbridge_type': self.airbridge_type}
+        params = {"airbridge_type": self.airbridge_type}
         if ab_len:
-            params['bridge_length'] = ab_len
+            params["bridge_length"] = ab_len
         ab_cell = self.add_element(Airbridge, **params)
         for x in xs:
             self.insert_cell(ab_cell, pya.DCplxTrans(1, get_angle(v_dir), False, start + x * v_dir))
@@ -838,13 +883,14 @@ class WaveguideComposite(Element):
 
         p2 = self._nodes[ind].position
         a, b = self.a, self.b
-        if hasattr(self, '_ta'):
+        if hasattr(self, "_ta"):
             self.a, self.b = self._ta, self._tb
         WaveguideCoplanar.produce_end_termination(self, p1, p2, term)
         self.a, self.b = a, b
 
 
 # TODO technical debt: refactor this to be more straightforward and efficient
+
 
 def produce_fixed_length_bend(element, target_len, point_a, point_a_corner, point_b, point_b_corner, bridges):
     """Inserts a waveguide bend with the given length to the chip.
@@ -865,24 +911,43 @@ def produce_fixed_length_bend(element, target_len, point_a, point_a_corner, poin
         ValueError, if a bend with the given target length and points cannot be created.
 
     """
+
     def objective(x):
-        return _length_of_var_length_bend(element.layout, element.LIBRARY_NAME, x, point_a, point_a_corner, point_b,
-                                          point_b_corner, bridges, element.r) - target_len
+        return (
+            _length_of_var_length_bend(
+                element.layout,
+                element.LIBRARY_NAME,
+                x,
+                point_a,
+                point_a_corner,
+                point_b,
+                point_b_corner,
+                bridges,
+                element.r,
+            )
+            - target_len
+        )
+
     try:
         # floods the database with PCell variants :(
         root = root_scalar(objective, bracket=(element.r, target_len / 2))
-        cell = _var_length_bend(element.layout, element.LIBRARY_NAME, root.root, point_a, point_a_corner, point_b,
-                                point_b_corner, bridges)
+        cell = _var_length_bend(
+            element.layout, element.LIBRARY_NAME, root.root, point_a, point_a_corner, point_b, point_b_corner, bridges
+        )
         inst, _ = element.insert_cell(cell)
     except ValueError as e:
-        raise ValueError("Cannot create a waveguide bend with length {} between points {} and {}".format(
-            target_len, point_a, point_b)) from e
+        raise ValueError(
+            "Cannot create a waveguide bend with length {} between points {} and {}".format(
+                target_len, point_a, point_b
+            )
+        ) from e
 
     return inst
 
 
-def _length_of_var_length_bend(layout, library, corner_dist, point_a, point_a_corner, point_b, point_b_corner,
-                               bridges, r):
+def _length_of_var_length_bend(
+    layout, library, corner_dist, point_a, point_a_corner, point_b, point_b_corner, bridges, r
+):
     # This function shouldn't raise exception, so we have to manually test if waveguide doesn't fit.
     # These tests do not cover all cases, but are enough in most cases
     point_a_shift = point_shift_along_vector(point_a, point_a_corner, corner_dist)
@@ -906,10 +971,16 @@ def _length_of_var_length_bend(layout, library, corner_dist, point_a, point_a_co
 
 
 def _var_length_bend(layout, library, corner_dist, point_a, point_a_corner, point_b, point_b_corner, bridges):
-    cell = WaveguideComposite.create(layout, library, nodes=[
-        Node(point_a, ab_across=bridges.endswith("ends")),
-        Node(point_shift_along_vector(point_a, point_a_corner, corner_dist)),
-        Node(point_shift_along_vector(point_b, point_b_corner, corner_dist), n_bridges=bridges.startswith("middle")),
-        Node(point_b, ab_across=bridges.endswith("ends")),
-    ])
+    cell = WaveguideComposite.create(
+        layout,
+        library,
+        nodes=[
+            Node(point_a, ab_across=bridges.endswith("ends")),
+            Node(point_shift_along_vector(point_a, point_a_corner, corner_dist)),
+            Node(
+                point_shift_along_vector(point_b, point_b_corner, corner_dist), n_bridges=bridges.startswith("middle")
+            ),
+            Node(point_b, ab_across=bridges.endswith("ends")),
+        ],
+    )
     return cell

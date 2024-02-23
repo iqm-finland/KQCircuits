@@ -37,18 +37,30 @@ class TestStructure(Element):
             pad_width: width (and height) of the pad
 
         """
-        offset_x = pad_width/2
-        offset_y = pad_height/2
-        pad = pya.DPolygon([
-            pya.DPoint(x - offset_x, y - offset_y),
-            pya.DPoint(x - offset_x, y + offset_y),
-            pya.DPoint(x + offset_x, y + offset_y),
-            pya.DPoint(x + offset_x, y - offset_y),
-        ])
+        offset_x = pad_width / 2
+        offset_y = pad_height / 2
+        pad = pya.DPolygon(
+            [
+                pya.DPoint(x - offset_x, y - offset_y),
+                pya.DPoint(x - offset_x, y + offset_y),
+                pya.DPoint(x + offset_x, y + offset_y),
+                pya.DPoint(x + offset_x, y - offset_y),
+            ]
+        )
         pads_region.insert(pad.to_itype(self.layout.dbu))
 
-    def produce_four_point_pads(self, pads_region, pad_width, pad_height, pad_spacing_x, pad_spacing_y, connect_pads,
-                                trans=pya.DTrans(), refpoint_prefix="probe", refpoint_distance=None):
+    def produce_four_point_pads(
+        self,
+        pads_region,
+        pad_width,
+        pad_height,
+        pad_spacing_x,
+        pad_spacing_y,
+        connect_pads,
+        trans=pya.DTrans(),
+        refpoint_prefix="probe",
+        refpoint_distance=None,
+    ):
         """Inserts four pads to pads_region.
 
         Args:
@@ -64,8 +76,8 @@ class TestStructure(Element):
 
         """
 
-        pad_offset_x = (pad_spacing_x + pad_width)/2
-        pad_offset_y = (pad_spacing_y + pad_height)/2
+        pad_offset_x = (pad_spacing_x + pad_width) / 2
+        pad_offset_y = (pad_spacing_y + pad_height) / 2
 
         pos_sw = pya.DPoint(trans.disp.x - pad_offset_x, trans.disp.y - pad_offset_y)
         pos_nw = pya.DPoint(trans.disp.x - pad_offset_x, trans.disp.y + pad_offset_y)
@@ -79,12 +91,11 @@ class TestStructure(Element):
 
         if connect_pads:
             pad_connection_box_width = 50
-            pad_connection_box = pya.DBox(pya.DPoint(0, 0),
-                                          pya.DPoint(pad_connection_box_width, pad_spacing_y))
-            trans_left = pya.DTrans(-pad_spacing_x/2 - pad_connection_box_width, -pad_spacing_y/2)
-            trans_right = pya.DTrans(pad_spacing_x/2, -pad_spacing_y/2)
-            pads_region.insert((trans*trans_left*pad_connection_box).to_itype(self.layout.dbu))
-            pads_region.insert((trans*trans_right*pad_connection_box).to_itype(self.layout.dbu))
+            pad_connection_box = pya.DBox(pya.DPoint(0, 0), pya.DPoint(pad_connection_box_width, pad_spacing_y))
+            trans_left = pya.DTrans(-pad_spacing_x / 2 - pad_connection_box_width, -pad_spacing_y / 2)
+            trans_right = pya.DTrans(pad_spacing_x / 2, -pad_spacing_y / 2)
+            pads_region.insert((trans * trans_left * pad_connection_box).to_itype(self.layout.dbu))
+            pads_region.insert((trans * trans_right * pad_connection_box).to_itype(self.layout.dbu))
 
         if refpoint_distance is None:
             self.refpoints["{}_sw".format(refpoint_prefix)] = pos_sw
@@ -92,10 +103,14 @@ class TestStructure(Element):
             self.refpoints["{}_ne".format(refpoint_prefix)] = pos_ne
             self.refpoints["{}_se".format(refpoint_prefix)] = pos_se
         else:
-            self.refpoints["{}_sw".format(refpoint_prefix)] = pos_sw + pya.DVector(-pad_width/2 + refpoint_distance, 0)
-            self.refpoints["{}_nw".format(refpoint_prefix)] = pos_nw + pya.DVector(-pad_width/2 + refpoint_distance, 0)
-            self.refpoints["{}_ne".format(refpoint_prefix)] = pos_ne + pya.DVector(pad_width/2 - refpoint_distance, 0)
-            self.refpoints["{}_se".format(refpoint_prefix)] = pos_se + pya.DVector(pad_width/2 - refpoint_distance, 0)
+            self.refpoints["{}_sw".format(refpoint_prefix)] = pos_sw + pya.DVector(
+                -pad_width / 2 + refpoint_distance, 0
+            )
+            self.refpoints["{}_nw".format(refpoint_prefix)] = pos_nw + pya.DVector(
+                -pad_width / 2 + refpoint_distance, 0
+            )
+            self.refpoints["{}_ne".format(refpoint_prefix)] = pos_ne + pya.DVector(pad_width / 2 - refpoint_distance, 0)
+            self.refpoints["{}_se".format(refpoint_prefix)] = pos_se + pya.DVector(pad_width / 2 - refpoint_distance, 0)
 
     def produce_etched_region(self, metal_region, pos, width, height):
         """Produces structures in metal gap layer.
@@ -110,16 +125,18 @@ class TestStructure(Element):
             height: height of the produced region
 
         """
-        test_area = pya.DPolygon([
-            pya.DPoint(pos.x + width/2, pos.y + height/2),
-            pya.DPoint(pos.x + width/2, pos.y - height/2),
-            pya.DPoint(pos.x - width/2, pos.y - height/2),
-            pya.DPoint(pos.x - width/2, pos.y + height/2),
-        ])
+        test_area = pya.DPolygon(
+            [
+                pya.DPoint(pos.x + width / 2, pos.y + height / 2),
+                pya.DPoint(pos.x + width / 2, pos.y - height / 2),
+                pya.DPoint(pos.x - width / 2, pos.y - height / 2),
+                pya.DPoint(pos.x - width / 2, pos.y + height / 2),
+            ]
+        )
         reg_test_area = pya.Region(test_area.to_itype(self.layout.dbu))
         # etched region
         reg_etch = reg_test_area - metal_region
         self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(reg_etch)
         # grid avoidance region
-        reg_protect = reg_etch.extents(int(self.margin/self.layout.dbu))
+        reg_protect = reg_etch.extents(int(self.margin / self.layout.dbu))
         self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(reg_protect)

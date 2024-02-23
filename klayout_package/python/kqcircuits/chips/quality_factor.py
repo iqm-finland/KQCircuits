@@ -31,33 +31,66 @@ from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 
 class QualityFactor(Chip):
     """The PCell declaration for a QualityFactor chip."""
-    res_lengths = Param(pdt.TypeList, "Resonator lengths", [5434, 5429, 5374, 5412, 5493, 5589], unit="[μm]",
-                        docstring="Physical length of resonators [μm]")
-    n_fingers = Param(pdt.TypeList, "Number of fingers of the coupler", [4, 4, 2, 4, 4, 4],
-                      docstring="Fingers in planar capacitors")
-    l_fingers = Param(pdt.TypeList, "Length of fingers", [23.1, 9.9, 14.1, 10, 21, 28], unit="[μm]",
-                      docstring="Length of the capacitor fingers [μm]")
-    type_coupler = Param(pdt.TypeList, "Coupler types",
-                         ["interdigital", "interdigital", "interdigital", "gap", "gap", "gap"])
+
+    res_lengths = Param(
+        pdt.TypeList,
+        "Resonator lengths",
+        [5434, 5429, 5374, 5412, 5493, 5589],
+        unit="[μm]",
+        docstring="Physical length of resonators [μm]",
+    )
+    n_fingers = Param(
+        pdt.TypeList, "Number of fingers of the coupler", [4, 4, 2, 4, 4, 4], docstring="Fingers in planar capacitors"
+    )
+    l_fingers = Param(
+        pdt.TypeList,
+        "Length of fingers",
+        [23.1, 9.9, 14.1, 10, 21, 28],
+        unit="[μm]",
+        docstring="Length of the capacitor fingers [μm]",
+    )
+    type_coupler = Param(
+        pdt.TypeList, "Coupler types", ["interdigital", "interdigital", "interdigital", "gap", "gap", "gap"]
+    )
     n_ab = Param(pdt.TypeList, "Number of resonator airbridges", [5, 0, 5, 5, 5, 5])
-    res_term = Param(pdt.TypeList, "Resonator termination type",
-        ["galvanic", "galvanic", "galvanic", "airbridge", "airbridge", "airbridge"])
-    res_beg = Param(pdt.TypeList, "Resonator beginning type",
-        ["galvanic", "galvanic", "galvanic", "airbridge", "airbridge", "airbridge"])
-    res_a = Param(pdt.TypeList, "Resonator waveguide center conductor width", [5, 10, 20, 5, 10, 20], unit="[μm]",
-                  docstring="Width of the center conductor in the resonators [μm]")
-    res_b = Param(pdt.TypeList, "Resonator waveguide gap width", [3, 6, 12, 3, 6, 12], unit="[μm]",
-                  docstring="Width of the gap in the resonators [μm]")
+    res_term = Param(
+        pdt.TypeList,
+        "Resonator termination type",
+        ["galvanic", "galvanic", "galvanic", "airbridge", "airbridge", "airbridge"],
+    )
+    res_beg = Param(
+        pdt.TypeList,
+        "Resonator beginning type",
+        ["galvanic", "galvanic", "galvanic", "airbridge", "airbridge", "airbridge"],
+    )
+    res_a = Param(
+        pdt.TypeList,
+        "Resonator waveguide center conductor width",
+        [5, 10, 20, 5, 10, 20],
+        unit="[μm]",
+        docstring="Width of the center conductor in the resonators [μm]",
+    )
+    res_b = Param(
+        pdt.TypeList,
+        "Resonator waveguide gap width",
+        [3, 6, 12, 3, 6, 12],
+        unit="[μm]",
+        docstring="Width of the gap in the resonators [μm]",
+    )
     tl_airbridges = Param(pdt.TypeBoolean, "Airbridges on transmission line", True)
-    res_airbridge_types = Param(pdt.TypeList, "Airbridge type for each resonator",
-                         default=[default_airbridge_type]*6)
+    res_airbridge_types = Param(pdt.TypeList, "Airbridge type for each resonator", default=[default_airbridge_type] * 6)
     sample_holder_type = Param(pdt.TypeInt, "Sample holder type for the chip", "SMA8", choices=["SMA8", "ARD24"])
     marker_safety = Param(pdt.TypeDouble, "Distance between launcher and first curve", 1000, unit="μm")
     feedline_bend_distance = Param(pdt.TypeDouble, "Horizontal distance of feedline bend", 100, unit="μm")
     resonators_both_sides = Param(pdt.TypeBoolean, "Place resonators on both sides of feedline", False)
-    max_res_len = Param(pdt.TypeDouble, "Maximal straight length of resonators", 1e30, unit="μm",
-                        docstring="Resonators exceeding this length become meandering")
-    ground_grid_in_trace = Param(pdt.TypeList, "Include ground-grid in the trace", [0]*18)
+    max_res_len = Param(
+        pdt.TypeDouble,
+        "Maximal straight length of resonators",
+        1e30,
+        unit="μm",
+        docstring="Resonators exceeding this length become meandering",
+    )
+    ground_grid_in_trace = Param(pdt.TypeList, "Include ground-grid in the trace", [0] * 18)
     # override box to have hidden=False and allow GUI editing
     box = Param(pdt.TypeShape, "Border", pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000)))
 
@@ -83,15 +116,15 @@ class QualityFactor(Chip):
 
         # support resizable chip keeping pad distances from the top constant
         if self.sample_holder_type == "ARD24":
-            launchers = self.produce_n_launchers(**{**default_sampleholders["ARD24"],
-                                                    "pad_pitch": (chip_side - 4000) / 5,
-                                                    "chip_box": self.box},
-                                                launcher_assignments={24: "PL-1-IN", 7: "PL-1-OUT"})
+            launchers = self.produce_n_launchers(
+                **{**default_sampleholders["ARD24"], "pad_pitch": (chip_side - 4000) / 5, "chip_box": self.box},
+                launcher_assignments={24: "PL-1-IN", 7: "PL-1-OUT"},
+            )
         elif self.sample_holder_type == "SMA8":
-            launchers = self.produce_n_launchers(**{**default_sampleholders["SMA8"],
-                                                    "pad_pitch": chip_side - 2 * 2800,
-                                                    "chip_box": self.box},
-                                                 launcher_assignments={8: "PL-1-IN", 3: "PL-1-OUT"})
+            launchers = self.produce_n_launchers(
+                **{**default_sampleholders["SMA8"], "pad_pitch": chip_side - 2 * 2800, "chip_box": self.box},
+                launcher_assignments={8: "PL-1-IN", 3: "PL-1-OUT"},
+            )
 
         # Define start and end of feedline
         points_fl = [launchers["PL-1-IN"][0]]
@@ -99,12 +132,14 @@ class QualityFactor(Chip):
             # Bend in the feedline needed
             points_fl += [
                 launchers["PL-1-IN"][0] + pya.DVector(self.r + self.marker_safety, 0),
-                pya.DPoint(launchers["PL-1-IN"][0].x + self.r + self.feedline_bend_distance + self.marker_safety,
-                           wg_top_y)
+                pya.DPoint(
+                    launchers["PL-1-IN"][0].x + self.r + self.feedline_bend_distance + self.marker_safety, wg_top_y
+                ),
             ]
             points_fl_end = [
-                pya.DPoint(launchers["PL-1-OUT"][0].x - self.r - self.feedline_bend_distance - self.marker_safety,
-                           wg_top_y),
+                pya.DPoint(
+                    launchers["PL-1-OUT"][0].x - self.r - self.feedline_bend_distance - self.marker_safety, wg_top_y
+                ),
                 launchers["PL-1-OUT"][0] + pya.DVector(-self.r - self.marker_safety, 0),
             ]
         elif self.marker_safety > 0:
@@ -121,9 +156,11 @@ class QualityFactor(Chip):
         tl_end = points_fl_end[0]
 
         resonators = len(self.res_lengths)
-        v_res_step = (tl_end - tl_start) * (1. / resonators)
-        cell_cross = self.add_element(WaveguideCoplanarSplitter, **t_cross_parameters(
-            length_extra_side=2 * self.a, a=self.a, b=self.b, a2=self.a, b2=self.b))
+        v_res_step = (tl_end - tl_start) * (1.0 / resonators)
+        cell_cross = self.add_element(
+            WaveguideCoplanarSplitter,
+            **t_cross_parameters(length_extra_side=2 * self.a, a=self.a, b=self.b, a2=self.a, b2=self.b),
+        )
 
         # Airbridge crossing resonators
         cell_ab_crossing = self.add_element(Airbridge)
@@ -140,14 +177,22 @@ class QualityFactor(Chip):
                 trans=pya.DTrans.R270 if resonator_up else pya.DTrans.R90,
                 align="port_b",
                 align_to=cross_refpoints_abs["port_bottom"],
-                **cap_params(n_fingers[i], l_fingers[i], type_coupler[i], element_key='cell',
-                             a=res_a[i], b=res_b[i], a2=self.a, b2=self.b)
+                **cap_params(
+                    n_fingers[i],
+                    l_fingers[i],
+                    type_coupler[i],
+                    element_key="cell",
+                    a=res_a[i],
+                    b=res_b[i],
+                    a2=self.a,
+                    b2=self.b,
+                ),
             )
 
             pos_res_start = cplr_refpoints_abs["port_a"]
             sign = 1 if resonator_up else -1
-            pos_res_end = pos_res_start + sign*pya.DVector(0, min(res_lengths[i], self.max_res_len))
-            self.refpoints['resonator_{}_end'.format(i)] = pos_res_end
+            pos_res_end = pos_res_start + sign * pya.DVector(0, min(res_lengths[i], self.max_res_len))
+            self.refpoints["resonator_{}_end".format(i)] = pos_res_end
 
             # create resonator using WaveguideComposite
             if res_beg[i] == "airbridge":
@@ -158,49 +203,66 @@ class QualityFactor(Chip):
             length_increment = res_lengths[i] - self.max_res_len if res_lengths[i] > self.max_res_len else None
             bridge_length = res_a[i] + 2 * res_b[i] + 38
             if res_term[i] == "airbridge":
-                node_end = Node(pos_res_end, AirbridgeConnection, with_side_airbridges=False,
-                                with_right_waveguide=False, n_bridges=n_ab[i],
-                                bridge_length=bridge_length, length_increment=length_increment)
+                node_end = Node(
+                    pos_res_end,
+                    AirbridgeConnection,
+                    with_side_airbridges=False,
+                    with_right_waveguide=False,
+                    n_bridges=n_ab[i],
+                    bridge_length=bridge_length,
+                    length_increment=length_increment,
+                )
             else:
-                node_end = Node(pos_res_end, n_bridges=n_ab[i],
-                                bridge_length=bridge_length,
-                                length_increment=length_increment)
+                node_end = Node(
+                    pos_res_end, n_bridges=n_ab[i], bridge_length=bridge_length, length_increment=length_increment
+                )
 
             airbridge_type = default_airbridge_type
             if i < len(self.res_airbridge_types):
                 airbridge_type = self.res_airbridge_types[i]
-            wg = self.add_element(WaveguideComposite,
-                                  nodes=[node_beg, node_end],
-                                  a=res_a[i], b=res_b[i],
-                                  ground_grid_in_trace=int(self.ground_grid_in_trace[i]),
-                                  airbridge_type=airbridge_type)
+            wg = self.add_element(
+                WaveguideComposite,
+                nodes=[node_beg, node_end],
+                a=res_a[i],
+                b=res_b[i],
+                ground_grid_in_trace=int(self.ground_grid_in_trace[i]),
+                airbridge_type=airbridge_type,
+            )
             self.insert_cell(wg)
 
             # Feedline
-            self.insert_cell(WaveguideCoplanar, **{**self.cell.pcell_parameters_by_name(), **{
-                "path": pya.DPath(points_fl + [
-                    cross_refpoints_abs["port_left"]
-                ], 1),
-                "term2": 0,
-                "ground_grid_in_trace": False
-            }})
+            self.insert_cell(
+                WaveguideCoplanar,
+                **{
+                    **self.cell.pcell_parameters_by_name(),
+                    **{
+                        "path": pya.DPath(points_fl + [cross_refpoints_abs["port_left"]], 1),
+                        "term2": 0,
+                        "ground_grid_in_trace": False,
+                    },
+                },
+            )
             points_fl = [cross_refpoints_abs["port_right"]]
 
             # airbridges on the left and right side of the couplers
             if self.tl_airbridges:
                 ab_dist_to_coupler = 60.0
-                ab_coupler_left = pya.DPoint((cross_refpoints_abs["port_left"].x) - ab_dist_to_coupler,
-                                             (cross_refpoints_abs["port_left"].y))
-                ab_coupler_right = pya.DPoint((cross_refpoints_abs["port_right"].x) + ab_dist_to_coupler,
-                                              (cross_refpoints_abs["port_right"].y))
+                ab_coupler_left = pya.DPoint(
+                    (cross_refpoints_abs["port_left"].x) - ab_dist_to_coupler, (cross_refpoints_abs["port_left"].y)
+                )
+                ab_coupler_right = pya.DPoint(
+                    (cross_refpoints_abs["port_right"].x) + ab_dist_to_coupler, (cross_refpoints_abs["port_right"].y)
+                )
 
                 self.insert_cell(cell_ab_crossing, pya.DTrans(0, False, ab_coupler_left))
                 self.insert_cell(cell_ab_crossing, pya.DTrans(0, False, ab_coupler_right))
 
         # Last feedline
 
-        self.insert_cell(WaveguideCoplanar, **{**self.cell.pcell_parameters_by_name(), **{
-            "path": pya.DPath(points_fl + points_fl_end, 1),
-            "term2": 0,
-            "ground_grid_in_trace": False
-        }})
+        self.insert_cell(
+            WaveguideCoplanar,
+            **{
+                **self.cell.pcell_parameters_by_name(),
+                **{"path": pya.DPath(points_fl + points_fl_end, 1), "term2": 0, "ground_grid_in_trace": False},
+            },
+        )

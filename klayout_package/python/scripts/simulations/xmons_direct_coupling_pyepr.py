@@ -24,8 +24,11 @@ from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.export.simulation_export import sweep_simulation, export_simulation_oas
 
 from kqcircuits.simulations.xmons_direct_coupling_sim import XMonsDirectCouplingSim
-from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
-    open_with_klayout_or_default_application
+from kqcircuits.util.export_helper import (
+    create_or_empty_tmp_directory,
+    get_active_or_new_layout,
+    open_with_klayout_or_default_application,
+)
 
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
@@ -33,24 +36,23 @@ dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 # Simulation parameters
 sim_class = XMonsDirectCouplingSim  # pylint: disable=invalid-name
 sim_parameters = {
-    'name': 'three_coupled_xmons',
-    'use_internal_ports': True,
-    'box': pya.DBox(pya.DPoint(3500, 3500), pya.DPoint(6500, 6500))
+    "name": "three_coupled_xmons",
+    "use_internal_ports": True,
+    "box": pya.DBox(pya.DPoint(3500, 3500), pya.DPoint(6500, 6500)),
 }
 
 export_parameters = {
-    'path': dir_path,
-    'ansys_tool': 'eigenmode',
-    'percent_refinement': 30,
-    'maximum_passes': 17,
-    'minimum_passes': 1,
-    'minimum_converged_passes': 2,
-    'exit_after_run': True,
-
-    'max_delta_f': 0.1,  # maximum relative difference for convergence in %
-    'n_modes': 2,  # eigenmodes to solve
-    'frequency': 0.1,  # minimum allowed eigenmode frequency
-    'simulation_flags': ['pyepr'],  # required for setting up pyepr specific stuff
+    "path": dir_path,
+    "ansys_tool": "eigenmode",
+    "percent_refinement": 30,
+    "maximum_passes": 17,
+    "minimum_passes": 1,
+    "minimum_converged_passes": 2,
+    "exit_after_run": True,
+    "max_delta_f": 0.1,  # maximum relative difference for convergence in %
+    "n_modes": 2,  # eigenmodes to solve
+    "frequency": 0.1,  # minimum allowed eigenmode frequency
+    "simulation_flags": ["pyepr"],  # required for setting up pyepr specific stuff
 }
 
 # Get layout
@@ -61,10 +63,7 @@ layout = get_active_or_new_layout()
 simulations = [sim_class(layout, **sim_parameters)]
 
 # Sweep geometry for simulations
-simulations += sweep_simulation(layout, sim_class, sim_parameters, {
-    'qubit_spacing': [5, 15],
-    'cpl_width': [12]
-})
+simulations += sweep_simulation(layout, sim_class, sim_parameters, {"qubit_spacing": [5, 15], "cpl_width": [12]})
 
 # Export Ansys files
 export_ansys(simulations, **export_parameters)

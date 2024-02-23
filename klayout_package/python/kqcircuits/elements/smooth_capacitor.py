@@ -34,8 +34,12 @@ class SmoothCapacitor(Element):
     Capacitance range is achieved by changing single parameter called `finger_control`.
     """
 
-    finger_control = Param(pdt.TypeDouble, "Continuously adjust finger number", 2.1,
-               docstring="Parameter for capacitor growth (related to number of fingers per side)")
+    finger_control = Param(
+        pdt.TypeDouble,
+        "Continuously adjust finger number",
+        2.1,
+        docstring="Parameter for capacitor growth (related to number of fingers per side)",
+    )
     ground_gap = Param(pdt.TypeDouble, "Gap between ground and finger", 10, unit="μm")
 
     def can_create_from_shape_impl(self):
@@ -96,7 +100,7 @@ class SmoothCapacitor(Element):
             trans = pya.DTrans(0, order_number % 2 == 1) * pya.DTrans(x_max, (order_number - 0.5) * scale)
             if self.finger_control <= 1.0:
                 return t_poly(0.0, scale).transformed(trans)
-            t_len = scale * pi/2  # length of 90-degree turn segment
+            t_len = scale * pi / 2  # length of 90-degree turn segment
             s_len = scale * (2 * self.finger_control - 3)  # length of straight segment
             f_len = s_len + 2 * t_len  # total length of finger (including two 90-degree turns and straight)
             x = (self.finger_control - order_number) * f_len
@@ -114,17 +118,25 @@ class SmoothCapacitor(Element):
 
         def insert_wg_joint(reg, x0, xr, r):
             rr = r / self.layout.dbu
-            reg += pya.Region(pya.DBox(xr, -r, 2*x0 - xr, r).to_itype(self.layout.dbu)).rounded_corners(rr, rr, self.n)
-            reg -= pya.Region(pya.DBox(x0, -r, 2*x0 - xr, r).to_itype(self.layout.dbu))
+            reg += pya.Region(pya.DBox(xr, -r, 2 * x0 - xr, r).to_itype(self.layout.dbu)).rounded_corners(
+                rr, rr, self.n
+            )
+            reg -= pya.Region(pya.DBox(x0, -r, 2 * x0 - xr, r).to_itype(self.layout.dbu))
 
         def middle_gap_fill():
             y = scale / 2
             x = (x_mid + x_max) / 2
             l = 2 * x if self.finger_control < 1 else scale
             rr = (self.finger_width / 2 + self.ground_gap) / self.layout.dbu
-            return pya.Region(pya.DPolygon([pya.DPoint(-x, y), pya.DPoint(l - x, y),
-                                            pya.DPoint(x, -y), pya.DPoint(x - l, -y)]).to_itype(self.layout.dbu)
-                              ).sized(rr, 5).rounded_corners(rr, rr, self.n)
+            return (
+                pya.Region(
+                    pya.DPolygon(
+                        [pya.DPoint(-x, y), pya.DPoint(l - x, y), pya.DPoint(x, -y), pya.DPoint(x - l, -y)]
+                    ).to_itype(self.layout.dbu)
+                )
+                .sized(rr, 5)
+                .rounded_corners(rr, rr, self.n)
+            )
 
         def super_smoothen_region(reg, r):
             rr = r / self.layout.dbu
@@ -143,9 +155,7 @@ class SmoothCapacitor(Element):
             i += 1
 
         # Create finger pad regions
-        right_fingers = pya.Region([
-            poly.to_itype(self.layout.dbu) for poly in polys
-        ])
+        right_fingers = pya.Region([poly.to_itype(self.layout.dbu) for poly in polys])
         left_fingers = right_fingers.transformed(pya.Trans(2))
 
         # Ground etch region
@@ -154,13 +164,13 @@ class SmoothCapacitor(Element):
         region_ground += middle_gap_fill()
         a2 = self.a if self.a2 < 0 else self.a2
         b2 = self.b if self.b2 < 0 else self.b2
-        insert_wg_joint(region_ground, xport, x_mid - self.ground_gap, b2 + a2/2)
-        insert_wg_joint(region_ground, -xport, -x_mid + self.ground_gap, self.b + self.a/2)
+        insert_wg_joint(region_ground, xport, x_mid - self.ground_gap, b2 + a2 / 2)
+        insert_wg_joint(region_ground, -xport, -x_mid + self.ground_gap, self.b + self.a / 2)
         region_ground = super_smoothen_region(region_ground, self.finger_gap + self.ground_gap)
 
         # Finalize finger pad regions
-        insert_wg_joint(right_fingers, xport, x_mid, a2/2)
-        insert_wg_joint(left_fingers, -xport, -x_mid, self.a/2)
+        insert_wg_joint(right_fingers, xport, x_mid, a2 / 2)
+        insert_wg_joint(left_fingers, -xport, -x_mid, self.a / 2)
         right_fingers = super_smoothen_region(right_fingers, self.finger_gap)
         left_fingers = super_smoothen_region(left_fingers, self.finger_gap)
 
@@ -169,13 +179,18 @@ class SmoothCapacitor(Element):
             xfixed = self.fixed_length / 2
             if xfixed < xport:
                 raise ValueError(f"SmoothCapacitor parameters not compatible with fixed_length={self.fixed_length}")
-            region_ground += pya.Region(pya.DBox(xport, -b2 - a2/2, xfixed, b2 + a2/2).to_itype(self.layout.dbu)) + \
-                pya.Region(pya.DBox(-xfixed, -self.b - self.a/2, -xport, self.b + self.a/2).to_itype(self.layout.dbu))
+            region_ground += pya.Region(
+                pya.DBox(xport, -b2 - a2 / 2, xfixed, b2 + a2 / 2).to_itype(self.layout.dbu)
+            ) + pya.Region(
+                pya.DBox(-xfixed, -self.b - self.a / 2, -xport, self.b + self.a / 2).to_itype(self.layout.dbu)
+            )
         else:
             xfixed = xport
         # Always insert tolerance to secure trace connection
-        right_fingers += pya.Region(pya.DBox(xport-0.001, -a2/2, xfixed+1, a2/2).to_itype(self.layout.dbu))
-        left_fingers += pya.Region(pya.DBox(-xfixed-1, -self.a/2, -xport+0.001, self.a/2).to_itype(self.layout.dbu))
+        right_fingers += pya.Region(pya.DBox(xport - 0.001, -a2 / 2, xfixed + 1, a2 / 2).to_itype(self.layout.dbu))
+        left_fingers += pya.Region(
+            pya.DBox(-xfixed - 1, -self.a / 2, -xport + 0.001, self.a / 2).to_itype(self.layout.dbu)
+        )
         xport = xfixed
 
         # Create shapes into cell

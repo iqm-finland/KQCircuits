@@ -21,32 +21,30 @@ from kqcircuits.chips.chip import Chip
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import add_parameters_from
 
+
 @add_parameters_from(Chip, frames_enabled=[0, 1])
-@add_parameters_from(LithographyTest, 'stripe_test')
+@add_parameters_from(LithographyTest, "stripe_test")
 class LithographyTestTwoface(Chip):
     """Optical lithography test chip in a flip chip architecture.
 
     Consists of StripesTest cells with different parameters.
     """
+
     create_pattern = LithographyTest.create_pattern
 
     def build(self):
-        cell_horizontal_1, cell_vertical_1, cell_diagonal_1 = self.create_pattern(num_stripes=20, length=100,
-                                                                                  min_width=1,
-                                                                                  max_width=15, step=1, spacing=1,
-                                                                                  face_id=self.face_ids[0])
-        cell_horizontal_2, cell_vertical_2, cell_diagonal_2 = self.create_pattern(num_stripes=20, length=100,
-                                                                                  min_width=1,
-                                                                                  max_width=15, step=1, spacing=5,
-                                                                                  face_id=self.face_ids[0])
-        cell_horizontal_3, cell_vertical_3, cell_diagonal_3 = self.create_pattern(num_stripes=20, length=100,
-                                                                                  min_width=1,
-                                                                                  max_width=15, step=1, spacing=1,
-                                                                                  face_id=self.face_ids[1])
-        cell_horizontal_4, cell_vertical_4, cell_diagonal_4 = self.create_pattern(num_stripes=20, length=100,
-                                                                                  min_width=1,
-                                                                                  max_width=15, step=1, spacing=5,
-                                                                                  face_id=self.face_ids[1])
+        cell_horizontal_1, cell_vertical_1, cell_diagonal_1 = self.create_pattern(
+            num_stripes=20, length=100, min_width=1, max_width=15, step=1, spacing=1, face_id=self.face_ids[0]
+        )
+        cell_horizontal_2, cell_vertical_2, cell_diagonal_2 = self.create_pattern(
+            num_stripes=20, length=100, min_width=1, max_width=15, step=1, spacing=5, face_id=self.face_ids[0]
+        )
+        cell_horizontal_3, cell_vertical_3, cell_diagonal_3 = self.create_pattern(
+            num_stripes=20, length=100, min_width=1, max_width=15, step=1, spacing=1, face_id=self.face_ids[1]
+        )
+        cell_horizontal_4, cell_vertical_4, cell_diagonal_4 = self.create_pattern(
+            num_stripes=20, length=100, min_width=1, max_width=15, step=1, spacing=5, face_id=self.face_ids[1]
+        )
         # bottom patterns
         self.insert_cell(cell_horizontal_1, pya.DCplxTrans(1, 0, False, 2000, 6500))
         self.insert_cell(cell_horizontal_1, pya.DCplxTrans(1, 0, False, 3000, 6500))

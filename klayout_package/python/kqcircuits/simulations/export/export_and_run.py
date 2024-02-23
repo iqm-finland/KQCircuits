@@ -22,7 +22,8 @@ import logging
 
 logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 
-def export_and_run(export_script: Path, export_path: Path, quiet: bool=False, export_only: bool=False, args=None):
+
+def export_and_run(export_script: Path, export_path: Path, quiet: bool = False, export_only: bool = False, args=None):
     """
     Exports and runs a KQC simulation.
 
@@ -44,22 +45,23 @@ def export_and_run(export_script: Path, export_path: Path, quiet: bool=False, ex
     if args is None:
         args = []
     else:
-        if '--simulation-export-path' in args:
+        if "--simulation-export-path" in args:
             logging.error("--simulation-export-path is not allowed!")
             sys.exit()
 
-    subprocess.call([sys.executable, export_script,
-        '--simulation-export-path', str(export_path)] + args + (['-q'] if quiet else []))
+    subprocess.call(
+        [sys.executable, export_script, "--simulation-export-path", str(export_path)] + args + (["-q"] if quiet else [])
+    )
     if export_only:
         return export_script, export_path
 
-    if (export_path / 'simulation.sh').is_file():
-        if platform.system() == 'Darwin':  # macOS
-            subprocess.call(['bash', 'simulation.sh'], cwd=str(export_path))
+    if (export_path / "simulation.sh").is_file():
+        if platform.system() == "Darwin":  # macOS
+            subprocess.call(["bash", "simulation.sh"], cwd=str(export_path))
         else:  # Linux
-            subprocess.call(['bash', 'simulation.sh'], cwd=str(export_path))
+            subprocess.call(["bash", "simulation.sh"], cwd=str(export_path))
     else:
-        if platform.system() == 'Windows':  # Windows
-            subprocess.call('simulation.bat', shell=True, cwd=str(export_path))
+        if platform.system() == "Windows":  # Windows
+            subprocess.call("simulation.bat", shell=True, cwd=str(export_path))
 
     return export_script, export_path

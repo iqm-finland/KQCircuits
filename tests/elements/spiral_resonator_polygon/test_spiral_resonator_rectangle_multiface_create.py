@@ -21,6 +21,7 @@ from kqcircuits.elements.spiral_resonator_polygon import SpiralResonatorPolygon,
 
 relative_length_tolerance = 1e-3
 
+
 def test_length_by_connector_location():
     len_begin = _get_waveguide_length(4200, 500, 400, 1000, 0)
     len_middle = _get_waveguide_length(4200, 500, 400, 1000, 2000)
@@ -33,11 +34,14 @@ def test_length_by_connector_location():
 def _get_waveguide_length(length, above_space, below_space, right_space, connector_dist):
     """Returns the relative error of the spiral resonator length with the given parameters."""
     layout = pya.Layout()
-    spiral_resonator_cell = SpiralResonatorPolygon.create(layout, **rectangular_parameters(
-                                                            length=length,
-                                                            above_space=above_space,
-                                                            below_space=below_space,
-                                                            right_space=right_space,
-                                                            connector_dist=connector_dist
-                                                            ))
+    spiral_resonator_cell = SpiralResonatorPolygon.create(
+        layout,
+        **rectangular_parameters(
+            length=length,
+            above_space=above_space,
+            below_space=below_space,
+            right_space=right_space,
+            connector_dist=connector_dist,
+        ),
+    )
     return get_cell_path_length(spiral_resonator_cell)

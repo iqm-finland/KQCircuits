@@ -53,42 +53,41 @@ mask_set = MaskSet(name="DemoMF", version=1, with_grid=False)
 
 # Create a multi-face mask layout with regular chip maps (default size 10x10mm)
 wafer_1 = mask_set.add_multi_face_mask_layout(
-    chips_map=[
-        ["CH1"] * 15
-    ] * 7,
-    face_ids=['1t1', '1b1'],
+    chips_map=[["CH1"] * 15] * 7,
+    face_ids=["1t1", "1b1"],
     extra_face_params={
-        '1t1': {
+        "1t1": {
             "layers_to_mask": {"base_metal_gap": "1", "through_silicon_via": "2"},
-            "mask_export_layers": ["base_metal_gap", "through_silicon_via"]
+            "mask_export_layers": ["base_metal_gap", "through_silicon_via"],
         },
-        '1b1': {
+        "1b1": {
             "mirror_labels": True,  # Mask label and chip copy labels are mirrored on the bottom side of the wafer
             "layers_to_mask": {"base_metal_gap": "1", "through_silicon_via": "2"},
-            "mask_export_layers": ["^base_metal_gap", "^through_silicon_via"]  # Mirror individual output files
+            "mask_export_layers": ["^base_metal_gap", "^through_silicon_via"],  # Mirror individual output files
         },
-    }
+    },
 )
 
 # Add 20x10mm chips on part of the chip
 wafer_1.add_chips_map(
     [
         ["ST1"] * 6,
-    ] * 7,
+    ]
+    * 7,
     align_to=(-65000, 5000),  # Top-left corner of the chip map
     chip_size=(20000, 10000),  # (width, height) of the ST1 chip
 )
 
 # Chip parameters for an empty multi-face chip that uses `1t1` and `1b1`
 multi_face_parameters = {
-    "face_ids": ['1t1', '2b1', '1b1', '2t1'],
+    "face_ids": ["1t1", "2b1", "1b1", "2t1"],
     "frames_enabled": [0, 2],
     "frames_marker_dist": [1500, 1500],
     "frames_mirrored": [False, True],
     "frames_dice_width": [200, 200],
     "face_boxes": [None] * 4,  # Same size on all faces
     "with_gnd_tsvs": True,
-    "marker_types": [default_marker_type]*8
+    "marker_types": [default_marker_type] * 8,
 }
 
 # Chip parameters for a rectangular 20x10 mm chip.
@@ -99,10 +98,7 @@ rectangular_parametes = {
     "box": pya.DBox(0, 0, 20000, 10000),
 }
 
-mask_set.add_chip([
-    (Chip, "CH1", multi_face_parameters),
-    (SampleHolderTest, "ST1", rectangular_parametes)
-])
+mask_set.add_chip([(Chip, "CH1", multi_face_parameters), (SampleHolderTest, "ST1", rectangular_parametes)])
 
 mask_set.build()
 mask_set.export()

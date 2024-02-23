@@ -34,15 +34,13 @@ if launchers:
 # Simulation parameters
 sim_class = SingleXmonsFullChipSim  # pylint: disable=invalid-name
 sim_parameters = {
-    'use_ports': True,
-    'launchers': launchers,  # True includes bonding pads and tapers, false includes only waveguides
-    'use_test_resonators': True,  # True makes XS1, false makes XS2
-    'n': 16,  # Reduce number of point in waveguide corners
-    'port_size': port_size
+    "use_ports": True,
+    "launchers": launchers,  # True includes bonding pads and tapers, false includes only waveguides
+    "use_test_resonators": True,  # True makes XS1, false makes XS2
+    "n": 16,  # Reduce number of point in waveguide corners
+    "port_size": port_size,
 }
-export_parameters = {
-    'path': dir_path
-}
+export_parameters = {"path": dir_path}
 
 # Create simulation
 simulations = [sim_class(pya.Layout(), **sim_parameters)]

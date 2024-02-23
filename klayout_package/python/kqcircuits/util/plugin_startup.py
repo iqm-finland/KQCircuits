@@ -23,7 +23,7 @@ _plugins_registered = False
 
 
 def register_plugins():
-    """ Register KQC plugins into KLayout. Registration happens only one.
+    """Register KQC plugins into KLayout. Registration happens only one.
 
     Note: For KLayout 0.28.0 and up, plugin registration must happen before any layout views are created.
     """

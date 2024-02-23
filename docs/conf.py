@@ -27,8 +27,7 @@ import sys
 import inspect
 import shutil
 
-__location__ = os.path.join(os.getcwd(), os.path.dirname(
-    inspect.getfile(inspect.currentframe())))
+__location__ = os.path.join(os.getcwd(), os.path.dirname(inspect.getfile(inspect.currentframe())))
 
 
 # -- Path setup --------------------------------------------------------------
@@ -38,7 +37,7 @@ __location__ = os.path.join(os.getcwd(), os.path.dirname(
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 
-sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath(".."))
 sys.path.append(os.path.abspath("../docs/sphinxext"))
 
 # -- Run sphinx-apidoc ------------------------------------------------------
@@ -66,11 +65,13 @@ try:
     from pkg_resources import parse_version
 
     template_dir = os.path.join(__location__, "templates", "apidoc")
-    cmd_line_template = "sphinx-apidoc -f -o {outputdir} {moduledir} -e --implicit-namespaces --templatedir={templatedir}"
+    cmd_line_template = (
+        "sphinx-apidoc -f -o {outputdir} {moduledir} -e --implicit-namespaces --templatedir={templatedir}"
+    )
     cmd_line = cmd_line_template.format(outputdir=output_dir, moduledir=module_dir, templatedir=template_dir)
 
     args = cmd_line.split(" ")
-    if parse_version(sphinx.__version__) >= parse_version('1.7'):
+    if parse_version(sphinx.__version__) >= parse_version("1.7"):
         args = args[1:]
 
     apidoc.main(args)
@@ -84,73 +85,75 @@ import sphinx_rtd_theme
 import re
 from versiontag import get_version
 
-project = 'KQCircuits'
-copyright = '2021-2024, IQM'
-author = 'IQM'
+project = "KQCircuits"
+copyright = "2021-2024, IQM"
+author = "IQM"
 
 # Set supplied KQC version if found from Git tags
-matched_version = re.match(r'([0-9]+\.[0-9]+\.[0-9]+)\.', get_version(pypi=True))
+matched_version = re.match(r"([0-9]+\.[0-9]+\.[0-9]+)\.", get_version(pypi=True))
 if not matched_version:
-    print(f'KQC version not matched for: {get_version()}')
+    print(f"KQC version not matched for: {get_version()}")
 else:
     version = matched_version.group(1)
     release = version
 
 # -- General configuration ---------------------------------------------------
 
-source_suffix = ['.rst']
-master_doc = 'index'
+source_suffix = [".rst"]
+master_doc = "index"
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx_rtd_theme',
-    'sphinx.ext.autodoc',
-    'sphinx.ext.autosummary',
-    'sphinx.ext.coverage',
-    'sphinx.ext.githubpages',
-    'sphinx.ext.napoleon',
-    'sphinx.ext.todo',
-    'sphinx.ext.viewcode',
-    'sphinx.ext.graphviz',
-    'kqc_elem_params',
-    'sphinx.ext.extlinks',
+    "sphinx_rtd_theme",
+    "sphinx.ext.autodoc",
+    "sphinx.ext.autosummary",
+    "sphinx.ext.coverage",
+    "sphinx.ext.githubpages",
+    "sphinx.ext.napoleon",
+    "sphinx.ext.todo",
+    "sphinx.ext.viewcode",
+    "sphinx.ext.graphviz",
+    "kqc_elem_params",
+    "sphinx.ext.extlinks",
 ]
 
 todo_include_todos = True
 
-pygments_style = 'trac'
+pygments_style = "trac"
 
-graphviz_output_format = 'svg'
+graphviz_output_format = "svg"
 
 autoclass_content = "both"
 autosummary_generate = True
-autodoc_member_order = 'bysource'
-autodoc_default_options = {'members': True,
-                           'undoc-members': True,
-                           'show-inheritance': True}
+autodoc_member_order = "bysource"
+autodoc_default_options = {"members": True, "undoc-members": True, "show-inheritance": True}
+
 
 def add_param_details(app, what, name, obj, options, lines):
     global _parameters
     if what == "class" and hasattr(obj, "get_schema"):
         _parameters = obj.get_schema(noparents=True).keys()
 
+
 def skip_params(app, what, name, obj, skip, options):
     if what == "class" and str(type(obj)) != "<class 'function'>" and not skip and name in _parameters:
         return True
+
 
 def setup(app):
     app.connect("autodoc-process-docstring", add_param_details)
     app.connect("autodoc-skip-member", skip_params)
 
+
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'api/modules.rst']
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "api/modules.rst"]
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -158,34 +161,32 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'api/modules.rst']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
+html_theme = "sphinx_rtd_theme"
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 html_theme_options = {
-    'logo_only': True,
-    'display_version': False,
-    'style_nav_header_background': 'white',
-    'collapse_navigation': False,
+    "logo_only": True,
+    "display_version": False,
+    "style_nav_header_background": "white",
+    "collapse_navigation": False,
 }
 
 # Add favicon and logo to site. Vectors are supported by modern browsers.
-html_favicon = 'images/logo.svg'
+html_favicon = "images/logo.svg"
 html_logo = "images/logo-small.png"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
-html_css_files = [
-    'css/custom.css'
-]
+html_static_path = ["_static"]
+html_css_files = ["css/custom.css"]
 
 # Add "Edit on GitHub" button
 html_context = {
-  'display_github': True,
-  'github_user': 'iqm-finland',
-  'github_repo': 'KQCircuits',
-  'github_version': 'main',
-  'conf_py_path': '/docs/'
+    "display_github": True,
+    "github_user": "iqm-finland",
+    "github_repo": "KQCircuits",
+    "github_version": "main",
+    "conf_py_path": "/docs/",
 }
 
 # A string of reStructuredText that will be included at the end of every source file that is read.
@@ -193,9 +194,11 @@ html_context = {
 rst_epilog = """
 .. |GIT_CLONE_URL| replace:: {url}
 """.format(
-    url=os.environ.get('DOCS_GIT_CLONE_URL', f'https://github.com/{html_context["github_user"]}/{html_context["github_repo"]}'),  # picks default if no ENV
+    url=os.environ.get(
+        "DOCS_GIT_CLONE_URL", f'https://github.com/{html_context["github_user"]}/{html_context["github_repo"]}'
+    ),  # picks default if no ENV
 )
 
 # Base URL for files in the git repository
 github_url = f'https://github.com/{html_context["github_user"]}/{html_context["github_repo"]}/blob/{html_context["github_version"]}/'
-extlinks = {'git_url': (os.environ.get('DOCS_GIT_URL', github_url), '%s')}
+extlinks = {"git_url": (os.environ.get("DOCS_GIT_URL", github_url), "%s")}

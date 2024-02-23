@@ -36,8 +36,14 @@ def _test_nodes():
         Node(pya.DPoint(2700, -500), FlipChipConnectorRf, face_id="2b1", output_rotation=90),
         Node(pya.DPoint(400, 0), face_id="2b1"),
         Node(pya.DPoint(400, 0), Airbridge),
-        Node(pya.DPoint(200, 0), AirbridgeConnection, airbridge_type="Airbridge Rectangular",
-             with_side_airbridges=False, b=4, a=5),
+        Node(
+            pya.DPoint(200, 0),
+            AirbridgeConnection,
+            airbridge_type="Airbridge Rectangular",
+            with_side_airbridges=False,
+            b=4,
+            a=5,
+        ),
         Node(pya.DPoint(1060, 100), ab_across=True),
         Node(pya.DPoint(1100, 100), WaveguideCoplanarTaper, a=10, b=5),
         Node(pya.DPoint(1400, 0), n_bridges=3),
@@ -45,7 +51,7 @@ def _test_nodes():
     ]
 
 
-@pytest.mark.parametrize('node', _test_nodes())
+@pytest.mark.parametrize("node", _test_nodes())
 def test_nodes_from_text_is_inverse_of_nodes_to_text(node):
     """
     Test that nodes_from_text is the inverse of node_to_text
@@ -60,16 +66,16 @@ def test_node_from_text_valid_values():
     """
     Test some valid arguments, including whitespace here and there
     """
-    node = node_from_text('1', '2.2', 'Airbridge', 'my_instance', '90.0', '\t1000', '300 ', 'port_in, port_out', '')
+    node = node_from_text("1", "2.2", "Airbridge", "my_instance", "90.0", "\t1000", "300 ", "port_in, port_out", "")
 
-    assert(node.position.x == 1)
-    assert(node.position.y == 2.2)
-    assert(node.element is Airbridge)
-    assert(node.inst_name == "my_instance")
-    assert(node.angle == 90)
-    assert(node.length_before == 1000)
-    assert(node.length_increment == 300)
-    assert(node.align == ('port_in', 'port_out'))
+    assert node.position.x == 1
+    assert node.position.y == 2.2
+    assert node.element is Airbridge
+    assert node.inst_name == "my_instance"
+    assert node.angle == 90
+    assert node.length_before == 1000
+    assert node.length_increment == 300
+    assert node.align == ("port_in", "port_out")
 
 
 def test_node_from_text_with_parameters():
@@ -77,38 +83,38 @@ def test_node_from_text_with_parameters():
     Test key=value parameters
     """
     params = "key1='value1'\nkey2=3.0\n\tkey3 = ['list', 'of', 'strings']\nkey_4=[1,2,3]\nkey_5=(1,12)"
-    node = node_from_text('1', '2.2', 'Airbridge', '', '', '', '', '', params)
+    node = node_from_text("1", "2.2", "Airbridge", "", "", "", "", "", params)
 
-    assert (node.params == {
-        'key1': 'value1',
-        'key2': 3.0,
-        'key3': ['list', 'of', 'strings'],
-        'key_4': [1, 2, 3],
-        'key_5': pya.DPoint(1, 12),
-    })
+    assert node.params == {
+        "key1": "value1",
+        "key2": 3.0,
+        "key3": ["list", "of", "strings"],
+        "key_4": [1, 2, 3],
+        "key_5": pya.DPoint(1, 12),
+    }
 
 
 # Edge cases
 def test_nodes_from_text_raises_on_x():
     with pytest.raises(ValueError):
-        node_from_text('not a float', '0', '', '', '', '', '', '', '')
+        node_from_text("not a float", "0", "", "", "", "", "", "", "")
 
 
 def test_nodes_from_text_raises_on_y():
     with pytest.raises(ValueError):
-        node_from_text('0', 'not a float', '', '', '', '', '', '', '')
+        node_from_text("0", "not a float", "", "", "", "", "", "", "")
 
 
 def test_nodes_from_text_invalid_element():
-    node = node_from_text('0', '0', 'ThisElementDoesNotExist', '', '', '', '', '', '')
-    assert(node.element is None)
+    node = node_from_text("0", "0", "ThisElementDoesNotExist", "", "", "", "", "", "")
+    assert node.element is None
 
 
 def test_nodes_from_text_raises_on_invalid_tuple_parameter():
     with pytest.raises(ValueError):
-        node_from_text('0', '0', 'Airbridge', '', '', '', '', '', "key=(1,'two')")
+        node_from_text("0", "0", "Airbridge", "", "", "", "", "", "key=(1,'two')")
 
 
 def test_nodes_from_text_raises_on_too_short_tuple_parameter():
     with pytest.raises(ValueError):
-        node_from_text('0', '0', 'Airbridge', '', '', '', '', '', "key=(1,)")
+        node_from_text("0", "0", "Airbridge", "", "", "", "", "", "key=(1,)")

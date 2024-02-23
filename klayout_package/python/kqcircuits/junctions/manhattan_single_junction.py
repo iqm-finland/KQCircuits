@@ -24,8 +24,7 @@ from kqcircuits.util.symmetric_polygons import polygon_with_vsym
 
 
 class ManhattanSingleJunction(Junction):
-    """The PCell declaration for a Manhattan style single junction.
-    """
+    """The PCell declaration for a Manhattan style single junction."""
 
     finger_overshoot = Param(pdt.TypeDouble, "Length of fingers after the junction.", 1.0, unit="μm")
     include_base_metal_gap = Param(pdt.TypeBoolean, "Include base metal gap layer.", True)
@@ -60,32 +59,31 @@ class ManhattanSingleJunction(Junction):
         shadow_shapes = []
 
         # create rounded bottom part
-        y0 = (self.height / 2) - self.pad_height/2
-        bp_pts_left = [
-            pya.DPoint(-self.pad_width / 2, y0),
-            pya.DPoint(-self.pad_width / 2, y0 + self.pad_height)
-        ]
-        bp_shape = pya.DTrans(0, False, 0,
-                              -self.pad_height / 2 - self.pad_to_pad_separation/2) * polygon_with_vsym(bp_pts_left)
+        y0 = (self.height / 2) - self.pad_height / 2
+        bp_pts_left = [pya.DPoint(-self.pad_width / 2, y0), pya.DPoint(-self.pad_width / 2, y0 + self.pad_height)]
+        bp_shape = pya.DTrans(0, False, 0, -self.pad_height / 2 - self.pad_to_pad_separation / 2) * polygon_with_vsym(
+            bp_pts_left
+        )
         self._round_corners_and_append(bp_shape, junction_shapes_bottom, rounding_params)
 
         bp_shadow_pts_left = [
             bp_pts_left[0] + pya.DPoint(-self.shadow_margin, -self.shadow_margin),
-            bp_pts_left[1] + pya.DPoint(-self.shadow_margin, self.shadow_margin)
+            bp_pts_left[1] + pya.DPoint(-self.shadow_margin, self.shadow_margin),
         ]
-        bp_shadow_shape = pya.DTrans(0, False, 0,
-                                     -self.pad_height / 2
-                                     - self.pad_to_pad_separation / 2) * polygon_with_vsym(bp_shadow_pts_left)
+        bp_shadow_shape = pya.DTrans(
+            0, False, 0, -self.pad_height / 2 - self.pad_to_pad_separation / 2
+        ) * polygon_with_vsym(bp_shadow_pts_left)
         self._round_corners_and_append(bp_shadow_shape, shadow_shapes, rounding_params)
 
         # create rounded top part
-        tp_shape = pya.DTrans(0, False, 0,
-                              self.pad_height/2 + self.pad_to_pad_separation/2) * polygon_with_vsym(bp_pts_left)
+        tp_shape = pya.DTrans(0, False, 0, self.pad_height / 2 + self.pad_to_pad_separation / 2) * polygon_with_vsym(
+            bp_pts_left
+        )
         self._round_corners_and_append(tp_shape, junction_shapes_top, rounding_params)
 
-        tp_shadow_shape = pya.DTrans(0, False, 0,
-                                     self.pad_height/2 +
-                                     self.pad_to_pad_separation/2) * polygon_with_vsym(bp_shadow_pts_left)
+        tp_shadow_shape = pya.DTrans(
+            0, False, 0, self.pad_height / 2 + self.pad_to_pad_separation / 2
+        ) * polygon_with_vsym(bp_shadow_pts_left)
         self._round_corners_and_append(tp_shadow_shape, shadow_shapes, rounding_params)
 
         # create rectangular junction-support structures and junctions
@@ -123,10 +121,12 @@ class ManhattanSingleJunction(Junction):
         finger_bottom = pya.DTrans(-jx, -jy + self.x_offset) * pya.DPolygon(finger_points(ddb))
         finger_top = pya.DTrans(-jx + self.x_offset, -jy) * pya.DPolygon(finger_points(ddt))
 
-        junction_shapes = [(pya.DTrans(jx - finger_margin, jy) * finger_top).to_itype(self.layout.dbu),
-                           (pya.DTrans(0, False, jx-2*top_corner.x, jy) * finger_top).to_itype(self.layout.dbu),
-                           (pya.DTrans(3, False, jx - finger_margin, jy+2.2) * finger_bottom).to_itype(self.layout.dbu),
-                           (pya.DTrans(3, False, jx-2*top_corner.x, jy+2.2) * finger_bottom).to_itype(self.layout.dbu)]
+        junction_shapes = [
+            (pya.DTrans(jx - finger_margin, jy) * finger_top).to_itype(self.layout.dbu),
+            (pya.DTrans(0, False, jx - 2 * top_corner.x, jy) * finger_top).to_itype(self.layout.dbu),
+            (pya.DTrans(3, False, jx - finger_margin, jy + 2.2) * finger_bottom).to_itype(self.layout.dbu),
+            (pya.DTrans(3, False, jx - 2 * top_corner.x, jy + 2.2) * finger_bottom).to_itype(self.layout.dbu),
+        ]
 
         junction_region = pya.Region(junction_shapes).merged()
         layer_name = "SIS_junction_2" if self.separate_junctions else "SIS_junction"
@@ -148,7 +148,7 @@ class ManhattanSingleJunction(Junction):
     def _produce_ground_metal_shapes(self):
         """Produces hardcoded shapes in metal gap and metal addition layers."""
         # metal additions bottom
-        x0 = - self.a / 2
+        x0 = -self.a / 2
         y0 = self.height / 2
         bottom_pts = [
             pya.DPoint(x0 + 2, y0 - 7),
@@ -156,7 +156,7 @@ class ManhattanSingleJunction(Junction):
             pya.DPoint(x0 + 3, y0 - 5),
             pya.DPoint(x0 + 3, y0 - 4),
             pya.DPoint(x0, y0 - 4),
-            pya.DPoint(x0, 0)
+            pya.DPoint(x0, 0),
         ]
         if self.include_base_metal_addition:
             shape = polygon_with_vsym(bottom_pts)
@@ -176,8 +176,11 @@ class ManhattanSingleJunction(Junction):
         # metal gap
         if self.include_base_metal_gap:
             if self.include_base_metal_addition:
-                pts = bottom_pts + [pya.DPoint(-self.width / 2, 0), pya.DPoint(-self.width / 2, self.height)] \
-                      + top_pts[::-1]
+                pts = (
+                    bottom_pts
+                    + [pya.DPoint(-self.width / 2, 0), pya.DPoint(-self.width / 2, self.height)]
+                    + top_pts[::-1]
+                )
             else:
                 pts = [pya.DPoint(-self.width / 2, 0), pya.DPoint(-self.width / 2, self.height)]
             shape = polygon_with_vsym(pts)
@@ -187,7 +190,7 @@ class ManhattanSingleJunction(Junction):
         """Add ground grid avoidance."""
         w = self.cell.dbbox().width()
         h = self.cell.dbbox().height()
-        protection = pya.DBox(-w / 2 - self.margin, - self.margin, w / 2 + self.margin, h + self.margin)
+        protection = pya.DBox(-w / 2 - self.margin, -self.margin, w / 2 + self.margin, h + self.margin)
         self.add_protection(protection)
 
     def _round_corners_and_append(self, polygon, polygon_list, rounding_params):

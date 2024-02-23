@@ -29,7 +29,7 @@ def klayout_view_with_chip():
         return None
 
     view = KLayoutView(background_color="#ffffff")
-    view.layout_view.set_config('grid-visible', 'false')
-    view.layout_view.set_config('guiding-shape-visible', 'false')
+    view.layout_view.set_config("grid-visible", "false")
+    view.layout_view.set_config("guiding-shape-visible", "false")
     view.insert_cell(Chip)
     return view

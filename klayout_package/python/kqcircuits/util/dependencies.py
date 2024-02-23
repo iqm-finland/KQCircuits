@@ -35,8 +35,9 @@ def install_kqc_dependencies():
     # pylint: disable=import-outside-toplevel
 
     from kqcircuits.pya_resolver import pya
+
     # Skip installation in stand-alone python package mode
-    if not hasattr(pya, 'MessageBox'):
+    if not hasattr(pya, "MessageBox"):
         return
 
     missing_pkgs = []
@@ -56,12 +57,16 @@ def install_kqc_dependencies():
 
     # Install missing modules inside KLayout.
     from pip import __main__
+
     if hasattr(__main__, "_main"):
         main = __main__._main
     else:
         from pip._internal.cli.main import main
 
-    ask = pya.MessageBox.warning("Install packages?", "Install missing packages using 'pip': " +
-                                 ", ".join(missing_pkgs), pya.MessageBox.Yes + pya.MessageBox.No)
+    ask = pya.MessageBox.warning(
+        "Install packages?",
+        "Install missing packages using 'pip': " + ", ".join(missing_pkgs),
+        pya.MessageBox.Yes + pya.MessageBox.No,
+    )
     if ask == pya.MessageBox.Yes:
-        main(['install'] + [kqc_python_dependencies[pkg] for pkg in missing_pkgs])
+        main(["install"] + [kqc_python_dependencies[pkg] for pkg in missing_pkgs])

@@ -31,17 +31,27 @@ class WaveguideCoplanarSplitter(Element):
 
     .. MARKERS_FOR_PNG -9,4 -1,-8 9,9
     """
+
     lengths = Param(pdt.TypeList, "Waveguide length per port, measured from origin", [11, 11, 11])
     angles = Param(pdt.TypeList, "Angle of each port (degrees)", [0, 180, 270])
     use_airbridges = Param(pdt.TypeBoolean, "Use airbridges at a distance from the centre", False)
     bridge_distance = Param(pdt.TypeDouble, "Bridges distance from centre", 80)
-    a_list = Param(pdt.TypeList, "Center conductor widths", [], unit="[μm]",
-                   docstring="List of center conductor widths for each port."
-                             " If empty, self.a will be used for all ports instead. [μm]")
-    b_list = Param(pdt.TypeList, "Gap widths", [], unit="[μm]",
-                   docstring="List of gap widths for each port."
-                             " If empty, self.b will be used for all ports instead. [μm]")
-    port_names = Param(pdt.TypeList, "Port names", ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'])
+    a_list = Param(
+        pdt.TypeList,
+        "Center conductor widths",
+        [],
+        unit="[μm]",
+        docstring="List of center conductor widths for each port."
+        " If empty, self.a will be used for all ports instead. [μm]",
+    )
+    b_list = Param(
+        pdt.TypeList,
+        "Gap widths",
+        [],
+        unit="[μm]",
+        docstring="List of gap widths for each port." " If empty, self.b will be used for all ports instead. [μm]",
+    )
+    port_names = Param(pdt.TypeList, "Port names", ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"])
 
     def build(self):
 
@@ -64,29 +74,27 @@ class WaveguideCoplanarSplitter(Element):
             b = float(b)
 
             # Generate port shapes
-            gap_shapes.append(self._get_port_shape(
-                angle_rad=angle_rad,
-                length=length,
-                width=a + 2*b
-            ).to_itype(self.layout.dbu))
+            gap_shapes.append(
+                self._get_port_shape(angle_rad=angle_rad, length=length, width=a + 2 * b).to_itype(self.layout.dbu)
+            )
 
-            trace_shapes.append(self._get_port_shape(
-                angle_rad=angle_rad,
-                length=length + rounding_tolerance,
-                width=a
-            ).to_itype(self.layout.dbu))
+            trace_shapes.append(
+                self._get_port_shape(angle_rad=angle_rad, length=length + rounding_tolerance, width=a).to_itype(
+                    self.layout.dbu
+                )
+            )
 
-            avoidance_shapes.append(self._get_port_shape(
-                angle_rad=angle_rad,
-                length=length + self.margin,
-                width=a + 2*b + 2*self.margin
-            ).to_itype(self.layout.dbu))
+            avoidance_shapes.append(
+                self._get_port_shape(
+                    angle_rad=angle_rad, length=length + self.margin, width=a + 2 * b + 2 * self.margin
+                ).to_itype(self.layout.dbu)
+            )
 
             # Port refpoints
             self.add_port(
                 port_name,
-                pya.DPoint(length*cos(angle_rad), length*sin(angle_rad)),
-                pya.DVector(self.r*cos(angle_rad), self.r*sin(angle_rad))
+                pya.DPoint(length * cos(angle_rad), length * sin(angle_rad)),
+                pya.DVector(self.r * cos(angle_rad), self.r * sin(angle_rad)),
             )
 
             # Waveguide length annotation
@@ -96,9 +104,9 @@ class WaveguideCoplanarSplitter(Element):
 
             # Airbridges
             if self.use_airbridges:
-                ab_trans = pya.DCplxTrans(1, angle_deg, False,
-                                          self.bridge_distance*cos(angle_rad),
-                                          self.bridge_distance*sin(angle_rad))
+                ab_trans = pya.DCplxTrans(
+                    1, angle_deg, False, self.bridge_distance * cos(angle_rad), self.bridge_distance * sin(angle_rad)
+                )
                 ab_cell = self.add_element(Airbridge, pad_length=14, pad_extra=2)
                 self.insert_cell(ab_cell, ab_trans)
 
@@ -112,13 +120,15 @@ class WaveguideCoplanarSplitter(Element):
         # Generate a shape consisting of a rectangle (length, width) starting at (0, 0), with a round cap at the origin
         # side.
 
-        r = width/2  # Radius of round cap
+        r = width / 2  # Radius of round cap
 
         # Straight section
         c = cos(angle_rad)
         s = sin(angle_rad)
-        points = [pya.DPoint(length * c - r * s, length * s + r * c),
-                  pya.DPoint(length * c + r * s, length * s - r * c)]
+        points = [
+            pya.DPoint(length * c - r * s, length * s + r * c),
+            pya.DPoint(length * c + r * s, length * s - r * c),
+        ]
 
         # Corner section
         angles = [radians(float(angle)) for angle in self.angles]
@@ -141,8 +151,15 @@ class WaveguideCoplanarSplitter(Element):
         return pya.DPolygon(points)
 
 
-def t_cross_parameters(a=Element.get_schema()["a"].default, b=Element.get_schema()["b"].default,
-                      a2=Element.a, b2=Element.b, length_extra=0, length_extra_side=0, **kwargs):
+def t_cross_parameters(
+    a=Element.get_schema()["a"].default,
+    b=Element.get_schema()["b"].default,
+    a2=Element.a,
+    b2=Element.b,
+    length_extra=0,
+    length_extra_side=0,
+    **kwargs,
+):
     """A utility function to easily produce T-cross splitter (old WaveguideCoplanarTCross).
 
     Args:
@@ -158,9 +175,11 @@ def t_cross_parameters(a=Element.get_schema()["a"].default, b=Element.get_schema
     """
     length = a2 / 2 + b2 + length_extra
     length2 = a / 2 + b + length_extra_side
-    return {'lengths': [length, length, length2],
-            'angles': [0, 180, 270],
-            'a_list': [a, a, a2],
-            'b_list': [b, b, b2],
-            'port_names': ['right', 'left', 'bottom'],
-            **kwargs}
+    return {
+        "lengths": [length, length, length2],
+        "angles": [0, 180, 270],
+        "a_list": [a, a, a2],
+        "b_list": [b, b, b2],
+        "port_names": ["right", "left", "bottom"],
+        **kwargs,
+    }

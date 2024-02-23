@@ -24,8 +24,11 @@ from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf import Flip
 from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.export.simulation_export import export_simulation_oas, sweep_simulation
-from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
-    open_with_klayout_or_default_application
+from kqcircuits.util.export_helper import (
+    create_or_empty_tmp_directory,
+    get_active_or_new_layout,
+    open_with_klayout_or_default_application,
+)
 
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
@@ -33,27 +36,27 @@ dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 # Simulation parameters
 sim_class = get_single_element_sim_class(FlipChipConnectorRf)  # pylint: disable=invalid-name
 sim_parameters = {
-    'name': 'flip_chip',
-    'use_internal_ports': False,
-    'use_ports': True,
-    'box': pya.DBox(pya.DPoint(0, 0), pya.DPoint(600, 500)),
-    'waveguide_length': 100,
-    'r': 10,
-    'a': 10,
-    'b': 10,
-    'port_size': 200,
-    'output_rotation': 180,
-    'face_stack': ['1t1', '2b1']
+    "name": "flip_chip",
+    "use_internal_ports": False,
+    "use_ports": True,
+    "box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(600, 500)),
+    "waveguide_length": 100,
+    "r": 10,
+    "a": 10,
+    "b": 10,
+    "port_size": 200,
+    "output_rotation": 180,
+    "face_stack": ["1t1", "2b1"],
 }
 export_parameters = {
-    'path': dir_path,
-    'frequency': [5, 10, 20],
-    'max_delta_s': 0.001,
-    'sweep_start': 0,
-    'sweep_end': 30,
-    'sweep_count': 1001,
-    'maximum_passes': 20,
-    'exit_after_run': True
+    "path": dir_path,
+    "frequency": [5, 10, 20],
+    "max_delta_s": 0.001,
+    "sweep_start": 0,
+    "sweep_end": 30,
+    "sweep_count": 1001,
+    "maximum_passes": 20,
+    "exit_after_run": True,
 }
 
 # Get layout
@@ -61,9 +64,7 @@ logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 layout = get_active_or_new_layout()
 
 # Sweep simulations
-simulations = sweep_simulation(layout, sim_class, sim_parameters, {
-    'chip_distance': [2, 3, 4, 5, 6, 7, 8, 9, 10]
-})
+simulations = sweep_simulation(layout, sim_class, sim_parameters, {"chip_distance": [2, 3, 4, 5, 6, 7, 8, 9, 10]})
 
 # Export Ansys files
 export_ansys(simulations, **export_parameters)

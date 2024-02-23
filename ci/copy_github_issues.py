@@ -45,41 +45,43 @@ github_url = "https://api.github.com/repos/iqm-finland/KQCircuits/issues"
 github_request = requests.get(github_url)
 if github_request.status_code != HTTPStatus.OK:
     raise requests.exceptions.HTTPError(
-        f"HTTP Error {github_request.status_code}: {client.responses[github_request.status_code]}")
+        f"HTTP Error {github_request.status_code}: {client.responses[github_request.status_code]}"
+    )
 
 # Get the open issues from gitlab
 gitlab_header = {"PRIVATE-TOKEN": gitlab_token}
 gitlab_request = requests.get(gitlab_url, headers=gitlab_header, params={"labels": "github"})
 if gitlab_request.status_code != HTTPStatus.OK:
     raise requests.exceptions.HTTPError(
-        f"HTTP Error {gitlab_request.status_code}: {client.responses[gitlab_request.status_code]}")
+        f"HTTP Error {gitlab_request.status_code}: {client.responses[gitlab_request.status_code]}"
+    )
 
 github_issues = github_request.json()
 gitlab_issues = gitlab_request.json()
 
 new_issue_found = False
 for gh_issue in github_issues:
-    issue_number = gh_issue['number']
-    url = gh_issue['html_url']
+    issue_number = gh_issue["number"]
+    url = gh_issue["html_url"]
     for gl_issue in gitlab_issues:
-        if url in gl_issue['description']:
+        if url in gl_issue["description"]:
             break
     else:  # URL not found in existing gitlab issues, so corresponding issue does not exist. Make it
         new_issue_found = True
-        title = gh_issue['title']
-        user = gh_issue['user']
-        header = (f"This issue was automatically copied from GitHub by the CI/CD. \n"
-                  f"Original {url}  \n"
-                  f"Original GitHub reporter: [{user['login']}]({user['html_url']})  \n"
-                  f"Do not remove or edit this header or the `GitHub` label to avoid duplicating the issue.  \n"
-                  f"Original (unedited) description below. Feel free to edit anything below the following line.\n\n"
-                  f"---\n\n")
+        title = gh_issue["title"]
+        user = gh_issue["user"]
+        header = (
+            f"This issue was automatically copied from GitHub by the CI/CD. \n"
+            f"Original {url}  \n"
+            f"Original GitHub reporter: [{user['login']}]({user['html_url']})  \n"
+            f"Do not remove or edit this header or the `GitHub` label to avoid duplicating the issue.  \n"
+            f"Original (unedited) description below. Feel free to edit anything below the following line.\n\n"
+            f"---\n\n"
+        )
 
         description = f"{header}{gh_issue['body']}"
 
-        post_attributes = {"title": title,
-                           "description": description,
-                           "labels": labels}
+        post_attributes = {"title": title, "description": description, "labels": labels}
 
         print("New issue found, posting to gitlab")
         print("Title: " + title)
@@ -91,7 +93,8 @@ for gh_issue in github_issues:
         else:
             print("Error creating the issue")
             raise requests.exceptions.HTTPError(
-                f"HTTP Error {gitlab_post.status_code}: {client.responses[gitlab_post.status_code]}")
+                f"HTTP Error {gitlab_post.status_code}: {client.responses[gitlab_post.status_code]}"
+            )
 
 if not new_issue_found:
     print("No new issues found")

@@ -29,6 +29,7 @@ log = logging.getLogger(__name__)
 
 # normal cases
 
+
 def test_pascal_case():
     result = to_module_name("AbcXyz")
     assert result == "abc_xyz"
@@ -45,6 +46,7 @@ def test_pascal_case_with_multiple_single_uppercase_letters():
 
 
 # edge cases
+
 
 def test_camel_case():
     with pytest.raises(ValueError) as info:

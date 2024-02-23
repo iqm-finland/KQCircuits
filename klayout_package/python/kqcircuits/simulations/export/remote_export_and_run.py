@@ -28,6 +28,7 @@ from kqcircuits.defaults import TMP_PATH, SCRIPTS_PATH, KQC_REMOTE_TMP_PATH
 
 logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 
+
 def _prepare_remote_tmp(ssh_login, kqc_remote_tmp_path):
     """
     Internal helper function to create remote tmp directory if it doesnt exist and raise error if its not empty
@@ -43,6 +44,7 @@ def _prepare_remote_tmp(ssh_login, kqc_remote_tmp_path):
         logging.error("Either delete its contents manually or use another directory")
         sys.exit()
 
+
 def _get_sbatch_time(export_tmp_paths) -> int:
     """
     Internal helper function to extract sbatch time limit from simulation.sh files
@@ -54,20 +56,21 @@ def _get_sbatch_time(export_tmp_paths) -> int:
         sbatch_time (int) Number of seconds for setting ssh timeout.
                           This is equal to total amount of time reserved for all batch jobs sent to remote
     """
+
     def _get_single_sbatch_time(simulation_script):
-        with open(simulation_script , 'r') as f:
+        with open(simulation_script, "r") as f:
             for line in f:
                 res = line.strip().partition("#SBATCH --time=")[2]
                 if len(res) == 8:
-                    times = res.split(':')
-                    if len(times)==3:
-                        return 3600*int(times[0]) + 60*int(times[1]) + int(times[2])
+                    times = res.split(":")
+                    if len(times) == 3:
+                        return 3600 * int(times[0]) + 60 * int(times[1]) + int(times[2])
         return 0
 
     sbatch_time = 0
     for d in export_tmp_paths:
-        t_meshes = _get_single_sbatch_time(Path(d)/"simulation_meshes.sh")
-        t = _get_single_sbatch_time(Path(d)/"simulation.sh")
+        t_meshes = _get_single_sbatch_time(Path(d) / "simulation_meshes.sh")
+        t = _get_single_sbatch_time(Path(d) / "simulation.sh")
         if t == 0 or t_meshes == 0:
             logging.warning("Could not extract the sbatch time limit from simulation.sh or simulation_meshes.sh")
             logging.warning("Wait script timeout of 60 minutes will be used")
@@ -77,11 +80,10 @@ def _get_sbatch_time(export_tmp_paths) -> int:
 
     return sbatch_time
 
-def _remote_run(ssh_login: str,
-                export_tmp_paths: list,
-                kqc_remote_tmp_path: str,
-                detach_simulation: bool,
-                poll_interval: int):
+
+def _remote_run(
+    ssh_login: str, export_tmp_paths: list, kqc_remote_tmp_path: str, detach_simulation: bool, poll_interval: int
+):
     """
     Internal helper function to copy and run simulations to remote and back
 
@@ -92,10 +94,10 @@ def _remote_run(ssh_login: str,
         detach_simulation      (bool): Detach the remote simulation from terminal, not waiting for it to finish
         poll_interval           (int): Polling interval in seconds when waiting for the remote simulation to finish
     """
-    if platform.system() == 'Windows':  # Windows
+    if platform.system() == "Windows":  # Windows
         logging.error("Connecting to remote host not supported on Windows")
         sys.exit()
-    elif platform.system() == 'Darwin':  # macOS
+    elif platform.system() == "Darwin":  # macOS
         logging.error("Connecting to remote host not supported on Mac OS")
         sys.exit()
     # Else linux
@@ -108,29 +110,31 @@ def _remote_run(ssh_login: str,
         poll_interval = 60
 
     # Check if we sugin sbatch by checking if all export folders have `simulation_meshes.sh`
-    if not all(((Path(d)/"simulation_meshes.sh").is_file() for d in export_tmp_paths)):
-        logging.error('Simulation not exported with "sbatch" (simulation_meshes.sh does not exist)' )
+    if not all(((Path(d) / "simulation_meshes.sh").is_file() for d in export_tmp_paths)):
+        logging.error('Simulation not exported with "sbatch" (simulation_meshes.sh does not exist)')
         sys.exit()
 
     # Add uuid to the remote path for this run
     # Allows simultaneous calls to "kqc sim --remote"
     run_uuid = str(uuid.uuid4())
-    kqc_remote_tmp_path = str(Path(kqc_remote_tmp_path) / ('run_' + run_uuid))
+    kqc_remote_tmp_path = str(Path(kqc_remote_tmp_path) / ("run_" + run_uuid))
     # Create remote tmp if it doesnt exist, and check that its empty
-    _prepare_remote_tmp(ssh_login,kqc_remote_tmp_path)
+    _prepare_remote_tmp(ssh_login, kqc_remote_tmp_path)
 
     dirs_remote = [str(Path(kqc_remote_tmp_path) / str(Path(d).name)) for d in export_tmp_paths]
 
-    print('\nFEM simulations prepared successfully.\n'
-          'Submitting the following simulations to the remote host (can take some time):', flush=True)
-    for d1,d2 in zip(export_tmp_paths, dirs_remote):
+    print(
+        "\nFEM simulations prepared successfully.\n"
+        "Submitting the following simulations to the remote host (can take some time):",
+        flush=True,
+    )
+    for d1, d2 in zip(export_tmp_paths, dirs_remote):
         print(f"{d1}   --->   user@remote:{d2}", flush=True)
     print("\n", flush=True)
 
-
     remote_script_name = f"remote_simulation_{run_uuid}.sh"
     remote_simulation_script = str(TMP_PATH / remote_script_name)
-    simlist = ' '.join(dirs_remote)
+    simlist = " ".join(dirs_remote)
 
     remote_simulation = f"""#!/bin/bash
     sim_list=({simlist})
@@ -150,7 +154,7 @@ def _remote_run(ssh_login: str,
     skip_patterns = '-name "mesh.*" -o -name "*.msh" -o -name "scripts" -o -name "partitioning.*"'
     if not copy_vtus:
         skip_patterns = skip_patterns + ' -o -name "*.vtu" -o -name "*.pvtu"'
-    skip_patterns = r'\( ' + skip_patterns +  r' \)'
+    skip_patterns = r"\( " + skip_patterns + r" \)"
 
     poll_interval_str = f"{poll_interval}s" if poll_interval <= 60 else f"{round(float(poll_interval)/60, 1)} min"
     # Write script to run in the background and copy results back once simulation is finished
@@ -202,20 +206,23 @@ def _remote_run(ssh_login: str,
         file.write(wait_and_copy_back)
     os.chmod(wait_and_copy_back_script, os.stat(wait_and_copy_back_script).st_mode | stat.S_IEXEC)
 
-
     try:
-        copy_cmd = ['scp', '-r', '-q'] + export_tmp_paths + \
-                   [remote_simulation_script, ssh_login + ':' + kqc_remote_tmp_path]
-        run_cmd =  f"""ssh {ssh_login} -tt -q 'bash -l -c "cd {kqc_remote_tmp_path} && ./{remote_script_name}"'"""
+        copy_cmd = (
+            ["scp", "-r", "-q"] + export_tmp_paths + [remote_simulation_script, ssh_login + ":" + kqc_remote_tmp_path]
+        )
+        run_cmd = f"""ssh {ssh_login} -tt -q 'bash -l -c "cd {kqc_remote_tmp_path} && ./{remote_script_name}"'"""
         # COPY (dirs_local) -> (dirs_remote)
         subprocess.check_call(copy_cmd)
         # Remove remote simulation script from local tmp folder
-        subprocess.check_call(['rm',  remote_simulation_script])
+        subprocess.check_call(["rm", remote_simulation_script])
         # Force to use login shell on remote to get correct env variables
         subprocess.check_call(run_cmd, shell=True)
 
-        print(f"Simulations started and connection to remote closed.\n"
-              f"Starting a script to follow the submitted jobs with {poll_interval_str} interval", flush=True)
+        print(
+            f"Simulations started and connection to remote closed.\n"
+            f"Starting a script to follow the submitted jobs with {poll_interval_str} interval",
+            flush=True,
+        )
         # start ssh poll and wait script
         if detach_simulation:
             nohup_file = str(TMP_PATH / f"nohup_{run_uuid}.out")
@@ -224,11 +231,15 @@ def _remote_run(ssh_login: str,
         subprocess.check_call(wait_and_copy_back_script, shell=True)
 
         if detach_simulation:
-            print("Simulation wait script sent to background. You can follow the job state with"
-                  f" 'watch cat {nohup_file}'", flush=True)
+            print(
+                "Simulation wait script sent to background. You can follow the job state with"
+                f" 'watch cat {nohup_file}'",
+                flush=True,
+            )
 
     except Exception as exc:
         raise RuntimeError("Starting remote run failed. Please manually fetch and delete data from remote") from exc
+
 
 def _allowed_simulations():
     """
@@ -245,19 +256,23 @@ def _allowed_simulations():
 
     tmpdir = str(TMP_PATH)
 
-    if 'KQCircuits' not in tmpdir:
-        logging.error('Non-default tmp path. \
-                      Check that the KQC_ROOT_PATH environment variable is properly set')
+    if "KQCircuits" not in tmpdir:
+        logging.error(
+            "Non-default tmp path. \
+                      Check that the KQC_ROOT_PATH environment variable is properly set"
+        )
         sys.exit()
 
     simdir = str(SCRIPTS_PATH / "simulations")
 
-    if 'KQCircuits' not in simdir:
-        logging.error('Non-default simulations path. \
-                      Check that the KQC_ROOT_PATH environment variable is properly set')
+    if "KQCircuits" not in simdir:
+        logging.error(
+            "Non-default simulations path. \
+                      Check that the KQC_ROOT_PATH environment variable is properly set"
+        )
         sys.exit()
 
-    allowed_simulations = ['cpw_fem_xsection.py']
+    allowed_simulations = ["cpw_fem_xsection.py"]
     for f in os.listdir(simdir):
         if os.path.isfile(os.path.join(simdir, f)):
             allowed_simulations.append(f)
@@ -265,12 +280,14 @@ def _allowed_simulations():
     return (allowed_simulations, simdir, tmpdir)
 
 
-def remote_export_and_run(ssh_login: str,
-                          kqc_remote_tmp_path: str=None,
-                          detach_simulation :bool=False,
-                          poll_interval: int=None,
-                          export_path_basename: str=None,
-                          args=None):
+def remote_export_and_run(
+    ssh_login: str,
+    kqc_remote_tmp_path: str = None,
+    detach_simulation: bool = False,
+    poll_interval: int = None,
+    export_path_basename: str = None,
+    args=None,
+):
     """
     Exports locally and runs KQC simulations on a remote host. Froced to use no GUI (--quiet, -q option)
 
@@ -290,13 +307,13 @@ def remote_export_and_run(ssh_login: str,
 
     export_scripts = []
     # By default use --use-sbatch and -q flags. Note that the export script must support this
-    args_for_script = ['--use-sbatch', '-q']
+    args_for_script = ["--use-sbatch", "-q"]
     # Separate export script filenames and script arguments
     for arg in args:
-        if arg.startswith('-'):
+        if arg.startswith("-"):
             args_for_script.append(arg)
         else:
-            if arg.endswith('.py'):
+            if arg.endswith(".py"):
                 arg_filename = Path(arg).name
                 arg_path = Path(simdir) / arg_filename
                 if arg_filename != arg:
@@ -320,23 +337,20 @@ def remote_export_and_run(ssh_login: str,
 
     # Export simulation files locally
     for export_path, export_script in zip(export_tmp_paths, export_scripts):
-        export_cmd = [sys.executable, export_script,
-            '--simulation-export-path', str(export_path)] + args_for_script
+        export_cmd = [sys.executable, export_script, "--simulation-export-path", str(export_path)] + args_for_script
         subprocess.call(export_cmd)
 
     # Run on remote
-    _remote_run(ssh_login,
-                export_tmp_paths,
-                kqc_remote_tmp_path,
-                detach_simulation,
-                poll_interval)
+    _remote_run(ssh_login, export_tmp_paths, kqc_remote_tmp_path, detach_simulation, poll_interval)
 
 
-def remote_run_only(ssh_login: str,
-                    kqc_remote_tmp_path: str=None,
-                    detach_simulation: bool=False,
-                    poll_interval: int=None,
-                    export_tmp_dirs: list=None):
+def remote_run_only(
+    ssh_login: str,
+    kqc_remote_tmp_path: str = None,
+    detach_simulation: bool = False,
+    poll_interval: int = None,
+    export_tmp_dirs: list = None,
+):
     """
     Runs already locally exported simulations on remote host
 
@@ -362,7 +376,7 @@ def remote_run_only(ssh_login: str,
                 logging.warning(f"Concatenating the path to its final component and search in {tmpdir} instead")
                 logging.warning(f"{p} -> {p_filename} -> {p_path}")
             if os.path.isdir(p_path):
-                if any((sim in p  for sim in allowed_simulations)):
+                if any((sim in p for sim in allowed_simulations)):
                     paths_filtered.append(p_path)
 
     if len(paths_filtered) == 0:
@@ -370,8 +384,4 @@ def remote_run_only(ssh_login: str,
         sys.exit()
 
     # Run on remote
-    _remote_run(ssh_login,
-                paths_filtered,
-                kqc_remote_tmp_path,
-                detach_simulation,
-                poll_interval)
+    _remote_run(ssh_login, paths_filtered, kqc_remote_tmp_path, detach_simulation, poll_interval)

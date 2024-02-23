@@ -31,6 +31,7 @@ class SampleHolderTest(Chip):
     SampleHolderTest has parametrized launcher configuration (launcher dimensions and number of launchers).
     The launchers are connected pairwise by coplanar waveguides.
     """
+
     n_launchers = Param(pdt.TypeInt, "Number of launchers", 40, unit="")
     launcher_pitch = Param(pdt.TypeDouble, "Launcher pitch", 635, unit="μm")
     launcher_width = Param(pdt.TypeDouble, "Launcher width", 160, unit="μm")
@@ -38,30 +39,49 @@ class SampleHolderTest(Chip):
     launcher_indent = Param(pdt.TypeDouble, "Launcher indent from edge", 520, unit="μm")
 
     def build(self):
-        nr_pads_per_side = int(self.n_launchers / 4.)
+        nr_pads_per_side = int(self.n_launchers / 4.0)
 
         # North edge
         launcher_assigments = {i: f"PL-{i}-IN" for i in range(1, nr_pads_per_side + 1)}
         # East edge
-        launcher_assigments.update({pin: f"PL-{pl+1}-OUT" for pl, pin in
-                                    enumerate(range(2 * nr_pads_per_side, nr_pads_per_side, -1))})
+        launcher_assigments.update(
+            {pin: f"PL-{pl+1}-OUT" for pl, pin in enumerate(range(2 * nr_pads_per_side, nr_pads_per_side, -1))}
+        )
         # South edge
-        launcher_assigments.update({pin: f"PL-{pl + nr_pads_per_side + 1}-OUT" for pl, pin in
-                                    enumerate(range(2 * nr_pads_per_side + 1, 3 * nr_pads_per_side + 1))})
+        launcher_assigments.update(
+            {
+                pin: f"PL-{pl + nr_pads_per_side + 1}-OUT"
+                for pl, pin in enumerate(range(2 * nr_pads_per_side + 1, 3 * nr_pads_per_side + 1))
+            }
+        )
         # West edge
-        launcher_assigments.update({pin: f"PL-{pl + nr_pads_per_side + 1}-IN" for pl, pin in
-                                    enumerate(range(4 * nr_pads_per_side, 3 * nr_pads_per_side, -1))})
+        launcher_assigments.update(
+            {
+                pin: f"PL-{pl + nr_pads_per_side + 1}-IN"
+                for pl, pin in enumerate(range(4 * nr_pads_per_side, 3 * nr_pads_per_side, -1))
+            }
+        )
 
-        self.produce_n_launchers(self.n_launchers, "RF", self.launcher_width, self.launcher_gap, self.launcher_indent,
-                                 self.launcher_pitch, launcher_assignments=launcher_assigments)
+        self.produce_n_launchers(
+            self.n_launchers,
+            "RF",
+            self.launcher_width,
+            self.launcher_gap,
+            self.launcher_indent,
+            self.launcher_pitch,
+            launcher_assignments=launcher_assigments,
+        )
 
         def _produce_waveguide(i, straight_distance, first_port, second_port):
-            cell = self.add_element(WaveguideComposite, nodes=[
-                Node(self.refpoints[f'PL-{i}-{first_port}_port']),
-                Node(self.refpoints[f'PL-{i}-{first_port}_port_corner'] + pya.DVector(0, straight_distance)),
-                Node(self.refpoints[f'PL-{i}-{second_port}_port_corner'] + pya.DVector(straight_distance, 0)),
-                Node(self.refpoints[f'PL-{i}-{second_port}_port']),
-            ])
+            cell = self.add_element(
+                WaveguideComposite,
+                nodes=[
+                    Node(self.refpoints[f"PL-{i}-{first_port}_port"]),
+                    Node(self.refpoints[f"PL-{i}-{first_port}_port_corner"] + pya.DVector(0, straight_distance)),
+                    Node(self.refpoints[f"PL-{i}-{second_port}_port_corner"] + pya.DVector(straight_distance, 0)),
+                    Node(self.refpoints[f"PL-{i}-{second_port}_port"]),
+                ],
+            )
             self.insert_cell(cell)
 
             logging.info(f"{self.name_chip}: Waveguide PL-{i} length: {cell.length()}")

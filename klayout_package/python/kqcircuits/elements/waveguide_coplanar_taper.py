@@ -26,7 +26,7 @@ from kqcircuits.elements.waveguide_coplanar_straight import WaveguideCoplanarStr
 
 
 @add_parameters_from(WaveguideCoplanarStraight, "add_metal")
-@add_parameters_from(FingerCapacitorSquare, a2=Element.a*2, b2=Element.b*2)
+@add_parameters_from(FingerCapacitorSquare, a2=Element.a * 2, b2=Element.b * 2)
 class WaveguideCoplanarTaper(Element):
     """The PCell declaration of a taper segment of a coplanar waveguide.
 
@@ -43,7 +43,7 @@ class WaveguideCoplanarTaper(Element):
             pya.DPoint(0, self.a / 2 + 0),
             pya.DPoint(self.taper_length, self.a2 / 2 + 0),
             pya.DPoint(self.taper_length, self.a2 / 2 + self.b2),
-            pya.DPoint(0, self.a / 2 + self.b)
+            pya.DPoint(0, self.a / 2 + self.b),
         ]
         shape = pya.DPolygon(pts)
         self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(shape)
@@ -52,7 +52,7 @@ class WaveguideCoplanarTaper(Element):
             pya.DPoint(0, -self.a / 2 + 0),
             pya.DPoint(self.taper_length, -self.a2 / 2 + 0),
             pya.DPoint(self.taper_length, -self.a2 / 2 - self.b2),
-            pya.DPoint(0, -self.a / 2 - self.b)
+            pya.DPoint(0, -self.a / 2 - self.b),
         ]
         shape = pya.DPolygon(pts)
         self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(shape)
@@ -61,7 +61,7 @@ class WaveguideCoplanarTaper(Element):
             pya.DPoint(0, -self.a / 2 - self.b - self.margin),
             pya.DPoint(self.taper_length, -self.a2 / 2 - self.b2 - self.m2),
             pya.DPoint(self.taper_length, self.a2 / 2 + self.b2 + self.m2),
-            pya.DPoint(0, self.a / 2 + self.b + self.margin)
+            pya.DPoint(0, self.a / 2 + self.b + self.margin),
         ]
         self.add_protection(pya.DPolygon(pts))
         # Waveguide layer
@@ -69,7 +69,7 @@ class WaveguideCoplanarTaper(Element):
             pya.DPoint(0, self.a / 2),
             pya.DPoint(self.taper_length, self.a2 / 2),
             pya.DPoint(self.taper_length, -self.a2 / 2),
-            pya.DPoint(0, -self.a / 2)
+            pya.DPoint(0, -self.a / 2),
         ]
         shape = pya.DPolygon(pts)
         self.cell.shapes(self.get_layer("waveguide_path")).insert(shape)

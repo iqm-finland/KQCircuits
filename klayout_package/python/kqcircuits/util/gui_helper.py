@@ -46,7 +46,7 @@ def get_nodes_near_position(top_cell, position, box_size=10, require_gui_editing
 
     for inst in top_cell.each_inst():
         if inst.is_pcell() and isinstance(inst.pcell_declaration(), WaveguideComposite):
-            if (not require_gui_editing_enabled) or inst.pcell_parameter('enable_gui_editing'):
+            if (not require_gui_editing_enabled) or inst.pcell_parameter("enable_gui_editing"):
                 dtrans = inst.dcplx_trans
 
                 nodes = Node.nodes_from_string(inst.pcell_parameter("nodes"))
@@ -77,7 +77,7 @@ def node_to_text(node):
     length_increment = str(node.length_increment) if node.length_increment is not None else ""
     element = node.element.__name__ if node.element is not None else ""
     align = ",".join(node.align) if node.align is not None else ""
-    parameters = "\n".join([f'{key}={repr(value)}' for key, value in node.params.items()])
+    parameters = "\n".join([f"{key}={repr(value)}" for key, value in node.params.items()])
 
     return (x, y, element, inst_name, angle, length_before, length_increment, align, parameters)
 
@@ -111,26 +111,26 @@ def node_from_text(x, y, element, inst_name, angle, length_before, length_increm
 
     params = {}
     if inst_name != "":
-        params['inst_name'] = inst_name.strip()
+        params["inst_name"] = inst_name.strip()
     if angle != "":
-        params['angle'] = float(angle)
+        params["angle"] = float(angle)
     if length_before != "":
-        params['length_before'] = float(length_before)
+        params["length_before"] = float(length_before)
     if length_increment != "":
-        params['length_increment'] = float(length_increment)
+        params["length_increment"] = float(length_increment)
     element = element.strip()
     if element == "":
         element = None
     if align != "":
-        params['align'] = tuple(s.strip() for s in align.split(','))
+        params["align"] = tuple(s.strip() for s in align.split(","))
 
-    param_lines = parameters.split('\n')
+    param_lines = parameters.split("\n")
     for param_line in param_lines:
         param_line = param_line.strip()
         if param_line != "":
-            m = re.fullmatch(r'([a-zA-Z0-9_]+)\s*=\s*(.*)', param_line)
+            m = re.fullmatch(r"([a-zA-Z0-9_]+)\s*=\s*(.*)", param_line)
             if not m:
-                raise ValueError('Element parameters should be one key=value pair on each line')
+                raise ValueError("Element parameters should be one key=value pair on each line")
 
             key = m.groups()[0]
             value = ast.literal_eval(m.groups()[1])
@@ -147,9 +147,9 @@ def replace_node(waveguide_instance, node_index, node):
         node_index: (int) index of the node to replace
         node: new Node
     """
-    nodes = Node.nodes_from_string(waveguide_instance.pcell_parameter('nodes'))
+    nodes = Node.nodes_from_string(waveguide_instance.pcell_parameter("nodes"))
     nodes[node_index] = node
-    waveguide_instance.change_pcell_parameter('nodes', [str(node) for node in nodes])
+    waveguide_instance.change_pcell_parameter("nodes", [str(node) for node in nodes])
 
     # Update gui_path and gui_path_shadow to reflect possible position changes in the node
     if waveguide_instance.pcell_parameter("enable_gui_editing"):
@@ -167,9 +167,9 @@ def get_all_node_elements():
     Returns:
         List of class names (str)
     """
-    valid_elements = ['Airbridge']
+    valid_elements = ["Airbridge"]
 
-    layout = load_libraries(path='elements')['Element Library'].layout()
+    layout = load_libraries(path="elements")["Element Library"].layout()
     for pcell_id in layout.pcell_ids():
         pcell = layout.pcell_declaration(pcell_id)
         valid_elements.append(pcell.__class__.__name__)
@@ -200,8 +200,9 @@ def get_valid_node_elements():
         if element is not None:
             cell, refp = element.create_with_refpoints(layout)
 
-            refpoints_with_corner = [name.rstrip('_corner') for name in refp
-                                     if name.endswith('_corner') and name.rstrip('_corner') in refp]
+            refpoints_with_corner = [
+                name.rstrip("_corner") for name in refp if name.endswith("_corner") and name.rstrip("_corner") in refp
+            ]
 
             layout.delete_cell(cell.cell_index())
 

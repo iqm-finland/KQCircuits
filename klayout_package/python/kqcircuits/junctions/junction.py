@@ -41,8 +41,13 @@ class Junction(Element):
     default_type = default_junction_type
 
     junction_type = Param(pdt.TypeString, "Junction Type", default_junction_type, choices=junction_type_choices)
-    junction_width = Param(pdt.TypeDouble, "Junction width for code generated element", 0.02, unit="μm",
-                           docstring="Junction width (only used for code generated element)")
+    junction_width = Param(
+        pdt.TypeDouble,
+        "Junction width for code generated element",
+        0.02,
+        unit="μm",
+        docstring="Junction width (only used for code generated element)",
+    )
     junction_parameters = Param(pdt.TypeString, "Extra Junction Parameters", "{}")
     _junction_parameters = Param(pdt.TypeString, "Previous state of *_parameters", "{}", hidden=True)
 

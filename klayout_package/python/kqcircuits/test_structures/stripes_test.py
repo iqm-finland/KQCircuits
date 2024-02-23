@@ -42,15 +42,19 @@ class StripesTest(TestStructure):
         stripe = pya.DBox(0, 0, width, self.stripe_length)
 
         for i in range(self.num_stripes):
-            trans = pya.DTrans(i*(width + self.stripe_spacing), 0)
+            trans = pya.DTrans(i * (width + self.stripe_spacing), 0)
             self.cell.shapes(layer_base_metal).insert(trans * stripe)
 
         width_str = int(width) if width.is_integer() else width
-        text_cell = self.layout.create_cell("TEXT", "Basic", {
-            "layer": self.face()["base_metal_gap_wo_grid"],
-            "text": "{}".format(width_str),
-            "mag": 40,
-        })
-        text_x = self.num_stripes*(width + self.stripe_spacing) + width
-        text_y = self.stripe_length/2
+        text_cell = self.layout.create_cell(
+            "TEXT",
+            "Basic",
+            {
+                "layer": self.face()["base_metal_gap_wo_grid"],
+                "text": "{}".format(width_str),
+                "mag": 40,
+            },
+        )
+        text_x = self.num_stripes * (width + self.stripe_spacing) + width
+        text_y = self.stripe_length / 2
         self.insert_cell(text_cell, pya.DTrans(text_x, text_y))

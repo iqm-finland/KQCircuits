@@ -28,4 +28,4 @@ with open(str(sys.argv[1]), "r") as fp:
     network = json.load(fp)
 
 graph = network_as_graph(network)
-draw_graph(graph, with_labels=True, with_position=(sys.argv[2] == '1') if (len(sys.argv) >= 3) else True)
+draw_graph(graph, with_labels=True, with_position=(sys.argv[2] == "1") if (len(sys.argv) >= 3) else True)

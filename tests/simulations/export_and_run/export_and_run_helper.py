@@ -63,9 +63,10 @@ def assert_dicts(d1, d2, rtol, atol, ignore_keys=None, only_keys=None):
                 assert np.allclose(val1, val2, rtol=rtol, atol=atol), f"{val1} and {val2} for {key} do not match"
     return True
 
-def assert_project_results_equal(project_results_path: Path,
-        ref_project_results_path: Path, rtol, atol, ignore_keys=None,
-        generate_ref_results=False):
+
+def assert_project_results_equal(
+    project_results_path: Path, ref_project_results_path: Path, rtol, atol, ignore_keys=None, generate_ref_results=False
+):
     """
     Checks whether the project results correspond to the reference
     project results.
@@ -82,7 +83,7 @@ def assert_project_results_equal(project_results_path: Path,
         results = json.load(f)
 
     if generate_ref_results:
-        with open(ref_project_results_path, 'w') as f:
+        with open(ref_project_results_path, "w") as f:
             json.dump(results, f)
 
     with open(ref_project_results_path) as f:
@@ -90,7 +91,8 @@ def assert_project_results_equal(project_results_path: Path,
 
     return assert_dicts(ref_results, results, rtol, atol, ignore_keys=ignore_keys)
 
-def export_and_run_test(tmp_path: Path, export_script_name: str, args:list):
+
+def export_and_run_test(tmp_path: Path, export_script_name: str, args: list):
     """
     Exports, runs and asserts a KQC simulation.
 
@@ -107,16 +109,18 @@ def export_and_run_test(tmp_path: Path, export_script_name: str, args:list):
 
     """
 
-    export_script = SIM_SCRIPT_PATH / f'{export_script_name}.py'
+    export_script = SIM_SCRIPT_PATH / f"{export_script_name}.py"
 
     return export_and_run(export_script, tmp_path, quiet=True, args=args)
 
-def assert_sim_script(export_script_name: str,
-                      export_script_dir: Path,
-                      export_path: Path,
-                      project_ref_info: dict,
-                      generate_ref_results = False,
-                      ):
+
+def assert_sim_script(
+    export_script_name: str,
+    export_script_dir: Path,
+    export_path: Path,
+    project_ref_info: dict,
+    generate_ref_results=False,
+):
     """
     Exports, runs and asserts a KQC simulation.
 
@@ -140,12 +144,12 @@ def assert_sim_script(export_script_name: str,
     asset_dir = export_script_dir / export_script_name
 
     project_ref = {
-            'project_results_path':  export_path / project_ref_info['project_results_file'],
-            'ref_project_results_path': asset_dir / project_ref_info['ref_project_results_file'],
-            'rtol': project_ref_info['rtol'],
-            'atol': project_ref_info['atol'],
-            'ignore_keys': project_ref_info['ignore_keys'],
-        }
+        "project_results_path": export_path / project_ref_info["project_results_file"],
+        "ref_project_results_path": asset_dir / project_ref_info["ref_project_results_file"],
+        "rtol": project_ref_info["rtol"],
+        "atol": project_ref_info["atol"],
+        "ignore_keys": project_ref_info["ignore_keys"],
+    }
 
     assert_project_results_equal(**project_ref, generate_ref_results=generate_ref_results)
 

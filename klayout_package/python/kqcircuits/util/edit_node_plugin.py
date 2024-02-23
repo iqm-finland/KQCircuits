@@ -34,7 +34,7 @@ class EditNodePlugin(pya.Plugin):
     def create_dialog(self):
         dialog = pya.QDialog(pya.Application.instance().main_window())
         self.dialog = dialog
-        dialog.windowTitle = 'Edit Node'
+        dialog.windowTitle = "Edit Node"
         dialog.setModal(False)
 
         form = pya.QFormLayout(dialog)
@@ -53,7 +53,7 @@ class EditNodePlugin(pya.Plugin):
         self.text_length_before = add_row("Length before (µm):", pya.QLineEdit("", dialog))
         self.text_length_increment = add_row("Length increment (µm):", pya.QLineEdit("", dialog))
         self.text_element = add_row("Element:", pya.QComboBox(dialog))
-        self.text_element.addItems([''] + node_editor_valid_elements)
+        self.text_element.addItems([""] + node_editor_valid_elements)
         self.text_element.editable = True
         self.text_align = add_row("Refpoint names to align to (input,output):", pya.QLineEdit("", dialog))
         self.text_params = add_row("Element parameters:", pya.QPlainTextEdit("", dialog))
@@ -65,30 +65,39 @@ class EditNodePlugin(pya.Plugin):
             return
 
         try:
-            new_node = node_from_text(self.text_x.text, self.text_y.text, self.text_element.currentText,
-                                      self.text_inst_name.text, self.text_angle.text,
-                                      self.text_length_before.text, self.text_length_increment.text,
-                                      self.text_align.text, self.text_params.toPlainText())
+            new_node = node_from_text(
+                self.text_x.text,
+                self.text_y.text,
+                self.text_element.currentText,
+                self.text_inst_name.text,
+                self.text_angle.text,
+                self.text_length_before.text,
+                self.text_length_increment.text,
+                self.text_align.text,
+                self.text_params.toPlainText(),
+            )
         except ValueError as e:
             pya.MessageBox.warning(type(e).__name__, str(e), pya.MessageBox.Ok)
             return
 
         self.manager.transaction("Edit node")
-        replace_node(self.selection['instance'], self.selection['node_index'], new_node)
+        replace_node(self.selection["instance"], self.selection["node_index"], new_node)
         self.manager.commit()
-        self.selection['node'] = new_node
+        self.selection["node"] = new_node
         self.update()
 
     def update_form_from_node(self, node):
-        (self.text_x.text,
-         self.text_y.text,
-         self.text_element.currentText,
-         self.text_inst_name.text,
-         self.text_angle.text,
-         self.text_length_before.text,
-         self.text_length_increment.text,
-         self.text_align.text,
-         self.text_params.plainText) = node_to_text(node)
+        (
+            self.text_x.text,
+            self.text_y.text,
+            self.text_element.currentText,
+            self.text_inst_name.text,
+            self.text_angle.text,
+            self.text_length_before.text,
+            self.text_length_increment.text,
+            self.text_align.text,
+            self.text_params.plainText,
+        ) = node_to_text(node)
 
     def deselect(self):
         self.selection = None
@@ -112,11 +121,11 @@ class EditNodePlugin(pya.Plugin):
         self.dialog.show()
 
         self.selection = {
-            'instance': instance,
-            'instance_trans': instance.dcplx_trans,
-            'node_index': node_index,
-            'node': node,
-            'marker': marker,
+            "instance": instance,
+            "instance_trans": instance.dcplx_trans,
+            "node_index": node_index,
+            "node": node,
+            "marker": marker,
         }
 
     def activated(self):
@@ -149,7 +158,7 @@ class EditNodePlugin(pya.Plugin):
 
     def tracking_position(self):
         if self.selection is not None:
-            position = self.selection['instance_trans'].inverted() * self.last_mouse_position
+            position = self.selection["instance_trans"].inverted() * self.last_mouse_position
             return position
         else:
             return pya.DPoint(0, 0)  # Only reached if something in the internal state is broken
@@ -157,8 +166,8 @@ class EditNodePlugin(pya.Plugin):
     def update(self):
         # Update marker size to stay constant in pixels
         if self.selection is not None:
-            marker = self.selection['marker']
-            position = self.selection['instance_trans'] * self.selection['node'].position
+            marker = self.selection["marker"]
+            position = self.selection["instance_trans"] * self.selection["node"].position
             size = pya.DVector(self.capture_range, self.capture_range) / self.view.viewport_trans().mag
             marker.set(pya.DBox(position - size, position + size))
 
@@ -166,11 +175,11 @@ class EditNodePlugin(pya.Plugin):
 class EditNodePluginFactory(pya.PluginFactory):
     def __init__(self):
         if pya.Application.instance().is_editable():
-            icon_path = os.path.join(os.path.dirname(__file__), 'edit_node_plugin.png')
+            icon_path = os.path.join(os.path.dirname(__file__), "edit_node_plugin.png")
             self.register(1000, "kqc_edit_node", "Edit Node", icon_path)
 
             # Set tooltip to something more helpful
-            toolbar_action = pya.MainWindow.instance().menu().action('@toolbar.kqc_edit_node')
+            toolbar_action = pya.MainWindow.instance().menu().action("@toolbar.kqc_edit_node")
             if toolbar_action:
                 toolbar_action.tool_tip = "Edit individual Node properties of WaveguideComposite elements"
 

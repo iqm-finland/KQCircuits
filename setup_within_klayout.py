@@ -51,14 +51,16 @@ def get_klayout_packages_path(path_start):
             break
     return packages_path
 
+
 if __name__ == "__main__":
     # KQCircuits source path
     kqc_root_path = os.path.dirname(os.path.abspath(__file__))
 
-    parser = argparse.ArgumentParser(description='KQC setup within klayout')
-    parser.add_argument('--unlink', action="store_true", help='remove links')
-    parser.add_argument('--force-package-reinstall', action="store_true",
-                        help='force reinstalling packages that KQCircuits depends on')
+    parser = argparse.ArgumentParser(description="KQC setup within klayout")
+    parser.add_argument("--unlink", action="store_true", help="remove links")
+    parser.add_argument(
+        "--force-package-reinstall", action="store_true", help="force reinstalling packages that KQCircuits depends on"
+    )
     args = parser.parse_args()
 
     configdir = klayout_configdir(kqc_root_path)
@@ -80,10 +82,14 @@ if __name__ == "__main__":
         elif os.name == "posix":
             pip_args = "requirements_within_klayout_unix.txt"  # Linux
             if platform == "darwin":  # macOS
-                td = get_klayout_packages_path("/Applications/klayout.app/Contents/Frameworks/Python.framework/Versions")
+                td = get_klayout_packages_path(
+                    "/Applications/klayout.app/Contents/Frameworks/Python.framework/Versions"
+                )
                 if not os.path.exists(td):
                     # Homebrew installs under /Applications/KLayout/klayout.app
-                    td = get_klayout_packages_path("/Applications/KLayout/klayout.app/Contents/Frameworks/Python.framework/Versions")
+                    td = get_klayout_packages_path(
+                        "/Applications/KLayout/klayout.app/Contents/Frameworks/Python.framework/Versions"
+                    )
                 # KLayout may use either its own site-packages or the system site-packages, depending on the build
                 if os.path.exists(td):
                     target_dir = td
@@ -98,4 +104,3 @@ if __name__ == "__main__":
         print("Finished setting up KQC.")
     else:
         print("KQC unlinked from the Klayout installation")
-

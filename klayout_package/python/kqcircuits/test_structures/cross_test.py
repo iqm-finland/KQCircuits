@@ -39,14 +39,20 @@ class CrossTest(TestStructure):
 
         layer_base_metal = self.get_layer("base_metal_gap_wo_grid")
 
-        box = pya.DBox(pya.DPoint(-self.cross_width/2, -self.cross_box_distance), pya.DPoint(self.cross_width/2,
-                                                                    -self.cross_box_distance - self.cross_width))
-        vertical_tick = pya.DBox(pya.DPoint(-self.cross_width/2, 0), pya.DPoint(self.cross_width/2, self.cross_length))
-        horizontal_tick = pya.DBox(pya.DPoint(-self.cross_length/2, self.cross_length/2 - self.cross_width/2),
-                                   pya.DPoint(self.cross_length/2, self.cross_length/2 + self.cross_width/2))
+        box = pya.DBox(
+            pya.DPoint(-self.cross_width / 2, -self.cross_box_distance),
+            pya.DPoint(self.cross_width / 2, -self.cross_box_distance - self.cross_width),
+        )
+        vertical_tick = pya.DBox(
+            pya.DPoint(-self.cross_width / 2, 0), pya.DPoint(self.cross_width / 2, self.cross_length)
+        )
+        horizontal_tick = pya.DBox(
+            pya.DPoint(-self.cross_length / 2, self.cross_length / 2 - self.cross_width / 2),
+            pya.DPoint(self.cross_length / 2, self.cross_length / 2 + self.cross_width / 2),
+        )
 
         for i in range(self.num_crosses):
-            trans = pya.DTrans(0, False, i*self.cross_spacing, 0).to_itype(self.layout.dbu)
+            trans = pya.DTrans(0, False, i * self.cross_spacing, 0).to_itype(self.layout.dbu)
             box_trans = pya.Region(trans * box.to_itype(self.layout.dbu))
             vertical_tick_trans = pya.Region(trans * vertical_tick.to_itype(self.layout.dbu))
             horizontal_tick_trans = pya.Region(trans * horizontal_tick.to_itype(self.layout.dbu))

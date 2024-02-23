@@ -36,11 +36,11 @@ if os.name == "nt" and os.path.islink(Path(__file__).parent):
 
 # project paths
 SRC_PATHS = [_kqcircuits_path]
-ROOT_PATH = Path(os.getenv('KQC_ROOT_PATH', os.getcwd()))  # "current dir" or set by optional KQC_ROOT_PATH
+ROOT_PATH = Path(os.getenv("KQC_ROOT_PATH", os.getcwd()))  # "current dir" or set by optional KQC_ROOT_PATH
 if _kqcircuits_path.parts[-3] == "klayout_package":  # developer setup
     ROOT_PATH = _kqcircuits_path.parents[2]
 
-TMP_PATH = Path(os.getenv('KQC_TMP_PATH', str(ROOT_PATH.joinpath("tmp"))))  # specify alternative tmp directory
+TMP_PATH = Path(os.getenv("KQC_TMP_PATH", str(ROOT_PATH.joinpath("tmp"))))  # specify alternative tmp directory
 _py_path = ROOT_PATH.joinpath("klayout_package/python")
 
 if _kqcircuits_path.parts[-4] == "salt":  # KQC Salt package
@@ -54,20 +54,24 @@ DRC_PATH = _py_path.joinpath("drc")
 TMP_PATH.mkdir(parents=True, exist_ok=True)  # TODO move elsewhere?
 
 ANSYS_EXECUTABLE = find_ansys_executable(r"%PROGRAMFILES%\AnsysEM\v241\Win64\ansysedt.exe")
-ANSYS_SCRIPT_PATHS = [SCRIPTS_PATH.joinpath("simulations").joinpath("ansys"),
-                      SCRIPTS_PATH.joinpath("simulations").joinpath("post_process")]
-ELMER_SCRIPT_PATHS = [SCRIPTS_PATH.joinpath("simulations").joinpath("elmer"),
-                      SCRIPTS_PATH.joinpath("simulations").joinpath("post_process")]
+ANSYS_SCRIPT_PATHS = [
+    SCRIPTS_PATH.joinpath("simulations").joinpath("ansys"),
+    SCRIPTS_PATH.joinpath("simulations").joinpath("post_process"),
+]
+ELMER_SCRIPT_PATHS = [
+    SCRIPTS_PATH.joinpath("simulations").joinpath("elmer"),
+    SCRIPTS_PATH.joinpath("simulations").joinpath("post_process"),
+]
 XSECTION_PROCESS_PATH = ROOT_PATH.joinpath("xsection/kqc_process.xs")
 
 VERSION_PATHS = {}
-VERSION_PATHS['KQC'] = ROOT_PATH
-SIM_SCRIPT_PATH = ROOT_PATH / 'klayout_package' / 'python' / 'scripts' / 'simulations'
+VERSION_PATHS["KQC"] = ROOT_PATH
+SIM_SCRIPT_PATH = ROOT_PATH / "klayout_package" / "python" / "scripts" / "simulations"
 
 # Default path on remote
-KQC_REMOTE_TMP_PATH = os.getenv('KQC_REMOTE_TMP_PATH', '~/KQCircuits/tmp')
+KQC_REMOTE_TMP_PATH = os.getenv("KQC_REMOTE_TMP_PATH", "~/KQCircuits/tmp")
 # Remote account for slurm
-KQC_REMOTE_ACCOUNT = os.getenv('KQC_REMOTE_ACCOUNT')
+KQC_REMOTE_ACCOUNT = os.getenv("KQC_REMOTE_ACCOUNT")
 
 # Given to subprocess.Popen calls, hides terminals on Windows
 STARTUPINFO = None
@@ -101,39 +105,41 @@ default_netlist_breakdown = [
 ]
 
 default_netlist_ignore_connections = [
-    ("drive", "drive"), # Don't connect two overlapping qubit drive ports
+    ("drive", "drive"),  # Don't connect two overlapping qubit drive ports
 ]
 
 # default progress bar formatting with tqdm
-default_bar_format = '{l_bar}{bar}| {n_fmt}/{total_fmt} [Elapsed: {elapsed}, Left (eta): {remaining}, {rate_inv_fmt}' \
-                     '{postfix}]'
+default_bar_format = (
+    "{l_bar}{bar}| {n_fmt}/{total_fmt} [Elapsed: {elapsed}, Left (eta): {remaining}, {rate_inv_fmt}" "{postfix}]"
+)
 
 # refpoint is extracted as probepoint if it contains some string from default_probe_types and
 # ends with some substring from default_probe_suffixes
 
 default_probe_types = ["testarray", "qb"]
 default_probe_suffixes = [
-    "_l", "_r", "_top", # Test array probepoints
+    "_l",
+    "_r",
+    "_top",  # Test array probepoints
     # Single island qubit probepoints
-    "_probe_ground", "_probe_island",
+    "_probe_ground",
+    "_probe_island",
     # Double island qubit probepoints
-    "_probe_island_1", "_probe_island_2"
+    "_probe_island_1",
+    "_probe_island_2",
 ]
 # for probepoint pair, one is assigned to west and other to east prober based on their x coordinate
 # but we also want to set a standard where ground is consistently probed from one side and island
 # from the other. This dict defines such rules
-recommended_probe_suffix_mapping = {
-    "_probe_ground": "east",
-    "_probe_island": "west"
-}
+recommended_probe_suffix_mapping = {"_probe_ground": "east", "_probe_island": "west"}
 
 # Library names in dependency order. Every library should have its dependencies before its own entry.
 kqc_library_names = (
-    'Element Library',
-    'Junction Library',
-    'Test Structure Library',
-    'Qubit Library',
-    'Chip Library',
+    "Element Library",
+    "Junction Library",
+    "Test Structure Library",
+    "Qubit Library",
+    "Chip Library",
 )
 
 # The user may override KQC Element's default parameters
@@ -171,7 +177,7 @@ default_sampleholders = {
         "launcher_indent": 800,
         "launcher_frame_gap": 180,
         "pad_pitch": 4400,
-        "chip_box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000))
+        "chip_box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000)),
     },
     "ARD24": {
         "n": 24,
@@ -180,7 +186,7 @@ default_sampleholders = {
         "launcher_gap": 179,
         "launcher_indent": 680,
         "pad_pitch": 1200,
-        "chip_box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000))
+        "chip_box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000)),
     },
     "DC24": {
         "n": 24,
@@ -189,8 +195,8 @@ default_sampleholders = {
         "launcher_gap": 300,
         "launcher_indent": 680,
         "pad_pitch": 850,
-        "chip_box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000))
-    }
+        "chip_box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000)),
+    },
 }
 
 # Elements that are visible in the Node editor plugin dropdown box, specified by class name. A list of in principle
@@ -198,18 +204,26 @@ default_sampleholders = {
 # an instance of each PCell which is clumsy to run at startup.
 # In the list below basic waveguide elements are omitted since they can be better generated by other node parameters
 node_editor_valid_elements = [
-    'Airbridge', 'AirbridgeConnection', 'AirbridgeMultiFace', 'AirbridgeRectangular', 'CircularCapacitor',
-    'FingerCapacitorSquare', 'FingerCapacitorTaper', 'FlipChipConnectorRf', 'SmoothCapacitor',
-    'WaveguideCoplanarSplitter']
+    "Airbridge",
+    "AirbridgeConnection",
+    "AirbridgeMultiFace",
+    "AirbridgeRectangular",
+    "CircularCapacitor",
+    "FingerCapacitorSquare",
+    "FingerCapacitorTaper",
+    "FlipChipConnectorRf",
+    "SmoothCapacitor",
+    "WaveguideCoplanarSplitter",
+]
 
-node_editor_layer_changing_elements = ['FlipChipConnectorRf']
+node_editor_layer_changing_elements = ["FlipChipConnectorRf"]
 
 # List of modules to be excluded from documentation generation. Plain module file names without '.py'.
 excluded_module_names = ()
 
 # Path to the layer configuration file, which defines layer/face related defaults.
 # The path can be either absolute or relative.
-layer_config_path = Path(__file__).parent/"layer_config"/"default_layer_config.py"
+layer_config_path = Path(__file__).parent / "layer_config" / "default_layer_config.py"
 
 # Load layer/face related defaults from the layer config file
 

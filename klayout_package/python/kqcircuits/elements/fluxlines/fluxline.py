@@ -56,8 +56,11 @@ class Fluxline(Element):
         self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(left_gap)
         self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(right_gap)
         # protection
-        protection = pya.Region([p.to_itype(self.layout.dbu) for p in [right_gap, left_gap]]
-                                ).bbox().enlarged(self.margin/self.layout.dbu, self.margin/self.layout.dbu)
+        protection = (
+            pya.Region([p.to_itype(self.layout.dbu) for p in [right_gap, left_gap]])
+            .bbox()
+            .enlarged(self.margin / self.layout.dbu, self.margin / self.layout.dbu)
+        )
         self.add_protection(pya.Polygon(protection))
 
     def _add_fluxline_refpoints(self, port_ref):

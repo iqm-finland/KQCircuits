@@ -17,79 +17,92 @@
 
 from pathlib import Path
 import sys
+
 export_script_dir = Path(__file__).parent
 sys.path.append(str(export_script_dir.parent))
 from export_and_run_helper import assert_sim_script, export_and_run_test
 
-generate_ref_results = False # set to True if you wish to update the
-                             # reference results with what you get from your tests
+generate_ref_results = False  # set to True if you wish to update the
+# reference results with what you get from your tests
+
 
 def test_n_guides_1(tmp_path):
-    export_and_run_test(tmp_path, "waveguides_sim_xsection", ['--n-guides', '1'])
+    export_and_run_test(tmp_path, "waveguides_sim_xsection", ["--n-guides", "1"])
 
     project_ref_info = {
-            'project_results_file': 'waveguides_n_guides_1_result.json',
-            'ref_project_results_file': 'test_n_guides_1.json',
-            'rtol': 1e-2,
-            'atol': 1e-20,
-            'ignore_keys': ['E_ground', 'E_signal_'],
-        }
+        "project_results_file": "waveguides_n_guides_1_result.json",
+        "ref_project_results_file": "test_n_guides_1.json",
+        "rtol": 1e-2,
+        "atol": 1e-20,
+        "ignore_keys": ["E_ground", "E_signal_"],
+    }
 
-    assert_sim_script("waveguides_sim_xsection",
-                      export_script_dir,
-                      tmp_path,
-                      project_ref_info,
-                      generate_ref_results=generate_ref_results)
+    assert_sim_script(
+        "waveguides_sim_xsection",
+        export_script_dir,
+        tmp_path,
+        project_ref_info,
+        generate_ref_results=generate_ref_results,
+    )
+
 
 def test_london(tmp_path):
-    export_and_run_test(tmp_path, "waveguides_sim_xsection",
-                        ['--n-guides', '1', '--london-penetration-depth', '100e-9'])
+    export_and_run_test(
+        tmp_path, "waveguides_sim_xsection", ["--n-guides", "1", "--london-penetration-depth", "100e-9"]
+    )
 
     project_ref_info = {
-            'project_results_file': 'waveguides_n_guides_1_result.json',
-            'ref_project_results_file': 'test_london.json',
-            'rtol': 1e-2,
-            'atol': 1e-20,
-            'ignore_keys': ['E_ground', 'E_signal_'],
-        }
+        "project_results_file": "waveguides_n_guides_1_result.json",
+        "ref_project_results_file": "test_london.json",
+        "rtol": 1e-2,
+        "atol": 1e-20,
+        "ignore_keys": ["E_ground", "E_signal_"],
+    }
 
-    assert_sim_script("waveguides_sim_xsection",
-                      export_script_dir,
-                      tmp_path,
-                      project_ref_info,
-                      generate_ref_results=generate_ref_results)
+    assert_sim_script(
+        "waveguides_sim_xsection",
+        export_script_dir,
+        tmp_path,
+        project_ref_info,
+        generate_ref_results=generate_ref_results,
+    )
+
 
 def test_flip_chip(tmp_path):
-    export_and_run_test(tmp_path, "waveguides_sim_xsection", ['--n-guides', '1', '--flip-chip'])
+    export_and_run_test(tmp_path, "waveguides_sim_xsection", ["--n-guides", "1", "--flip-chip"])
 
     project_ref_info = {
-            'project_results_file': 'waveguides_n_guides_1_result.json',
-            'ref_project_results_file': 'test_flip_chip.json',
-            'rtol': 1e-2,
-            'atol': 1e-20,
-            'ignore_keys': ['E_ground', 'E_signal_'],
-        }
+        "project_results_file": "waveguides_n_guides_1_result.json",
+        "ref_project_results_file": "test_flip_chip.json",
+        "rtol": 1e-2,
+        "atol": 1e-20,
+        "ignore_keys": ["E_ground", "E_signal_"],
+    }
 
-    assert_sim_script("waveguides_sim_xsection",
-                      export_script_dir,
-                      tmp_path,
-                      project_ref_info,
-                      generate_ref_results=generate_ref_results)
+    assert_sim_script(
+        "waveguides_sim_xsection",
+        export_script_dir,
+        tmp_path,
+        project_ref_info,
+        generate_ref_results=generate_ref_results,
+    )
+
 
 def test_flip_chip_etched_top(tmp_path):
-    export_and_run_test(tmp_path, "waveguides_sim_xsection",
-                        ['--n-guides', '1', '--flip-chip', '--etch-opposite-face'])
+    export_and_run_test(tmp_path, "waveguides_sim_xsection", ["--n-guides", "1", "--flip-chip", "--etch-opposite-face"])
 
     project_ref_info = {
-            'project_results_file': 'waveguides_n_guides_1_result.json',
-            'ref_project_results_file': 'test_flip_chip_etched_top.json',
-            'rtol': 1e-2,
-            'atol': 1e-20,
-            'ignore_keys': ['E_ground', 'E_signal_'],
-        }
+        "project_results_file": "waveguides_n_guides_1_result.json",
+        "ref_project_results_file": "test_flip_chip_etched_top.json",
+        "rtol": 1e-2,
+        "atol": 1e-20,
+        "ignore_keys": ["E_ground", "E_signal_"],
+    }
 
-    assert_sim_script("waveguides_sim_xsection",
-                      export_script_dir,
-                      tmp_path,
-                      project_ref_info,
-                      generate_ref_results=generate_ref_results)
+    assert_sim_script(
+        "waveguides_sim_xsection",
+        export_script_dir,
+        tmp_path,
+        project_ref_info,
+        generate_ref_results=generate_ref_results,
+    )

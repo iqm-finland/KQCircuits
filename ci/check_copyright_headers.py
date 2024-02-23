@@ -44,7 +44,7 @@ if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("--exclude-paths", nargs="*", type=str, default=[])
     args = parser.parse_args()
-    exclude_paths = [cwd/p for p in args.exclude_paths]
+    exclude_paths = [cwd / p for p in args.exclude_paths]
 
     print("Checking the existence of copyright header in all .py and .lym files...")
 
@@ -65,8 +65,9 @@ if __name__ == "__main__":
     files_without_copyright = file_paths_2
     for copyright_year in [2021, 2022, 2023, 2024]:
         copyright_string = copyright_template.substitute(year=copyright_year)
-        files_without_copyright = [file for file in files_without_copyright
-                                   if copyright_string not in open(file, encoding="utf-8").read()]
+        files_without_copyright = [
+            file for file in files_without_copyright if copyright_string not in open(file, encoding="utf-8").read()
+        ]
 
     if len(files_without_copyright) > 0:
         print("Files without copyright header:")

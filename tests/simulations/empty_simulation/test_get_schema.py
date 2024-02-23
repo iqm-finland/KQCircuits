@@ -16,7 +16,6 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-
 def test_simulation_has_schema(empty_simulation):
     schema = empty_simulation.get_schema()
 

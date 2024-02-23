@@ -26,33 +26,37 @@ import os
 import sys
 import csv
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'util'))
-from post_process_helpers import find_varied_parameters, tabulate_into_csv \
-    # pylint: disable=wrong-import-position, no-name-in-module
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "util"))
+from post_process_helpers import (
+    find_varied_parameters,
+    tabulate_into_csv,
+)  # pylint: disable=wrong-import-position, no-name-in-module
 
-with open(sys.argv[1], 'r') as fp:
+with open(sys.argv[1], "r") as fp:
     loss_tangents = json.load(fp)
 
 # Find data files
 path = os.path.curdir
-result_files = [f for f in os.listdir(path) if f.endswith('_project_energy.csv') or f.endswith('_result.json')]
+result_files = [f for f in os.listdir(path) if f.endswith("_project_energy.csv") or f.endswith("_result.json")]
 if result_files:
     # Find parameters that are swept
-    definition_files = [f.replace('_result.json', '.json') if f.endswith('_result.json') else
-                        f.replace('_project_energy.csv', '.json') for f in result_files]
+    definition_files = [
+        f.replace("_result.json", ".json") if f.endswith("_result.json") else f.replace("_project_energy.csv", ".json")
+        for f in result_files
+    ]
     parameters, parameter_values = find_varied_parameters(definition_files)
 
     # Load result data
     q = {}
     for key, result_file in zip(parameter_values.keys(), result_files):
-        if result_file.endswith('_result.json'):
+        if result_file.endswith("_result.json"):
             # read results from Elmer output
-            with open(result_file, 'r') as f:
+            with open(result_file, "r") as f:
                 result = json.load(f)
         else:
             # read results from Ansys output
-            with open(result_file, 'r') as f:
-                reader = csv.reader(f, delimiter=',')
+            with open(result_file, "r") as f:
+                reader = csv.reader(f, delimiter=",")
                 result_keys = next(reader)
                 result_values = next(reader)
                 result = {k[:-3]: float(v) for k, v in zip(result_keys, result_values)}
@@ -62,9 +66,11 @@ if result_files:
         if total_energy == 0.0:
             continue
 
-        loss = {loss_layer: sum([loss * v / total_energy for k, v in energy.items() if loss_layer in k])
-                for loss_layer, loss in loss_tangents.items()}
-        q[key] = {'Q_' + k: 1.0 / v for k, v in loss.items()}
-        q[key]['Q_total'] = 1.0 / sum(loss.values())
+        loss = {
+            loss_layer: sum([loss * v / total_energy for k, v in energy.items() if loss_layer in k])
+            for loss_layer, loss in loss_tangents.items()
+        }
+        q[key] = {"Q_" + k: 1.0 / v for k, v in loss.items()}
+        q[key]["Q_total"] = 1.0 / sum(loss.values())
 
-    tabulate_into_csv(f'{os.path.basename(os.path.abspath(path))}_q_factors.csv', q, parameters, parameter_values)
+    tabulate_into_csv(f"{os.path.basename(os.path.abspath(path))}_q_factors.csv", q, parameters, parameter_values)

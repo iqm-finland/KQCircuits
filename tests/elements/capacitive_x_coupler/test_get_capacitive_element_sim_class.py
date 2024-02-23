@@ -25,10 +25,12 @@ def test_can_create(get_simulation):
 
 # TODO: refactor so box doesn't need to be specified.
 def test_ansys_export_produces_output_files(perform_test_ansys_export_produces_output_files):
-    perform_test_ansys_export_produces_output_files(CapacitiveXCoupler,
-                                                    box=pya.DBox(pya.DPoint(-250, -250), pya.DPoint(250, 250)))
+    perform_test_ansys_export_produces_output_files(
+        CapacitiveXCoupler, box=pya.DBox(pya.DPoint(-250, -250), pya.DPoint(250, 250))
+    )
 
 
 def test_sonnet_export_produces_output_files(perform_test_sonnet_export_produces_output_files):
-    perform_test_sonnet_export_produces_output_files(CapacitiveXCoupler,
-                                                     box=pya.DBox(pya.DPoint(-250, -250), pya.DPoint(250, 250)))
+    perform_test_sonnet_export_produces_output_files(
+        CapacitiveXCoupler, box=pya.DBox(pya.DPoint(-250, -250), pya.DPoint(250, 250))
+    )

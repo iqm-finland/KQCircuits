@@ -17,6 +17,7 @@
 
 
 from kqcircuits.pya_resolver import pya
+
 DPoint = pya.DPoint
 
 
@@ -25,9 +26,18 @@ class Port:
 
     Depending on your simulation type, these produce excitations, set potentials, or act as ideal RLC lumped elements.
     """
-    def __init__(self, number: int,
-                 resistance: float = 50, reactance: float = 0, inductance: float = 0, capacitance: float = 0,
-                 face: int = 0, junction: bool = False, renormalization: float = 50):
+
+    def __init__(
+        self,
+        number: int,
+        resistance: float = 50,
+        reactance: float = 0,
+        inductance: float = 0,
+        capacitance: float = 0,
+        face: int = 0,
+        junction: bool = False,
+        renormalization: float = 50,
+    ):
         """
         Args:
             number: Port number.
@@ -56,9 +66,20 @@ class Port:
 
 class InternalPort(Port):
     """Data structure for ports inside the simulation area."""
-    def __init__(self, number: int, signal_location: DPoint, ground_location: DPoint = None,
-                 resistance: float = 50, reactance: float = 0, inductance: float = 0, capacitance: float = 0,
-                 face: int = 0, junction: bool = False, signal_layer: str = 'signal'):
+
+    def __init__(
+        self,
+        number: int,
+        signal_location: DPoint,
+        ground_location: DPoint = None,
+        resistance: float = 50,
+        reactance: float = 0,
+        inductance: float = 0,
+        capacitance: float = 0,
+        face: int = 0,
+        junction: bool = False,
+        signal_layer: str = "signal",
+    ):
         """
         Args:
             number: Port number.
@@ -82,9 +103,20 @@ class InternalPort(Port):
 
 class EdgePort(Port):
     """Data structure for ports at the edge of the simulation area."""
-    def __init__(self, number: int, signal_location: DPoint,
-                 resistance: float = 50, reactance: float = 0, inductance: float = 0, capacitance: float = 0,
-                 deembed_len: float = None, face: int = 0, junction: bool = False, size=None):
+
+    def __init__(
+        self,
+        number: int,
+        signal_location: DPoint,
+        resistance: float = 50,
+        reactance: float = 0,
+        inductance: float = 0,
+        capacitance: float = 0,
+        deembed_len: float = None,
+        face: int = 0,
+        junction: bool = False,
+        size=None,
+    ):
         """
         Args:
             number: Port number.

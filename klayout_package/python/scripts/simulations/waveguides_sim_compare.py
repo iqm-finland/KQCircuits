@@ -25,8 +25,11 @@ from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.post_process import PostProcess
 from kqcircuits.simulations.waveguides_sim import WaveGuidesSim
-from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
-    open_with_klayout_or_default_application
+from kqcircuits.util.export_helper import (
+    create_or_empty_tmp_directory,
+    get_active_or_new_layout,
+    open_with_klayout_or_default_application,
+)
 
 
 # This testcase is the first proof of concept for Gmsh.
@@ -48,30 +51,42 @@ from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_act
 # Simulation parameters
 parser = argparse.ArgumentParser()
 
-parser.add_argument('--no-edge-ports', action="store_true", help='Do not use edge_ports')
-parser.add_argument('--flip-chip', action="store_true", help='Make a flip chip')
-parser.add_argument('--ansys', action="store_true", help='Use Ansys (otherwise Elmer)')
-parser.add_argument('--use-sbatch', action="store_true", help='Use sbatch (Slurm)')
-parser.add_argument('--adaptive-remeshing', action="store_true", help='Use adaptive remeshing')
-parser.add_argument('--port-termination', action="store_true", help='Port termination')
-parser.add_argument('--wave-equation', action="store_true",
-        help='Compute wave equation (otherwise electrostatics)')
-parser.add_argument('--n-guides-range', nargs=2, default=[1,2],
-        type=int, help='number of guides in first case and last \
+parser.add_argument("--no-edge-ports", action="store_true", help="Do not use edge_ports")
+parser.add_argument("--flip-chip", action="store_true", help="Make a flip chip")
+parser.add_argument("--ansys", action="store_true", help="Use Ansys (otherwise Elmer)")
+parser.add_argument("--use-sbatch", action="store_true", help="Use sbatch (Slurm)")
+parser.add_argument("--adaptive-remeshing", action="store_true", help="Use adaptive remeshing")
+parser.add_argument("--port-termination", action="store_true", help="Port termination")
+parser.add_argument("--wave-equation", action="store_true", help="Compute wave equation (otherwise electrostatics)")
+parser.add_argument(
+    "--n-guides-range",
+    nargs=2,
+    default=[1, 2],
+    type=int,
+    help="number of guides in first case and last \
         simulation: all the cases in between with an increment of one \
-        will be simulated as well')
-parser.add_argument('--cpw-length', default=100., type=float, help='Length of cpws in the model')
-parser.add_argument('--p-element-order', default=3, type=int, help='Order of p-elements in the FEM computation')
-parser.add_argument('--elmer-n-processes', default=-1, type=int,
-        help='Number of processes in Elmer simulations, -1 means all physical cores')
-parser.add_argument('--elmer-n-threads', default=1, type=int,
-        help='Number of threads per process in Elmer simulations')
-parser.add_argument('--gmsh-n-threads', default=-1, type=int, help='Number of threads in Gmsh simulations, \
-        -1 means all physical cores')
+        will be simulated as well",
+)
+parser.add_argument("--cpw-length", default=100.0, type=float, help="Length of cpws in the model")
+parser.add_argument("--p-element-order", default=3, type=int, help="Order of p-elements in the FEM computation")
+parser.add_argument(
+    "--elmer-n-processes",
+    default=-1,
+    type=int,
+    help="Number of processes in Elmer simulations, -1 means all physical cores",
+)
+parser.add_argument("--elmer-n-threads", default=1, type=int, help="Number of threads per process in Elmer simulations")
+parser.add_argument(
+    "--gmsh-n-threads",
+    default=-1,
+    type=int,
+    help="Number of threads in Gmsh simulations, \
+        -1 means all physical cores",
+)
 
-parser.add_argument('--port-mesh-size', default=1., type=float, help='Element size at ports')
-parser.add_argument('--gap-mesh-size', default=2., type=float, help='Element size at gaps')
-parser.add_argument('--global-mesh-size', default=100., type=float, help='Global element size')
+parser.add_argument("--port-mesh-size", default=1.0, type=float, help="Element size at ports")
+parser.add_argument("--gap-mesh-size", default=2.0, type=float, help="Element size at gaps")
+parser.add_argument("--global-mesh-size", default=100.0, type=float, help="Global element size")
 args, unknown = parser.parse_known_args()
 
 sim_class = WaveGuidesSim  # pylint: disable=invalid-name
@@ -81,9 +96,7 @@ use_elmer = not args.ansys
 use_sbatch = args.use_sbatch
 wave_equation = args.wave_equation
 flip_chip = args.flip_chip
-sweep_parameters = {
-    'n_guides': range(args.n_guides_range[0], args.n_guides_range[1]+1)
-}
+sweep_parameters = {"n_guides": range(args.n_guides_range[0], args.n_guides_range[1] + 1)}
 
 cpw_length = args.cpw_length
 
@@ -108,54 +121,55 @@ else:
         path = create_or_empty_tmp_directory("waveguides_sim_q3d")
 
 sim_parameters = {
-    'name': 'waveguides',
-    'use_internal_ports': True,
-    'use_edge_ports': edge_ports,
-    'port_termination_end': args.port_termination,
-    'use_ports': True,
-    'box': pya.DBox(pya.DPoint(-box_size_x/2., -box_size_y/2.), pya.DPoint(box_size_x/2., box_size_y/2.)),
-    'cpw_length': cpw_length,  # if edge_ports then this has to be box_size_x
-    'a': 10,
-    'b': 6,
-    'add_bumps': False,
-    'face_stack': ['1t1', '2b1'] if flip_chip else ['1t1'],
-    'n_guides': 1,
-    'chip_distance': 8,
-    'port_size': 50,
+    "name": "waveguides",
+    "use_internal_ports": True,
+    "use_edge_ports": edge_ports,
+    "port_termination_end": args.port_termination,
+    "use_ports": True,
+    "box": pya.DBox(pya.DPoint(-box_size_x / 2.0, -box_size_y / 2.0), pya.DPoint(box_size_x / 2.0, box_size_y / 2.0)),
+    "cpw_length": cpw_length,  # if edge_ports then this has to be box_size_x
+    "a": 10,
+    "b": 6,
+    "add_bumps": False,
+    "face_stack": ["1t1", "2b1"] if flip_chip else ["1t1"],
+    "n_guides": 1,
+    "chip_distance": 8,
+    "port_size": 50,
 }
 
 if use_elmer:
     elmer_n_processes = args.elmer_n_processes
     elmer_n_threads = args.elmer_n_threads
     mesh_size = {
-        'global_max': args.global_mesh_size,
-        '1t1_gap': args.gap_mesh_size,
-        **{f'port_{i+1}': args.port_mesh_size for i in range(args.n_guides_range[1])}
+        "global_max": args.global_mesh_size,
+        "1t1_gap": args.gap_mesh_size,
+        **{f"port_{i+1}": args.port_mesh_size for i in range(args.n_guides_range[1])},
     }
 
     if wave_equation:
         export_parameters_elmer = {
-            'path': path,
-            'tool': 'wave_equation',
-            'frequency': 10,
+            "path": path,
+            "tool": "wave_equation",
+            "frequency": 10,
         }
     else:
         export_parameters_elmer = {
-            'path': path,
-            'tool': 'capacitance',
-            'linear_system_method': 'mg',
-            'p_element_order': args.p_element_order,
-            'post_process': PostProcess('produce_cmatrix_table.py'),
+            "path": path,
+            "tool": "capacitance",
+            "linear_system_method": "mg",
+            "p_element_order": args.p_element_order,
+            "post_process": PostProcess("produce_cmatrix_table.py"),
         }
         if args.adaptive_remeshing:
             export_parameters_elmer.update(
                 {
-                    'percent_error': 0.001,
-                    'max_error_scale': 2,          # allow outlier where error is 2*0.005
-                    'max_outlier_fraction': 1e-3,  # allow 0.1% of outliers
-                    'maximum_passes': 3,
-                    'minimum_passes': 2
-                })
+                    "percent_error": 0.001,
+                    "max_error_scale": 2,  # allow outlier where error is 2*0.005
+                    "max_outlier_fraction": 1e-3,  # allow 0.1% of outliers
+                    "maximum_passes": 3,
+                    "minimum_passes": 2,
+                }
+            )
 
     workflow = {
         'run_gmsh_gui': True,  # For GMSH: if true, the mesh is shown after it is done
@@ -210,24 +224,24 @@ if use_elmer:
 else:
     if wave_equation:
         export_parameters_ansys = {
-            'path': path,
-            'frequency': [5, 10, 20],
-            'max_delta_s': 0.001,
-            'sweep_start': 0,
-            'sweep_end': 30,
-            'sweep_count': 1001,
-            'maximum_passes': 20,
-            'exit_after_run': True
+            "path": path,
+            "frequency": [5, 10, 20],
+            "max_delta_s": 0.001,
+            "sweep_start": 0,
+            "sweep_end": 30,
+            "sweep_count": 1001,
+            "maximum_passes": 20,
+            "exit_after_run": True,
         }
     else:
         export_parameters_ansys = {
-            'path': path,
-            'ansys_tool': 'q3d',
-            'post_process': PostProcess('produce_cmatrix_table.py'),
-            'percent_error': 0.2,
-            'minimum_converged_passes': 2,
-            'maximum_passes': 40,
-            'exit_after_run': True,
+            "path": path,
+            "ansys_tool": "q3d",
+            "post_process": PostProcess("produce_cmatrix_table.py"),
+            "percent_error": 0.2,
+            "minimum_converged_passes": 2,
+            "maximum_passes": 40,
+            "exit_after_run": True,
         }
 
 

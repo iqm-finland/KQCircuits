@@ -27,9 +27,9 @@ from kqcircuits.util.parameters import Param, pdt
 class TsvEllipse(Tsv):
     """Connector between faces of two sides of a substrate.
 
-    Origin is at the geometric center. Geometry is elliptical.
+     Origin is at the geometric center. Geometry is elliptical.
 
-   .. MARKERS_FOR_PNG -0.2,0
+    .. MARKERS_FOR_PNG -0.2,0
     """
 
     tsv_elliptical_width = Param(pdt.TypeDouble, "TSV elliptical width", 30, unit="μm")
@@ -50,15 +50,20 @@ class TsvEllipse(Tsv):
         p1 = 6
         p2 = 2
         tsv_pts = [
-            pya.DPoint(numpy.abs(math.cos(a)) ** (2 / p1) * w * numpy.sign(math.cos(a)),
-                       numpy.abs(math.sin(a)) ** (2 / p2) * r * numpy.sign(math.sin(a))) for
-            a in (x / n * 2 * math.pi for x in range(0, n + 1))]
+            pya.DPoint(
+                numpy.abs(math.cos(a)) ** (2 / p1) * w * numpy.sign(math.cos(a)),
+                numpy.abs(math.sin(a)) ** (2 / p2) * r * numpy.sign(math.sin(a)),
+            )
+            for a in (x / n * 2 * math.pi for x in range(0, n + 1))
+        ]
 
         tsv_region = pya.Region(pya.DPolygon(tsv_pts).to_itype(self.layout.dbu))
 
         self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(
-            tsv_region.sized(self.tsv_margin / self.layout.dbu, self.tsv_margin / self.layout.dbu, 2))
+            tsv_region.sized(self.tsv_margin / self.layout.dbu, self.tsv_margin / self.layout.dbu, 2)
+        )
         self.cell.shapes(self.get_layer("ground_grid_avoidance", 1)).insert(
-            tsv_region.sized(self.tsv_margin / self.layout.dbu, self.tsv_margin / self.layout.dbu, 2))
+            tsv_region.sized(self.tsv_margin / self.layout.dbu, self.tsv_margin / self.layout.dbu, 2)
+        )
         self.cell.shapes(self.get_layer("through_silicon_via")).insert(tsv_region)
         self.cell.shapes(self.get_layer("through_silicon_via", 1)).insert(tsv_region)

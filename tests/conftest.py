@@ -27,7 +27,7 @@ from kqcircuits.simulations.export.sonnet.sonnet_export import export_sonnet
 
 @pytest.fixture
 def layout():
-    """ Return a new pya Layout """
+    """Return a new pya Layout"""
     return pya.Layout()
 
 
@@ -37,6 +37,7 @@ def get_simulation(layout):
         if issubclass(cls, Simulation):
             return cls(layout, **parameters)
         return get_single_element_sim_class(cls)(layout, **parameters)
+
     return get_sim
 
 

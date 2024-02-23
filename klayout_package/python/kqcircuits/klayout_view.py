@@ -20,8 +20,14 @@ import warnings
 from kqcircuits.elements.element import insert_cell_into
 from kqcircuits.pya_resolver import pya, lay, is_standalone_session
 
-from kqcircuits.defaults import default_layers, default_png_dimensions, mask_bitmap_export_layers, \
-    all_layers_bitmap_hide_layers, default_faces, default_layer_props
+from kqcircuits.defaults import (
+    default_layers,
+    default_png_dimensions,
+    mask_bitmap_export_layers,
+    all_layers_bitmap_hide_layers,
+    default_faces,
+    default_layer_props,
+)
 
 
 class KLayoutView:
@@ -54,6 +60,7 @@ class KLayoutView:
     Several methods are available to export PNG files of the current view or specific cells and layers.
     In Jupyter notebooks, the ``show`` method displays the current view inline in the notebook.
     """
+
     if hasattr(lay, "LayoutView"):
         layout_view: lay.LayoutView
 
@@ -65,11 +72,13 @@ class KLayoutView:
             initialize: Boolean, specify whether to initialize the layout with the default layer configuration and a
                 top cell. Defaults to True if ``current==False``, and to False if ``current==True``.
             background_color: Background color as HTML color code. Defaults to `"#ffffff"` (white).
-            """
+        """
         if not hasattr(lay, "LayoutView"):
             # Standalone session before KLayout 0.28
-            raise MissingUILibraryException("KLayoutView is not supported in standalone mode for this klayout version. "
-                                            "Consider upgrading your klayout package to version 0.28 or above.")
+            raise MissingUILibraryException(
+                "KLayoutView is not supported in standalone mode for this klayout version. "
+                "Consider upgrading your klayout package to version 0.28 or above."
+            )
 
         if initialize is None:
             initialize = not current
@@ -77,8 +86,9 @@ class KLayoutView:
         if is_standalone_session():
             # Standalone session since KLayout 0.28
             if current:
-                raise MissingUILibraryException("In standalone python mode only KLayoutView(current=False) " +
-                                                "is supported.")
+                raise MissingUILibraryException(
+                    "In standalone python mode only KLayoutView(current=False) " + "is supported."
+                )
             self.layout_view = lay.LayoutView(True)  # Creates a new LayoutView in editable mode
             self.layout_view.show_layout(pya.Layout(), True)  # Adds a CellView and Layout
             self.layout_view.set_config("background-color", background_color)
@@ -92,8 +102,9 @@ class KLayoutView:
             self.add_default_layers()
             self.create_top_cell()
 
-    def insert_cell(self, cell, trans=None, inst_name=None, label_trans=None, align_to=None, align=None,
-                    rec_levels=0, **parameters):
+    def insert_cell(
+        self, cell, trans=None, inst_name=None, label_trans=None, align_to=None, align=None, rec_levels=0, **parameters
+    ):
         """Inserts a subcell into the first top cell (the very first cell in the cell window)
 
         It will use the given ``cell`` object or if ``cell`` is an Element class' name then directly
@@ -119,8 +130,9 @@ class KLayoutView:
             tuple of placed cell instance and reference points with the same transformation
         """
 
-        return insert_cell_into(self.top_cell, cell, trans, inst_name, label_trans, align_to, align, rec_levels,
-                                **parameters)
+        return insert_cell_into(
+            self.top_cell, cell, trans, inst_name, label_trans, align_to, align, rec_levels, **parameters
+        )
 
     def focus(self, cell=None):
         """Sets a given cell as the active cell, and fits the zoom level to fit the cell.
@@ -229,7 +241,7 @@ class KLayoutView:
             cell: Cell to export
             filename: Filename to export to, or None to use the cell's name.
         """
-        self._export_bitmap(path, cell, filename=filename, layers_set='all')
+        self._export_bitmap(path, cell, filename=filename, layers_set="all")
 
     def export_pcell_png(self, path, cell, filename=None, max_size=default_png_dimensions[0]):
         """Exports a cell to a .png file no bigger than max_size at either dimension.
@@ -243,11 +255,11 @@ class KLayoutView:
 
         zoom = cell.dbbox()
         x, y = zoom.width(), zoom.height()
-        if max_size * x / y < max_size - 200 :   # 200x100 is enough for the sizebar
+        if max_size * x / y < max_size - 200:  # 200x100 is enough for the sizebar
             size = (max_size * x / y + 200, max_size)
         else:
             size = (max_size, max_size * y / x + 100)
-        self._export_bitmap(path, cell, filename=filename, layers_set='all', z_box=zoom, pngsize=size)
+        self._export_bitmap(path, cell, filename=filename, layers_set="all", z_box=zoom, pngsize=size)
 
     def get_pixels(self, cell=None, width=None, height=None, layers_set=None, box=None):
         """Returns a PixelBuffer render of the current view.
@@ -287,8 +299,11 @@ class KLayoutView:
         """Gets the currently active CellView. Not supported in standalone python mode.
 
         Deprecated, use ``KLayoutView(current=True).cell_view`` to get the same behavior."""
-        warnings.warn('KLayoutView.get_active_cell_view will be deprecated. ' +
-                      'Use instance property KLayoutView.cell_view instead.', DeprecationWarning)
+        warnings.warn(
+            "KLayoutView.get_active_cell_view will be deprecated. "
+            + "Use instance property KLayoutView.cell_view instead.",
+            DeprecationWarning,
+        )
         return lay.CellView.active()
 
     @staticmethod
@@ -297,8 +312,10 @@ class KLayoutView:
 
         Deprecated, use ``KLayoutView(current=True).layout`` to get the same behavior. If you already have a
         KLayoutView instance, use the ``layout`` property of that instance instead."""
-        warnings.warn('KLayoutView.get_active_layout will be deprecated. ' +
-                      'Use instance property KLayoutView.layout instead.', DeprecationWarning)
+        warnings.warn(
+            "KLayoutView.get_active_layout will be deprecated. " + "Use instance property KLayoutView.layout instead.",
+            DeprecationWarning,
+        )
         return lay.CellView.active().layout()
 
     @staticmethod
@@ -307,16 +324,20 @@ class KLayoutView:
 
         Deprecated, use ``KLayoutView(current=True).active_cell`` to get the same behavior. If you already have a
         KLayoutView instance, use the ``active_cell`` property of that instance instead."""
-        warnings.warn('KLayoutView.get_active_cell will be deprecated. ' +
-                      'Use instance property KLayoutView.active_cell instead.', DeprecationWarning)
+        warnings.warn(
+            "KLayoutView.get_active_cell will be deprecated. "
+            + "Use instance property KLayoutView.active_cell instead.",
+            DeprecationWarning,
+        )
         return lay.CellView.active().cell
 
     # ********************************************************************************
     # PRIVATE METHODS
     # ********************************************************************************
 
-    def _export_bitmap(self, path, cell=None, filename=None, layers_set=None, z_box=None,
-                       pngsize=default_png_dimensions):
+    def _export_bitmap(
+        self, path, cell=None, filename=None, layers_set=None, z_box=None, pngsize=default_png_dimensions
+    ):
 
         if filename is None:
             filename = cell.name
@@ -335,7 +356,7 @@ class KLayoutView:
         self._export_bitmap_configure(export_callback, cell, layers_set, z_box)
 
     def _export_bitmap_configure(self, export_callback, cell, layers_set, z_box):
-        """ Common configuration for export functions. """
+        """Common configuration for export functions."""
 
         def get_visibility_state():
             """Get the current layer visibility and drawing focus state"""
@@ -347,7 +368,7 @@ class KLayoutView:
 
         def restore_visibility_state(layer_visibility, cell, zoom, hier):
             """Restore the layer visibility and drawing focus state.
-            Assumes order of layers has not changed since calling ``get_visibility_state`` """
+            Assumes order of layers has not changed since calling ``get_visibility_state``"""
             for _layer, _visible in zip(self.layout_view.each_layer(), layer_visibility):
                 _layer.visible = _visible
             self.layout_view.active_cellview().cell = cell
@@ -385,8 +406,7 @@ class KLayoutView:
                 if not is_layer_group:
                     layer.visible = False
                 for layer_to_show in layers_set:
-                    if layer.source_layer == layer_to_show.layer \
-                            and layer.source_datatype == layer_to_show.datatype:
+                    if layer.source_layer == layer_to_show.layer and layer.source_datatype == layer_to_show.datatype:
                         layer.visible = True
                         break
 

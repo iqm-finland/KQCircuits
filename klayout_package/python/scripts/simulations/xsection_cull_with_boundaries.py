@@ -23,22 +23,30 @@ from pathlib import Path
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.export.simulation_export import export_simulation_oas
 from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
-from kqcircuits.simulations.export.xsection.xsection_export import create_xsections_from_simulations, \
-    separate_signal_layer_shapes
+from kqcircuits.simulations.export.xsection.xsection_export import (
+    create_xsections_from_simulations,
+    separate_signal_layer_shapes,
+)
 from kqcircuits.simulations.waveguides_sim import WaveGuidesSim
-from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
-    open_with_klayout_or_default_application
+from kqcircuits.util.export_helper import (
+    create_or_empty_tmp_directory,
+    get_active_or_new_layout,
+    open_with_klayout_or_default_application,
+)
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument('--flip-chip', action="store_true", help='Make a flip chip')
-parser.add_argument('--n-guides', nargs="+", default=[1, 2, 3],
-                    type=int, help='Number of waveguides in each simulation')
-parser.add_argument('--p-element-order', default=3, type=int, help='Order of p-elements in the FEM computation')
-parser.add_argument('--london-penetration-depth', default=0.0, type=float,
-                    help='London penetration depth of superconductor in [m]')
-parser.add_argument('--etch-whole-opposite-face', action="store_true",
-                    help='If true, the top face metal will be etched away')
+parser.add_argument("--flip-chip", action="store_true", help="Make a flip chip")
+parser.add_argument(
+    "--n-guides", nargs="+", default=[1, 2, 3], type=int, help="Number of waveguides in each simulation"
+)
+parser.add_argument("--p-element-order", default=3, type=int, help="Order of p-elements in the FEM computation")
+parser.add_argument(
+    "--london-penetration-depth", default=0.0, type=float, help="London penetration depth of superconductor in [m]"
+)
+parser.add_argument(
+    "--etch-whole-opposite-face", action="store_true", help="If true, the top face metal will be etched away"
+)
 
 args, unknown = parser.parse_known_args()
 
@@ -56,46 +64,41 @@ path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 cpw_length = 100
 sim_box_height = 1000
 sim_parameters = {
-    'name': 'xsection_cull_with_boundaries',
-    'box': pya.DBox(pya.DPoint(-cpw_length/2., -sim_box_height/2.), pya.DPoint(cpw_length/2., sim_box_height/2.)),
-    'cpw_length': cpw_length,
-    'face_stack': ['1t1', '2b1'] if multiface else ['1t1'],
-    'etch_whole_opposite_face': args.etch_whole_opposite_face,
-    'n_guides': 1,
+    "name": "xsection_cull_with_boundaries",
+    "box": pya.DBox(
+        pya.DPoint(-cpw_length / 2.0, -sim_box_height / 2.0), pya.DPoint(cpw_length / 2.0, sim_box_height / 2.0)
+    ),
+    "cpw_length": cpw_length,
+    "face_stack": ["1t1", "2b1"] if multiface else ["1t1"],
+    "etch_whole_opposite_face": args.etch_whole_opposite_face,
+    "n_guides": 1,
 }
 
-boundary_conditions = {
-    'xmin':{
-        'potential':0
-    },
-    'ymax':{
-        'potential':0
-    }
-}
+boundary_conditions = {"xmin": {"potential": 0}, "ymax": {"potential": 0}}
 
 workflow = {
-    'run_gmsh': True,
-    'run_gmsh_gui': True,
-    'run_elmergrid': True,
-    'run_elmer': True,
-    'run_paraview': True,  # this is visual view of the results which can be removed to speed up the process
-    'python_executable': 'python', # use 'kqclib' when using singularity image (you can also put a full path)
-    'elmer_n_processes': -1,  # -1 means all the physical cores
-    'elmer_n_threads': 1,  # number of omp threads
+    "run_gmsh": True,
+    "run_gmsh_gui": True,
+    "run_elmergrid": True,
+    "run_elmer": True,
+    "run_paraview": True,  # this is visual view of the results which can be removed to speed up the process
+    "python_executable": "python",  # use 'kqclib' when using singularity image (you can also put a full path)
+    "elmer_n_processes": -1,  # -1 means all the physical cores
+    "elmer_n_threads": 1,  # number of omp threads
 }
 
 mesh_size = {
-    'vacuum': 100,
-    'b_substrate': 100,
+    "vacuum": 100,
+    "b_substrate": 100,
     # 'b_signal_1': 1,
     # 'b_signal_2': 1,
     # 'b_signal_3': 1,
-    'b_simulation_ground': 4,
-    'ma_layer': 0.02,
-    'ms_layer': 0.02,
-    'sa_layer': 0.02,
-    't_substrate': 100,
-    't_simulation_ground': 4,
+    "b_simulation_ground": 4,
+    "ma_layer": 0.02,
+    "ms_layer": 0.02,
+    "sa_layer": 0.02,
+    "t_substrate": 100,
+    "t_simulation_ground": 4,
 }
 
 # Get layout
@@ -109,24 +112,28 @@ for simulation in simulations:
 
 # Create cross sections using xsection tool
 # Oxide layer permittivity and thickness values same as in double_pads_sim.py simulation
-xsection_simulations = create_xsections_from_simulations(simulations, path,
-    (pya.DPoint(0, -8), pya.DPoint(0, -2)), # Cut coordinates
+xsection_simulations = create_xsections_from_simulations(
+    simulations,
+    path,
+    (pya.DPoint(0, -8), pya.DPoint(0, -2)),  # Cut coordinates
     ma_permittivity=8.0,
     ms_permittivity=11.4,
     sa_permittivity=4.0,
     ma_thickness=0.0048,
     ms_thickness=0.0003,
     sa_thickness=0.0024,
-    magnification_order=3, # Zoom to nanometers due to thin oxide layers
+    magnification_order=3,  # Zoom to nanometers due to thin oxide layers
     london_penetration_depth=args.london_penetration_depth,
-    vertical_cull=(-3,3),
+    vertical_cull=(-3, 3),
 )
 open_with_klayout_or_default_application(export_simulation_oas(xsection_simulations, path))
-export_elmer(xsection_simulations,
-             path,
-             tool='cross-section',
-             mesh_size=mesh_size,
-             boundary_conditions=boundary_conditions,
-             workflow=workflow,
-             p_element_order=args.p_element_order,
-             linear_system_method='mg')
+export_elmer(
+    xsection_simulations,
+    path,
+    tool="cross-section",
+    mesh_size=mesh_size,
+    boundary_conditions=boundary_conditions,
+    workflow=workflow,
+    p_element_order=args.p_element_order,
+    linear_system_method="mg",
+)

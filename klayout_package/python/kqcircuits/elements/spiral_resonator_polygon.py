@@ -60,14 +60,20 @@ class SpiralResonatorPolygon(Element):
 
     length = Param(pdt.TypeDouble, "Resonator length", 5000, unit="μm")
     input_path = Param(pdt.TypeShape, "Input waveguide path", pya.DPath([pya.DPoint(-200, 0), pya.DPoint(0, 0)], 10))
-    poly_path = Param(pdt.TypeShape, "Polygon path",
-                      pya.DPath([pya.DPoint(0, 800), pya.DPoint(1000, 0), pya.DPoint(0, -800)], 10))
+    poly_path = Param(
+        pdt.TypeShape, "Polygon path", pya.DPath([pya.DPoint(0, 800), pya.DPoint(1000, 0), pya.DPoint(0, -800)], 10)
+    )
     auto_spacing = Param(pdt.TypeBoolean, "Use automatic spacing", True)
     manual_spacing = Param(pdt.TypeList, "Manual spacing pattern", [300], unit="[μm]")
     bridge_spacing = Param(pdt.TypeDouble, "Airbridge spacing", 0, unit="μm")
     n_bridges_pattern = Param(pdt.TypeList, "Pattern for number of airbridges on edges", [0])
-    connector_dist = Param(pdt.TypeDouble, "Face to face connector distance from beginning", -1, unit="µm",
-                           docstring="Negative value means single face resonator without connector.")
+    connector_dist = Param(
+        pdt.TypeDouble,
+        "Face to face connector distance from beginning",
+        -1,
+        unit="µm",
+        docstring="Negative value means single face resonator without connector.",
+    )
 
     def build(self):
         if isinstance(self.input_path, list):
@@ -86,21 +92,24 @@ class SpiralResonatorPolygon(Element):
         This creates resonators with different spacing, until it finds the largest spacing that can be used to create
         a valid resonator. Only the final resonator with optimal spacing is inserted to `self.cell` in the end.
         """
+
         def polygon_min_diameter(path):
             p = list(path.each_point())
             n = len(p)
             diams = []
             for i in range(n):
                 _, v = vector_length_and_direction(p[(i + 1) % n] - p[i])
-                diams.append(max([abs(v.vprod(p[j % n] - p[i])) for j in range(i+2, i+n)]))
+                diams.append(max([abs(v.vprod(p[j % n] - p[i])) for j in range(i + 2, i + n)]))
             return min(diams)
 
         # find optimal spacing using bisection method
         min_spacing, max_spacing = 0, polygon_min_diameter(self.poly_path) / 2
         optimal_points = self._produce_path_points([min_spacing])
         if optimal_points is None:
-            self.raise_error_on_cell("Cannot create a resonator with the given parameters. Try decreasing the turn "
-                                     "radius.", (self.input_path.bbox() + self.poly_path.bbox()).center())
+            self.raise_error_on_cell(
+                "Cannot create a resonator with the given parameters. Try decreasing the turn " "radius.",
+                (self.input_path.bbox() + self.poly_path.bbox()).center(),
+            )
 
         spacing_tolerance = 0.001
         while max_spacing - min_spacing > spacing_tolerance:
@@ -121,8 +130,11 @@ class SpiralResonatorPolygon(Element):
         sp = [float(s) for s in self.manual_spacing] if isinstance(self.manual_spacing, list) else [self.manual_spacing]
         points = self._produce_path_points(sp)
         if points is None:
-            self.raise_error_on_cell("Cannot create a resonator with the given parameters. Try decreasing the spacings "
-                                     "or the turn radius.", (self.input_path.bbox() + self.poly_path.bbox()).center())
+            self.raise_error_on_cell(
+                "Cannot create a resonator with the given parameters. Try decreasing the spacings "
+                "or the turn radius.",
+                (self.input_path.bbox() + self.poly_path.bbox()).center(),
+            )
         self._produce_resonator(points)
 
     def _produce_path_points(self, spacing):
@@ -191,14 +203,15 @@ class SpiralResonatorPolygon(Element):
         poly_points = list(self.poly_path.each_point())
         n_poly_points = len(poly_points)
         if n_poly_points > 2:
-            poly_edges = [pya.DEdge(poly_points[i], poly_points[(i+1) % n_poly_points]) for i in range(n_poly_points)]
+            poly_edges = [pya.DEdge(poly_points[i], poly_points[(i + 1) % n_poly_points]) for i in range(n_poly_points)]
             clockwise = is_clockwise(poly_points)
             # get the normal vectors (toward inside of polygon) of each edge
             normals = []
             for edge in poly_edges:
                 _, direction = vector_length_and_direction(edge.p2 - edge.p1)
-                normals.append(pya.DVector(direction.y, -direction.x) if clockwise else
-                               pya.DVector(-direction.y, direction.x))
+                normals.append(
+                    pya.DVector(direction.y, -direction.x) if clockwise else pya.DVector(-direction.y, direction.x)
+                )
             # define amount of spacing for the first round
             shifts = [0.0] * len(poly_edges)
             if len(points) > 0:
@@ -295,8 +308,9 @@ class SpiralResonatorPolygon(Element):
         extra_len = current_length - self.length
         last_seg_len, last_seg_dir = vector_length_and_direction(points[-1] - points[-2])
         if len(points) > 2:
-            v1, v2, alpha1, alpha2, corner_pos = WaveguideCoplanar.get_corner_data(points[-3], points[-2], points[-1],
-                                                                                   self.r)
+            v1, v2, alpha1, alpha2, corner_pos = WaveguideCoplanar.get_corner_data(
+                points[-3], points[-2], points[-1], self.r
+            )
             # distance between points[-2] and start of the curve
             corner_cut_dist = self.r * tan((pi - abs(pi - abs(alpha2 - alpha1))) / 2)
             # check if last waveguide segment is too short to be straight
@@ -317,10 +331,12 @@ class SpiralResonatorPolygon(Element):
                 curve_alpha = curve_length / self.r
                 # add new curve piece at the waveguide end
                 fids = [0, 1] if self.connector_dist < 0 else [1, 0]
-                curve_cell = self.add_element(WaveguideCoplanarCurved, alpha=curve_alpha,
-                                              face_ids=[self.face_ids[f] for f in fids])
-                curve_trans = pya.DCplxTrans(1, degrees(alpha1) - v1.vprod_sign(v2)*90, v1.vprod_sign(v2) < 0,
-                                             corner_pos)
+                curve_cell = self.add_element(
+                    WaveguideCoplanarCurved, alpha=curve_alpha, face_ids=[self.face_ids[f] for f in fids]
+                )
+                curve_trans = pya.DCplxTrans(
+                    1, degrees(alpha1) - v1.vprod_sign(v2) * 90, v1.vprod_sign(v2) < 0, corner_pos
+                )
                 self.insert_cell(curve_cell, curve_trans)
                 WaveguideCoplanarCurved.produce_curve_termination(self, curve_alpha, self.term2, curve_trans, fids[0])
                 return True
@@ -343,8 +359,11 @@ class SpiralResonatorPolygon(Element):
             dist_to_next_bridge = self.bridge_spacing
             for i in range(0, len(points) - 1):
                 segment_len, segment_dir = vector_length_and_direction(points[i + 1] - points[i])
-                cut_dist, curve_len = (self._corner_cut_distance(points[i], points[i + 1], points[i + 2])
-                                       if i + 2 < len(points) else (0.0, 0.0))
+                cut_dist, curve_len = (
+                    self._corner_cut_distance(points[i], points[i + 1], points[i + 2])
+                    if i + 2 < len(points)
+                    else (0.0, 0.0)
+                )
                 end_of_straight = segment_len - bridge_width - cut_dist
 
                 angle = degrees(atan2(segment_dir.y, segment_dir.x))
@@ -352,8 +371,9 @@ class SpiralResonatorPolygon(Element):
                     pos = points[i] + dist_to_next_bridge * segment_dir
                     self.insert_cell(Airbridge, pya.DCplxTrans(1, angle, False, pos))
                     dist_to_next_bridge += self.bridge_spacing
-                dist_to_next_bridge = max(dist_to_next_bridge - segment_len + 2 * cut_dist - curve_len,
-                                          cut_dist + bridge_width)
+                dist_to_next_bridge = max(
+                    dist_to_next_bridge - segment_len + 2 * cut_dist - curve_len, cut_dist + bridge_width
+                )
 
         # Create airbridges by self.n_bridges_pattern
         nb = [int(n) for n in self.n_bridges_pattern] if isinstance(self.n_bridges_pattern, list) else []
@@ -361,7 +381,7 @@ class SpiralResonatorPolygon(Element):
         if any(nb) and n_beg < len(points) - 2:
             cut_dist0, _ = self._corner_cut_distance(points[n_beg - 1], points[n_beg], points[n_beg + 1])
             for i in range(n_beg, len(points) - 2):
-                segment_len, segment_dir = vector_length_and_direction(points[i+1] - points[i])
+                segment_len, segment_dir = vector_length_and_direction(points[i + 1] - points[i])
                 cut_dist1, _ = self._corner_cut_distance(points[i], points[i + 1], points[i + 2])
 
                 n_bridges = nb[(i - n_beg) % len(nb)]
@@ -396,12 +416,17 @@ class SpiralResonatorPolygon(Element):
             if segment == 0 and distance < 1e-3:
                 WaveguideCoplanar.produce_end_termination(self, t_pos, b_pos, self.term1)
             else:
-                self.insert_cell(WaveguideCoplanar, path=points[:segment + 1] + [b_pos], term2=0)
+                self.insert_cell(WaveguideCoplanar, path=points[: segment + 1] + [b_pos], term2=0)
             if segment + 2 == len(points) and s_len - conn_len - distance < 1e-3:
                 WaveguideCoplanar.produce_end_termination(self, b_pos, t_pos, term2, face_index=1)
             else:
-                self.insert_cell(WaveguideCoplanar, path=[t_pos] + points[segment + 1:],
-                                 term1=0, term2=term2, face_ids=self.face_ids[1::-1])
+                self.insert_cell(
+                    WaveguideCoplanar,
+                    path=[t_pos] + points[segment + 1 :],
+                    term1=0,
+                    term2=term2,
+                    face_ids=self.face_ids[1::-1],
+                )
 
         last = {}  # parameters for last possible connector position
         prev_len = 0.0
@@ -411,16 +436,18 @@ class SpiralResonatorPolygon(Element):
                 if last:
                     insert_wg_with_connector(**last)
                     return
-                self.raise_error_on_cell("Face-to-face connector cannot fit.",
-                                         (self.input_path.bbox() + self.poly_path.bbox()).center())
-            corner_cut_dist, corner_length = ((0.0, 0.0) if i + 2 == len(points) else
-                                              self._corner_cut_distance(p, points[i + 1], points[i + 2]))
+                self.raise_error_on_cell(
+                    "Face-to-face connector cannot fit.", (self.input_path.bbox() + self.poly_path.bbox()).center()
+                )
+            corner_cut_dist, corner_length = (
+                (0.0, 0.0) if i + 2 == len(points) else self._corner_cut_distance(p, points[i + 1], points[i + 2])
+            )
             segment_len, _ = vector_length_and_direction(points[i + 1] - p)
             straight_len = segment_len - prev_cut_dist - corner_cut_dist
             if conn_len <= straight_len:
-                last = {'segment': i, 'distance': segment_len - corner_cut_dist - conn_len}
+                last = {"segment": i, "distance": segment_len - corner_cut_dist - conn_len}
                 dist = self.connector_dist - conn_len / 2 - prev_len + prev_cut_dist
-                if dist <= last['distance']:
+                if dist <= last["distance"]:
                     insert_wg_with_connector(i, max(prev_cut_dist, dist))
                     return
             prev_len += straight_len + corner_length
@@ -439,12 +466,22 @@ class SpiralResonatorPolygon(Element):
         """
         _, _, alpha1, alpha2, _ = WaveguideCoplanar.get_corner_data(point1, point2, point3, self.r)
         abs_curve = pi - abs(pi - abs(alpha2 - alpha1))
-        return self.r*tan(abs_curve/2), self.r * abs_curve
+        return self.r * tan(abs_curve / 2), self.r * abs_curve
 
 
-def rectangular_parameters(above_space=500, below_space=400, right_space=1000, x_spacing=100, y_spacing=100,
-                           bridges_left=False, bridges_bottom=False, bridges_right=False, bridges_top=False,
-                           r=Element.get_schema()["r"].default, **kwargs):
+def rectangular_parameters(
+    above_space=500,
+    below_space=400,
+    right_space=1000,
+    x_spacing=100,
+    y_spacing=100,
+    bridges_left=False,
+    bridges_bottom=False,
+    bridges_right=False,
+    bridges_top=False,
+    r=Element.get_schema()["r"].default,
+    **kwargs,
+):
     """A utility function to easily produce rectangular spiral resonator (old SpiralResonatorRectangle).
 
     Args:
@@ -464,28 +501,64 @@ def rectangular_parameters(above_space=500, below_space=400, right_space=1000, x
     """
     defaults = {"manual_spacing": [y_spacing, x_spacing], "r": r}
     if above_space == 0:
-        params = {"input_path": pya.DPath([], 10),
-                  "poly_path": pya.DPath([pya.DPoint(0, above_space), pya.DPoint(right_space, above_space),
-                                          pya.DPoint(right_space, -below_space), pya.DPoint(0, -below_space)], 10),
-                  "n_bridges_pattern": [bridges_top, bridges_right, bridges_bottom, bridges_left]}
+        params = {
+            "input_path": pya.DPath([], 10),
+            "poly_path": pya.DPath(
+                [
+                    pya.DPoint(0, above_space),
+                    pya.DPoint(right_space, above_space),
+                    pya.DPoint(right_space, -below_space),
+                    pya.DPoint(0, -below_space),
+                ],
+                10,
+            ),
+            "n_bridges_pattern": [bridges_top, bridges_right, bridges_bottom, bridges_left],
+        }
     elif below_space == 0:
-        params = {"input_path": pya.DPath([], 10),
-                  "poly_path": pya.DPath([pya.DPoint(0, -below_space), pya.DPoint(right_space, -below_space),
-                                          pya.DPoint(right_space, above_space), pya.DPoint(0, above_space)], 10),
-                  "n_bridges_pattern": [bridges_bottom, bridges_right, bridges_top, bridges_left]}
+        params = {
+            "input_path": pya.DPath([], 10),
+            "poly_path": pya.DPath(
+                [
+                    pya.DPoint(0, -below_space),
+                    pya.DPoint(right_space, -below_space),
+                    pya.DPoint(right_space, above_space),
+                    pya.DPoint(0, above_space),
+                ],
+                10,
+            ),
+            "n_bridges_pattern": [bridges_bottom, bridges_right, bridges_top, bridges_left],
+        }
     elif above_space > below_space:
         x1 = sqrt(above_space / (4 * r - above_space)) * r if above_space < 2 * r else r
         x2 = (sqrt((4 * r - above_space) * above_space) if above_space < 2 * r else 2 * r) - x1
-        params = {"input_path": pya.DPath([pya.DPoint(0, 0), pya.DPoint(x1, 0)], 10),
-                  "poly_path": pya.DPath([pya.DPoint(x2, above_space), pya.DPoint(right_space, above_space),
-                                          pya.DPoint(right_space, -below_space), pya.DPoint(x2, -below_space)], 10),
-                  "n_bridges_pattern": [bridges_top, bridges_right, bridges_bottom, bridges_left]}
+        params = {
+            "input_path": pya.DPath([pya.DPoint(0, 0), pya.DPoint(x1, 0)], 10),
+            "poly_path": pya.DPath(
+                [
+                    pya.DPoint(x2, above_space),
+                    pya.DPoint(right_space, above_space),
+                    pya.DPoint(right_space, -below_space),
+                    pya.DPoint(x2, -below_space),
+                ],
+                10,
+            ),
+            "n_bridges_pattern": [bridges_top, bridges_right, bridges_bottom, bridges_left],
+        }
     else:
         x1 = sqrt(below_space / (4 * r - below_space)) * r if below_space < 2 * r else r
         x2 = (sqrt((4 * r - below_space) * below_space) if below_space < 2 * r else 2 * r) - x1
-        params = {"input_path": pya.DPath([pya.DPoint(0, 0), pya.DPoint(x1, 0)], 10),
-                  "poly_path": pya.DPath([pya.DPoint(x2, -below_space), pya.DPoint(right_space, -below_space),
-                                          pya.DPoint(right_space, above_space), pya.DPoint(x2, above_space)], 10),
-                  "n_bridges_pattern": [bridges_bottom, bridges_right, bridges_top, bridges_left]}
+        params = {
+            "input_path": pya.DPath([pya.DPoint(0, 0), pya.DPoint(x1, 0)], 10),
+            "poly_path": pya.DPath(
+                [
+                    pya.DPoint(x2, -below_space),
+                    pya.DPoint(right_space, -below_space),
+                    pya.DPoint(right_space, above_space),
+                    pya.DPoint(x2, above_space),
+                ],
+                10,
+            ),
+            "n_bridges_pattern": [bridges_bottom, bridges_right, bridges_top, bridges_left],
+        }
 
     return {**defaults, **params, **kwargs}

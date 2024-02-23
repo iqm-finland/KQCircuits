@@ -91,11 +91,7 @@ default_covered_region_excluded_layers = None
 mask_bitmap_export_layers = None
 all_layers_bitmap_hide_layers = None
 chip_export_layer_clusters = None
-default_path_length_layers = [
-    "1_wg_path",
-    "2_wg_path",
-    "waveguide_length"
-]
+default_path_length_layers = ["1_wg_path", "2_wg_path", "waveguide_length"]
 default_mask_parameters = {
     "1": {
         "dice_width": 200,

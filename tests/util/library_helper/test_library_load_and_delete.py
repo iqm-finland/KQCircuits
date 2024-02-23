@@ -27,6 +27,7 @@ log = logging.getLogger(__name__)
 
 # normal cases
 
+
 def test_load():
     libraries = load_libraries(path="elements")
     pcells = [name for library in libraries.values() for name in library.layout().pcell_names()]
@@ -70,6 +71,7 @@ def test_delete():
 
 
 # edge cases
+
 
 def test_without_input():
     load_libraries()

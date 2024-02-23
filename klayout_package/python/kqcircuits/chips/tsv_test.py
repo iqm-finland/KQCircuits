@@ -31,8 +31,9 @@ class TsvTest(Chip):
     Consists of arrays of TSVs and metrology segment for crossectional analysis.
     """
 
-    array_layout = Param(pdt.TypeList, "Array layout for TSV in center",
-                         [2, 2, 2, 6, 14, 2, 14, 14, 2, 2, 14, 14, 2, 14, 6, 2, 2, 2])
+    array_layout = Param(
+        pdt.TypeList, "Array layout for TSV in center", [2, 2, 2, 6, 14, 2, 14, 14, 2, 2, 14, 14, 2, 14, 6, 2, 2, 2]
+    )
     metrology_pitch = Param(pdt.TypeDouble, "Pitch in the metrology", 50, unit="μm")
     cpw_distance = Param(pdt.TypeDouble, "CPW Placeholder distance", 100, unit="μm")
     hor_distance = Param(pdt.TypeDouble, "Horizontal pitch on TSV", 200, unit="μm")
@@ -44,14 +45,18 @@ class TsvTest(Chip):
         self.insert_cell(cell_pattern, pya.DCplxTrans(1, 0, False, 5000, 5000))
 
         # metrology cell for crossectional analysis
-        min_spacing = self.tsv_diameter if self.tsv_type == "standard" else max([self.tsv_diameter,
-                                                                                 self.tsv_elliptical_width])
-        self.create_xsection(position=pya.DPoint(1250, 1250), array_form=[10, 10],
-                             pitch=self.metrology_pitch + min_spacing)
-        self.create_xsection(position=pya.DPoint(1250, 8750), array_form=[8, 8],
-                             pitch=self.metrology_pitch + 2 * min_spacing)
-        self.create_xsection(position=pya.DPoint(8750, 1250), array_form=[6, 6], pitch=self.metrology_pitch + 2.5 *
-                                                                                       min_spacing)
+        min_spacing = (
+            self.tsv_diameter if self.tsv_type == "standard" else max([self.tsv_diameter, self.tsv_elliptical_width])
+        )
+        self.create_xsection(
+            position=pya.DPoint(1250, 1250), array_form=[10, 10], pitch=self.metrology_pitch + min_spacing
+        )
+        self.create_xsection(
+            position=pya.DPoint(1250, 8750), array_form=[8, 8], pitch=self.metrology_pitch + 2 * min_spacing
+        )
+        self.create_xsection(
+            position=pya.DPoint(8750, 1250), array_form=[6, 6], pitch=self.metrology_pitch + 2.5 * min_spacing
+        )
 
     def create_xsection(self, position, array_form, pitch):
         tsv_unit = self.add_element(Tsv)

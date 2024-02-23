@@ -26,7 +26,7 @@ from kqcircuits.simulations.simulation import Simulation, get_simulation_layer_b
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 
 
-@add_parameters_from(Simulation, 'name', 'box', 'extra_json_data')
+@add_parameters_from(Simulation, "name", "box", "extra_json_data")
 class CrossSectionSimulation:
     """Class for co-planar waveguide cross-section simulations.
 
@@ -46,12 +46,17 @@ class CrossSectionSimulation:
     LIBRARY_NAME = None  # This is needed by some methods inherited from Element.
 
     london_penetration_depth = Param(
-        pdt.TypeDouble, "London penetration depth of metals", 0.0, unit='m',
-        docstring="London penetration depth is implemented for one signal simulation only"
+        pdt.TypeDouble,
+        "London penetration depth of metals",
+        0.0,
+        unit="m",
+        docstring="London penetration depth is implemented for one signal simulation only",
     )
     xsection_source_class = Param(
-        pdt.TypeNone, "Simulation class XSection tool was used on", None, docstring=
-        "Class from which the simulation was generated from using the XSection tool. Used to get the correct schema."
+        pdt.TypeNone,
+        "Simulation class XSection tool was used on",
+        None,
+        docstring="Class from which the simulation was generated from using the XSection tool. Used to get the correct schema.",
     )
 
     def __init__(self, layout, **kwargs):
@@ -83,11 +88,11 @@ class CrossSectionSimulation:
             else:
                 setattr(self, parameter, item.default)
 
-        self.cell = kwargs['cell'] if 'cell' in kwargs else layout.create_cell(self.name)
+        self.cell = kwargs["cell"] if "cell" in kwargs else layout.create_cell(self.name)
 
         self.layer_dict = dict()
         self.permittivity_dict = dict()
-        self.units = kwargs.get('units', 'um')
+        self.units = kwargs.get("units", "um")
         self.build()
 
     # Inherit specific methods from Element
@@ -131,10 +136,7 @@ class CrossSectionSimulation:
 
     def get_parameters(self):
         """Return dictionary with all parameters and their values."""
-        return {
-            param: getattr(self, param)
-            for param in (self.xsection_source_class or type(self)).get_schema()
-        }
+        return {param: getattr(self, param) for param in (self.xsection_source_class or type(self)).get_schema()}
 
     def get_simulation_data(self):
         """Return the simulation data in dictionary form.
@@ -143,11 +145,11 @@ class CrossSectionSimulation:
             dictionary of relevant parameters for simulation
         """
         simulation_data = {
-            'gds_file': self.name + '.gds',
-            'units': self.units,
-            'box': self.box,
+            "gds_file": self.name + ".gds",
+            "units": self.units,
+            "box": self.box,
             "london_penetration_depth": self.london_penetration_depth,
-            **{'{}_permittivity'.format(k): v for k, v in self.permittivity_dict.items()},
-            'parameters': self.get_parameters(),
+            **{"{}_permittivity".format(k): v for k, v in self.permittivity_dict.items()},
+            "parameters": self.get_parameters(),
         }
         return simulation_data

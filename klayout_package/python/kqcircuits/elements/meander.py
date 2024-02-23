@@ -29,6 +29,7 @@ from kqcircuits.elements.element import Element
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.util.geometry_helper import vector_length_and_direction, get_angle
 
+
 @add_parameters_from(WaveguideCoplanarStraight, "ground_grid_in_trace")
 class Meander(Element):
     """The PCell declaration for a meandering waveguide.
@@ -45,6 +46,7 @@ class Meander(Element):
 
        .. MARKERS_FOR_PNG 0,0
     """
+
     start = Param(pdt.TypeShape, "Start", pya.DPoint(-600, 0))
     end = Param(pdt.TypeShape, "End", pya.DPoint(600, 0))
     length = Param(pdt.TypeDouble, "Length", 3000, unit="μm")
@@ -69,20 +71,21 @@ class Meander(Element):
         else:
             end = self.end
 
-        angle = 180/pi*atan2(end.y - start.y, end.x - start.x)
+        angle = 180 / pi * atan2(end.y - start.y, end.x - start.x)
         transf = pya.DCplxTrans(1, angle, False, pya.DVector(start))
         l_direct = start.distance(end)
-        if l_direct < 4*self.r:
+        if l_direct < 4 * self.r:
             self.raise_error_on_cell(
-                "Cannot create a Meander because start and end points are too close to each other.",
-                (start + end)/2)
+                "Cannot create a Meander because start and end points are too close to each other.", (start + end) / 2
+            )
         if self.meanders < 1:
-            self.meanders = int(l_direct/(2*self.r) - 1)  # automatically choose maximum possible number of meanders
+            self.meanders = int(l_direct / (2 * self.r) - 1)  # automatically choose maximum possible number of meanders
 
         target_increment = self.length - l_direct  # target length increment compared to straight segment
         if target_increment < -1e-3:
-            self.raise_error_on_cell("Cannot create a Meander with the given parameters. Try increasing the length.",
-                                     (start + end) / 2)
+            self.raise_error_on_cell(
+                "Cannot create a Meander with the given parameters. Try increasing the length.", (start + end) / 2
+            )
 
         def bend_corner_displacement(w):
             """Returns x-displacement of corner point as function of bend width w.
@@ -102,7 +105,7 @@ class Meander(Element):
                 return self.r * (pi / 2 - 2) + w
             h = w / self.r
             x = (1 - h) / (1 - h / 2)
-            return self.r * (2 * atan(1 - x) + (x + h * (h - 1)) / sqrt(x ** 2 + h ** 2) - 1)
+            return self.r * (2 * atan(1 - x) + (x + h * (h - 1)) / sqrt(x**2 + h**2) - 1)
 
         def meander_length_increment(w):
             """Returns amount of waveguide length increment due to all meander bends as function of meander width w."""
@@ -124,12 +127,12 @@ class Meander(Element):
             x1 = bend_corner_displacement(width / 2)  # x-displacement of corner points in the middle of meander
 
             points.append(pya.DPoint(l_rest - x0, 0))
-            points.append(pya.DPoint(l_rest + x0, width/2))
+            points.append(pya.DPoint(l_rest + x0, width / 2))
             for i in range(1, self.meanders):
                 x = l_rest + 2 * self.r * i
-                points.append(pya.DPoint(x - x1, (-1)**(i+1) * width / 2))
-                points.append(pya.DPoint(x + x1, (-1)**i * width / 2))
-            points.append(pya.DPoint(l_direct - l_rest - x0, (-1)**(self.meanders+1) * width / 2))
+                points.append(pya.DPoint(x - x1, (-1) ** (i + 1) * width / 2))
+                points.append(pya.DPoint(x + x1, (-1) ** i * width / 2))
+            points.append(pya.DPoint(l_direct - l_rest - x0, (-1) ** (self.meanders + 1) * width / 2))
             points.append(pya.DPoint(l_direct - l_rest + x0, 0))
         points.append(pya.DPoint(l_direct, 0))
 
@@ -152,17 +155,17 @@ class Meander(Element):
         """
 
         def insert_bridge(position, angle):
-            self.insert_cell(Airbridge, trans*pya.DCplxTrans(1, angle, False, position))
+            self.insert_cell(Airbridge, trans * pya.DCplxTrans(1, angle, False, position))
 
         bridge_separation = self.length / (self.n_bridges + 1)
         dist_to_next = bridge_separation
         n_inserted = 0
 
         # Insert airbridges on bends and between bends
-        for i in range(1, len(points)-1):
+        for i in range(1, len(points) - 1):
             v1, _, a1, a2, c_pos = WaveguideCoplanar.get_corner_data(points[i - 1], points[i], points[i + 1], self.r)
             alpha = (a2 - a1 + pi) % (2 * pi) - pi  # turn angle (between -pi and pi) in radians
-            sign_r = (self.r if alpha > 0 else -self.r)  # positive or negative radius depending on turn signature
+            sign_r = self.r if alpha > 0 else -self.r  # positive or negative radius depending on turn signature
             length, direction = vector_length_and_direction(v1)
             cut_dist = self.r * tan(abs(alpha) / 2)  # distance between corner point and beginning of straights
 

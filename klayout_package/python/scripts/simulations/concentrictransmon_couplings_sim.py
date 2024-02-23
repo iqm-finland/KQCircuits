@@ -24,10 +24,16 @@ import numpy as np
 from kqcircuits.qubits.concentric_transmon import ConcentricTransmon
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
-from kqcircuits.simulations.export.simulation_export import cross_sweep_simulation, export_simulation_oas, \
-    sweep_simulation
-from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
-    open_with_klayout_or_default_application
+from kqcircuits.simulations.export.simulation_export import (
+    cross_sweep_simulation,
+    export_simulation_oas,
+    sweep_simulation,
+)
+from kqcircuits.util.export_helper import (
+    create_or_empty_tmp_directory,
+    get_active_or_new_layout,
+    open_with_klayout_or_default_application,
+)
 from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
 
 # Prepare output directory
@@ -37,50 +43,49 @@ dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 sim_class = get_single_element_sim_class(ConcentricTransmon)  # pylint: disable=invalid-name
 sim_parameters = {
     # Arguments for the base Simulation class
-    'name': 'concentrictransmon',
-    'box': pya.DBox(pya.DPoint(0, 0), pya.DPoint(2000, 2000)),  # total area for simulation
-    'use_ports': True,
-    'use_internal_ports': True,  # wave ports are actually internal (lumped) ports instead of at the edge
-    'separate_island_internal_ports': True,
-    'waveguide_length': 100,  # wave port length before terminating with InternalPort in this case
-
+    "name": "concentrictransmon",
+    "box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(2000, 2000)),  # total area for simulation
+    "use_ports": True,
+    "use_internal_ports": True,  # wave ports are actually internal (lumped) ports instead of at the edge
+    "separate_island_internal_ports": True,
+    "waveguide_length": 100,  # wave port length before terminating with InternalPort in this case
     # Nominal qubit parameters for the inherited ConcentricTransmon
-    'r_inner': 110,
-    'r_outer': 280,
-    'outer_island_width': 80,
-    'ground_gap': 40,
-    'squid_angle': 90,
-    'drive_angle': 110,
-    'couplers_r': 300,
-    'couplers_a': [10],
-    'couplers_b': [6],
-    'couplers_angle': [225],
-    'couplers_width': [10],
-    'couplers_arc_amplitude': [35]
+    "r_inner": 110,
+    "r_outer": 280,
+    "outer_island_width": 80,
+    "ground_gap": 40,
+    "squid_angle": 90,
+    "drive_angle": 110,
+    "couplers_r": 300,
+    "couplers_a": [10],
+    "couplers_b": [6],
+    "couplers_angle": [225],
+    "couplers_width": [10],
+    "couplers_arc_amplitude": [35],
 }
 
 
 elmer_export_parameters = {
-    'path': dir_path,
-    'tool': 'capacitance',
-    'workflow': {
-        'run_gmsh_gui': False,  # open gmsh gui after meshing
-        'run_elmergrid': True,
-        'run_elmer': True,
-        'run_paraview': False,  # opens results in ParaView after finishing
-        'n_workers': 1,  # workers for first-level parallelisation
-        'gmsh_n_threads': 4,  # -1 means all the physical cores
-        'elmer_n_processes': 4,  # processes for second-level parallelisation
-        'elmer_n_threads': 1,  # the number of omp threads per process
-        'python_executable': 'python' # use 'kqclib' when using singularity image (you can also put a full path)
+    "path": dir_path,
+    "tool": "capacitance",
+    "workflow": {
+        "run_gmsh_gui": False,  # open gmsh gui after meshing
+        "run_elmergrid": True,
+        "run_elmer": True,
+        "run_paraview": False,  # opens results in ParaView after finishing
+        "n_workers": 1,  # workers for first-level parallelisation
+        "gmsh_n_threads": 4,  # -1 means all the physical cores
+        "elmer_n_processes": 4,  # processes for second-level parallelisation
+        "elmer_n_threads": 1,  # the number of omp threads per process
+        "python_executable": "python",  # use 'kqclib' when using singularity image (you can also put a full path)
     },
-    'linear_system_method': 'mg',  # Multigrid solver in Elmer, details in Elmer docs
-    'p_element_order': 2,  # Polynomial order of FEM basis functions, computationally more expensive but more accurate.
-    'mesh_size': {  # check implementation of `export_gmsh_msh` for detais. Employs 'mesh size fields'.
-        'global_max': 80.,
-        '1t1_gap&1t1_signal': [4., 8.],
-        '1t1_gap&1t1_ground': [4., 8.],
-    }
+    "linear_system_method": "mg",  # Multigrid solver in Elmer, details in Elmer docs
+    "p_element_order": 2,  # Polynomial order of FEM basis functions, computationally more expensive but more accurate.
+    "mesh_size": {  # check implementation of `export_gmsh_msh` for detais. Employs 'mesh size fields'.
+        "global_max": 80.0,
+        "1t1_gap&1t1_signal": [4.0, 8.0],
+        "1t1_gap&1t1_ground": [4.0, 8.0],
+    },
 }
 
 # Get layout
@@ -95,17 +100,20 @@ simulations += sweep_simulation(
     sim_parameters,
     {
         # The nominal `sim_parameters` are overwritten with these
-        'r_inner': [70, 90, 100],
-        'r_outer': np.linspace(270, 290, 3),
-    }
+        "r_inner": [70, 90, 100],
+        "r_outer": np.linspace(270, 290, 3),
+    },
 )
 
 # Full ND sweep of given parameters
 simulations += cross_sweep_simulation(
-    layout, sim_class, sim_parameters, {
-        'r_inner': [100, 110, 120],
-        'r_outer': np.linspace(270, 290, 3),
-    }
+    layout,
+    sim_class,
+    sim_parameters,
+    {
+        "r_inner": [100, 110, 120],
+        "r_outer": np.linspace(270, 290, 3),
+    },
 )
 
 # Export simulation files

@@ -33,6 +33,7 @@ class Refpoints:
         trans: transform for converting reference points into target coordinate system
         rec_levels: recursion level when looking for reference points from subcells. Set to 0 to disable recursion.
     """
+
     def __init__(self, layer, cell, trans, rec_levels):
         self.layer = layer
         self.cell = cell
@@ -50,7 +51,9 @@ class Refpoints:
             while not shapes_iter.at_end():
                 shape = shapes_iter.shape()
                 if shape.type() in (pya.Shape.TText, pya.Shape.TTextRef):
-                    self.refpoints[shape.text_string] = self.trans * (shapes_iter.dtrans()*pya.DPoint(shape.text_dpos))
+                    self.refpoints[shape.text_string] = self.trans * (
+                        shapes_iter.dtrans() * pya.DPoint(shape.text_dpos)
+                    )
                 shapes_iter.next()
         return self.refpoints
 
@@ -78,6 +81,7 @@ class Refpoints:
         """Returns a list of positions."""
         return self.dict().values()
 
+
 class RefpointToSimPort:
     """Class that takes a refpoint of an Element class with given string
     and places appropriate Simulation port(s) at the refpoint's location
@@ -88,30 +92,61 @@ class RefpointToSimPort:
         refpoint: Refpoint name string
         face: index of the face where the refpoint is located
     """
+
     def __init__(self, refpoint, face=0):
         self.refpoint, self.face = refpoint, face
 
+
 class RefpointToInternalPort(RefpointToSimPort):
-    """Creates an InternalPort at refpoint with given string
-    """
-    def __init__(self, refpoint, ground_refpoint,
-                 resistance=50, reactance=0, inductance=0, capacitance=0,
-                 face=0, junction=False, signal_layer='signal'):
+    """Creates an InternalPort at refpoint with given string"""
+
+    def __init__(
+        self,
+        refpoint,
+        ground_refpoint,
+        resistance=50,
+        reactance=0,
+        inductance=0,
+        capacitance=0,
+        face=0,
+        junction=False,
+        signal_layer="signal",
+    ):
         super().__init__(refpoint, face)
-        self.ground_refpoint, self.resistance, self.reactance, self.inductance, self.capacitance, \
-            self.junction, self.signal_layer = \
-            ground_refpoint, resistance, reactance, inductance, capacitance, junction, signal_layer
+        (
+            self.ground_refpoint,
+            self.resistance,
+            self.reactance,
+            self.inductance,
+            self.capacitance,
+            self.junction,
+            self.signal_layer,
+        ) = (ground_refpoint, resistance, reactance, inductance, capacitance, junction, signal_layer)
+
 
 class RefpointToEdgePort(RefpointToSimPort):
-    """Creates an EdgePort at refpoint with given string
-    """
-    def __init__(self, refpoint,
-                 resistance=50, reactance=0, inductance=0, capacitance=0,
-                 face=0, deembed_len=None, junction=False):
+    """Creates an EdgePort at refpoint with given string"""
+
+    def __init__(
+        self,
+        refpoint,
+        resistance=50,
+        reactance=0,
+        inductance=0,
+        capacitance=0,
+        face=0,
+        deembed_len=None,
+        junction=False,
+    ):
         super().__init__(refpoint, face)
-        self.resistance, self.reactance, self.inductance, self.capacitance, \
-            self.deembed_len, self.junction = \
-            resistance, reactance, inductance, capacitance, deembed_len, junction
+        self.resistance, self.reactance, self.inductance, self.capacitance, self.deembed_len, self.junction = (
+            resistance,
+            reactance,
+            inductance,
+            capacitance,
+            deembed_len,
+            junction,
+        )
 
 
 class WaveguideToSimPort(RefpointToSimPort):
@@ -137,12 +172,36 @@ class WaveguideToSimPort(RefpointToSimPort):
         over_etching: Expansion of gaps. Defaults to the value of the `over_etching` parameter
         airbridge: if True, an airbridge will be inserted at location of the `refpoint`. Default False
     """
-    def __init__(self, refpoint, face=0, towards=None, side=None, use_internal_ports=None,
-                 waveguide_length=None, term1=0, turn_radius=None, a=None, b=None, over_etching=None, airbridge=False):
+
+    def __init__(
+        self,
+        refpoint,
+        face=0,
+        towards=None,
+        side=None,
+        use_internal_ports=None,
+        waveguide_length=None,
+        term1=0,
+        turn_radius=None,
+        a=None,
+        b=None,
+        over_etching=None,
+        airbridge=False,
+    ):
         super().__init__(refpoint, face)
-        self.towards, self.side, self.use_internal_ports, self.waveguide_length, \
-            self.term1, self.turn_radius, self.a, self.b, self.over_etching, self.airbridge = \
-            towards, side, use_internal_ports, waveguide_length, term1, turn_radius, a, b, over_etching, airbridge
+        (
+            self.towards,
+            self.side,
+            self.use_internal_ports,
+            self.waveguide_length,
+            self.term1,
+            self.turn_radius,
+            self.a,
+            self.b,
+            self.over_etching,
+            self.airbridge,
+        ) = (towards, side, use_internal_ports, waveguide_length, term1, turn_radius, a, b, over_etching, airbridge)
+
 
 class JunctionSimPort(RefpointToSimPort):
     """Creates internal ports for a junction in the Simulation object.
@@ -156,6 +215,7 @@ class JunctionSimPort(RefpointToSimPort):
                         Defaults to "port_squid_b" as most commonly used junction port name
         face: index of the face where the `refpoint` is located
     """
+
     def __init__(self, refpoint="port_squid_a", other_refpoint="port_squid_b", face=0):
         super().__init__(refpoint, face)
         self.other_refpoint = other_refpoint

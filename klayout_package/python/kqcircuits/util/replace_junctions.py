@@ -33,34 +33,43 @@ from kqcircuits.util.library_helper import load_libraries, to_library_name
 
 class JunctionEntry:
     """All junction properties we want to store when extracting junctions"""
+
     def __init__(self, class_type: type, trans: pya.DCplxTrans, parameters: Dict, parent_name: str, name: str) -> None:
         self.type = class_type
         self.trans = trans
         self.parameters = parameters
         self.parent_name = parent_name
         self.name = name
+
     def __eq__(self, __value: object) -> bool:
-        return self.type == __value.type and \
-            self.trans == __value.trans and \
-            self.parameters == __value.parameters and \
-            self.parent_name == __value.parent_name and \
-            self.name == __value.name
+        return (
+            self.type == __value.type
+            and self.trans == __value.trans
+            and self.parameters == __value.parameters
+            and self.parent_name == __value.parent_name
+            and self.name == __value.name
+        )
+
 
 def _check_junction_names_unique(junctions):
     """Raises exception if ``junctions`` contains a non-unique (parent_name, name) key-pair"""
     unique_names = set()
     for junction in junctions:
         if (junction.parent_name, junction.name) in unique_names:
-            error_text = ("Following cell parent name and child name is not unique in top cell: "
-                        f"{(junction.parent_name, junction.name)}. "
-                        "Something seems to be wrong with KQC generated cell")
+            error_text = (
+                "Following cell parent name and child name is not unique in top cell: "
+                f"{(junction.parent_name, junction.name)}. "
+                "Something seems to be wrong with KQC generated cell"
+            )
             error = ValueError(error_text)
             logging.exception(error_text, exc_info=error)
             raise error
         unique_names.add((junction.parent_name, junction.name))
 
-def _check_missing_junction_parameters(junction_class_name, junction_schema_errors,
-                                       params, tuned_params, parent_name, name):
+
+def _check_missing_junction_parameters(
+    junction_class_name, junction_schema_errors, params, tuned_params, parent_name, name
+):
     """Run for every found junction to compare junction library schema (`params`)
     and schema as given in json file (`tuned_params`).
 
@@ -72,16 +81,16 @@ def _check_missing_junction_parameters(junction_class_name, junction_schema_erro
     """
     ignore_param_keys = {"_junction_parameters", "junction_parameters", "display_name"}
     if junction_class_name not in junction_schema_errors:
-        junction_schema_errors[junction_class_name] = {
-            "missing_fields": (set(), []), "surplus_fields": (set(), [])
-        }
+        junction_schema_errors[junction_class_name] = {"missing_fields": (set(), []), "surplus_fields": (set(), [])}
     missing_fields = set(params.keys()).difference(set(tuned_params.keys())).difference(ignore_param_keys)
     junction_schema_errors[junction_class_name]["missing_fields"][0].update(missing_fields)
     if len(missing_fields) > 0:
         junction_schema_errors[junction_class_name]["missing_fields"][1].append((parent_name, name))
 
-def _check_surplus_junction_parameters(junction_class_name, junction_schema_errors,
-                                       params, tuned_params, parent_name, name):
+
+def _check_surplus_junction_parameters(
+    junction_class_name, junction_schema_errors, params, tuned_params, parent_name, name
+):
     """Run for every found junction to compare junction library schema (`params`)
     and schema as given in json file (`tuned_params`).
 
@@ -91,25 +100,29 @@ def _check_surplus_junction_parameters(junction_class_name, junction_schema_erro
     a tuple "surplus_fields" with set of surplus parameter keys and a list for junction names.
     """
     if junction_class_name not in junction_schema_errors:
-        junction_schema_errors[junction_class_name] = {
-            "missing_fields": (set(), []), "surplus_fields": (set(), [])
-        }
+        junction_schema_errors[junction_class_name] = {"missing_fields": (set(), []), "surplus_fields": (set(), [])}
     surplus_fields = set(tuned_params.keys()).difference(set(params.keys()))
     junction_schema_errors[junction_class_name]["surplus_fields"][0].update(surplus_fields)
     if len(surplus_fields) > 0:
         junction_schema_errors[junction_class_name]["surplus_fields"][1].append((parent_name, name))
+
 
 def _print_surplus_junction_parameters(junction_schema_errors):
     """Logs as warning the content of "surplus_fields" in `junction_schema_errors`
     junction parameters that were attempted to be tuned,
     yet were not defined for the given junction types.
     """
-    for k,v in junction_schema_errors.items():
+    for k, v in junction_schema_errors.items():
         surplus_fields, junctions = v["surplus_fields"]
         if len(surplus_fields) > 0:
-            logging.warning((f"{k} class junction attempted to be tuned with parameters "
-                             f"that are not part of the class: {surplus_fields}"))
+            logging.warning(
+                (
+                    f"{k} class junction attempted to be tuned with parameters "
+                    f"that are not part of the class: {surplus_fields}"
+                )
+            )
             logging.warning(f"for {junctions[:5]}\n")
+
 
 def _halt_if_missing_junction_parameters(junction_schema_errors, is_pcell):
     """Raises exception if "missing_fields" for some entry in `junction_schema_errors` is not empty,
@@ -117,25 +130,32 @@ def _halt_if_missing_junction_parameters(junction_schema_errors, is_pcell):
     and names the affected junctions.
     """
     error_text = ""
-    for k,v in junction_schema_errors.items():
+    for k, v in junction_schema_errors.items():
         missing_fields, junctions = v["missing_fields"]
         if len(missing_fields) > 0:
-            error_text = (f"{error_text}"
-                          f"{k} class junction parameters missing {missing_fields}\n"
-                          f"missing for {junctions[:5]}\n\n")
+            error_text = (
+                f"{error_text}"
+                f"{k} class junction parameters missing {missing_fields}\n"
+                f"missing for {junctions[:5]}\n\n"
+            )
     if len(error_text) > 0:
         if is_pcell:
-            error_text = ("Since junction type was changed for some junctions, "
-                        "the tuned junction json should give value at least for parameters "
-                        "that are in new junction type but not in old junction type.\n"
-                        f"Following junction parameters missing:\n\n{error_text}")
+            error_text = (
+                "Since junction type was changed for some junctions, "
+                "the tuned junction json should give value at least for parameters "
+                "that are in new junction type but not in old junction type.\n"
+                f"Following junction parameters missing:\n\n{error_text}"
+            )
         else:
-            error_text = ("Since the cell doesn't contain pre-existing PCell parameter data, "
-                        "the tuned junction json should be exhaustive.\n"
-                        f"Following junction parameters missing:\n\n{error_text}")
+            error_text = (
+                "Since the cell doesn't contain pre-existing PCell parameter data, "
+                "the tuned junction json should be exhaustive.\n"
+                f"Following junction parameters missing:\n\n{error_text}"
+            )
         error = ValueError("Some junction parameters were missing in the tuning json, see log for details")
         logging.exception(error_text, exc_info=error)
         raise error
+
 
 def extract_junctions(top_cell: pya.Cell, tuned_junction_parameters: Dict) -> List[JunctionEntry]:
     """Extracts all junction elements placed in the `top_cell`.
@@ -178,14 +198,14 @@ def extract_junctions(top_cell: pya.Cell, tuned_junction_parameters: Dict) -> Li
 
     def recursive_junction_search(inst, parent_name, prev_trans):
         cell = layout.cell(inst.cell_index)
-        name = inst.property('id')
+        name = inst.property("id")
         trans = prev_trans * inst.dcplx_trans
         tuned_params = tuned_junction_parameters.get(parent_name, {}).get(name, {})
         if is_pcell:
             pcell = inst.pcell_declaration()
-            is_junction = (pcell and isinstance(pcell, Junction))
+            is_junction = pcell and isinstance(pcell, Junction)
         else:
-            cell_class_from_name = cell.name.split('$')[0].replace('*', ' ')
+            cell_class_from_name = cell.name.split("$")[0].replace("*", " ")
             pcell = library_layout.pcell_declaration(cell_class_from_name)
             is_junction = cell_class_from_name in junction_type_choices
         if is_junction:
@@ -194,8 +214,10 @@ def extract_junctions(top_cell: pya.Cell, tuned_junction_parameters: Dict) -> Li
                 pcell_param_values = inst.pcell_parameters_by_name()
             junction_type = tuned_params.get("junction_type")
             if junction_type not in junction_type_choices and not (is_pcell and "junction_type" not in tuned_params):
-                error_text = (f"'junction_type' value {junction_type} for junction "
-                              f"({parent_name}, {name}) is not part of junction_type_choices")
+                error_text = (
+                    f"'junction_type' value {junction_type} for junction "
+                    f"({parent_name}, {name}) is not part of junction_type_choices"
+                )
                 error = ValueError(error_text)
                 logging.exception(error_text, exc_info=error)
                 raise error
@@ -210,17 +232,28 @@ def extract_junctions(top_cell: pya.Cell, tuned_junction_parameters: Dict) -> Li
             params.update(tuned_params)
             # Not PCell, need to be strict that tuned junction params json includes all params
             if not is_pcell:
-                _check_missing_junction_parameters(type(junction_type).__name__,
-                                                   junction_schema_errors,
-                                                   params, tuned_params, parent_name, name)
+                _check_missing_junction_parameters(
+                    type(junction_type).__name__, junction_schema_errors, params, tuned_params, parent_name, name
+                )
             # Is PCell, and junction type is being changed. Need to make sure params exclusive to new type are tuned
             elif junction_type is not None and junction_type != pcell:
-                exclusive_params = {k:v for k,v in params.items() if k not in pcell_param_values}
-                _check_missing_junction_parameters(type(junction_type).__name__,
-                                                   junction_schema_errors,
-                                                   exclusive_params, tuned_params, parent_name, name)
-            _check_surplus_junction_parameters(type(junction_type).__name__, junction_schema_errors,
-                                               type(junction_type).get_schema(), tuned_params, parent_name, name)
+                exclusive_params = {k: v for k, v in params.items() if k not in pcell_param_values}
+                _check_missing_junction_parameters(
+                    type(junction_type).__name__,
+                    junction_schema_errors,
+                    exclusive_params,
+                    tuned_params,
+                    parent_name,
+                    name,
+                )
+            _check_surplus_junction_parameters(
+                type(junction_type).__name__,
+                junction_schema_errors,
+                type(junction_type).get_schema(),
+                tuned_params,
+                parent_name,
+                name,
+            )
             found_junctions.append(JunctionEntry(type(junction_type), trans, params, parent_name, name))
         for i in cell.each_inst():
             # For pcell oas, accumulate transformation starting from root
@@ -234,22 +267,26 @@ def extract_junctions(top_cell: pya.Cell, tuned_junction_parameters: Dict) -> Li
     _halt_if_missing_junction_parameters(junction_schema_errors, is_pcell)
     return found_junctions
 
+
 def place_junctions(top_cell: pya.Cell, junctions: List[JunctionEntry]) -> None:
     """Places `junctions` to `top_cell` in the same location and orientation as in
     the cell they were extracted from, but with possibly tuned parameters.
     """
     layout = top_cell.layout()
     for junction in junctions:
-        if 'junction_type' not in junction.parameters:
-            junction.parameters['junction_type'] = to_library_name(junction.type.__name__)
-        if to_library_name(junction.type.__name__) != junction.parameters['junction_type']:
-            error_text = (f"Exported junction of class '{to_library_name(junction.type.__name__)}', "
-                          f"but 'junction_type' parameter was set to {junction.parameters['junction_type']}")
+        if "junction_type" not in junction.parameters:
+            junction.parameters["junction_type"] = to_library_name(junction.type.__name__)
+        if to_library_name(junction.type.__name__) != junction.parameters["junction_type"]:
+            error_text = (
+                f"Exported junction of class '{to_library_name(junction.type.__name__)}', "
+                f"but 'junction_type' parameter was set to {junction.parameters['junction_type']}"
+            )
             error = ValueError(error_text)
             logging.exception(error_text, exc_info=error)
             raise error
         junction_cell = Junction.create(layout, **junction.parameters)
         top_cell.insert(pya.DCellInstArray(junction_cell.cell_index(), junction.trans))
+
 
 def get_tuned_junction_json(junctions: List[JunctionEntry]) -> Dict:
     """Returns a jsonable dict of all junction parameters for each junction entry in `junctions`.
@@ -265,8 +302,10 @@ def get_tuned_junction_json(junctions: List[JunctionEntry]) -> Dict:
         result[junction.parent_name][junction.name] = junction.parameters
     return result
 
-def copy_one_layer_of_cell(write_path: str, top_cell: pya.Cell, junctions: List[JunctionEntry], layer_string: str
-                           ) -> None:
+
+def copy_one_layer_of_cell(
+    write_path: str, top_cell: pya.Cell, junctions: List[JunctionEntry], layer_string: str
+) -> None:
     """Extracts all geometry in `top_cell` at layer `layer_string`
     and saves the geometry into a new file at `write_path`.
     The face of the layer is determined from `junctions` parameters.
@@ -303,6 +342,7 @@ def copy_one_layer_of_cell(write_path: str, top_cell: pya.Cell, junctions: List[
     svopt.write_context_info = False
     layout.write(write_path, svopt)
 
+
 def replace_squids(cell, junction_type, parameter_name, parameter_start, parameter_step, parameter_end=None):
     """DEPRECATED! Replaces squids by code generated squids with the given parameter sweep.
 
@@ -333,9 +373,9 @@ def replace_squids(cell, junction_type, parameter_name, parameter_start, paramet
         for subcell_inst in top_cell.each_inst():
             subcell_name = subcell_inst.cell.name.split("$")[0]
             if subcell_name in junction_types:
-                old_squids.append((subcell_inst, combined_dtrans*subcell_inst.dcplx_trans, subcell_name))
+                old_squids.append((subcell_inst, combined_dtrans * subcell_inst.dcplx_trans, subcell_name))
             else:
-                recursive_replace_squids(subcell_inst, combined_dtrans*subcell_inst.dcplx_trans)
+                recursive_replace_squids(subcell_inst, combined_dtrans * subcell_inst.dcplx_trans)
 
     for inst in cell.each_inst():
         if inst.cell.name in junction_types:
@@ -345,18 +385,26 @@ def replace_squids(cell, junction_type, parameter_name, parameter_start, paramet
     # sort left-to-right and bottom-to-top
     old_squids.sort(key=lambda squid: (squid[1].disp.x, squid[1].disp.y))
 
-    for (inst, dtrans, name) in old_squids:
+    for inst, dtrans, name in old_squids:
         if (parameter_end is None) or (parameter_value <= parameter_end):
             # create new squid at old squid's position
             parameters = {parameter_name: parameter_value}
-            squid_cell = Junction.create(layout, junction_type=junction_type, face_ids=inst.pcell_parameter("face_ids"),
-                                      **parameters)
+            squid_cell = Junction.create(
+                layout, junction_type=junction_type, face_ids=inst.pcell_parameter("face_ids"), **parameters
+            )
             cell.insert(pya.DCellInstArray(squid_cell.cell_index(), dtrans))
-            logging.info("Replaced squid \"%s\" with dtrans=%s by a squid \"%s\" with %s=%s.",
-                         name, dtrans, junction_type, parameter_name, parameter_value)
+            logging.info(
+                'Replaced squid "%s" with dtrans=%s by a squid "%s" with %s=%s.',
+                name,
+                dtrans,
+                junction_type,
+                parameter_name,
+                parameter_value,
+            )
             parameter_value += parameter_step
         # delete old squid
         inst.delete()
+
 
 def replace_squid(top_cell, inst_name, junction_type, mirror=False, squid_index=0, **params):
     """DEPRECATED! Replaces a SQUID by the requested alternative in the named instance.
@@ -401,7 +449,7 @@ def replace_squid(top_cell, inst_name, junction_type, mirror=False, squid_index=
         file_cell = layout.top_cells()[-1]
         file_cell.name = f"Junction Library.{file_cell.name}"
 
-    for (chip, inst) in cells:
+    for chip, inst in cells:
         orig_trans = inst.dcplx_trans
         ccell = inst.layout().cell(inst.cell_index)
 
@@ -431,8 +479,9 @@ def replace_squid(top_cell, inst_name, junction_type, mirror=False, squid_index=
             new_squid = ccell.insert(pya.DCellInstArray(new_squid.cell_index(), trans))
         new_squid.set_property("squid_index", squid_index)
 
+
 def convert_cells_to_static(layout):
-    """DEPRECATED! Converts all cells in the layout to static. """
+    """DEPRECATED! Converts all cells in the layout to static."""
 
     converted_cells = {}
 

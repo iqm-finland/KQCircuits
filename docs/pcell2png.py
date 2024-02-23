@@ -48,11 +48,11 @@ def add_rulers(cls, view):
     if markers:
         rulers += markers[0].split()
 
-    #Check for autoruler in x,y[,name] format or manual ruler in x1,y1,x2,y2[,name] format
+    # Check for autoruler in x,y[,name] format or manual ruler in x1,y1,x2,y2[,name] format
     for ruler in rulers:
-        markers = [x for x in ruler.split(',')]
+        markers = [x for x in ruler.split(",")]
 
-        pname = ''
+        pname = ""
         if len(markers) in (3, 5):
             pname = markers.pop(-1) + "\n"
         markers = [float(x) for x in markers]
@@ -62,11 +62,12 @@ def add_rulers(cls, view):
             ant.fmt = f"$(sprintf('{pname}%.1f',D))"
         elif len(markers) == 4:
             ant = pya.Annotation()
-            ant.p1 = pya.DPoint(markers[0],markers[1])
-            ant.p2 = pya.DPoint(markers[2],markers[3])
+            ant.p1 = pya.DPoint(markers[0], markers[1])
+            ant.p2 = pya.DPoint(markers[2], markers[3])
             ant.style = pya.Annotation.StyleRuler
             ant.fmt = f"$(sprintf('{pname}%.1f',D))"
             view.layout_view.insert_annotation(ant)
+
 
 # Get arguments from command line, if not already processed by KLayout.
 lib_name = lib_name if "lib_name" in locals() else argv[1]
@@ -80,7 +81,7 @@ view = KLayoutView()
 layout = view.layout
 cell = cls.create(layout)
 
-#Insert the element to the layout
+# Insert the element to the layout
 view.insert_cell(cell)
 
 # save the element as static .oas file
@@ -90,9 +91,10 @@ save_opts.format = "OASIS"
 save_opts.write_context_info = False  # to save all cells as static cells
 static_cell.write(f"{path}/{cls.__module__}.oas", save_opts)
 
-#Hides specified layers before saving png - improves readability and rulers
-layers_to_remove = ['refpoints','1t1_ports','1t1_ground_grid_avoidance', '2b1_ground_grid_avoidance']
-for layer in layers_to_remove: layout.delete_layer(layout.layer(default_layers[layer]))
+# Hides specified layers before saving png - improves readability and rulers
+layers_to_remove = ["refpoints", "1t1_ports", "1t1_ground_grid_avoidance", "2b1_ground_grid_avoidance"]
+for layer in layers_to_remove:
+    layout.delete_layer(layout.layer(default_layers[layer]))
 view.focus()
 
 # export as .png file

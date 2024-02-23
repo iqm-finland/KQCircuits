@@ -27,81 +27,98 @@ import glob
 from pathlib import Path
 from multiprocessing import Pool
 import importlib.util
+
 has_tqdm = importlib.util.find_spec("tqdm") is not None
 if has_tqdm:
     from tqdm import tqdm
+
 
 def write_simulation_machine_versions_file(path, name):
     """
     Writes file SIMULATION_MACHINE_VERSIONS into given file path.
     """
     versions = {}
-    versions['platform'] = platform.platform()
-    versions['python'] = sys.version_info
+    versions["platform"] = platform.platform()
+    versions["python"] = sys.version_info
 
     gmsh_versions_list = []
-    with open(path.joinpath('log_files').joinpath(name+'.Gmsh.log')) as f:
+    with open(path.joinpath("log_files").joinpath(name + ".Gmsh.log")) as f:
         gmsh_log = f.readlines()
-        gmsh_versions_list = [line.replace('\n', '') for line in gmsh_log if 'ersion' in line]
+        gmsh_versions_list = [line.replace("\n", "") for line in gmsh_log if "ersion" in line]
 
     elmer_versions_list = []
-    with open(next(path.joinpath('log_files').glob("*Elmer.log"))) as f:
+    with open(next(path.joinpath("log_files").glob("*Elmer.log"))) as f:
         elmer_log = f.readlines()
-        elmer_versions_list = [line.replace('\n', '') for line in elmer_log if 'ersion' in line]
+        elmer_versions_list = [line.replace("\n", "") for line in elmer_log if "ersion" in line]
 
-    versions['gmsh'] = gmsh_versions_list
-    versions['elmer'] = elmer_versions_list
+    versions["gmsh"] = gmsh_versions_list
+    versions["elmer"] = elmer_versions_list
 
-    mpi_command = 'mpirun' if shutil.which('mpirun') is not None else 'mpiexec'
+    mpi_command = "mpirun" if shutil.which("mpirun") is not None else "mpiexec"
     if shutil.which(mpi_command) is not None:
-        if mpi_command == 'mpiexec':
+        if mpi_command == "mpiexec":
             output = subprocess.check_output([mpi_command])
         else:
-            output = subprocess.check_output([mpi_command, '--version'])
-        versions['mpi'] = output.decode('ascii').split('\n', maxsplit=1)[0]
+            output = subprocess.check_output([mpi_command, "--version"])
+        versions["mpi"] = output.decode("ascii").split("\n", maxsplit=1)[0]
 
-    paraview_command = 'paraview'
+    paraview_command = "paraview"
     if shutil.which(paraview_command) is not None:
         try:
-            output = subprocess.check_output([paraview_command, '--version'])
-            versions['paraview'] = output.decode('ascii').split('\n', maxsplit=1)[0]
+            output = subprocess.check_output([paraview_command, "--version"])
+            versions["paraview"] = output.decode("ascii").split("\n", maxsplit=1)[0]
         except subprocess.CalledProcessError:
-            versions['paraview'] = 'unknown_version'
+            versions["paraview"] = "unknown_version"
 
-    with open('SIMULATION_MACHINE_VERSIONS.json', 'w') as file:
+    with open("SIMULATION_MACHINE_VERSIONS.json", "w") as file:
         json.dump(versions, file)
 
+
 def run_elmer_grid(msh_path, n_processes, exec_path_override=None):
-    elmergrid_executable = shutil.which('ElmerGrid')
+    elmergrid_executable = shutil.which("ElmerGrid")
     if elmergrid_executable is not None:
-        subprocess.check_call([elmergrid_executable, '14', '2', msh_path], cwd=exec_path_override)
+        subprocess.check_call([elmergrid_executable, "14", "2", msh_path], cwd=exec_path_override)
         if n_processes > 1:
-            subprocess.check_call([elmergrid_executable, '2', '2', Path(msh_path).stem + '/', '-metis',
-                                   str(n_processes), '4', '-removeunused'], cwd=exec_path_override)
+            subprocess.check_call(
+                [
+                    elmergrid_executable,
+                    "2",
+                    "2",
+                    Path(msh_path).stem + "/",
+                    "-metis",
+                    str(n_processes),
+                    "4",
+                    "-removeunused",
+                ],
+                cwd=exec_path_override,
+            )
     else:
-        logging.warning("ElmerGrid was not found! Make sure you have ElmerFEM installed: "
-                        "https://github.com/ElmerCSC/elmerfem")
+        logging.warning(
+            "ElmerGrid was not found! Make sure you have ElmerFEM installed: " "https://github.com/ElmerCSC/elmerfem"
+        )
         sys.exit()
+
 
 # Helper function to check if wsl is used
 def is_microsoft(exec_path_override=None) -> bool:
     # See if version file contains the string microsoft -> wsl
-    run_cmd = ['grep', '-qi', 'microsoft', '/proc/version']
+    run_cmd = ["grep", "-qi", "microsoft", "/proc/version"]
     ret = subprocess.call(run_cmd, cwd=exec_path_override)
     # subprocess returns 0 if substring is found, 1 if not and some other error code is the call fails
-    if ret not in (0,1):
-        raise RuntimeError(f'Unexpected return code {ret} in is_microsoft() subprocess call')
+    if ret not in (0, 1):
+        raise RuntimeError(f"Unexpected return code {ret} in is_microsoft() subprocess call")
     return not ret
+
 
 # Helper function to check if Elmer is run with singularity
 # Note that this function only works when run OUTSIDE of singularity
 def is_singularity(exec_path_override=None) -> bool:
     # Follow the symbolic link pointing to ElmerSolver and check if path contains "singularity"
-    run_cmd = ['readlink', '-f', '$(which', 'ElmerSolver)', '|', 'grep', '-qi', 'singularity']
-    ret = subprocess.call(' '.join(run_cmd), shell=True, cwd=exec_path_override)
+    run_cmd = ["readlink", "-f", "$(which", "ElmerSolver)", "|", "grep", "-qi", "singularity"]
+    ret = subprocess.call(" ".join(run_cmd), shell=True, cwd=exec_path_override)
     # subprocess returns 0 if substring is found, 1 if not and some other error code is the call fails
-    if ret not in (0,1):
-        raise RuntimeError(f'Unexpected return code {ret} is_singularity() subprocess call')
+    if ret not in (0, 1):
+        raise RuntimeError(f"Unexpected return code {ret} is_singularity() subprocess call")
     return not ret
 
 
@@ -118,33 +135,24 @@ def worker(command, outfile, cwd, env):
     Returns:
         Exit code of the process
     """
-    is_windows = os.name == 'nt'
+    is_windows = os.name == "nt"
     try:
         if outfile is not None:
-            with  open(outfile, 'w') as f:
+            with open(outfile, "w") as f:
                 return subprocess.check_call(
-                    ['bash', command] if is_windows else command,
-                    stdout=f,
-                    stderr=f,
-                    text=True,
-                    env=env,
-                    cwd=cwd
+                    ["bash", command] if is_windows else command, stdout=f, stderr=f, text=True, env=env, cwd=cwd
                 )
         else:
-            return subprocess.check_call(
-                ['bash', command] if is_windows else command,
-                text=True,
-                env=env,
-                cwd=cwd
-            )
+            return subprocess.check_call(["bash", command] if is_windows else command, text=True, env=env, cwd=cwd)
     except subprocess.CalledProcessError as err:
-        logging.warning(f'The worker for {err.cmd} exited with code {err.returncode}')
+        logging.warning(f"The worker for {err.cmd} exited with code {err.returncode}")
         logging.warning(err)
-        if is_windows and 'is not recognized as an internal or external command' in err.stderr:
-            logging.warning('Do you have Bash (e.g. Git Bash or MSYS2) installed?')
+        if is_windows and "is not recognized as an internal or external command" in err.stderr:
+            logging.warning("Do you have Bash (e.g. Git Bash or MSYS2) installed?")
         return err
 
-def pool_run_cmds(n_workers: int, cmds: list, output_files: list=None, cwd=None, env=None):
+
+def pool_run_cmds(n_workers: int, cmds: list, output_files: list = None, cwd=None, env=None):
     """
     Workload manager for running multiple commands (Elmer instances) in parallel
 
@@ -164,19 +172,28 @@ def pool_run_cmds(n_workers: int, cmds: list, output_files: list=None, cwd=None,
     if env is None:
         env = os.environ.copy()
     if has_tqdm:
-        progress_bar = tqdm(total=len(cmds), unit='sim')
+        progress_bar = tqdm(total=len(cmds), unit="sim")
 
     def update_progress_bar(process):
         if has_tqdm:
             progress_bar.update()
         else:
-            print(process.stdout, 'done!')
+            print(process.stdout, "done!")
 
     if output_files is None:
         output_files = len(cmds) * [None]
     print("Starting simulations:\n")
     for sim, f in zip(cmds, output_files):
-        pool.apply_async(worker, (sim, f, cwd, env,), callback=update_progress_bar)
+        pool.apply_async(
+            worker,
+            (
+                sim,
+                f,
+                cwd,
+                env,
+            ),
+            callback=update_progress_bar,
+        )
 
     pool.close()
     pool.join()
@@ -193,19 +210,15 @@ def elmer_check_convergence(log_file, cwd=None):
     if cwd is not None:
         log_file = cwd.joinpath(log_file)
 
-    with open(log_file, 'r') as f:
+    with open(log_file, "r") as f:
         lines = [line.rstrip().lower() for line in f]
 
     for ind, l in enumerate(lines):
-        if 'did not converge' in l:
+        if "did not converge" in l:
             logging.warning(f"Linear system iteration did not converge. See {log_file}:{ind+1}")
 
-def _run_elmer_solver(sim_name,
-                      sif_names,
-                      n_parallel_simulations,
-                      n_processes,
-                      n_threads,
-                      exec_path_override=None):
+
+def _run_elmer_solver(sim_name, sif_names, n_parallel_simulations, n_processes, n_threads, exec_path_override=None):
     """
     Internal function for running ElmerSolver based on explicit variables instead of the json file
 
@@ -220,34 +233,27 @@ def _run_elmer_solver(sim_name,
     """
 
     my_env = os.environ.copy()
-    my_env["OMP_NUM_THREADS"]=str(n_threads)
+    my_env["OMP_NUM_THREADS"] = str(n_threads)
 
-    elmersolver_executable = shutil.which('ElmerSolver')
-    elmersolver_mpi_executable = shutil.which('ElmerSolver_mpi')
+    elmersolver_executable = shutil.which("ElmerSolver")
+    elmersolver_mpi_executable = shutil.which("ElmerSolver_mpi")
 
-    sif_paths = [Path(sim_name).joinpath(f'{sif_file}.sif')
-                 for sif_file in sif_names]
+    sif_paths = [Path(sim_name).joinpath(f"{sif_file}.sif") for sif_file in sif_names]
 
     if n_processes > 1 and elmersolver_mpi_executable is not None:
         if is_microsoft(exec_path_override) and is_singularity(exec_path_override):
             # If using wsl and singularity the mpi command needs to be given inside singularity
-            run_cmds = [[elmersolver_mpi_executable,
-                        sif,
-                        '-np',
-                        str(n_processes)] for sif in sif_paths]
+            run_cmds = [[elmersolver_mpi_executable, sif, "-np", str(n_processes)] for sif in sif_paths]
         else:
-            mpi_command = 'mpirun' if shutil.which('mpirun') is not None else 'mpiexec'
-            run_cmds = [[mpi_command,
-                        '-np',
-                        str(n_processes),
-                        elmersolver_mpi_executable,
-                        sif] for sif in sif_paths]
+            mpi_command = "mpirun" if shutil.which("mpirun") is not None else "mpiexec"
+            run_cmds = [[mpi_command, "-np", str(n_processes), elmersolver_mpi_executable, sif] for sif in sif_paths]
 
     elif elmersolver_executable is not None:
         run_cmds = [[elmersolver_executable, sif] for sif in sif_paths]
     else:
-        logging.warning("ElmerSolver was not found! Make sure you have ElmerFEM installed: "
-                        "https://github.com/ElmerCSC/elmerfem")
+        logging.warning(
+            "ElmerSolver was not found! Make sure you have ElmerFEM installed: " "https://github.com/ElmerCSC/elmerfem"
+        )
         sys.exit()
     output_files = [f"log_files/{sif}.Elmer.log" for sif in sif_names]
 
@@ -255,11 +261,12 @@ def _run_elmer_solver(sim_name,
         pool_run_cmds(n_parallel_simulations, run_cmds, output_files=output_files, cwd=exec_path_override, env=my_env)
     else:
         for cmd, out in zip(run_cmds, output_files):
-            with open(out, 'w') as f:
+            with open(out, "w") as f:
                 subprocess.check_call(cmd, cwd=exec_path_override, env=my_env, stdout=f)
 
     for f in output_files:
         elmer_check_convergence(f, cwd=exec_path_override)
+
 
 def run_elmer_solver(json_data, exec_path_override=None):
     """
@@ -271,31 +278,33 @@ def run_elmer_solver(json_data, exec_path_override=None):
         exec_path_override(Path): Working directory from where the simulations are run (usually KQCircuits/tmp/sim_name)
 
     """
-    if json_data['workflow']['_parallelization_level'] == 'elmer':
-        n_parallel_simulations = json_data['workflow'].get('n_workers', 1)
+    if json_data["workflow"]["_parallelization_level"] == "elmer":
+        n_parallel_simulations = json_data["workflow"].get("n_workers", 1)
     else:
         n_parallel_simulations = 1
 
-    n_processes = json_data['workflow'].get('elmer_n_processes', 1)
-    n_threads = json_data['workflow'].get('elmer_n_threads', 1)
+    n_processes = json_data["workflow"].get("elmer_n_processes", 1)
+    n_threads = json_data["workflow"].get("elmer_n_threads", 1)
 
-    _run_elmer_solver(sim_name=json_data['parameters']['name'],
-                        sif_names=json_data['sif_names'],
-                        n_parallel_simulations=n_parallel_simulations,
-                        n_processes=n_processes,
-                        n_threads=n_threads,
-                        exec_path_override=exec_path_override)
+    _run_elmer_solver(
+        sim_name=json_data["parameters"]["name"],
+        sif_names=json_data["sif_names"],
+        n_parallel_simulations=n_parallel_simulations,
+        n_processes=n_processes,
+        n_threads=n_threads,
+        exec_path_override=exec_path_override,
+    )
 
 
 def run_paraview(result_path, n_processes, exec_path_override=None):
-    paraview_executable = shutil.which('paraview')
+    paraview_executable = shutil.which("paraview")
     if paraview_executable is not None:
         if n_processes > 1:
-            pvtu_files = glob.glob('{}*.pvtu'.format(result_path))
-            subprocess.check_call([paraview_executable]+pvtu_files, cwd=exec_path_override)
+            pvtu_files = glob.glob("{}*.pvtu".format(result_path))
+            subprocess.check_call([paraview_executable] + pvtu_files, cwd=exec_path_override)
         else:
-            vtu_files = glob.glob('{}*.vtu'.format(result_path))
-            subprocess.check_call([paraview_executable]+vtu_files, cwd=exec_path_override)
+            vtu_files = glob.glob("{}*.vtu".format(result_path))
+            subprocess.check_call([paraview_executable] + vtu_files, cwd=exec_path_override)
     else:
         logging.warning("Paraview was not found! Make sure you have it installed: https://www.paraview.org/")
         sys.exit()

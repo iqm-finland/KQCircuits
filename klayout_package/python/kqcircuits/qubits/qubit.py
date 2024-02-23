@@ -28,8 +28,9 @@ from kqcircuits.junctions.sim import Sim
 
 
 @add_parameters_from(Fluxline, "fluxline_type", "fluxline_parameters", "_fluxline_parameters")
-@add_parameters_from(Squid, "junction_width", "loop_area", "junction_type",
-                     "junction_parameters", "_junction_parameters")
+@add_parameters_from(
+    Squid, "junction_width", "loop_area", "junction_type", "junction_parameters", "_junction_parameters"
+)
 @add_parameters_from(Sim, "junction_total_length")
 class Qubit(Element):
     """Base class for qubit objects without actual produce function.
@@ -58,7 +59,7 @@ class Qubit(Element):
     LIBRARY_DESCRIPTION = "Library for qubits."
     LIBRARY_PATH = "qubits"
 
-    mirror_squid =  Param(pdt.TypeBoolean, "Mirror SQUID by its Y axis", False)
+    mirror_squid = Param(pdt.TypeBoolean, "Mirror SQUID by its Y axis", False)
 
     def coerce_parameters_impl(self):
         self.sync_parameters(Fluxline)
@@ -86,11 +87,11 @@ class Qubit(Element):
         refpoints_rel = self.get_refpoints(cell)
         mwidth = cell.dbbox_per_layer(self.get_layer("base_metal_gap_wo_grid")).width()
         if mwidth > 0.0:
-            refpoints_rel['right_side'] = pya.DPoint(mwidth / 2, 0.0)
+            refpoints_rel["right_side"] = pya.DPoint(mwidth / 2, 0.0)
         squid_transf = transf * pya.DTrans.M90 if self.mirror_squid else transf
 
         if "squid_index" in parameters:
-            s_index = int(parameters.pop('squid_index'))
+            s_index = int(parameters.pop("squid_index"))
             inst, _ = self.insert_cell(cell, squid_transf, inst_name=f"squid_{s_index}")
             inst.set_property("squid_index", s_index)
         else:
@@ -133,7 +134,7 @@ class Qubit(Element):
 
         refpoints_so_far = self.get_refpoints(self.cell)
         squid_edge = refpoints_so_far["origin_squid"]
-        a = (squid_edge - refpoints_so_far['port_common'])
+        a = squid_edge - refpoints_so_far["port_common"]
         rotation = math.atan2(a.y, a.x) / math.pi * 180 + 90
         total_transformation = pya.DCplxTrans(1, rotation + rot, False, squid_edge - self.refpoints["base"] + trans)
 

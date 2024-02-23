@@ -27,5 +27,3 @@ def test_errors(capfd):
 
 def test_box_existence():
     box_existence_test(DaisyWoven)
-
-

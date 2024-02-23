@@ -18,7 +18,8 @@
 import pytest
 from kqcircuits.simulations.empty_simulation import EmptySimulation
 
+
 @pytest.fixture
 def empty_simulation(get_simulation):
-    """ Return an instance of EmptySimulation """
+    """Return an instance of EmptySimulation"""
     return get_simulation(EmptySimulation)

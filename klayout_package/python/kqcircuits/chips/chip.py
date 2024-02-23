@@ -20,8 +20,14 @@
 import logging
 import numpy
 
-from kqcircuits.defaults import default_layers, default_junction_type, default_sampleholders, default_mask_parameters, \
-    default_bump_parameters, default_marker_type
+from kqcircuits.defaults import (
+    default_layers,
+    default_junction_type,
+    default_sampleholders,
+    default_mask_parameters,
+    default_bump_parameters,
+    default_marker_type,
+)
 from kqcircuits.elements.chip_frame import ChipFrame
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.launcher import Launcher
@@ -40,8 +46,16 @@ from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf import Flip
 @add_parameters_from(Tsv, "tsv_type")
 @add_parameters_from(FlipChipConnectorRf, "connector_type")
 @add_parameter(ChipFrame, "box", hidden=True)
-@add_parameters_from(ChipFrame, "name_mask", "name_chip", "name_copy", "name_brand", "chip_dicing_in_base_metal",
-                     "dice_grid_margin", marker_types=[default_marker_type] * 8)
+@add_parameters_from(
+    ChipFrame,
+    "name_mask",
+    "name_chip",
+    "name_copy",
+    "name_brand",
+    "chip_dicing_in_base_metal",
+    "dice_grid_margin",
+    marker_types=[default_marker_type] * 8,
+)
 class Chip(Element):
     """Base PCell declaration for chips.
 
@@ -55,8 +69,13 @@ class Chip(Element):
 
     with_grid = Param(pdt.TypeBoolean, "Make ground plane grid", False)
     merge_base_metal_gap = Param(pdt.TypeBoolean, "Merge grid and other gaps into base_metal_gap layer", False)
-    a_capped = Param(pdt.TypeDouble, "Capped center conductor width", 10, unit="μm",
-                     docstring="Width of center conductor in the capped region (μm)")
+    a_capped = Param(
+        pdt.TypeDouble,
+        "Capped center conductor width",
+        10,
+        unit="μm",
+        docstring="Width of center conductor in the capped region (μm)",
+    )
     b_capped = Param(pdt.TypeDouble, "Width of gap in the capped region ", 10, unit="μm")
 
     # TSV grid parameters
@@ -64,32 +83,45 @@ class Chip(Element):
     with_face1_gnd_tsvs = Param(pdt.TypeBoolean, "Make a grid of TSVs on top chip", False)
     tsv_grid_spacing = Param(pdt.TypeDouble, "TSV grid spacing (center to center)", 300, unit="μm")
     edge_from_tsv = Param(pdt.TypeDouble, "TSV grid clearance to chip edge (center to edge)", 550, unit="μm")
-    tsv_edge_to_tsv_edge_separation = Param(pdt.TypeDouble, "TSV grid clearance to existing TSVs (edge to edge)", 250,
-                                            unit="μm")
-    tsv_edge_to_nearest_element = Param(pdt.TypeDouble, "TSV grid clearance to other elements (edge to edge)", 100,
-                                        unit="μm")
+    tsv_edge_to_tsv_edge_separation = Param(
+        pdt.TypeDouble, "TSV grid clearance to existing TSVs (edge to edge)", 250, unit="μm"
+    )
+    tsv_edge_to_nearest_element = Param(
+        pdt.TypeDouble, "TSV grid clearance to other elements (edge to edge)", 100, unit="μm"
+    )
 
     # Bump grid parameters
     with_gnd_bumps = Param(pdt.TypeBoolean, "Make a grid of indium bumps", False)
-    bump_grid_spacing = Param(pdt.TypeDouble, "Bump grid spacing (center to center)",
-                              default_bump_parameters['bump_grid_spacing'], unit="μm")
-    edge_from_bump = Param(pdt.TypeDouble, "Bump grid clearance to chip edge (center to edge)",
-                           default_bump_parameters['edge_from_bump'], unit="μm")
-    bump_edge_to_bump_edge_separation = Param(pdt.TypeDouble, "Bump grid clearance to existing bumps (edge to edge)",
-                                              default_bump_parameters['bump_edge_to_bump_edge_separation'], unit="μm")
+    bump_grid_spacing = Param(
+        pdt.TypeDouble, "Bump grid spacing (center to center)", default_bump_parameters["bump_grid_spacing"], unit="μm"
+    )
+    edge_from_bump = Param(
+        pdt.TypeDouble,
+        "Bump grid clearance to chip edge (center to edge)",
+        default_bump_parameters["edge_from_bump"],
+        unit="μm",
+    )
+    bump_edge_to_bump_edge_separation = Param(
+        pdt.TypeDouble,
+        "Bump grid clearance to existing bumps (edge to edge)",
+        default_bump_parameters["bump_edge_to_bump_edge_separation"],
+        unit="μm",
+    )
 
     frames_enabled = Param(pdt.TypeList, "List of face ids (integers) for which a ChipFrame is drawn", [0])
     frames_marker_dist = Param(pdt.TypeList, "Marker distance from edge for each chip frame", [1500, 1000], unit="[μm]")
     frames_diagonal_squares = Param(pdt.TypeList, "Number of diagonal marker squares for each chip frame", [10, 2])
-    frames_mirrored = Param(pdt.TypeList,
-                            "List of booleans specifying if the frame is mirrored for each chip frame", [False, True])
+    frames_mirrored = Param(
+        pdt.TypeList, "List of booleans specifying if the frame is mirrored for each chip frame", [False, True]
+    )
     frames_dice_width = Param(pdt.TypeList, "Dicing street width for each chip frame", [200, 140], unit="[μm]")
 
     face_boxes = Param(
         pdt.TypeShape,
         "List of chip frame sizes (type DBox) for each face. None uses the chips box parameter.",
         default=[None, pya.DBox(pya.DPoint(1500, 1500), pya.DPoint(8500, 8500))],
-        hidden=True)
+        hidden=True,
+    )
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
@@ -128,24 +160,26 @@ class Chip(Element):
             junction_type: A string defining the type of junction used in the test pads.
 
         """
-        junction_tests_w = self.add_element(JunctionTestPads,
-                                            margin=50,
-                                            area_height=1300,
-                                            area_width=2500,
-                                            junctions_horizontal=True,
-                                            junction_type=junction_type,
-                                            display_name="JunctionTestsHorizontal",
-                                            )
-        junction_tests_h = self.add_element(JunctionTestPads,
-                                            margin=50,
-                                            area_height=2500,
-                                            area_width=1300,
-                                            junctions_horizontal=True,
-                                            junction_type=junction_type,
-                                            display_name="JunctionTestsVertical",
-                                            )
-        self.insert_cell(junction_tests_h, pya.DTrans(0, False, .35e3, (10e3 - 2.5e3) / 2), "testarray_w")
-        self.insert_cell(junction_tests_w, pya.DTrans(0, False, (10e3 - 2.5e3) / 2, .35e3), "testarray_s")
+        junction_tests_w = self.add_element(
+            JunctionTestPads,
+            margin=50,
+            area_height=1300,
+            area_width=2500,
+            junctions_horizontal=True,
+            junction_type=junction_type,
+            display_name="JunctionTestsHorizontal",
+        )
+        junction_tests_h = self.add_element(
+            JunctionTestPads,
+            margin=50,
+            area_height=2500,
+            area_width=1300,
+            junctions_horizontal=True,
+            junction_type=junction_type,
+            display_name="JunctionTestsVertical",
+        )
+        self.insert_cell(junction_tests_h, pya.DTrans(0, False, 0.35e3, (10e3 - 2.5e3) / 2), "testarray_w")
+        self.insert_cell(junction_tests_w, pya.DTrans(0, False, (10e3 - 2.5e3) / 2, 0.35e3), "testarray_s")
         self.insert_cell(junction_tests_h, pya.DTrans(0, False, 9.65e3 - 1.3e3, (10e3 - 2.5e3) / 2), "testarray_e")
         self.insert_cell(junction_tests_w, pya.DTrans(0, False, (10e3 - 2.5e3) / 2, 9.65e3 - 1.3e3), "testarray_n")
 
@@ -161,22 +195,31 @@ class Chip(Element):
 
         combined_cell = self.layout.create_cell("Stripes")
         for i, width in enumerate(numpy.arange(max_width + 0.1 * step, min_width, -step)):
-            stripes_cell = self.add_element(StripesTest, num_stripes=num_stripes, stripe_width=width,
-                                            stripe_length=length)
+            stripes_cell = self.add_element(
+                StripesTest, num_stripes=num_stripes, stripe_width=width, stripe_length=length
+            )
             # horizontal
-            combined_cell.insert(pya.DCellInstArray(stripes_cell.cell_index(),
-                                                    pya.DCplxTrans(1, 0, False, -880, 2 * i * length +
-                                                                   first_stripes_width - 200)))
+            combined_cell.insert(
+                pya.DCellInstArray(
+                    stripes_cell.cell_index(),
+                    pya.DCplxTrans(1, 0, False, -880, 2 * i * length + first_stripes_width - 200),
+                )
+            )
             # vertical
-            combined_cell.insert(pya.DCellInstArray(stripes_cell.cell_index(),
-                                                    pya.DCplxTrans(1, 90, False,
-                                                                   2 * i * length + length + first_stripes_width - 200,
-                                                                   -880)))
+            combined_cell.insert(
+                pya.DCellInstArray(
+                    stripes_cell.cell_index(),
+                    pya.DCplxTrans(1, 90, False, 2 * i * length + length + first_stripes_width - 200, -880),
+                )
+            )
             # diagonal
             diag_offset = 2 * num_stripes * width / numpy.sqrt(8)
-            combined_cell.insert(pya.DCellInstArray(stripes_cell.cell_index(),
-                                                    pya.DCplxTrans(1, -45, False, 250 + i * length - diag_offset,
-                                                                   250 + i * length + diag_offset)))
+            combined_cell.insert(
+                pya.DCellInstArray(
+                    stripes_cell.cell_index(),
+                    pya.DCplxTrans(1, -45, False, 250 + i * length - diag_offset, 250 + i * length + diag_offset),
+                )
+            )
 
         self.insert_cell(combined_cell, pya.DCplxTrans(1, 0, False, 1500, 1500))
         self.insert_cell(combined_cell, pya.DCplxTrans(1, 90, False, 8500, 1500))
@@ -202,9 +245,12 @@ class Chip(Element):
         grid_area = box * (1 / self.layout.dbu)
         protection = pya.Region(self.cell.begin_shapes_rec(self.get_layer("ground_grid_avoidance", face_id))).merged()
         grid_mag_factor = 1
-        region_ground_grid = make_grid(grid_area, protection,
-                                       grid_step=10 * (1 / self.layout.dbu) * grid_mag_factor,
-                                       grid_size=5 * (1 / self.layout.dbu) * grid_mag_factor)
+        region_ground_grid = make_grid(
+            grid_area,
+            protection,
+            grid_step=10 * (1 / self.layout.dbu) * grid_mag_factor,
+            grid_size=5 * (1 / self.layout.dbu) * grid_mag_factor,
+        )
         self.cell.shapes(self.get_layer("ground_grid", face_id)).insert(region_ground_grid)
 
     def produce_frame(self, frame_parameters, trans=pya.DTrans()):
@@ -259,10 +305,10 @@ class Chip(Element):
                 text_margin=default_mask_parameters[self.face_ids[face]]["text_margin"],
                 marker_dist=float(self.frames_marker_dist[i]),
                 diagonal_squares=int(self.frames_diagonal_squares[i]),
-                marker_types=self.marker_types[i * 4:(i + 1) * 4]
+                marker_types=self.marker_types[i * 4 : (i + 1) * 4],
             )
 
-            if str(self.frames_mirrored[i]).lower() == 'true':  # Accept both boolean and string representation
+            if str(self.frames_mirrored[i]).lower() == "true":  # Accept both boolean and string representation
                 frame_trans = pya.DTrans(frame_box.center()) * pya.DTrans.M90 * pya.DTrans(-frame_box.center())
             else:
                 frame_trans = pya.DTrans(0, 0)
@@ -361,7 +407,7 @@ class Chip(Element):
 
         The bumps avoid ground grid avoidance on both faces, and keep a minimum distance to existing bumps.
         """
-        logging.info('Starting bump grid generation')
+        logging.info("Starting bump grid generation")
 
         # Count existing bump count for logging purpose
         existing_bump_region = pya.Region()
@@ -373,9 +419,10 @@ class Chip(Element):
         bump = self.add_element(FlipChipConnectorDc, face_ids=[self.face_ids[face] for face in faces])
         shape_layers = [("underbump_metallization", face) for face in faces]
         filter_regions = self.get_filter_regions(
-            [("ground_grid_avoidance", face, 0) for face in faces] +
-            [("indium_bump", face, self.bump_edge_to_bump_edge_separation) for face in faces] +
-            [("through_silicon_via", face, self.tsv_edge_to_nearest_element) for face in faces])
+            [("ground_grid_avoidance", face, 0) for face in faces]
+            + [("indium_bump", face, self.bump_edge_to_bump_edge_separation) for face in faces]
+            + [("through_silicon_via", face, self.tsv_edge_to_nearest_element) for face in faces]
+        )
         bump_box = self.get_box(1).enlarged(pya.DVector(-self.edge_from_bump, -self.edge_from_bump))
         locations = self.get_ground_bump_locations(bump_box)
 
@@ -389,8 +436,10 @@ class Chip(Element):
             # Use default rotation for all bumps
             bump_locations = self.insert_filtered_elements(bump, shape_layers, filter_regions, locations)
 
-        logging.info(f'Found {existing_bump_count} existing bumps and inserted {len(bump_locations)} bumps on grid, '
-                     f'totalling {existing_bump_count + len(bump_locations)} bumps.')
+        logging.info(
+            f"Found {existing_bump_count} existing bumps and inserted {len(bump_locations)} bumps on grid, "
+            f"totalling {existing_bump_count + len(bump_locations)} bumps."
+        )
         return bump_locations
 
     def post_build(self):
@@ -408,11 +457,9 @@ class Chip(Element):
         for inst in self.cell.each_inst():
             inst_id = inst.property("id")
             if inst_id:
-                cell = self.layout.create_cell("TEXT", "Basic", {
-                    "layer": default_layers["instance_names"],
-                    "text": inst_id,
-                    "mag": 400.0
-                })
+                cell = self.layout.create_cell(
+                    "TEXT", "Basic", {"layer": default_layers["instance_names"], "text": inst_id, "mag": 400.0}
+                )
                 label_trans = inst.dcplx_trans
                 # prevent the label from being upside-down or mirrored
                 if 90 < label_trans.angle < 270:
@@ -446,13 +493,29 @@ class Chip(Element):
                 launcher_assignments = {1: "NW", 2: "NE", 3: "EN", 4: "ES", 5: "SE", 6: "SW", 7: "WS", 8: "WN"}
 
         if sampleholder_type in default_sampleholders:
-            return self.produce_n_launchers(**default_sampleholders[sampleholder_type],
-                                            launcher_assignments=launcher_assignments, enabled=enabled, face_id=face_id)
+            return self.produce_n_launchers(
+                **default_sampleholders[sampleholder_type],
+                launcher_assignments=launcher_assignments,
+                enabled=enabled,
+                face_id=face_id,
+            )
         return {}
 
-    def produce_n_launchers(self, n, launcher_type, launcher_width, launcher_gap, launcher_indent, pad_pitch,
-                            launcher_assignments=None, port_id_remap=None, launcher_frame_gap=None, enabled=None,
-                            chip_box=None, face_id=0):
+    def produce_n_launchers(
+        self,
+        n,
+        launcher_type,
+        launcher_width,
+        launcher_gap,
+        launcher_indent,
+        pad_pitch,
+        launcher_assignments=None,
+        port_id_remap=None,
+        launcher_frame_gap=None,
+        enabled=None,
+        chip_box=None,
+        face_id=0,
+    ):
         """Produces n launchers at default locations and optionally changes the chip size.
 
         Launcher pads are equally distributed around the chip. This may be overridden by specifying
@@ -494,9 +557,15 @@ class Chip(Element):
         if launcher_type == "DC":
             launcher_cell = self.add_element(LauncherDC, width=launcher_width, face_ids=[self.face_ids[face_id]])
         else:
-            launcher_cell = self.add_element(Launcher, s=launcher_width, l=launcher_width,
-                                             a_launcher=launcher_width, b_launcher=launcher_gap,
-                                             launcher_frame_gap=launcher_frame_gap, face_ids=[self.face_ids[face_id]])
+            launcher_cell = self.add_element(
+                Launcher,
+                s=launcher_width,
+                l=launcher_width,
+                a_launcher=launcher_width,
+                b_launcher=launcher_gap,
+                launcher_frame_gap=launcher_frame_gap,
+                face_ids=[self.face_ids[face_id]],
+            )
 
         pads_per_side = n
         if not isinstance(n, tuple):
@@ -504,23 +573,47 @@ class Chip(Element):
             pads_per_side = [n, n, n, n]
 
         dirs = (90, 0, -90, 180)
-        trans = (pya.DTrans(3, 0, self.box.p1.x, self.box.p2.y),
-                 pya.DTrans(2, 0, self.box.p2.x, self.box.p2.y),
-                 pya.DTrans(1, 0, self.box.p2.x, self.box.p1.y),
-                 pya.DTrans(0, 0, self.box.p1.x, self.box.p1.y))
+        trans = (
+            pya.DTrans(3, 0, self.box.p1.x, self.box.p2.y),
+            pya.DTrans(2, 0, self.box.p2.x, self.box.p2.y),
+            pya.DTrans(1, 0, self.box.p2.x, self.box.p1.y),
+            pya.DTrans(0, 0, self.box.p1.x, self.box.p1.y),
+        )
         _w = self.box.p2.x - self.box.p1.x
         _h = self.box.p2.y - self.box.p1.y
         sides = [_w, _h, _w, _h]
 
-        return self._insert_launchers(dirs, enabled, launcher_assignments, port_id_remap, launcher_cell,
-                                      launcher_indent, launcher_width, pad_pitch, pads_per_side, sides, trans,
-                                      face_id=face_id)
+        return self._insert_launchers(
+            dirs,
+            enabled,
+            launcher_assignments,
+            port_id_remap,
+            launcher_cell,
+            launcher_indent,
+            launcher_width,
+            pad_pitch,
+            pads_per_side,
+            sides,
+            trans,
+            face_id=face_id,
+        )
 
-    def _insert_launchers(self, dirs, enabled, launcher_assignments, port_id_remap, launcher_cell, launcher_indent,
-                          launcher_width, pad_pitch, pads_per_side, sides, trans, face_id):
-        """Inserts launcher cell at predefined parameters and returns launcher cells
-
-        """
+    def _insert_launchers(
+        self,
+        dirs,
+        enabled,
+        launcher_assignments,
+        port_id_remap,
+        launcher_cell,
+        launcher_indent,
+        launcher_width,
+        pad_pitch,
+        pads_per_side,
+        sides,
+        trans,
+        face_id,
+    ):
+        """Inserts launcher cell at predefined parameters and returns launcher cells"""
         launcher_order_idx, launchers = 0, {}
         for np, dr, tr, si in zip(pads_per_side, dirs, trans, sides):
             for i in range(np):
@@ -590,9 +683,9 @@ class Chip(Element):
     def _produce_ground_tsvs(self, faces=[0, 2], tsv_box=None):  # pylint: disable=dangerous-default-value
         """Produces a grid of TSVs between given faces.
 
-         The TSVs avoid ground grid avoidance on both faces, and keep a distance to existing elements.
-         """
-        logging.info(f'Starting TSV grid generation on face(s) {[self.face_ids[face] for face in faces]}')
+        The TSVs avoid ground grid avoidance on both faces, and keep a distance to existing elements.
+        """
+        logging.info(f"Starting TSV grid generation on face(s) {[self.face_ids[face] for face in faces]}")
 
         # Count existing TSV count for logging purpose
         existing_tsv_region = pya.Region()
@@ -604,13 +697,15 @@ class Chip(Element):
         tsv = self.add_element(Tsv, face_ids=[self.face_ids[face] for face in faces])
         shape_layers = [("through_silicon_via", face) for face in faces]
         filter_regions = self.get_filter_regions(
-            [("ground_grid_avoidance", face, 0) for face in faces] +
-            [("through_silicon_via_avoidance", face, 0) for face in faces] +
-            [("indium_bump", face, self.tsv_edge_to_nearest_element) for face in faces] +
-            [("base_metal_gap_wo_grid", face, self.tsv_edge_to_nearest_element) for face in faces] +
-            [("through_silicon_via", face, self.tsv_edge_to_tsv_edge_separation) for face in faces])
-        locations = self.get_ground_tsv_locations(tsv_box if tsv_box is not None else
-                                                  self.box.enlarged(-self.edge_from_tsv))
+            [("ground_grid_avoidance", face, 0) for face in faces]
+            + [("through_silicon_via_avoidance", face, 0) for face in faces]
+            + [("indium_bump", face, self.tsv_edge_to_nearest_element) for face in faces]
+            + [("base_metal_gap_wo_grid", face, self.tsv_edge_to_nearest_element) for face in faces]
+            + [("through_silicon_via", face, self.tsv_edge_to_tsv_edge_separation) for face in faces]
+        )
+        locations = self.get_ground_tsv_locations(
+            tsv_box if tsv_box is not None else self.box.enlarged(-self.edge_from_tsv)
+        )
 
         # Produce TSV grid
         if isinstance(locations, dict):
@@ -622,6 +717,8 @@ class Chip(Element):
             # Use default rotation for all TSVs
             tsv_locations = self.insert_filtered_elements(tsv, shape_layers, filter_regions, locations)
 
-        logging.info(f'Found {existing_tsv_count} existing TSVs and inserted {len(tsv_locations)} TSVs on grid, '
-                     f'totalling {existing_tsv_count + len(tsv_locations)} TSVs.')
+        logging.info(
+            f"Found {existing_tsv_count} existing TSVs and inserted {len(tsv_locations)} TSVs on grid, "
+            f"totalling {existing_tsv_count + len(tsv_locations)} TSVs."
+        )
         return tsv_locations

@@ -27,8 +27,15 @@ from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.chips.quality_factor import QualityFactor
 
 
-@add_parameters_from(QualityFactor, "res_lengths", "n_fingers", "l_fingers", "type_coupler",
-                     res_a=[10, 10, 10, 20, 10, 5], res_b=[6, 6, 6, 12, 6, 3])
+@add_parameters_from(
+    QualityFactor,
+    "res_lengths",
+    "n_fingers",
+    "l_fingers",
+    "type_coupler",
+    res_a=[10, 10, 10, 20, 10, 5],
+    res_b=[6, 6, 6, 12, 6, 3],
+)
 @add_parameters_from(Chip, frames_enabled=[0, 1])
 @add_parameters_from(SpiralResonatorPolygon, "bridge_spacing")
 class QualityFactorTwoface(Chip):
@@ -36,30 +43,52 @@ class QualityFactorTwoface(Chip):
 
     Preliminary class for flip-chip resonators.
     """
-    resonator_types = Param(pdt.TypeList, "Resonator types (capped, twoface, etched, or solid)", ["capped"] * 6,
-                            docstring="Choices: 'capped', 'twoface', 'etched', 'solid'")
+
+    resonator_types = Param(
+        pdt.TypeList,
+        "Resonator types (capped, twoface, etched, or solid)",
+        ["capped"] * 6,
+        docstring="Choices: 'capped', 'twoface', 'etched', 'solid'",
+    )
     resonator_faces = Param(pdt.TypeList, "Resonator face order list", [0, 1])
-    connector_distances = Param(pdt.TypeList, "Resonator input to face to face connector",
-                                [500, 1300, 2100, 2900, 3700, 4500] * 2, unit="[μm]",
-                                docstring="Distances of face to face connectors from resonator inputs")
+    connector_distances = Param(
+        pdt.TypeList,
+        "Resonator input to face to face connector",
+        [500, 1300, 2100, 2900, 3700, 4500] * 2,
+        unit="[μm]",
+        docstring="Distances of face to face connectors from resonator inputs",
+    )
     spiral_box_height = Param(pdt.TypeDouble, "Spiral resonator box height", 2000)
     spiral_box_width = Param(pdt.TypeDouble, "Spiral resonator box width", 500)
     x_indentation = Param(pdt.TypeDouble, "Resonator/connector indentation from side edges", 800)
     cap_res_distance = Param(pdt.TypeDouble, "Distance between spiral resonator and capacitor", 200)
     waveguide_indentation = Param(pdt.TypeDouble, "Waveguide indentation from top chip edge", 500)
-    extra_resonator_avoidance = Param(pdt.TypeList, "Added avoidance", [0, 0, 0, 0, 0, 0], unit="[μm]",
-                                      docstring="Added avoidance around resonators. At both faces.")
-    extra_resonator_etch = Param(pdt.TypeList, "Added opposite face etch", [0, 0, 0, 0, 0, 0], unit="μm",
-                                 docstring="Extra opposite side etching margin around resonators.")
+    extra_resonator_avoidance = Param(
+        pdt.TypeList,
+        "Added avoidance",
+        [0, 0, 0, 0, 0, 0],
+        unit="[μm]",
+        docstring="Added avoidance around resonators. At both faces.",
+    )
+    extra_resonator_etch = Param(
+        pdt.TypeList,
+        "Added opposite face etch",
+        [0, 0, 0, 0, 0, 0],
+        unit="μm",
+        docstring="Extra opposite side etching margin around resonators.",
+    )
 
     def build(self):
         self._produce_resonators()
 
     def _produce_resonators(self):
-        self.produce_launchers("SMA8", launcher_assignments={
-            3: "PL-1-OUT",
-            8: "PL-1-IN",
-        })
+        self.produce_launchers(
+            "SMA8",
+            launcher_assignments={
+                3: "PL-1-OUT",
+                8: "PL-1-IN",
+            },
+        )
 
         # Constants
         face1_box = self.get_box(1)
@@ -79,16 +108,27 @@ class QualityFactorTwoface(Chip):
         # Create probeline
         tee_length = self.a_capped / 2 + self.b_capped
         side_tee_length = tee_length + 5 * self.a_capped
-        splitter_nodes = [Node(point, WaveguideCoplanarSplitter, angles=[0, 180, angle],
-                               lengths=[tee_length, tee_length, side_tee_length], inst_name=f"{i}_t")
-                          for i, (point, angle) in enumerate(zip(resonator_positions, resonator_directions))]
+        splitter_nodes = [
+            Node(
+                point,
+                WaveguideCoplanarSplitter,
+                angles=[0, 180, angle],
+                lengths=[tee_length, tee_length, side_tee_length],
+                inst_name=f"{i}_t",
+            )
+            for i, (point, angle) in enumerate(zip(resonator_positions, resonator_directions))
+        ]
 
         probeline = self.add_element(
             WaveguideComposite,
             nodes=[
                 Node(self.refpoints["PL-1-IN_port"]),
-                Node(pya.DPoint(face1_box.left, self.refpoints["PL-1-IN_port"].y), a=self.a_capped, b=self.b_capped,
-                     taper_length=100),
+                Node(
+                    pya.DPoint(face1_box.left, self.refpoints["PL-1-IN_port"].y),
+                    a=self.a_capped,
+                    b=self.b_capped,
+                    taper_length=100,
+                ),
                 Node(pya.DPoint(left_x, self.refpoints["PL-1-IN_port"].y)),
                 Node(pya.DPoint(left_x, mid_y)),
                 Node(pya.DPoint(left_connector, mid_y), face_id=resonator_face_ids[0]),
@@ -96,9 +136,13 @@ class QualityFactorTwoface(Chip):
                 Node(pya.DPoint(right_connector, mid_y), face_id=self.face_ids[0]),
                 Node(pya.DPoint(right_x, mid_y)),
                 Node(pya.DPoint(right_x, self.refpoints["PL-1-OUT_port"].y)),
-                Node(pya.DPoint(face1_box.right - 100, self.refpoints["PL-1-OUT_port"].y), a=self.a, b=self.b,
-                     taper_length=100),
-                Node(self.refpoints["PL-1-OUT_port"])
+                Node(
+                    pya.DPoint(face1_box.right - 100, self.refpoints["PL-1-OUT_port"].y),
+                    a=self.a,
+                    b=self.b,
+                    taper_length=100,
+                ),
+                Node(self.refpoints["PL-1-OUT_port"]),
             ],
         )
         self.insert_cell(probeline, inst_name="pl")
@@ -106,14 +150,38 @@ class QualityFactorTwoface(Chip):
         # Create resonators
         for i in range(n_resonators):
             extra_resonator_etch = float(self.extra_resonator_etch[i]) if i < len(self.extra_resonator_etch) else 0.0
-            self.produce_resonator(i, float(self.res_a[i]), float(self.res_b[i]), float(self.res_lengths[i]),
-                                   float(self.n_fingers[i]), float(self.l_fingers[i]), self.type_coupler[i],
-                                   resonator_face_ids, self.resonator_types[i], float(self.connector_distances[i]),
-                                   float(self.extra_resonator_avoidance[i]), extra_resonator_etch, mirror=(i % 2 == 1))
+            self.produce_resonator(
+                i,
+                float(self.res_a[i]),
+                float(self.res_b[i]),
+                float(self.res_lengths[i]),
+                float(self.n_fingers[i]),
+                float(self.l_fingers[i]),
+                self.type_coupler[i],
+                resonator_face_ids,
+                self.resonator_types[i],
+                float(self.connector_distances[i]),
+                float(self.extra_resonator_avoidance[i]),
+                extra_resonator_etch,
+                mirror=(i % 2 == 1),
+            )
 
-    def produce_resonator(self, i, a, b, length, n_fingers, l_fingers, type_coupler, face_ids,
-                          resonator_type="capped", connector_distance=0.0,
-                          extra_resonator_avoidance=0.0, extra_resonator_etch=0.0, mirror=False):
+    def produce_resonator(
+        self,
+        i,
+        a,
+        b,
+        length,
+        n_fingers,
+        l_fingers,
+        type_coupler,
+        face_ids,
+        resonator_type="capped",
+        connector_distance=0.0,
+        extra_resonator_avoidance=0.0,
+        extra_resonator_etch=0.0,
+        mirror=False,
+    ):
         """
         Produce a single spiral resonator and corresponding input capacitor.
 
@@ -151,15 +219,28 @@ class QualityFactorTwoface(Chip):
 
         # Capacitor
         cplr_params = cap_params(
-            n_fingers, l_fingers, type_coupler, protect_opposite_face=protect_opposite_face,
-            face_ids=face_ids, a=self.a_capped, b=self.b_capped, a2=a, b2=b, element_key='cell')
-        _, cplr_refpoints = self.insert_cell(**cplr_params, align="port_a", align_to=start,
-                                                     etch_opposite_face=(resonator_type == "etched"),
-                                                     trans=pya.DCplxTrans(1, start_angle, False, 0, 0))
+            n_fingers,
+            l_fingers,
+            type_coupler,
+            protect_opposite_face=protect_opposite_face,
+            face_ids=face_ids,
+            a=self.a_capped,
+            b=self.b_capped,
+            a2=a,
+            b2=b,
+            element_key="cell",
+        )
+        _, cplr_refpoints = self.insert_cell(
+            **cplr_params,
+            align="port_a",
+            align_to=start,
+            etch_opposite_face=(resonator_type == "etched"),
+            trans=pya.DCplxTrans(1, start_angle, False, 0, 0),
+        )
 
         # Spiral resonator
         if resonator_type == "twoface":
-            res_params = {'connector_dist': connector_distance, "bridge_spacing": 0}
+            res_params = {"connector_dist": connector_distance, "bridge_spacing": 0}
         elif resonator_type == "etched":
             res_params = {
                 "airbridge_type": "Airbridge Multi Face",
@@ -177,21 +258,27 @@ class QualityFactorTwoface(Chip):
         self.insert_cell(
             SpiralResonatorPolygon,
             margin=self.margin + extra_resonator_avoidance,
-            input_path=pya.DPath([
-                pya.DPoint(0, 0),
-            ], 10),
-            poly_path=pya.DPath([
-                pya.DPoint(self.cap_res_distance, 0),
-                pya.DPoint(self.spiral_box_height, 0),
-                pya.DPoint(self.spiral_box_height, -self.spiral_box_width),
-                pya.DPoint(self.cap_res_distance, -self.spiral_box_width)
-            ], 10),
+            input_path=pya.DPath(
+                [
+                    pya.DPoint(0, 0),
+                ],
+                10,
+            ),
+            poly_path=pya.DPath(
+                [
+                    pya.DPoint(self.cap_res_distance, 0),
+                    pya.DPoint(self.spiral_box_height, 0),
+                    pya.DPoint(self.spiral_box_height, -self.spiral_box_width),
+                    pya.DPoint(self.cap_res_distance, -self.spiral_box_width),
+                ],
+                10,
+            ),
             length=length,
             a=a,
             b=b,
             face_ids=face_ids,
             protect_opposite_face=protect_opposite_face,
             **res_params,
-            inst_name=f'resonator{i}',
-            trans=pya.DCplxTrans(1, start_angle, mirror, cplr_refpoints["port_b"])
+            inst_name=f"resonator{i}",
+            trans=pya.DCplxTrans(1, start_angle, mirror, cplr_refpoints["port_b"]),
         )

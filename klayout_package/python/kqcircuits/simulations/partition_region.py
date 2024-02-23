@@ -19,9 +19,9 @@ from kqcircuits.pya_resolver import pya
 
 
 class PartitionRegion:
-    """ Class to enable partitioning of simulation geometry into sub-regions
-    """
-    def __init__(self, name='part', vertical_dimensions=1.0, metal_edge_dimensions=None, region=None, face_ids=None):
+    """Class to enable partitioning of simulation geometry into sub-regions"""
+
+    def __init__(self, name="part", vertical_dimensions=1.0, metal_edge_dimensions=None, region=None, face_ids=None):
         """
         Args:
             name: Suffix of the partition layers. Must not end with a number.
@@ -35,7 +35,7 @@ class PartitionRegion:
                 pya.DPolygons. Use None to cover full domain.
             face_ids: List of face names to which the partition region is applied. Use None to apply on all faces.
         """
-        if name[-1] in '0123456789':
+        if name[-1] in "0123456789":
             raise ValueError(f"PartitionRegion name must not end with a number, but {name} is given.")
         if name == "":
             raise ValueError("PartitionRegion name must not be an empty string.")

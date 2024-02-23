@@ -24,7 +24,7 @@ from kqcircuits.simulations.export.util import export_layers
 
 
 def copy_content_into_directory(source_paths: list, path: Path, folder):
-    """ Create a folder and copy the contents of the source folders into it
+    """Create a folder and copy the contents of the source folders into it
 
     Arguments:
         source_paths: list of source directories from which to copy content
@@ -37,7 +37,7 @@ def copy_content_into_directory(source_paths: list, path: Path, folder):
 
 
 def get_post_process_command_lines(post_process, path, json_filenames):
-    """ Return post process command line calls as string. Can be used in construction of .bat or .sh script files.
+    """Return post process command line calls as string. Can be used in construction of .bat or .sh script files.
 
     Args:
         post_process: List of PostProcess objects, a single PostProcess object, or None to be executed after simulations
@@ -50,7 +50,7 @@ def get_post_process_command_lines(post_process, path, json_filenames):
     if post_process is None:
         return ""
 
-    commands = 'echo Post-process\n'
+    commands = "echo Post-process\n"
     if isinstance(post_process, list):
         for pp in post_process:
             commands += pp.get_command_line(path, json_filenames)
@@ -59,7 +59,7 @@ def get_post_process_command_lines(post_process, path, json_filenames):
     return commands
 
 
-def export_simulation_oas(simulations, path: Path, file_prefix='simulation'):
+def export_simulation_oas(simulations, path: Path, file_prefix="simulation"):
     """
     Write single OASIS file containing all simulations in list.
     """
@@ -68,10 +68,8 @@ def export_simulation_oas(simulations, path: Path, file_prefix='simulation'):
         raise ValueError("Cannot write batch OASIS file since not all simulations are on the same layout.")
 
     cells = [simulation.cell for simulation in simulations]
-    oas_filename = str(path.joinpath(file_prefix + '.oas'))
-    export_layers(oas_filename, simulations[0].layout, cells,
-                  output_format='OASIS',
-                  layers=None)
+    oas_filename = str(path.joinpath(file_prefix + ".oas"))
+    export_layers(oas_filename, simulations[0].layout, cells, output_format="OASIS", layers=None)
     return oas_filename
 
 
@@ -82,12 +80,11 @@ def sweep_simulation(layout, sim_class, sim_parameters, sweeps):
     logging.info(f'Added simulations: {" + ".join([str(l) for l in lengths])} = {sum(lengths)}')
     for param in sweeps:
         for value in sweeps[param]:
-            parameters = {**sim_parameters, param: value,
-                          'name': '{}_{}_{}'.format(
-                            sim_parameters['name'],
-                            param,
-                            str(value)
-                          )}
+            parameters = {
+                **sim_parameters,
+                param: value,
+                "name": "{}_{}_{}".format(sim_parameters["name"], param, str(value)),
+            }
             simulations.append(sim_class(layout, **parameters))
     return simulations
 
@@ -102,7 +99,6 @@ def cross_sweep_simulation(layout, sim_class, sim_parameters, sweeps):
         parameters = {**sim_parameters}
         for i, key in enumerate(keys):
             parameters[key] = values[i]
-        parameters['name'] = sim_parameters['name'] + '_' \
-            + '_'.join([str(value) for value in values])
+        parameters["name"] = sim_parameters["name"] + "_" + "_".join([str(value) for value in values])
         simulations.append(sim_class(layout, **parameters))
     return simulations

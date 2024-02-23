@@ -53,14 +53,19 @@ class SingleXmons(Chip):
             left to right).
 
     """
-    readout_res_lengths = Param(pdt.TypeList, "Readout resonator lengths (six resonators)",
-                                [5000, 5100, 5200, 5300, 5400, 5500])
+
+    readout_res_lengths = Param(
+        pdt.TypeList, "Readout resonator lengths (six resonators)", [5000, 5100, 5200, 5300, 5400, 5500]
+    )
     use_test_resonators = Param(pdt.TypeBoolean, "Use test resonators", True)
     test_res_lengths = Param(pdt.TypeList, "Test resonator lengths (four resonators)", [5200, 5400, 5600, 5800])
     n_fingers = Param(pdt.TypeList, "Number of fingers for test resonator couplers", [4, 4, 2, 4])
     l_fingers = Param(pdt.TypeList, "Length of fingers for test resonator couplers", [23.1, 9.9, 14.1, 10, 21])
-    type_coupler = Param(pdt.TypeList, "Coupler type for test resonator couplers",
-                         ["interdigital", "interdigital", "interdigital", "gap"])
+    type_coupler = Param(
+        pdt.TypeList,
+        "Coupler type for test resonator couplers",
+        ["interdigital", "interdigital", "interdigital", "gap"],
+    )
 
     def build(self):
         """Produces a SingleXmons PCell."""
@@ -92,7 +97,8 @@ class SingleXmons(Chip):
         """
         if turn_radius is None:
             turn_radius = self.r
-        waveguide = self.add_element(WaveguideCoplanar,
+        waveguide = self.add_element(
+            WaveguideCoplanar,
             path=pya.DPath(path, 1),
             r=turn_radius,
             term2=term2,
@@ -131,7 +137,8 @@ class SingleXmons(Chip):
             3,4,5 are the lower qubits (from left to right).
 
         """
-        qubit = self.add_element(Swissmon,
+        qubit = self.add_element(
+            Swissmon,
             fluxline_type="none",
             arm_length=[146] * 4,
             arm_width=[24] * 4,
@@ -180,21 +187,24 @@ class SingleXmons(Chip):
         distance_to_feedline = 27
         feedline_coupling_y = 5e3 + factor * distance_to_feedline
         meander_start_x = pos_start.x - (coupling_length + 2 * turn_radius)
-        meander_start = pya.DPoint(meander_start_x, 5e3 + factor * distance_to_feedline +
-                                   factor * 2 * turn_radius)
+        meander_start = pya.DPoint(meander_start_x, 5e3 + factor * distance_to_feedline + factor * 2 * turn_radius)
         # non-meandering part of the resonator
-        coupler_waveguide = self._produce_waveguide([
-            pos_start,
-            pya.DPoint(pos_start.x, feedline_coupling_y),
-            pya.DPoint(meander_start_x, feedline_coupling_y),
-            meander_start
-        ], turn_radius=turn_radius)
+        coupler_waveguide = self._produce_waveguide(
+            [
+                pos_start,
+                pya.DPoint(pos_start.x, feedline_coupling_y),
+                pya.DPoint(meander_start_x, feedline_coupling_y),
+                meander_start,
+            ],
+            turn_radius=turn_radius,
+        )
         len_coupler = coupler_waveguide.length()
         # meandering part of the resonator
         meander_length = total_length - len_coupler
         w = 350
         num_meanders = _get_num_meanders(meander_length, turn_radius, w)
-        self.insert_cell(Meander,
+        self.insert_cell(
+            Meander,
             start=meander_start,
             end=meander_start + pya.DPoint(0, 2 * factor * turn_radius * (num_meanders + 1)),
             length=meander_length,
@@ -240,7 +250,7 @@ class SingleXmons(Chip):
 
     def _produce_test_resonator(self, capacitor, capacitor_dtrans, res_idx):
 
-        factor = (2*(res_idx % 2) - 1)  # -1 for resonators below feedline, +1 for resonators above feedline
+        factor = 2 * (res_idx % 2) - 1  # -1 for resonators below feedline, +1 for resonators above feedline
         total_length = float(self.test_res_lengths[res_idx])
         turn_radius = 50
 
@@ -250,19 +260,23 @@ class SingleXmons(Chip):
         y1 = factor * 300
         y2 = factor * 100
         meander_start = pos_start + pya.DPoint(x1, y1 + y2)
-        nonmeander_waveguide = self._produce_waveguide([
-            pos_start,
-            pos_start + pya.DPoint(0, y1),
-            pos_start + pya.DPoint(x1, y1),
-            meander_start,
-        ], turn_radius=turn_radius)
+        nonmeander_waveguide = self._produce_waveguide(
+            [
+                pos_start,
+                pos_start + pya.DPoint(0, y1),
+                pos_start + pya.DPoint(x1, y1),
+                meander_start,
+            ],
+            turn_radius=turn_radius,
+        )
         len_nonmeander = nonmeander_waveguide.length()
 
         # meandering part of the resonator
         meander_length = total_length - len_nonmeander
         w = 250
         num_meanders = _get_num_meanders(meander_length, turn_radius, w)
-        self.insert_cell(Meander,
+        self.insert_cell(
+            Meander,
             start=meander_start,
             end=meander_start + pya.DPoint(0, 2 * factor * turn_radius * (num_meanders + 1)),
             length=meander_length,
@@ -282,14 +296,16 @@ class SingleXmons(Chip):
                 clear from the junction test pads.
 
         """
-        self._produce_waveguide([
-            self.launchers["WN"][0],
-            pya.DPoint(self.launchers["WN"][0].x + x_distance, self.launchers["WN"][0].y),
-            pya.DPoint(self.launchers["WN"][0].x + x_distance, 5e3),
-            pya.DPoint(self.launchers["ES"][0].x - x_distance, 5e3),
-            pya.DPoint(self.launchers["ES"][0].x - x_distance, self.launchers["ES"][0].y),
-            self.launchers["ES"][0]
-        ])
+        self._produce_waveguide(
+            [
+                self.launchers["WN"][0],
+                pya.DPoint(self.launchers["WN"][0].x + x_distance, self.launchers["WN"][0].y),
+                pya.DPoint(self.launchers["WN"][0].x + x_distance, 5e3),
+                pya.DPoint(self.launchers["ES"][0].x - x_distance, 5e3),
+                pya.DPoint(self.launchers["ES"][0].x - x_distance, self.launchers["ES"][0].y),
+                self.launchers["ES"][0],
+            ]
+        )
 
     def _produce_feedline_and_test_resonators(self, x_distance):
         """Produces a feedline and test resonators for a SingleXmons chip.
@@ -309,13 +325,15 @@ class SingleXmons(Chip):
             pya.DPoint((self.qubits_refpoints[3]["base"].x + self.qubits_refpoints[4]["base"].x) / 2 + x_offset, 5e3),
             pya.DPoint((self.qubits_refpoints[1]["base"].x + self.qubits_refpoints[0]["base"].x) / 2 + x_offset, 5e3),
             pya.DPoint((self.qubits_refpoints[5]["base"].x + self.qubits_refpoints[4]["base"].x) / 2 + x_offset, 5e3),
-            pya.DPoint((self.qubits_refpoints[2]["base"].x + self.qubits_refpoints[1]["base"].x) / 2 + x_offset, 5e3)
+            pya.DPoint((self.qubits_refpoints[2]["base"].x + self.qubits_refpoints[1]["base"].x) / 2 + x_offset, 5e3),
         ]
 
         # feedline couplings with test resonators
 
-        cell_cross = self.add_element(WaveguideCoplanarSplitter, **t_cross_parameters(
-            a=self.a, b=self.b, a2=self.a, b2=self.b, length_extra_side=2 * self.a))
+        cell_cross = self.add_element(
+            WaveguideCoplanarSplitter,
+            **t_cross_parameters(a=self.a, b=self.b, a2=self.a, b2=self.b, length_extra_side=2 * self.a),
+        )
         inst_crosses = []
 
         for i in range(4):
@@ -340,27 +358,37 @@ class SingleXmons(Chip):
 
         # feedline
 
-        self._produce_waveguide([
-            self.launchers["WN"][0],
-            pya.DPoint(self.launchers["WN"][0].x + x_distance, self.launchers["WN"][0].y),
-            pya.DPoint(self.launchers["WN"][0].x + x_distance, 5e3),
-            self.get_refpoints(cell_cross, inst_crosses[0].dtrans)["port_left"],
-            ])
-        self._produce_waveguide([
-            self.get_refpoints(cell_cross, inst_crosses[0].dtrans)["port_right"],
-            self.get_refpoints(cell_cross, inst_crosses[1].dtrans)["port_right"],
-           ])
-        self._produce_waveguide([
-            self.get_refpoints(cell_cross, inst_crosses[1].dtrans)["port_left"],
-            self.get_refpoints(cell_cross, inst_crosses[2].dtrans)["port_left"],
-            ])
-        self._produce_waveguide([
-            self.get_refpoints(cell_cross, inst_crosses[2].dtrans)["port_right"],
-            self.get_refpoints(cell_cross, inst_crosses[3].dtrans)["port_right"],
-        ])
-        self._produce_waveguide([
-            self.get_refpoints(cell_cross, inst_crosses[3].dtrans)["port_left"],
-            pya.DPoint(self.launchers["ES"][0].x - x_distance, 5e3),
-            pya.DPoint(self.launchers["ES"][0].x - x_distance, self.launchers["ES"][0].y),
-            self.launchers["ES"][0]
-        ])
+        self._produce_waveguide(
+            [
+                self.launchers["WN"][0],
+                pya.DPoint(self.launchers["WN"][0].x + x_distance, self.launchers["WN"][0].y),
+                pya.DPoint(self.launchers["WN"][0].x + x_distance, 5e3),
+                self.get_refpoints(cell_cross, inst_crosses[0].dtrans)["port_left"],
+            ]
+        )
+        self._produce_waveguide(
+            [
+                self.get_refpoints(cell_cross, inst_crosses[0].dtrans)["port_right"],
+                self.get_refpoints(cell_cross, inst_crosses[1].dtrans)["port_right"],
+            ]
+        )
+        self._produce_waveguide(
+            [
+                self.get_refpoints(cell_cross, inst_crosses[1].dtrans)["port_left"],
+                self.get_refpoints(cell_cross, inst_crosses[2].dtrans)["port_left"],
+            ]
+        )
+        self._produce_waveguide(
+            [
+                self.get_refpoints(cell_cross, inst_crosses[2].dtrans)["port_right"],
+                self.get_refpoints(cell_cross, inst_crosses[3].dtrans)["port_right"],
+            ]
+        )
+        self._produce_waveguide(
+            [
+                self.get_refpoints(cell_cross, inst_crosses[3].dtrans)["port_left"],
+                pya.DPoint(self.launchers["ES"][0].x - x_distance, 5e3),
+                pya.DPoint(self.launchers["ES"][0].x - x_distance, self.launchers["ES"][0].y),
+                self.launchers["ES"][0],
+            ]
+        )

@@ -50,7 +50,7 @@ class Launcher(Element):
             pya.DPoint(self.l + self.s, self.a_launcher / 2),
             pya.DPoint(self.l + self.s, -self.a_launcher / 2),
             pya.DPoint(self.l, -self.a_launcher / 2),
-            pya.DPoint(0, -self.a / 2 + 0)
+            pya.DPoint(0, -self.a / 2 + 0),
         ]
         if self.add_metal:
             self.cell.shapes(self.get_layer("base_metal_addition")).insert(pya.DPolygon(pts))

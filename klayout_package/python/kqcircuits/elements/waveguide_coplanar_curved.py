@@ -26,7 +26,7 @@ from kqcircuits.elements.waveguide_coplanar_straight import WaveguideCoplanarStr
 
 
 def arc(r, start, stop, n):
-    """ Returns list of points of an arc
+    """Returns list of points of an arc
 
     Args:
         r: radius
@@ -64,8 +64,15 @@ class WaveguideCoplanarCurved(Element):
 
     def build(self):
 
-        left_inner_arc, left_outer_arc, right_inner_arc, right_outer_arc, left_protection_arc, right_protection_arc, \
-            annotation_arc = WaveguideCoplanarCurved.create_curve_arcs(self, self.alpha)
+        (
+            left_inner_arc,
+            left_outer_arc,
+            right_inner_arc,
+            right_outer_arc,
+            left_protection_arc,
+            right_protection_arc,
+            annotation_arc,
+        ) = WaveguideCoplanarCurved.create_curve_arcs(self, self.alpha)
 
         # Left gap
         pts = left_inner_arc + left_outer_arc
@@ -105,15 +112,22 @@ class WaveguideCoplanarCurved(Element):
         """
         alphastart = 0
         alphastop = angle
-        left_gap_inner = arc(elem.r - elem.a/2, alphastart, alphastop, elem.n)
-        left_gap_outer = arc(elem.r - elem.a/2 - elem.b, alphastop, alphastart, elem.n)
-        right_gap_inner = arc(elem.r + elem.a/2, alphastart, alphastop, elem.n)
-        right_gap_outer = arc(elem.r + elem.a/2 + elem.b, alphastop, alphastart, elem.n)
-        left_protection = arc(elem.r - elem.a/2 - elem.b - elem.margin, alphastart, alphastop, elem.n)
-        right_protection = arc(elem.r + elem.a/2 + elem.b + elem.margin, alphastop, alphastart, elem.n)
+        left_gap_inner = arc(elem.r - elem.a / 2, alphastart, alphastop, elem.n)
+        left_gap_outer = arc(elem.r - elem.a / 2 - elem.b, alphastop, alphastart, elem.n)
+        right_gap_inner = arc(elem.r + elem.a / 2, alphastart, alphastop, elem.n)
+        right_gap_outer = arc(elem.r + elem.a / 2 + elem.b, alphastop, alphastart, elem.n)
+        left_protection = arc(elem.r - elem.a / 2 - elem.b - elem.margin, alphastart, alphastop, elem.n)
+        right_protection = arc(elem.r + elem.a / 2 + elem.b + elem.margin, alphastop, alphastart, elem.n)
         annotation = arc(elem.r, alphastart, alphastop, elem.n)
-        return left_gap_inner, left_gap_outer, right_gap_inner, right_gap_outer, left_protection, right_protection,\
-            annotation
+        return (
+            left_gap_inner,
+            left_gap_outer,
+            right_gap_inner,
+            right_gap_outer,
+            left_protection,
+            right_protection,
+            annotation,
+        )
 
     @staticmethod
     def produce_curve_termination(elem, angle, term_len, trans, face_index=0):
@@ -129,8 +143,15 @@ class WaveguideCoplanarCurved(Element):
             trans (DTrans): transformation applied to the termination
             face_index (int): face index of the face in elem where the termination is created
         """
-        left_inner_arc, left_outer_arc, right_inner_arc, right_outer_arc, left_protection_arc, right_protection_arc,\
-            _ = WaveguideCoplanarCurved.create_curve_arcs(elem, angle)
+        (
+            left_inner_arc,
+            left_outer_arc,
+            right_inner_arc,
+            right_outer_arc,
+            left_protection_arc,
+            right_protection_arc,
+            _,
+        ) = WaveguideCoplanarCurved.create_curve_arcs(elem, angle)
 
         # direction of the termination box
         _, term_dir = vector_length_and_direction(left_outer_arc[0] - left_outer_arc[1])
@@ -140,19 +161,19 @@ class WaveguideCoplanarCurved(Element):
             pts = [
                 left_inner_arc[-1],
                 left_outer_arc[0],
-                left_outer_arc[0] + term_len*term_dir,
-                right_outer_arc[0] + term_len*term_dir,
+                left_outer_arc[0] + term_len * term_dir,
+                right_outer_arc[0] + term_len * term_dir,
                 right_outer_arc[0],
                 right_inner_arc[-1],
             ]
             shape = pya.DPolygon(pts)
-            elem.cell.shapes(elem.layout.layer(elem.face(face_index)["base_metal_gap_wo_grid"])).insert(trans*shape)
+            elem.cell.shapes(elem.layout.layer(elem.face(face_index)["base_metal_gap_wo_grid"])).insert(trans * shape)
 
         # grid avoidance for termination
         protection_pts = [
             left_protection_arc[-1],
-            left_protection_arc[-1] + (term_len + elem.margin)*term_dir,
-            right_protection_arc[0] + (term_len + elem.margin)*term_dir,
+            left_protection_arc[-1] + (term_len + elem.margin) * term_dir,
+            right_protection_arc[0] + (term_len + elem.margin) * term_dir,
             right_protection_arc[0],
         ]
         elem.add_protection(trans * pya.DPolygon(protection_pts), face_index)

@@ -31,6 +31,7 @@ def test_bridge_number_many():
     n_bridges = 124
     assert _get_number_of_bridges(n_bridges) == n_bridges
 
+
 def _get_number_of_bridges(n_bridges):
     layout = pya.Layout()
     cell = AirbridgeDC.create(layout, n_ab=n_bridges)

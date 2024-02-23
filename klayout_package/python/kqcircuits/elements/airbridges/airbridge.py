@@ -46,8 +46,8 @@ class Airbridge(Element):
         # transform cell to have 'port_a' at (0, l/2) and 'port_b' at (0, -l/2), where l is distance between ports
         if not code_generated:
             ref_points = get_refpoints(layout.layer(default_layers["refpoints"]), cell)
-            center = (ref_points['port_a'] + ref_points['port_b']) / 2
-            orientation = get_angle(ref_points['port_a'] - ref_points['port_b'])
+            center = (ref_points["port_a"] + ref_points["port_b"]) / 2
+            orientation = get_angle(ref_points["port_a"] - ref_points["port_b"])
             cell.transform(pya.DCplxTrans(1.0, 90 - orientation, False, -center))
 
         return cell

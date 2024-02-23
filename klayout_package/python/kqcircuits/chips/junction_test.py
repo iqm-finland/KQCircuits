@@ -44,28 +44,32 @@ class JunctionTest(Chip):
         dice_width = float(self.frames_dice_width[0])
 
         # create the polygon
-        poly = pya.DPolygon([
-            pya.DPoint(left + 2000, bottom + 100 + dice_width),
-            pya.DPoint(left + 2000, bottom + 2000),
-            pya.DPoint(left + 100 + dice_width, bottom + 2000),
-            pya.DPoint(left + 100 + dice_width, bottom + 8000),
-            pya.DPoint(left + 2000, bottom + 8000),
-            pya.DPoint(left + 2000, bottom + height - 100 - dice_width),
-            pya.DPoint(left + 8000, bottom + height - 100 - dice_width),
-            pya.DPoint(left + 8000, bottom + 8000),
-            pya.DPoint(left + width - 100 - dice_width, bottom + 8000),
-            pya.DPoint(left + width - 100 - dice_width, bottom + 2000),
-            pya.DPoint(left + 8000, bottom + 2000),
-            pya.DPoint(left + 8000, bottom + 100 + dice_width)
-        ])
+        poly = pya.DPolygon(
+            [
+                pya.DPoint(left + 2000, bottom + 100 + dice_width),
+                pya.DPoint(left + 2000, bottom + 2000),
+                pya.DPoint(left + 100 + dice_width, bottom + 2000),
+                pya.DPoint(left + 100 + dice_width, bottom + 8000),
+                pya.DPoint(left + 2000, bottom + 8000),
+                pya.DPoint(left + 2000, bottom + height - 100 - dice_width),
+                pya.DPoint(left + 8000, bottom + height - 100 - dice_width),
+                pya.DPoint(left + 8000, bottom + 8000),
+                pya.DPoint(left + width - 100 - dice_width, bottom + 8000),
+                pya.DPoint(left + width - 100 - dice_width, bottom + 2000),
+                pya.DPoint(left + 8000, bottom + 2000),
+                pya.DPoint(left + 8000, bottom + 100 + dice_width),
+            ]
+        )
 
         # create the box array
         b_array = []
 
-        for y in numpy.arange(bottom + dice_width + self.inter_space, bottom + height - dice_width,
-                              self.edge_len + self.inter_space):
-            for x in numpy.arange(left + dice_width + self.inter_space, left + width - dice_width,
-                                  self.edge_len + self.inter_space):
+        for y in numpy.arange(
+            bottom + dice_width + self.inter_space, bottom + height - dice_width, self.edge_len + self.inter_space
+        ):
+            for x in numpy.arange(
+                left + dice_width + self.inter_space, left + width - dice_width, self.edge_len + self.inter_space
+            ):
                 b = pya.DPolygon(pya.DBox(x, y, x + self.edge_len, y + self.edge_len)).to_itype(self.layout.dbu)
                 b_array.append(b)
 

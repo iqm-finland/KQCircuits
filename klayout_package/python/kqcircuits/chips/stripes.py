@@ -50,20 +50,22 @@ class Stripes(Chip):
         dice_width = float(self.frames_dice_width[0])
 
         # create the test area polygon
-        poly = pya.DPolygon([
-            pya.DPoint(left + p_left, bottom + 100 + dice_width),
-            pya.DPoint(left + p_left, bottom + p_bottom),
-            pya.DPoint(left + 100 + dice_width, bottom + p_bottom),
-            pya.DPoint(left + 100 + dice_width, bottom + p_top),
-            pya.DPoint(left + p_left, bottom + p_top),
-            pya.DPoint(left + p_left, bottom + height - 100 - dice_width),
-            pya.DPoint(left + p_right, bottom + height - 100 - dice_width),
-            pya.DPoint(left + p_right, bottom + p_top),
-            pya.DPoint(left + width - 100 - dice_width, bottom + p_top),
-            pya.DPoint(left + width - 100 - dice_width, bottom + p_bottom),
-            pya.DPoint(left + p_right, bottom + p_bottom),
-            pya.DPoint(left + p_right, bottom + 100 + dice_width)
-        ])
+        poly = pya.DPolygon(
+            [
+                pya.DPoint(left + p_left, bottom + 100 + dice_width),
+                pya.DPoint(left + p_left, bottom + p_bottom),
+                pya.DPoint(left + 100 + dice_width, bottom + p_bottom),
+                pya.DPoint(left + 100 + dice_width, bottom + p_top),
+                pya.DPoint(left + p_left, bottom + p_top),
+                pya.DPoint(left + p_left, bottom + height - 100 - dice_width),
+                pya.DPoint(left + p_right, bottom + height - 100 - dice_width),
+                pya.DPoint(left + p_right, bottom + p_top),
+                pya.DPoint(left + width - 100 - dice_width, bottom + p_top),
+                pya.DPoint(left + width - 100 - dice_width, bottom + p_bottom),
+                pya.DPoint(left + p_right, bottom + p_bottom),
+                pya.DPoint(left + p_right, bottom + 100 + dice_width),
+            ]
+        )
 
         # create the box array
         b_array = []
@@ -110,8 +112,8 @@ class Stripes(Chip):
                 stripe_bottom_left_y = c
 
             r = pya.DPolygon(
-                pya.DBox(stripe_bottom_left_x, stripe_bottom_left_y, stripe_top_right_x, stripe_top_right_y)).to_itype(
-                self.layout.dbu)
+                pya.DBox(stripe_bottom_left_x, stripe_bottom_left_y, stripe_top_right_x, stripe_top_right_y)
+            ).to_itype(self.layout.dbu)
             b_array.append(r)
 
         # creating the squares for all of the ground grid

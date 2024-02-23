@@ -34,4 +34,4 @@ class TsvStandard(Tsv):
         margin = circle_polygon(self.tsv_diameter / 2 + self.tsv_margin, self.n)
         self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(margin)
         self.cell.shapes(self.get_layer("ground_grid_avoidance", 1)).insert(margin)
-        del self.refpoints['base']
+        del self.refpoints["base"]

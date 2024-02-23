@@ -28,12 +28,11 @@ class WaveGuidesSim(Simulation):
     cpw_length = Param(pdt.TypeDouble, "Waveguide length", 100, unit="μm")
     n_guides = Param(pdt.TypeInt, "Number of guides", 5)
     spacing = Param(pdt.TypeDouble, "Parallel spacing", 100, unit="μm")
-    guide_face_id = Param(pdt.TypeString, "Guide face id", '1t1')
+    guide_face_id = Param(pdt.TypeString, "Guide face id", "1t1")
     add_bumps = Param(pdt.TypeBoolean, "Add ground bumps", False)
     port_termination_end = Param(pdt.TypeBoolean, "Port termination end", True)
     use_edge_ports = Param(pdt.TypeBoolean, "Use edge ports", True)
     etch_whole_opposite_face = Param(pdt.TypeBoolean, "Remove the whole opposite face metal if flip chip", False)
-
 
     def build(self):
         self.produce_guides()
@@ -46,38 +45,46 @@ class WaveGuidesSim(Simulation):
         a = self.a
         b = self.b
         spacing = self.spacing
-        tot_y = (n_guides-1)*spacing
+        tot_y = (n_guides - 1) * spacing
         guide_face_id = self.guide_face_id
-        face_id = {
-            '1t1': 0,
-            '2b1': 1
-        }
+        face_id = {"1t1": 0, "2b1": 1}
 
         for i in range(n_guides):
-            y_pos = i*spacing-tot_y/2.
-            p1 = pya.DPoint(-cpw_length/2, y_pos)
-            p2 = pya.DPoint(cpw_length/2., y_pos)
+            y_pos = i * spacing - tot_y / 2.0
+            p1 = pya.DPoint(-cpw_length / 2, y_pos)
+            p2 = pya.DPoint(cpw_length / 2.0, y_pos)
             p0 = pya.DPoint(0, y_pos)
             # waveguide_cell = self.add_element(WaveguideCoplanar, path=pya.DPath([p1, p2], 0),
             #                                   face_ids=[guide_face_id])
             if self.use_edge_ports:
-                wg_cell = self.add_element(WaveguideCoplanar, path=pya.DPath([p1, p2], 0), term1=0,
-                                           term2=0, face_ids=[guide_face_id])
+                wg_cell = self.add_element(
+                    WaveguideCoplanar, path=pya.DPath([p1, p2], 0), term1=0, term2=0, face_ids=[guide_face_id]
+                )
                 self.insert_cell(wg_cell)
-                self.ports.append(EdgePort(i+1, p1, face=face_id[guide_face_id]))
+                self.ports.append(EdgePort(i + 1, p1, face=face_id[guide_face_id]))
                 if self.port_termination_end:
-                    self.ports.append(EdgePort(n_guides+i+1, p2, face=face_id[guide_face_id]))
+                    self.ports.append(EdgePort(n_guides + i + 1, p2, face=face_id[guide_face_id]))
             else:
                 if self.port_termination_end:
-                    self.produce_waveguide_to_port(p0, p1, i+1, waveguide_length=cpw_length/2.,
-                                                   a=a, b=b, face=face_id[guide_face_id])
-                    self.produce_waveguide_to_port(p0, p2, n_guides+i+1, waveguide_length=cpw_length/2.,
-                                                   a=a, b=b, face=face_id[guide_face_id])
+                    self.produce_waveguide_to_port(
+                        p0, p1, i + 1, waveguide_length=cpw_length / 2.0, a=a, b=b, face=face_id[guide_face_id]
+                    )
+                    self.produce_waveguide_to_port(
+                        p0,
+                        p2,
+                        n_guides + i + 1,
+                        waveguide_length=cpw_length / 2.0,
+                        a=a,
+                        b=b,
+                        face=face_id[guide_face_id],
+                    )
                 else:
-                    self.produce_waveguide_to_port(p0, p1, i+1, waveguide_length=cpw_length/2.,
-                                                   a=a, b=b, face=face_id[guide_face_id])
-                    wg_cell = self.add_element(WaveguideCoplanar, path=pya.DPath([p0, p2], 0), term1=0,
-                                               term2=self.b, face_ids=[guide_face_id])
+                    self.produce_waveguide_to_port(
+                        p0, p1, i + 1, waveguide_length=cpw_length / 2.0, a=a, b=b, face=face_id[guide_face_id]
+                    )
+                    wg_cell = self.add_element(
+                        WaveguideCoplanar, path=pya.DPath([p0, p2], 0), term1=0, term2=self.b, face_ids=[guide_face_id]
+                    )
                     self.insert_cell(wg_cell)
 
             if self.etch_whole_opposite_face:
@@ -87,9 +94,9 @@ class WaveGuidesSim(Simulation):
     def produce_ground_bumps(self):
         n_guides = self.n_guides
         spacing = self.spacing
-        tot_y = (n_guides-1)*spacing
+        tot_y = (n_guides - 1) * spacing
         bump = self.add_element(FlipChipConnectorDc)
 
-        for i in range(n_guides-1):
-            y_pos = i*spacing-tot_y/2.+spacing/2.
+        for i in range(n_guides - 1):
+            y_pos = i * spacing - tot_y / 2.0 + spacing / 2.0
             self.insert_cell(bump, pya.DCplxTrans(1, 0, False, pya.DVector(0, y_pos)))

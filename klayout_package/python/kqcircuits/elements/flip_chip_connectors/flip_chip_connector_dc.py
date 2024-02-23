@@ -18,6 +18,7 @@
 
 from kqcircuits.elements.flip_chip_connectors.flip_chip_connector import FlipChipConnector
 
+
 class FlipChipConnectorDc(FlipChipConnector):
     """PCell declaration for an inter-chip dc connector.
 

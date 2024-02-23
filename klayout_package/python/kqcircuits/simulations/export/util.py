@@ -52,15 +52,15 @@ def _dist(edge: pya.Edge, point: pya.Point):
     If point projected to line by edge is in edge then use `distance_abs`
     but otherwise take the minimum distance to end points
     """
-    v_edge = pya.Vector(edge.p2-edge.p1)
+    v_edge = pya.Vector(edge.p2 - edge.p1)
     if v_edge.sprod(v_edge) > 0:
-        v_point_start = pya.Vector(point-edge.p1)
-        v_point_end = pya.Vector(point-edge.p2)
+        v_point_start = pya.Vector(point - edge.p1)
+        v_point_end = pya.Vector(point - edge.p2)
 
-        v_point_start_projection = v_edge.sprod(v_point_start)/math.sqrt(v_edge.sprod(v_edge))
-        v_point_end_projection = v_edge.sprod(v_point_end)/math.sqrt(v_edge.sprod(v_edge))
+        v_point_start_projection = v_edge.sprod(v_point_start) / math.sqrt(v_edge.sprod(v_edge))
+        v_point_end_projection = v_edge.sprod(v_point_end) / math.sqrt(v_edge.sprod(v_edge))
 
-        if edge.length() >= abs(v_point_start_projection+v_point_end_projection):
+        if edge.length() >= abs(v_point_start_projection + v_point_end_projection):
             out = edge.distance_abs(point)
         else:
             out = min(point.distance(edge.p1), point.distance(edge.p2))
@@ -75,12 +75,12 @@ def find_edge_from_point_in_polygons(polygons: List[pya.Polygon], point: pya.DPo
     """
 
     # Find closest edge to point
-    edges = [(i, j, edge.to_dtype(dbu))
-             for (i, polygon) in enumerate(polygons)
-             for (j, edge) in enumerate(polygon.each_edge())
-             ]
-    (distance, i, j, nearest_edge) = \
-        sorted([(_dist(edge, point), i, j, edge) for (i, j, edge) in edges])[0]
+    edges = [
+        (i, j, edge.to_dtype(dbu))
+        for (i, polygon) in enumerate(polygons)
+        for (j, edge) in enumerate(polygon.each_edge())
+    ]
+    (distance, i, j, nearest_edge) = sorted([(_dist(edge, point), i, j, edge) for (i, j, edge) in edges])[0]
     if distance < tolerance:
         return i, j, nearest_edge
     else:
@@ -112,7 +112,7 @@ def get_enclosing_polygon(points: List[List[float]]):
         Returns:
             y = y0 + (x-x0)*(dy/dx)
         """
-        return p0[1] + (x-p0[0])*((p1[1]-p0[1])/(p1[0]-p0[0]))
+        return p0[1] + (x - p0[0]) * ((p1[1] - p0[1]) / (p1[0] - p0[0]))
 
     # Sort by x and then y, to ensure we go from lowest left-most point to
     # highest right-most point.

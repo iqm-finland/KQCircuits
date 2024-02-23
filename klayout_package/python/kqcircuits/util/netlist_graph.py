@@ -54,10 +54,13 @@ def network_as_graph(network):
     # Add all edges from the netlist
     for net in network["nets"].values():
         if len(net) >= 2:
-            for i,net_i in enumerate(net):
-                for net_j in net[i+1:]:
-                    reasons_to_ignore_connections = [(a,b) for a,b in default_netlist_ignore_connections
-                        if (net_i["pin"] == a and net_j["pin"] == b) or (net_i["pin"] == b and net_j["pin"] == a)]
+            for i, net_i in enumerate(net):
+                for net_j in net[i + 1 :]:
+                    reasons_to_ignore_connections = [
+                        (a, b)
+                        for a, b in default_netlist_ignore_connections
+                        if (net_i["pin"] == a and net_j["pin"] == b) or (net_i["pin"] == b and net_j["pin"] == a)
+                    ]
                     if len(reasons_to_ignore_connections) > 0:
                         continue
                     edges.append([net_i["subcircuit_id"], net_j["subcircuit_id"]])
@@ -70,9 +73,11 @@ def network_as_graph(network):
     for subcircuit_id in used_subcircuit_ids:
         subcircuit = network["subcircuits"][str(subcircuit_id)]
         graph.nodes[subcircuit_id]["cell_name"] = subcircuit["cell_name"]
-        graph.nodes[subcircuit_id]["cell_type"] = subcircuit["cell_name"].split('$')[0].replace('*', ' ')
-        graph.nodes[subcircuit_id]["location"] = [  subcircuit["subcircuit_location"]["x"],
-                                                    subcircuit["subcircuit_location"]["y"]]
+        graph.nodes[subcircuit_id]["cell_type"] = subcircuit["cell_name"].split("$")[0].replace("*", " ")
+        graph.nodes[subcircuit_id]["location"] = [
+            subcircuit["subcircuit_location"]["x"],
+            subcircuit["subcircuit_location"]["y"],
+        ]
         if "instance_name" in subcircuit and subcircuit["instance_name"] is not None:
             instance_name = subcircuit["instance_name"]
         else:

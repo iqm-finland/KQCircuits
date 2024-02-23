@@ -20,8 +20,10 @@ from tests.chips.chip_test_helpers import errors_test, box_existence_test
 
 from kqcircuits.chips.lithography_test_twoface import LithographyTestTwoface
 
+
 def test_errors(capfd):
     errors_test(capfd, LithographyTestTwoface)
+
 
 def test_box_existence():
     box_existence_test(LithographyTestTwoface)

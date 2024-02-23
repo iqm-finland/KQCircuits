@@ -30,16 +30,19 @@ from kqcircuits.junctions.junction import Junction
 @add_parameters_from(XMonsDirectCoupling, "arm_width_a", "rr_cpl_width")
 class XMonsDirectCouplingSim(Simulation):
 
-    #Re-define some XMonsDirectCoupling parameters with defaults changed:
+    # Re-define some XMonsDirectCoupling parameters with defaults changed:
     qubit_spacing = Param(pdt.TypeDouble, "Qubit spacing", 3, unit="μm")
     arm_width_b = Param(pdt.TypeDouble, "Qubit 2 arm width", 66, unit="μm")
-    waveguide_length = Param(pdt.TypeDouble,
-                             "Length of waveguide stubs or distance between couplers and waveguide turning point", 100)
+    waveguide_length = Param(
+        pdt.TypeDouble, "Length of waveguide stubs or distance between couplers and waveguide turning point", 100
+    )
     cpl_width = Param(pdt.TypeDouble, "Qubit RR coupler width", 24, unit="μm")
-    junction_inductances = Param(pdt.TypeList, "Qubit junction inductances",
-                                [13.5e-9, 13.5e-9, 13.5e-9], unit="[H, H, H]")
-    junction_capacitances = Param(pdt.TypeList, "Qubit junction capacitances",
-                                [0.1e-15, 0.1e-15, 0.1e-15], unit="[F, F, F]")
+    junction_inductances = Param(
+        pdt.TypeList, "Qubit junction inductances", [13.5e-9, 13.5e-9, 13.5e-9], unit="[H, H, H]"
+    )
+    junction_capacitances = Param(
+        pdt.TypeList, "Qubit junction capacitances", [0.1e-15, 0.1e-15, 0.1e-15], unit="[F, F, F]"
+    )
 
     produce_qubits = XMonsDirectCoupling.produce_qubits
 
@@ -55,14 +58,14 @@ class XMonsDirectCouplingSim(Simulation):
             port_nr=1,
             location=self.refpoints["QB1_port_drive"],
             term1=10,
-            towards=self.refpoints["QB1_port_drive"] + pya.DVector(-1, 1)
+            towards=self.refpoints["QB1_port_drive"] + pya.DVector(-1, 1),
         )
         # driveline 2
         self.produce_waveguide_to_port(
             port_nr=2,
             location=self.refpoints["QB2_port_drive"],
             term1=10,
-            towards=self.refpoints["QB2_port_drive"] + pya.DVector(0, -1)
+            towards=self.refpoints["QB2_port_drive"] + pya.DVector(0, -1),
         )
         # driveline 3
         self.produce_waveguide_to_port(
@@ -79,7 +82,7 @@ class XMonsDirectCouplingSim(Simulation):
             b=20,
             location=self.refpoints["QB1_port_cplr1"],
             towards=self.refpoints["QB1_port_cplr1"] + pya.DVector(0, 1),
-            use_internal_ports=True
+            use_internal_ports=True,
         )
         # readout 2
         self.produce_waveguide_to_port(
@@ -88,7 +91,7 @@ class XMonsDirectCouplingSim(Simulation):
             b=20,
             location=self.refpoints["QB2_port_cplr1"],
             towards=self.refpoints["QB2_port_cplr1"] + pya.DVector(0, 1),
-            use_internal_ports=True
+            use_internal_ports=True,
         )
         # readout 3
         self.produce_waveguide_to_port(
@@ -97,15 +100,32 @@ class XMonsDirectCouplingSim(Simulation):
             b=20,
             location=self.refpoints["QB3_port_cplr1"],
             towards=self.refpoints["QB3_port_cplr1"] + pya.DVector(0, 1),
-            use_internal_ports=True
+            use_internal_ports=True,
         )
 
         # qubits
-        self.ports.extend([
-            InternalPort(7, *self.etched_line(self.refpoints["QB1_port_squid_a"], self.refpoints["QB1_port_squid_b"]),
-                inductance=self.junction_inductances[0], capacitance=self.junction_capacitances[0], junction=True),
-            InternalPort(8, *self.etched_line(self.refpoints["QB2_port_squid_a"], self.refpoints["QB2_port_squid_b"]),
-                inductance=self.junction_inductances[1], capacitance=self.junction_capacitances[1], junction=True),
-            InternalPort(9, *self.etched_line(self.refpoints["QB3_port_squid_a"], self.refpoints["QB3_port_squid_b"]),
-                inductance=self.junction_inductances[2], capacitance=self.junction_capacitances[2], junction=True),
-        ])
+        self.ports.extend(
+            [
+                InternalPort(
+                    7,
+                    *self.etched_line(self.refpoints["QB1_port_squid_a"], self.refpoints["QB1_port_squid_b"]),
+                    inductance=self.junction_inductances[0],
+                    capacitance=self.junction_capacitances[0],
+                    junction=True,
+                ),
+                InternalPort(
+                    8,
+                    *self.etched_line(self.refpoints["QB2_port_squid_a"], self.refpoints["QB2_port_squid_b"]),
+                    inductance=self.junction_inductances[1],
+                    capacitance=self.junction_capacitances[1],
+                    junction=True,
+                ),
+                InternalPort(
+                    9,
+                    *self.etched_line(self.refpoints["QB3_port_squid_a"], self.refpoints["QB3_port_squid_b"]),
+                    inductance=self.junction_inductances[2],
+                    capacitance=self.junction_capacitances[2],
+                    junction=True,
+                ),
+            ]
+        )

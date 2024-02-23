@@ -30,8 +30,14 @@ from kqcircuits.simulations.simulation import Simulation
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
 
 
-def xsection_call(input_oas: Path, output_oas: Path, cut1: pya.DPoint, cut2: pya.DPoint,
-        process_path: Path = XSECTION_PROCESS_PATH, parameters_path: Path = None) -> None:
+def xsection_call(
+    input_oas: Path,
+    output_oas: Path,
+    cut1: pya.DPoint,
+    cut2: pya.DPoint,
+    process_path: Path = XSECTION_PROCESS_PATH,
+    parameters_path: Path = None,
+) -> None:
     """Calls on KLayout to run the XSection plugin
 
     Args:
@@ -62,13 +68,27 @@ def xsection_call(input_oas: Path, output_oas: Path, cut1: pya.DPoint, cut2: pya
     xs_run = str(process_path).replace("\\\\?\\", "")
     xs_params = str(parameters_path).replace("\\\\?\\", "")
     # When debugging, remove '-z' argument to see ruby error messages
-    subprocess.run([klayout_executable_command(), input_oas.absolute(), '-z', '-nc', '-rx',
-                    '-r', xsection_plugin_path,
-                    '-rd', f'xs_run={xs_run}',
-                    '-rd', f'xs_params={xs_params}',
-                    '-rd', f'xs_cut={cut_string}',
-                    '-rd', f'xs_out={output_oas.absolute()}'],
-        check=True, startupinfo=STARTUPINFO)
+    subprocess.run(
+        [
+            klayout_executable_command(),
+            input_oas.absolute(),
+            "-z",
+            "-nc",
+            "-rx",
+            "-r",
+            xsection_plugin_path,
+            "-rd",
+            f"xs_run={xs_run}",
+            "-rd",
+            f"xs_params={xs_params}",
+            "-rd",
+            f"xs_cut={cut_string}",
+            "-rd",
+            f"xs_out={output_oas.absolute()}",
+        ],
+        check=True,
+        startupinfo=STARTUPINFO,
+    )
 
 
 def _oxidise_layers(simulation, ma_thickness, ms_thickness, sa_thickness):
@@ -77,8 +97,11 @@ def _oxidise_layers(simulation, ma_thickness, ms_thickness, sa_thickness):
     """
     substrate_layers = [layer for layer in simulation.layout.layer_infos() if layer.name.endswith("_substrate")]
     substrate = _combine_region_from_layers(simulation, substrate_layers)
-    metal_layers  = [layer for layer in simulation.layout.layer_infos() if layer.name in
-        ["b_ground", "t_ground", "b_signal", "t_signal"]]
+    metal_layers = [
+        layer
+        for layer in simulation.layout.layer_infos()
+        if layer.name in ["b_ground", "t_ground", "b_signal", "t_signal"]
+    ]
     metal_layers += [layer for layer in simulation.layout.layer_infos() if layer.name.startswith("b_signal_")]
     metal_layers += [layer for layer in simulation.layout.layer_infos() if layer.name.startswith("t_signal_")]
     metals = _combine_region_from_layers(simulation, metal_layers)
@@ -99,15 +122,14 @@ def _oxidise_layers(simulation, ma_thickness, ms_thickness, sa_thickness):
     ma_layer = _thicken_edges(simulation, ma_edges, ma_thickness, True)
     ms_layer = _thicken_edges(simulation, ms_edges, ms_thickness, False)
     sa_layer = _thicken_edges(simulation, sa_edges, sa_thickness, True)
-    sa_layer -= ma_layer # MA layer takes precedence over SA layer
+    sa_layer -= ma_layer  # MA layer takes precedence over SA layer
 
     # Etch and replace substrate layer regions
     if ms_thickness > 0.0 or sa_thickness > 0.0:
         for substrate_layer in substrate_layers:
             substrate_region = pya.Region(simulation.cell.shapes(simulation.layout.layer(substrate_layer)))
             simulation.cell.shapes(simulation.layout.layer(substrate_layer)).clear()
-            simulation.cell.shapes(simulation.layout.layer(substrate_layer)).insert(
-                substrate_region - ms_layer)
+            simulation.cell.shapes(simulation.layout.layer(substrate_layer)).insert(substrate_region - ms_layer)
 
     if ma_thickness > 0.0:
         simulation.cell.shapes(simulation.get_sim_layer("ma_layer")).insert(ma_layer)
@@ -117,24 +139,24 @@ def _oxidise_layers(simulation, ma_thickness, ms_thickness, sa_thickness):
         simulation.cell.shapes(simulation.get_sim_layer("sa_layer")).insert(sa_layer)
 
 
-def create_xsections_from_simulations(simulations: List[Simulation],
-                                      output_path: Path,
-                                      cuts: Union[Tuple[pya.DPoint, pya.DPoint], List[Tuple[pya.DPoint, pya.DPoint]]],
-                                      process_path: Path = XSECTION_PROCESS_PATH,
-                                      post_processing_function: Callable[[CrossSectionSimulation], None] = None,
-                                      oxidise_layers_function:
-                                        Callable[[CrossSectionSimulation, float, float, float], None] = _oxidise_layers,
-                                      ma_permittivity: float = 0,
-                                      ms_permittivity: float = 0,
-                                      sa_permittivity: float = 0,
-                                      ma_thickness: float = 0,
-                                      ms_thickness: float = 0,
-                                      sa_thickness: float = 0,
-                                      vertical_cull: Union[None, Tuple[float, float]] = None,
-                                      mer_box: Union[None, pya.DBox] = None,
-                                      london_penetration_depth: float = 0,
-                                      magnification_order: int = 0
-                                    ) -> List[Simulation]:
+def create_xsections_from_simulations(
+    simulations: List[Simulation],
+    output_path: Path,
+    cuts: Union[Tuple[pya.DPoint, pya.DPoint], List[Tuple[pya.DPoint, pya.DPoint]]],
+    process_path: Path = XSECTION_PROCESS_PATH,
+    post_processing_function: Callable[[CrossSectionSimulation], None] = None,
+    oxidise_layers_function: Callable[[CrossSectionSimulation, float, float, float], None] = _oxidise_layers,
+    ma_permittivity: float = 0,
+    ms_permittivity: float = 0,
+    sa_permittivity: float = 0,
+    ma_thickness: float = 0,
+    ms_thickness: float = 0,
+    sa_thickness: float = 0,
+    vertical_cull: Union[None, Tuple[float, float]] = None,
+    mer_box: Union[None, pya.DBox] = None,
+    london_penetration_depth: float = 0,
+    magnification_order: int = 0,
+) -> List[Simulation]:
     """Create cross-sections of all simulation geometries in the list.
     Will set 'box' and 'cell' parameters according to the produced cross-section geometry data.
 
@@ -186,10 +208,8 @@ def create_xsections_from_simulations(simulations: List[Simulation],
     for simulation, cut in zip(simulations, cuts):
         xsection_parameters = _dump_xsection_parameters(xsection_dir, simulation)
         simulation_file = xsection_dir / f"original_{simulation.cell.name}.oas"
-        xsection_file   = xsection_dir / f"xsection_{simulation.cell.name}.oas"
-        export_layers(str(simulation_file), simulation.layout, [simulation.cell],
-                    output_format='OASIS',
-                    layers=None)
+        xsection_file = xsection_dir / f"xsection_{simulation.cell.name}.oas"
+        export_layers(str(simulation_file), simulation.layout, [simulation.cell], output_format="OASIS", layers=None)
         xsection_call(simulation_file, xsection_file, cut[0], cut[1], process_path, xsection_parameters)
 
         layout.read(str(xsection_file), load_opts)
@@ -198,23 +218,26 @@ def create_xsections_from_simulations(simulations: List[Simulation],
 
     _clean_tmp_xsection_directory(xsection_dir, simulations)
     # Collect cross section simulation sweeps
-    return [_construct_cross_section_simulation(
-                layout,
-                xsection_cell,
-                simulations[idx],
-                post_processing_function,
-                oxidise_layers_function,
-                ma_permittivity,
-                ms_permittivity,
-                sa_permittivity,
-                ma_thickness,
-                ms_thickness,
-                sa_thickness,
-                vertical_cull,
-                mer_box,
-                london_penetration_depth,
-                magnification_order)
-        for idx, xsection_cell in enumerate(layout.top_cells())]
+    return [
+        _construct_cross_section_simulation(
+            layout,
+            xsection_cell,
+            simulations[idx],
+            post_processing_function,
+            oxidise_layers_function,
+            ma_permittivity,
+            ms_permittivity,
+            sa_permittivity,
+            ma_thickness,
+            ms_thickness,
+            sa_thickness,
+            vertical_cull,
+            mer_box,
+            london_penetration_depth,
+            magnification_order,
+        )
+        for idx, xsection_cell in enumerate(layout.top_cells())
+    ]
 
 
 def separate_signal_layer_shapes(simulation: Simulation, sort_key: Callable[[pya.Shape], float] = None):
@@ -227,9 +250,11 @@ def separate_signal_layer_shapes(simulation: Simulation, sort_key: Callable[[pya
             If None, picks a point in shape polygon, sorts points top to bottom then tie-breaks left to right
     """
     if sort_key is None:
+
         def sort_key(shape):
             point_in_shape = list(shape.polygon.each_point_hull())[0]
             return (-point_in_shape.y, point_in_shape.x)
+
     signal_index = 1
     gen_free_layer_slots = free_layer_slots(simulation.layout)
     for face in simulation.face_ids:
@@ -287,16 +312,21 @@ def _dump_xsection_parameters(xsection_dir, simulation):
     """If we're sweeping xsection specific parameters,
     dump them in external file for xsection process file to pick up
     """
-    simulation_params = {param_name: param_value for param_name, param_value in simulation.get_parameters().items()
-                            if not isinstance(param_value, pya.DBox)} # Hack: ignore non-serializable params
+    simulation_params = {
+        param_name: param_value
+        for param_name, param_value in simulation.get_parameters().items()
+        if not isinstance(param_value, pya.DBox)
+    }  # Hack: ignore non-serializable params
     # Also dump all used layers in the simulation cell
-    sim_layers = {_remap_face(l.name, simulation_params['face_stack']): f"{l.layer}/{l.datatype}"
-        for l in simulation.layout.layer_infos()}
+    sim_layers = {
+        _remap_face(l.name, simulation_params["face_stack"]): f"{l.layer}/{l.datatype}"
+        for l in simulation.layout.layer_infos()
+    }
     # Find avaiable layer numbers for substrate layers
     gen_free_layer_slots = free_layer_slots(simulation.layout)
     sim_layers["b_substrate"] = f"{next(gen_free_layer_slots)}/0"
     sim_layers["t_substrate"] = f"{next(gen_free_layer_slots)}/0"
-    simulation_params['sim_layers'] = sim_layers
+    simulation_params["sim_layers"] = sim_layers
     xsection_parameters_file = xsection_dir / f"parameters_{simulation.cell.name}.json"
     with open(xsection_parameters_file, "w") as sweep_file:
         json.dump(simulation_params, sweep_file, cls=GeometryJsonEncoder)
@@ -325,10 +355,12 @@ def _combine_region_from_layers(simulation, layers):
 
 def _edge_on_the_box_border(edge, box):
     """True if edge is exactly at the rim of the box. edge must be of class pya.DEdge"""
-    return  (edge.x1 == box.p1.x and edge.x2 == box.p1.x) or \
-            (edge.x1 == box.p2.x and edge.x2 == box.p2.x) or \
-            (edge.y1 == box.p1.y and edge.y2 == box.p1.y) or \
-            (edge.y1 == box.p2.y and edge.y2 == box.p2.y)
+    return (
+        (edge.x1 == box.p1.x and edge.x2 == box.p1.x)
+        or (edge.x1 == box.p2.x and edge.x2 == box.p2.x)
+        or (edge.y1 == box.p1.y and edge.y2 == box.p1.y)
+        or (edge.y1 == box.p2.y and edge.y2 == box.p2.y)
+    )
 
 
 def _cut_edge(target_edge, source_edge, extra_edges):
@@ -368,10 +400,10 @@ def _remove_shared_points(target_edge, acting_edges, is_adjacent):
         if acting_edge.is_parallel(target_edge):
             # Remove edge bits if they are completely covered by acting_edge
             edge_bits = [e for e in edge_bits if not (acting_edge.contains(e.p1) and acting_edge.contains(e.p2))]
-            extra_edge_bits = [] # Collect extra edge bits here
+            extra_edge_bits = []  # Collect extra edge bits here
             edge_bits = [_cut_edge(e, acting_edge, extra_edge_bits) for e in edge_bits]
-            edge_bits.extend(extra_edge_bits) # Add extra bits
-            edge_bits = [e for e in edge_bits if e.p1 != e.p2] # Remove zero length edge bits
+            edge_bits.extend(extra_edge_bits)  # Add extra bits
+            edge_bits = [e for e in edge_bits if e.p1 != e.p2]  # Remove zero length edge bits
     return edge_bits
 
 
@@ -397,7 +429,7 @@ def _thicken_edges(simulation, edges, thickness, grow):
     Set grow to True to grow the region outward, False to grow inward
     Each edge should be in integer form (pya.Edge)
     """
-    if thickness <= 0.0: # Don't do anything if no thickness
+    if thickness <= 0.0:  # Don't do anything if no thickness
         return pya.Region()
     # Construct a graph from the edges to find paths
     # Start by finding start points for paths
@@ -418,8 +450,9 @@ def _thicken_edges(simulation, edges, thickness, grow):
             # First collect path points for the region polygon
             inner_path.append(current_edge.p2)
             # Also collect their normals
-            normals.append((1. if grow else -1.) *
-                           _normal_of_edge(simulation, current_edge.p1, current_edge.p2, thickness))
+            normals.append(
+                (1.0 if grow else -1.0) * _normal_of_edge(simulation, current_edge.p1, current_edge.p2, thickness)
+            )
             # At the end point, terminate
             if current_edge.p2 not in path_graph:
                 break
@@ -429,7 +462,7 @@ def _thicken_edges(simulation, edges, thickness, grow):
         outer_path = [inner_path[-1] + normals[-1]]
         # Backtrack the path for the second layer of the polygon
         for idx in range(len(normals) - 1, 0, -1):
-            normal_sum = normals[idx] + normals[idx - 1] # Sum normals of surrounding edges of the point
+            normal_sum = normals[idx] + normals[idx - 1]  # Sum normals of surrounding edges of the point
             outer_path.append(inner_path[idx] + normal_sum)
         outer_path.append(inner_path[0] + normals[0])
         result_region += pya.Region(pya.Polygon(inner_path + outer_path))
@@ -453,9 +486,9 @@ def _thicken_edges(simulation, edges, thickness, grow):
             # To shrink, we have to rely on normals
             loop_sized = []
             for i, p in enumerate(loop):
-                j = 0 if i+1 == len(loop) else i+1
-                normal_next =  _normal_of_edge(simulation, p, loop[j], thickness)
-                normal_prev =  _normal_of_edge(simulation, loop[i-1], p, thickness)
+                j = 0 if i + 1 == len(loop) else i + 1
+                normal_next = _normal_of_edge(simulation, p, loop[j], thickness)
+                normal_prev = _normal_of_edge(simulation, loop[i - 1], p, thickness)
                 loop_sized.append(p + normal_prev + normal_next)
             loop_sized = pya.Polygon(loop_sized)
         else:
@@ -466,9 +499,9 @@ def _thicken_edges(simulation, edges, thickness, grow):
             loop_sized = loop_sized.sized(thickness)
             loop_sized = loop_sized.to_itype(simulation.layout.dbu)
         if grow:
-            result_region += (pya.Region(loop_poly) - pya.Region(loop_sized))
+            result_region += pya.Region(loop_poly) - pya.Region(loop_sized)
         else:
-            result_region += (pya.Region(loop_sized) - pya.Region(loop_poly))
+            result_region += pya.Region(loop_sized) - pya.Region(loop_poly)
     return result_region
 
 
@@ -481,32 +514,42 @@ def _iterate_layers_and_modify_region(xsection_cell, process_region):
         if region.is_empty():
             continue
         xsection_cell.shapes(xsection_cell.layout().layer(layer)).clear()
-        xsection_cell.shapes(xsection_cell.layout().layer(layer)).insert(
-            process_region(region, layer))
+        xsection_cell.shapes(xsection_cell.layout().layer(layer)).insert(process_region(region, layer))
 
 
-def _construct_cross_section_simulation(layout, xsection_cell, simulation,
-        post_processing_function,
-        oxidise_layers_function,
-        ma_permittivity, ms_permittivity, sa_permittivity,
-        ma_thickness, ms_thickness, sa_thickness,
-        vertical_cull, mer_box, london_penetration_depth, magnification_order):
+def _construct_cross_section_simulation(
+    layout,
+    xsection_cell,
+    simulation,
+    post_processing_function,
+    oxidise_layers_function,
+    ma_permittivity,
+    ms_permittivity,
+    sa_permittivity,
+    ma_thickness,
+    ms_thickness,
+    sa_thickness,
+    vertical_cull,
+    mer_box,
+    london_penetration_depth,
+    magnification_order,
+):
     """Produce CrossSectionSimulation object"""
     if magnification_order > 0:
         layout.dbu = 10 ** (-3 - magnification_order)
-        xsection_cell.transform(pya.DCplxTrans(10 ** magnification_order))
+        xsection_cell.transform(pya.DCplxTrans(10**magnification_order))
     xsection_parameters = simulation.get_parameters()
-    xsection_parameters['london_penetration_depth'] = london_penetration_depth
+    xsection_parameters["london_penetration_depth"] = london_penetration_depth
     cell_bbox = xsection_cell.dbbox()
     # Disabled for single face and flip-chip cases
-    #cell_bbox.p1 -= pya.DPoint(0, xsection_parameters['lower_box_height'])
-    if len(xsection_parameters['face_stack']) == 1:
-        cell_bbox.p2 += pya.DPoint(0, xsection_parameters['upper_box_height'])
+    # cell_bbox.p1 -= pya.DPoint(0, xsection_parameters['lower_box_height'])
+    if len(xsection_parameters["face_stack"]) == 1:
+        cell_bbox.p2 += pya.DPoint(0, xsection_parameters["upper_box_height"])
     if vertical_cull is not None:
         cell_bbox.p1 = pya.DPoint(cell_bbox.p1.x, min(vertical_cull))
         cell_bbox.p2 = pya.DPoint(cell_bbox.p2.x, max(vertical_cull))
-    xsection_parameters['box'] = cell_bbox
-    xsection_parameters['cell'] = xsection_cell
+    xsection_parameters["box"] = cell_bbox
+    xsection_parameters["cell"] = xsection_cell
     xsection_simulation = CrossSectionSimulation(layout, **xsection_parameters)
     # Keep all parameters given in simulations for JSON
     for k, v in xsection_parameters.items():
@@ -514,16 +557,16 @@ def _construct_cross_section_simulation(layout, xsection_cell, simulation,
     xsection_simulation.xsection_source_class = type(simulation)
     xsection_simulation.register_cell_layers_as_sim_layers()
 
-    material_dict = xsection_parameters['material_dict']
+    material_dict = xsection_parameters["material_dict"]
     material_dict = ast.literal_eval(material_dict) if isinstance(material_dict, str) else material_dict
-    substrate_material = xsection_parameters['substrate_material']
-    b_substrate_permittivity = material_dict[substrate_material[0]]['permittivity']
-    xsection_simulation.set_permittivity('b_substrate', b_substrate_permittivity)
-    if len(xsection_parameters['face_stack']) == 2:
+    substrate_material = xsection_parameters["substrate_material"]
+    b_substrate_permittivity = material_dict[substrate_material[0]]["permittivity"]
+    xsection_simulation.set_permittivity("b_substrate", b_substrate_permittivity)
+    if len(xsection_parameters["face_stack"]) == 2:
         t_substrate_permittivity = b_substrate_permittivity
         if len(substrate_material) > 1:
-            t_substrate_permittivity = material_dict[substrate_material[1]]['permittivity']
-        xsection_simulation.set_permittivity('t_substrate', t_substrate_permittivity)
+            t_substrate_permittivity = material_dict[substrate_material[1]]["permittivity"]
+        xsection_simulation.set_permittivity("t_substrate", t_substrate_permittivity)
 
     if post_processing_function is not None:
         post_processing_function(xsection_simulation)
@@ -531,16 +574,20 @@ def _construct_cross_section_simulation(layout, xsection_cell, simulation,
     oxidise_layers_function(xsection_simulation, ma_thickness, ms_thickness, sa_thickness)
 
     if vertical_cull is not None:
-        def _cull_region_vertically(region, layer): # pylint: disable=unused-argument
+
+        def _cull_region_vertically(region, layer):  # pylint: disable=unused-argument
             return region & cell_bbox.to_itype(xsection_cell.layout().dbu)
+
         _iterate_layers_and_modify_region(xsection_cell, _cull_region_vertically)
 
     if mer_box is not None:
         regions_to_update = {}
+
         def _separate_region_in_mer_box(region, layer):
             region_in_box = region & mer_box.to_itype(xsection_cell.layout().dbu)
             regions_to_update[f"{layer.name}_mer"] = region_in_box
             return region - mer_box.to_itype(xsection_cell.layout().dbu)
+
         _iterate_layers_and_modify_region(xsection_cell, _separate_region_in_mer_box)
         vacuum_in_box = pya.Region(mer_box.to_itype(xsection_cell.layout().dbu))
         for layer, region in regions_to_update.items():
@@ -549,9 +596,9 @@ def _construct_cross_section_simulation(layout, xsection_cell, simulation,
         xsection_cell.shapes(xsection_simulation.get_sim_layer("vacuum_mer")).insert(vacuum_in_box)
 
     if ma_thickness > 0.0:
-        xsection_simulation.set_permittivity('ma_layer', ma_permittivity)
+        xsection_simulation.set_permittivity("ma_layer", ma_permittivity)
     if ms_thickness > 0.0:
-        xsection_simulation.set_permittivity('ms_layer', ms_permittivity)
+        xsection_simulation.set_permittivity("ms_layer", ms_permittivity)
     if sa_thickness > 0.0:
-        xsection_simulation.set_permittivity('sa_layer', sa_permittivity)
+        xsection_simulation.set_permittivity("sa_layer", sa_permittivity)
     return xsection_simulation

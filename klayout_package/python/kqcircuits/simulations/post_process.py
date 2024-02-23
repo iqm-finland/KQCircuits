@@ -21,8 +21,16 @@ from pathlib import Path
 class PostProcess:
     """Base class for adding post-processing scripts into the simulation batch"""
 
-    def __init__(self, script, command='python', arguments='', folder='scripts', repeat_for_each=False,
-                 data_file_prefix=None, **data):
+    def __init__(
+        self,
+        script,
+        command="python",
+        arguments="",
+        folder="scripts",
+        repeat_for_each=False,
+        data_file_prefix=None,
+        **data,
+    ):
         """
         Args:
             script: name of the post-processing script
@@ -51,9 +59,9 @@ class PostProcess:
         """
         str_args = self.arguments
         if self.data:
-            file = str(Path(self.script).stem if self.data_file_prefix is None else self.data_file_prefix) + '.json'
+            file = str(Path(self.script).stem if self.data_file_prefix is None else self.data_file_prefix) + ".json"
             str_args += ' "' + file + '"'
-            with open(path.joinpath(file), 'w') as f:
+            with open(path.joinpath(file), "w") as f:
                 json.dump(self.data, f, indent=4)
 
         # Return the command line(s)
@@ -63,4 +71,4 @@ class PostProcess:
             for json_filename in json_filenames:
                 lines += f'{str_cmd} "{Path(json_filename).relative_to(path)}" {str_args}\n'
             return lines
-        return f'{str_cmd} {str_args}\n'
+        return f"{str_cmd} {str_args}\n"

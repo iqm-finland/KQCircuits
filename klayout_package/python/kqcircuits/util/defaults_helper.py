@@ -20,10 +20,11 @@ from pathlib import Path
 
 
 def find_ansys_executable(default):
-    """Finds latest Ansys Electronics executable from default installation locations. Returns 'default' if not found.
-    """
-    paths = [(Path(os.environ.get("ProgramFiles", r"C:\Program Files")).joinpath("AnsysEM"), r"Win64\ansysedt.exe"),
-             (Path("/opt/AnsysEM"), "Linux64/ansysedt")]
+    """Finds latest Ansys Electronics executable from default installation locations. Returns 'default' if not found."""
+    paths = [
+        (Path(os.environ.get("ProgramFiles", r"C:\Program Files")).joinpath("AnsysEM"), r"Win64\ansysedt.exe"),
+        (Path("/opt/AnsysEM"), "Linux64/ansysedt"),
+    ]
     for root, exe in paths:
         if os.path.isdir(root):
             versions = sorted([f for f in os.listdir(root) if f.startswith("v")], reverse=True)

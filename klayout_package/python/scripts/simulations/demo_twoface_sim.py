@@ -24,25 +24,25 @@ from kqcircuits.util.parameters import add_parameters_from
 from kqcircuits.chips.demo_twoface import DemoTwoface
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.export.simulation_export import export_simulation_oas
-from kqcircuits.util.export_helper import create_or_empty_tmp_directory, open_with_klayout_or_default_application, \
-    get_active_or_new_layout
+from kqcircuits.util.export_helper import (
+    create_or_empty_tmp_directory,
+    open_with_klayout_or_default_application,
+    get_active_or_new_layout,
+)
 
 
 # This script is to demonstrate a full flip-chip simulation export.
 # First, we introduce the simulation class that is inherited from Simulation.
 # Second, we process the export script.
-@add_parameters_from(Simulation, face_stack=['1t1', '2b1', []], substrate_box=DemoTwoface.face_boxes)
+@add_parameters_from(Simulation, face_stack=["1t1", "2b1", []], substrate_box=DemoTwoface.face_boxes)
 class DemoTwofaceSim(Simulation):
 
     def build(self):
 
-        chip = self.add_element(DemoTwoface, **{
-            "junction_type": "Sim",
-            "marker_types": [None] * 8,
-            "name_mask": "",
-            "name_chip": "",
-            "name_brand": ""
-        })
+        chip = self.add_element(
+            DemoTwoface,
+            **{"junction_type": "Sim", "marker_types": [None] * 8, "name_mask": "", "name_chip": "", "name_brand": ""},
+        )
 
         # Insert chip and get refpoints
         _, refpoints = self.insert_cell(chip, rec_levels=None)
@@ -54,18 +54,26 @@ class DemoTwofaceSim(Simulation):
         self.box &= maximum_box
 
         # Define edge ports, shifted inward by port_shift w.r.t. launcher refpoints
-        for i, (port, shift) in enumerate([
-            ('DL-QB1', [-port_shift, 0]),
-            ('DL-QB2', [port_shift, 0]),
-            ('DL-QB3', [-port_shift, 0]),
-            ('DL-QB4', [port_shift, 0])]):
-            self.ports.append(EdgePort(i + 1, refpoints['{}_port'.format(port)] + pya.DVector(*shift)))
+        for i, (port, shift) in enumerate(
+            [
+                ("DL-QB1", [-port_shift, 0]),
+                ("DL-QB2", [port_shift, 0]),
+                ("DL-QB3", [-port_shift, 0]),
+                ("DL-QB4", [port_shift, 0]),
+            ]
+        ):
+            self.ports.append(EdgePort(i + 1, refpoints["{}_port".format(port)] + pya.DVector(*shift)))
 
         # Add squid internal ports
-        for i, port in enumerate(['QB1', 'QB2', 'QB3', 'QB4']):
+        for i, port in enumerate(["QB1", "QB2", "QB3", "QB4"]):
             self.ports.append(
-                InternalPort(5 + i, *self.etched_line(refpoints['{}_squid_port_squid_a'.format(port)],
-                                                      refpoints['{}_squid_port_squid_b'.format(port)])))
+                InternalPort(
+                    5 + i,
+                    *self.etched_line(
+                        refpoints["{}_squid_port_squid_a".format(port)], refpoints["{}_squid_port_squid_b".format(port)]
+                    ),
+                )
+            )
 
 
 # Prepare output directory
@@ -73,15 +81,11 @@ dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
 # Simulation parameters
 sim_parameters = {
-    'name': 'demo_twoface',
-    'use_ports': True,
-    'port_size': 1000,
+    "name": "demo_twoface",
+    "use_ports": True,
+    "port_size": 1000,
 }
-export_parameters = {
-    'path': dir_path,
-    'sweep_enabled': False,
-    'exit_after_run': False
-}
+export_parameters = {"path": dir_path, "sweep_enabled": False, "exit_after_run": False}
 
 # Get layout
 layout = get_active_or_new_layout()

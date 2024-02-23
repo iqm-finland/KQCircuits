@@ -35,21 +35,23 @@ def apply_template(filename_template, filename_output, rules):
 
 
 def polygon_head(
-        nvertices,  # number of vertices of the polygon
-        debugid,  # unique number for sonnet internal debugging
-        ilevel=0,  # sonnet layer number
-        mtype=-1,  # metallization type index, -1 for lossless
-        filltype="N",  # N for staircase, T for diagonal, V for conformal
-        xmin=1,  # minimum subsection size
-        ymin=1,  # minimum subsection size
-        xmax=100,  # maximum subsection size
-        ymax=100,  # maximum subsection size
-        conmax=0,  # maximum length for conformal mesh subsection, 0 for auto
-        res=0,  # reserved for sonnet future
-        edge_mesh="Y"  # edge mesh on (Y) or off (N)
+    nvertices,  # number of vertices of the polygon
+    debugid,  # unique number for sonnet internal debugging
+    ilevel=0,  # sonnet layer number
+    mtype=-1,  # metallization type index, -1 for lossless
+    filltype="N",  # N for staircase, T for diagonal, V for conformal
+    xmin=1,  # minimum subsection size
+    ymin=1,  # minimum subsection size
+    xmax=100,  # maximum subsection size
+    ymax=100,  # maximum subsection size
+    conmax=0,  # maximum length for conformal mesh subsection, 0 for auto
+    res=0,  # reserved for sonnet future
+    edge_mesh="Y",  # edge mesh on (Y) or off (N)
 ):
-    return f"{ilevel} {nvertices} {mtype} {filltype} {debugid} {xmin} {ymin} {xmax} {ymax} {conmax} {res} {res} " \
-           f"{edge_mesh}\n"
+    return (
+        f"{ilevel} {nvertices} {mtype} {filltype} {debugid} {xmin} {ymin} {xmax} {ymax} {conmax} {res} {res} "
+        f"{edge_mesh}\n"
+    )
 
 
 def symmetry(sym: bool = False):
@@ -60,11 +62,11 @@ def symmetry(sym: bool = False):
 
 
 def box(
-        xwidth: float = 8000.,
-        ywidth: float = 8000.,
-        xcells: int = 8000,
-        ycells: int = 8000,
-        materials_type: str = "Si BT"
+    xwidth: float = 8000.0,
+    ywidth: float = 8000.0,
+    xcells: int = 8000,
+    ycells: int = 8000,
+    materials_type: str = "Si BT",
 ):
     xcells2 = 2 * xcells
     ycells2 = 2 * ycells
@@ -72,29 +74,22 @@ def box(
     eeff = 0  # placeholder for deprecated parameter
 
     materials = {
-        "Si RT": "3000 1 1 0 0 0 0 \"vacuum\"\n500 11.7 1 0 0 0 0 \"Silicon (room temperature)\"",
-        "Si BT": "3000 1 1 0 0 0 0 \"vacuum\"\n500 11.45 1 1e-006 0 0 0 \"Silicon (10mK)\"",
-        "SiOx+Si": "3000 1 1 0 0 0 0 \"vacuum\"\n0.55 3.78 11.7 1 0 0 0 \"SiOx (10mK)\"\n525 11.45 1 1e-06 0 0 0 \"Si "
-                   "(10mK)\"",
-        "Si+Al": "3000 1 1 0 0 0 0 \"vacuum\"\n0.5 9.9 1 0.0001 0 0 0 \"Alumina (99.5%)\"\n0.45 1 1 0 0 0 0 \"vacuum\""
-                 "\n525 11.45 1 1e-06 0 0 0 \"Si (10mK)\"",
+        "Si RT": '3000 1 1 0 0 0 0 "vacuum"\n500 11.7 1 0 0 0 0 "Silicon (room temperature)"',
+        "Si BT": '3000 1 1 0 0 0 0 "vacuum"\n500 11.45 1 1e-006 0 0 0 "Silicon (10mK)"',
+        "SiOx+Si": '3000 1 1 0 0 0 0 "vacuum"\n0.55 3.78 11.7 1 0 0 0 "SiOx (10mK)"\n525 11.45 1 1e-06 0 0 0 "Si '
+        '(10mK)"',
+        "Si+Al": '3000 1 1 0 0 0 0 "vacuum"\n0.5 9.9 1 0.0001 0 0 0 "Alumina (99.5%)"\n0.45 1 1 0 0 0 0 "vacuum"'
+        '\n525 11.45 1 1e-06 0 0 0 "Si (10mK)"',
     }[materials_type]
 
-    nlev = {
-        "Si": 1,
-        "Si BT": 1,
-        "SiOx+Si": 2,
-        "Si+Al": 3
-    }[materials_type]
+    nlev = {"Si": 1, "Si BT": 1, "SiOx+Si": 2, "Si+Al": 3}[materials_type]
 
     return f"BOX {nlev} {xwidth} {ywidth} {xcells2} {ycells2} {nsubs} {eeff}\n{materials}"
 
 
 def refplane(
-        position: str,  # "LEFT" | "RIGHT" | "TOP" | "BOTTOM",
-        length: int = 0,
-        port_ipoly: str = "" # "LINK" or "FIX"
-        ):
+    position: str, length: int = 0, port_ipoly: str = ""  # "LEFT" | "RIGHT" | "TOP" | "BOTTOM",  # "LINK" or "FIX"
+):
     if port_ipoly != "":
         plane_type = "LINK"
         poly = "POLY {} 1\n0\n".format(port_ipoly[0])
@@ -113,17 +108,17 @@ def refplanes(positions, length, port_ipolys):
 
 
 def port(
-        portnum,
-        ipolygon,
-        ivertex,
-        port_type="STD",  # STD for standard | AGND autogrounded | CUP cocalibrated
-        xcord=0,  # pylint: disable=unused-argument
-        ycord=0,  # pylint: disable=unused-argument
-        group="",
-        resist=50,
-        react=0,
-        induct=0,
-        capac=0
+    portnum,
+    ipolygon,
+    ivertex,
+    port_type="STD",  # STD for standard | AGND autogrounded | CUP cocalibrated
+    xcord=0,  # pylint: disable=unused-argument
+    ycord=0,  # pylint: disable=unused-argument
+    group="",
+    resist=50,
+    react=0,
+    induct=0,
+    capac=0,
 ):
     if group:
         group = '"' + group + '"'
@@ -147,31 +142,33 @@ def port(
 #
 #  return sonnet_str
 
+
 def control(control_type):
     return {
         "Simple": "SIMPLE",  # Linear frequency sweep
-        "ABS": "ABS", # Sonnet guesses the resonances, simulates about 5 points around the resonance and interpolates
-                      # the rest
-        "Sweep": "VARSWP"
+        "ABS": "ABS",  # Sonnet guesses the resonances, simulates about 5 points around the resonance and interpolates
+        # the rest
+        "Sweep": "VARSWP",
     }[control_type]
 
 
 def polygons(polygons, v, dbu, ilevel, fill_type):
-    sonnet_str = 'NUM {}\n'.format(len(polygons))
+    sonnet_str = "NUM {}\n".format(len(polygons))
     for i, hole_poly in enumerate(polygons):
         poly = hole_poly.resolved_holes()
 
-        if hasattr(poly, 'isVia'):
+        if hasattr(poly, "isVia"):
             sonnet_str += via(poly, debugid=i, ilevel=next(ilevel))
         else:
-            sonnet_str += polygon_head(nvertices=poly.num_points_hull() + 1,
-                                   debugid=i + 1, ilevel=next(ilevel),
-                                   filltype=fill_type)  # "Debugid" is actually used for mapping ports to polygons, 0 is
-                                                        # not allowed
+            sonnet_str += polygon_head(
+                nvertices=poly.num_points_hull() + 1, debugid=i + 1, ilevel=next(ilevel), filltype=fill_type
+            )  # "Debugid" is actually used for mapping ports to polygons, 0 is
+            # not allowed
 
         for _, point in enumerate(poly.each_point_hull()):
-            sonnet_str += "{} {}\n".format(point.x * dbu + v.x,
-                                           -(point.y * dbu + v.y))  # sonnet Y-coordinate goes in the other direction
+            sonnet_str += "{} {}\n".format(
+                point.x * dbu + v.x, -(point.y * dbu + v.y)
+            )  # sonnet Y-coordinate goes in the other direction
         point = next(poly.each_point_hull())  # first point again to close the polygon
         sonnet_str += "{} {}\nEND\n".format(point.x * dbu + v.x, -(point.y * dbu + v.y))
 

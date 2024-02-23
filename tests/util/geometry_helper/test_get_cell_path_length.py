@@ -30,23 +30,33 @@ def test_get_length_simple_path():
     layout = pya.Layout()
     path_layer = layout.layer(default_layers["1t1_waveguide_path"])
     cell = layout.create_cell("test")
-    shape = pya.DPath([
-        pya.DPoint(0, 0),
-        pya.DPoint(300, 0),
-        pya.DPoint(300, 100),
-    ], 0)
+    shape = pya.DPath(
+        [
+            pya.DPoint(0, 0),
+            pya.DPoint(300, 0),
+            pya.DPoint(300, 100),
+        ],
+        0,
+    )
     cell.shapes(path_layer).insert(shape)
     length = 300 + 100
-    assert abs(get_cell_path_length(cell) - length)/length < relative_length_tolerance
+    assert abs(get_cell_path_length(cell) - length) / length < relative_length_tolerance
 
 
 def test_get_length_simple_waveguide():
     layout = pya.Layout()
     r = 50
-    cell = WaveguideCoplanar.create(layout, path=pya.DPath([
-        pya.DPoint(0, 0),
-        pya.DPoint(0, 250),
-        pya.DPoint(200, 250),
-    ], 0), r=r)
-    length = 250 + 200 - 2*r + math.pi*r/2
-    assert abs(get_cell_path_length(cell) - length)/length < relative_length_tolerance
+    cell = WaveguideCoplanar.create(
+        layout,
+        path=pya.DPath(
+            [
+                pya.DPoint(0, 0),
+                pya.DPoint(0, 250),
+                pya.DPoint(200, 250),
+            ],
+            0,
+        ),
+        r=r,
+    )
+    length = 250 + 200 - 2 * r + math.pi * r / 2
+    assert abs(get_cell_path_length(cell) - length) / length < relative_length_tolerance

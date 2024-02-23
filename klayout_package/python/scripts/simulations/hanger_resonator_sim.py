@@ -27,41 +27,48 @@ from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.post_process import PostProcess
 from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
-from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
-    open_with_klayout_or_default_application
+from kqcircuits.util.export_helper import (
+    create_or_empty_tmp_directory,
+    get_active_or_new_layout,
+    open_with_klayout_or_default_application,
+)
 
 import numpy as np
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--use-sbatch', action="store_true", help='Use sbatch (Slurm)')
+parser.add_argument("--use-sbatch", action="store_true", help="Use sbatch (Slurm)")
 args, unknown = parser.parse_known_args()
 
 # Simulation parameters
-coupling_length = 500.
-head_length = 500.
-resonator_length = 5800. # internal ports add automatically 100um so in total this is 6000um
+coupling_length = 500.0
+head_length = 500.0
+resonator_length = 5800.0  # internal ports add automatically 100um so in total this is 6000um
 turn_radius = 50
 
-box_size_x = coupling_length +2*turn_radius + 2000
-box_y1 = -max(head_length, resonator_length - coupling_length - head_length) - 1000.
-box_y2 = 1000.
+box_size_x = coupling_length + 2 * turn_radius + 2000
+box_y1 = -max(head_length, resonator_length - coupling_length - head_length) - 1000.0
+box_y2 = 1000.0
 
-sim_class = get_single_element_sim_class(HangerResonator,
-                transformation_from_center=lambda cell: pya.DTrans(0, False, -coupling_length/2., -(box_y1+box_y2)/2.))  # pylint: disable=invalid-name
+sim_class = get_single_element_sim_class(
+    HangerResonator,
+    transformation_from_center=lambda cell: pya.DTrans(0, False, -coupling_length / 2.0, -(box_y1 + box_y2) / 2.0),
+)  # pylint: disable=invalid-name
 
 sim_parameters = {
-    'name': 'hanger_resonator_sim',
-    'box': pya.DBox(pya.DPoint(-box_size_x/2. + coupling_length/2., box_y1),
-                    pya.DPoint( box_size_x/2. + coupling_length/2.,  box_y2)),
-    'coupling_length': coupling_length,
-    'head_length': head_length,
-    'resonator_length': resonator_length,
-    'r': turn_radius,
-    'res_a': 10,
-    'res_b': 6,
-    'a': 10,
-    'b': 6,
-    'ground_width': 10
+    "name": "hanger_resonator_sim",
+    "box": pya.DBox(
+        pya.DPoint(-box_size_x / 2.0 + coupling_length / 2.0, box_y1),
+        pya.DPoint(box_size_x / 2.0 + coupling_length / 2.0, box_y2),
+    ),
+    "coupling_length": coupling_length,
+    "head_length": head_length,
+    "resonator_length": resonator_length,
+    "r": turn_radius,
+    "res_a": 10,
+    "res_b": 6,
+    "a": 10,
+    "b": 6,
+    "ground_width": 10,
 }
 
 use_elmer = True
@@ -84,35 +91,35 @@ else:
 
 if use_elmer:
     mesh_size = {
-        'global_max': 100.,
-        '1t1_gap': 5.,
-        **{f'port_{i}': 5 for i in [1, 2]},  # edge ports
-        **{f'port_{i}': 5 for i in [3, 4]},  # internal ports
+        "global_max": 100.0,
+        "1t1_gap": 5.0,
+        **{f"port_{i}": 5 for i in [1, 2]},  # edge ports
+        **{f"port_{i}": 5 for i in [3, 4]},  # internal ports
     }
 
     if wave_equation:
         if interpolating_sweep:
             export_parameters_elmer = {
-                'path': path,
-                'tool': 'wave_equation',
-                'frequency': np.linspace(5,15,1001),
-                'sweep_type': 'interpolating',
-                'max_delta_s':1e-6,
-                'frequency_batch': 3,
+                "path": path,
+                "tool": "wave_equation",
+                "frequency": np.linspace(5, 15, 1001),
+                "sweep_type": "interpolating",
+                "max_delta_s": 1e-6,
+                "frequency_batch": 3,
             }
         else:
             export_parameters_elmer = {
-                'path': path,
-                'tool': 'wave_equation',
-                'frequency': np.linspace(5,15,5),
-                'sweep_type': 'explicit',
+                "path": path,
+                "tool": "wave_equation",
+                "frequency": np.linspace(5, 15, 5),
+                "sweep_type": "explicit",
             }
     else:
         export_parameters_elmer = {
-            'path': path,
-            'tool': 'capacitance',
-            'linear_system_method': 'mg',
-            'p_element_order': 3,
+            "path": path,
+            "tool": "capacitance",
+            "linear_system_method": "mg",
+            "p_element_order": 3,
         }
 
     workflow = {
@@ -170,25 +177,25 @@ if use_elmer:
 else:
     if wave_equation:
         export_parameters_ansys = {
-            'path': path,
-            'frequency': [8,10,12],
-            'max_delta_s': 0.001,
-            'sweep_start': 0,
-            'sweep_end': 30,
-            'sweep_count': 1001,
-            'maximum_passes': 20,
-            'exit_after_run': True,
-            'mesh_size': {'1t1_gap': 5}
+            "path": path,
+            "frequency": [8, 10, 12],
+            "max_delta_s": 0.001,
+            "sweep_start": 0,
+            "sweep_end": 30,
+            "sweep_count": 1001,
+            "maximum_passes": 20,
+            "exit_after_run": True,
+            "mesh_size": {"1t1_gap": 5},
         }
     else:
         export_parameters_ansys = {
-            'path': path,
-            'ansys_tool': 'q3d',
-            'post_process': PostProcess('produce_cmatrix_table.py'),
-            'percent_error': 0.2,
-            'minimum_converged_passes': 2,
-            'maximum_passes': 40,
-            'exit_after_run': True,
+            "path": path,
+            "ansys_tool": "q3d",
+            "post_process": PostProcess("produce_cmatrix_table.py"),
+            "percent_error": 0.2,
+            "minimum_converged_passes": 2,
+            "maximum_passes": 40,
+            "exit_after_run": True,
         }
 # Get layout
 logging.basicConfig(level=logging.WARN, stream=sys.stdout)

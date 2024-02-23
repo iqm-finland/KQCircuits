@@ -27,8 +27,17 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Union
 
 from kqcircuits.elements.element import get_refpoints
-from kqcircuits.defaults import default_layers, TMP_PATH, STARTUPINFO, default_probe_types, default_probe_suffixes, \
-    recommended_probe_suffix_mapping, VERSION_PATHS, default_drc_runset, DRC_PATH
+from kqcircuits.defaults import (
+    default_layers,
+    TMP_PATH,
+    STARTUPINFO,
+    default_probe_types,
+    default_probe_suffixes,
+    recommended_probe_suffix_mapping,
+    VERSION_PATHS,
+    default_drc_runset,
+    DRC_PATH,
+)
 from kqcircuits.klayout_view import KLayoutView, MissingUILibraryException
 from kqcircuits.pya_resolver import pya, is_standalone_session, klayout_executable_command
 
@@ -36,18 +45,20 @@ from kqcircuits.pya_resolver import pya, is_standalone_session, klayout_executab
 def _probe_point_coordinate(pos, eu=1e-3, sd=4):
     return {"x": round(pos.x * eu, sd), "y": round(pos.y * eu, sd)}
 
+
 def _probe_point_to_dpoint(pos, eu=1e-3):
     # this doesn't need to be super precise since we currently only use this to compare distances
     return pya.DPoint(pos["x"] / eu, pos["y"] / eu)
 
+
 # pylint: disable=dangerous-default-value
-def generate_probepoints_json(cell: pya.Cell,
-                              face: str = '1t1',
-                              flip_face: Optional[bool] = None,
-                              references: List[str] = ['nw'],
-                              contact: Optional[Union[
-                                  Tuple[pya.DPoint, pya.DPoint],
-                                  List[Tuple[pya.DPoint, pya.DPoint]]]] = None) -> Dict:
+def generate_probepoints_json(
+    cell: pya.Cell,
+    face: str = "1t1",
+    flip_face: Optional[bool] = None,
+    references: List[str] = ["nw"],
+    contact: Optional[Union[Tuple[pya.DPoint, pya.DPoint], List[Tuple[pya.DPoint, pya.DPoint]]]] = None,
+) -> Dict:
     """For given cell, collects probepoints from cell's refpoints into a json Dict.
 
     A refpoint is a probepoint if it
@@ -78,8 +89,10 @@ def generate_probepoints_json(cell: pya.Cell,
         (cell is None, "Cell is null"),
         (not references, "Can't use empty list of references"),
         (isinstance(contact, tuple) and len(contact) < 2, "Singular contact must be tuple of two DPoints"),
-        (isinstance(contact, list) and (len(contact) != len(references) or any(len(c) < 2 for c in contact)),
-            "List of contacts should define a tuple of two DPoints for each reference")
+        (
+            isinstance(contact, list) and (len(contact) != len(references) or any(len(c) < 2 for c in contact)),
+            "List of contacts should define a tuple of two DPoints for each reference",
+        ),
     ]
     for check, error_text in validations:
         if check:
@@ -96,13 +109,14 @@ def generate_probepoints_json(cell: pya.Cell,
     for reference in references:
         marker_refpoint = f"{face}_marker_{reference.lower()}"
         if marker_refpoint not in refpoints:
-            to_legacy_face_name = {face: '', '1t1': 'b', '2b1': 't'}
+            to_legacy_face_name = {face: "", "1t1": "b", "2b1": "t"}
             legacy_marker_refpoint = f"{to_legacy_face_name[face]}_marker_{reference.lower()}"
             if legacy_marker_refpoint in refpoints:
                 marker_refpoint = legacy_marker_refpoint
             else:
-                logging.warning((f"The marker or at least its refpoint {marker_refpoint} "
-                                f"is missing in the cell {cell.name}!"))
+                logging.warning(
+                    (f"The marker or at least its refpoint {marker_refpoint} " f"is missing in the cell {cell.name}!")
+                )
                 if pya.DPoint(1500, 8500) not in markers.values():
                     logging.warning(f"Setting marker {marker_refpoint} to DPoint(1500, 8500)")
                     markers[reference.upper()] = pya.DPoint(1500, 8500)
@@ -111,13 +125,16 @@ def generate_probepoints_json(cell: pya.Cell,
 
     # if not explicitely stated to flip the face, deduce from face string
     if flip_face is None:
-        if len(face) < 2:   # legacy face name
+        if len(face) < 2:  # legacy face name
             flip_face = face == "t"
-        else:               # current face name
+        else:  # current face name
             flip_face = face[1] == "b"
     # get boundaries of the chip dimensions
-    matching_layer = [l for l in layout.layer_infos()
-                      if l.name in [f"{face}_base_metal_gap_wo_grid", f"{face}*base*metal*gap*wo*grid"]]
+    matching_layer = [
+        l
+        for l in layout.layer_infos()
+        if l.name in [f"{face}_base_metal_gap_wo_grid", f"{face}*base*metal*gap*wo*grid"]
+    ]
     if matching_layer:
         bbox_for_face = cell.dbbox_per_layer(layout.layer(matching_layer[0]))
     else:
@@ -135,10 +152,7 @@ def generate_probepoints_json(cell: pya.Cell,
     # initialize dictionaries for each probe point group
     groups = {}
     for marker_name, marker in markers.items():
-        groups[marker_name] = {
-            "alignment": _probe_point_coordinate(marker),
-            "sites": []
-        }
+        groups[marker_name] = {"alignment": _probe_point_coordinate(marker), "sites": []}
 
     # first collect sites before grouping them
     sites = []
@@ -153,8 +167,8 @@ def generate_probepoints_json(cell: pya.Cell,
         # extract suffix if probepoint_name uses one from default_probe_suffixes
         suffixes = [s for s in default_probe_suffixes if probepoint_name.endswith(s)]
         if name_type in default_probe_types and suffixes:
-            remove_suffix_tokens = max(len(suffixes[0].split('_')) - 2, 1)
-            probe_name = '_'.join(probepoint_name.split('_')[:-remove_suffix_tokens])
+            remove_suffix_tokens = max(len(suffixes[0].split("_")) - 2, 1)
+            probe_name = "_".join(probepoint_name.split("_")[:-remove_suffix_tokens])
             # find site with id value as this probepoint prefix
             probepoint_sites = [s for s in sites if s["id"] == probe_name]
             probepoint_entry = _probe_point_coordinate(probepoint)
@@ -172,18 +186,24 @@ def generate_probepoints_json(cell: pya.Cell,
                     site[direction] = probepoint_entry
                     expected_direction = recommended_probe_suffix_mapping.get(suffixes[0])
                     if expected_direction is not None and expected_direction != direction:
-                        logging.warning((f"Probepoint {probepoint_name} was mapped to {direction}, "
-                                        f"but recommended direction for {suffixes[0]} is {expected_direction}"))
+                        logging.warning(
+                            (
+                                f"Probepoint {probepoint_name} was mapped to {direction}, "
+                                f"but recommended direction for {suffixes[0]} is {expected_direction}"
+                            )
+                        )
                 else:
                     # limited support for more than two point probing
                     for key in site:
                         if key == "id":
                             continue
-                        sites.append({
-                            "east": site[key] if site[key]["x"] > probepoint_entry["x"] else probepoint_entry,
-                            "id": f"{probe_name}{suffixes[0]}_{key}",
-                            "west": probepoint_entry if site[key]["x"] > probepoint_entry["x"] else site[key],
-                        })
+                        sites.append(
+                            {
+                                "east": site[key] if site[key]["x"] > probepoint_entry["x"] else probepoint_entry,
+                                "id": f"{probe_name}{suffixes[0]}_{key}",
+                                "west": probepoint_entry if site[key]["x"] > probepoint_entry["x"] else site[key],
+                            }
+                        )
 
     # sanity check that each site has exactly east and west probe
     for site in sites:
@@ -199,17 +219,21 @@ def generate_probepoints_json(cell: pya.Cell,
 
     # reason for sorting is to make the exported json more deterministic
     sites.sort(key=lambda site: site["id"])
-    for idx,_ in enumerate(sites):
+    for idx, _ in enumerate(sites):
         sites[idx] = dict(sorted(sites[idx].items()))
 
     # divide probe points into groups by closest marker (multireference only)
     for site in sites:
-        midpoint = {"x": (site["west"]["x"] + site["east"]["x"]) / 2.,
-                    "y": (site["west"]["y"] + site["east"]["y"]) / 2.}
+        midpoint = {
+            "x": (site["west"]["x"] + site["east"]["x"]) / 2.0,
+            "y": (site["west"]["y"] + site["east"]["y"]) / 2.0,
+        }
         midpoint = _probe_point_to_dpoint(midpoint)
         _, closest_marker = sorted(
-            [(refpoint.distance(midpoint), marker) for marker, refpoint in markers.items()],
-            key=lambda x: x[0])[0]   # sort by distance, get closest tuple, get marker
+            [(refpoint.distance(midpoint), marker) for marker, refpoint in markers.items()], key=lambda x: x[0]
+        )[
+            0
+        ]  # sort by distance, get closest tuple, get marker
         groups[closest_marker]["sites"].append(site)
 
     # add manual "contact" entries
@@ -221,18 +245,20 @@ def generate_probepoints_json(cell: pya.Cell,
             contact1 = _probe_point_coordinate(transform(contact1))
             contact2 = _probe_point_coordinate(transform(contact2))
             west_is_1 = contact1["x"] < contact2["x"]
-            group["sites"].append({
-                "east": contact2 if west_is_1 else contact1,
-                "id": "contact",
-                "west": contact1 if west_is_1 else contact2,
-            })
+            group["sites"].append(
+                {
+                    "east": contact2 if west_is_1 else contact1,
+                    "id": "contact",
+                    "west": contact1 if west_is_1 else contact2,
+                }
+            )
 
     # find probepoint duplicates (within tolerance) and only keep the one with longer id name
     for group_key, group in groups.items():
         for i, site1 in enumerate(group["sites"]):
             if site1 == {}:
                 continue
-            for j, site2 in enumerate(group["sites"][i+1:]):
+            for j, site2 in enumerate(group["sites"][i + 1 :]):
                 if site2 == {}:
                     continue
                 too_close = True
@@ -245,14 +271,21 @@ def generate_probepoints_json(cell: pya.Cell,
                         too_close = False
                 if too_close:
                     logging.warning(
-                        f"Found two sites '{site1['id']}' and '{site2['id']}' with similar coordinates (respectively)")
+                        f"Found two sites '{site1['id']}' and '{site2['id']}' with similar coordinates (respectively)"
+                    )
                     logging.warning(
-                        f"  west {site1['west']['x']},{site1['west']['y']} = {site2['west']['x']},{site2['west']['y']}")
+                        f"  west {site1['west']['x']},{site1['west']['y']} = {site2['west']['x']},{site2['west']['y']}"
+                    )
                     logging.warning(
-                        f"  east {site1['east']['x']},{site1['east']['y']} = {site2['east']['x']},{site2['east']['y']}")
-                    logging.warning(("  will only keep the site "
-                                    f"'{site1['id'] if len(site1['id']) > len(site2['id']) else site2['id']}'"))
-                    group["sites"][i+j+1 if len(site1["id"]) > len(site2["id"]) else i].clear()
+                        f"  east {site1['east']['x']},{site1['east']['y']} = {site2['east']['x']},{site2['east']['y']}"
+                    )
+                    logging.warning(
+                        (
+                            "  will only keep the site "
+                            f"'{site1['id'] if len(site1['id']) > len(site2['id']) else site2['id']}'"
+                        )
+                    )
+                    group["sites"][i + j + 1 if len(site1["id"]) > len(site2["id"]) else i].clear()
                 if site1 == {}:
                     break
         # pylint: disable=unnecessary-dict-index-lookup
@@ -267,13 +300,13 @@ def generate_probepoints_json(cell: pya.Cell,
     return {"groups": [{"id": name, **group} for name, group in groups.items()]}
 
 
-def generate_probepoints_from_file(cell_file: str,
-                              face: str = '1t1',
-                              flip_face: Optional[bool] = None,
-                              references: List[str] = ['nw'],
-                              contact: Optional[Union[
-                                  Tuple[pya.DPoint, pya.DPoint],
-                                  List[Tuple[pya.DPoint, pya.DPoint]]]] = None) -> Dict:
+def generate_probepoints_from_file(
+    cell_file: str,
+    face: str = "1t1",
+    flip_face: Optional[bool] = None,
+    references: List[str] = ["nw"],
+    contact: Optional[Union[Tuple[pya.DPoint, pya.DPoint], List[Tuple[pya.DPoint, pya.DPoint]]]] = None,
+) -> Dict:
     """For an OAS and GDS file containing a chip at its top cell,
     collects probepoints from cell's refpoints into a json Dict.
     A refpoint is a probepoint if it
@@ -313,8 +346,9 @@ def create_or_empty_tmp_directory(dir_name):
     """Creates directory into TMP_PATH or removes its content if it exists.
     Returns directory path.
     """
+
     def remove_content(path):
-        """ Removes content of the directory path without removing directory itself."""
+        """Removes content of the directory path without removing directory itself."""
         for child in path.iterdir():
             if child.is_dir():
                 remove_content(child)
@@ -346,7 +380,7 @@ def get_simulation_directory(dir_name):
     args, _ = parser.parse_known_args()
 
     if args.simulation_export_path is not None:
-        dir_path=Path(args.simulation_export_path)
+        dir_path = Path(args.simulation_export_path)
     else:
         dir_path = TMP_PATH.joinpath(dir_name)
 
@@ -369,11 +403,12 @@ def write_commit_reference_file(path: Path, write_versions_file=True):
     If git repository is not found in given path, no file is written.
     """
     try:
-        with open(path.joinpath('COMMIT_REFERENCE'), 'w') as file:
+        with open(path.joinpath("COMMIT_REFERENCE"), "w") as file:
             for item in VERSION_PATHS.items():
-                output = subprocess.check_output(['git', 'rev-parse', 'HEAD'], stderr=subprocess.DEVNULL,
-                                             cwd=item[1], startupinfo=STARTUPINFO)
-                file.write("{} revision number: {}".format(item[0], output.decode('ascii')))
+                output = subprocess.check_output(
+                    ["git", "rev-parse", "HEAD"], stderr=subprocess.DEVNULL, cwd=item[1], startupinfo=STARTUPINFO
+                )
+                file.write("{} revision number: {}".format(item[0], output.decode("ascii")))
 
     except subprocess.CalledProcessError:
         return
@@ -381,17 +416,19 @@ def write_commit_reference_file(path: Path, write_versions_file=True):
     if write_versions_file:
         write_export_machine_versions_file(path)
 
+
 def write_export_machine_versions_file(path: Path):
     """
     Writes file EXPORT_MACHINE_VERSIONS into given file path.
     """
     versions = {}
-    versions['platform'] = platform.platform()
-    versions['python'] = sys.version_info
-    versions['klayout'] = get_klayout_version()
+    versions["platform"] = platform.platform()
+    versions["python"] = sys.version_info
+    versions["klayout"] = get_klayout_version()
 
-    with open(path.joinpath('EXPORT_MACHINE_VERSIONS.json'), 'w') as file:
+    with open(path.joinpath("EXPORT_MACHINE_VERSIONS.json"), "w") as file:
         json.dump(versions, file)
+
 
 def open_with_klayout_or_default_application(filepath):
     """
@@ -406,6 +443,7 @@ def open_with_klayout_or_default_application(filepath):
         logging.warning("KLayout executable not found.")
     else:
         subprocess.call((exe, filepath))
+
 
 def get_klayout_version():
     if is_standalone_session():
@@ -423,10 +461,19 @@ def export_drc_report(name, path, drc_script=default_drc_runset):
     logging.info("Exporting DRC report to %s", output_file)
 
     try:
-        subprocess.run([klayout_executable_command(), "-b", "-i",
-                        "-r", drc_runset_path,
-                        "-rd", f"output={output_file}",
-                        input_file
-                        ], check=True, startupinfo=STARTUPINFO)
+        subprocess.run(
+            [
+                klayout_executable_command(),
+                "-b",
+                "-i",
+                "-r",
+                drc_runset_path,
+                "-rd",
+                f"output={output_file}",
+                input_file,
+            ],
+            check=True,
+            startupinfo=STARTUPINFO,
+        )
     except subprocess.CalledProcessError as e:
         logging.error(e.output)

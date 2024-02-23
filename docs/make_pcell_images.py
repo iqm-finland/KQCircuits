@@ -28,16 +28,19 @@ from kqcircuits.defaults import STARTUPINFO
 
 DIR = "pcell_images"
 
+
 def to_png(pcell):
-    cmd = f'python pcell2png.py {pcell.__module__} {pcell.__name__} pcell_images'
-    return subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True,
-        universal_newlines=True, startupinfo=STARTUPINFO)
+    cmd = f"python pcell2png.py {pcell.__module__} {pcell.__name__} pcell_images"
+    return subprocess.check_output(
+        cmd, stderr=subprocess.STDOUT, shell=True, universal_newlines=True, startupinfo=STARTUPINFO
+    )
+
 
 if __name__ == "__main__":
     print(f"Creating PCell images in {DIR}...")
     os.makedirs(DIR, exist_ok=True)
 
-    skip = True if  '--skip-excluded-modules' in sys.argv else False
+    skip = True if "--skip-excluded-modules" in sys.argv else False
     pcells = _get_all_pcell_classes(skip_modules=skip)
     pool = Pool(os.cpu_count())
     err = pool.map(to_png, pcells)
@@ -45,7 +48,7 @@ if __name__ == "__main__":
     ret = 0
     for e in err:
         if e:
-            print(e, file = sys.stderr)
+            print(e, file=sys.stderr)
             ret = -1
     print("Finished creating PCell images.")
     exit(ret)

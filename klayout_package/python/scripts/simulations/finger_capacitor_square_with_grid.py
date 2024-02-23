@@ -27,30 +27,33 @@ from kqcircuits.simulations.export.simulation_export import export_simulation_oa
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.simulations.post_process import PostProcess
 from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
-from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
-    open_with_klayout_or_default_application
+from kqcircuits.util.export_helper import (
+    create_or_empty_tmp_directory,
+    get_active_or_new_layout,
+    open_with_klayout_or_default_application,
+)
 
 sim_class = get_single_element_sim_class(FingerCapacitorSquare)  # pylint: disable=invalid-name
 
 use_elmer = True
 with_grid = True
-with_grid_str = ''
+with_grid_str = ""
 if with_grid:
-    with_grid_str = '_with_grid'
+    with_grid_str = "_with_grid"
 
 # Prepare output directory
 if use_elmer:
-    path = create_or_empty_tmp_directory(Path(__file__).stem.replace('_with_grid', '') + with_grid_str + "_elmer")
+    path = create_or_empty_tmp_directory(Path(__file__).stem.replace("_with_grid", "") + with_grid_str + "_elmer")
 else:
-    path = create_or_empty_tmp_directory(Path(__file__).stem.replace('_with_grid', '') + with_grid_str + "_q3d")
+    path = create_or_empty_tmp_directory(Path(__file__).stem.replace("_with_grid", "") + with_grid_str + "_q3d")
 
 # Simulation parameters, using multiface interdigital as starting point
 sim_parameters = {
-    'name': 'capacitor',
-    'use_internal_ports': True,
-    'use_ports': True,
-    'box': pya.DBox(pya.DPoint(0, 0), pya.DPoint(1000, 1000)),
-    'ground_grid_box': pya.DBox(pya.DPoint(350, 450), pya.DPoint(650, 550)),
+    "name": "capacitor",
+    "use_internal_ports": True,
+    "use_ports": True,
+    "box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(1000, 1000)),
+    "ground_grid_box": pya.DBox(pya.DPoint(350, 450), pya.DPoint(650, 550)),
     "finger_number": 4,
     "finger_width": 10,
     "finger_gap_end": 9.5,
@@ -61,42 +64,42 @@ sim_parameters = {
     "a2": 3.5,
     "b2": 32,
     "ground_padding": 10,
-    'port_size': 200,
-    'face_stack': ['1t1', '2b1'],
-    'corner_r': 2,
-    'chip_distance': 8,
-    'with_grid': with_grid,
-    'face_ids': ['2b1', '1t1', '2t1'],
+    "port_size": 200,
+    "face_stack": ["1t1", "2b1"],
+    "corner_r": 2,
+    "chip_distance": 8,
+    "with_grid": with_grid,
+    "face_ids": ["2b1", "1t1", "2t1"],
 }
 
 if use_elmer:
     mesh_size = {
-        'global_max': 100.,
-        '2b1_gap&2b1_signal': 1,
-        '2b1_gap&2b1_ground': 1,
+        "global_max": 100.0,
+        "2b1_gap&2b1_signal": 1,
+        "2b1_gap&2b1_ground": 1,
     }
 
     export_parameters_elmer = {
-        'path': path,
-        'tool': 'capacitance',
+        "path": path,
+        "tool": "capacitance",
     }
 
     workflow = {
-        'run_gmsh_gui': True,  # For GMSH: if true, the mesh is shown after it is done
-                               # (for large meshes this can take a long time)
-        'run_elmergrid': True,
-        'run_elmer': True,
-        'run_paraview': True,  # this is visual view of the results which can be removed to speed up the process
+        "run_gmsh_gui": True,  # For GMSH: if true, the mesh is shown after it is done
+        # (for large meshes this can take a long time)
+        "run_elmergrid": True,
+        "run_elmer": True,
+        "run_paraview": True,  # this is visual view of the results which can be removed to speed up the process
     }
 else:
     export_parameters_ansys = {
-        'path': path,
-        'ansys_tool': 'q3d',
-        'post_process': PostProcess('produce_cmatrix_table.py'),
-        'percent_error': 0.2,
-        'minimum_converged_passes': 2,
-        'maximum_passes': 40,
-        'exit_after_run': True,
+        "path": path,
+        "ansys_tool": "q3d",
+        "post_process": PostProcess("produce_cmatrix_table.py"),
+        "percent_error": 0.2,
+        "minimum_converged_passes": 2,
+        "maximum_passes": 40,
+        "exit_after_run": True,
     }
 
 # Get layout

@@ -137,7 +137,7 @@ def simple_region(region):
 
 
 def region_with_merged_points(region, tolerance):
-    """ In each polygon of the region, removes points that are closer to other points than a given tolerance.
+    """In each polygon of the region, removes points that are closer to other points than a given tolerance.
 
     Arguments:
         region: Input region
@@ -146,8 +146,9 @@ def region_with_merged_points(region, tolerance):
     Returns:
         region: with merged points
     """
+
     def find_next(curr, step, data):
-        """ Returns the next index starting from 'i' to direction 'step' for which 'data' has positive value """
+        """Returns the next index starting from 'i' to direction 'step' for which 'data' has positive value"""
         num = len(data)
         j = curr + step
         while data[j % num] <= 0.0:
@@ -155,7 +156,7 @@ def region_with_merged_points(region, tolerance):
         return j
 
     def merged_points(points):
-        """ Removes points that are closer another points than a given tolerance. Returns list of points."""
+        """Removes points that are closer another points than a given tolerance. Returns list of points."""
         # find squared length of each segment of polygon
         num = len(points)
         squares = [0.0] * num
@@ -164,7 +165,7 @@ def region_with_merged_points(region, tolerance):
 
         # merge short segments
         curr_id = 0
-        squared_tolerance = tolerance ** 2
+        squared_tolerance = tolerance**2
         while curr_id < num:
             if squares[curr_id % num] >= squared_tolerance:
                 # segment long enough: increase 'curr' for the next iteration
@@ -199,7 +200,7 @@ def region_with_merged_points(region, tolerance):
 
 
 def region_with_merged_polygons(region, tolerance, expansion=0.0):
-    """ Merges polygons in given region. Ignores gaps that are smaller than given tolerance.
+    """Merges polygons in given region. Ignores gaps that are smaller than given tolerance.
 
     Arguments:
         region: input region
@@ -217,7 +218,7 @@ def region_with_merged_polygons(region, tolerance, expansion=0.0):
 
 
 def match_points_on_layers(cell, layout, layers):
-    """ Merges adjacent points of layers.
+    """Merges adjacent points of layers.
     Also goes through each polygon edge and splits the edge whenever it passes close to existing point.
 
     This function can eliminate gaps and overlaps caused by transformation to simple_polygon.
@@ -351,7 +352,7 @@ def is_clockwise(polygon_points):
     a = polygon_points[bottom_left_point_idx - 1]
     b = polygon_points[bottom_left_point_idx]
     c = polygon_points[(bottom_left_point_idx + 1) % len(polygon_points)]
-    det = (b.x - a.x)*(c.y - a.y) - (c.x - a.x)*(b.y - a.y)
+    det = (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y)
     return det < 0
 
 
@@ -389,10 +390,9 @@ def arc_points(r, start=0, stop=2 * pi, n=64, origin=pya.DPoint(0, 0)):
     return [origin + pya.DPoint(cos(start + a * step) * r, sin(start + a * step) * r) for a in range(0, n_steps)]
 
 
-def _cubic_polynomial(control_points: List[pya.DPoint],
-                      spline_matrix: np.array,
-                      sample_points: int = 100,
-                      endpoint: bool = False) -> List[pya.DPoint]:
+def _cubic_polynomial(
+    control_points: List[pya.DPoint], spline_matrix: np.array, sample_points: int = 100, endpoint: bool = False
+) -> List[pya.DPoint]:
     """Returns a list of DPoints sampled uniformly from a third order polynomial spline
 
     Args:
@@ -408,15 +408,14 @@ def _cubic_polynomial(control_points: List[pya.DPoint],
     geometry_matrix = np.array([[p.x, p.y] for p in control_points]).T
     result_points = []
     for t in np.linspace(0.0, 1.0, sample_points, endpoint=endpoint):
-        result_vector = geometry_matrix.dot(spline_matrix).dot(np.array([1, t, t*t, t*t*t]).T)
+        result_vector = geometry_matrix.dot(spline_matrix).dot(np.array([1, t, t * t, t * t * t]).T)
         result_points.append(pya.DPoint(result_vector[0], result_vector[1]))
     return result_points
 
 
-def bspline_points(control_points: List[pya.DPoint],
-                   sample_points: int = 100,
-                   startpoint: bool = False,
-                   endpoint: bool = False) -> List[pya.DPoint]:
+def bspline_points(
+    control_points: List[pya.DPoint], sample_points: int = 100, startpoint: bool = False, endpoint: bool = False
+) -> List[pya.DPoint]:
     """Samples points uniformly from the B-Spline constructed from a sequence of control points.
     The spline is derived from a sequence of cubic splines for each subsequence of four-control points
     in a sliding window.
@@ -449,17 +448,16 @@ def bspline_points(control_points: List[pya.DPoint],
         control_points = control_points + [control_points[-1], control_points[-1]]
     if len(control_points) < 4:
         raise ValueError("B-Spline needs at least four control points")
-    bspline_matrix = (1.0/6.0) * np.array([[ 1,-3, 3,-1],
-                                           [ 4, 0,-6, 3],
-                                           [ 1, 3, 3,-3],
-                                           [ 0, 0, 0, 1]])
+    bspline_matrix = (1.0 / 6.0) * np.array([[1, -3, 3, -1], [4, 0, -6, 3], [1, 3, 3, -3], [0, 0, 0, 1]])
     result_points = []
     # Sliding window
     for window_start in range(len(control_points) - 3):
-        result_points += _cubic_polynomial( control_points[window_start:window_start+4],
-                                            bspline_matrix,
-                                            sample_points,
-                                            endpoint=(window_start == len(control_points) - 4))
+        result_points += _cubic_polynomial(
+            control_points[window_start : window_start + 4],
+            bspline_matrix,
+            sample_points,
+            endpoint=(window_start == len(control_points) - 4),
+        )
     return result_points
 
 
@@ -487,15 +485,14 @@ def bezier_points(control_points: List[pya.DPoint], sample_points: int = 100) ->
     """
     if (len(control_points) - 1) % 3 == 0:
         raise ValueError("For Bezier curve, the number of control points should equal to 3*n+1 for some integer n")
-    bezier_matrix = np.array([[ 1,-3, 3,-1],
-                              [ 0, 3,-6, 3],
-                              [ 0, 0, 3,-3],
-                              [ 0, 0, 0, 1]])
+    bezier_matrix = np.array([[1, -3, 3, -1], [0, 3, -6, 3], [0, 0, 3, -3], [0, 0, 0, 1]])
     result_points = []
     # Windows with one shared control point
     for window_start in range(0, len(control_points) - 3, 3):
-        result_points += _cubic_polynomial( control_points[window_start:window_start+4],
-                                            bezier_matrix,
-                                            sample_points,
-                                            endpoint=(window_start == len(control_points) - 4))
+        result_points += _cubic_polynomial(
+            control_points[window_start : window_start + 4],
+            bezier_matrix,
+            sample_points,
+            endpoint=(window_start == len(control_points) - 4),
+        )
     return result_points

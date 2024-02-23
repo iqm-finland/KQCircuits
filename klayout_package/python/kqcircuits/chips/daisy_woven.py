@@ -21,6 +21,7 @@ from kqcircuits.elements.element import Element
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 
+
 @add_parameters_from(Chip, frames_enabled=[0, 1])
 class DaisyWoven(Chip):
     """Base PCell declaration for a Daisy Woven chip.
@@ -52,30 +53,30 @@ class DaisyWoven(Chip):
             y_max = max(self.box.p1.y, self.box.p2.y)
 
             # shorthand notation
-            origin_offset_x = 1e3 * (x_max - x_min) / 2.
-            origin_offset_y = 1e3 * (y_max - y_min) / 2.
+            origin_offset_x = 1e3 * (x_max - x_min) / 2.0
+            origin_offset_y = 1e3 * (y_max - y_min) / 2.0
 
             chip_region = pya.Region(box.to_itype(self.layout.dbu))  # this is already the shape of the box
 
             # Using a static file, so use static layer indices
-            daisy_shapes_base_metal_gap_wo_grid  = daisy_cell.shapes(self.layout.layer(11 + face_id * 30, 1))
+            daisy_shapes_base_metal_gap_wo_grid = daisy_cell.shapes(self.layout.layer(11 + face_id * 30, 1))
             daisy_shapes_underbump_metallization = daisy_cell.shapes(self.layout.layer(32 + face_id * 30, 4))
-            daisy_shapes_indium_bump             = daisy_cell.shapes(self.layout.layer(33 + face_id * 30, 4))
+            daisy_shapes_indium_bump = daisy_cell.shapes(self.layout.layer(33 + face_id * 30, 4))
 
             protection = pya.Region(
-                self.cell.begin_shapes_rec(self.get_layer("ground_grid_avoidance", face_id))).merged()
+                self.cell.begin_shapes_rec(self.get_layer("ground_grid_avoidance", face_id))
+            ).merged()
             self.cell.shapes(self.get_layer("ground_grid_avoidance", face_id)).insert(chip_region)
 
             # extract the bottom Nb layer
-            pattern = pya.Region(daisy_shapes_base_metal_gap_wo_grid).moved(
-                origin_offset_x, origin_offset_y)
+            pattern = pya.Region(daisy_shapes_base_metal_gap_wo_grid).moved(origin_offset_x, origin_offset_y)
             difference = chip_region - pattern - protection
 
             # copy design cell layers manually to DaisyWoven cell
             self.cell.shapes(self.get_layer("base_metal_gap_wo_grid", face_id)).insert(difference)
             self.cell.shapes(self.get_layer("underbump_metallization", face_id)).insert(
-                pya.Region(daisy_shapes_underbump_metallization).moved(
-                    origin_offset_x, origin_offset_y))
+                pya.Region(daisy_shapes_underbump_metallization).moved(origin_offset_x, origin_offset_y)
+            )
             self.cell.shapes(self.get_layer("indium_bump", face_id)).insert(
-                pya.Region(daisy_shapes_indium_bump).moved(
-                    origin_offset_x, origin_offset_y))
+                pya.Region(daisy_shapes_indium_bump).moved(origin_offset_x, origin_offset_y)
+            )

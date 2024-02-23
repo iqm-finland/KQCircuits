@@ -31,12 +31,31 @@ from kqcircuits.defaults import ANSYS_EXECUTABLE, ANSYS_SCRIPT_PATHS
 from kqcircuits.simulations.simulation import Simulation
 
 
-def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
-                      frequency_units="GHz", frequency=5, max_delta_s=0.1, percent_error=1, percent_refinement=30,
-                      maximum_passes=12, minimum_passes=1, minimum_converged_passes=1,
-                      sweep_enabled=True, sweep_start=0, sweep_end=10, sweep_count=101, sweep_type='interpolating',
-                      max_delta_f=0.1, n_modes=2, mesh_size=None, simulation_flags=None, ansys_project_template=None,
-                      integrate_energies=False, hfss_capacitance_export=False):
+def export_ansys_json(
+    simulation: Simulation,
+    path: Path,
+    ansys_tool="hfss",
+    frequency_units="GHz",
+    frequency=5,
+    max_delta_s=0.1,
+    percent_error=1,
+    percent_refinement=30,
+    maximum_passes=12,
+    minimum_passes=1,
+    minimum_converged_passes=1,
+    sweep_enabled=True,
+    sweep_start=0,
+    sweep_end=10,
+    sweep_count=101,
+    sweep_type="interpolating",
+    max_delta_f=0.1,
+    n_modes=2,
+    mesh_size=None,
+    simulation_flags=None,
+    ansys_project_template=None,
+    integrate_energies=False,
+    hfss_capacitance_export=False,
+):
     r"""
     Export Ansys simulation into json and gds files.
 
@@ -76,52 +95,57 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
 
     # collect data for .json file
     json_data = {
-        'ansys_tool': ansys_tool,
+        "ansys_tool": ansys_tool,
         **simulation.get_simulation_data(),
-        'analysis_setup': {
-            'frequency_units': frequency_units,
-            'frequency': frequency,
-            'max_delta_s': max_delta_s,  # stopping criterion for HFSS
-            'percent_error': percent_error,  # stopping criterion for Q3D
-            'percent_refinement': percent_refinement,
-            'maximum_passes': maximum_passes,
-            'minimum_passes': minimum_passes,
-            'minimum_converged_passes': minimum_converged_passes,
-            'sweep_enabled': sweep_enabled,
-            'sweep_start': sweep_start,
-            'sweep_end': sweep_end,
-            'sweep_count': sweep_count,
-            'sweep_type': sweep_type,
-            'max_delta_f': max_delta_f,
-            'n_modes': n_modes,
+        "analysis_setup": {
+            "frequency_units": frequency_units,
+            "frequency": frequency,
+            "max_delta_s": max_delta_s,  # stopping criterion for HFSS
+            "percent_error": percent_error,  # stopping criterion for Q3D
+            "percent_refinement": percent_refinement,
+            "maximum_passes": maximum_passes,
+            "minimum_passes": minimum_passes,
+            "minimum_converged_passes": minimum_converged_passes,
+            "sweep_enabled": sweep_enabled,
+            "sweep_start": sweep_start,
+            "sweep_end": sweep_end,
+            "sweep_count": sweep_count,
+            "sweep_type": sweep_type,
+            "max_delta_f": max_delta_f,
+            "n_modes": n_modes,
         },
-        'mesh_size': {} if mesh_size is None else mesh_size,
-        'simulation_flags': simulation_flags,
-        'integrate_energies': integrate_energies,
-        'hfss_capacitance_export': hfss_capacitance_export,
+        "mesh_size": {} if mesh_size is None else mesh_size,
+        "simulation_flags": simulation_flags,
+        "integrate_energies": integrate_energies,
+        "hfss_capacitance_export": hfss_capacitance_export,
     }
 
     if ansys_project_template is not None:
-        json_data['ansys_project_template'] = ansys_project_template
+        json_data["ansys_project_template"] = ansys_project_template
 
     # write .json file
-    json_filename = str(path.joinpath(simulation.name + '.json'))
-    with open(json_filename, 'w') as fp:
+    json_filename = str(path.joinpath(simulation.name + ".json"))
+    with open(json_filename, "w") as fp:
         json.dump(json_data, fp, cls=GeometryJsonEncoder, indent=4)
 
     # write .gds file
-    gds_filename = str(path.joinpath(simulation.name + '.gds'))
-    export_layers(gds_filename, simulation.layout, [simulation.cell],
-                  output_format='GDS2',
-                  layers=simulation.get_layers()
-                  )
+    gds_filename = str(path.joinpath(simulation.name + ".gds"))
+    export_layers(
+        gds_filename, simulation.layout, [simulation.cell], output_format="GDS2", layers=simulation.get_layers()
+    )
 
     return json_filename
 
 
-def export_ansys_bat(json_filenames, path: Path, file_prefix='simulation', exit_after_run=False,
-                     execution_script='scripts/import_and_simulate.py',
-                     post_process=None, use_rel_path=True):
+def export_ansys_bat(
+    json_filenames,
+    path: Path,
+    file_prefix="simulation",
+    exit_after_run=False,
+    execution_script="scripts/import_and_simulate.py",
+    post_process=None,
+    use_rel_path=True,
+):
     """
     Create a batch file for running one or more already exported simulations.
 
@@ -137,32 +161,32 @@ def export_ansys_bat(json_filenames, path: Path, file_prefix='simulation', exit_
     Returns:
          Path to exported bat file.
     """
-    run_cmd = 'RunScriptAndExit' if exit_after_run else 'RunScript'
+    run_cmd = "RunScriptAndExit" if exit_after_run else "RunScript"
 
-    bat_filename = str(path.joinpath(file_prefix + '.bat'))
-    with open(bat_filename, 'w') as file:
+    bat_filename = str(path.joinpath(file_prefix + ".bat"))
+    with open(bat_filename, "w") as file:
         file.write(
-            '@echo off\n'\
-            r'powershell -Command "Get-Process | Where-Object {$_.MainWindowTitle -like \"Run Simulations*\"} '\
-                '| Select -ExpandProperty Id | Export-Clixml -path blocking_pids.xml"\n'\
-            'title Run Simulations\n'\
-            'powershell -Command "$sim_pids = Import-Clixml -Path blocking_pids.xml; if ($sim_pids) '\
-                r'{ echo \"Waiting for $sim_pids\"; Wait-Process $sim_pids -ErrorAction SilentlyContinue }; '\
-                'Remove-Item blocking_pids.xml"\n'
+            "@echo off\n"
+            r'powershell -Command "Get-Process | Where-Object {$_.MainWindowTitle -like \"Run Simulations*\"} '
+            '| Select -ExpandProperty Id | Export-Clixml -path blocking_pids.xml"\n'
+            "title Run Simulations\n"
+            'powershell -Command "$sim_pids = Import-Clixml -Path blocking_pids.xml; if ($sim_pids) '
+            r"{ echo \"Waiting for $sim_pids\"; Wait-Process $sim_pids -ErrorAction SilentlyContinue }; "
+            'Remove-Item blocking_pids.xml"\n'
         )
 
         # Commands for each simulation
         for i, json_filename in enumerate(json_filenames):
-            printing = 'echo Simulation {}/{} - {}\n'.format(
-                i+1,
-                len(json_filenames),
-                str(Path(json_filename).relative_to(path)))
+            printing = "echo Simulation {}/{} - {}\n".format(
+                i + 1, len(json_filenames), str(Path(json_filename).relative_to(path))
+            )
             file.write(printing)
             command = '"{}" -scriptargs "{}" -{} "{}"\n'.format(
                 ANSYS_EXECUTABLE,
                 str(Path(json_filename).relative_to(path) if use_rel_path else json_filename),
                 run_cmd,
-                str(execution_script))
+                str(execution_script),
+            )
             file.write(command)
 
         file.write(get_post_process_command_lines(post_process, path, json_filenames))
@@ -173,14 +197,38 @@ def export_ansys_bat(json_filenames, path: Path, file_prefix='simulation', exit_
     return bat_filename
 
 
-def export_ansys(simulations, path: Path, ansys_tool='hfss', script_folder='scripts', file_prefix='simulation',
-                 frequency_units="GHz", frequency=5, max_delta_s=0.1, percent_error=1, percent_refinement=30,
-                 maximum_passes=12, minimum_passes=1, minimum_converged_passes=1,
-                 sweep_enabled=True, sweep_start=0, sweep_end=10, sweep_count=101, sweep_type='interpolating',
-                 max_delta_f=0.1, n_modes=2, mesh_size=None, exit_after_run=False,
-                 import_script='import_and_simulate.py', post_process=None, use_rel_path=True, simulation_flags=None,
-                 ansys_project_template=None, integrate_energies=False, hfss_capacitance_export=False,
-                 skip_errors=False):
+def export_ansys(
+    simulations,
+    path: Path,
+    ansys_tool="hfss",
+    script_folder="scripts",
+    file_prefix="simulation",
+    frequency_units="GHz",
+    frequency=5,
+    max_delta_s=0.1,
+    percent_error=1,
+    percent_refinement=30,
+    maximum_passes=12,
+    minimum_passes=1,
+    minimum_converged_passes=1,
+    sweep_enabled=True,
+    sweep_start=0,
+    sweep_end=10,
+    sweep_count=101,
+    sweep_type="interpolating",
+    max_delta_f=0.1,
+    n_modes=2,
+    mesh_size=None,
+    exit_after_run=False,
+    import_script="import_and_simulate.py",
+    post_process=None,
+    use_rel_path=True,
+    simulation_flags=None,
+    ansys_project_template=None,
+    integrate_energies=False,
+    hfss_capacitance_export=False,
+    skip_errors=False,
+):
     r"""
     Export Ansys simulations by writing necessary scripts and json, gds, and bat files.
 
@@ -231,35 +279,53 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', script_folder='scri
     json_filenames = []
     for simulation in simulations:
         try:
-            json_filenames.append(export_ansys_json(simulation, path, ansys_tool=ansys_tool,
-                                            frequency_units=frequency_units, frequency=frequency,
-                                            max_delta_s=max_delta_s, percent_error=percent_error,
-                                            percent_refinement=percent_refinement,
-                                            maximum_passes=maximum_passes, minimum_passes=minimum_passes,
-                                            minimum_converged_passes=minimum_converged_passes,
-                                            sweep_enabled=sweep_enabled, sweep_start=sweep_start,
-                                            sweep_end=sweep_end, sweep_count=sweep_count, sweep_type=sweep_type,
-                                            max_delta_f=max_delta_f, n_modes=n_modes,
-                                            mesh_size=mesh_size,
-                                            simulation_flags=simulation_flags,
-                                            ansys_project_template=ansys_project_template,
-                                            integrate_energies=integrate_energies,
-                                            hfss_capacitance_export=hfss_capacitance_export,
-                                            ))
+            json_filenames.append(
+                export_ansys_json(
+                    simulation,
+                    path,
+                    ansys_tool=ansys_tool,
+                    frequency_units=frequency_units,
+                    frequency=frequency,
+                    max_delta_s=max_delta_s,
+                    percent_error=percent_error,
+                    percent_refinement=percent_refinement,
+                    maximum_passes=maximum_passes,
+                    minimum_passes=minimum_passes,
+                    minimum_converged_passes=minimum_converged_passes,
+                    sweep_enabled=sweep_enabled,
+                    sweep_start=sweep_start,
+                    sweep_end=sweep_end,
+                    sweep_count=sweep_count,
+                    sweep_type=sweep_type,
+                    max_delta_f=max_delta_f,
+                    n_modes=n_modes,
+                    mesh_size=mesh_size,
+                    simulation_flags=simulation_flags,
+                    ansys_project_template=ansys_project_template,
+                    integrate_energies=integrate_energies,
+                    hfss_capacitance_export=hfss_capacitance_export,
+                )
+            )
         except (IndexError, ValueError, Exception) as e:  # pylint: disable=broad-except
             if skip_errors:
                 logging.warning(
-                    f'Simulation {simulation.name} skipped due to {e.args}. '\
-                    'Some of your other simulations might not make sense geometrically. '\
-                    'Disable `skip_errors` to see the full traceback.'
+                    f"Simulation {simulation.name} skipped due to {e.args}. "
+                    "Some of your other simulations might not make sense geometrically. "
+                    "Disable `skip_errors` to see the full traceback."
                 )
             else:
                 raise UserWarning(
-                    'Generating simulation failed. You can discard the errors using `skip_errors` in `export_ansys`. '\
-                    'Moreover, `skip_errors` enables visual inspection of failed and successful simulation '\
-                    'geometry files.'
+                    "Generating simulation failed. You can discard the errors using `skip_errors` in `export_ansys`. "
+                    "Moreover, `skip_errors` enables visual inspection of failed and successful simulation "
+                    "geometry files."
                 ) from e
 
-    return export_ansys_bat(json_filenames, path, file_prefix=file_prefix, exit_after_run=exit_after_run,
-                            execution_script=Path(script_folder).joinpath(import_script), post_process=post_process,
-                            use_rel_path=use_rel_path)
+    return export_ansys_bat(
+        json_filenames,
+        path,
+        file_prefix=file_prefix,
+        exit_after_run=exit_after_run,
+        execution_script=Path(script_folder).joinpath(import_script),
+        post_process=post_process,
+        use_rel_path=use_rel_path,
+    )

@@ -127,16 +127,16 @@ route_log(lowest_visible_level="INFO", filename=f"{TMP_PATH}/kqc.log")
 logging.info(f"Element path: {element_path}")
 
 # Figure out the python import path from the specified file path
-path_without_extension = pathlib.Path(element_path).with_suffix('')
+path_without_extension = pathlib.Path(element_path).with_suffix("")
 # Remove 'KQCircuits' or similar folder from beginning
 for idx, part in reversed(list(enumerate(path_without_extension.parts))):
-    if 'Circuits' in part:
-        path_without_extension = path_without_extension.relative_to(*path_without_extension.parts[:idx+1])
+    if "Circuits" in part:
+        path_without_extension = path_without_extension.relative_to(*path_without_extension.parts[: idx + 1])
 
 if path_without_extension.parts[0] == "klayout_package" and path_without_extension.parts[1] == "python":
-    module_path = '.'.join(path_without_extension.parts[2:])
+    module_path = ".".join(path_without_extension.parts[2:])
 else:
-    module_path = '.'.join(path_without_extension.parts)
+    module_path = ".".join(path_without_extension.parts)
 module_name = path_without_extension.name
 
 # Import module
@@ -145,9 +145,12 @@ module = importlib.import_module(module_path)
 logging.info(f"Loaded module {str(module)}")
 
 # Find classes that are in this actual module (rather than imported from somewhere else)
-classes_in_module = [m for m in vars(module).values() if
-                     hasattr(m, '__module__') and m.__module__ == module_path and hasattr(m, '__mro__')]
-element_classes = [m for m in classes_in_module if 'Element' in [s.__name__ for s in m.__mro__]]
+classes_in_module = [
+    m
+    for m in vars(module).values()
+    if hasattr(m, "__module__") and m.__module__ == module_path and hasattr(m, "__mro__")
+]
+element_classes = [m for m in classes_in_module if "Element" in [s.__name__ for s in m.__mro__]]
 
 logging.info(f"Found classes {str(element_classes)}")
 

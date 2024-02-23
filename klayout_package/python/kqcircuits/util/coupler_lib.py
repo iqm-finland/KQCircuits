@@ -20,7 +20,7 @@ from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.elements.smooth_capacitor import SmoothCapacitor
 
 
-def cap_params(fingers, length=None, coupler_type="interdigital", element_key='cls', **kwargs):
+def cap_params(fingers, length=None, coupler_type="interdigital", element_key="cls", **kwargs):
     """An utility function to easily produce typical finger capacitor instance parameters.
     Covers FingerCapacitorSquare and SmoothCapacitor.
 
@@ -35,37 +35,42 @@ def cap_params(fingers, length=None, coupler_type="interdigital", element_key='c
     Returns:
         dictionary of coupler parameters
     """
-    if coupler_type == 'smooth':
-        return {element_key: SmoothCapacitor,
-                'finger_control': fingers,
-                "finger_width": 10,
-                "ground_gap": 10,
-                "finger_gap": 5,
-                **kwargs}
+    if coupler_type == "smooth":
+        return {
+            element_key: SmoothCapacitor,
+            "finger_control": fingers,
+            "finger_width": 10,
+            "ground_gap": 10,
+            "finger_gap": 5,
+            **kwargs,
+        }
 
-    defaults = {element_key: FingerCapacitorSquare,
-                "finger_number": int(fingers),
-                "finger_length": length,
-                "finger_gap_end": 5,
-                "finger_gap": 5,
-                "finger_width": 15,
-                "ground_padding": 10,
-               }
+    defaults = {
+        element_key: FingerCapacitorSquare,
+        "finger_number": int(fingers),
+        "finger_length": length,
+        "finger_gap_end": 5,
+        "finger_gap": 5,
+        "finger_width": 15,
+        "ground_padding": 10,
+    }
 
     params = {}
 
     if coupler_type == "gap":
-        params = {"finger_length": 0,
-                  "finger_gap_end": length,
-                  "finger_gap": 0,
-                  "finger_width": 10,
-                 }
+        params = {
+            "finger_length": 0,
+            "finger_gap_end": length,
+            "finger_gap": 0,
+            "finger_width": 10,
+        }
     elif coupler_type == "ground gap":
-        params = {"finger_length": 0,
-                  "finger_gap_end": length,
-                  "finger_gap": 50 - length / 2,
-                  "finger_width": 20,
-                  "ground_gap_ratio": 1/3
-                  }
+        params = {
+            "finger_length": 0,
+            "finger_gap_end": length,
+            "finger_gap": 50 - length / 2,
+            "finger_width": 20,
+            "ground_gap_ratio": 1 / 3,
+        }
 
     return {**defaults, **params, **kwargs}

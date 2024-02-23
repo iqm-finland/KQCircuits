@@ -28,9 +28,10 @@ class FlipChipConnector(Element):
     Origin is at the geometric center.
     """
 
-    ubm_diameter = Param(pdt.TypeDouble, "Under-bump metalization diameter",
-                         default_bump_parameters['under_bump_diameter'], unit="μm")
-    bump_diameter = Param(pdt.TypeDouble, "Bump diameter", default_bump_parameters['bump_diameter'], unit="μm")
+    ubm_diameter = Param(
+        pdt.TypeDouble, "Under-bump metalization diameter", default_bump_parameters["under_bump_diameter"], unit="μm"
+    )
+    bump_diameter = Param(pdt.TypeDouble, "Bump diameter", default_bump_parameters["bump_diameter"], unit="μm")
 
     def create_bump_connector(self):
         ubm_shape = circle_polygon(self.ubm_diameter / 2, self.n)

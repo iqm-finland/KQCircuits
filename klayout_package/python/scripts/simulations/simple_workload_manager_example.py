@@ -24,8 +24,11 @@ from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
 from kqcircuits.simulations.export.simulation_export import sweep_simulation, export_simulation_oas
 
 from kqcircuits.simulations.xmons_direct_coupling_sim import XMonsDirectCouplingSim
-from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
-    open_with_klayout_or_default_application
+from kqcircuits.util.export_helper import (
+    create_or_empty_tmp_directory,
+    get_active_or_new_layout,
+    open_with_klayout_or_default_application,
+)
 
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
@@ -34,36 +37,36 @@ dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 # This is the same as `xmons_direct_coupling` but computes the capacitance matrix using Elmer
 sim_class = XMonsDirectCouplingSim  # pylint: disable=invalid-name
 sim_parameters = {
-    'name': 'three_coupled_xmons',
-    'use_internal_ports': True,
-    'box': pya.DBox(pya.DPoint(3500, 3500), pya.DPoint(6500, 6500))
+    "name": "three_coupled_xmons",
+    "use_internal_ports": True,
+    "box": pya.DBox(pya.DPoint(3500, 3500), pya.DPoint(6500, 6500)),
 }
 
 export_parameters = {
-    'path': dir_path,
-    'tool': 'capacitance',  # Selected Elmer tool
+    "path": dir_path,
+    "tool": "capacitance",  # Selected Elmer tool
 }
 
 # Gmsh meshing parameters
 mesh_size = {
-    'global_max': 400.,
-    '1t1_gap': 16.,
-    '1t1_signal&1t1_gap': 8,
+    "global_max": 400.0,
+    "1t1_gap": 16.0,
+    "1t1_signal&1t1_gap": 8,
 }
 
 # Here we select to use up to 4*2=8 cores with two levels of parallelisation
 # That is, we have 4 simulations running at the same time, each using 2 cores.
 # NB that mesh_parameters also has a gmsh_n_threads parameter that may be different.
 workflow = {
-    'run_elmergrid': True,
-    'run_gmsh_gui': True,
-    'run_elmer': True,
-    'run_paraview': False,  # don't open field solution between simulations
-    'n_workers': 4,  # workers for first-level parallelisation, using Slurm would override this
-    'gmsh_n_threads': 2,
-    'elmer_n_processes': 2,  # processes for second-level parallelisation
-    'elmer_n_threads': 1,  # number of omp threads per process
-    'python_executable': 'python' # use 'kqclib' when using singularity image (you can also put a full path)
+    "run_elmergrid": True,
+    "run_gmsh_gui": True,
+    "run_elmer": True,
+    "run_paraview": False,  # don't open field solution between simulations
+    "n_workers": 4,  # workers for first-level parallelisation, using Slurm would override this
+    "gmsh_n_threads": 2,
+    "elmer_n_processes": 2,  # processes for second-level parallelisation
+    "elmer_n_threads": 1,  # number of omp threads per process
+    "python_executable": "python",  # use 'kqclib' when using singularity image (you can also put a full path)
 }
 
 # Get layout
@@ -71,9 +74,7 @@ logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 layout = get_active_or_new_layout()
 
 # Sweep simulations
-simulations = sweep_simulation(layout, sim_class, sim_parameters, {
-    'cpl_width': [5, 10, 15, 20]
-})
+simulations = sweep_simulation(layout, sim_class, sim_parameters, {"cpl_width": [5, 10, 15, 20]})
 
 # Export Elmer files
 export_elmer(simulations, **export_parameters, mesh_size=mesh_size, workflow=workflow)

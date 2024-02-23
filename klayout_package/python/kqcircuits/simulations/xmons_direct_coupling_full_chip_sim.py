@@ -34,12 +34,12 @@ class XMonsDirectCouplingFullChipSim(Simulation):
     enable_drive_lines = Param(pdt.TypeBoolean, "To drive or not to drive", True)
     enable_transmission_line = Param(pdt.TypeBoolean, "To transmit?", True)
 
-
     def produce_waveguide(self, path, term1=0, term2=0, turn_radius=None):
         if turn_radius is None:
             turn_radius = self.r
 
-        tl = self.add_element(WaveguideCoplanar,
+        tl = self.add_element(
+            WaveguideCoplanar,
             path=pya.DPath(path, 1),
             r=turn_radius,
             term1=term1,
@@ -69,32 +69,34 @@ class XMonsDirectCouplingFullChipSim(Simulation):
 
         # coupler
         pos_coupler_end = pya.DPoint(pos_start.x, end_y - 3 * self.r)
-        len_coupler = self.produce_waveguide([
-            pya.DPoint(pos_start.x - width_rr / 2, end_y),
-            pya.DPoint(pos_start.x + width_rr / 2, end_y),
-            pya.DPoint(pos_start.x + width_rr / 2, end_y - 2 * self.r),
-            pya.DPoint(pos_start.x, end_y - 2 * self.r),
-            pos_coupler_end
-        ], turn_radius=50, term1=10)
+        len_coupler = self.produce_waveguide(
+            [
+                pya.DPoint(pos_start.x - width_rr / 2, end_y),
+                pya.DPoint(pos_start.x + width_rr / 2, end_y),
+                pya.DPoint(pos_start.x + width_rr / 2, end_y - 2 * self.r),
+                pya.DPoint(pos_start.x, end_y - 2 * self.r),
+                pos_coupler_end,
+            ],
+            turn_radius=50,
+            term1=10,
+        )
 
         # meander
-        meander = self.add_element(Meander,
-            start=pos_coupler_end,
-            end=pos_start,
-            length=length - len_coupler,
-            meanders=8,
-            r=50
+        meander = self.add_element(
+            Meander, start=pos_coupler_end, end=pos_start, length=length - len_coupler, meanders=8, r=50
         )
         self.cell.insert(pya.DCellInstArray(meander.cell_index(), pya.DTrans()))
 
     def produce_launcher(self, pos, direction):
         """Wrapper function for launcher PCell placement at `pos` with `direction`, `name` and `width`."""
 
-        subcell = self.add_element(WaveguideCoplanar,
-            path= pya.DPath([pya.DPoint(0, 0), pya.DPoint(90, 0)], 0),
+        subcell = self.add_element(
+            WaveguideCoplanar,
+            path=pya.DPath([pya.DPoint(0, 0), pya.DPoint(90, 0)], 0),
             term2=10,
         )
-        subcell2 = self.add_element(WaveguideCoplanar,
+        subcell2 = self.add_element(
+            WaveguideCoplanar,
             path=pya.DPath([pya.DPoint(100, 0), pya.DPoint(110, 0)], 0),
             term2=0,
         )
@@ -128,7 +130,7 @@ class XMonsDirectCouplingFullChipSim(Simulation):
             "SW": (pya.DPoint(2800, 800), "S", 300),
             "NW": (pya.DPoint(2800, 9200), "N", 300),
             "SE": (pya.DPoint(7200, 800), "S", 300),
-            "NE": (pya.DPoint(7200, 9200), "N", 300)
+            "NE": (pya.DPoint(7200, 9200), "N", 300),
         }
         for name in enabled:
             self.produce_launcher(launchers[name][0], launchers[name][1])
@@ -138,13 +140,13 @@ class XMonsDirectCouplingFullChipSim(Simulation):
         enabled_launchers = []
         launchers_with_ports = []
         if self.enable_transmission_line:
-            enabled_launchers += ['NW', 'NE']
-            launchers_with_ports += ['NW', 'NE']
+            enabled_launchers += ["NW", "NE"]
+            launchers_with_ports += ["NW", "NE"]
         if self.enable_drive_lines:
-            enabled_launchers += ['WN', 'SW', 'ES']
-            launchers_with_ports += ['WN', 'SW', 'ES']
+            enabled_launchers += ["WN", "SW", "ES"]
+            launchers_with_ports += ["WN", "SW", "ES"]
         if self.enable_flux_lines:
-            enabled_launchers += ['WS', 'SE', 'EN']
+            enabled_launchers += ["WS", "SE", "EN"]
             # For now, flux lines don't have ports
             # TODO: Set up a way to make flux line a different polygon from ground plane, and move it to signal layer
         launchers = self.produce_launchers_SMA8(enabled=enabled_launchers)
@@ -152,27 +154,36 @@ class XMonsDirectCouplingFullChipSim(Simulation):
         # Finnmon
         qubit_props_common = {
             "fluxline_type": "Fluxline Standard" if self.enable_flux_lines else "none",
-            "junction_type": 'Sim',
+            "junction_type": "Sim",
             "arm_length": [146] * 4,
             "island_r": 2,
             "cpl_length": [0, 140, 0],
             "cpl_width": [60, 24, 60],
             "cpl_gap": [110, 102, 110],
-            "cl_offset": [150, 150]
+            "cl_offset": [150, 150],
         }
-        finnmon_a = self.add_element(Swissmon,
+        finnmon_a = self.add_element(
+            Swissmon,
             arm_width=[self.arm_width_a] * 4,
-            gap_width=[(72 - self.arm_width_a) / 2] * 4, **qubit_props_common)
-        finnmon_b = self.add_element(Swissmon,
+            gap_width=[(72 - self.arm_width_a) / 2] * 4,
+            **qubit_props_common,
+        )
+        finnmon_b = self.add_element(
+            Swissmon,
             arm_width=[self.arm_width_b] * 4,
-            gap_width=[(72 - self.arm_width_b) / 2] * 4, **qubit_props_common)
+            gap_width=[(72 - self.arm_width_b) / 2] * 4,
+            **qubit_props_common,
+        )
 
-        (pos_qb1_dr, pos_qb1_fl, pos_qb1_rr, port_qubit1_squid_a, port_qubit1_squid_b) = \
-            self.produce_qubit(finnmon_a, 5e3 - 330 - self.qubit_spacing, name="qb_1")
-        (pos_qb2_dr, pos_qb2_fl, pos_qb2_rr, port_qubit2_squid_a, port_qubit2_squid_b) = \
-            self.produce_qubit(finnmon_b, 5e3, name="qb_`2")
-        (pos_qb3_dr, pos_qb3_fl, pos_qb3_rr, port_qubit3_squid_a, port_qubit3_squid_b) = \
-            self.produce_qubit(finnmon_a, 5e3 + 330 + self.qubit_spacing, name="qb_3")
+        (pos_qb1_dr, pos_qb1_fl, pos_qb1_rr, port_qubit1_squid_a, port_qubit1_squid_b) = self.produce_qubit(
+            finnmon_a, 5e3 - 330 - self.qubit_spacing, name="qb_1"
+        )
+        (pos_qb2_dr, pos_qb2_fl, pos_qb2_rr, port_qubit2_squid_a, port_qubit2_squid_b) = self.produce_qubit(
+            finnmon_b, 5e3, name="qb_`2"
+        )
+        (pos_qb3_dr, pos_qb3_fl, pos_qb3_rr, port_qubit3_squid_a, port_qubit3_squid_b) = self.produce_qubit(
+            finnmon_a, 5e3 + 330 + self.qubit_spacing, name="qb_3"
+        )
 
         # Readout resonators
         height_rr_feedline = 7.3e3
@@ -185,59 +196,70 @@ class XMonsDirectCouplingFullChipSim(Simulation):
 
         if self.enable_transmission_line:
             # RR feedline
-            self.produce_waveguide([
-                launchers["NW"][0],
-                pya.DPoint(launchers["NW"][0].x, height_rr_feedline),
-                pya.DPoint(launchers["NE"][0].x, height_rr_feedline),
-                launchers["NE"][0]])
+            self.produce_waveguide(
+                [
+                    launchers["NW"][0],
+                    pya.DPoint(launchers["NW"][0].x, height_rr_feedline),
+                    pya.DPoint(launchers["NE"][0].x, height_rr_feedline),
+                    launchers["NE"][0],
+                ]
+            )
 
         if self.enable_drive_lines:
             # Qb1 chargeline
-            self.produce_waveguide([
-                launchers["WN"][0],
-                pya.DPoint(launchers["NW"][0].x - tl_gap, launchers["WN"][0].y),
-                pya.DPoint(launchers["NW"][0].x - tl_gap, launchers["WS"][0].y + tl_gap),
-                pya.DPoint(pos_qb1_dr.x, launchers["WS"][0].y + tl_gap),
-                pos_qb1_dr], term2=self.b)
+            self.produce_waveguide(
+                [
+                    launchers["WN"][0],
+                    pya.DPoint(launchers["NW"][0].x - tl_gap, launchers["WN"][0].y),
+                    pya.DPoint(launchers["NW"][0].x - tl_gap, launchers["WS"][0].y + tl_gap),
+                    pya.DPoint(pos_qb1_dr.x, launchers["WS"][0].y + tl_gap),
+                    pos_qb1_dr,
+                ],
+                term2=self.b,
+            )
             # Qb2 chargeline
-            self.produce_waveguide([
-                launchers["SW"][0],
-                pya.DPoint(launchers["SW"][0].x, launchers["WS"][0].y - tl_gap),
-                pya.DPoint(pos_qb2_dr.x, launchers["WS"][0].y - tl_gap),
-                pos_qb2_dr], term2=self.b)
+            self.produce_waveguide(
+                [
+                    launchers["SW"][0],
+                    pya.DPoint(launchers["SW"][0].x, launchers["WS"][0].y - tl_gap),
+                    pya.DPoint(pos_qb2_dr.x, launchers["WS"][0].y - tl_gap),
+                    pos_qb2_dr,
+                ],
+                term2=self.b,
+            )
             # Qb3 driveline
-            self.produce_waveguide([
-                launchers["ES"][0],
-                pya.DPoint(pos_qb3_dr.x, launchers["ES"][0].y),
-                pos_qb3_dr], term2=self.b)
+            self.produce_waveguide(
+                [launchers["ES"][0], pya.DPoint(pos_qb3_dr.x, launchers["ES"][0].y), pos_qb3_dr], term2=self.b
+            )
 
         if self.enable_flux_lines:
             # Qb1 fluxline
-            self.produce_waveguide([
-                launchers["WS"][0],
-                pya.DPoint(pos_qb1_fl.x, launchers["WS"][0].y),
-                pos_qb1_fl])
+            self.produce_waveguide([launchers["WS"][0], pya.DPoint(pos_qb1_fl.x, launchers["WS"][0].y), pos_qb1_fl])
             # Qb2 fluxline
-            self.produce_waveguide([
-                launchers["SE"][0],
-                pya.DPoint(launchers["SE"][0].x, launchers["ES"][0].y - tl_gap),
-                pya.DPoint(pos_qb2_fl.x, launchers["ES"][0].y - tl_gap),
-                pos_qb2_fl])
+            self.produce_waveguide(
+                [
+                    launchers["SE"][0],
+                    pya.DPoint(launchers["SE"][0].x, launchers["ES"][0].y - tl_gap),
+                    pya.DPoint(pos_qb2_fl.x, launchers["ES"][0].y - tl_gap),
+                    pos_qb2_fl,
+                ]
+            )
             # Qb3 fluxline
-            self.produce_waveguide([
-                launchers["EN"][0],
-                pya.DPoint(launchers["NE"][0].x + tl_gap, launchers["EN"][0].y),
-                pya.DPoint(launchers["NE"][0].x + tl_gap, launchers["ES"][0].y + tl_gap),
-                pya.DPoint(pos_qb3_fl.x, launchers["ES"][0].y + tl_gap),
-                pos_qb3_fl])
+            self.produce_waveguide(
+                [
+                    launchers["EN"][0],
+                    pya.DPoint(launchers["NE"][0].x + tl_gap, launchers["EN"][0].y),
+                    pya.DPoint(launchers["NE"][0].x + tl_gap, launchers["ES"][0].y + tl_gap),
+                    pya.DPoint(pos_qb3_fl.x, launchers["ES"][0].y + tl_gap),
+                    pos_qb3_fl,
+                ]
+            )
 
+        dx = {"W": -90, "E": 90, "S": 0, "N": 0}
+        dy = {"W": 0, "E": 0, "S": -90, "N": 90}
 
-        dx = {'W': -90, 'E': 90, 'S': 0, 'N': 0}
-        dy = {'W': 0, 'E': 0, 'S': -90, 'N': 90}
-
-        dx2 = {'W': -100, 'E': 100, 'S': 0, 'N': 0}
-        dy2 = {'W': 0, 'E': 0, 'S': -100, 'N': 100}
-
+        dx2 = {"W": -100, "E": 100, "S": 0, "N": 0}
+        dy2 = {"W": 0, "E": 0, "S": -100, "N": 100}
 
         for i, launcher_name in enumerate(launchers_with_ports):
             launcher = launchers[launcher_name]

@@ -27,8 +27,11 @@ from kqcircuits.simulations.export.simulation_export import cross_sweep_simulati
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.simulations.post_process import PostProcess
 from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
-from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
-    open_with_klayout_or_default_application
+from kqcircuits.util.export_helper import (
+    create_or_empty_tmp_directory,
+    get_active_or_new_layout,
+    open_with_klayout_or_default_application,
+)
 
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
@@ -37,38 +40,38 @@ sim_class = get_single_element_sim_class(FingerCapacitorSquare)  # pylint: disab
 
 # Simulation parameters, using multiface interdigital as starting point
 sim_parameters = {
-    'name': 'finger_capacitor',
-    'use_internal_ports': True,
-    'use_ports': True,
-    'box': pya.DBox(pya.DPoint(0, 0), pya.DPoint(1000, 1000)),
-    'a2': -1,
-    'b2': -1,
+    "name": "finger_capacitor",
+    "use_internal_ports": True,
+    "use_ports": True,
+    "box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(1000, 1000)),
+    "a2": -1,
+    "b2": -1,
     "finger_number": 5,
     "finger_width": 15,
     "finger_gap": 5,
     "finger_gap_end": 5,
     "finger_length": 20,
     "ground_padding": 10,
-    'port_size': 200,
-    'face_stack': ['1t1', '2b1'],
-    'corner_r': 2,
-    'chip_distance': 8
+    "port_size": 200,
+    "face_stack": ["1t1", "2b1"],
+    "corner_r": 2,
+    "chip_distance": 8,
 }
 # Parameters that differ from sim_parameters for gap type
 gap_parameters = {
-    'finger_number': 4,
-    'finger_length': 0,
-    'finger_gap': 0,
-    'finger_width': 10,
+    "finger_number": 4,
+    "finger_length": 0,
+    "finger_gap": 0,
+    "finger_width": 10,
 }
 export_parameters = {
-    'path': dir_path,
-    'ansys_tool': 'q3d',
-    'post_process': PostProcess('produce_cmatrix_table.py'),
-    'exit_after_run': True,
-    'percent_error': 0.3,
-    'minimum_converged_passes': 2,
-    'maximum_passes': 20,
+    "path": dir_path,
+    "ansys_tool": "q3d",
+    "post_process": PostProcess("produce_cmatrix_table.py"),
+    "exit_after_run": True,
+    "percent_error": 0.3,
+    "minimum_converged_passes": 2,
+    "maximum_passes": 20,
 }
 
 # Sweep ranges
@@ -85,50 +88,62 @@ layout = get_active_or_new_layout()
 simulations = []
 
 # Multi face finger (interdigital) capacitor sweeps
-simulations += cross_sweep_simulation(layout, sim_class, sim_parameters, {
-    'chip_distance': chip_distances,
-    'finger_number': finger_numbers,
-    'finger_length': finger_lengths,
-})
+simulations += cross_sweep_simulation(
+    layout,
+    sim_class,
+    sim_parameters,
+    {
+        "chip_distance": chip_distances,
+        "finger_number": finger_numbers,
+        "finger_length": finger_lengths,
+    },
+)
 
 # Multi face gap capacitor sweeps
 simulations += cross_sweep_simulation(
-    layout, sim_class,
+    layout,
+    sim_class,
     {
         **sim_parameters,
-        'name': sim_parameters['name'] + '_gap',
+        "name": sim_parameters["name"] + "_gap",
         **gap_parameters,
     },
     {
-        'chip_distance': chip_distances,
-        'finger_gap_end': gap_lengths,
-    })
+        "chip_distance": chip_distances,
+        "finger_gap_end": gap_lengths,
+    },
+)
 
 
 # Single face finger (interdigital) capacitor sweeps
 simulations += cross_sweep_simulation(
-    layout, sim_class,
+    layout,
+    sim_class,
     {
         **sim_parameters,
-        'name': sim_parameters['name'] + '_singleface',
-        'face_stack': ['1t1'],
-    }, {
-        'finger_number': finger_numbers,
-        'finger_length': finger_lengths,
-    })
+        "name": sim_parameters["name"] + "_singleface",
+        "face_stack": ["1t1"],
+    },
+    {
+        "finger_number": finger_numbers,
+        "finger_length": finger_lengths,
+    },
+)
 
 # Single face gap capacitor sweeps
 simulations += cross_sweep_simulation(
-    layout, sim_class,
+    layout,
+    sim_class,
     {
         **sim_parameters,
-        'name': sim_parameters['name'] + '_singleface_gap',
-        'face_stack': ['1t1'],
+        "name": sim_parameters["name"] + "_singleface_gap",
+        "face_stack": ["1t1"],
         **gap_parameters,
     },
     {
-        'finger_gap_end': gap_lengths,
-    })
+        "finger_gap_end": gap_lengths,
+    },
+)
 
 # Export Ansys files
 export_ansys(simulations, **export_parameters)

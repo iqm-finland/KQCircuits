@@ -40,7 +40,7 @@ slo.write_context_info = False
 
 if file_out.endswith(".oas"):
     slo.oasis_substitution_char = "*"
-    if file_in.endswith(".dxf"):    # DXF does not record TOP cell, let's use the file name
+    if file_in.endswith(".dxf"):  # DXF does not record TOP cell, let's use the file name
         layout.top_cell().name = path.split(file_out)[1][:-4]
 
 layout.write(file_out, slo)

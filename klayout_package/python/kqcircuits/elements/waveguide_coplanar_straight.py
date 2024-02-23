@@ -24,7 +24,7 @@ from kqcircuits.util.parameters import Param, pdt
 class WaveguideCoplanarStraight(Element):
     """The PCell declaration of a straight segment of a coplanar waveguide.
 
-   .. MARKERS_FOR_PNG 15,8 15,0
+    .. MARKERS_FOR_PNG 15,8 15,0
     """
 
     l = Param(pdt.TypeDouble, "Length", 30)
@@ -38,7 +38,7 @@ class WaveguideCoplanarStraight(Element):
             pya.DPoint(0, self.a / 2 + 0),
             pya.DPoint(self.l, self.a / 2 + 0),
             pya.DPoint(self.l, self.a / 2 + self.b),
-            pya.DPoint(0, self.a / 2 + self.b)
+            pya.DPoint(0, self.a / 2 + self.b),
         ]
         shape_1 = pya.DPolygon(pts)
         self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(shape_1)
@@ -48,11 +48,10 @@ class WaveguideCoplanarStraight(Element):
             pya.DPoint(0, -self.a / 2 + 0),
             pya.DPoint(self.l, -self.a / 2 + 0),
             pya.DPoint(self.l, -self.a / 2 - self.b),
-            pya.DPoint(0, -self.a / 2 - self.b)
+            pya.DPoint(0, -self.a / 2 - self.b),
         ]
         shape_2 = pya.DPolygon(pts)
         self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(shape_2)
-
 
         # Protection layer
         if self.ground_grid_in_trace:
@@ -60,12 +59,7 @@ class WaveguideCoplanarStraight(Element):
             self.add_protection(shape_2.sized(1))
         else:
             w = self.a / 2 + self.b + self.margin
-            pts = [
-                pya.DPoint(0, -w),
-                pya.DPoint(self.l, -w),
-                pya.DPoint(self.l, w),
-                pya.DPoint(0, w)
-            ]
+            pts = [pya.DPoint(0, -w), pya.DPoint(self.l, -w), pya.DPoint(self.l, w), pya.DPoint(0, w)]
             self.add_protection(pya.DPolygon(pts))
 
         # Waveguide length

@@ -33,6 +33,7 @@ import os
 import platform
 from pathlib import Path
 from shutil import which
+
 try:
     import pya
     import pya as lay  # pylint: disable=unused-import
@@ -42,7 +43,8 @@ except ImportError:
 
 
 def is_standalone_session():
-    return not hasattr(pya, 'Application')
+    return not hasattr(pya, "Application")
+
 
 def klayout_executable_command():
     """Returns the KLayout executable command's full path in the current OS. Or ``None`` if it is not found."""

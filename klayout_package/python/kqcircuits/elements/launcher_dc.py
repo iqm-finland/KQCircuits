@@ -33,14 +33,14 @@ class LauncherDC(Element):
 
         extra_width = 100
 
-        offset = self.width/2
+        offset = self.width / 2
         metal_region = pya.Region((pya.DBox(-offset, -offset, offset, offset)).to_itype(self.layout.dbu))
 
-        offset = (self.width + extra_width)/2
+        offset = (self.width + extra_width) / 2
         gap_region = pya.Region((pya.DBox(-offset, -offset, offset, offset)).to_itype(self.layout.dbu))
         self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(gap_region - metal_region)
 
-        offset = (self.width + extra_width)/2 + self.margin
+        offset = (self.width + extra_width) / 2 + self.margin
         shape = pya.Region((pya.DBox(-offset, -offset, offset, offset)).to_itype(self.layout.dbu))
         self.add_protection(shape)
 

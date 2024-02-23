@@ -31,20 +31,25 @@ class JunctionTest2(Chip):
 
     pad_width = Param(pdt.TypeDouble, "Pad Width", 500, unit="μm")
     junctions_horizontal = Param(pdt.TypeBoolean, "Horizontal (True) or vertical (False) junctions", True)
-    small_loop_area = Param(pdt.TypeDouble, "Test SQUIDs small loop area",
-                                 default=80, unit="μm")
-    large_loop_area = Param(pdt.TypeDouble, "Test SQUIDs large loop area",
-                                 default=130, unit="μm")
-    junction_width_small = Param(pdt.TypeDouble, "Test SQUIDs Junction finger width starting value (small loop)",
-                                      default=0.15, unit="μm")
-    junction_width_large = Param(pdt.TypeDouble, "Test SQUIDs Junction finger width starting value (large loop)",
-                                      default=0.08, unit="μm")
-    junction_width_step_increment_small = Param(pdt.TypeDouble, "Junction finger width step increment (small loop)",
-                                                default=0.01, unit="μm")
-    junction_width_step_increment_large = Param(pdt.TypeDouble, "Junction finger width step increment (large loop)",
-                                                default=0.03, unit="μm")
-    pads_loop = Param(pdt.TypeList, "Select large or small loop area for each central test pad",
-                      default=["large", "large", "small", "small", "small", "large"])
+    small_loop_area = Param(pdt.TypeDouble, "Test SQUIDs small loop area", default=80, unit="μm")
+    large_loop_area = Param(pdt.TypeDouble, "Test SQUIDs large loop area", default=130, unit="μm")
+    junction_width_small = Param(
+        pdt.TypeDouble, "Test SQUIDs Junction finger width starting value (small loop)", default=0.15, unit="μm"
+    )
+    junction_width_large = Param(
+        pdt.TypeDouble, "Test SQUIDs Junction finger width starting value (large loop)", default=0.08, unit="μm"
+    )
+    junction_width_step_increment_small = Param(
+        pdt.TypeDouble, "Junction finger width step increment (small loop)", default=0.01, unit="μm"
+    )
+    junction_width_step_increment_large = Param(
+        pdt.TypeDouble, "Junction finger width step increment (large loop)", default=0.03, unit="μm"
+    )
+    pads_loop = Param(
+        pdt.TypeList,
+        "Select large or small loop area for each central test pad",
+        default=["large", "large", "small", "small", "small", "large"],
+    )
 
     def coerce_parameters_impl(self):
         self.sync_parameters(JunctionTestPads)
@@ -54,44 +59,51 @@ class JunctionTest2(Chip):
         right = self.box.right
         top = self.box.top
 
-        arrays_coordinates = [(left + 300, top - 2000 - 6000), (left + 2000, top - 300 - 9400),
-                                   (left + 2000 + 2*(self.pad_spacing+ self.pad_width), top - 300 - 9400),
-                                   (left + 2000 + 4*(self.pad_spacing + self.pad_width),
-                                    top - 300 - 9400), (left + 2000 + 6*(self.pad_spacing + self.pad_width), top - 300
-                                    - 9400), (right - 300 - 1700, top - 2000 - 6000)]
+        arrays_coordinates = [
+            (left + 300, top - 2000 - 6000),
+            (left + 2000, top - 300 - 9400),
+            (left + 2000 + 2 * (self.pad_spacing + self.pad_width), top - 300 - 9400),
+            (left + 2000 + 4 * (self.pad_spacing + self.pad_width), top - 300 - 9400),
+            (left + 2000 + 6 * (self.pad_spacing + self.pad_width), top - 300 - 9400),
+            (right - 300 - 1700, top - 2000 - 6000),
+        ]
         area_height = [6000, 9400, 9400, 9400, 9400, 6000]
         squid_indexing_small = 0
         squid_indexing_large = 0
         name = "testarray"
 
-        for j,array_coordinates in enumerate(arrays_coordinates):
+        for j, array_coordinates in enumerate(arrays_coordinates):
 
             squids_per_test_array = area_height[j] // (self.pad_spacing + self.pad_width)
 
             if self.pads_loop[j] == "small":
-                junction_width_starting_value = self.junction_width_small + squid_indexing_small * \
-                                                self.junction_width_step_increment_small
+                junction_width_starting_value = (
+                    self.junction_width_small + squid_indexing_small * self.junction_width_step_increment_small
+                )
 
                 squid_indexing_small += squids_per_test_array
                 junction_width_steps = [junction_width_starting_value, self.junction_width_step_increment_small]
                 loop_area = self.small_loop_area
 
             else:
-                junction_width_starting_value = self.junction_width_large + squid_indexing_large * \
-                                                self.junction_width_step_increment_large
+                junction_width_starting_value = (
+                    self.junction_width_large + squid_indexing_large * self.junction_width_step_increment_large
+                )
 
                 squid_indexing_large += squids_per_test_array
                 junction_width_steps = [junction_width_starting_value, self.junction_width_step_increment_large]
                 loop_area = self.large_loop_area
 
-            cell = self.add_element(JunctionTestPads,
-                                margin=20,
-                                area_height=area_height[j],
-                                area_width=3*self.pad_spacing + 2*self.pad_width,
-                                pad_width=self.pad_width,
-                                junction_width_steps=junction_width_steps,
-                                loop_area =loop_area,
-                                only_arms=True,
-                                )
-            self.insert_cell(cell, pya.DTrans(0, False, array_coordinates[0], array_coordinates[1]),
-                             name + "_{}".format(j+1))
+            cell = self.add_element(
+                JunctionTestPads,
+                margin=20,
+                area_height=area_height[j],
+                area_width=3 * self.pad_spacing + 2 * self.pad_width,
+                pad_width=self.pad_width,
+                junction_width_steps=junction_width_steps,
+                loop_area=loop_area,
+                only_arms=True,
+            )
+            self.insert_cell(
+                cell, pya.DTrans(0, False, array_coordinates[0], array_coordinates[1]), name + "_{}".format(j + 1)
+            )

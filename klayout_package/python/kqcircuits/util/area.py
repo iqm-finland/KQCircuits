@@ -22,21 +22,21 @@ from kqcircuits.pya_resolver import pya
 
 
 class AreaReceiver(pya.TileOutputReceiver):
-    """ Class for handling and storing output from :class:`TilingProcessor` """
+    """Class for handling and storing output from :class:`TilingProcessor`"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.area = 0.0
 
     def put(self, ix, iy, tile, obj, dbu, clip):
-        """ Function called by :class:`TilingProcessor` on output """
-        #pylint: disable=unused-argument
+        """Function called by :class:`TilingProcessor` on output"""
+        # pylint: disable=unused-argument
         logging.debug(f"Area for tile {ix},{iy}: {obj} ({dbu})")
         self.area = obj * (dbu * dbu)  # report as um^2
 
 
 def get_area_and_density(cell: pya.Cell, layer_infos=None):
-    """ Get total area and density :math:`\\rho=\\frac{area}{bbox.area}` of all layers.
+    """Get total area and density :math:`\\rho=\\frac{area}{bbox.area}` of all layers.
 
     Args:
         cell: target cell to get area from
@@ -63,7 +63,7 @@ def get_area_and_density(cell: pya.Cell, layer_infos=None):
 
     for layer_info, area_receiver, bbox_receiver in zip(layer_infos, layer_areas, layer_bboxes):
         name = f"_{layer_info.name}"  # if `name` starts with a number, tp.execute() fails, so we add an underscore
-        area, bbox = name + '_area', name + '_bbox'
+        area, bbox = name + "_area", name + "_bbox"
         tp.input(name, cell.begin_shapes_rec(layout.layer(layer_info)))
         tp.output(area, area_receiver)
         tp.output(bbox, bbox_receiver)
@@ -76,7 +76,7 @@ def get_area_and_density(cell: pya.Cell, layer_infos=None):
     layer_names = [layer_info.name for layer_info in layer_infos]
     densities = [area / bbox if bbox != 0.0 else 0.0 for area, bbox in zip(areas, bboxes)]
     if len(areas) > 0:
-        logging.info(f'For cell {cell.name} got layer areas: {areas}')
-        logging.info(f'Area calculation took {perf_counter() - start_time:.1f} seconds')
+        logging.info(f"For cell {cell.name} got layer areas: {areas}")
+        logging.info(f"Area calculation took {perf_counter() - start_time:.1f} seconds")
 
     return layer_names, areas, densities

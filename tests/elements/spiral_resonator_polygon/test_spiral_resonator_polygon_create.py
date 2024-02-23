@@ -61,7 +61,7 @@ def test_length_empty_input_path():
 def test_length_quadrilateral():
     relative_error = _get_length_error(
         length=5700,
-        poly_path=pya.DPath([pya.DPoint(0, 800), pya.DPoint(1000, 0), pya.DPoint(1000, -800), pya.DPoint(0, -800)], 0)
+        poly_path=pya.DPath([pya.DPoint(0, 800), pya.DPoint(1000, 0), pya.DPoint(1000, -800), pya.DPoint(0, -800)], 0),
     )
     assert relative_error < relative_length_tolerance
 
@@ -69,8 +69,10 @@ def test_length_quadrilateral():
 def test_length_pentagon():
     relative_error = _get_length_error(
         length=6200,
-        poly_path=pya.DPath([pya.DPoint(0, 400), pya.DPoint(700, 700), pya.DPoint(1200, 0), pya.DPoint(700, -700),
-                             pya.DPoint(0, -400)], 0)
+        poly_path=pya.DPath(
+            [pya.DPoint(0, 400), pya.DPoint(700, 700), pya.DPoint(1200, 0), pya.DPoint(700, -700), pya.DPoint(0, -400)],
+            0,
+        ),
     )
     assert relative_error < relative_length_tolerance
 
@@ -110,7 +112,9 @@ def test_length_only_input_path():
                 pya.DPoint(800, -800),
                 pya.DPoint(400, -800),
                 pya.DPoint(400, 600),
-            ], 0),
+            ],
+            0,
+        ),
         poly_path=pya.DPath([], 0),
         auto_spacing=False,
         manual_spacing=300,
@@ -124,10 +128,7 @@ def test_length_very_short_resonator():
         auto_spacing=False,
         manual_spacing=150,
         input_path=pya.DPath([pya.DPoint(0, 0)], 10),
-        poly_path=pya.DPath([pya.DPoint(1000, 0),
-                             pya.DPoint(800, 350),
-                             pya.DPoint(-200, 350),
-                             pya.DPoint(0, 0)], 10)
+        poly_path=pya.DPath([pya.DPoint(1000, 0), pya.DPoint(800, 350), pya.DPoint(-200, 350), pya.DPoint(0, 0)], 10),
     )
     assert relative_error < relative_length_tolerance
 
@@ -138,10 +139,7 @@ def test_length_resonator_with_consecutive_curves():
         auto_spacing=False,
         manual_spacing=150,
         input_path=pya.DPath([pya.DPoint(0, 0)], 10),
-        poly_path=pya.DPath([pya.DPoint(1000, 0),
-                             pya.DPoint(800, 350),
-                             pya.DPoint(-200, 350),
-                             pya.DPoint(0, 0)], 10)
+        poly_path=pya.DPath([pya.DPoint(1000, 0), pya.DPoint(800, 350), pya.DPoint(-200, 350), pya.DPoint(0, 0)], 10),
     )
     assert relative_error < relative_length_tolerance
 
@@ -152,10 +150,7 @@ def test_length_too_long_resonator(capfd):
         auto_spacing=False,
         manual_spacing=150,
         input_path=pya.DPath([pya.DPoint(0, 0)], 10),
-        poly_path=pya.DPath([pya.DPoint(1000, 0),
-                             pya.DPoint(800, 351),
-                             pya.DPoint(-200, 351),
-                             pya.DPoint(0, 0)], 10)
+        poly_path=pya.DPath([pya.DPoint(1000, 0), pya.DPoint(800, 351), pya.DPoint(-200, 351), pya.DPoint(0, 0)], 10),
     )
     # the resonator should either have small relative error or fail
     _, err = capfd.readouterr()
@@ -172,8 +167,9 @@ def test_continuity_straight_last_segment():
         auto_spacing=False,
         manual_spacing=300,
     )
-    assert WaveguideCoplanar.is_continuous(cell, layout.layer(default_layers["1t1_waveguide_path"]),
-                                           continuity_tolerance)
+    assert WaveguideCoplanar.is_continuous(
+        cell, layout.layer(default_layers["1t1_waveguide_path"]), continuity_tolerance
+    )
 
 
 def test_continuity_curved_last_segment():
@@ -186,8 +182,9 @@ def test_continuity_curved_last_segment():
         auto_spacing=False,
         manual_spacing=300,
     )
-    assert WaveguideCoplanar.is_continuous(cell, layout.layer(default_layers["1t1_waveguide_path"]),
-                                           continuity_tolerance)
+    assert WaveguideCoplanar.is_continuous(
+        cell, layout.layer(default_layers["1t1_waveguide_path"]), continuity_tolerance
+    )
 
 
 def test_can_create_resonator_with_short_segment(capfd):

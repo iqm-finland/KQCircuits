@@ -32,10 +32,20 @@ class FingerCapacitorSquare(Element):
     .. MARKERS_FOR_PNG 20,-10,ground_padding 0,17,finger_width 0,5,finger_gap
     """
 
-    a2 = Param(pdt.TypeDouble, "Width of center conductor on the other end", -1, unit="μm",
-               docstring="Non-physical value '-1' means that the default size 'a' is used.")
-    b2 = Param(pdt.TypeDouble, "Width of gap on the other end", -1, unit="μm",
-               docstring="Non-physical value '-1' means that the default size 'b' is used.")
+    a2 = Param(
+        pdt.TypeDouble,
+        "Width of center conductor on the other end",
+        -1,
+        unit="μm",
+        docstring="Non-physical value '-1' means that the default size 'a' is used.",
+    )
+    b2 = Param(
+        pdt.TypeDouble,
+        "Width of gap on the other end",
+        -1,
+        unit="μm",
+        docstring="Non-physical value '-1' means that the default size 'b' is used.",
+    )
     finger_gap_end = Param(pdt.TypeDouble, "Gap between the finger and other pad", 3, unit="μm")
     ground_padding = Param(pdt.TypeDouble, "Ground plane padding", 20, unit="μm")
     fixed_length = Param(pdt.TypeDouble, "Fixed length of element, 0 for auto-length", 0, unit="μm")
@@ -56,41 +66,51 @@ class FingerCapacitorSquare(Element):
 
         region_ground = self.get_ground_region()
 
-        region_taper_right = pya.Region(pya.DPolygon([
-            pya.DPoint(x_mid, y_mid),
-            pya.DPoint(x_right, y_mid),
-            pya.DPoint(x_right, y_right),
-            pya.DPoint(x_max, y_right),
-            pya.DPoint(x_max, -y_right),
-            pya.DPoint(x_right, -y_right),
-            pya.DPoint(x_right, -y_mid),
-            pya.DPoint(x_mid, -y_mid)
-        ]).to_itype(self.layout.dbu))
-        region_taper_left = pya.Region(pya.DPolygon([
-            pya.DPoint(-x_mid, y_mid),
-            pya.DPoint(-x_left, y_mid),
-            pya.DPoint(-x_left, y_left),
-            pya.DPoint(-x_max, y_left),
-            pya.DPoint(-x_max, -y_left),
-            pya.DPoint(-x_left, -y_left),
-            pya.DPoint(-x_left, -y_mid),
-            pya.DPoint(-x_mid, -y_mid)
-        ]).to_itype(self.layout.dbu))
+        region_taper_right = pya.Region(
+            pya.DPolygon(
+                [
+                    pya.DPoint(x_mid, y_mid),
+                    pya.DPoint(x_right, y_mid),
+                    pya.DPoint(x_right, y_right),
+                    pya.DPoint(x_max, y_right),
+                    pya.DPoint(x_max, -y_right),
+                    pya.DPoint(x_right, -y_right),
+                    pya.DPoint(x_right, -y_mid),
+                    pya.DPoint(x_mid, -y_mid),
+                ]
+            ).to_itype(self.layout.dbu)
+        )
+        region_taper_left = pya.Region(
+            pya.DPolygon(
+                [
+                    pya.DPoint(-x_mid, y_mid),
+                    pya.DPoint(-x_left, y_mid),
+                    pya.DPoint(-x_left, y_left),
+                    pya.DPoint(-x_max, y_left),
+                    pya.DPoint(-x_max, -y_left),
+                    pya.DPoint(-x_left, -y_left),
+                    pya.DPoint(-x_left, -y_mid),
+                    pya.DPoint(-x_mid, -y_mid),
+                ]
+            ).to_itype(self.layout.dbu)
+        )
 
         polys_fingers = []
         for i in range(self.finger_number):
             x = (i % 2) * self.finger_gap_end - x_mid
             y = i * (self.finger_width + self.finger_gap) - y_mid
-            polys_fingers.append(pya.DPolygon([
-                pya.DPoint(x + self.finger_length, y + self.finger_width),
-                pya.DPoint(x + self.finger_length, y),
-                pya.DPoint(x, y),
-                pya.DPoint(x, y + self.finger_width)
-            ]))
+            polys_fingers.append(
+                pya.DPolygon(
+                    [
+                        pya.DPoint(x + self.finger_length, y + self.finger_width),
+                        pya.DPoint(x + self.finger_length, y),
+                        pya.DPoint(x, y),
+                        pya.DPoint(x, y + self.finger_width),
+                    ]
+                )
+            )
 
-        region_fingers = pya.Region([
-            poly.to_itype(self.layout.dbu) for poly in polys_fingers
-        ])
+        region_fingers = pya.Region([poly.to_itype(self.layout.dbu) for poly in polys_fingers])
         region_etch = region_taper_left + region_taper_right + region_fingers
         region_etch.round_corners(self.corner_r / self.layout.dbu, self.corner_r / self.layout.dbu, self.n)
         self.cut_region(region_etch, x_end, max(y_mid, y_left, y_right))
@@ -123,20 +143,24 @@ class FingerCapacitorSquare(Element):
         x_end = x_mid + self.ground_padding
         x_max = x_end + self.corner_r
 
-        region_ground = pya.Region(pya.DPolygon([
-            pya.DPoint(-x_left, -y_mid),
-            pya.DPoint(-x_left, -y_left),
-            pya.DPoint(-x_max, -y_left),
-            pya.DPoint(-x_max, y_left),
-            pya.DPoint(-x_left, y_left),
-            pya.DPoint(-x_left, y_mid),
-            pya.DPoint(x_right, y_mid),
-            pya.DPoint(x_right, y_right),
-            pya.DPoint(x_max, y_right),
-            pya.DPoint(x_max, -y_right),
-            pya.DPoint(x_right, -y_right),
-            pya.DPoint(x_right, -y_mid),
-        ]).to_itype(self.layout.dbu))
+        region_ground = pya.Region(
+            pya.DPolygon(
+                [
+                    pya.DPoint(-x_left, -y_mid),
+                    pya.DPoint(-x_left, -y_left),
+                    pya.DPoint(-x_max, -y_left),
+                    pya.DPoint(-x_max, y_left),
+                    pya.DPoint(-x_left, y_left),
+                    pya.DPoint(-x_left, y_mid),
+                    pya.DPoint(x_right, y_mid),
+                    pya.DPoint(x_right, y_right),
+                    pya.DPoint(x_max, y_right),
+                    pya.DPoint(x_max, -y_right),
+                    pya.DPoint(x_right, -y_right),
+                    pya.DPoint(x_right, -y_mid),
+                ]
+            ).to_itype(self.layout.dbu)
+        )
 
         if self.ground_gap_ratio > 0:
             x_conn = self.ground_gap_ratio * self.finger_gap_end / 2
@@ -148,10 +172,14 @@ class FingerCapacitorSquare(Element):
                 y0 = i * (self.finger_width + self.finger_gap) - (finger_area_width + self.finger_gap) / 2
                 y1 = y0 + self.finger_width + self.finger_gap
                 y_conn = sign * self.ground_gap_ratio * self.finger_gap / 2
-                left_pts += [pya.DPoint(x - x_conn, y0 - y_conn if i > 0 else -y_mid),
-                             pya.DPoint(x - x_conn, y1 + y_conn if i + 1 < self.finger_number else y_mid)]
-                right_pts += [pya.DPoint(x + x_conn, y0 + y_conn if i > 0 else -y_mid),
-                              pya.DPoint(x + x_conn, y1 - y_conn if i + 1 < self.finger_number else y_mid)]
+                left_pts += [
+                    pya.DPoint(x - x_conn, y0 - y_conn if i > 0 else -y_mid),
+                    pya.DPoint(x - x_conn, y1 + y_conn if i + 1 < self.finger_number else y_mid),
+                ]
+                right_pts += [
+                    pya.DPoint(x + x_conn, y0 + y_conn if i > 0 else -y_mid),
+                    pya.DPoint(x + x_conn, y1 - y_conn if i + 1 < self.finger_number else y_mid),
+                ]
             region_ground -= pya.Region(pya.DPolygon(left_pts + right_pts[::-1]).to_itype(self.layout.dbu))
 
         region_ground.round_corners(self.corner_r / self.layout.dbu, self.corner_r / self.layout.dbu, self.n)
@@ -167,12 +195,16 @@ class FingerCapacitorSquare(Element):
         return self.finger_length + self.finger_gap_end
 
     def cut_region(self, region, x_max, y_max):
-        cutter = pya.Region(pya.DPolygon([
-            pya.DPoint(x_max, -y_max),
-            pya.DPoint(x_max, y_max),
-            pya.DPoint(-x_max, y_max),
-            pya.DPoint(-x_max, -y_max)
-        ]).to_itype(self.layout.dbu))
+        cutter = pya.Region(
+            pya.DPolygon(
+                [
+                    pya.DPoint(x_max, -y_max),
+                    pya.DPoint(x_max, y_max),
+                    pya.DPoint(-x_max, y_max),
+                    pya.DPoint(-x_max, -y_max),
+                ]
+            ).to_itype(self.layout.dbu)
+        )
         region &= cutter
 
     def add_waveguides(self, region, x_end, y_left, y_right):
@@ -180,17 +212,25 @@ class FingerCapacitorSquare(Element):
         if self.fixed_length != 0 and x_guide < x_end:
             raise ValueError(f"FingerCapacitorSquare parameters not compatible with fixed_length={self.fixed_length}")
         if x_guide > x_end:
-            region += pya.Region(pya.DPolygon([
-                pya.DPoint(-x_end, -y_left),
-                pya.DPoint(-x_guide, -y_left),
-                pya.DPoint(-x_guide, y_left),
-                pya.DPoint(-x_end, y_left),
-            ]).to_itype(self.layout.dbu)) + pya.Region(pya.DPolygon([
-                pya.DPoint(x_end, y_right),
-                pya.DPoint(x_guide, y_right),
-                pya.DPoint(x_guide, -y_right),
-                pya.DPoint(x_end, -y_right),
-            ]).to_itype(self.layout.dbu))
+            region += pya.Region(
+                pya.DPolygon(
+                    [
+                        pya.DPoint(-x_end, -y_left),
+                        pya.DPoint(-x_guide, -y_left),
+                        pya.DPoint(-x_guide, y_left),
+                        pya.DPoint(-x_end, y_left),
+                    ]
+                ).to_itype(self.layout.dbu)
+            ) + pya.Region(
+                pya.DPolygon(
+                    [
+                        pya.DPoint(x_end, y_right),
+                        pya.DPoint(x_guide, y_right),
+                        pya.DPoint(x_guide, -y_right),
+                        pya.DPoint(x_end, -y_right),
+                    ]
+                ).to_itype(self.layout.dbu)
+            )
 
     @classmethod
     def get_sim_ports(cls, simulation):

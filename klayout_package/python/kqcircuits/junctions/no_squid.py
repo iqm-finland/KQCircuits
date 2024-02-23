@@ -27,7 +27,7 @@ class NoSquid(Junction):
     Origin at the center of junction layer bottom edge.
     """
 
-    junction_total_length = Param(pdt.TypeDouble, "Junction total length", 26.5, unit='µm')
+    junction_total_length = Param(pdt.TypeDouble, "Junction total length", 26.5, unit="µm")
 
     def build(self):
         # only add refpoints

@@ -37,12 +37,7 @@ def test_too_few_points(capfd):
 
 def test_straight_doesnt_fit_between_corners(capfd):
     layout = pya.Layout()
-    points = [
-        pya.DPoint(0, 0),
-        pya.DPoint(200, 0),
-        pya.DPoint(200, 190),
-        pya.DPoint(400, 190)
-    ]
+    points = [pya.DPoint(0, 0), pya.DPoint(200, 0), pya.DPoint(200, 190), pya.DPoint(400, 190)]
     WaveguideCoplanar.create(layout, path=pya.DPath(points, 1))
     _, err = capfd.readouterr()
     assert err != ""
@@ -50,11 +45,7 @@ def test_straight_doesnt_fit_between_corners(capfd):
 
 def test_too_short_last_segment(capfd):
     layout = pya.Layout()
-    points = [
-        pya.DPoint(0, 0),
-        pya.DPoint(200, 0),
-        pya.DPoint(200, 90)
-    ]
+    points = [pya.DPoint(0, 0), pya.DPoint(200, 0), pya.DPoint(200, 90)]
     WaveguideCoplanar.create(layout, path=pya.DPath(points, 1))
     _, err = capfd.readouterr()
     assert err != ""
@@ -68,18 +59,18 @@ def test_continuity_90degree_turn():
         pya.DPoint(200, 200),
     ]
     guideline = pya.DPath(points, 5)
-    waveguide_cell = WaveguideCoplanar.create(layout,
-        path=guideline
+    waveguide_cell = WaveguideCoplanar.create(layout, path=guideline)
+    assert WaveguideCoplanar.is_continuous(
+        waveguide_cell, layout.layer(default_layers["1t1_waveguide_path"]), continuity_tolerance
     )
-    assert WaveguideCoplanar.is_continuous(waveguide_cell, layout.layer(default_layers["1t1_waveguide_path"]),
-                                           continuity_tolerance)
 
 
 def test_continuity_many_turns():
     layout = pya.Layout()
     waveguide_cell = _create_waveguide_many_turns(layout, 20, 40, 5)
-    assert WaveguideCoplanar.is_continuous(waveguide_cell, layout.layer(default_layers["1t1_waveguide_path"]),
-                                           continuity_tolerance)
+    assert WaveguideCoplanar.is_continuous(
+        waveguide_cell, layout.layer(default_layers["1t1_waveguide_path"]), continuity_tolerance
+    )
 
 
 def test_continuity_many_turns_with_zero_length_segments():
@@ -88,8 +79,9 @@ def test_continuity_many_turns_with_zero_length_segments():
     """
     layout = pya.Layout()
     waveguide_cell = _create_waveguide_many_turns(layout, 30, 30, 5)
-    assert WaveguideCoplanar.is_continuous(waveguide_cell, layout.layer(default_layers["1t1_waveguide_path"]),
-                                           continuity_tolerance)
+    assert WaveguideCoplanar.is_continuous(
+        waveguide_cell, layout.layer(default_layers["1t1_waveguide_path"]), continuity_tolerance
+    )
 
 
 def _create_waveguide_many_turns(layout, n, scale1, scale2):
@@ -106,13 +98,15 @@ def _create_waveguide_many_turns(layout, n, scale1, scale2):
     for x in range(n):
         points[x] = pya.DPoint(x * scale1, scale2 * n * math.sin(x / (n / 3) * math.pi))
         points[x + n] = pya.DPoint(n * scale1 - scale2 * n * math.sin(x / (n / 3) * math.pi), -x * scale1)
-        points[x + 2 * n] = pya.DPoint(n * scale1 - x * scale1,
-                                       -scale2 * n * math.sin(x / (n / 3) * math.pi) - n * scale1)
+        points[x + 2 * n] = pya.DPoint(
+            n * scale1 - x * scale1, -scale2 * n * math.sin(x / (n / 3) * math.pi) - n * scale1
+        )
         points[x + 3 * n] = pya.DPoint(scale2 * n * math.sin(x / (n / 3) * math.pi), x * scale1 - n * scale1)
 
     guideline = pya.DPath(points, 5)
 
-    waveguide_cell = WaveguideCoplanar.create(layout,
+    waveguide_cell = WaveguideCoplanar.create(
+        layout,
         path=guideline,
         r=50,
     )
@@ -128,17 +122,18 @@ def assert_perfect_waveguide_continuity(cell, layout, expected_shapes):
     #   layout: layout containing the waveguide
     #   expected_shapes: number of non-overlapping shapes expected. Should be 2 for an open-ended waveguide,
     #       and 1 for a waveguide with one or more termination.
-    test_region = pya.Region(cell.begin_shapes_rec(
-            layout.layer(default_faces['1t1']["base_metal_gap_wo_grid"])
-        )).merged()
+    test_region = pya.Region(
+        cell.begin_shapes_rec(layout.layer(default_faces["1t1"]["base_metal_gap_wo_grid"]))
+    ).merged()
     number_of_shapes = len([x for x in test_region.each()])
-    assert(number_of_shapes == expected_shapes)
+    assert number_of_shapes == expected_shapes
 
 
 def test_perfect_continuity_of_carefully_chosen_corner():
     layout = pya.Layout()
 
-    waveguide_cell = WaveguideCoplanar.create(layout,
+    waveguide_cell = WaveguideCoplanar.create(
+        layout,
         path=pya.DPath([pya.DPoint(135, 240), pya.DPoint(1000, 1000), pya.DPoint(2000, 1500)], 0),
         # corner_safety_overlap=0
     )
@@ -167,7 +162,8 @@ def test_perfect_continuity_straight_segment_with_terminations():
     for path in paths:
         layout.clear()
 
-        waveguide_cell = WaveguideCoplanar.create(layout,
+        waveguide_cell = WaveguideCoplanar.create(
+            layout,
             path=path,
             term1=10,
             term2=10,
@@ -182,10 +178,10 @@ def test_number_of_child_instances_with_missing_curves_1():
     points = [
         pya.DPoint(0, 0),
         pya.DPoint(100, 100),
-        pya.DPoint(200, 200)  # same direction as last point, so no curve at previous point
+        pya.DPoint(200, 200),  # same direction as last point, so no curve at previous point
     ]
 
-    waveguide_cell = WaveguideCoplanar.create(layout,path=pya.DPath(points, 1))
+    waveguide_cell = WaveguideCoplanar.create(layout, path=pya.DPath(points, 1))
 
     assert waveguide_cell.child_instances() == 2
 
@@ -199,7 +195,7 @@ def test_number_of_child_instances_with_missing_curves_2():
         pya.DPoint(200, 400),  # same direction as last point, so no curve at previous point
         pya.DPoint(200, 900),
         pya.DPoint(500, 700),
-        pya.DPoint(800, 500)  # same direction as last point, so no curve at previous point
+        pya.DPoint(800, 500),  # same direction as last point, so no curve at previous point
     ]
 
     waveguide_cell = WaveguideCoplanar.create(layout, path=pya.DPath(points, 1))
@@ -212,7 +208,7 @@ def test_length_with_missing_curves_1():
     points = [
         pya.DPoint(0, 0),
         pya.DPoint(100, 0),
-        pya.DPoint(200, 0)  # same direction as last point, so no curve at previous point
+        pya.DPoint(200, 0),  # same direction as last point, so no curve at previous point
     ]
 
     _assert_correct_length(points, target_length=200)
@@ -226,7 +222,7 @@ def test_length_with_missing_curves_2():
         pya.DPoint(0, 400),  # same direction as last point, so no curve at previous point
         pya.DPoint(200, 400),
         pya.DPoint(500, 400),
-        pya.DPoint(800, 400)  # same direction as last point, so no curve at previous point
+        pya.DPoint(800, 400),  # same direction as last point, so no curve at previous point
     ]
 
     _assert_correct_length(points, target_length=1200)

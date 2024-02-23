@@ -27,19 +27,22 @@ from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.post_process import PostProcess
 from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
-from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
-    open_with_klayout_or_default_application
+from kqcircuits.util.export_helper import (
+    create_or_empty_tmp_directory,
+    get_active_or_new_layout,
+    open_with_klayout_or_default_application,
+)
 
 import numpy as np
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--use-sbatch', action="store_true", help='Use sbatch (Slurm)')
+parser.add_argument("--use-sbatch", action="store_true", help="Use sbatch (Slurm)")
 args, unknown = parser.parse_known_args()
 
-sim_class = get_single_element_sim_class(CapacitiveXCoupler) # pylint: disable=invalid-name
+sim_class = get_single_element_sim_class(CapacitiveXCoupler)  # pylint: disable=invalid-name
 
-height = 500.
-length = 500.
+height = 500.0
+length = 500.0
 p_element_order = 3
 gmsh_n_threads = -1
 elmer_n_processes = 5
@@ -56,39 +59,39 @@ quiet = True
 path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
 sim_parameters = {
-    'name': 'capacitive_x_coupler',
-    'box': pya.DBox(pya.DPoint(-box_size_x/2., -box_size_y/2.), pya.DPoint(box_size_x/2., box_size_y/2.)),
-    'a': 10,
-    'b': 6,
-    'x_coupler_height': height,
-    'x_coupler_length': length,
-    'finger_number': 9,
-    'x_coupler_variant': '+',
-    'remove_capacitors': True,
+    "name": "capacitive_x_coupler",
+    "box": pya.DBox(pya.DPoint(-box_size_x / 2.0, -box_size_y / 2.0), pya.DPoint(box_size_x / 2.0, box_size_y / 2.0)),
+    "a": 10,
+    "b": 6,
+    "x_coupler_height": height,
+    "x_coupler_length": length,
+    "finger_number": 9,
+    "x_coupler_variant": "+",
+    "remove_capacitors": True,
     "metal_height": 0.2,
 }
 
 if use_elmer:
     mesh_size = {
-        'global_max': 50.,
-        '1t1_gap': 2.,
-        '1t1_gap&1t1_ground': [0.5,0.5,2],
-        '1t1_gap&1t1_signal': [0.5,0.5,2],
-        **{f'port_{i}': 20. for i in range(1, 5)},
+        "global_max": 50.0,
+        "1t1_gap": 2.0,
+        "1t1_gap&1t1_ground": [0.5, 0.5, 2],
+        "1t1_gap&1t1_signal": [0.5, 0.5, 2],
+        **{f"port_{i}": 20.0 for i in range(1, 5)},
     }
 
     if wave_equation:
         export_parameters_elmer = {
-            'path': path,
-            'tool': 'wave_equation',
-            'frequency': np.linspace(8,12,5),
+            "path": path,
+            "tool": "wave_equation",
+            "frequency": np.linspace(8, 12, 5),
         }
     else:
         export_parameters_elmer = {
-            'path': path,
-            'tool': 'capacitance',
-            'linear_system_method': 'mg',
-            'p_element_order': p_element_order,
+            "path": path,
+            "tool": "capacitance",
+            "linear_system_method": "mg",
+            "p_element_order": p_element_order,
         }
 
     workflow = {
@@ -144,24 +147,24 @@ if use_elmer:
 else:
     if wave_equation:
         export_parameters_ansys = {
-            'path': path,
-            'frequency': [5, 10, 20],
-            'max_delta_s': 0.001,
-            'sweep_start': 0,
-            'sweep_end': 30,
-            'sweep_count': 1001,
-            'maximum_passes': 20,
-            'exit_after_run': True
+            "path": path,
+            "frequency": [5, 10, 20],
+            "max_delta_s": 0.001,
+            "sweep_start": 0,
+            "sweep_end": 30,
+            "sweep_count": 1001,
+            "maximum_passes": 20,
+            "exit_after_run": True,
         }
     else:
         export_parameters_ansys = {
-            'path': path,
-            'ansys_tool': 'q3d',
-            'post_process': PostProcess('produce_cmatrix_table.py'),
-            'percent_error': 0.2,
-            'minimum_converged_passes': 2,
-            'maximum_passes': 40,
-            'exit_after_run': True,
+            "path": path,
+            "ansys_tool": "q3d",
+            "post_process": PostProcess("produce_cmatrix_table.py"),
+            "percent_error": 0.2,
+            "minimum_converged_passes": 2,
+            "maximum_passes": 40,
+            "exit_after_run": True,
         }
 
 

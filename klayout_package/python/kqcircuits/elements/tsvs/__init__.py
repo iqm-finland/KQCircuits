@@ -19,6 +19,6 @@
 """PCell classes for TSVs."""
 
 tsv_type_choices = [
-    'Tsv Standard',
-    'Tsv Ellipse',
+    "Tsv Standard",
+    "Tsv Ellipse",
 ]
