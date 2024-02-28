@@ -471,7 +471,6 @@
 <span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
 
 
-
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.chips.chip</span> <span class="kn">import</span> <span class="n">Chip</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
@@ -481,11 +480,10 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.finger_capacitor_square</span> <span class="kn">import</span> <span class="n">FingerCapacitorSquare</span>
 
 
-
 <div class="viewcode-block" id="Simple"><a class="viewcode-back" href="../../../api/kqcircuits.chips.simple.html#kqcircuits.chips.simple.Simple">[docs]</a><span class="k">class</span> <span class="nc">Simple</span><span class="p">(</span><span class="n">Chip</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The PCell declaration for a very simple chip.</span>
 
-<span class="sd">       Contains a small number of elements connected in a simple, direct way.</span>
+<span class="sd">    Contains a small number of elements connected in a simple, direct way.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">name_chip</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;Name of the chip&quot;</span><span class="p">,</span> <span class="s2">&quot;Simple&quot;</span><span class="p">)</span>
@@ -506,8 +504,9 @@
 
         <span class="c1"># WaveguideCoplanarSplitter</span>
         <span class="n">_pos</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;SE&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;WN&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">tcross_refs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideCoplanarSplitter</span><span class="p">,</span> <span class="n">_pos</span><span class="p">,</span> <span class="o">**</span><span class="n">t_cross_parameters</span><span class="p">(</span>
-            <span class="n">a</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="n">a2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">b2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">))</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">tcross_refs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span>
+            <span class="n">WaveguideCoplanarSplitter</span><span class="p">,</span> <span class="n">_pos</span><span class="p">,</span> <span class="o">**</span><span class="n">t_cross_parameters</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="n">a2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">b2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)</span>
+        <span class="p">)</span>
 
         <span class="c1"># Waveguides: WN -&gt; Swissmon -&gt; FingerCapacitorSquare -&gt; WaveguideCoplanarSplitter -&gt; EN</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span><span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;WN&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">swissmon_refs</span><span class="p">[</span><span class="s2">&quot;port_flux&quot;</span><span class="p">]],</span> <span class="mi">1</span><span class="p">))</span>

@@ -485,16 +485,19 @@
 <span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">XMonsDirectCoupling</span><span class="p">,</span> <span class="s2">&quot;arm_width_a&quot;</span><span class="p">,</span> <span class="s2">&quot;rr_cpl_width&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">XMonsDirectCouplingSim</span><span class="p">(</span><span class="n">Simulation</span><span class="p">):</span>
 
-    <span class="c1">#Re-define some XMonsDirectCoupling parameters with defaults changed:</span>
+    <span class="c1"># Re-define some XMonsDirectCoupling parameters with defaults changed:</span>
     <span class="n">qubit_spacing</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Qubit spacing&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
     <span class="n">arm_width_b</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Qubit 2 arm width&quot;</span><span class="p">,</span> <span class="mi">66</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
-    <span class="n">waveguide_length</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span>
-                             <span class="s2">&quot;Length of waveguide stubs or distance between couplers and waveguide turning point&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="n">waveguide_length</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span>
+        <span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Length of waveguide stubs or distance between couplers and waveguide turning point&quot;</span><span class="p">,</span> <span class="mi">100</span>
+    <span class="p">)</span>
     <span class="n">cpl_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Qubit RR coupler width&quot;</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
-    <span class="n">junction_inductances</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Qubit junction inductances&quot;</span><span class="p">,</span>
-                                <span class="p">[</span><span class="mf">13.5e-9</span><span class="p">,</span> <span class="mf">13.5e-9</span><span class="p">,</span> <span class="mf">13.5e-9</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[H, H, H]&quot;</span><span class="p">)</span>
-    <span class="n">junction_capacitances</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Qubit junction capacitances&quot;</span><span class="p">,</span>
-                                <span class="p">[</span><span class="mf">0.1e-15</span><span class="p">,</span> <span class="mf">0.1e-15</span><span class="p">,</span> <span class="mf">0.1e-15</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[F, F, F]&quot;</span><span class="p">)</span>
+    <span class="n">junction_inductances</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span>
+        <span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Qubit junction inductances&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">13.5e-9</span><span class="p">,</span> <span class="mf">13.5e-9</span><span class="p">,</span> <span class="mf">13.5e-9</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[H, H, H]&quot;</span>
+    <span class="p">)</span>
+    <span class="n">junction_capacitances</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span>
+        <span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Qubit junction capacitances&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.1e-15</span><span class="p">,</span> <span class="mf">0.1e-15</span><span class="p">,</span> <span class="mf">0.1e-15</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[F, F, F]&quot;</span>
+    <span class="p">)</span>
 
     <span class="n">produce_qubits</span> <span class="o">=</span> <span class="n">XMonsDirectCoupling</span><span class="o">.</span><span class="n">produce_qubits</span>
 
@@ -510,14 +513,14 @@
             <span class="n">port_nr</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
             <span class="n">location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB1_port_drive&quot;</span><span class="p">],</span>
             <span class="n">term1</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-            <span class="n">towards</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB1_port_drive&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">towards</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB1_port_drive&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
         <span class="p">)</span>
         <span class="c1"># driveline 2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">produce_waveguide_to_port</span><span class="p">(</span>
             <span class="n">port_nr</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
             <span class="n">location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB2_port_drive&quot;</span><span class="p">],</span>
             <span class="n">term1</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-            <span class="n">towards</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB2_port_drive&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">towards</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB2_port_drive&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
         <span class="p">)</span>
         <span class="c1"># driveline 3</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">produce_waveguide_to_port</span><span class="p">(</span>
@@ -534,7 +537,7 @@
             <span class="n">b</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
             <span class="n">location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB1_port_cplr1&quot;</span><span class="p">],</span>
             <span class="n">towards</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB1_port_cplr1&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-            <span class="n">use_internal_ports</span><span class="o">=</span><span class="kc">True</span>
+            <span class="n">use_internal_ports</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="c1"># readout 2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">produce_waveguide_to_port</span><span class="p">(</span>
@@ -543,7 +546,7 @@
             <span class="n">b</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
             <span class="n">location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB2_port_cplr1&quot;</span><span class="p">],</span>
             <span class="n">towards</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB2_port_cplr1&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-            <span class="n">use_internal_ports</span><span class="o">=</span><span class="kc">True</span>
+            <span class="n">use_internal_ports</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="c1"># readout 3</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">produce_waveguide_to_port</span><span class="p">(</span>
@@ -552,18 +555,35 @@
             <span class="n">b</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
             <span class="n">location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB3_port_cplr1&quot;</span><span class="p">],</span>
             <span class="n">towards</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB3_port_cplr1&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-            <span class="n">use_internal_ports</span><span class="o">=</span><span class="kc">True</span>
+            <span class="n">use_internal_ports</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="c1"># qubits</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ports</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span>
-            <span class="n">InternalPort</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">etched_line</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB1_port_squid_a&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB1_port_squid_b&quot;</span><span class="p">]),</span>
-                <span class="n">inductance</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">junction_inductances</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">capacitance</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">junction_capacitances</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">junction</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-            <span class="n">InternalPort</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">etched_line</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB2_port_squid_a&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB2_port_squid_b&quot;</span><span class="p">]),</span>
-                <span class="n">inductance</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">junction_inductances</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">capacitance</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">junction_capacitances</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">junction</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-            <span class="n">InternalPort</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">etched_line</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB3_port_squid_a&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB3_port_squid_b&quot;</span><span class="p">]),</span>
-                <span class="n">inductance</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">junction_inductances</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">capacitance</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">junction_capacitances</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">junction</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-        <span class="p">])</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ports</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">InternalPort</span><span class="p">(</span>
+                    <span class="mi">7</span><span class="p">,</span>
+                    <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">etched_line</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB1_port_squid_a&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB1_port_squid_b&quot;</span><span class="p">]),</span>
+                    <span class="n">inductance</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">junction_inductances</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="n">capacitance</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">junction_capacitances</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="n">junction</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">),</span>
+                <span class="n">InternalPort</span><span class="p">(</span>
+                    <span class="mi">8</span><span class="p">,</span>
+                    <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">etched_line</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB2_port_squid_a&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB2_port_squid_b&quot;</span><span class="p">]),</span>
+                    <span class="n">inductance</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">junction_inductances</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="n">capacitance</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">junction_capacitances</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="n">junction</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">),</span>
+                <span class="n">InternalPort</span><span class="p">(</span>
+                    <span class="mi">9</span><span class="p">,</span>
+                    <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">etched_line</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB3_port_squid_a&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB3_port_squid_b&quot;</span><span class="p">]),</span>
+                    <span class="n">inductance</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">junction_inductances</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                    <span class="n">capacitance</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">junction_capacitances</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                    <span class="n">junction</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">]</span>
+        <span class="p">)</span></div></div>
 </pre></div>
 
            </div>

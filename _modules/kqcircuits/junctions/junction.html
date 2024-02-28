@@ -496,8 +496,13 @@
     <span class="n">default_type</span> <span class="o">=</span> <span class="n">default_junction_type</span>
 
     <span class="n">junction_type</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;Junction Type&quot;</span><span class="p">,</span> <span class="n">default_junction_type</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="n">junction_type_choices</span><span class="p">)</span>
-    <span class="n">junction_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Junction width for code generated element&quot;</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">,</span>
-                           <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Junction width (only used for code generated element)&quot;</span><span class="p">)</span>
+    <span class="n">junction_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span>
+        <span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span>
+        <span class="s2">&quot;Junction width for code generated element&quot;</span><span class="p">,</span>
+        <span class="mf">0.02</span><span class="p">,</span>
+        <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Junction width (only used for code generated element)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">junction_parameters</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;Extra Junction Parameters&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">_junction_parameters</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;Previous state of *_parameters&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 

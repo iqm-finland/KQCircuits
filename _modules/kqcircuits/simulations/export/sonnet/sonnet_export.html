@@ -484,12 +484,7 @@
 
 
 <div class="viewcode-block" id="poly_and_edge_indices"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.sonnet_export.html#kqcircuits.simulations.export.sonnet.sonnet_export.poly_and_edge_indices">[docs]</a><span class="k">def</span> <span class="nf">poly_and_edge_indices</span><span class="p">(</span><span class="n">polygons</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
-    <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">find_edge_from_point_in_polygons</span><span class="p">(</span>
-        <span class="n">polygons</span><span class="p">,</span>
-        <span class="n">location</span><span class="p">,</span>
-        <span class="n">dbu</span><span class="p">,</span>
-        <span class="n">tolerance</span><span class="o">=</span><span class="mf">5.0</span>  <span class="c1"># hardcoded, feel free to change</span>
-        <span class="p">)</span>
+    <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">find_edge_from_point_in_polygons</span><span class="p">(</span><span class="n">polygons</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>  <span class="c1"># hardcoded, feel free to change</span>
 
     <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="n">port</span><span class="p">(</span>
         <span class="n">portnum</span><span class="o">=</span><span class="n">number</span><span class="p">,</span>
@@ -500,12 +495,20 @@
         <span class="n">resist</span><span class="o">=</span><span class="n">port</span><span class="o">.</span><span class="n">resistance</span><span class="p">,</span>
         <span class="n">react</span><span class="o">=</span><span class="n">port</span><span class="o">.</span><span class="n">reactance</span><span class="p">,</span>
         <span class="n">induct</span><span class="o">=</span><span class="n">port</span><span class="o">.</span><span class="n">inductance</span><span class="p">,</span>
-        <span class="n">capac</span><span class="o">=</span><span class="n">port</span><span class="o">.</span><span class="n">capacitance</span>
+        <span class="n">capac</span><span class="o">=</span><span class="n">port</span><span class="o">.</span><span class="n">capacitance</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="export_sonnet_son"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.sonnet_export.html#kqcircuits.simulations.export.sonnet.sonnet_export.export_sonnet_son">[docs]</a><span class="k">def</span> <span class="nf">export_sonnet_son</span><span class="p">(</span><span class="n">simulation</span><span class="p">:</span> <span class="n">Simulation</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">detailed_resonance</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">lower_accuracy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                      <span class="n">control</span><span class="o">=</span><span class="s1">&#39;ABS&#39;</span><span class="p">,</span> <span class="n">fill_type</span><span class="o">=</span><span class="s1">&#39;Staircase&#39;</span><span class="p">,</span> <span class="n">simulation_safety</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="export_sonnet_son"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.sonnet_export.html#kqcircuits.simulations.export.sonnet.sonnet_export.export_sonnet_son">[docs]</a><span class="k">def</span> <span class="nf">export_sonnet_son</span><span class="p">(</span>
+    <span class="n">simulation</span><span class="p">:</span> <span class="n">Simulation</span><span class="p">,</span>
+    <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="n">detailed_resonance</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">lower_accuracy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">current</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">control</span><span class="o">=</span><span class="s2">&quot;ABS&quot;</span><span class="p">,</span>
+    <span class="n">fill_type</span><span class="o">=</span><span class="s2">&quot;Staircase&quot;</span><span class="p">,</span>
+    <span class="n">simulation_safety</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Export simulation into son file.</span>
 
@@ -538,38 +541,50 @@
         <span class="n">layer_son</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">get_simulation_layer_by_name</span><span class="p">(</span><span class="s2">&quot;1t1_signal&quot;</span><span class="p">))</span>
         <span class="n">layer_son_ground</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">get_simulation_layer_by_name</span><span class="p">(</span><span class="s2">&quot;1t1_ground&quot;</span><span class="p">))</span>
 
-        <span class="n">simpolygons</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">polygon</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layer_son</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">()]</span> <span class="o">+</span> \
-                      <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">polygon</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layer_son_ground</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">()]</span>
+        <span class="n">simpolygons</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">polygon</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layer_son</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">()]</span> <span class="o">+</span> <span class="p">[</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">polygon</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layer_son_ground</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">()</span>
+        <span class="p">]</span>
         <span class="n">airbridge_polygons</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">polygon</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layer_bridge</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">()]</span>
         <span class="n">airpads_polygons</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">polygon</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layer_pad</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">()]</span>
         <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">airpads_polygons</span><span class="p">:</span>
             <span class="n">p</span><span class="o">.</span><span class="n">isVia</span> <span class="o">=</span> <span class="kc">True</span>
 
-        <span class="n">level_iter</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">simpolygons</span><span class="p">)</span> <span class="o">*</span> <span class="p">[(</span><span class="mi">2</span> <span class="k">if</span> <span class="n">material_type</span> <span class="o">==</span> <span class="s2">&quot;Si+Al&quot;</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)]</span> <span class="o">+</span>
-                          <span class="nb">len</span><span class="p">(</span><span class="n">airbridge_polygons</span><span class="p">)</span> <span class="o">*</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">airpads_polygons</span><span class="p">)</span> <span class="o">*</span> <span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">level_iter</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">simpolygons</span><span class="p">)</span> <span class="o">*</span> <span class="p">[(</span><span class="mi">2</span> <span class="k">if</span> <span class="n">material_type</span> <span class="o">==</span> <span class="s2">&quot;Si+Al&quot;</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)]</span>
+            <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">airbridge_polygons</span><span class="p">)</span> <span class="o">*</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">airpads_polygons</span><span class="p">)</span> <span class="o">*</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="p">)</span>
 
-        <span class="n">polys</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">polygons</span><span class="p">(</span><span class="n">simpolygons</span> <span class="o">+</span> <span class="n">airbridge_polygons</span> <span class="o">+</span> <span class="n">airpads_polygons</span><span class="p">,</span>
-                                <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">-</span><span class="n">simulation</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">p1</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="n">simulation</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">p2</span><span class="o">.</span><span class="n">y</span><span class="p">),</span> <span class="n">dbu</span><span class="p">,</span>
-                                <span class="c1"># get the bottom left corner</span>
-                                <span class="n">ilevel</span><span class="o">=</span><span class="n">level_iter</span><span class="p">,</span> <span class="n">fill_type</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;V&quot;</span> <span class="k">if</span> <span class="p">(</span><span class="n">fill_type</span> <span class="o">==</span> <span class="s2">&quot;Conformal&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;N&quot;</span><span class="p">)</span>
-                                <span class="p">)</span>
+        <span class="n">polys</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">polygons</span><span class="p">(</span>
+            <span class="n">simpolygons</span> <span class="o">+</span> <span class="n">airbridge_polygons</span> <span class="o">+</span> <span class="n">airpads_polygons</span><span class="p">,</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">-</span><span class="n">simulation</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">p1</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="n">simulation</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">p2</span><span class="o">.</span><span class="n">y</span><span class="p">),</span>
+            <span class="n">dbu</span><span class="p">,</span>
+            <span class="c1"># get the bottom left corner</span>
+            <span class="n">ilevel</span><span class="o">=</span><span class="n">level_iter</span><span class="p">,</span>
+            <span class="n">fill_type</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;V&quot;</span> <span class="k">if</span> <span class="p">(</span><span class="n">fill_type</span> <span class="o">==</span> <span class="s2">&quot;Conformal&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;N&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
 
         <span class="c1"># find port edges</span>
         <span class="n">sstring_ports</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="n">refplane_dirs</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">port_ipolys</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">group_ascii</span> <span class="o">=</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">)</span>
-        <span class="n">calgroup</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">group_ascii</span> <span class="o">=</span> <span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
+        <span class="n">calgroup</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">simulation</span><span class="o">.</span><span class="n">use_ports</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">ports</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="n">InternalPort</span><span class="p">):</span>
                     <span class="n">sstring_ports</span> <span class="o">+=</span> <span class="n">poly_and_edge_indices</span><span class="p">(</span>
-                        <span class="n">simpolygons</span> <span class="o">+</span> <span class="n">airbridge_polygons</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span>
-                        <span class="n">port</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="p">,</span> <span class="nb">chr</span><span class="p">(</span><span class="n">group_ascii</span><span class="p">))</span>
+                        <span class="n">simpolygons</span> <span class="o">+</span> <span class="n">airbridge_polygons</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="p">,</span> <span class="nb">chr</span><span class="p">(</span><span class="n">group_ascii</span><span class="p">)</span>
+                    <span class="p">)</span>
                     <span class="n">sstring_ports</span> <span class="o">+=</span> <span class="n">poly_and_edge_indices</span><span class="p">(</span>
-                        <span class="n">simpolygons</span> <span class="o">+</span> <span class="n">airbridge_polygons</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span>
-                        <span class="n">port</span><span class="p">,</span> <span class="o">-</span><span class="n">port</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">ground_location</span><span class="p">,</span> <span class="nb">chr</span><span class="p">(</span><span class="n">group_ascii</span><span class="p">))</span>
+                        <span class="n">simpolygons</span> <span class="o">+</span> <span class="n">airbridge_polygons</span><span class="p">,</span>
+                        <span class="n">dbu</span><span class="p">,</span>
+                        <span class="n">port</span><span class="p">,</span>
+                        <span class="o">-</span><span class="n">port</span><span class="o">.</span><span class="n">number</span><span class="p">,</span>
+                        <span class="n">port</span><span class="o">.</span><span class="n">ground_location</span><span class="p">,</span>
+                        <span class="nb">chr</span><span class="p">(</span><span class="n">group_ascii</span><span class="p">),</span>
+                    <span class="p">)</span>
                     <span class="n">calgroup</span> <span class="o">+=</span> <span class="s1">&#39;CUPGRP &quot;</span><span class="si">{}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">ID 28</span><span class="se">\n</span><span class="s1">GNDREF F</span><span class="se">\n</span><span class="s1">TWTYPE FEED</span><span class="se">\n</span><span class="s1">END</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="n">group_ascii</span><span class="p">))</span>
                     <span class="n">group_ascii</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="n">EdgePort</span><span class="p">):</span>
@@ -580,15 +595,15 @@
                     <span class="c1">#     logging.info(re.findall(r&#39;POLY (\d+)&#39;, ipoly))</span>
                     <span class="c1">#     port_ipolys.append(re.findall(r&#39;POLY (\d+)&#39;, ipoly)) # scan ipolygon</span>
                     <span class="n">sstring_ports</span> <span class="o">+=</span> <span class="n">poly_and_edge_indices</span><span class="p">(</span>
-                        <span class="n">simpolygons</span> <span class="o">+</span> <span class="n">airbridge_polygons</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span>
-                        <span class="n">port</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                        <span class="n">simpolygons</span> <span class="o">+</span> <span class="n">airbridge_polygons</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
+                    <span class="p">)</span>
 
         <span class="n">sonnet_box</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">box</span><span class="p">(</span>
             <span class="n">xwidth</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">width</span><span class="p">(),</span>
             <span class="n">ywidth</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">height</span><span class="p">(),</span>
             <span class="n">xcells</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">width</span><span class="p">()</span> <span class="o">/</span> <span class="n">grid_size</span><span class="p">),</span>
             <span class="n">ycells</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">height</span><span class="p">()</span> <span class="o">/</span> <span class="n">grid_size</span><span class="p">),</span>
-            <span class="n">materials_type</span><span class="o">=</span><span class="n">material_type</span>
+            <span class="n">materials_type</span><span class="o">=</span><span class="n">material_type</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="k">return</span> <span class="p">{</span>
@@ -601,28 +616,35 @@
             <span class="s2">&quot;nports&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">({</span><span class="nb">abs</span><span class="p">(</span><span class="n">port</span><span class="o">.</span><span class="n">number</span><span class="p">)</span> <span class="k">for</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">ports</span><span class="p">}),</span>
             <span class="s2">&quot;resonance_abs&quot;</span><span class="p">:</span> <span class="s2">&quot;DET_ABS_RES Y&quot;</span> <span class="k">if</span> <span class="n">detailed_resonance</span> <span class="k">else</span> <span class="s2">&quot;DET_ABS_RES N&quot;</span><span class="p">,</span>
             <span class="s2">&quot;lower_accuracy&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span> <span class="k">if</span> <span class="n">lower_accuracy</span> <span class="k">else</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;current&quot;</span><span class="p">:</span> <span class="s2">&quot;j&quot;</span> <span class="k">if</span> <span class="n">current</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+            <span class="s2">&quot;current&quot;</span><span class="p">:</span> <span class="s2">&quot;j&quot;</span> <span class="k">if</span> <span class="n">current</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="p">}</span>
 
     <span class="c1"># detect airbridges</span>
-    <span class="n">shapes_in_air</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">begin_shapes</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span>
-        <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;1t1_airbridge_flyover&quot;</span><span class="p">]))</span>
+    <span class="n">shapes_in_air</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">begin_shapes</span><span class="p">(</span>
+        <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;1t1_airbridge_flyover&quot;</span><span class="p">])</span>
+    <span class="p">)</span>
     <span class="n">materials_type</span> <span class="o">=</span> <span class="s2">&quot;Si+Al&quot;</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">shapes_in_air</span><span class="o">.</span><span class="n">shape</span><span class="p">()</span><span class="o">.</span><span class="n">is_null</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;Si BT&quot;</span>
 
     <span class="n">sonnet_strings</span> <span class="o">=</span> <span class="n">get_sonnet_strings</span><span class="p">(</span><span class="n">materials_type</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
     <span class="n">sonnet_strings</span><span class="p">[</span><span class="s2">&quot;control&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">control</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
 
-    <span class="n">son_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.son&#39;</span><span class="p">))</span>
+    <span class="n">son_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.son&quot;</span><span class="p">))</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">apply_template</span><span class="p">(</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">parser</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s2">&quot;template.son&quot;</span><span class="p">),</span>
-        <span class="n">son_filename</span><span class="p">,</span>
-        <span class="n">sonnet_strings</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">parser</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s2">&quot;template.son&quot;</span><span class="p">),</span> <span class="n">son_filename</span><span class="p">,</span> <span class="n">sonnet_strings</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">son_filename</span></div>
 
 
-<div class="viewcode-block" id="export_sonnet"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.sonnet_export.html#kqcircuits.simulations.export.sonnet.sonnet_export.export_sonnet">[docs]</a><span class="k">def</span> <span class="nf">export_sonnet</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">detailed_resonance</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">lower_accuracy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">control</span><span class="o">=</span><span class="s1">&#39;ABS&#39;</span><span class="p">,</span>
-                  <span class="n">fill_type</span><span class="o">=</span><span class="s1">&#39;Staircase&#39;</span><span class="p">,</span> <span class="n">simulation_safety</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="export_sonnet"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.sonnet_export.html#kqcircuits.simulations.export.sonnet.sonnet_export.export_sonnet">[docs]</a><span class="k">def</span> <span class="nf">export_sonnet</span><span class="p">(</span>
+    <span class="n">simulations</span><span class="p">,</span>
+    <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="n">detailed_resonance</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">lower_accuracy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">current</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">control</span><span class="o">=</span><span class="s2">&quot;ABS&quot;</span><span class="p">,</span>
+    <span class="n">fill_type</span><span class="o">=</span><span class="s2">&quot;Staircase&quot;</span><span class="p">,</span>
+    <span class="n">simulation_safety</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Export Sonnet simulations by writing son files.</span>
 
@@ -647,9 +669,18 @@
     <span class="n">write_commit_reference_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="n">son_filenames</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">simulation</span> <span class="ow">in</span> <span class="n">simulations</span><span class="p">:</span>
-        <span class="n">son_filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">export_sonnet_son</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">detailed_resonance</span><span class="o">=</span><span class="n">detailed_resonance</span><span class="p">,</span>
-                                               <span class="n">lower_accuracy</span><span class="o">=</span><span class="n">lower_accuracy</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="n">current</span><span class="p">,</span> <span class="n">control</span><span class="o">=</span><span class="n">control</span><span class="p">,</span>
-                                               <span class="n">fill_type</span><span class="o">=</span><span class="n">fill_type</span><span class="p">,</span> <span class="n">simulation_safety</span><span class="o">=</span><span class="n">simulation_safety</span><span class="p">))</span>
+        <span class="n">son_filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">export_sonnet_son</span><span class="p">(</span>
+                <span class="n">simulation</span><span class="p">,</span>
+                <span class="n">path</span><span class="p">,</span>
+                <span class="n">detailed_resonance</span><span class="o">=</span><span class="n">detailed_resonance</span><span class="p">,</span>
+                <span class="n">lower_accuracy</span><span class="o">=</span><span class="n">lower_accuracy</span><span class="p">,</span>
+                <span class="n">current</span><span class="o">=</span><span class="n">current</span><span class="p">,</span>
+                <span class="n">control</span><span class="o">=</span><span class="n">control</span><span class="p">,</span>
+                <span class="n">fill_type</span><span class="o">=</span><span class="n">fill_type</span><span class="p">,</span>
+                <span class="n">simulation_safety</span><span class="o">=</span><span class="n">simulation_safety</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
     <span class="k">return</span> <span class="n">son_filenames</span></div>
 </pre></div>
 

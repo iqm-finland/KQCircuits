@@ -486,17 +486,27 @@
 
 <span class="sd">    .. MARKERS_FOR_PNG -9,4 -1,-8 9,9</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">lengths</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Waveguide length per port, measured from origin&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">11</span><span class="p">])</span>
     <span class="n">angles</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Angle of each port (degrees)&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">270</span><span class="p">])</span>
     <span class="n">use_airbridges</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Use airbridges at a distance from the centre&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
     <span class="n">bridge_distance</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Bridges distance from centre&quot;</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
-    <span class="n">a_list</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Center conductor widths&quot;</span><span class="p">,</span> <span class="p">[],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">,</span>
-                   <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;List of center conductor widths for each port.&quot;</span>
-                             <span class="s2">&quot; If empty, self.a will be used for all ports instead. [μm]&quot;</span><span class="p">)</span>
-    <span class="n">b_list</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Gap widths&quot;</span><span class="p">,</span> <span class="p">[],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">,</span>
-                   <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;List of gap widths for each port.&quot;</span>
-                             <span class="s2">&quot; If empty, self.b will be used for all ports instead. [μm]&quot;</span><span class="p">)</span>
-    <span class="n">port_names</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Port names&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="s1">&#39;j&#39;</span><span class="p">])</span>
+    <span class="n">a_list</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span>
+        <span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span>
+        <span class="s2">&quot;Center conductor widths&quot;</span><span class="p">,</span>
+        <span class="p">[],</span>
+        <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;List of center conductor widths for each port.&quot;</span>
+        <span class="s2">&quot; If empty, self.a will be used for all ports instead. [μm]&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">b_list</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span>
+        <span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span>
+        <span class="s2">&quot;Gap widths&quot;</span><span class="p">,</span>
+        <span class="p">[],</span>
+        <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;List of gap widths for each port.&quot;</span> <span class="s2">&quot; If empty, self.b will be used for all ports instead. [μm]&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">port_names</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Port names&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="s2">&quot;j&quot;</span><span class="p">])</span>
 
 <div class="viewcode-block" id="WaveguideCoplanarSplitter.build"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_splitter.html#kqcircuits.elements.waveguide_coplanar_splitter.WaveguideCoplanarSplitter.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
@@ -519,29 +529,27 @@
             <span class="n">b</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
 
             <span class="c1"># Generate port shapes</span>
-            <span class="n">gap_shapes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_port_shape</span><span class="p">(</span>
-                <span class="n">angle_rad</span><span class="o">=</span><span class="n">angle_rad</span><span class="p">,</span>
-                <span class="n">length</span><span class="o">=</span><span class="n">length</span><span class="p">,</span>
-                <span class="n">width</span><span class="o">=</span><span class="n">a</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">b</span>
-            <span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
+            <span class="n">gap_shapes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_get_port_shape</span><span class="p">(</span><span class="n">angle_rad</span><span class="o">=</span><span class="n">angle_rad</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">length</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">a</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
+            <span class="p">)</span>
 
-            <span class="n">trace_shapes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_port_shape</span><span class="p">(</span>
-                <span class="n">angle_rad</span><span class="o">=</span><span class="n">angle_rad</span><span class="p">,</span>
-                <span class="n">length</span><span class="o">=</span><span class="n">length</span> <span class="o">+</span> <span class="n">rounding_tolerance</span><span class="p">,</span>
-                <span class="n">width</span><span class="o">=</span><span class="n">a</span>
-            <span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
+            <span class="n">trace_shapes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_get_port_shape</span><span class="p">(</span><span class="n">angle_rad</span><span class="o">=</span><span class="n">angle_rad</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">length</span> <span class="o">+</span> <span class="n">rounding_tolerance</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
 
-            <span class="n">avoidance_shapes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_port_shape</span><span class="p">(</span>
-                <span class="n">angle_rad</span><span class="o">=</span><span class="n">angle_rad</span><span class="p">,</span>
-                <span class="n">length</span><span class="o">=</span><span class="n">length</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">,</span>
-                <span class="n">width</span><span class="o">=</span><span class="n">a</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">b</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">margin</span>
-            <span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
+            <span class="n">avoidance_shapes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_get_port_shape</span><span class="p">(</span>
+                    <span class="n">angle_rad</span><span class="o">=</span><span class="n">angle_rad</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">length</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">a</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">b</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
+            <span class="p">)</span>
 
             <span class="c1"># Port refpoints</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_port</span><span class="p">(</span>
                 <span class="n">port_name</span><span class="p">,</span>
-                <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">length</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">),</span> <span class="n">length</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">)),</span>
-                <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">))</span>
+                <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">length</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">),</span> <span class="n">length</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">)),</span>
+                <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">)),</span>
             <span class="p">)</span>
 
             <span class="c1"># Waveguide length annotation</span>
@@ -551,9 +559,9 @@
 
             <span class="c1"># Airbridges</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_airbridges</span><span class="p">:</span>
-                <span class="n">ab_trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">angle_deg</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span>
-                                          <span class="bp">self</span><span class="o">.</span><span class="n">bridge_distance</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">),</span>
-                                          <span class="bp">self</span><span class="o">.</span><span class="n">bridge_distance</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">))</span>
+                <span class="n">ab_trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span>
+                    <span class="mi">1</span><span class="p">,</span> <span class="n">angle_deg</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bridge_distance</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">bridge_distance</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">)</span>
+                <span class="p">)</span>
                 <span class="n">ab_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">Airbridge</span><span class="p">,</span> <span class="n">pad_length</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">pad_extra</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">ab_cell</span><span class="p">,</span> <span class="n">ab_trans</span><span class="p">)</span>
 
@@ -567,13 +575,15 @@
         <span class="c1"># Generate a shape consisting of a rectangle (length, width) starting at (0, 0), with a round cap at the origin</span>
         <span class="c1"># side.</span>
 
-        <span class="n">r</span> <span class="o">=</span> <span class="n">width</span><span class="o">/</span><span class="mi">2</span>  <span class="c1"># Radius of round cap</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">width</span> <span class="o">/</span> <span class="mi">2</span>  <span class="c1"># Radius of round cap</span>
 
         <span class="c1"># Straight section</span>
         <span class="n">c</span> <span class="o">=</span> <span class="n">cos</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">)</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">sin</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">)</span>
-        <span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">length</span> <span class="o">*</span> <span class="n">c</span> <span class="o">-</span> <span class="n">r</span> <span class="o">*</span> <span class="n">s</span><span class="p">,</span> <span class="n">length</span> <span class="o">*</span> <span class="n">s</span> <span class="o">+</span> <span class="n">r</span> <span class="o">*</span> <span class="n">c</span><span class="p">),</span>
-                  <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">length</span> <span class="o">*</span> <span class="n">c</span> <span class="o">+</span> <span class="n">r</span> <span class="o">*</span> <span class="n">s</span><span class="p">,</span> <span class="n">length</span> <span class="o">*</span> <span class="n">s</span> <span class="o">-</span> <span class="n">r</span> <span class="o">*</span> <span class="n">c</span><span class="p">)]</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">length</span> <span class="o">*</span> <span class="n">c</span> <span class="o">-</span> <span class="n">r</span> <span class="o">*</span> <span class="n">s</span><span class="p">,</span> <span class="n">length</span> <span class="o">*</span> <span class="n">s</span> <span class="o">+</span> <span class="n">r</span> <span class="o">*</span> <span class="n">c</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">length</span> <span class="o">*</span> <span class="n">c</span> <span class="o">+</span> <span class="n">r</span> <span class="o">*</span> <span class="n">s</span><span class="p">,</span> <span class="n">length</span> <span class="o">*</span> <span class="n">s</span> <span class="o">-</span> <span class="n">r</span> <span class="o">*</span> <span class="n">c</span><span class="p">),</span>
+        <span class="p">]</span>
 
         <span class="c1"># Corner section</span>
         <span class="n">angles</span> <span class="o">=</span> <span class="p">[</span><span class="n">radians</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">angle</span><span class="p">))</span> <span class="k">for</span> <span class="n">angle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="p">]</span>
@@ -596,8 +606,15 @@
         <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span><span class="n">points</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="t_cross_parameters"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_splitter.html#kqcircuits.elements.waveguide_coplanar_splitter.t_cross_parameters">[docs]</a><span class="k">def</span> <span class="nf">t_cross_parameters</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">Element</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()[</span><span class="s2">&quot;a&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">default</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">Element</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()[</span><span class="s2">&quot;b&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">default</span><span class="p">,</span>
-                      <span class="n">a2</span><span class="o">=</span><span class="n">Element</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">b2</span><span class="o">=</span><span class="n">Element</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="n">length_extra</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">length_extra_side</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="t_cross_parameters"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_splitter.html#kqcircuits.elements.waveguide_coplanar_splitter.t_cross_parameters">[docs]</a><span class="k">def</span> <span class="nf">t_cross_parameters</span><span class="p">(</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">Element</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()[</span><span class="s2">&quot;a&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">default</span><span class="p">,</span>
+    <span class="n">b</span><span class="o">=</span><span class="n">Element</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()[</span><span class="s2">&quot;b&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">default</span><span class="p">,</span>
+    <span class="n">a2</span><span class="o">=</span><span class="n">Element</span><span class="o">.</span><span class="n">a</span><span class="p">,</span>
+    <span class="n">b2</span><span class="o">=</span><span class="n">Element</span><span class="o">.</span><span class="n">b</span><span class="p">,</span>
+    <span class="n">length_extra</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">length_extra_side</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A utility function to easily produce T-cross splitter (old WaveguideCoplanarTCross).</span>
 
 <span class="sd">    Args:</span>
@@ -613,12 +630,14 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">length</span> <span class="o">=</span> <span class="n">a2</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">b2</span> <span class="o">+</span> <span class="n">length_extra</span>
     <span class="n">length2</span> <span class="o">=</span> <span class="n">a</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="n">length_extra_side</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;lengths&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">length</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">length2</span><span class="p">],</span>
-            <span class="s1">&#39;angles&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">270</span><span class="p">],</span>
-            <span class="s1">&#39;a_list&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">a2</span><span class="p">],</span>
-            <span class="s1">&#39;b_list&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">b</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">b2</span><span class="p">],</span>
-            <span class="s1">&#39;port_names&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="s1">&#39;bottom&#39;</span><span class="p">],</span>
-            <span class="o">**</span><span class="n">kwargs</span><span class="p">}</span></div>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;lengths&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">length</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">length2</span><span class="p">],</span>
+        <span class="s2">&quot;angles&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">270</span><span class="p">],</span>
+        <span class="s2">&quot;a_list&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">a2</span><span class="p">],</span>
+        <span class="s2">&quot;b_list&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">b</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">b2</span><span class="p">],</span>
+        <span class="s2">&quot;port_names&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="s2">&quot;bottom&quot;</span><span class="p">],</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">}</span></div>
 </pre></div>
 
            </div>

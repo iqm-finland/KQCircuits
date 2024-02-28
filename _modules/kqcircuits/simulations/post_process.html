@@ -476,8 +476,16 @@
 <div class="viewcode-block" id="PostProcess"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.post_process.html#kqcircuits.simulations.post_process.PostProcess">[docs]</a><span class="k">class</span> <span class="nc">PostProcess</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for adding post-processing scripts into the simulation batch&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">script</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="n">arguments</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="s1">&#39;scripts&#39;</span><span class="p">,</span> <span class="n">repeat_for_each</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">data_file_prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">script</span><span class="p">,</span>
+        <span class="n">command</span><span class="o">=</span><span class="s2">&quot;python&quot;</span><span class="p">,</span>
+        <span class="n">arguments</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">folder</span><span class="o">=</span><span class="s2">&quot;scripts&quot;</span><span class="p">,</span>
+        <span class="n">repeat_for_each</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">data_file_prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">data</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
 <span class="sd">            script: name of the post-processing script</span>
@@ -506,9 +514,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">str_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
-            <span class="n">file</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">script</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_file_prefix</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_file_prefix</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.json&#39;</span>
+            <span class="n">file</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">script</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_file_prefix</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_file_prefix</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.json&quot;</span>
             <span class="n">str_args</span> <span class="o">+=</span> <span class="s1">&#39; &quot;&#39;</span> <span class="o">+</span> <span class="n">file</span> <span class="o">+</span> <span class="s1">&#39;&quot;&#39;</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">file</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">file</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 
         <span class="c1"># Return the command line(s)</span>
@@ -518,7 +526,7 @@
             <span class="k">for</span> <span class="n">json_filename</span> <span class="ow">in</span> <span class="n">json_filenames</span><span class="p">:</span>
                 <span class="n">lines</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">str_cmd</span><span class="si">}</span><span class="s1"> &quot;</span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s1">&quot; </span><span class="si">{</span><span class="n">str_args</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
             <span class="k">return</span> <span class="n">lines</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">str_cmd</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">str_args</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span></div></div>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">str_cmd</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">str_args</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span></div></div>
 </pre></div>
 
            </div>

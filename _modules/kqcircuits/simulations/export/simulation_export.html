@@ -479,7 +479,7 @@
 
 
 <div class="viewcode-block" id="copy_content_into_directory"><a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.simulation_export.html#kqcircuits.simulations.export.simulation_export.copy_content_into_directory">[docs]</a><span class="k">def</span> <span class="nf">copy_content_into_directory</span><span class="p">(</span><span class="n">source_paths</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">folder</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Create a folder and copy the contents of the source folders into it</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a folder and copy the contents of the source folders into it</span>
 
 <span class="sd">    Arguments:</span>
 <span class="sd">        source_paths: list of source directories from which to copy content</span>
@@ -492,7 +492,7 @@
 
 
 <div class="viewcode-block" id="get_post_process_command_lines"><a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.simulation_export.html#kqcircuits.simulations.export.simulation_export.get_post_process_command_lines">[docs]</a><span class="k">def</span> <span class="nf">get_post_process_command_lines</span><span class="p">(</span><span class="n">post_process</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">json_filenames</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Return post process command line calls as string. Can be used in construction of .bat or .sh script files.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return post process command line calls as string. Can be used in construction of .bat or .sh script files.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        post_process: List of PostProcess objects, a single PostProcess object, or None to be executed after simulations</span>
@@ -505,7 +505,7 @@
     <span class="k">if</span> <span class="n">post_process</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;&quot;</span>
 
-    <span class="n">commands</span> <span class="o">=</span> <span class="s1">&#39;echo Post-process</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="n">commands</span> <span class="o">=</span> <span class="s2">&quot;echo Post-process</span><span class="se">\n</span><span class="s2">&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">post_process</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">pp</span> <span class="ow">in</span> <span class="n">post_process</span><span class="p">:</span>
             <span class="n">commands</span> <span class="o">+=</span> <span class="n">pp</span><span class="o">.</span><span class="n">get_command_line</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">json_filenames</span><span class="p">)</span>
@@ -514,7 +514,7 @@
     <span class="k">return</span> <span class="n">commands</span></div>
 
 
-<div class="viewcode-block" id="export_simulation_oas"><a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.simulation_export.html#kqcircuits.simulations.export.simulation_export.export_simulation_oas">[docs]</a><span class="k">def</span> <span class="nf">export_simulation_oas</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="s1">&#39;simulation&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="export_simulation_oas"><a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.simulation_export.html#kqcircuits.simulations.export.simulation_export.export_simulation_oas">[docs]</a><span class="k">def</span> <span class="nf">export_simulation_oas</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="s2">&quot;simulation&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Write single OASIS file containing all simulations in list.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -523,10 +523,8 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot write batch OASIS file since not all simulations are on the same layout.&quot;</span><span class="p">)</span>
 
     <span class="n">cells</span> <span class="o">=</span> <span class="p">[</span><span class="n">simulation</span><span class="o">.</span><span class="n">cell</span> <span class="k">for</span> <span class="n">simulation</span> <span class="ow">in</span> <span class="n">simulations</span><span class="p">]</span>
-    <span class="n">oas_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">file_prefix</span> <span class="o">+</span> <span class="s1">&#39;.oas&#39;</span><span class="p">))</span>
-    <span class="n">export_layers</span><span class="p">(</span><span class="n">oas_filename</span><span class="p">,</span> <span class="n">simulations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="n">cells</span><span class="p">,</span>
-                  <span class="n">output_format</span><span class="o">=</span><span class="s1">&#39;OASIS&#39;</span><span class="p">,</span>
-                  <span class="n">layers</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">oas_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">file_prefix</span> <span class="o">+</span> <span class="s2">&quot;.oas&quot;</span><span class="p">))</span>
+    <span class="n">export_layers</span><span class="p">(</span><span class="n">oas_filename</span><span class="p">,</span> <span class="n">simulations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="n">cells</span><span class="p">,</span> <span class="n">output_format</span><span class="o">=</span><span class="s2">&quot;OASIS&quot;</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">oas_filename</span></div>
 
 
@@ -537,12 +535,11 @@
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Added simulations: </span><span class="si">{</span><span class="s2">&quot; + &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">l</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">lengths</span><span class="p">])</span><span class="si">}</span><span class="s1"> = </span><span class="si">{</span><span class="nb">sum</span><span class="p">(</span><span class="n">lengths</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">sweeps</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">sweeps</span><span class="p">[</span><span class="n">param</span><span class="p">]:</span>
-            <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">sim_parameters</span><span class="p">,</span> <span class="n">param</span><span class="p">:</span> <span class="n">value</span><span class="p">,</span>
-                          <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_</span><span class="si">{}</span><span class="s1">_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                            <span class="n">sim_parameters</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
-                            <span class="n">param</span><span class="p">,</span>
-                            <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-                          <span class="p">)}</span>
+            <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="o">**</span><span class="n">sim_parameters</span><span class="p">,</span>
+                <span class="n">param</span><span class="p">:</span> <span class="n">value</span><span class="p">,</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">_</span><span class="si">{}</span><span class="s2">_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sim_parameters</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="n">param</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)),</span>
+            <span class="p">}</span>
             <span class="n">simulations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sim_class</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">simulations</span></div>
 
@@ -557,8 +554,7 @@
         <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">sim_parameters</span><span class="p">}</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
             <span class="n">parameters</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sim_parameters</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> \
-            <span class="o">+</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="p">])</span>
+        <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sim_parameters</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="p">])</span>
         <span class="n">simulations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sim_class</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">simulations</span></div>
 </pre></div>

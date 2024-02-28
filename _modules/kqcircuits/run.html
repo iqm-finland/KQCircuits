@@ -483,50 +483,79 @@
 
 <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">WARN</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
 
+
 <div class="viewcode-block" id="run"><a class="viewcode-back" href="../../api/kqcircuits.run.html#kqcircuits.run.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
-    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;KQC console scripts&#39;</span><span class="p">)</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;KQC console scripts&quot;</span><span class="p">)</span>
 
     <span class="n">subparser</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">add_subparsers</span><span class="p">(</span><span class="n">dest</span><span class="o">=</span><span class="s2">&quot;command&quot;</span><span class="p">)</span>
 
-    <span class="n">simulate_parser</span> <span class="o">=</span> <span class="n">subparser</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="s1">&#39;sim&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;KQC simulation </span><span class="se">\</span>
-<span class="s1">            export and run script. Run and export with a single command!&#39;</span><span class="p">)</span>
-    <span class="n">mask_parser</span> <span class="o">=</span> <span class="n">subparser</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="s1">&#39;mask&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Build KQC Mask.&#39;</span><span class="p">)</span>
+    <span class="n">simulate_parser</span> <span class="o">=</span> <span class="n">subparser</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
+        <span class="s2">&quot;sim&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;KQC simulation </span><span class="se">\</span>
+<span class="s2">            export and run script. Run and export with a single command!&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">mask_parser</span> <span class="o">=</span> <span class="n">subparser</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="s2">&quot;mask&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Build KQC Mask.&quot;</span><span class="p">)</span>
 
-    <span class="n">singularity_parser</span> <span class="o">=</span> <span class="n">subparser</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="s1">&#39;singularity&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Build and push </span><span class="se">\</span>
-<span class="s1">                                              singularity image to remote host.&#39;</span><span class="p">)</span>
+    <span class="n">singularity_parser</span> <span class="o">=</span> <span class="n">subparser</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
+        <span class="s2">&quot;singularity&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Build and push </span><span class="se">\</span>
+<span class="s2">                                              singularity image to remote host.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 
-    <span class="n">simulate_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;export_script&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Name of the export script&#39;</span><span class="p">)</span>
-    <span class="n">simulate_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--export-path-basename&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                 <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The export folder will be `TMP_PATH / Path(export_path_basename)`, </span><span class="se">\</span>
-<span class="s1">                                       if not given, then it will be `TMP_PATH / Path(args.export_script).stem`&#39;</span><span class="p">)</span>
-    <span class="n">simulate_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-q&#39;</span><span class="p">,</span> <span class="s1">&#39;--quiet&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Quiet mode: No GUI&#39;</span><span class="p">)</span>
-    <span class="n">simulate_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-e&#39;</span><span class="p">,</span> <span class="s1">&#39;--export-only&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
-                                 <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Do not run simulation, only export generated files.&#39;</span><span class="p">)</span>
+    <span class="n">simulate_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;export_script&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Name of the export script&quot;</span><span class="p">)</span>
+    <span class="n">simulate_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--export-path-basename&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The export folder will be `TMP_PATH / Path(export_path_basename)`, </span><span class="se">\</span>
+<span class="s2">                                       if not given, then it will be `TMP_PATH / Path(args.export_script).stem`&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">simulate_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-q&quot;</span><span class="p">,</span> <span class="s2">&quot;--quiet&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Quiet mode: No GUI&quot;</span><span class="p">)</span>
+    <span class="n">simulate_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-e&quot;</span><span class="p">,</span> <span class="s2">&quot;--export-only&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not run simulation, only export generated files.&quot;</span>
+    <span class="p">)</span>
 
-    <span class="n">simulate_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--remote&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
-                                 <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Export and run the simulations at remote host &quot;user@host&quot;&#39;</span><span class="p">)</span>
-    <span class="n">simulate_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--remote-run-only&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
-                                 <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Run the simulation at remote host &quot;user@host&quot;&#39;</span><span class="p">)</span>
-    <span class="n">simulate_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--kqc-remote-tmp-path&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Path to the used tmp directory on remote&#39;</span><span class="p">)</span>
+    <span class="n">simulate_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--remote&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Export and run the simulations at remote host &quot;user@host&quot;&#39;</span>
+    <span class="p">)</span>
+    <span class="n">simulate_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--remote-run-only&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Run the simulation at remote host &quot;user@host&quot;&#39;</span>
+    <span class="p">)</span>
+    <span class="n">simulate_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--kqc-remote-tmp-path&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Path to the used tmp directory on remote&quot;</span><span class="p">)</span>
 
-    <span class="n">simulate_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--detach&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
-                                 <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Detach the remote simulation from terminal, not waiting for it to finish&#39;</span><span class="p">)</span>
-    <span class="n">simulate_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--poll-interval&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
-                                 <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Interval for polling the job state of remote simulation in seconds&#39;</span><span class="p">)</span>
+    <span class="n">simulate_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--detach&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Detach the remote simulation from terminal, not waiting for it to finish&quot;</span>
+    <span class="p">)</span>
+    <span class="n">simulate_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--poll-interval&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Interval for polling the job state of remote simulation in seconds&quot;</span>
+    <span class="p">)</span>
 
-    <span class="n">mask_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;mask_script&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Name of the mask script&#39;</span><span class="p">)</span>
-    <span class="n">mask_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-d&#39;</span><span class="p">,</span> <span class="s1">&#39;--debug&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Debug mode. Use a single process and &quot;</span>
-                             <span class="s2">&quot;print logs to standard output too.&quot;</span><span class="p">)</span>
-    <span class="n">mask_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-m&#39;</span><span class="p">,</span> <span class="s1">&#39;--mock_chips&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Replace all chips with empty frames for &quot;</span>
-                                                                             <span class="s2">&quot;faster testing of the mask layout&quot;</span><span class="p">)</span>
-    <span class="n">mask_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-s&#39;</span><span class="p">,</span> <span class="s1">&#39;--skip_extras&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Skip netlist and documentation export&quot;</span><span class="p">)</span>
-    <span class="n">mask_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-c N&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Limit the number of used CPUs to &#39;N&#39;&quot;</span><span class="p">)</span>
+    <span class="n">mask_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;mask_script&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Name of the mask script&quot;</span><span class="p">)</span>
+    <span class="n">mask_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-d&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--debug&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Debug mode. Use a single process and &quot;</span> <span class="s2">&quot;print logs to standard output too.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">mask_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-m&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--mock_chips&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Replace all chips with empty frames for &quot;</span> <span class="s2">&quot;faster testing of the mask layout&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">mask_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-s&quot;</span><span class="p">,</span> <span class="s2">&quot;--skip_extras&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Skip netlist and documentation export&quot;</span><span class="p">)</span>
+    <span class="n">mask_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-c N&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Limit the number of used CPUs to &#39;N&#39;&quot;</span><span class="p">)</span>
 
-    <span class="n">singularity_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--build&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;build singularity image locally&#39;</span><span class="p">)</span>
-    <span class="n">singularity_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--push&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Destination of the export &quot;user@host:dir&quot;</span><span class="se">\</span>
-<span class="s1">                                    if left empty the defaults from .remote_profile.txt will be used&#39;</span><span class="p">)</span>
-    <span class="n">singularity_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--singularity-remote-path&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-                                    <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Installation path for the singularity image on remote&#39;</span><span class="p">)</span>
+    <span class="n">singularity_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--build&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;build singularity image locally&quot;</span><span class="p">)</span>
+    <span class="n">singularity_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--push&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Destination of the export &quot;user@host:dir&quot;</span><span class="se">\</span>
+<span class="s1">                                    if left empty the defaults from .remote_profile.txt will be used&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">singularity_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--singularity-remote-path&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Installation path for the singularity image on remote&quot;</span>
+    <span class="p">)</span>
 
     <span class="n">args</span><span class="p">,</span> <span class="n">args_for_script</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">()</span>
 
@@ -540,20 +569,18 @@
 
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">remote</span><span class="p">:</span>
             <span class="n">remote_host</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">export_script</span><span class="p">)</span>
-            <span class="n">remote_export_and_run</span><span class="p">(</span><span class="n">remote_host</span><span class="p">,</span>
-                                  <span class="n">args</span><span class="o">.</span><span class="n">kqc_remote_tmp_path</span><span class="p">,</span>
-                                  <span class="n">args</span><span class="o">.</span><span class="n">detach</span><span class="p">,</span>
-                                  <span class="n">args</span><span class="o">.</span><span class="n">poll_interval</span><span class="p">,</span>
-                                  <span class="n">args</span><span class="o">.</span><span class="n">export_path_basename</span><span class="p">,</span>
-                                  <span class="n">args_for_script</span><span class="p">)</span>
+            <span class="n">remote_export_and_run</span><span class="p">(</span>
+                <span class="n">remote_host</span><span class="p">,</span>
+                <span class="n">args</span><span class="o">.</span><span class="n">kqc_remote_tmp_path</span><span class="p">,</span>
+                <span class="n">args</span><span class="o">.</span><span class="n">detach</span><span class="p">,</span>
+                <span class="n">args</span><span class="o">.</span><span class="n">poll_interval</span><span class="p">,</span>
+                <span class="n">args</span><span class="o">.</span><span class="n">export_path_basename</span><span class="p">,</span>
+                <span class="n">args_for_script</span><span class="p">,</span>
+            <span class="p">)</span>
             <span class="k">return</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">remote_run_only</span><span class="p">:</span>
             <span class="n">remote_host</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">export_script</span><span class="p">)</span>
-            <span class="n">remote_run_only</span><span class="p">(</span><span class="n">remote_host</span><span class="p">,</span>
-                            <span class="n">args</span><span class="o">.</span><span class="n">kqc_remote_tmp_path</span><span class="p">,</span>
-                            <span class="n">args</span><span class="o">.</span><span class="n">detach</span><span class="p">,</span>
-                            <span class="n">args</span><span class="o">.</span><span class="n">poll_interval</span><span class="p">,</span>
-                            <span class="n">args_for_script</span><span class="p">)</span>
+            <span class="n">remote_run_only</span><span class="p">(</span><span class="n">remote_host</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">kqc_remote_tmp_path</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">detach</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">poll_interval</span><span class="p">,</span> <span class="n">args_for_script</span><span class="p">)</span>
             <span class="k">return</span>
 
         <span class="n">script_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">export_script</span><span class="p">)</span>
@@ -582,21 +609,25 @@
                 <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mask script not found at </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">mask_script</span><span class="si">}</span><span class="s2"> or </span><span class="si">{</span><span class="n">script_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">return</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
-            <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="n">script_file</span><span class="p">,</span> <span class="s1">&#39;-d&#39;</span><span class="p">])</span>
+            <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="n">script_file</span><span class="p">,</span> <span class="s2">&quot;-d&quot;</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># Windows needs this for multiprocessing</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">script_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">mask_file</span><span class="p">:</span>
                 <span class="n">exec</span><span class="p">(</span><span class="n">mask_file</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>  <span class="c1"># pylint: disable=exec-used</span>
     <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">command</span> <span class="o">==</span> <span class="s2">&quot;singularity&quot;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">build</span><span class="p">:</span>
             <span class="n">chdir</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s2">&quot;singularity&quot;</span><span class="p">))</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;install_software.sh&#39;</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;install_software.sh&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="s1">&#39;export MPI_VERSION=&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
-                        <span class="n">mpi_v</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s1">&#39;export MPI_VERSION=&#39;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                        <span class="nb">print</span><span class="p">((</span><span class="sa">f</span><span class="s2">&quot;Singularity will use MPI version </span><span class="si">{</span><span class="n">mpi_v</span><span class="si">}</span><span class="s2">. &quot;</span>
+                    <span class="k">if</span> <span class="s2">&quot;export MPI_VERSION=&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                        <span class="n">mpi_v</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">&quot;export MPI_VERSION=&quot;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                        <span class="nb">print</span><span class="p">(</span>
+                            <span class="p">(</span>
+                                <span class="sa">f</span><span class="s2">&quot;Singularity will use MPI version </span><span class="si">{</span><span class="n">mpi_v</span><span class="si">}</span><span class="s2">. &quot;</span>
                                 <span class="s2">&quot;Make sure this corresponds to the MPI version on the target machine</span><span class="se">\n</span><span class="s2">&quot;</span>
                                 <span class="s2">&quot;MPI and other package versions used by singularity can be changed &quot;</span>
-                                <span class="s2">&quot;in the beginning of the /singularity/install_software.sh script&quot;</span><span class="p">))</span>
+                                <span class="s2">&quot;in the beginning of the /singularity/install_software.sh script&quot;</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
                         <span class="k">break</span>
             <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s2">&quot;./singularity.sh&quot;</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">push</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>

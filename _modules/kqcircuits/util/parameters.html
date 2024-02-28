@@ -489,7 +489,7 @@
 <span class="sd">        **param_with_default_value: dictionary of parameter names and new default values</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">invert</span> <span class="o">=</span> <span class="p">(</span><span class="ow">not</span> <span class="n">param_names</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">param_with_default_value</span><span class="p">)</span>
+    <span class="n">invert</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">param_names</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">param_with_default_value</span>
     <span class="k">if</span> <span class="n">param_names</span> <span class="ow">and</span> <span class="n">param_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;*&quot;</span><span class="p">:</span>
         <span class="n">param_names</span> <span class="o">=</span> <span class="n">param_names</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
         <span class="n">invert</span> <span class="o">=</span> <span class="kc">True</span>
@@ -532,7 +532,7 @@
     <span class="k">def</span> <span class="nf">_decorate</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">schema</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">change</span><span class="p">:</span>  <span class="c1"># Redefine the parameter in case of any change</span>
-            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">p</span><span class="o">.</span><span class="n">kwargs</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">:</span><span class="n">p</span><span class="o">.</span><span class="n">description</span><span class="p">,</span> <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">default</span><span class="p">,</span> <span class="o">**</span><span class="n">change</span><span class="p">}</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">p</span><span class="o">.</span><span class="n">kwargs</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">description</span><span class="p">,</span> <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">default</span><span class="p">,</span> <span class="o">**</span><span class="n">change</span><span class="p">}</span>
             <span class="n">p</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">data_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
         <span class="n">p</span><span class="o">.</span><span class="n">__set_name__</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
@@ -543,6 +543,7 @@
 
 <div class="viewcode-block" id="pdt"><a class="viewcode-back" href="../../../api/kqcircuits.util.parameters.html#kqcircuits.util.parameters.pdt">[docs]</a><span class="k">class</span> <span class="nc">pdt</span><span class="p">:</span>  <span class="c1"># pylint: disable=invalid-name</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A namespace for pya.PCellParameterDeclaration types.&quot;&quot;&quot;</span>
+
     <span class="n">TypeDouble</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">PCellParameterDeclaration</span><span class="o">.</span><span class="n">TypeDouble</span>
     <span class="n">TypeInt</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">PCellParameterDeclaration</span><span class="o">.</span><span class="n">TypeInt</span>
     <span class="n">TypeList</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">PCellParameterDeclaration</span><span class="o">.</span><span class="n">TypeList</span>
@@ -565,7 +566,7 @@
 <span class="sd">        * ``docstring``: Longer description of the parameter that gets used by Sphinx to generate API docs.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_index</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1"># A private dictionary of parameter dictionaries indexed by owner classes&#39; name</span>
+    <span class="n">_index</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># A private dictionary of parameter dictionaries indexed by owner classes&#39; name</span>
 
 <div class="viewcode-block" id="Param.get_all"><a class="viewcode-back" href="../../../api/kqcircuits.util.parameters.html#kqcircuits.util.parameters.Param.get_all">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_all</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
@@ -578,7 +579,7 @@
 <span class="sd">            a name-to-Param dictionary of all parameters of class `owner` or an empty one if it has none.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">owner_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">owner</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">owner</span><span class="o">.</span><span class="vm">__qualname__</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">owner_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">owner</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">owner</span><span class="o">.</span><span class="vm">__qualname__</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">if</span> <span class="n">owner_name</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_index</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_index</span><span class="p">[</span><span class="n">owner_name</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
@@ -592,7 +593,7 @@
 
     <span class="k">def</span> <span class="nf">__set_name__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="n">owner_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">owner</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">owner</span><span class="o">.</span><span class="vm">__qualname__</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">owner_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">owner</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">owner</span><span class="o">.</span><span class="vm">__qualname__</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">if</span> <span class="n">owner_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="p">[</span><span class="n">owner_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="p">[</span><span class="n">owner_name</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
@@ -600,9 +601,9 @@
     <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">objtype</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;_param_values&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">obj</span><span class="o">.</span><span class="n">_param_values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">default</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;_param_value_map&quot;</span><span class="p">):</span>    <span class="c1"># Element</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;_param_value_map&quot;</span><span class="p">):</span>  <span class="c1"># Element</span>
             <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_param_values</span><span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="n">_param_value_map</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]]</span>
-        <span class="k">else</span><span class="p">:</span>                                   <span class="c1"># Simulation</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># Simulation</span>
             <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_param_values</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>

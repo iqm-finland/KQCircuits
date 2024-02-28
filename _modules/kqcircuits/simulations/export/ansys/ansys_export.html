@@ -486,12 +486,31 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
 
 
-<div class="viewcode-block" id="export_ansys_json"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys_json">[docs]</a><span class="k">def</span> <span class="nf">export_ansys_json</span><span class="p">(</span><span class="n">simulation</span><span class="p">:</span> <span class="n">Simulation</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">ansys_tool</span><span class="o">=</span><span class="s1">&#39;hfss&#39;</span><span class="p">,</span>
-                      <span class="n">frequency_units</span><span class="o">=</span><span class="s2">&quot;GHz&quot;</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_delta_s</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">percent_error</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">percent_refinement</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
-                      <span class="n">maximum_passes</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">minimum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">minimum_converged_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                      <span class="n">sweep_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sweep_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sweep_end</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sweep_count</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span> <span class="n">sweep_type</span><span class="o">=</span><span class="s1">&#39;interpolating&#39;</span><span class="p">,</span>
-                      <span class="n">max_delta_f</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">n_modes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">mesh_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">simulation_flags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ansys_project_template</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                      <span class="n">integrate_energies</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">hfss_capacitance_export</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="export_ansys_json"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys_json">[docs]</a><span class="k">def</span> <span class="nf">export_ansys_json</span><span class="p">(</span>
+    <span class="n">simulation</span><span class="p">:</span> <span class="n">Simulation</span><span class="p">,</span>
+    <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="n">ansys_tool</span><span class="o">=</span><span class="s2">&quot;hfss&quot;</span><span class="p">,</span>
+    <span class="n">frequency_units</span><span class="o">=</span><span class="s2">&quot;GHz&quot;</span><span class="p">,</span>
+    <span class="n">frequency</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">max_delta_s</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">percent_error</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">percent_refinement</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+    <span class="n">maximum_passes</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
+    <span class="n">minimum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">minimum_converged_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">sweep_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sweep_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">sweep_end</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">sweep_count</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span>
+    <span class="n">sweep_type</span><span class="o">=</span><span class="s2">&quot;interpolating&quot;</span><span class="p">,</span>
+    <span class="n">max_delta_f</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">n_modes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">mesh_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">simulation_flags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">ansys_project_template</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">integrate_energies</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">hfss_capacitance_export</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Export Ansys simulation into json and gds files.</span>
 
@@ -531,52 +550,57 @@
 
     <span class="c1"># collect data for .json file</span>
     <span class="n">json_data</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;ansys_tool&#39;</span><span class="p">:</span> <span class="n">ansys_tool</span><span class="p">,</span>
+        <span class="s2">&quot;ansys_tool&quot;</span><span class="p">:</span> <span class="n">ansys_tool</span><span class="p">,</span>
         <span class="o">**</span><span class="n">simulation</span><span class="o">.</span><span class="n">get_simulation_data</span><span class="p">(),</span>
-        <span class="s1">&#39;analysis_setup&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;frequency_units&#39;</span><span class="p">:</span> <span class="n">frequency_units</span><span class="p">,</span>
-            <span class="s1">&#39;frequency&#39;</span><span class="p">:</span> <span class="n">frequency</span><span class="p">,</span>
-            <span class="s1">&#39;max_delta_s&#39;</span><span class="p">:</span> <span class="n">max_delta_s</span><span class="p">,</span>  <span class="c1"># stopping criterion for HFSS</span>
-            <span class="s1">&#39;percent_error&#39;</span><span class="p">:</span> <span class="n">percent_error</span><span class="p">,</span>  <span class="c1"># stopping criterion for Q3D</span>
-            <span class="s1">&#39;percent_refinement&#39;</span><span class="p">:</span> <span class="n">percent_refinement</span><span class="p">,</span>
-            <span class="s1">&#39;maximum_passes&#39;</span><span class="p">:</span> <span class="n">maximum_passes</span><span class="p">,</span>
-            <span class="s1">&#39;minimum_passes&#39;</span><span class="p">:</span> <span class="n">minimum_passes</span><span class="p">,</span>
-            <span class="s1">&#39;minimum_converged_passes&#39;</span><span class="p">:</span> <span class="n">minimum_converged_passes</span><span class="p">,</span>
-            <span class="s1">&#39;sweep_enabled&#39;</span><span class="p">:</span> <span class="n">sweep_enabled</span><span class="p">,</span>
-            <span class="s1">&#39;sweep_start&#39;</span><span class="p">:</span> <span class="n">sweep_start</span><span class="p">,</span>
-            <span class="s1">&#39;sweep_end&#39;</span><span class="p">:</span> <span class="n">sweep_end</span><span class="p">,</span>
-            <span class="s1">&#39;sweep_count&#39;</span><span class="p">:</span> <span class="n">sweep_count</span><span class="p">,</span>
-            <span class="s1">&#39;sweep_type&#39;</span><span class="p">:</span> <span class="n">sweep_type</span><span class="p">,</span>
-            <span class="s1">&#39;max_delta_f&#39;</span><span class="p">:</span> <span class="n">max_delta_f</span><span class="p">,</span>
-            <span class="s1">&#39;n_modes&#39;</span><span class="p">:</span> <span class="n">n_modes</span><span class="p">,</span>
+        <span class="s2">&quot;analysis_setup&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;frequency_units&quot;</span><span class="p">:</span> <span class="n">frequency_units</span><span class="p">,</span>
+            <span class="s2">&quot;frequency&quot;</span><span class="p">:</span> <span class="n">frequency</span><span class="p">,</span>
+            <span class="s2">&quot;max_delta_s&quot;</span><span class="p">:</span> <span class="n">max_delta_s</span><span class="p">,</span>  <span class="c1"># stopping criterion for HFSS</span>
+            <span class="s2">&quot;percent_error&quot;</span><span class="p">:</span> <span class="n">percent_error</span><span class="p">,</span>  <span class="c1"># stopping criterion for Q3D</span>
+            <span class="s2">&quot;percent_refinement&quot;</span><span class="p">:</span> <span class="n">percent_refinement</span><span class="p">,</span>
+            <span class="s2">&quot;maximum_passes&quot;</span><span class="p">:</span> <span class="n">maximum_passes</span><span class="p">,</span>
+            <span class="s2">&quot;minimum_passes&quot;</span><span class="p">:</span> <span class="n">minimum_passes</span><span class="p">,</span>
+            <span class="s2">&quot;minimum_converged_passes&quot;</span><span class="p">:</span> <span class="n">minimum_converged_passes</span><span class="p">,</span>
+            <span class="s2">&quot;sweep_enabled&quot;</span><span class="p">:</span> <span class="n">sweep_enabled</span><span class="p">,</span>
+            <span class="s2">&quot;sweep_start&quot;</span><span class="p">:</span> <span class="n">sweep_start</span><span class="p">,</span>
+            <span class="s2">&quot;sweep_end&quot;</span><span class="p">:</span> <span class="n">sweep_end</span><span class="p">,</span>
+            <span class="s2">&quot;sweep_count&quot;</span><span class="p">:</span> <span class="n">sweep_count</span><span class="p">,</span>
+            <span class="s2">&quot;sweep_type&quot;</span><span class="p">:</span> <span class="n">sweep_type</span><span class="p">,</span>
+            <span class="s2">&quot;max_delta_f&quot;</span><span class="p">:</span> <span class="n">max_delta_f</span><span class="p">,</span>
+            <span class="s2">&quot;n_modes&quot;</span><span class="p">:</span> <span class="n">n_modes</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;mesh_size&#39;</span><span class="p">:</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">mesh_size</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">mesh_size</span><span class="p">,</span>
-        <span class="s1">&#39;simulation_flags&#39;</span><span class="p">:</span> <span class="n">simulation_flags</span><span class="p">,</span>
-        <span class="s1">&#39;integrate_energies&#39;</span><span class="p">:</span> <span class="n">integrate_energies</span><span class="p">,</span>
-        <span class="s1">&#39;hfss_capacitance_export&#39;</span><span class="p">:</span> <span class="n">hfss_capacitance_export</span><span class="p">,</span>
+        <span class="s2">&quot;mesh_size&quot;</span><span class="p">:</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">mesh_size</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">mesh_size</span><span class="p">,</span>
+        <span class="s2">&quot;simulation_flags&quot;</span><span class="p">:</span> <span class="n">simulation_flags</span><span class="p">,</span>
+        <span class="s2">&quot;integrate_energies&quot;</span><span class="p">:</span> <span class="n">integrate_energies</span><span class="p">,</span>
+        <span class="s2">&quot;hfss_capacitance_export&quot;</span><span class="p">:</span> <span class="n">hfss_capacitance_export</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="k">if</span> <span class="n">ansys_project_template</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;ansys_project_template&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ansys_project_template</span>
+        <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;ansys_project_template&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ansys_project_template</span>
 
     <span class="c1"># write .json file</span>
-    <span class="n">json_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.json&#39;</span><span class="p">))</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+    <span class="n">json_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.json&quot;</span><span class="p">))</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
         <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">GeometryJsonEncoder</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 
     <span class="c1"># write .gds file</span>
-    <span class="n">gds_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.gds&#39;</span><span class="p">))</span>
-    <span class="n">export_layers</span><span class="p">(</span><span class="n">gds_filename</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="p">[</span><span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="p">],</span>
-                  <span class="n">output_format</span><span class="o">=</span><span class="s1">&#39;GDS2&#39;</span><span class="p">,</span>
-                  <span class="n">layers</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
-                  <span class="p">)</span>
+    <span class="n">gds_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.gds&quot;</span><span class="p">))</span>
+    <span class="n">export_layers</span><span class="p">(</span>
+        <span class="n">gds_filename</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="p">[</span><span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="p">],</span> <span class="n">output_format</span><span class="o">=</span><span class="s2">&quot;GDS2&quot;</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+    <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">json_filename</span></div>
 
 
-<div class="viewcode-block" id="export_ansys_bat"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys_bat">[docs]</a><span class="k">def</span> <span class="nf">export_ansys_bat</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="s1">&#39;simulation&#39;</span><span class="p">,</span> <span class="n">exit_after_run</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                     <span class="n">execution_script</span><span class="o">=</span><span class="s1">&#39;scripts/import_and_simulate.py&#39;</span><span class="p">,</span>
-                     <span class="n">post_process</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_rel_path</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="export_ansys_bat"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys_bat">[docs]</a><span class="k">def</span> <span class="nf">export_ansys_bat</span><span class="p">(</span>
+    <span class="n">json_filenames</span><span class="p">,</span>
+    <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="n">file_prefix</span><span class="o">=</span><span class="s2">&quot;simulation&quot;</span><span class="p">,</span>
+    <span class="n">exit_after_run</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">execution_script</span><span class="o">=</span><span class="s2">&quot;scripts/import_and_simulate.py&quot;</span><span class="p">,</span>
+    <span class="n">post_process</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">use_rel_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a batch file for running one or more already exported simulations.</span>
 
@@ -592,32 +616,32 @@
 <span class="sd">    Returns:</span>
 <span class="sd">         Path to exported bat file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">run_cmd</span> <span class="o">=</span> <span class="s1">&#39;RunScriptAndExit&#39;</span> <span class="k">if</span> <span class="n">exit_after_run</span> <span class="k">else</span> <span class="s1">&#39;RunScript&#39;</span>
+    <span class="n">run_cmd</span> <span class="o">=</span> <span class="s2">&quot;RunScriptAndExit&quot;</span> <span class="k">if</span> <span class="n">exit_after_run</span> <span class="k">else</span> <span class="s2">&quot;RunScript&quot;</span>
 
-    <span class="n">bat_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">file_prefix</span> <span class="o">+</span> <span class="s1">&#39;.bat&#39;</span><span class="p">))</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">bat_filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="n">bat_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">file_prefix</span> <span class="o">+</span> <span class="s2">&quot;.bat&quot;</span><span class="p">))</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">bat_filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
         <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
-            <span class="s1">&#39;@echo off</span><span class="se">\n</span><span class="s1">&#39;</span>\
-            <span class="sa">r</span><span class="s1">&#39;powershell -Command &quot;Get-Process | Where-Object {$_.MainWindowTitle -like \&quot;Run Simulations*\&quot;} &#39;</span>\
-                <span class="s1">&#39;| Select -ExpandProperty Id | Export-Clixml -path blocking_pids.xml&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>\
-            <span class="s1">&#39;title Run Simulations</span><span class="se">\n</span><span class="s1">&#39;</span>\
-            <span class="s1">&#39;powershell -Command &quot;$sim_pids = Import-Clixml -Path blocking_pids.xml; if ($sim_pids) &#39;</span>\
-                <span class="sa">r</span><span class="s1">&#39;{ echo \&quot;Waiting for $sim_pids\&quot;; Wait-Process $sim_pids -ErrorAction SilentlyContinue }; &#39;</span>\
-                <span class="s1">&#39;Remove-Item blocking_pids.xml&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="s2">&quot;@echo off</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">r</span><span class="s1">&#39;powershell -Command &quot;Get-Process | Where-Object {$_.MainWindowTitle -like \&quot;Run Simulations*\&quot;} &#39;</span>
+            <span class="s1">&#39;| Select -ExpandProperty Id | Export-Clixml -path blocking_pids.xml&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="s2">&quot;title Run Simulations</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s1">&#39;powershell -Command &quot;$sim_pids = Import-Clixml -Path blocking_pids.xml; if ($sim_pids) &#39;</span>
+            <span class="sa">r</span><span class="s2">&quot;{ echo </span><span class="se">\&quot;</span><span class="s2">Waiting for $sim_pids</span><span class="se">\&quot;</span><span class="s2">; Wait-Process $sim_pids -ErrorAction SilentlyContinue }; &quot;</span>
+            <span class="s1">&#39;Remove-Item blocking_pids.xml&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
         <span class="p">)</span>
 
         <span class="c1"># Commands for each simulation</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">json_filename</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">):</span>
-            <span class="n">printing</span> <span class="o">=</span> <span class="s1">&#39;echo Simulation </span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1"> - </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span>
-                <span class="nb">len</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">),</span>
-                <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">)))</span>
+            <span class="n">printing</span> <span class="o">=</span> <span class="s2">&quot;echo Simulation </span><span class="si">{}</span><span class="s2">/</span><span class="si">{}</span><span class="s2"> - </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+            <span class="p">)</span>
             <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">printing</span><span class="p">)</span>
             <span class="n">command</span> <span class="o">=</span> <span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot; -scriptargs &quot;</span><span class="si">{}</span><span class="s1">&quot; -</span><span class="si">{}</span><span class="s1"> &quot;</span><span class="si">{}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="n">ANSYS_EXECUTABLE</span><span class="p">,</span>
                 <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">if</span> <span class="n">use_rel_path</span> <span class="k">else</span> <span class="n">json_filename</span><span class="p">),</span>
                 <span class="n">run_cmd</span><span class="p">,</span>
-                <span class="nb">str</span><span class="p">(</span><span class="n">execution_script</span><span class="p">))</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">execution_script</span><span class="p">),</span>
+            <span class="p">)</span>
             <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
 
         <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">get_post_process_command_lines</span><span class="p">(</span><span class="n">post_process</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">json_filenames</span><span class="p">))</span>
@@ -628,14 +652,38 @@
     <span class="k">return</span> <span class="n">bat_filename</span></div>
 
 
-<div class="viewcode-block" id="export_ansys"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys">[docs]</a><span class="k">def</span> <span class="nf">export_ansys</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">ansys_tool</span><span class="o">=</span><span class="s1">&#39;hfss&#39;</span><span class="p">,</span> <span class="n">script_folder</span><span class="o">=</span><span class="s1">&#39;scripts&#39;</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="s1">&#39;simulation&#39;</span><span class="p">,</span>
-                 <span class="n">frequency_units</span><span class="o">=</span><span class="s2">&quot;GHz&quot;</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_delta_s</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">percent_error</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">percent_refinement</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
-                 <span class="n">maximum_passes</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">minimum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">minimum_converged_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                 <span class="n">sweep_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sweep_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sweep_end</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sweep_count</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span> <span class="n">sweep_type</span><span class="o">=</span><span class="s1">&#39;interpolating&#39;</span><span class="p">,</span>
-                 <span class="n">max_delta_f</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">n_modes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">mesh_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exit_after_run</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">import_script</span><span class="o">=</span><span class="s1">&#39;import_and_simulate.py&#39;</span><span class="p">,</span> <span class="n">post_process</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_rel_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">simulation_flags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">ansys_project_template</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">integrate_energies</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">hfss_capacitance_export</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">skip_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="export_ansys"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys">[docs]</a><span class="k">def</span> <span class="nf">export_ansys</span><span class="p">(</span>
+    <span class="n">simulations</span><span class="p">,</span>
+    <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="n">ansys_tool</span><span class="o">=</span><span class="s2">&quot;hfss&quot;</span><span class="p">,</span>
+    <span class="n">script_folder</span><span class="o">=</span><span class="s2">&quot;scripts&quot;</span><span class="p">,</span>
+    <span class="n">file_prefix</span><span class="o">=</span><span class="s2">&quot;simulation&quot;</span><span class="p">,</span>
+    <span class="n">frequency_units</span><span class="o">=</span><span class="s2">&quot;GHz&quot;</span><span class="p">,</span>
+    <span class="n">frequency</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">max_delta_s</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">percent_error</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">percent_refinement</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+    <span class="n">maximum_passes</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
+    <span class="n">minimum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">minimum_converged_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">sweep_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">sweep_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">sweep_end</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">sweep_count</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span>
+    <span class="n">sweep_type</span><span class="o">=</span><span class="s2">&quot;interpolating&quot;</span><span class="p">,</span>
+    <span class="n">max_delta_f</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">n_modes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">mesh_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">exit_after_run</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">import_script</span><span class="o">=</span><span class="s2">&quot;import_and_simulate.py&quot;</span><span class="p">,</span>
+    <span class="n">post_process</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">use_rel_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">simulation_flags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">ansys_project_template</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">integrate_energies</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">hfss_capacitance_export</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">skip_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Export Ansys simulations by writing necessary scripts and json, gds, and bat files.</span>
 
@@ -686,38 +734,56 @@
     <span class="n">json_filenames</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">simulation</span> <span class="ow">in</span> <span class="n">simulations</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">json_filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">export_ansys_json</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">ansys_tool</span><span class="o">=</span><span class="n">ansys_tool</span><span class="p">,</span>
-                                            <span class="n">frequency_units</span><span class="o">=</span><span class="n">frequency_units</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="n">frequency</span><span class="p">,</span>
-                                            <span class="n">max_delta_s</span><span class="o">=</span><span class="n">max_delta_s</span><span class="p">,</span> <span class="n">percent_error</span><span class="o">=</span><span class="n">percent_error</span><span class="p">,</span>
-                                            <span class="n">percent_refinement</span><span class="o">=</span><span class="n">percent_refinement</span><span class="p">,</span>
-                                            <span class="n">maximum_passes</span><span class="o">=</span><span class="n">maximum_passes</span><span class="p">,</span> <span class="n">minimum_passes</span><span class="o">=</span><span class="n">minimum_passes</span><span class="p">,</span>
-                                            <span class="n">minimum_converged_passes</span><span class="o">=</span><span class="n">minimum_converged_passes</span><span class="p">,</span>
-                                            <span class="n">sweep_enabled</span><span class="o">=</span><span class="n">sweep_enabled</span><span class="p">,</span> <span class="n">sweep_start</span><span class="o">=</span><span class="n">sweep_start</span><span class="p">,</span>
-                                            <span class="n">sweep_end</span><span class="o">=</span><span class="n">sweep_end</span><span class="p">,</span> <span class="n">sweep_count</span><span class="o">=</span><span class="n">sweep_count</span><span class="p">,</span> <span class="n">sweep_type</span><span class="o">=</span><span class="n">sweep_type</span><span class="p">,</span>
-                                            <span class="n">max_delta_f</span><span class="o">=</span><span class="n">max_delta_f</span><span class="p">,</span> <span class="n">n_modes</span><span class="o">=</span><span class="n">n_modes</span><span class="p">,</span>
-                                            <span class="n">mesh_size</span><span class="o">=</span><span class="n">mesh_size</span><span class="p">,</span>
-                                            <span class="n">simulation_flags</span><span class="o">=</span><span class="n">simulation_flags</span><span class="p">,</span>
-                                            <span class="n">ansys_project_template</span><span class="o">=</span><span class="n">ansys_project_template</span><span class="p">,</span>
-                                            <span class="n">integrate_energies</span><span class="o">=</span><span class="n">integrate_energies</span><span class="p">,</span>
-                                            <span class="n">hfss_capacitance_export</span><span class="o">=</span><span class="n">hfss_capacitance_export</span><span class="p">,</span>
-                                            <span class="p">))</span>
+            <span class="n">json_filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">export_ansys_json</span><span class="p">(</span>
+                    <span class="n">simulation</span><span class="p">,</span>
+                    <span class="n">path</span><span class="p">,</span>
+                    <span class="n">ansys_tool</span><span class="o">=</span><span class="n">ansys_tool</span><span class="p">,</span>
+                    <span class="n">frequency_units</span><span class="o">=</span><span class="n">frequency_units</span><span class="p">,</span>
+                    <span class="n">frequency</span><span class="o">=</span><span class="n">frequency</span><span class="p">,</span>
+                    <span class="n">max_delta_s</span><span class="o">=</span><span class="n">max_delta_s</span><span class="p">,</span>
+                    <span class="n">percent_error</span><span class="o">=</span><span class="n">percent_error</span><span class="p">,</span>
+                    <span class="n">percent_refinement</span><span class="o">=</span><span class="n">percent_refinement</span><span class="p">,</span>
+                    <span class="n">maximum_passes</span><span class="o">=</span><span class="n">maximum_passes</span><span class="p">,</span>
+                    <span class="n">minimum_passes</span><span class="o">=</span><span class="n">minimum_passes</span><span class="p">,</span>
+                    <span class="n">minimum_converged_passes</span><span class="o">=</span><span class="n">minimum_converged_passes</span><span class="p">,</span>
+                    <span class="n">sweep_enabled</span><span class="o">=</span><span class="n">sweep_enabled</span><span class="p">,</span>
+                    <span class="n">sweep_start</span><span class="o">=</span><span class="n">sweep_start</span><span class="p">,</span>
+                    <span class="n">sweep_end</span><span class="o">=</span><span class="n">sweep_end</span><span class="p">,</span>
+                    <span class="n">sweep_count</span><span class="o">=</span><span class="n">sweep_count</span><span class="p">,</span>
+                    <span class="n">sweep_type</span><span class="o">=</span><span class="n">sweep_type</span><span class="p">,</span>
+                    <span class="n">max_delta_f</span><span class="o">=</span><span class="n">max_delta_f</span><span class="p">,</span>
+                    <span class="n">n_modes</span><span class="o">=</span><span class="n">n_modes</span><span class="p">,</span>
+                    <span class="n">mesh_size</span><span class="o">=</span><span class="n">mesh_size</span><span class="p">,</span>
+                    <span class="n">simulation_flags</span><span class="o">=</span><span class="n">simulation_flags</span><span class="p">,</span>
+                    <span class="n">ansys_project_template</span><span class="o">=</span><span class="n">ansys_project_template</span><span class="p">,</span>
+                    <span class="n">integrate_energies</span><span class="o">=</span><span class="n">integrate_energies</span><span class="p">,</span>
+                    <span class="n">hfss_capacitance_export</span><span class="o">=</span><span class="n">hfss_capacitance_export</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
             <span class="k">if</span> <span class="n">skip_errors</span><span class="p">:</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">&#39;Simulation </span><span class="si">{</span><span class="n">simulation</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> skipped due to </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="si">}</span><span class="s1">. &#39;</span>\
-                    <span class="s1">&#39;Some of your other simulations might not make sense geometrically. &#39;</span>\
-                    <span class="s1">&#39;Disable `skip_errors` to see the full traceback.&#39;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Simulation </span><span class="si">{</span><span class="n">simulation</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> skipped due to </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="si">}</span><span class="s2">. &quot;</span>
+                    <span class="s2">&quot;Some of your other simulations might not make sense geometrically. &quot;</span>
+                    <span class="s2">&quot;Disable `skip_errors` to see the full traceback.&quot;</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">UserWarning</span><span class="p">(</span>
-                    <span class="s1">&#39;Generating simulation failed. You can discard the errors using `skip_errors` in `export_ansys`. &#39;</span>\
-                    <span class="s1">&#39;Moreover, `skip_errors` enables visual inspection of failed and successful simulation &#39;</span>\
-                    <span class="s1">&#39;geometry files.&#39;</span>
+                    <span class="s2">&quot;Generating simulation failed. You can discard the errors using `skip_errors` in `export_ansys`. &quot;</span>
+                    <span class="s2">&quot;Moreover, `skip_errors` enables visual inspection of failed and successful simulation &quot;</span>
+                    <span class="s2">&quot;geometry files.&quot;</span>
                 <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
 
-    <span class="k">return</span> <span class="n">export_ansys_bat</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="n">file_prefix</span><span class="p">,</span> <span class="n">exit_after_run</span><span class="o">=</span><span class="n">exit_after_run</span><span class="p">,</span>
-                            <span class="n">execution_script</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">script_folder</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">import_script</span><span class="p">),</span> <span class="n">post_process</span><span class="o">=</span><span class="n">post_process</span><span class="p">,</span>
-                            <span class="n">use_rel_path</span><span class="o">=</span><span class="n">use_rel_path</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">export_ansys_bat</span><span class="p">(</span>
+        <span class="n">json_filenames</span><span class="p">,</span>
+        <span class="n">path</span><span class="p">,</span>
+        <span class="n">file_prefix</span><span class="o">=</span><span class="n">file_prefix</span><span class="p">,</span>
+        <span class="n">exit_after_run</span><span class="o">=</span><span class="n">exit_after_run</span><span class="p">,</span>
+        <span class="n">execution_script</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">script_folder</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">import_script</span><span class="p">),</span>
+        <span class="n">post_process</span><span class="o">=</span><span class="n">post_process</span><span class="p">,</span>
+        <span class="n">use_rel_path</span><span class="o">=</span><span class="n">use_rel_path</span><span class="p">,</span>
+    <span class="p">)</span></div>
 </pre></div>
 
            </div>

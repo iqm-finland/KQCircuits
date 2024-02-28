@@ -490,21 +490,23 @@
 
 
 <div class="viewcode-block" id="polygon_head"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.polygon_head">[docs]</a><span class="k">def</span> <span class="nf">polygon_head</span><span class="p">(</span>
-        <span class="n">nvertices</span><span class="p">,</span>  <span class="c1"># number of vertices of the polygon</span>
-        <span class="n">debugid</span><span class="p">,</span>  <span class="c1"># unique number for sonnet internal debugging</span>
-        <span class="n">ilevel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># sonnet layer number</span>
-        <span class="n">mtype</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># metallization type index, -1 for lossless</span>
-        <span class="n">filltype</span><span class="o">=</span><span class="s2">&quot;N&quot;</span><span class="p">,</span>  <span class="c1"># N for staircase, T for diagonal, V for conformal</span>
-        <span class="n">xmin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># minimum subsection size</span>
-        <span class="n">ymin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># minimum subsection size</span>
-        <span class="n">xmax</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>  <span class="c1"># maximum subsection size</span>
-        <span class="n">ymax</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>  <span class="c1"># maximum subsection size</span>
-        <span class="n">conmax</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># maximum length for conformal mesh subsection, 0 for auto</span>
-        <span class="n">res</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># reserved for sonnet future</span>
-        <span class="n">edge_mesh</span><span class="o">=</span><span class="s2">&quot;Y&quot;</span>  <span class="c1"># edge mesh on (Y) or off (N)</span>
+    <span class="n">nvertices</span><span class="p">,</span>  <span class="c1"># number of vertices of the polygon</span>
+    <span class="n">debugid</span><span class="p">,</span>  <span class="c1"># unique number for sonnet internal debugging</span>
+    <span class="n">ilevel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># sonnet layer number</span>
+    <span class="n">mtype</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># metallization type index, -1 for lossless</span>
+    <span class="n">filltype</span><span class="o">=</span><span class="s2">&quot;N&quot;</span><span class="p">,</span>  <span class="c1"># N for staircase, T for diagonal, V for conformal</span>
+    <span class="n">xmin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># minimum subsection size</span>
+    <span class="n">ymin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># minimum subsection size</span>
+    <span class="n">xmax</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>  <span class="c1"># maximum subsection size</span>
+    <span class="n">ymax</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>  <span class="c1"># maximum subsection size</span>
+    <span class="n">conmax</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># maximum length for conformal mesh subsection, 0 for auto</span>
+    <span class="n">res</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># reserved for sonnet future</span>
+    <span class="n">edge_mesh</span><span class="o">=</span><span class="s2">&quot;Y&quot;</span><span class="p">,</span>  <span class="c1"># edge mesh on (Y) or off (N)</span>
 <span class="p">):</span>
-    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ilevel</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">nvertices</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">mtype</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">filltype</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">debugid</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">xmin</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">ymin</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">xmax</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">ymax</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">conmax</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s2"> &quot;</span> \
-           <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">edge_mesh</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span></div>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ilevel</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">nvertices</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">mtype</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">filltype</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">debugid</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">xmin</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">ymin</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">xmax</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">ymax</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">conmax</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s2"> &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">edge_mesh</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="symmetry"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.symmetry">[docs]</a><span class="k">def</span> <span class="nf">symmetry</span><span class="p">(</span><span class="n">sym</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
@@ -515,11 +517,11 @@
 
 
 <div class="viewcode-block" id="box"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.box">[docs]</a><span class="k">def</span> <span class="nf">box</span><span class="p">(</span>
-        <span class="n">xwidth</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">8000.</span><span class="p">,</span>
-        <span class="n">ywidth</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">8000.</span><span class="p">,</span>
-        <span class="n">xcells</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8000</span><span class="p">,</span>
-        <span class="n">ycells</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8000</span><span class="p">,</span>
-        <span class="n">materials_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Si BT&quot;</span>
+    <span class="n">xwidth</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">8000.0</span><span class="p">,</span>
+    <span class="n">ywidth</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">8000.0</span><span class="p">,</span>
+    <span class="n">xcells</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8000</span><span class="p">,</span>
+    <span class="n">ycells</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8000</span><span class="p">,</span>
+    <span class="n">materials_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Si BT&quot;</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="n">xcells2</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">xcells</span>
     <span class="n">ycells2</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">ycells</span>
@@ -527,29 +529,22 @@
     <span class="n">eeff</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># placeholder for deprecated parameter</span>
 
     <span class="n">materials</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;Si RT&quot;</span><span class="p">:</span> <span class="s2">&quot;3000 1 1 0 0 0 0 </span><span class="se">\&quot;</span><span class="s2">vacuum</span><span class="se">\&quot;\n</span><span class="s2">500 11.7 1 0 0 0 0 </span><span class="se">\&quot;</span><span class="s2">Silicon (room temperature)</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Si BT&quot;</span><span class="p">:</span> <span class="s2">&quot;3000 1 1 0 0 0 0 </span><span class="se">\&quot;</span><span class="s2">vacuum</span><span class="se">\&quot;\n</span><span class="s2">500 11.45 1 1e-006 0 0 0 </span><span class="se">\&quot;</span><span class="s2">Silicon (10mK)</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;SiOx+Si&quot;</span><span class="p">:</span> <span class="s2">&quot;3000 1 1 0 0 0 0 </span><span class="se">\&quot;</span><span class="s2">vacuum</span><span class="se">\&quot;\n</span><span class="s2">0.55 3.78 11.7 1 0 0 0 </span><span class="se">\&quot;</span><span class="s2">SiOx (10mK)</span><span class="se">\&quot;\n</span><span class="s2">525 11.45 1 1e-06 0 0 0 </span><span class="se">\&quot;</span><span class="s2">Si &quot;</span>
-                   <span class="s2">&quot;(10mK)</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Si+Al&quot;</span><span class="p">:</span> <span class="s2">&quot;3000 1 1 0 0 0 0 </span><span class="se">\&quot;</span><span class="s2">vacuum</span><span class="se">\&quot;\n</span><span class="s2">0.5 9.9 1 0.0001 0 0 0 </span><span class="se">\&quot;</span><span class="s2">Alumina (99.5%)</span><span class="se">\&quot;\n</span><span class="s2">0.45 1 1 0 0 0 0 </span><span class="se">\&quot;</span><span class="s2">vacuum</span><span class="se">\&quot;</span><span class="s2">&quot;</span>
-                 <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">525 11.45 1 1e-06 0 0 0 </span><span class="se">\&quot;</span><span class="s2">Si (10mK)</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Si RT&quot;</span><span class="p">:</span> <span class="s1">&#39;3000 1 1 0 0 0 0 &quot;vacuum&quot;</span><span class="se">\n</span><span class="s1">500 11.7 1 0 0 0 0 &quot;Silicon (room temperature)&quot;&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;Si BT&quot;</span><span class="p">:</span> <span class="s1">&#39;3000 1 1 0 0 0 0 &quot;vacuum&quot;</span><span class="se">\n</span><span class="s1">500 11.45 1 1e-006 0 0 0 &quot;Silicon (10mK)&quot;&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;SiOx+Si&quot;</span><span class="p">:</span> <span class="s1">&#39;3000 1 1 0 0 0 0 &quot;vacuum&quot;</span><span class="se">\n</span><span class="s1">0.55 3.78 11.7 1 0 0 0 &quot;SiOx (10mK)&quot;</span><span class="se">\n</span><span class="s1">525 11.45 1 1e-06 0 0 0 &quot;Si &#39;</span>
+        <span class="s1">&#39;(10mK)&quot;&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;Si+Al&quot;</span><span class="p">:</span> <span class="s1">&#39;3000 1 1 0 0 0 0 &quot;vacuum&quot;</span><span class="se">\n</span><span class="s1">0.5 9.9 1 0.0001 0 0 0 &quot;Alumina (99.5%)&quot;</span><span class="se">\n</span><span class="s1">0.45 1 1 0 0 0 0 &quot;vacuum&quot;&#39;</span>
+        <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">525 11.45 1 1e-06 0 0 0 &quot;Si (10mK)&quot;&#39;</span><span class="p">,</span>
     <span class="p">}[</span><span class="n">materials_type</span><span class="p">]</span>
 
-    <span class="n">nlev</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;Si&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="s2">&quot;Si BT&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="s2">&quot;SiOx+Si&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-        <span class="s2">&quot;Si+Al&quot;</span><span class="p">:</span> <span class="mi">3</span>
-    <span class="p">}[</span><span class="n">materials_type</span><span class="p">]</span>
+    <span class="n">nlev</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Si&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Si BT&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;SiOx+Si&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;Si+Al&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}[</span><span class="n">materials_type</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;BOX </span><span class="si">{</span><span class="n">nlev</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">xwidth</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">ywidth</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">xcells2</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">ycells2</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">nsubs</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">eeff</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">materials</span><span class="si">}</span><span class="s2">&quot;</span></div>
 
 
 <div class="viewcode-block" id="refplane"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.refplane">[docs]</a><span class="k">def</span> <span class="nf">refplane</span><span class="p">(</span>
-        <span class="n">position</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>  <span class="c1"># &quot;LEFT&quot; | &quot;RIGHT&quot; | &quot;TOP&quot; | &quot;BOTTOM&quot;,</span>
-        <span class="n">length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">port_ipoly</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="c1"># &quot;LINK&quot; or &quot;FIX&quot;</span>
-        <span class="p">):</span>
+    <span class="n">position</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">port_ipoly</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>  <span class="c1"># &quot;LEFT&quot; | &quot;RIGHT&quot; | &quot;TOP&quot; | &quot;BOTTOM&quot;,  # &quot;LINK&quot; or &quot;FIX&quot;</span>
+<span class="p">):</span>
     <span class="k">if</span> <span class="n">port_ipoly</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
         <span class="n">plane_type</span> <span class="o">=</span> <span class="s2">&quot;LINK&quot;</span>
         <span class="n">poly</span> <span class="o">=</span> <span class="s2">&quot;POLY </span><span class="si">{}</span><span class="s2"> 1</span><span class="se">\n</span><span class="s2">0</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">port_ipoly</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -568,17 +563,17 @@
 
 
 <div class="viewcode-block" id="port"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.port">[docs]</a><span class="k">def</span> <span class="nf">port</span><span class="p">(</span>
-        <span class="n">portnum</span><span class="p">,</span>
-        <span class="n">ipolygon</span><span class="p">,</span>
-        <span class="n">ivertex</span><span class="p">,</span>
-        <span class="n">port_type</span><span class="o">=</span><span class="s2">&quot;STD&quot;</span><span class="p">,</span>  <span class="c1"># STD for standard | AGND autogrounded | CUP cocalibrated</span>
-        <span class="n">xcord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># pylint: disable=unused-argument</span>
-        <span class="n">ycord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># pylint: disable=unused-argument</span>
-        <span class="n">group</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">resist</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
-        <span class="n">react</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">induct</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">capac</span><span class="o">=</span><span class="mi">0</span>
+    <span class="n">portnum</span><span class="p">,</span>
+    <span class="n">ipolygon</span><span class="p">,</span>
+    <span class="n">ivertex</span><span class="p">,</span>
+    <span class="n">port_type</span><span class="o">=</span><span class="s2">&quot;STD&quot;</span><span class="p">,</span>  <span class="c1"># STD for standard | AGND autogrounded | CUP cocalibrated</span>
+    <span class="n">xcord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># pylint: disable=unused-argument</span>
+    <span class="n">ycord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># pylint: disable=unused-argument</span>
+    <span class="n">group</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">resist</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">react</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">induct</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">capac</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="k">if</span> <span class="n">group</span><span class="p">:</span>
         <span class="n">group</span> <span class="o">=</span> <span class="s1">&#39;&quot;&#39;</span> <span class="o">+</span> <span class="n">group</span> <span class="o">+</span> <span class="s1">&#39;&quot;&#39;</span>
@@ -602,31 +597,33 @@
 <span class="c1">#</span>
 <span class="c1">#  return sonnet_str</span>
 
+
 <div class="viewcode-block" id="control"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.control">[docs]</a><span class="k">def</span> <span class="nf">control</span><span class="p">(</span><span class="n">control_type</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">{</span>
         <span class="s2">&quot;Simple&quot;</span><span class="p">:</span> <span class="s2">&quot;SIMPLE&quot;</span><span class="p">,</span>  <span class="c1"># Linear frequency sweep</span>
-        <span class="s2">&quot;ABS&quot;</span><span class="p">:</span> <span class="s2">&quot;ABS&quot;</span><span class="p">,</span> <span class="c1"># Sonnet guesses the resonances, simulates about 5 points around the resonance and interpolates</span>
-                      <span class="c1"># the rest</span>
-        <span class="s2">&quot;Sweep&quot;</span><span class="p">:</span> <span class="s2">&quot;VARSWP&quot;</span>
+        <span class="s2">&quot;ABS&quot;</span><span class="p">:</span> <span class="s2">&quot;ABS&quot;</span><span class="p">,</span>  <span class="c1"># Sonnet guesses the resonances, simulates about 5 points around the resonance and interpolates</span>
+        <span class="c1"># the rest</span>
+        <span class="s2">&quot;Sweep&quot;</span><span class="p">:</span> <span class="s2">&quot;VARSWP&quot;</span><span class="p">,</span>
     <span class="p">}[</span><span class="n">control_type</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="polygons"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.polygons">[docs]</a><span class="k">def</span> <span class="nf">polygons</span><span class="p">(</span><span class="n">polygons</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span> <span class="n">ilevel</span><span class="p">,</span> <span class="n">fill_type</span><span class="p">):</span>
-    <span class="n">sonnet_str</span> <span class="o">=</span> <span class="s1">&#39;NUM </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">polygons</span><span class="p">))</span>
+    <span class="n">sonnet_str</span> <span class="o">=</span> <span class="s2">&quot;NUM </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">polygons</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">hole_poly</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">polygons</span><span class="p">):</span>
         <span class="n">poly</span> <span class="o">=</span> <span class="n">hole_poly</span><span class="o">.</span><span class="n">resolved_holes</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="s1">&#39;isVia&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="s2">&quot;isVia&quot;</span><span class="p">):</span>
             <span class="n">sonnet_str</span> <span class="o">+=</span> <span class="n">via</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="n">debugid</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">ilevel</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="n">ilevel</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">sonnet_str</span> <span class="o">+=</span> <span class="n">polygon_head</span><span class="p">(</span><span class="n">nvertices</span><span class="o">=</span><span class="n">poly</span><span class="o">.</span><span class="n">num_points_hull</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
-                                   <span class="n">debugid</span><span class="o">=</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ilevel</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="n">ilevel</span><span class="p">),</span>
-                                   <span class="n">filltype</span><span class="o">=</span><span class="n">fill_type</span><span class="p">)</span>  <span class="c1"># &quot;Debugid&quot; is actually used for mapping ports to polygons, 0 is</span>
-                                                        <span class="c1"># not allowed</span>
+            <span class="n">sonnet_str</span> <span class="o">+=</span> <span class="n">polygon_head</span><span class="p">(</span>
+                <span class="n">nvertices</span><span class="o">=</span><span class="n">poly</span><span class="o">.</span><span class="n">num_points_hull</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">debugid</span><span class="o">=</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ilevel</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="n">ilevel</span><span class="p">),</span> <span class="n">filltype</span><span class="o">=</span><span class="n">fill_type</span>
+            <span class="p">)</span>  <span class="c1"># &quot;Debugid&quot; is actually used for mapping ports to polygons, 0 is</span>
+            <span class="c1"># not allowed</span>
 
         <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">point</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">poly</span><span class="o">.</span><span class="n">each_point_hull</span><span class="p">()):</span>
-            <span class="n">sonnet_str</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">point</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="n">dbu</span> <span class="o">+</span> <span class="n">v</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
-                                           <span class="o">-</span><span class="p">(</span><span class="n">point</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="n">dbu</span> <span class="o">+</span> <span class="n">v</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>  <span class="c1"># sonnet Y-coordinate goes in the other direction</span>
+            <span class="n">sonnet_str</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">point</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="n">dbu</span> <span class="o">+</span> <span class="n">v</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="p">(</span><span class="n">point</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="n">dbu</span> <span class="o">+</span> <span class="n">v</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+            <span class="p">)</span>  <span class="c1"># sonnet Y-coordinate goes in the other direction</span>
         <span class="n">point</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">poly</span><span class="o">.</span><span class="n">each_point_hull</span><span class="p">())</span>  <span class="c1"># first point again to close the polygon</span>
         <span class="n">sonnet_str</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="se">\n</span><span class="s2">END</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">point</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="n">dbu</span> <span class="o">+</span> <span class="n">v</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="p">(</span><span class="n">point</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="n">dbu</span> <span class="o">+</span> <span class="n">v</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
 

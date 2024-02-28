@@ -557,11 +557,11 @@
         <span class="n">library</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Library</span><span class="o">.</span><span class="n">library_by_name</span><span class="p">(</span><span class="n">library_name</span><span class="p">)</span>  <span class="c1"># returns only registered libraries</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">library</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n">flush</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">library_name</span> <span class="ow">in</span> <span class="n">_kqc_libraries</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using created library </span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">.&quot;</span><span class="p">,</span> <span class="n">library_name</span><span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Using created library &quot;</span><span class="si">%s</span><span class="s1">&quot;.&#39;</span><span class="p">,</span> <span class="n">library_name</span><span class="p">)</span>
                 <span class="n">library</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_kqc_libraries</span><span class="p">[</span><span class="n">library_name</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># create a library, but do not register it yet</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating new library </span><span class="se">\&quot;</span><span class="si">{</span><span class="n">library_name</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">.&quot;</span><span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Creating new library &quot;</span><span class="si">{</span><span class="n">library_name</span><span class="si">}</span><span class="s1">&quot;.&#39;</span><span class="p">)</span>
                 <span class="n">library</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Library</span><span class="p">()</span>
                 <span class="n">library</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">LIBRARY_DESCRIPTION</span>
                 <span class="n">_kqc_libraries</span><span class="p">[</span><span class="n">library_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">library</span><span class="p">,</span> <span class="n">library_path</span><span class="p">)</span>
@@ -706,10 +706,7 @@
         <span class="n">library</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">register_pcell</span><span class="p">(</span><span class="n">pcell_name</span><span class="p">,</span> <span class="n">pcell_class</span><span class="p">())</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Registered pcell [</span><span class="si">{</span><span class="n">pcell_name</span><span class="si">}</span><span class="s2">] to library </span><span class="si">{</span><span class="n">library_name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Failed to register pcell in class </span><span class="si">{</span><span class="n">pcell_class</span><span class="si">}</span><span class="s2"> to library </span><span class="si">{</span><span class="n">library_name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">,</span>
-            <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span>
-        <span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to register pcell in class </span><span class="si">{</span><span class="n">pcell_class</span><span class="si">}</span><span class="s2"> to library </span><span class="si">{</span><span class="n">library_name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_load_manual_designs</span><span class="p">(</span><span class="n">library_name</span><span class="p">):</span>
@@ -755,7 +752,7 @@
                 <span class="k">if</span> <span class="n">module_name</span> <span class="ow">in</span> <span class="n">skip_list</span><span class="p">:</span>
                     <span class="k">continue</span>
                 <span class="c1"># Get the module path starting from the &quot;pkg&quot; directory below project root directory.</span>
-                <span class="n">import_path_parts</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">parts</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">mp</span><span class="o">.</span><span class="n">parts</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">pkg</span><span class="p">)::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">import_path_parts</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">parts</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">mp</span><span class="o">.</span><span class="n">parts</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">pkg</span><span class="p">)</span> <span class="p">::</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                 <span class="n">import_path</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">import_path_parts</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>  <span class="c1"># the -3 is for removing &quot;.py&quot; from the path</span>
 
                 <span class="n">module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">import_path</span><span class="p">)</span>
@@ -809,6 +806,7 @@
         <span class="k">return</span> <span class="n">value</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
+
 
 <span class="k">def</span> <span class="nf">_is_valid_class_name</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if string value is valid PEP-8 compliant Python class name.&quot;&quot;&quot;</span>

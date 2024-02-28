@@ -488,6 +488,7 @@
 <span class="sd">        trans: transform for converting reference points into target coordinate system</span>
 <span class="sd">        rec_levels: recursion level when looking for reference points from subcells. Set to 0 to disable recursion.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">rec_levels</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="n">layer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="n">cell</span>
@@ -505,7 +506,9 @@
             <span class="k">while</span> <span class="ow">not</span> <span class="n">shapes_iter</span><span class="o">.</span><span class="n">at_end</span><span class="p">():</span>
                 <span class="n">shape</span> <span class="o">=</span> <span class="n">shapes_iter</span><span class="o">.</span><span class="n">shape</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">shape</span><span class="o">.</span><span class="n">type</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Shape</span><span class="o">.</span><span class="n">TText</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">Shape</span><span class="o">.</span><span class="n">TTextRef</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="n">shape</span><span class="o">.</span><span class="n">text_string</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trans</span> <span class="o">*</span> <span class="p">(</span><span class="n">shapes_iter</span><span class="o">.</span><span class="n">dtrans</span><span class="p">()</span><span class="o">*</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">text_dpos</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="n">shape</span><span class="o">.</span><span class="n">text_string</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trans</span> <span class="o">*</span> <span class="p">(</span>
+                        <span class="n">shapes_iter</span><span class="o">.</span><span class="n">dtrans</span><span class="p">()</span> <span class="o">*</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">text_dpos</span><span class="p">)</span>
+                    <span class="p">)</span>
                 <span class="n">shapes_iter</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span></div>
 
@@ -533,6 +536,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a list of positions.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">()</span></div></div>
 
+
 <div class="viewcode-block" id="RefpointToSimPort"><a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.RefpointToSimPort">[docs]</a><span class="k">class</span> <span class="nc">RefpointToSimPort</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class that takes a refpoint of an Element class with given string</span>
 <span class="sd">    and places appropriate Simulation port(s) at the refpoint&#39;s location</span>
@@ -543,30 +547,61 @@
 <span class="sd">        refpoint: Refpoint name string</span>
 <span class="sd">        face: index of the face where the refpoint is located</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">refpoint</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">refpoint</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span> <span class="o">=</span> <span class="n">refpoint</span><span class="p">,</span> <span class="n">face</span></div>
 
+
 <div class="viewcode-block" id="RefpointToInternalPort"><a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.RefpointToInternalPort">[docs]</a><span class="k">class</span> <span class="nc">RefpointToInternalPort</span><span class="p">(</span><span class="n">RefpointToSimPort</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates an InternalPort at refpoint with given string</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">refpoint</span><span class="p">,</span> <span class="n">ground_refpoint</span><span class="p">,</span>
-                 <span class="n">resistance</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">reactance</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">inductance</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">capacitance</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                 <span class="n">face</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">junction</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">signal_layer</span><span class="o">=</span><span class="s1">&#39;signal&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates an InternalPort at refpoint with given string&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">refpoint</span><span class="p">,</span>
+        <span class="n">ground_refpoint</span><span class="p">,</span>
+        <span class="n">resistance</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+        <span class="n">reactance</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">inductance</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">capacitance</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">face</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">junction</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">signal_layer</span><span class="o">=</span><span class="s2">&quot;signal&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">refpoint</span><span class="p">,</span> <span class="n">face</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ground_refpoint</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">resistance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reactance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inductance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">capacitance</span><span class="p">,</span> \
-            <span class="bp">self</span><span class="o">.</span><span class="n">junction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">signal_layer</span> <span class="o">=</span> \
-            <span class="n">ground_refpoint</span><span class="p">,</span> <span class="n">resistance</span><span class="p">,</span> <span class="n">reactance</span><span class="p">,</span> <span class="n">inductance</span><span class="p">,</span> <span class="n">capacitance</span><span class="p">,</span> <span class="n">junction</span><span class="p">,</span> <span class="n">signal_layer</span></div>
+        <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ground_refpoint</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resistance</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reactance</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inductance</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">capacitance</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">junction</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">signal_layer</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="n">ground_refpoint</span><span class="p">,</span> <span class="n">resistance</span><span class="p">,</span> <span class="n">reactance</span><span class="p">,</span> <span class="n">inductance</span><span class="p">,</span> <span class="n">capacitance</span><span class="p">,</span> <span class="n">junction</span><span class="p">,</span> <span class="n">signal_layer</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="RefpointToEdgePort"><a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.RefpointToEdgePort">[docs]</a><span class="k">class</span> <span class="nc">RefpointToEdgePort</span><span class="p">(</span><span class="n">RefpointToSimPort</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates an EdgePort at refpoint with given string</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">refpoint</span><span class="p">,</span>
-                 <span class="n">resistance</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">reactance</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">inductance</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">capacitance</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                 <span class="n">face</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">deembed_len</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">junction</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates an EdgePort at refpoint with given string&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">refpoint</span><span class="p">,</span>
+        <span class="n">resistance</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+        <span class="n">reactance</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">inductance</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">capacitance</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">face</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">deembed_len</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">junction</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">refpoint</span><span class="p">,</span> <span class="n">face</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">resistance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reactance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inductance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">capacitance</span><span class="p">,</span> \
-            <span class="bp">self</span><span class="o">.</span><span class="n">deembed_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">junction</span> <span class="o">=</span> \
-            <span class="n">resistance</span><span class="p">,</span> <span class="n">reactance</span><span class="p">,</span> <span class="n">inductance</span><span class="p">,</span> <span class="n">capacitance</span><span class="p">,</span> <span class="n">deembed_len</span><span class="p">,</span> <span class="n">junction</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resistance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reactance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inductance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">capacitance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">deembed_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">junction</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">resistance</span><span class="p">,</span>
+            <span class="n">reactance</span><span class="p">,</span>
+            <span class="n">inductance</span><span class="p">,</span>
+            <span class="n">capacitance</span><span class="p">,</span>
+            <span class="n">deembed_len</span><span class="p">,</span>
+            <span class="n">junction</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="WaveguideToSimPort"><a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.WaveguideToSimPort">[docs]</a><span class="k">class</span> <span class="nc">WaveguideToSimPort</span><span class="p">(</span><span class="n">RefpointToSimPort</span><span class="p">):</span>
@@ -592,12 +627,36 @@
 <span class="sd">        over_etching: Expansion of gaps. Defaults to the value of the `over_etching` parameter</span>
 <span class="sd">        airbridge: if True, an airbridge will be inserted at location of the `refpoint`. Default False</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">refpoint</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">towards</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_internal_ports</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">waveguide_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">term1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">turn_radius</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">over_etching</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">airbridge</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">refpoint</span><span class="p">,</span>
+        <span class="n">face</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">towards</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">side</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">use_internal_ports</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">waveguide_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">term1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">turn_radius</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">a</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">b</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">over_etching</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">airbridge</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">refpoint</span><span class="p">,</span> <span class="n">face</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">towards</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">side</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_internal_ports</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">waveguide_length</span><span class="p">,</span> \
-            <span class="bp">self</span><span class="o">.</span><span class="n">term1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">turn_radius</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">over_etching</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">airbridge</span> <span class="o">=</span> \
-            <span class="n">towards</span><span class="p">,</span> <span class="n">side</span><span class="p">,</span> <span class="n">use_internal_ports</span><span class="p">,</span> <span class="n">waveguide_length</span><span class="p">,</span> <span class="n">term1</span><span class="p">,</span> <span class="n">turn_radius</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">over_etching</span><span class="p">,</span> <span class="n">airbridge</span></div>
+        <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">towards</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">side</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">use_internal_ports</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">waveguide_length</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">term1</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">turn_radius</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">over_etching</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">airbridge</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="n">towards</span><span class="p">,</span> <span class="n">side</span><span class="p">,</span> <span class="n">use_internal_ports</span><span class="p">,</span> <span class="n">waveguide_length</span><span class="p">,</span> <span class="n">term1</span><span class="p">,</span> <span class="n">turn_radius</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">over_etching</span><span class="p">,</span> <span class="n">airbridge</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="JunctionSimPort"><a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.JunctionSimPort">[docs]</a><span class="k">class</span> <span class="nc">JunctionSimPort</span><span class="p">(</span><span class="n">RefpointToSimPort</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates internal ports for a junction in the Simulation object.</span>
@@ -611,6 +670,7 @@
 <span class="sd">                        Defaults to &quot;port_squid_b&quot; as most commonly used junction port name</span>
 <span class="sd">        face: index of the face where the `refpoint` is located</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">refpoint</span><span class="o">=</span><span class="s2">&quot;port_squid_a&quot;</span><span class="p">,</span> <span class="n">other_refpoint</span><span class="o">=</span><span class="s2">&quot;port_squid_b&quot;</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">refpoint</span><span class="p">,</span> <span class="n">face</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">other_refpoint</span> <span class="o">=</span> <span class="n">other_refpoint</span></div>

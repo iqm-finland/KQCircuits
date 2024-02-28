@@ -477,29 +477,48 @@
 <div class="viewcode-block" id="export_singularity"><a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.export_singularity.html#kqcircuits.simulations.export.export_singularity.export_singularity">[docs]</a><span class="k">def</span> <span class="nf">export_singularity</span><span class="p">(</span><span class="n">remote_host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">singularity_remote_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 
     <span class="k">if</span> <span class="n">singularity_remote_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">singularity_remote_path</span> <span class="o">=</span> <span class="s1">&#39;~/KQCircuits/singularity&#39;</span>
+        <span class="n">singularity_remote_path</span> <span class="o">=</span> <span class="s2">&quot;~/KQCircuits/singularity&quot;</span>
 
-    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="s1">&#39;ssh&#39;</span><span class="p">,</span> <span class="n">remote_host</span><span class="p">,</span>
-                    <span class="s1">&#39;mkdir&#39;</span><span class="p">,</span> <span class="s1">&#39;-p&#39;</span><span class="p">,</span>
-                    <span class="n">singularity_remote_path</span><span class="p">,</span>
-                    <span class="n">singularity_remote_path</span> <span class="o">+</span> <span class="s1">&#39;/libexec&#39;</span><span class="p">,</span>
-                    <span class="n">singularity_remote_path</span> <span class="o">+</span> <span class="s1">&#39;/bin&#39;</span><span class="p">])</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="s2">&quot;ssh&quot;</span><span class="p">,</span>
+            <span class="n">remote_host</span><span class="p">,</span>
+            <span class="s2">&quot;mkdir&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;-p&quot;</span><span class="p">,</span>
+            <span class="n">singularity_remote_path</span><span class="p">,</span>
+            <span class="n">singularity_remote_path</span> <span class="o">+</span> <span class="s2">&quot;/libexec&quot;</span><span class="p">,</span>
+            <span class="n">singularity_remote_path</span> <span class="o">+</span> <span class="s2">&quot;/bin&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
 
-    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="s1">&#39;scp&#39;</span><span class="p">,</span>
-                    <span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s1">&#39;singularity/libexec/kqclib&#39;</span><span class="p">,</span>
-                    <span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s1">&#39;singularity/libexec/kqclib.sh&#39;</span><span class="p">,</span>
-                    <span class="n">remote_host</span> <span class="o">+</span> <span class="s1">&#39;:&#39;</span> <span class="o">+</span> <span class="n">singularity_remote_path</span> <span class="o">+</span> <span class="s1">&#39;/libexec&#39;</span><span class="p">])</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="s2">&quot;scp&quot;</span><span class="p">,</span>
+            <span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s2">&quot;singularity/libexec/kqclib&quot;</span><span class="p">,</span>
+            <span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s2">&quot;singularity/libexec/kqclib.sh&quot;</span><span class="p">,</span>
+            <span class="n">remote_host</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span> <span class="o">+</span> <span class="n">singularity_remote_path</span> <span class="o">+</span> <span class="s2">&quot;/libexec&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
 
-    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="s1">&#39;scp&#39;</span><span class="p">,</span>
-                     <span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s1">&#39;singularity/create_links.sh&#39;</span><span class="p">,</span>
-                     <span class="n">remote_host</span> <span class="o">+</span> <span class="s1">&#39;:&#39;</span> <span class="o">+</span> <span class="n">singularity_remote_path</span><span class="p">])</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="s2">&quot;scp&quot;</span><span class="p">,</span> <span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s2">&quot;singularity/create_links.sh&quot;</span><span class="p">,</span> <span class="n">remote_host</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span> <span class="o">+</span> <span class="n">singularity_remote_path</span><span class="p">])</span>
 
-
-    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="s1">&#39;ssh&#39;</span><span class="p">,</span> <span class="n">remote_host</span><span class="p">,</span>
-                     <span class="s1">&#39;cd&#39;</span><span class="p">,</span> <span class="n">singularity_remote_path</span><span class="p">,</span> <span class="s1">&#39;&amp;&amp;&#39;</span><span class="p">,</span>
-                     <span class="s1">&#39;./create_links.sh&#39;</span><span class="p">,</span> <span class="s1">&#39;&amp;&amp;&#39;</span><span class="p">,</span>
-                     <span class="s1">&#39;mv&#39;</span><span class="p">,</span> <span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="s1">&#39;bin/python&#39;</span><span class="p">,</span> <span class="s1">&#39;&amp;&amp;&#39;</span><span class="p">,</span>
-                     <span class="s1">&#39;rm&#39;</span><span class="p">,</span> <span class="s1">&#39;bin/paraview&#39;</span><span class="p">])</span></div>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="s2">&quot;ssh&quot;</span><span class="p">,</span>
+            <span class="n">remote_host</span><span class="p">,</span>
+            <span class="s2">&quot;cd&quot;</span><span class="p">,</span>
+            <span class="n">singularity_remote_path</span><span class="p">,</span>
+            <span class="s2">&quot;&amp;&amp;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;./create_links.sh&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;&amp;&amp;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;mv&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;python&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;bin/python&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;&amp;&amp;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;rm&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;bin/paraview&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+    <span class="p">)</span></div>
 </pre></div>
 
            </div>

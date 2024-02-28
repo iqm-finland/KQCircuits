@@ -474,9 +474,9 @@
 
 
 <div class="viewcode-block" id="PartitionRegion"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.partition_region.html#kqcircuits.simulations.partition_region.PartitionRegion">[docs]</a><span class="k">class</span> <span class="nc">PartitionRegion</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Class to enable partitioning of simulation geometry into sub-regions</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;part&#39;</span><span class="p">,</span> <span class="n">vertical_dimensions</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">metal_edge_dimensions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">face_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to enable partitioning of simulation geometry into sub-regions&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;part&quot;</span><span class="p">,</span> <span class="n">vertical_dimensions</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">metal_edge_dimensions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">face_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
 <span class="sd">            name: Suffix of the partition layers. Must not end with a number.</span>
@@ -490,7 +490,7 @@
 <span class="sd">                pya.DPolygons. Use None to cover full domain.</span>
 <span class="sd">            face_ids: List of face names to which the partition region is applied. Use None to apply on all faces.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">name</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="s1">&#39;0123456789&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="s2">&quot;0123456789&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PartitionRegion name must not end with a number, but </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> is given.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;PartitionRegion name must not be an empty string.&quot;</span><span class="p">)</span>
