@@ -112,6 +112,20 @@ def _export_cell_netlist_breakdown(cell, filename, pcell, breakdown_list):
         log.info(f"No circuit found for {cell.display_title()}")
 
 
+def _transformations_close_enough(trans_a, trans_b):
+    angle_a, angle_b = trans_a.angle, trans_b.angle
+    if angle_a - angle_b > 180:
+        angle_a -= 360
+    elif angle_b - angle_a > 180:
+        angle_b -= 360
+    return (
+        trans_a.mag == trans_b.mag
+        and trans_a.is_mirror() == trans_b.is_mirror()
+        and abs(angle_a - angle_b) < 0.001
+        and (trans_a.disp - trans_b.disp).length() < 0.001
+    )
+
+
 def _export_netlist(circuit, filename, internal_layout, original_layout, cell_mapping, pcell, breakdown_list):
     """A helper function of ``export_cell_netlist``,  exports ``circuit`` into ``filename``.
 
@@ -169,15 +183,29 @@ def _export_netlist(circuit, filename, internal_layout, original_layout, cell_ma
                 (i, i_trans) for i, i_trans in original_instances if i.cell.cell_index() == original_cell_index
             ]
         else:
-            log.info(
-                (
-                    "%s element has no cell mapping in %s between circuit layout and orignal layout,"
-                    " using subcircuit center point as subcircuit_location instead"
-                ),
-                internal_cell.name,
-                circuit.name,
-            )
-            possible_instances = []
+            original_cell = original_layout.cell(internal_cell.name)
+            if not original_cell:
+                log.info(
+                    (
+                        f"{internal_cell.name} element has no cell mapping in {circuit.name} "
+                        "between circuit layout and orignal layout. "
+                        "Depending on cell type this can make the netlist unusable. "
+                        "Using subcircuit center point as subcircuit_location"
+                    )
+                )
+                possible_instances = []
+            else:
+                log.info(
+                    (
+                        f"There was no cell mapping for {internal_cell.name} element "
+                        "between circuit layout and orignal layout, "
+                        "but the element in original layout was succesfully looked up by name."
+                    )
+                )
+                original_cell_index = original_cell.cell_index()
+                possible_instances = [
+                    (i, i_trans) for i, i_trans in original_instances if i.cell.cell_index() == original_cell_index
+                ]
 
         used_internal_cells.add(internal_cell)
 
@@ -189,7 +217,9 @@ def _export_netlist(circuit, filename, internal_layout, original_layout, cell_ma
             subcircuit_location = pya.DPoint(0.0, 0.0)
 
         instances_with_eq_trans = [
-            (i, i_trans) for i, i_trans in possible_instances if i_trans * i.dcplx_trans == subcircuit_trans
+            (i, i_trans)
+            for i, i_trans in possible_instances
+            if _transformations_close_enough(i_trans * i.dcplx_trans, subcircuit_trans)
         ]
         property_dict = {}
         correct_instance = None
@@ -288,12 +318,16 @@ def extract_nets(net):
 def extract_circuits(cell_mapping, internal_cell, layout):
     """Extract dictionary for circuit for JSON export"""
 
-    circuit_has_cell = cell_mapping.has_mapping(internal_cell.cell_index())
-    circuit_for_export = {"circuit_has_cell": circuit_has_cell}
-
-    if circuit_has_cell:
+    if cell_mapping.has_mapping(internal_cell.cell_index()):
         original_cell_index = cell_mapping.cell_mapping(internal_cell.cell_index())
         original_cell = layout.cell(original_cell_index)
+    else:
+        original_cell = layout.cell(internal_cell.name)
+        if original_cell:  # Cell looked up by name, circuits has cell after all
+            original_cell_index = original_cell.cell_index()
+    circuit_for_export = {"circuit_has_cell": original_cell is not None}
+
+    if original_cell:
         is_pcell = original_cell.is_pcell_variant()
         circuit_for_export["is_pcell"] = is_pcell
         pcell_parameters = original_cell.pcell_parameters_by_name()
