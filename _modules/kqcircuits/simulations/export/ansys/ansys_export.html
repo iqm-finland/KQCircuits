@@ -359,6 +359,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.partition_region.html">kqcircuits.simulations.partition_region</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.port.html">kqcircuits.simulations.port</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.post_process.html">kqcircuits.simulations.post_process</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.simulation.html">kqcircuits.simulations.simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.single_element_simulation.html">kqcircuits.simulations.single_element_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.single_xmons_full_chip_sim.html">kqcircuits.simulations.single_xmons_full_chip_sim</a></li>
@@ -475,9 +476,9 @@
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 
-<span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">copytree</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
+<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.simulation_export</span> <span class="kn">import</span> <span class="n">copy_content_into_directory</span><span class="p">,</span> <span class="n">get_post_process_command_lines</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.export_helper</span> <span class="kn">import</span> <span class="n">write_commit_reference_file</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_json_encoder</span> <span class="kn">import</span> <span class="n">GeometryJsonEncoder</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.util</span> <span class="kn">import</span> <span class="n">export_layers</span>
@@ -485,27 +486,12 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
 
 
-<div class="viewcode-block" id="copy_ansys_scripts_to_directory"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.copy_ansys_scripts_to_directory">[docs]</a><span class="k">def</span> <span class="nf">copy_ansys_scripts_to_directory</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">import_script_folder</span><span class="o">=</span><span class="s1">&#39;scripts&#39;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Copies Ansys scripts into directory path.</span>
-
-<span class="sd">    Arguments:</span>
-<span class="sd">        path: Location where to copy scripts folder.</span>
-<span class="sd">        import_script_folder: Name of the folder in its new location.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
-        <span class="k">for</span> <span class="n">script_path</span> <span class="ow">in</span> <span class="n">ANSYS_SCRIPT_PATHS</span><span class="p">:</span>
-            <span class="n">copytree</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">script_path</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">import_script_folder</span><span class="p">)),</span> <span class="n">dirs_exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="export_ansys_json"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys_json">[docs]</a><span class="k">def</span> <span class="nf">export_ansys_json</span><span class="p">(</span><span class="n">simulation</span><span class="p">:</span> <span class="n">Simulation</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">ansys_tool</span><span class="o">=</span><span class="s1">&#39;hfss&#39;</span><span class="p">,</span>
                       <span class="n">frequency_units</span><span class="o">=</span><span class="s2">&quot;GHz&quot;</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_delta_s</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">percent_error</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">percent_refinement</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
                       <span class="n">maximum_passes</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">minimum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">minimum_converged_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                       <span class="n">sweep_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sweep_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sweep_end</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sweep_count</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span> <span class="n">sweep_type</span><span class="o">=</span><span class="s1">&#39;interpolating&#39;</span><span class="p">,</span>
-                      <span class="n">max_delta_f</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">n_modes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">mesh_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">substrate_loss_tangent</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                      <span class="n">dielectric_surfaces</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">simulation_flags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ansys_project_template</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                      <span class="n">integrate_energies</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">hfss_capacitance_export</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                      <span class="n">mer_coefficients</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mer_correction_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                      <span class="n">max_delta_f</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">n_modes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">mesh_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">simulation_flags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ansys_project_template</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">integrate_energies</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">hfss_capacitance_export</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Export Ansys simulation into json and gds files.</span>
 
@@ -530,31 +516,10 @@
 <span class="sd">        n_modes: Number of eigenmodes to solve. Used when ``ansys_tool`` is &#39;pyepr&#39;.</span>
 <span class="sd">        mesh_size(dict): Dictionary to determine manual mesh refinement on layers. Set key as the layer name and</span>
 <span class="sd">            value as the maximal mesh element length inside the layer.</span>
-<span class="sd">        substrate_loss_tangent: Bulk loss tangent (:math:`\tan{\delta}`) material parameter. 0 is off.</span>
-<span class="sd">        dielectric_surfaces: Material parameters for TLS interfaces, used in post-processing field calculations</span>
-<span class="sd">            from the participation sheets. Default is None. Input is of the form::</span>
-
-<span class="sd">                &#39;layerMA&#39;: {  # metal–vacuum</span>
-<span class="sd">                    &#39;tan_delta_surf&#39;: 0.001,  # loss tangent</span>
-<span class="sd">                    &#39;th&#39;: 4e-9,  # thickness</span>
-<span class="sd">                    &#39;eps_r&#39;: 10  # relative permittivity</span>
-<span class="sd">                },</span>
-<span class="sd">                &#39;layerMS&#39;: { # metal–substrate</span>
-<span class="sd">                    &#39;tan_delta_surf&#39;: 0.001,</span>
-<span class="sd">                    &#39;th&#39;: 2e-9,</span>
-<span class="sd">                    &#39;eps_r&#39;: 10</span>
-<span class="sd">                },</span>
-<span class="sd">                &#39;layerSA&#39;: { # substrate–vacuum</span>
-<span class="sd">                    &#39;tan_delta_surf&#39;: 0.001,</span>
-<span class="sd">                    &#39;th&#39;: 2e-9,</span>
-<span class="sd">                    &#39;eps_r&#39;: 10</span>
-<span class="sd">                },</span>
 <span class="sd">        simulation_flags: Optional export processing, given as list of strings</span>
 <span class="sd">        ansys_project_template: path to the simulation template</span>
 <span class="sd">        integrate_energies: Calculate energy integrals over each layer and save them into a file</span>
 <span class="sd">        hfss_capacitance_export: If True, the capacitance matrices are exported from HFSS simulations</span>
-<span class="sd">        mer_coefficients: dict of coefficients to fix metal edge region participation ratios</span>
-<span class="sd">        mer_correction_path: path to metal edge region case that contains participation results</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">         Path to exported json file.</span>
@@ -586,13 +551,9 @@
             <span class="s1">&#39;n_modes&#39;</span><span class="p">:</span> <span class="n">n_modes</span><span class="p">,</span>
         <span class="p">},</span>
         <span class="s1">&#39;mesh_size&#39;</span><span class="p">:</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">mesh_size</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">mesh_size</span><span class="p">,</span>
-        <span class="s1">&#39;substrate_loss_tangent&#39;</span><span class="p">:</span> <span class="n">substrate_loss_tangent</span><span class="p">,</span>
-        <span class="s1">&#39;dielectric_surfaces&#39;</span><span class="p">:</span> <span class="n">dielectric_surfaces</span><span class="p">,</span>
         <span class="s1">&#39;simulation_flags&#39;</span><span class="p">:</span> <span class="n">simulation_flags</span><span class="p">,</span>
         <span class="s1">&#39;integrate_energies&#39;</span><span class="p">:</span> <span class="n">integrate_energies</span><span class="p">,</span>
         <span class="s1">&#39;hfss_capacitance_export&#39;</span><span class="p">:</span> <span class="n">hfss_capacitance_export</span><span class="p">,</span>
-        <span class="s1">&#39;mer_coefficients&#39;</span><span class="p">:</span> <span class="n">mer_coefficients</span><span class="p">,</span>
-        <span class="s1">&#39;mer_correction_path&#39;</span><span class="p">:</span> <span class="n">mer_correction_path</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="k">if</span> <span class="n">ansys_project_template</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -614,9 +575,8 @@
 
 
 <div class="viewcode-block" id="export_ansys_bat"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys_bat">[docs]</a><span class="k">def</span> <span class="nf">export_ansys_bat</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="s1">&#39;simulation&#39;</span><span class="p">,</span> <span class="n">exit_after_run</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                     <span class="n">import_script_folder</span><span class="o">=</span><span class="s1">&#39;scripts&#39;</span><span class="p">,</span> <span class="n">import_script</span><span class="o">=</span><span class="s1">&#39;import_and_simulate.py&#39;</span><span class="p">,</span>
-                     <span class="n">post_process_script</span><span class="o">=</span><span class="s1">&#39;export_batch_results.py&#39;</span><span class="p">,</span> <span class="n">intermediate_processing_command</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                     <span class="n">use_rel_path</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                     <span class="n">execution_script</span><span class="o">=</span><span class="s1">&#39;scripts/import_and_simulate.py&#39;</span><span class="p">,</span>
+                     <span class="n">post_process</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_rel_path</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a batch file for running one or more already exported simulations.</span>
 
@@ -625,15 +585,8 @@
 <span class="sd">        path: Location where to write the bat file.</span>
 <span class="sd">        file_prefix: Name of the batch file to be created.</span>
 <span class="sd">        exit_after_run: Defines if the Ansys Electronics Desktop is automatically closed after running the script.</span>
-<span class="sd">        import_script_folder: Path to the Ansys-scripts folder.</span>
-<span class="sd">        import_script: Name of import script file.</span>
-<span class="sd">        post_process_script: Name of post processing script file.</span>
-<span class="sd">        intermediate_processing_command: Command for intermediate steps between simulations.</span>
-<span class="sd">            Default is None, which doesn&#39;t enable any processing. An example argument is ``python scripts/script.py``,</span>
-<span class="sd">            which runs in the `.bat` as::</span>
-
-<span class="sd">                python scripts/script.py json_filename.json</span>
-
+<span class="sd">        execution_script: The script file to be executed.</span>
+<span class="sd">        post_process: List of PostProcess objects, a single PostProcess object, or None to be executed after simulations</span>
 <span class="sd">        use_rel_path: Determines if to use relative paths.</span>
 
 <span class="sd">    Returns:</span>
@@ -664,22 +617,10 @@
                 <span class="n">ANSYS_EXECUTABLE</span><span class="p">,</span>
                 <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">if</span> <span class="n">use_rel_path</span> <span class="k">else</span> <span class="n">json_filename</span><span class="p">),</span>
                 <span class="n">run_cmd</span><span class="p">,</span>
-                <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">import_script_folder</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">import_script</span><span class="p">)))</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">execution_script</span><span class="p">))</span>
             <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
-            <span class="c1"># Possible processing between simulations</span>
-            <span class="k">if</span> <span class="n">intermediate_processing_command</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">command</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> &quot;</span><span class="si">{}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">intermediate_processing_command</span><span class="p">,</span>
-                    <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
-                <span class="p">)</span>
-                <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
 
-        <span class="c1"># Post-process command</span>
-        <span class="n">command</span> <span class="o">=</span> <span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot; -</span><span class="si">{}</span><span class="s1"> &quot;</span><span class="si">{}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">ANSYS_EXECUTABLE</span><span class="p">,</span>
-            <span class="n">run_cmd</span><span class="p">,</span>
-            <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">import_script_folder</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">post_process_script</span><span class="p">)))</span>
-        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">get_post_process_command_lines</span><span class="p">(</span><span class="n">post_process</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">json_filenames</span><span class="p">))</span>
 
     <span class="c1"># Make the bat file executable in linux</span>
     <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">bat_filename</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">bat_filename</span><span class="p">)</span><span class="o">.</span><span class="n">st_mode</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IEXEC</span><span class="p">)</span>
@@ -687,16 +628,14 @@
     <span class="k">return</span> <span class="n">bat_filename</span></div>
 
 
-<div class="viewcode-block" id="export_ansys"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys">[docs]</a><span class="k">def</span> <span class="nf">export_ansys</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">ansys_tool</span><span class="o">=</span><span class="s1">&#39;hfss&#39;</span><span class="p">,</span> <span class="n">import_script_folder</span><span class="o">=</span><span class="s1">&#39;scripts&#39;</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="s1">&#39;simulation&#39;</span><span class="p">,</span>
+<div class="viewcode-block" id="export_ansys"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys">[docs]</a><span class="k">def</span> <span class="nf">export_ansys</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">ansys_tool</span><span class="o">=</span><span class="s1">&#39;hfss&#39;</span><span class="p">,</span> <span class="n">script_folder</span><span class="o">=</span><span class="s1">&#39;scripts&#39;</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="s1">&#39;simulation&#39;</span><span class="p">,</span>
                  <span class="n">frequency_units</span><span class="o">=</span><span class="s2">&quot;GHz&quot;</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_delta_s</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">percent_error</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">percent_refinement</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
                  <span class="n">maximum_passes</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">minimum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">minimum_converged_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                  <span class="n">sweep_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sweep_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sweep_end</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sweep_count</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span> <span class="n">sweep_type</span><span class="o">=</span><span class="s1">&#39;interpolating&#39;</span><span class="p">,</span>
-                 <span class="n">max_delta_f</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">n_modes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">mesh_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">substrate_loss_tangent</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                 <span class="n">dielectric_surfaces</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exit_after_run</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">import_script</span><span class="o">=</span><span class="s1">&#39;import_and_simulate.py&#39;</span><span class="p">,</span> <span class="n">post_process_script</span><span class="o">=</span><span class="s1">&#39;export_batch_results.py&#39;</span><span class="p">,</span>
-                 <span class="n">intermediate_processing_command</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_rel_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">simulation_flags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">max_delta_f</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">n_modes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">mesh_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exit_after_run</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">import_script</span><span class="o">=</span><span class="s1">&#39;import_and_simulate.py&#39;</span><span class="p">,</span> <span class="n">post_process</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_rel_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">simulation_flags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">ansys_project_template</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">integrate_energies</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">hfss_capacitance_export</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">skip_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mer_coefficients</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mer_correction_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">skip_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Export Ansys simulations by writing necessary scripts and json, gds, and bat files.</span>
 
@@ -704,7 +643,7 @@
 <span class="sd">        simulations: List of simulations to be exported.</span>
 <span class="sd">        path: Location where to write export files.</span>
 <span class="sd">        ansys_tool: Determines whether to use HFSS (&#39;hfss&#39;), Q3D Extractor (&#39;q3d&#39;) or HFSS eigenmode (&#39;eigenmode&#39;).</span>
-<span class="sd">        import_script_folder: Path to the Ansys-scripts folder.</span>
+<span class="sd">        script_folder: Path to the Ansys-scripts folder.</span>
 <span class="sd">        file_prefix: Name of the batch file to be created.</span>
 <span class="sd">        frequency_units: Units of frequency.</span>
 <span class="sd">        frequency: Frequency for mesh refinement. To set up multifrequency analysis in HFSS use list of numbers.</span>
@@ -723,34 +662,9 @@
 <span class="sd">        n_modes: Number of eigenmodes to solve. Used when ``ansys_tool`` is &#39;eigenmode&#39;.</span>
 <span class="sd">        mesh_size(dict): Dictionary to determine manual mesh refinement on layers. Set key as the layer name and</span>
 <span class="sd">            value as the maximal mesh element length inside the layer.</span>
-<span class="sd">        substrate_loss_tangent: Bulk loss tangent (:math:`\tan{\delta}`) material parameter. 0 is off.</span>
-<span class="sd">        dielectric_surfaces: Material parameters for TLS interfaces, used in post-processing field calculations</span>
-<span class="sd">            from the participation sheets. Default is None. Input is of the form::</span>
-
-<span class="sd">                &#39;layerMA&#39;: {  # metal–vacuum</span>
-<span class="sd">                    &#39;tan_delta_surf&#39;: 0.001,  # loss tangent</span>
-<span class="sd">                    &#39;th&#39;: 4e-9,  # thickness</span>
-<span class="sd">                    &#39;eps_r&#39;: 10  # relative permittivity</span>
-<span class="sd">                },</span>
-<span class="sd">                &#39;layerMS&#39;: { # metal–substrate</span>
-<span class="sd">                    &#39;tan_delta_surf&#39;: 0.001,</span>
-<span class="sd">                    &#39;th&#39;: 2e-9,</span>
-<span class="sd">                    &#39;eps_r&#39;: 10</span>
-<span class="sd">                },</span>
-<span class="sd">                &#39;layerSA&#39;: { # substrate–vacuum</span>
-<span class="sd">                    &#39;tan_delta_surf&#39;: 0.001,</span>
-<span class="sd">                    &#39;th&#39;: 2e-9,</span>
-<span class="sd">                    &#39;eps_r&#39;: 10</span>
-<span class="sd">                },</span>
-
 <span class="sd">        exit_after_run: Defines if the Ansys Electronics Desktop is automatically closed after running the script.</span>
 <span class="sd">        import_script: Name of import script file.</span>
-<span class="sd">        post_process_script: Name of post processing script file.</span>
-<span class="sd">        intermediate_processing_command: Command for intermediate steps between simulations.</span>
-<span class="sd">            Default is None, which doesn&#39;t enable any processing. An example argument is ``python scripts/script.py``,</span>
-<span class="sd">            which runs in the `.bat` as::</span>
-
-<span class="sd">                python scripts/script.py json_filename.json</span>
+<span class="sd">        post_process: List of PostProcess objects, a single PostProcess object, or None to be executed after simulations</span>
 
 <span class="sd">        use_rel_path: Determines if to use relative paths.</span>
 <span class="sd">        simulation_flags: Optional export processing, given as list of strings. See Simulation Export in docs.</span>
@@ -763,14 +677,12 @@
 
 <span class="sd">               **Use this carefully**, some of your simulations might not make sense physically and</span>
 <span class="sd">               you might end up wasting time on bad simulations.</span>
-<span class="sd">        mer_coefficients: dict of coefficients to fix metal edge region participation ratios</span>
-<span class="sd">        mer_correction_path: path to metal edge region case that contains participation results</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Path to exported bat file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">write_commit_reference_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-    <span class="n">copy_ansys_scripts_to_directory</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">import_script_folder</span><span class="o">=</span><span class="n">import_script_folder</span><span class="p">)</span>
+    <span class="n">copy_content_into_directory</span><span class="p">(</span><span class="n">ANSYS_SCRIPT_PATHS</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">script_folder</span><span class="p">)</span>
     <span class="n">json_filenames</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">simulation</span> <span class="ow">in</span> <span class="n">simulations</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
@@ -784,14 +696,10 @@
                                             <span class="n">sweep_end</span><span class="o">=</span><span class="n">sweep_end</span><span class="p">,</span> <span class="n">sweep_count</span><span class="o">=</span><span class="n">sweep_count</span><span class="p">,</span> <span class="n">sweep_type</span><span class="o">=</span><span class="n">sweep_type</span><span class="p">,</span>
                                             <span class="n">max_delta_f</span><span class="o">=</span><span class="n">max_delta_f</span><span class="p">,</span> <span class="n">n_modes</span><span class="o">=</span><span class="n">n_modes</span><span class="p">,</span>
                                             <span class="n">mesh_size</span><span class="o">=</span><span class="n">mesh_size</span><span class="p">,</span>
-                                            <span class="n">substrate_loss_tangent</span><span class="o">=</span><span class="n">substrate_loss_tangent</span><span class="p">,</span>
-                                            <span class="n">dielectric_surfaces</span><span class="o">=</span><span class="n">dielectric_surfaces</span><span class="p">,</span>
                                             <span class="n">simulation_flags</span><span class="o">=</span><span class="n">simulation_flags</span><span class="p">,</span>
                                             <span class="n">ansys_project_template</span><span class="o">=</span><span class="n">ansys_project_template</span><span class="p">,</span>
                                             <span class="n">integrate_energies</span><span class="o">=</span><span class="n">integrate_energies</span><span class="p">,</span>
                                             <span class="n">hfss_capacitance_export</span><span class="o">=</span><span class="n">hfss_capacitance_export</span><span class="p">,</span>
-                                            <span class="n">mer_coefficients</span><span class="o">=</span><span class="n">mer_coefficients</span><span class="p">,</span>
-                                            <span class="n">mer_correction_path</span><span class="o">=</span><span class="n">mer_correction_path</span><span class="p">,</span>
                                             <span class="p">))</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
             <span class="k">if</span> <span class="n">skip_errors</span><span class="p">:</span>
@@ -808,9 +716,7 @@
                 <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
 
     <span class="k">return</span> <span class="n">export_ansys_bat</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="n">file_prefix</span><span class="p">,</span> <span class="n">exit_after_run</span><span class="o">=</span><span class="n">exit_after_run</span><span class="p">,</span>
-                            <span class="n">import_script_folder</span><span class="o">=</span><span class="n">import_script_folder</span><span class="p">,</span>
-                            <span class="n">import_script</span><span class="o">=</span><span class="n">import_script</span><span class="p">,</span> <span class="n">post_process_script</span><span class="o">=</span><span class="n">post_process_script</span><span class="p">,</span>
-                            <span class="n">intermediate_processing_command</span><span class="o">=</span><span class="n">intermediate_processing_command</span><span class="p">,</span>
+                            <span class="n">execution_script</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">script_folder</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">import_script</span><span class="p">),</span> <span class="n">post_process</span><span class="o">=</span><span class="n">post_process</span><span class="p">,</span>
                             <span class="n">use_rel_path</span><span class="o">=</span><span class="n">use_rel_path</span><span class="p">)</span></div>
 </pre></div>
 

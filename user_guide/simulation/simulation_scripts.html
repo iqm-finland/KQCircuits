@@ -362,6 +362,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.simulations.partition_region.html">kqcircuits.simulations.partition_region</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.simulations.port.html">kqcircuits.simulations.port</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.simulations.post_process.html">kqcircuits.simulations.post_process</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.simulations.simulation.html">kqcircuits.simulations.simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.simulations.single_element_simulation.html">kqcircuits.simulations.single_element_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.simulations.single_xmons_full_chip_sim.html">kqcircuits.simulations.single_xmons_full_chip_sim</a></li>
@@ -509,7 +510,7 @@ After the execution, the output files are written to a folder in the KQCircuits 
 <p>The <code class="docutils literal notranslate"><span class="pre">export_ansys</span></code> function produces files and scripts needed to run Ansys simulations.
 It calls internally the following functions:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.copy_ansys_scripts_to_directory" title="kqcircuits.simulations.export.ansys.ansys_export.copy_ansys_scripts_to_directory"><code class="xref py py-func docutils literal notranslate"><span class="pre">copy_ansys_scripts_to_directory()</span></code></a>, which copies the folder
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">copy_ansys_scripts_to_directory()</span></code>, which copies the folder
 <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys">scripts/simulations/ansys/</a> into the simulation
 directory. The folder contains needed IronPython scripts to run simulations in Ansys Electronics Desktop.</p></li>
 <li><p><a class="reference internal" href="../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys_json" title="kqcircuits.simulations.export.ansys.ansys_export.export_ansys_json"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_ansys_json()</span></code></a>, which exports x-y-shapes as GDSII file
@@ -538,7 +539,7 @@ two lines:</p>
 </div>
 <p>Similarly to <code class="docutils literal notranslate"><span class="pre">export_ansys</span></code>, the <code class="docutils literal notranslate"><span class="pre">export_elmer</span></code> calls internally the following functions:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.copy_elmer_scripts_to_directory" title="kqcircuits.simulations.export.elmer.elmer_export.copy_elmer_scripts_to_directory"><code class="xref py py-func docutils literal notranslate"><span class="pre">copy_elmer_scripts_to_directory()</span></code></a>, which copies the Gmsh and
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">copy_elmer_scripts_to_directory()</span></code>, which copies the Gmsh and
 Elmer script folder
 <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/elmer/scripts">scripts/simulations/elmer/scripts/</a> into the
 simulation directory.</p></li>

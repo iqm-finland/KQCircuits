@@ -13,6 +13,7 @@ kqcircuits.simulations
    kqcircuits.simulations.empty_simulation
    kqcircuits.simulations.partition_region
    kqcircuits.simulations.port
+   kqcircuits.simulations.post_process
    kqcircuits.simulations.simulation
    kqcircuits.simulations.single_element_simulation
    kqcircuits.simulations.single_xmons_full_chip_sim

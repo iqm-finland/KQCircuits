@@ -359,6 +359,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.simulations.partition_region.html">kqcircuits.simulations.partition_region</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.simulations.port.html">kqcircuits.simulations.port</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.simulations.post_process.html">kqcircuits.simulations.post_process</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.simulations.simulation.html">kqcircuits.simulations.simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.simulations.single_element_simulation.html">kqcircuits.simulations.single_element_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.simulations.single_xmons_full_chip_sim.html">kqcircuits.simulations.single_xmons_full_chip_sim</a></li>
@@ -472,8 +473,45 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">copytree</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.util</span> <span class="kn">import</span> <span class="n">export_layers</span>
+
+
+<div class="viewcode-block" id="copy_content_into_directory"><a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.simulation_export.html#kqcircuits.simulations.export.simulation_export.copy_content_into_directory">[docs]</a><span class="k">def</span> <span class="nf">copy_content_into_directory</span><span class="p">(</span><span class="n">source_paths</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">folder</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Create a folder and copy the contents of the source folders into it</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        source_paths: list of source directories from which to copy content</span>
+<span class="sd">        path: path where the new folder will be created</span>
+<span class="sd">        folder: name of the new folder</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">source_path</span> <span class="ow">in</span> <span class="n">source_paths</span><span class="p">:</span>
+            <span class="n">copytree</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">source_path</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">folder</span><span class="p">)),</span> <span class="n">dirs_exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_post_process_command_lines"><a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.simulation_export.html#kqcircuits.simulations.export.simulation_export.get_post_process_command_lines">[docs]</a><span class="k">def</span> <span class="nf">get_post_process_command_lines</span><span class="p">(</span><span class="n">post_process</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">json_filenames</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Return post process command line calls as string. Can be used in construction of .bat or .sh script files.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        post_process: List of PostProcess objects, a single PostProcess object, or None to be executed after simulations</span>
+<span class="sd">        path: simulation folder path</span>
+<span class="sd">        json_filenames: list of paths to simulation json files</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Command lines as string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">post_process</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="n">commands</span> <span class="o">=</span> <span class="s1">&#39;echo Post-process</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">post_process</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">pp</span> <span class="ow">in</span> <span class="n">post_process</span><span class="p">:</span>
+            <span class="n">commands</span> <span class="o">+=</span> <span class="n">pp</span><span class="o">.</span><span class="n">get_command_line</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">json_filenames</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">commands</span> <span class="o">+=</span> <span class="n">post_process</span><span class="o">.</span><span class="n">get_command_line</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">json_filenames</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">commands</span></div>
 
 
 <div class="viewcode-block" id="export_simulation_oas"><a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.simulation_export.html#kqcircuits.simulations.export.simulation_export.export_simulation_oas">[docs]</a><span class="k">def</span> <span class="nf">export_simulation_oas</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="s1">&#39;simulation&#39;</span><span class="p">):</span>

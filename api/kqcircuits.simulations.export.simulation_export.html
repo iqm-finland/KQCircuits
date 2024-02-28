@@ -362,6 +362,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.partition_region.html">kqcircuits.simulations.partition_region</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.port.html">kqcircuits.simulations.port</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.post_process.html">kqcircuits.simulations.post_process</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.simulation.html">kqcircuits.simulations.simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.single_element_simulation.html">kqcircuits.simulations.single_element_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.single_xmons_full_chip_sim.html">kqcircuits.simulations.single_xmons_full_chip_sim</a></li>
@@ -459,6 +460,39 @@
              
   <section id="module-kqcircuits.simulations.export.simulation_export">
 <span id="kqcircuits-simulations-export-simulation-export"></span><h1>kqcircuits.simulations.export.simulation_export<a class="headerlink" href="#module-kqcircuits.simulations.export.simulation_export" title="Permalink to this headline"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_export.copy_content_into_directory">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.simulation_export.</span></span><span class="sig-name descname"><span class="pre">copy_content_into_directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_export.html#copy_content_into_directory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_export.copy_content_into_directory" title="Permalink to this definition"></a></dt>
+<dd><p>Create a folder and copy the contents of the source folders into it</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source_paths</strong> – list of source directories from which to copy content</p></li>
+<li><p><strong>path</strong> – path where the new folder will be created</p></li>
+<li><p><strong>folder</strong> – name of the new folder</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_export.get_post_process_command_lines">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.simulation_export.</span></span><span class="sig-name descname"><span class="pre">get_post_process_command_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">post_process</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json_filenames</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_export.html#get_post_process_command_lines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_export.get_post_process_command_lines" title="Permalink to this definition"></a></dt>
+<dd><p>Return post process command line calls as string. Can be used in construction of .bat or .sh script files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>post_process</strong> – List of PostProcess objects, a single PostProcess object, or None to be executed after simulations</p></li>
+<li><p><strong>path</strong> – simulation folder path</p></li>
+<li><p><strong>json_filenames</strong> – list of paths to simulation json files</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Command lines as string</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_export.export_simulation_oas">
 <span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.simulation_export.</span></span><span class="sig-name descname"><span class="pre">export_simulation_oas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'simulation'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_export.html#export_simulation_oas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_export.export_simulation_oas" title="Permalink to this definition"></a></dt>
