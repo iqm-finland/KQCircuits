@@ -153,6 +153,3 @@ docs/pcell_images
 kqclib
 singularity/python
 singularity/bin
-
-# Black hack to exclude entire ansys directory with old Python 2.7 scripts
-klayout_package/python/scripts/simulations/ansys

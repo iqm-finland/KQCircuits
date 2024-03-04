@@ -24,16 +24,22 @@ import json
 import ScriptEnv
 
 # TODO: Figure out how to set the python path for the HFSS internal IronPython
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'util'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "util"))
+# fmt: off
 from util import get_enabled_setup, get_enabled_sweep, get_solution_data, \
     ComplexEncoder  # pylint: disable=wrong-import-position,no-name-in-module
+# fmt on
 
-
-def save_capacitance_matrix(file_name, c_matrix, detail=''):
-    """Save capacitance matrix in readable format. """
-    with open(file_name, 'w') as out_file:
-        out_file.write("Capacitance matrix" + detail + ":\n" + '\n'.join(
-            ['\t'.join(['%8.3f' % (item * 1e15) for item in row]) for row in c_matrix]) + '\n')
+def save_capacitance_matrix(file_name, c_matrix, detail=""):
+    """Save capacitance matrix in readable format."""
+    with open(file_name, "w") as out_file:
+        out_file.write(
+            "Capacitance matrix"
+            + detail
+            + ":\n"
+            + "\n".join(["\t".join(["%8.3f" % (item * 1e15) for item in row]) for row in c_matrix])
+            + "\n"
+        )
 
 
 # Set up environment
@@ -51,10 +57,10 @@ oReportSetup = oDesign.GetModule("ReportSetup")
 # Set file names
 path = oProject.GetPath()
 basename = oProject.GetName()
-matrix_filename = os.path.join(path, basename + '_CMatrix.txt')
-json_filename = os.path.join(path, basename + '_results.json')
-eig_filename = os.path.join(path, basename + '_modes.eig')
-energy_filename = os.path.join(path, basename + '_energy.csv')
+matrix_filename = os.path.join(path, basename + "_CMatrix.txt")
+json_filename = os.path.join(path, basename + "_results.json")
+eig_filename = os.path.join(path, basename + "_modes.eig")
+energy_filename = os.path.join(path, basename + "_energy.csv")
 
 # Export solution data separately for HFSS and Q3D
 design_type = oDesign.GetDesignType()
@@ -70,36 +76,68 @@ if design_type == "HFSS":
             # find lowest-frequency solution (of LastAdaptive) for capacitance extraction
             solution = setup + " : LastAdaptive"
             context = []
-            res = oReportSetup.GetSolutionDataPerVariation("Terminal Solution Data", solution, context,
-                                                           ["Freq:=", ['All']], [''])[0]
+            res = oReportSetup.GetSolutionDataPerVariation(
+                "Terminal Solution Data", solution, context, ["Freq:=", ["All"]], [""]
+            )[0]
             freq = "{}{}".format(res.GetSweepValues("Freq", False)[0], res.GetSweepUnits("Freq"))
             families = ["Freq:=", [freq]]
 
             # Get solution data
-            yyMatrix = [[get_solution_data(oReportSetup, "Terminal Solution Data", solution, context, families,
-                                           "yy_{}_{}".format(i, j))[0] for j in ports] for i in ports]
-            CMatrix = [[get_solution_data(oReportSetup, "Terminal Solution Data", solution, context, families,
-                                          "C_{}_{}".format(i, j))[0] for j in ports] for i in ports]
+            yyMatrix = [
+                [
+                    get_solution_data(
+                        oReportSetup, "Terminal Solution Data", solution, context, families, "yy_{}_{}".format(i, j)
+                    )[0]
+                    for j in ports
+                ]
+                for i in ports
+            ]
+            CMatrix = [
+                [
+                    get_solution_data(
+                        oReportSetup, "Terminal Solution Data", solution, context, families, "C_{}_{}".format(i, j)
+                    )[0]
+                    for j in ports
+                ]
+                for i in ports
+            ]
 
             # Save capacitance matrix into readable format
-            save_capacitance_matrix(matrix_filename, CMatrix, detail=' at ' + freq)
+            save_capacitance_matrix(matrix_filename, CMatrix, detail=" at " + freq)
 
             # Save results in json format
-            with open(json_filename, 'w') as outfile:
-                json.dump({
-                    'CMatrix': CMatrix,
-                    'yyMatrix': yyMatrix,
-                    'freq': freq,
-                    'yydata': get_solution_data(oReportSetup, "Terminal Solution Data", solution, context, families,
-                                                ["yy_{}_{}".format(i, j) for i in ports for j in ports]),
-                    'Cdata': get_solution_data(oReportSetup, "Terminal Solution Data", solution, context, families,
-                                                ["C_{}_{}".format(i, j) for i in ports for j in ports])
-                }, outfile, cls=ComplexEncoder, indent=4)
+            with open(json_filename, "w") as outfile:
+                json.dump(
+                    {
+                        "CMatrix": CMatrix,
+                        "yyMatrix": yyMatrix,
+                        "freq": freq,
+                        "yydata": get_solution_data(
+                            oReportSetup,
+                            "Terminal Solution Data",
+                            solution,
+                            context,
+                            families,
+                            ["yy_{}_{}".format(i, j) for i in ports for j in ports],
+                        ),
+                        "Cdata": get_solution_data(
+                            oReportSetup,
+                            "Terminal Solution Data",
+                            solution,
+                            context,
+                            families,
+                            ["C_{}_{}".format(i, j) for i in ports for j in ports],
+                        ),
+                    },
+                    outfile,
+                    cls=ComplexEncoder,
+                    indent=4,
+                )
 
         # S-parameter export
         solution = setup + (" : LastAdaptive" if sweep is None else " : " + sweep)
         file_format = 3  # 2 = Tab delimited (.tab), 3 = Touchstone (.sNp), 4 = CitiFile (.cit), 7 = Matlab  (.m), ...
-        file_name = os.path.join(path, basename + '_SMatrix.s{}p'.format(len(ports)))
+        file_name = os.path.join(path, basename + "_SMatrix.s{}p".format(len(ports)))
         frequencies = ["All"]
         do_renormalize = False
         renorm_impedance = 50
@@ -109,9 +147,22 @@ if design_type == "HFSS":
         precision = 8
         show_gamma_and_impedance = False
 
-        oSolutions.ExportNetworkData("", solution, file_format, file_name, frequencies, do_renormalize,
-                                     renorm_impedance, data_type, pass_number, complex_format, precision, True,
-                                     show_gamma_and_impedance, True)
+        oSolutions.ExportNetworkData(
+            "",
+            solution,
+            file_format,
+            file_name,
+            frequencies,
+            do_renormalize,
+            renorm_impedance,
+            data_type,
+            pass_number,
+            complex_format,
+            precision,
+            True,
+            show_gamma_and_impedance,
+            True,
+        )
 
     elif oDesign.GetSolutionType() == "Eigenmode":
         solution = setup + " : LastAdaptive"
@@ -130,22 +181,38 @@ elif design_type == "Q3D Extractor":
     # Get list of signal nets
     nets = oBoundarySetup.GetExcitations()[::2]
     net_types = oBoundarySetup.GetExcitations()[1::2]
-    signal_nets = [net for net, net_type in zip(nets, net_types) if net_type == 'SignalNet']
+    signal_nets = [net for net, net_type in zip(nets, net_types) if net_type == "SignalNet"]
 
     # Get solution data
-    CMatrix = [[get_solution_data(oReportSetup, "Matrix", solution, context, [],
-                                  "C_{}_{}".format(net_i, net_j))[0] for net_j in signal_nets] for net_i in signal_nets]
+    CMatrix = [
+        [
+            get_solution_data(oReportSetup, "Matrix", solution, context, [], "C_{}_{}".format(net_i, net_j))[0]
+            for net_j in signal_nets
+        ]
+        for net_i in signal_nets
+    ]
 
     # Save capacitance matrix into readable format
     save_capacitance_matrix(matrix_filename, CMatrix)
 
     # Save results in json format
-    with open(json_filename, 'w') as outfile:
-        json.dump({'CMatrix': CMatrix,
-                   'Cdata': get_solution_data(oReportSetup, "Matrix", solution, context, [],
-                                              ["C_{}_{}".format(net_i, net_j) for net_j in signal_nets for net_i in
-                                               signal_nets])
-                   }, outfile, cls=ComplexEncoder, indent=4)
+    with open(json_filename, "w") as outfile:
+        json.dump(
+            {
+                "CMatrix": CMatrix,
+                "Cdata": get_solution_data(
+                    oReportSetup,
+                    "Matrix",
+                    solution,
+                    context,
+                    [],
+                    ["C_{}_{}".format(net_i, net_j) for net_j in signal_nets for net_i in signal_nets],
+                ),
+            },
+            outfile,
+            cls=ComplexEncoder,
+            indent=4,
+        )
 
 # Notify the end of script
 oDesktop.AddMessage("", "", 0, "Done exporting solution data (%s)" % time.asctime(time.localtime()))

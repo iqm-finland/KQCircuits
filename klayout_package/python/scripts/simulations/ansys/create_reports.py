@@ -23,9 +23,11 @@ import time
 
 import ScriptEnv
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'util'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "util"))
+# fmt: off
 from util import get_enabled_setup, get_enabled_sweep, create_x_vs_y_plot \
                  # pylint: disable=wrong-import-position,no-name-in-module
+# fmt: on
 
 # Set up environment
 ScriptEnv.Initialize("Ansoft.ElectronicsDesktop")
@@ -50,53 +52,109 @@ if design_type == "HFSS":
         ports = oBoundarySetup.GetExcitations()[::2]
 
         # Create capacitance vs frequency report
-        unique_elements_c = ["C_%s_%s" % (port_i, ports[j]) for i, port_i in enumerate(ports) for j in
-                             range(i, len(ports))]  # The unique elements (half matrix), used for plotting C-matrix
+        unique_elements_c = [
+            "C_%s_%s" % (port_i, ports[j]) for i, port_i in enumerate(ports) for j in range(i, len(ports))
+        ]  # The unique elements (half matrix), used for plotting C-matrix
         unique_output_c = [e for e in unique_elements_c if e in oOutputVariable.GetOutputVariables()]
         if unique_output_c:
-            create_x_vs_y_plot(oReportSetup, "Capacitance vs Frequency", "Terminal Solution Data", solution, context,
-                               ["Freq:=", ["All"]], "Freq", "C [fF]", unique_output_c)
+            create_x_vs_y_plot(
+                oReportSetup,
+                "Capacitance vs Frequency",
+                "Terminal Solution Data",
+                solution,
+                context,
+                ["Freq:=", ["All"]],
+                "Freq",
+                "C [fF]",
+                unique_output_c,
+            )
 
         # Create S vs frequency and S convergence reports
-        unique_elements_s = ["dB(St(%s,%s))" % (port_i, ports[j]) for i, port_i in enumerate(ports) for j in
-                             range(i, len(ports))]  # The unique elements (half matrix), used for plotting S-matrix
+        unique_elements_s = [
+            "dB(St(%s,%s))" % (port_i, ports[j]) for i, port_i in enumerate(ports) for j in range(i, len(ports))
+        ]  # The unique elements (half matrix), used for plotting S-matrix
         if unique_elements_s:
-            create_x_vs_y_plot(oReportSetup, "S vs Frequency", "Terminal Solution Data", solution, context,
-                               ["Freq:=", ["All"]], "Freq", "S [dB]", unique_elements_s)
-            create_x_vs_y_plot(oReportSetup, "Solution Convergence", "Terminal Solution Data",
-                               setup + " : Adaptivepass", [], ["Pass:=", ["All"], "Freq:=", ["All"]], "Pass", "S [dB]",
-                               unique_elements_s)
+            create_x_vs_y_plot(
+                oReportSetup,
+                "S vs Frequency",
+                "Terminal Solution Data",
+                solution,
+                context,
+                ["Freq:=", ["All"]],
+                "Freq",
+                "S [dB]",
+                unique_elements_s,
+            )
+            create_x_vs_y_plot(
+                oReportSetup,
+                "Solution Convergence",
+                "Terminal Solution Data",
+                setup + " : Adaptivepass",
+                [],
+                ["Pass:=", ["All"], "Freq:=", ["All"]],
+                "Pass",
+                "S [dB]",
+                unique_elements_s,
+            )
 
     elif oDesign.GetSolutionType() == "Eigenmode":
         # Create eigenmode convergence report
         solution = setup + " : AdaptivePass"
         modes = oReportSetup.GetAllQuantities("Eigenmode Parameters", "Rectangular Plot", solution, [], "Eigen Modes")
-        create_x_vs_y_plot(oReportSetup, "Solution Convergence", "Eigenmode Parameters", solution, [],
-                           ["Pass:=", ["All"]], "Pass", "Frequency [Hz]", ['re({})'.format(m) for m in modes])
+        create_x_vs_y_plot(
+            oReportSetup,
+            "Solution Convergence",
+            "Eigenmode Parameters",
+            solution,
+            [],
+            ["Pass:=", ["All"]],
+            "Pass",
+            "Frequency [Hz]",
+            ["re({})".format(m) for m in modes],
+        )
 
     # Create energy integral report
     solution = setup + " : LastAdaptive"
     energies = oReportSetup.GetAllQuantities("Fields", "Rectangular Plot", solution, [], "Calculator Expressions")
     if energies:
-        create_x_vs_y_plot(oReportSetup, "Energy Integrals", "Fields", solution, [], ["Phase:=", ["0deg"]], "Phase",
-                           "E [J]", energies)
+        create_x_vs_y_plot(
+            oReportSetup, "Energy Integrals", "Fields", solution, [], ["Phase:=", ["0deg"]], "Phase", "E [J]", energies
+        )
 
 elif design_type == "Q3D Extractor":
     setup = get_enabled_setup(oDesign, tab="General")
     nets = oBoundarySetup.GetExcitations()[::2]
     net_types = oBoundarySetup.GetExcitations()[1::2]
-    signal_nets = [net for net, net_type in zip(nets, net_types) if net_type == 'SignalNet']
+    signal_nets = [net for net, net_type in zip(nets, net_types) if net_type == "SignalNet"]
 
     # Create capacitance vs frequency and capacitance convergence reports
-    unique_elements_c = ["C_%s_%s" % (net_i, signal_nets[j]) for i, net_i in enumerate(signal_nets) for j in
-                         range(i, len(signal_nets))]  # The unique elements (half matrix), used for plotting
+    unique_elements_c = [
+        "C_%s_%s" % (net_i, signal_nets[j]) for i, net_i in enumerate(signal_nets) for j in range(i, len(signal_nets))
+    ]  # The unique elements (half matrix), used for plotting
     unique_output_c = [e for e in unique_elements_c if e in oOutputVariable.GetOutputVariables()]
     if unique_output_c:
-        create_x_vs_y_plot(oReportSetup, "Capacitance vs Frequency", "Matrix", setup + " : LastAdaptive",
-                           ["Context:=", "Original"], ["Freq:=", ["All"]], "Freq", "C", unique_output_c)
-        create_x_vs_y_plot(oReportSetup, "Solution Convergence", "Matrix", setup + " : AdaptivePass",
-                           ["Context:=", "Original"], ["Pass:=", ["All"], "Freq:=", ["All"]], "Pass", "C",
-                           unique_output_c)
+        create_x_vs_y_plot(
+            oReportSetup,
+            "Capacitance vs Frequency",
+            "Matrix",
+            setup + " : LastAdaptive",
+            ["Context:=", "Original"],
+            ["Freq:=", ["All"]],
+            "Freq",
+            "C",
+            unique_output_c,
+        )
+        create_x_vs_y_plot(
+            oReportSetup,
+            "Solution Convergence",
+            "Matrix",
+            setup + " : AdaptivePass",
+            ["Context:=", "Original"],
+            ["Pass:=", ["All"], "Freq:=", ["All"]],
+            "Pass",
+            "C",
+            unique_output_c,
+        )
 
 # Notify the end of script
 oDesktop.AddMessage("", "", 0, "Reports created (%s)" % time.asctime(time.localtime()))

@@ -23,7 +23,7 @@ def get_enabled_setup(oDesign, tab="HfssTab"):
     """Returns enabled analysis setup. Returns None if not enabled."""
     setup_names = oDesign.GetModule("AnalysisSetup").GetSetups()
     for name in setup_names:
-        if oDesign.GetPropertyValue(tab, "AnalysisSetup:" + name, "Enabled") == 'true':
+        if oDesign.GetPropertyValue(tab, "AnalysisSetup:" + name, "Enabled") == "true":
             return name
     return None
 
@@ -32,7 +32,7 @@ def get_enabled_sweep(oDesign, setup, tab="HfssTab"):
     """Returns enabled analysis sweep. Returns None if not enabled."""
     sweep_names = oDesign.GetModule("AnalysisSetup").GetSweeps(str(setup))
     for name in sweep_names:
-        if oDesign.GetPropertyValue(tab, "AnalysisSetup:" + setup + ":" + name, "Enabled") == 'true':
+        if oDesign.GetPropertyValue(tab, "AnalysisSetup:" + setup + ":" + name, "Enabled") == "true":
             return name
     return None
 
@@ -45,29 +45,39 @@ def get_solution_data(report_setup, report_type, solution_name, context_array, f
         expressions = [expression]
 
     # get solution data by frequency and expression
-    s = report_setup.GetSolutionDataPerVariation(report_type, solution_name, context_array, families_array,
-                                                 expressions)[0]
+    s = report_setup.GetSolutionDataPerVariation(
+        report_type, solution_name, context_array, families_array, expressions
+    )[0]
 
     def getresult(s, expr):
         if s.IsDataComplex(expr):
-            return ([complex(re, im) for (re, im) in zip(
-                s.GetRealDataValues(expr, True),
-                s.GetImagDataValues(expr, True))])
+            return [
+                complex(re, im) for (re, im) in zip(s.GetRealDataValues(expr, True), s.GetImagDataValues(expr, True))
+            ]
         else:
             return [float(re) for re in s.GetRealDataValues(expr, True)]
 
     if isinstance(expression, list):
         result = {e: getresult(s, e) for e in expressions}
-        result['Freq'] = [float(re) for re in s.GetSweepValues('Freq')]
+        result["Freq"] = [float(re) for re in s.GetSweepValues("Freq")]
     else:
         result = getresult(s, expression)
 
     return result
 
 
-def create_x_vs_y_plot(report_setup, plot_name, report_type, solution_name, context_array, input_family,
-                       x_components, y_label, y_components):
-    """ Create report (plot) with x vs. y in the given context. Report is docked to view. """
+def create_x_vs_y_plot(
+    report_setup,
+    plot_name,
+    report_type,
+    solution_name,
+    context_array,
+    input_family,
+    x_components,
+    y_label,
+    y_components,
+):
+    """Create report (plot) with x vs. y in the given context. Report is docked to view."""
     report_setup.CreateReport(
         plot_name,
         report_type,
@@ -75,26 +85,28 @@ def create_x_vs_y_plot(report_setup, plot_name, report_type, solution_name, cont
         solution_name,
         context_array,
         input_family,
-        ["X Component:=", x_components, "Y Component:=", y_components]
+        ["X Component:=", x_components, "Y Component:=", y_components],
     )
     report_setup.ChangeProperty(
-        ["NAME:AllTabs",
-         ["NAME:Legend",
-          ["NAME:PropServers", "%s:Legend" % plot_name],
-          ["NAME:ChangedProps",
-           ["NAME:Show Variation Key", "Value:=", False],
-           ["NAME:Show Solution Name", "Value:=", False],
-           ["NAME:DockMode", "Value:=", "Dock Right"]
-           ]
-          ],
-         ["NAME:Axis",
-          ["NAME:PropServers", "%s:AxisY1" % plot_name],
-          ["NAME:ChangedProps",
-           ["NAME:Specify Name", "Value:=", True],
-           ["NAME:Name", "Value:=", y_label]
-           ]
-          ]
-         ])
+        [
+            "NAME:AllTabs",
+            [
+                "NAME:Legend",
+                ["NAME:PropServers", "%s:Legend" % plot_name],
+                [
+                    "NAME:ChangedProps",
+                    ["NAME:Show Variation Key", "Value:=", False],
+                    ["NAME:Show Solution Name", "Value:=", False],
+                    ["NAME:DockMode", "Value:=", "Dock Right"],
+                ],
+            ],
+            [
+                "NAME:Axis",
+                ["NAME:PropServers", "%s:AxisY1" % plot_name],
+                ["NAME:ChangedProps", ["NAME:Specify Name", "Value:=", True], ["NAME:Name", "Value:=", y_label]],
+            ],
+        ]
+    )
 
 
 # Helper class to encode complex data in json output

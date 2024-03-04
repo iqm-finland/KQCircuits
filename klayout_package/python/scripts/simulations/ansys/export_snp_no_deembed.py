@@ -34,50 +34,64 @@ oDesign.ChangeProperty(
         "NAME:AllTabs",
         [
             "NAME:HfssTab",
-            [
-                "NAME:PropServers",
-                "BoundarySetup:1"
-            ],
+            ["NAME:PropServers", "BoundarySetup:1"],
             [
                 "NAME:ChangedProps",
                 [
                     "NAME:Deembed Dist",
-                    "Value:=", "0um",
+                    "Value:=",
+                    "0um",
                     "NAME:Renorm All Terminals",
-                    "Value:=", False,
+                    "Value:=",
+                    False,
                     "NAME:Deembed",
-                    "Value:=", False,
-                ]
-            ]
-        ]
-    ])
+                    "Value:=",
+                    False,
+                ],
+            ],
+        ],
+    ]
+)
 oDesign.ChangeProperty(
     [
         "NAME:AllTabs",
         [
             "NAME:HfssTab",
-            [
-                "NAME:PropServers",
-                "BoundarySetup:2"
-            ],
+            ["NAME:PropServers", "BoundarySetup:2"],
             [
                 "NAME:ChangedProps",
                 [
                     "NAME:Deembed Dist",
-                    "Value:=", "0um",
+                    "Value:=",
+                    "0um",
                     "NAME:Renorm All Terminals",
-                    "Value:=", False,
+                    "Value:=",
+                    False,
                     "NAME:Deembed",
-                    "Value:=", False,
-                ]
-            ]
-        ]
-    ])
+                    "Value:=",
+                    False,
+                ],
+            ],
+        ],
+    ]
+)
 
 oModule = oDesign.GetModule("Solutions")
-oModule.ExportNetworkData("", ["Setup1:Sweep"], 3, os.path.join(path, basename + '_SMatrix_nodeembed.s2p'),
-                          [
-                              "All"
-                          ], False, 50, "S", -1, 0, 15, True, True, True)
+oModule.ExportNetworkData(
+    "",
+    ["Setup1:Sweep"],
+    3,
+    os.path.join(path, basename + "_SMatrix_nodeembed.s2p"),
+    ["All"],
+    False,
+    50,
+    "S",
+    -1,
+    0,
+    15,
+    True,
+    True,
+    True,
+)
 
 oProject.Save()
