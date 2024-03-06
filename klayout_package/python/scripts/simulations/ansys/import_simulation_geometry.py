@@ -80,11 +80,12 @@ oReportSetup = oDesign.GetModule("ReportSetup")
 
 
 # Define colors
-def color_by_material(material):
+def color_by_material(material, is_sheet=False):
     if material == "pec":
         return 240, 120, 240, 0.5
     n = 0.3 * (material_dict.get(material, dict()).get("permittivity", 1.0) - 1.0)
-    return tuple(int(100 + 80 * c) for c in [cos(n - pi / 3), cos(n + pi), cos(n + pi / 3)]) + (0.93**n,)
+    alpha = 0.93 ** (2 * n if is_sheet else n)
+    return tuple(int(100 + 80 * c) for c in [cos(n - pi / 3), cos(n + pi), cos(n + pi / 3)]) + (alpha,)
 
 
 # Set units
@@ -178,13 +179,14 @@ for lname, ldata in layers.items():
         set_color(oEditor, objects[lname], *color_by_material(material))
     elif material == "pec":
         pec_sheets += objects[lname]
-    elif lname not in mesh_size:
-        set_material(oEditor, objects[lname], None, None)  # set sheet as non-model
+    else:
+        set_color(oEditor, objects[lname], *color_by_material(material, True))
+        if lname not in mesh_size:
+            set_material(oEditor, objects[lname], None, None)  # set sheet as non-model
 
 # Assign perfect electric conductor to metal sheets
 if pec_sheets:
-    pec_color = color_by_material("pec")
-    set_color(oEditor, pec_sheets, pec_color[0], pec_color[1], pec_color[2], pec_color[3] ** 2)
+    set_color(oEditor, pec_sheets, *color_by_material("pec", True))
     if ansys_tool in {"hfss", "eigenmode"}:
         oBoundarySetup.AssignPerfectE(["NAME:PerfE1", "Objects:=", pec_sheets, "InfGroundPlane:=", False])
     elif ansys_tool == "q3d":
