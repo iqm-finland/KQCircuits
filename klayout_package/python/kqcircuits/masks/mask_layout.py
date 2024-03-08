@@ -149,7 +149,7 @@ class MaskLayout:
 
         self.align_to = kwargs.get("align_to", None)
         self.chip_counts = {}
-        self.extra_chips_maps = []
+        self.extra_chips_maps = kwargs.get("extra_chips_maps", [])
         self.chip_array_to_export = []
         self.chip_copies = {}
         # For mask name the letter I stats at x=750
