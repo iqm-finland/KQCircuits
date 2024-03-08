@@ -206,7 +206,8 @@ Contributing
 
 Contributions to KQC are welcome from the community. Contributors are expected to accept IQM
 Individual Contributor License Agreement by filling `a form at IQM website
-<https://meetiqm.com/developers/clas>`__. See also section `Contributing
+<https://www.meetiqm.com/technology/iqm-kqcircuits#iqm-contributor-license-agreement>`__.
+See also section `Contributing
 <https://iqm-finland.github.io/KQCircuits/contributing.html>`__ in the
 documentation.
 
@@ -234,13 +235,13 @@ You should have received a copy of the GNU General Public License along with thi
 https://www.gnu.org/licenses/gpl-3.0.html.
 
 The software distribution should follow IQM trademark policy for open-source software
-(`meetiqm.com/developers/osstmpolicy <https://meetiqm.com/developers/osstmpolicy/>`__).
+(`meetiqm.com/iqm-open-source-trademark-policy <https://meetiqm.com/iqm-open-source-trademark-policy/>`__).
 IQM welcomes contributions to the code. Please see our contribution agreements for individuals
-(`meetiqm.com/developers/clas/individual <https://meetiqm.com/developers/clas/individual/>`__)
-and organizations (`meetiqm.com/developers/clas/organization <https://meetiqm.com/developers/clas/organization/>`__).
+(`meetiqm.com/iqm-individual-contributor-license-agreement <https://meetiqm.com/iqm-individual-contributor-license-agreement/>`__)
+and organizations (`meetiqm.com/iqm-organization-contributor-license-agreement <https://meetiqm.com/iqm-organization-contributor-license-agreement/>`__).
 
 Trademarks
 ----------
 
 KQCircuits is a registered trademark of IQM. Please see
-`IQM open source software trademark policy <https://meetiqm.com/developers/osstmpolicy>`__.
+`IQM open source software trademark policy <https://meetiqm.com/iqm-open-source-trademark-policy>`__.
