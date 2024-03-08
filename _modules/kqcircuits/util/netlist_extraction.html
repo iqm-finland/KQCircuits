@@ -567,6 +567,20 @@
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No circuit found for </span><span class="si">{</span><span class="n">cell</span><span class="o">.</span><span class="n">display_title</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 
+<span class="k">def</span> <span class="nf">_transformations_close_enough</span><span class="p">(</span><span class="n">trans_a</span><span class="p">,</span> <span class="n">trans_b</span><span class="p">):</span>
+    <span class="n">angle_a</span><span class="p">,</span> <span class="n">angle_b</span> <span class="o">=</span> <span class="n">trans_a</span><span class="o">.</span><span class="n">angle</span><span class="p">,</span> <span class="n">trans_b</span><span class="o">.</span><span class="n">angle</span>
+    <span class="k">if</span> <span class="n">angle_a</span> <span class="o">-</span> <span class="n">angle_b</span> <span class="o">&gt;</span> <span class="mi">180</span><span class="p">:</span>
+        <span class="n">angle_a</span> <span class="o">-=</span> <span class="mi">360</span>
+    <span class="k">elif</span> <span class="n">angle_b</span> <span class="o">-</span> <span class="n">angle_a</span> <span class="o">&gt;</span> <span class="mi">180</span><span class="p">:</span>
+        <span class="n">angle_b</span> <span class="o">-=</span> <span class="mi">360</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">trans_a</span><span class="o">.</span><span class="n">mag</span> <span class="o">==</span> <span class="n">trans_b</span><span class="o">.</span><span class="n">mag</span>
+        <span class="ow">and</span> <span class="n">trans_a</span><span class="o">.</span><span class="n">is_mirror</span><span class="p">()</span> <span class="o">==</span> <span class="n">trans_b</span><span class="o">.</span><span class="n">is_mirror</span><span class="p">()</span>
+        <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">angle_a</span> <span class="o">-</span> <span class="n">angle_b</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.001</span>
+        <span class="ow">and</span> <span class="p">(</span><span class="n">trans_a</span><span class="o">.</span><span class="n">disp</span> <span class="o">-</span> <span class="n">trans_b</span><span class="o">.</span><span class="n">disp</span><span class="p">)</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.001</span>
+    <span class="p">)</span>
+
+
 <span class="k">def</span> <span class="nf">_export_netlist</span><span class="p">(</span><span class="n">circuit</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">internal_layout</span><span class="p">,</span> <span class="n">original_layout</span><span class="p">,</span> <span class="n">cell_mapping</span><span class="p">,</span> <span class="n">pcell</span><span class="p">,</span> <span class="n">breakdown_list</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A helper function of ``export_cell_netlist``,  exports ``circuit`` into ``filename``.</span>
 
@@ -624,15 +638,29 @@
                 <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">i_trans</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">i_trans</span> <span class="ow">in</span> <span class="n">original_instances</span> <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">()</span> <span class="o">==</span> <span class="n">original_cell_index</span>
             <span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="p">(</span>
-                    <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> element has no cell mapping in </span><span class="si">%s</span><span class="s2"> between circuit layout and orignal layout,&quot;</span>
-                    <span class="s2">&quot; using subcircuit center point as subcircuit_location instead&quot;</span>
-                <span class="p">),</span>
-                <span class="n">internal_cell</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-                <span class="n">circuit</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="n">possible_instances</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">original_cell</span> <span class="o">=</span> <span class="n">original_layout</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">internal_cell</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">original_cell</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">internal_cell</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> element has no cell mapping in </span><span class="si">{</span><span class="n">circuit</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> &quot;</span>
+                        <span class="s2">&quot;between circuit layout and orignal layout. &quot;</span>
+                        <span class="s2">&quot;Depending on cell type this can make the netlist unusable. &quot;</span>
+                        <span class="s2">&quot;Using subcircuit center point as subcircuit_location&quot;</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">possible_instances</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;There was no cell mapping for </span><span class="si">{</span><span class="n">internal_cell</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> element &quot;</span>
+                        <span class="s2">&quot;between circuit layout and orignal layout, &quot;</span>
+                        <span class="s2">&quot;but the element in original layout was succesfully looked up by name.&quot;</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">original_cell_index</span> <span class="o">=</span> <span class="n">original_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">()</span>
+                <span class="n">possible_instances</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">i_trans</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">i_trans</span> <span class="ow">in</span> <span class="n">original_instances</span> <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">()</span> <span class="o">==</span> <span class="n">original_cell_index</span>
+                <span class="p">]</span>
 
         <span class="n">used_internal_cells</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">internal_cell</span><span class="p">)</span>
 
@@ -644,7 +672,9 @@
             <span class="n">subcircuit_location</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
 
         <span class="n">instances_with_eq_trans</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">i_trans</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">i_trans</span> <span class="ow">in</span> <span class="n">possible_instances</span> <span class="k">if</span> <span class="n">i_trans</span> <span class="o">*</span> <span class="n">i</span><span class="o">.</span><span class="n">dcplx_trans</span> <span class="o">==</span> <span class="n">subcircuit_trans</span>
+            <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">i_trans</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">i_trans</span> <span class="ow">in</span> <span class="n">possible_instances</span>
+            <span class="k">if</span> <span class="n">_transformations_close_enough</span><span class="p">(</span><span class="n">i_trans</span> <span class="o">*</span> <span class="n">i</span><span class="o">.</span><span class="n">dcplx_trans</span><span class="p">,</span> <span class="n">subcircuit_trans</span><span class="p">)</span>
         <span class="p">]</span>
         <span class="n">property_dict</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">correct_instance</span> <span class="o">=</span> <span class="kc">None</span>
@@ -743,12 +773,16 @@
 <div class="viewcode-block" id="extract_circuits"><a class="viewcode-back" href="../../../api/kqcircuits.util.netlist_extraction.html#kqcircuits.util.netlist_extraction.extract_circuits">[docs]</a><span class="k">def</span> <span class="nf">extract_circuits</span><span class="p">(</span><span class="n">cell_mapping</span><span class="p">,</span> <span class="n">internal_cell</span><span class="p">,</span> <span class="n">layout</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract dictionary for circuit for JSON export&quot;&quot;&quot;</span>
 
-    <span class="n">circuit_has_cell</span> <span class="o">=</span> <span class="n">cell_mapping</span><span class="o">.</span><span class="n">has_mapping</span><span class="p">(</span><span class="n">internal_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">())</span>
-    <span class="n">circuit_for_export</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;circuit_has_cell&quot;</span><span class="p">:</span> <span class="n">circuit_has_cell</span><span class="p">}</span>
-
-    <span class="k">if</span> <span class="n">circuit_has_cell</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">cell_mapping</span><span class="o">.</span><span class="n">has_mapping</span><span class="p">(</span><span class="n">internal_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">()):</span>
         <span class="n">original_cell_index</span> <span class="o">=</span> <span class="n">cell_mapping</span><span class="o">.</span><span class="n">cell_mapping</span><span class="p">(</span><span class="n">internal_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">())</span>
         <span class="n">original_cell</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">original_cell_index</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">original_cell</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">internal_cell</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">original_cell</span><span class="p">:</span>  <span class="c1"># Cell looked up by name, circuits has cell after all</span>
+            <span class="n">original_cell_index</span> <span class="o">=</span> <span class="n">original_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">()</span>
+    <span class="n">circuit_for_export</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;circuit_has_cell&quot;</span><span class="p">:</span> <span class="n">original_cell</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">original_cell</span><span class="p">:</span>
         <span class="n">is_pcell</span> <span class="o">=</span> <span class="n">original_cell</span><span class="o">.</span><span class="n">is_pcell_variant</span><span class="p">()</span>
         <span class="n">circuit_for_export</span><span class="p">[</span><span class="s2">&quot;is_pcell&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">is_pcell</span>
         <span class="n">pcell_parameters</span> <span class="o">=</span> <span class="n">original_cell</span><span class="o">.</span><span class="n">pcell_parameters_by_name</span><span class="p">()</span>
