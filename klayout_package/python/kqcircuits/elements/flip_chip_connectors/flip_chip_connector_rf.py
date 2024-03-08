@@ -54,7 +54,7 @@ class FlipChipConnectorRf(FlipChipConnector):
     def build(self):
 
         # Flip-chip bump
-        bump = self.add_element(FlipChipConnectorDc, face_ids=self.face_ids)
+        bump = self._get_bump()
         for i in range(self.n_center_bumps):
             self.insert_cell(bump, pya.DTrans((i - (self.n_center_bumps - 1) / 2) * self.inter_bump_distance, 0))
         bump_ref = self.get_refpoints(bump)
@@ -197,6 +197,9 @@ class FlipChipConnectorRf(FlipChipConnector):
             self.insert_cell(bump, pya.DCplxTrans(1, 0, False, -dist_x, dist_y))
             self.insert_cell(bump, pya.DCplxTrans(1, 0, False, dist_x, -dist_y))
             self.insert_cell(bump, pya.DCplxTrans(1, 0, False, -dist_x, -dist_y))
+
+    def _get_bump(self):
+        return self.add_element(FlipChipConnectorDc, face_ids=self.face_ids)
 
     @classmethod
     def get_sim_ports(cls, simulation):
