@@ -70,7 +70,7 @@ if result_files:
             loss_layer: sum([loss * v / total_energy for k, v in energy.items() if loss_layer in k])
             for loss_layer, loss in loss_tangents.items()
         }
-        q[key] = {"Q_" + k: 1.0 / v for k, v in loss.items()}
+        q[key] = {"Q_" + k: (1.0 / v if v else float("inf")) for k, v in loss.items()}
         q[key]["Q_total"] = 1.0 / sum(loss.values())
 
     tabulate_into_csv(f"{os.path.basename(os.path.abspath(path))}_q_factors.csv", q, parameters, parameter_values)
