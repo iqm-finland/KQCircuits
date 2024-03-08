@@ -251,6 +251,7 @@ class WaveguideComposite(Element):
     tight_routing = Param(pdt.TypeBoolean, "Tight routing for corners", False)
     ab_to_ab_spacing = Param(pdt.TypeDouble, "Spacing between consecutive airbridges", 500, unit="μm")
     ab_to_node_clearance = Param(pdt.TypeDouble, "Spacing between an airbridge and a node", 100, unit="μm")
+    airbridge_params = Param(pdt.TypeString, "Extra params to be passed to the airbridge class", "{}", hidden=True)
 
     @classmethod
     def create(cls, layout, library=None, **parameters):
@@ -862,7 +863,11 @@ class WaveguideComposite(Element):
             xs = [(self.ab_to_node_clearance + i * self.ab_to_ab_spacing) / v_length for i in range(final_num)]
 
         # add airbridges
-        params = {"airbridge_type": self.airbridge_type}
+        if self.airbridge_params != "{}":
+            params = {"airbridge_type": self.airbridge_type, **dict(self.airbridge_params)}
+        else:
+            params = {"airbridge_type": self.airbridge_type}
+
         if ab_len:
             params["bridge_length"] = ab_len
         ab_cell = self.add_element(Airbridge, **params)
