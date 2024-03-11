@@ -22,7 +22,7 @@ kqc_python_dependencies = {
     "numpy": "numpy>=1.16",
     "scipy": "scipy>=1.2",
     "tqdm": "tqdm>=4.61",
-    "networkx": "networkx>=2.7",
+    "networkx": "networkx>=3.2.1",
 }
 
 

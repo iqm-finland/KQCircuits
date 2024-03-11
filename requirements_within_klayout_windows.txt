@@ -6,4 +6,4 @@
 # KLayout.
 
 tqdm==4.61
-networkx>=2.7,<3.2
+networkx>=3.2.1

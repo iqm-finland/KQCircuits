@@ -3,4 +3,4 @@
 numpy>=1.16
 scipy>=1.2
 tqdm==4.61
-networkx>=2.7,<3.2
+networkx>=3.2.1
