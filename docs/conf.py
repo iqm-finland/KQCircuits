@@ -200,5 +200,5 @@ rst_epilog = """
 )
 
 # Base URL for files in the git repository
-github_url = f'https://github.com/{html_context["github_user"]}/{html_context["github_repo"]}/blob/{html_context["github_version"]}/%s'
-extlinks = {"git_url": (os.environ.get("DOCS_GIT_URL", github_url), "%s")}
+github_url = f'https://github.com/{html_context["github_user"]}/{html_context["github_repo"]}/blob/{html_context["github_version"]}/'
+extlinks = {"git_url": (f'{os.environ.get("DOCS_GIT_URL", github_url)}/%s', "%s")}
