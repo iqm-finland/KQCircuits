@@ -186,6 +186,9 @@ class FlipChipConnectorRf(FlipChipConnector):
                 add_metal=add_metal,
             )
 
+        self._insert_ground_bumps(bump)
+
+    def _insert_ground_bumps(self, bump):
         # Insert ground bumps
         if self.connector_type == "GSG":
             self.insert_cell(bump, pya.DCplxTrans(1, 0, False, 0, self.inter_bump_distance))
