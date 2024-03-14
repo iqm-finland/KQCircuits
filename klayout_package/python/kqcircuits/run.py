@@ -95,8 +95,7 @@ def argument_parser():
     singularity_parser.add_argument(
         "--push",
         type=str,
-        help='Destination of the export "user@host:dir"\
-                                    if left empty the defaults from .remote_profile.txt will be used',
+        help='Destination of the export "user@host:dir"',
     )
     singularity_parser.add_argument(
         "--singularity-remote-path", type=str, help="Installation path for the singularity image on remote"
@@ -121,6 +120,7 @@ def run_kqc(args, args_for_script):
                 args.detach,
                 args.poll_interval,
                 args.export_path_basename,
+                args.quiet,
                 args_for_script,
             )
             return True
@@ -130,10 +130,7 @@ def run_kqc(args, args_for_script):
             return True
 
         script_file = Path(args.export_script)
-        if args.export_path_basename is not None:
-            export_path = TMP_PATH / args.export_path_basename
-        else:
-            export_path = TMP_PATH / script_file.stem
+        export_path = TMP_PATH / args.export_path_basename if args.export_path_basename else None
 
         if not script_file.is_file():
             script_file = Path(SCRIPTS_PATH / "simulations" / script_file)

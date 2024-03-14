@@ -67,7 +67,8 @@ XSECTION_PROCESS_PATH = ROOT_PATH.joinpath("xsection/kqc_process.xs")
 VERSION_PATHS = {}
 VERSION_PATHS["KQC"] = ROOT_PATH
 SIM_SCRIPT_PATH = ROOT_PATH / "klayout_package" / "python" / "scripts" / "simulations"
-
+# identifier used to pass export path from simulation script back to kqc sim console script via stdout
+EXPORT_PATH_IDENTIFIER = "KQC SIM EXPORT PATH: "
 # Default path on remote
 KQC_REMOTE_TMP_PATH = os.getenv("KQC_REMOTE_TMP_PATH", "~/KQCircuits/tmp")
 # Remote account for slurm

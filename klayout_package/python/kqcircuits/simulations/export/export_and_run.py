@@ -20,6 +20,8 @@ import platform
 import sys
 import logging
 
+from kqcircuits.defaults import EXPORT_PATH_IDENTIFIER
+
 logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 
 
@@ -29,7 +31,8 @@ def export_and_run(export_script: Path, export_path: Path, quiet: bool = False, 
 
     Args:
         export_script(Path): path to the simulation export script
-        export_path(Path): path where simulation files are exported
+        export_path(Path): path where simulation files are exported set with `--export-path-basename`. If None, the
+                           path set in export script will be used.
         quiet(bool): if True all the GUI dialogs are shown, otherwise not.
         export_only(bool): if True no simulation is run, only export files.
         args(list): a list of strings describing arguments to be passed to the simulation script
@@ -38,36 +41,76 @@ def export_and_run(export_script: Path, export_path: Path, quiet: bool = False, 
         a tuple containing
 
             * export_script(Path): path to the simulation export script
-            * export_path(Path): path where simulation files are exported
+            * export_path(list(Path)): list of paths where simulation files are exported
 
     """
 
+    script_export_paths = run_export_script(export_script, export_path, quiet, args)
+
+    if not export_only:
+        run_simulations(script_export_paths)
+
+    return export_script, script_export_paths
+
+
+def run_export_script(export_script: Path, export_path: Path, quiet: bool = False, args=None):
+    """
+    Generate the simulation files by running the export script. Returns list of paths where
+    simulation files are exported. Returned paths are parsed from stdout of the export script printed
+    by function `create_or_empty_tmp_directory`, based on the identifier `EXPORT_PATH_IDENTIFIER`
+    """
     if args is None:
         args = []
-    else:
-        if "--simulation-export-path" in args:
-            logging.error("--simulation-export-path is not allowed!")
-            sys.exit()
+    elif "--simulation-export-path" in args:
+        logging.error("--simulation-export-path is not allowed!")
+        sys.exit()
 
-    subprocess.call(
-        [sys.executable, export_script, "--simulation-export-path", str(export_path)] + args + (["-q"] if quiet else [])
+    export_cmd = (
+        [sys.executable, export_script]
+        + (["--simulation-export-path", str(export_path)] if export_path else [])
+        + args
+        + (["-q"] if quiet else [])
     )
-    if export_only:
-        return export_script, export_path
+    # Run export script and capture stdout to be processed
+    with subprocess.Popen(export_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) as process:
+        process_stdout, _ = process.communicate()
+        print(process_stdout)
+        if process.returncode:
+            # This provides full traceback so error doesn't need to be captured in process.communicate()
+            raise subprocess.CalledProcessError(process.returncode, export_cmd)
 
-    if (export_path / "simulation.sh").is_file():
-        simulation_shell_script = "simulation.sh"
-    else:
-        if platform.system() != "Windows":
-            logging.error("simulation.bat script can't be run on non-Windows platform!")
-            sys.exit()
-        simulation_shell_script = "simulation.bat"
+    # Parse export paths from stdout printed in `create_or_empty_tmp_directory`
+    script_export_paths = [l.strip() for l in process_stdout.split("\n")]
+    script_export_paths = [
+        Path(l.removeprefix(EXPORT_PATH_IDENTIFIER))
+        for l in script_export_paths
+        if l.startswith(EXPORT_PATH_IDENTIFIER)
+    ]
 
-    if platform.system() == "Windows":  # Windows
-        subprocess.call(simulation_shell_script, shell=True, cwd=str(export_path))
-    elif platform.system() == "Darwin":  # macOS
-        subprocess.call(["bash", simulation_shell_script], cwd=str(export_path))
-    else:  # Linux
-        subprocess.call(["bash", simulation_shell_script], cwd=str(export_path))
+    # remove duplicate paths
+    unique_paths = set()
+    script_export_paths = [n for n in script_export_paths if not (n in unique_paths or unique_paths.add(n))]
 
-    return export_script, export_path
+    if export_path and len(script_export_paths) > 1:
+        logging.error("Using `--export-path-basename` is not supported with scripts exporting multiple simulations")
+
+    return script_export_paths
+
+
+def run_simulations(script_export_paths: list[Path]):
+    """Run exported simulations"""
+    for script_export_path in script_export_paths:
+        if (script_export_path / "simulation.sh").is_file():
+            simulation_shell_script = "simulation.sh"
+        elif (script_export_path / "simulation.bat").is_file():
+            simulation_shell_script = "simulation.bat"
+        else:
+            logging.warning(f"No simulation.sh or .bat script found in {script_export_path}")
+            continue
+
+        if platform.system() == "Windows":  # Windows
+            subprocess.call(simulation_shell_script, shell=True, cwd=str(script_export_path))
+        elif platform.system() == "Darwin":  # macOS
+            subprocess.call(["bash", simulation_shell_script], cwd=str(script_export_path))
+        else:  # Linux
+            subprocess.call(["bash", simulation_shell_script], cwd=str(script_export_path))

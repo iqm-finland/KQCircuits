@@ -25,6 +25,7 @@ import os
 import stat
 import uuid
 from kqcircuits.defaults import TMP_PATH, SCRIPTS_PATH, KQC_REMOTE_TMP_PATH
+from kqcircuits.simulations.export.export_and_run import run_export_script
 
 logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 
@@ -286,6 +287,7 @@ def remote_export_and_run(
     detach_simulation: bool = False,
     poll_interval: int = None,
     export_path_basename: str = None,
+    quiet: bool = False,
     args=None,
 ):
     """
@@ -298,6 +300,7 @@ def remote_export_and_run(
         poll_interval           (int): Polling interval in seconds when waiting for the remote simulation to finish
         export_path_basename   (str): Alternative export folder name for the simulation
                                       If None, the simulation script name will be used
+        quiet                 (bool): if True all the GUI dialogs are shown, otherwise not.
         args                  (list): a list of strings:
                                         - If starts with a letter and ends with ".py"  -> export script
                                         - If starts with "-" or "--"                   -> script option
@@ -306,8 +309,8 @@ def remote_export_and_run(
     allowed_simulations, simdir, tmpdir = _allowed_simulations()
 
     export_scripts = []
-    # By default use --use-sbatch and -q flags. Note that the export script must support this
-    args_for_script = ["--use-sbatch", "-q"]
+    # By default use --use-sbatch flag. Note that the export script must support this
+    args_for_script = ["--use-sbatch"]
     # Separate export script filenames and script arguments
     for arg in args:
         if arg.startswith("-"):
@@ -326,22 +329,24 @@ def remote_export_and_run(
             else:
                 logging.warning(f"Skipping unkown argument: {arg}")
 
-    if export_path_basename is not None and len(export_scripts) == 1:
-        export_tmp_paths = [str(Path(tmpdir) / str(export_path_basename))]
-    else:
-        export_tmp_paths = [str(Path(tmpdir) / str(script.stem)) for script in export_scripts]
-
     if len(export_scripts) == 0:
         logging.error("No valid simulation script provided in remote_export_and_run")
         sys.exit()
 
+    if export_path_basename is not None and len(export_scripts) == 1:
+        export_tmp_paths = [str(Path(tmpdir) / str(export_path_basename))]
+    else:
+        export_tmp_paths = len(export_scripts) * [None]
+
     # Export simulation files locally
+    script_export_paths = []
     for export_path, export_script in zip(export_tmp_paths, export_scripts):
-        export_cmd = [sys.executable, export_script, "--simulation-export-path", str(export_path)] + args_for_script
-        subprocess.call(export_cmd)
+        script_export_paths += run_export_script(
+            export_script=export_script, export_path=export_path, quiet=quiet, args=args_for_script
+        )
 
     # Run on remote
-    _remote_run(ssh_login, export_tmp_paths, kqc_remote_tmp_path, detach_simulation, poll_interval)
+    _remote_run(ssh_login, script_export_paths, kqc_remote_tmp_path, detach_simulation, poll_interval)
 
 
 def remote_run_only(

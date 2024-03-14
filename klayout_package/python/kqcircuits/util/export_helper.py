@@ -36,6 +36,7 @@ from kqcircuits.defaults import (
     recommended_probe_suffix_mapping,
     VERSION_PATHS,
     DRC_PATH,
+    EXPORT_PATH_IDENTIFIER,
 )
 from kqcircuits.klayout_view import KLayoutView, MissingUILibraryException
 from kqcircuits.pya_resolver import pya, is_standalone_session, klayout_executable_command
@@ -369,6 +370,9 @@ def create_or_empty_tmp_directory(dir_name):
         remove_content(dir_path)
     else:
         dir_path.mkdir()
+
+    # This is used to pass the used export paths back to the `kqc sim` console script
+    print(f"{EXPORT_PATH_IDENTIFIER}{dir_path}", flush=True)
 
     return dir_path
 

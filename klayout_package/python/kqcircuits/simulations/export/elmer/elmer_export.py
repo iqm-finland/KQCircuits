@@ -634,6 +634,9 @@ def _update_elmer_workflow(simulations, common_solution, workflow):
         n_worker_lim = num_sims
         parallelization_level = "full_simulation"
 
+    workflow["_parallelization_level"] = parallelization_level
+    workflow["_n_simulations"] = n_worker_lim
+
     if "sbatch_parameters" in workflow:
         n_workers = workflow["sbatch_parameters"].get("n_workers", 1.0)
         workflow["sbatch_parameters"]["n_workers"] = min(int(n_workers), n_worker_lim)
@@ -676,8 +679,6 @@ def _update_elmer_workflow(simulations, common_solution, workflow):
         workflow["n_workers"] = n_workers
         workflow["elmer_n_processes"] = n_processes
         workflow["elmer_n_threads"] = n_threads
-        workflow["_parallelization_level"] = parallelization_level
-        workflow["_n_simulations"] = n_worker_lim
 
         gmsh_n_threads = workflow.get("gmsh_n_threads", 1)
         if gmsh_n_threads == -1:
