@@ -26,6 +26,7 @@ from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
 from kqcircuits.simulations.export.xsection.xsection_export import (
     create_xsections_from_simulations,
     separate_signal_layer_shapes,
+    visualise_xsection_cut_on_original_layout,
 )
 from kqcircuits.simulations.post_process import PostProcess
 from kqcircuits.simulations.waveguides_sim import WaveGuidesSim
@@ -111,10 +112,11 @@ for simulation in simulations:
 
 # Create cross-sections using xsection tool
 # Oxide layer permittivity and thickness values same as in double_pads_sim.py simulation
+cuts = (pya.DPoint(0, 150), pya.DPoint(0, -150))  # Cut coordinates
 xsection_simulations = create_xsections_from_simulations(
     simulations,
     path,
-    (pya.DPoint(0, 150), pya.DPoint(0, -150)),  # Cut coordinates
+    cuts,
     ma_permittivity=8.0,
     ms_permittivity=11.4,
     sa_permittivity=4.0,
@@ -131,6 +133,8 @@ loss_tangents = {
     "sa_layer": 2.1e-3,
 }
 open_with_klayout_or_default_application(export_simulation_oas(xsection_simulations, path))
+visualise_xsection_cut_on_original_layout(simulations, cuts)
+open_with_klayout_or_default_application(export_simulation_oas(simulations, path, file_prefix="xsection_cut_preview"))
 export_elmer(
     xsection_simulations,
     path,

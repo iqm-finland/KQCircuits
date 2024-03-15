@@ -293,6 +293,45 @@ def free_layer_slots(layout):
         yield layer_index
 
 
+def visualise_xsection_cut_on_original_layout(
+    simulations: List[Simulation],
+    cuts: Union[Tuple[pya.DPoint, pya.DPoint], List[Tuple[pya.DPoint, pya.DPoint]]],
+    cut_label: str = "cut",
+    width_ratio: float = 0.0,
+):
+    """Visualise requested xsection cuts on the original simulation layout.
+
+    Will add a rectangle between two points of the cut, and two text points into layer "xsection_cut"::
+
+        * f"{cut_label}_1" representing the left side of the cross section simulation
+        * f"{cut_label}_2" representing the right side of the cross section simulation
+
+    In case the export takes xsections for one simulation multiple times, this function
+    can be called on same simulation sweep multiple times so that multiple cuts can be visualised
+    in the same layout. In such case it is recommended to differentiate the cuts using `cut_label`.
+
+    Args:
+        simulations: list of simulations from which xsections are taken. After this call these simulations
+            will be modified to include the visualised cuts.
+        cuts: 1. A tuple (p1, p2), where p1 and p2 are endpoints of a cross-section cut or
+              2. a list of such tuples such that each Simulation object gets an individual cut
+        cut_label: prefix of the two text points shown for the cut
+        width_ratio: rectangles visualising cuts will have a width of length of the cut multiplied by width_ratio
+    """
+    if isinstance(cuts, Tuple):
+        cuts = [cuts] * len(simulations)
+    if len(simulations) != len(cuts):
+        raise Exception("Number of cuts did not match the number of simulations")
+    for simulation, cut in zip(simulations, cuts):
+        cut_length = (cut[1] - cut[0]).length()
+        marker = pya.Region(pya.DPath(cut, cut_length * width_ratio).to_itype(simulation.layout.dbu))
+        # Not using get_sim_layer since this geometry is not part of any simulation
+        cut_visualisation_layer = simulation.layout.layer("xsection_cut")
+        simulation.cell.shapes(cut_visualisation_layer).insert(marker)
+        simulation.cell.shapes(cut_visualisation_layer).insert(pya.DText(f"{cut_label}_1", cut[0].x, cut[0].y))
+        simulation.cell.shapes(cut_visualisation_layer).insert(pya.DText(f"{cut_label}_2", cut[1].x, cut[1].y))
+
+
 def _load_layout_options_for_xsection_output():
     load_opts = pya.LoadLayoutOptions()
     load_opts.cell_conflict_resolution = pya.LoadLayoutOptions.CellConflictResolution.RenameCell
