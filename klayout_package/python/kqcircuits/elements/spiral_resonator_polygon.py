@@ -330,15 +330,15 @@ class SpiralResonatorPolygon(Element):
                     curve_length = self.length - (points[-1] - points[-2]).length()
                 curve_alpha = curve_length / self.r
                 # add new curve piece at the waveguide end
-                fids = [0, 1] if self.connector_dist < 0 else [1, 0]
+                face = int(self.connector_dist >= 0)
                 curve_cell = self.add_element(
-                    WaveguideCoplanarCurved, alpha=curve_alpha, face_ids=[self.face_ids[f] for f in fids]
+                    WaveguideCoplanarCurved, alpha=curve_alpha, face_ids=[self.face_ids[face]]
                 )
                 curve_trans = pya.DCplxTrans(
                     1, degrees(alpha1) - v1.vprod_sign(v2) * 90, v1.vprod_sign(v2) < 0, corner_pos
                 )
                 self.insert_cell(curve_cell, curve_trans)
-                WaveguideCoplanarCurved.produce_curve_termination(self, curve_alpha, self.term2, curve_trans, fids[0])
+                WaveguideCoplanarCurved.produce_curve_termination(self, curve_alpha, self.term2, curve_trans, face)
                 return True
 
         # set last point to correct position based on length
