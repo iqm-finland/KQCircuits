@@ -84,7 +84,10 @@ class PartitionRegion:
         if self.region is None:
             self.region = box_region
         elif isinstance(self.region, list):
-            self.region = pya.Region([r.to_itype(dbu) for r in self.region]) & box_region
+            merged_region = pya.Region()
+            for r in self.region:
+                merged_region += pya.Region(r.to_itype(dbu))
+            self.region = merged_region & box_region
         else:
             self.region = pya.Region(self.region.to_itype(dbu)) & box_region
 
