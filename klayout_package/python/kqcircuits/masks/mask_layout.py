@@ -298,15 +298,25 @@ class MaskLayout:
             new_chip_cell = self.chips_map_legend[new_chip_name]
             new_bounding_box = self.chip_bounding_boxes[new_chip_name]
             if new_bounding_box != bbox:
-                raise ValueError(
-                    (
-                        f"Cannot insert hardcoded chip {new_chip_name} "
-                        f"in position {position_label} since it has a different bbox"
+                if round(bbox.width()) == round(new_bounding_box.width()) and round(bbox.height()) == round(
+                    new_bounding_box.height()
+                ):
+                    new_dtrans = dtrans * pya.DTrans(pya.DVector(bbox.p1) - pya.DVector(new_bounding_box.p1))
+                else:
+                    print(f"old bbox {bbox}, new bbox {new_bounding_box}")
+                    print(f"old width {bbox.width()}, height {bbox.height()}")
+                    print(f"new width {new_bounding_box.width()}, height {new_bounding_box.height()}")
+                    raise ValueError(
+                        (
+                            f"Cannot insert hardcoded chip {new_chip_name} "
+                            f"in position {position_label} since it has a different bbox"
+                        )
                     )
-                )
-
+            else:
+                new_dtrans = dtrans
             self.added_chips = [
-                (new_chip_name, new_chip_cell) + x[2:] if x[4] == dtrans else x for x in self.added_chips
+                (new_chip_name, new_chip_cell) + x[2:4] + (new_dtrans,) + x[5:] if x[4] == dtrans else x
+                for x in self.added_chips
             ]
             self.chip_counts[chip_name] -= 1
             self.chip_counts[new_chip_name] += 1
