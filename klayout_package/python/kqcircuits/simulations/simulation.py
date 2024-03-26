@@ -800,8 +800,6 @@ class Simulation:
                     obj["bottom"] = tool["top"]
                     return True
                 return False
-            if tool["region"].inside(obj["region"]).count() > 10:
-                return False  # avoid lateral hard subtract if it creates lots of holes (useful with lots of vias)
             obj["region"] -= tool["region"]
             return True
 
