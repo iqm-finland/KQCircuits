@@ -800,6 +800,8 @@ class Simulation:
                     obj["bottom"] = tool["top"]
                     return True
                 return False
+            if not can_modify(tool) and tool["region"].inside(obj["region"]).count() > 10 * obj["region"].count():
+                return False  # avoid lateral hard subtract if it creates lots of holes (useful with lots of vias)
             obj["region"] -= tool["region"]
             return True
 
