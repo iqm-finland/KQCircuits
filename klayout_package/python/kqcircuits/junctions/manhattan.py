@@ -14,8 +14,6 @@
 # The software distribution should follow IQM trademark policy for open-source software
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
-
-
 from math import sqrt
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
@@ -43,8 +41,8 @@ class Manhattan(Squid):
         self.produce_manhattan_squid(top_pad_layer="SIS_junction")
 
     def produce_manhattan_squid(self, top_pad_layer):
-
         # geometry constants
+
         big_loop_height = 10
         loop_bottom_y = 1.5
         self.metal_gap_top_y = 20 if self.compact_geometry else 26.5
@@ -52,83 +50,87 @@ class Manhattan(Squid):
         self.height = 17 if self.compact_geometry else 20.2  # total height of junction layer
         bp_height = 5  # bottom pad height
         tp_width = 10  # top pad width
-        brim_height = 1  # thickness of the "top-hat's" brim
         small_loop_height = 5.2
-        small_hat_width = 2  # width of the small hat shape, in case of small loop
+        h_pad_height = 1
+        v_pad_width = 2
+        pad_overlap = 1
 
         # corner rounding parameters
-        rounding_params = {
-            "rinner": 0.5,  # inner corner rounding radius
-            "router": 0.5,  # outer corner rounding radius
-            "n": 64,  # number of point per rounded corner
-        }
+
+        rounding_params = {"rinner": 0.5, "router": 0.5, "n": 64}
+        # In order inner corner rounding radius, outer corner rounding radius, number of point per rounded corner
 
         # convenience variables
-        delta_j = self.loop_area / big_loop_height  # junction distance, a.k.a. loop width
+        delta_j = self.loop_area / (big_loop_height)  # junction distance, a.k.a. loop width
         tp_height = self.height - loop_bottom_y - big_loop_height  # top pad height
         bp_gap_x = -self.width / 2 + (self.width - delta_j) / 2  # bottom gap left edge x-coordinate
         bp_gap_x_min = -self.width / 2 + 7  # fixed at minimum size
-        finger_margin = brim_height  # make hats brim this much wider for good finger connection
+        finger_margin = 1  # make hats brim this much wider for good finger connection
 
         # adjust for small loop geometry
+
         small_loop = tp_width > -bp_gap_x * 2
         if small_loop:
             bp_gap_x = bp_gap_x_min
             delta_j = self.loop_area / small_loop_height
+            edge_height = 2.7
 
         junction_shapes_top = []
         junction_shapes_bottom = []
         shadow_shapes = []
 
         # create rounded bottom part and top parts
+
         self.produce_contact_pads(
-            top_pad_layer,
             bp_height,
             bp_gap_x,
             tp_height,
-            tp_width,
             big_loop_height,
             junction_shapes_bottom,
             rounding_params,
             shadow_shapes,
-            junction_shapes_top,
         )
 
         # create rectangular junction-support structures and junctions
+
         if small_loop:
-            small_hat = [
-                pya.DPoint(-small_hat_width / 2, self.height - tp_height),
-                pya.DPoint(-small_hat_width / 2, small_loop_height + loop_bottom_y + brim_height),
-                pya.DPoint(-delta_j / 2 - finger_margin, small_loop_height + loop_bottom_y + brim_height),
-                pya.DPoint(-delta_j / 2 - finger_margin, small_loop_height + loop_bottom_y),
-            ]
-            junction_shapes_top.append(polygon_with_vsym(small_hat).to_itype(self.layout.dbu))
-            if top_pad_layer != "SIS_junction":
-                junction_shapes_bottom.append(polygon_with_vsym(small_hat).to_itype(self.layout.dbu))
-            small_hat_shadow = [
-                small_hat[0] + pya.DPoint(-self.shadow_margin, -self.shadow_margin),
-                small_hat[1] + pya.DPoint(-self.shadow_margin, self.shadow_margin),
-                small_hat[2] + pya.DPoint(-self.shadow_margin, self.shadow_margin),
-                small_hat[3] + pya.DPoint(-self.shadow_margin, -self.shadow_margin),
-            ]
-            shadow_shapes.append(polygon_with_vsym(small_hat_shadow).to_itype(self.layout.dbu))
-            small_hat[3].x += finger_margin
-            self._make_junctions(small_hat[3], loop_bottom_y)
+            self._make_junctions(
+                self.produce_tp_small(
+                    edge_height,
+                    small_loop_height,
+                    loop_bottom_y,
+                    delta_j,
+                    finger_margin,
+                    junction_shapes_top,
+                    top_pad_layer,
+                    junction_shapes_bottom,
+                    shadow_shapes,
+                    h_pad_height,
+                    v_pad_width,
+                    pad_overlap,
+                    tp_width,
+                    tp_height,
+                    rounding_params,
+                )[3],
+                loop_bottom_y,
+            )
         else:
-            tp_brim_left = [
-                pya.DPoint(-delta_j / 2 - finger_margin, self.height - tp_height + brim_height),
-                pya.DPoint(-delta_j / 2 - finger_margin, self.height - tp_height),
-            ]
-            junction_shapes_top.append(polygon_with_vsym(tp_brim_left).to_itype(self.layout.dbu))
-            if top_pad_layer != "SIS_junction":
-                junction_shapes_bottom.append(polygon_with_vsym(tp_brim_left).to_itype(self.layout.dbu))
-            tp_brim_shadow_pts = [
-                tp_brim_left[0] + pya.DPoint(-self.shadow_margin, self.shadow_margin),
-                tp_brim_left[1] + pya.DPoint(-self.shadow_margin, -self.shadow_margin),
-            ]
-            shadow_shapes.append(polygon_with_vsym(tp_brim_shadow_pts).to_itype(self.layout.dbu))
-            tp_brim_left[1].x += finger_margin
-            self._make_junctions(tp_brim_left[1], bp_height, finger_margin)
+            self._make_junctions(
+                self.produce_tp_large(
+                    delta_j,
+                    finger_margin,
+                    tp_height,
+                    junction_shapes_top,
+                    top_pad_layer,
+                    junction_shapes_bottom,
+                    shadow_shapes,
+                    tp_width,
+                    rounding_params,
+                    h_pad_height,
+                )[1],
+                bp_height,
+                finger_margin,
+            )
 
         self._add_shapes(junction_shapes_bottom, "SIS_junction")
         self._add_shapes(junction_shapes_top, top_pad_layer)
@@ -137,40 +139,45 @@ class Manhattan(Squid):
         self._produce_ground_metal_shapes()
         self._add_refpoints()
 
-    def produce_contact_pads(
+    # Create top junction pad  for smaller area
+
+    def produce_tp_small(
         self,
-        top_pad_layer,
-        bp_height,
-        bp_gap_x,
-        tp_height,
-        tp_width,
-        big_loop_height,
-        junction_shapes_bottom,
-        rounding_params,
-        shadow_shapes,
+        edge_height,
+        small_loop_height,
+        loop_bottom_y,
+        delta_j,
+        finger_margin,
         junction_shapes_top,
+        top_pad_layer,
+        junction_shapes_bottom,
+        shadow_shapes,
+        h_pad_height,
+        v_pad_width,
+        pad_overlap,
+        tp_width,
+        tp_height,
+        rounding_params,
     ):
-
-        bp_pts_left = [
-            pya.DPoint(-self.width / 2, -0.5),
-            pya.DPoint(-self.width / 2, bp_height),
-            pya.DPoint(bp_gap_x, bp_height),
-            pya.DPoint(bp_gap_x, self.height - tp_height - big_loop_height),
+        small_hat = [
+            pya.DPoint(-v_pad_width / 2, self.height - edge_height + pad_overlap),
+            pya.DPoint(-v_pad_width / 2, small_loop_height + loop_bottom_y + h_pad_height),
+            pya.DPoint(-delta_j / 2 - finger_margin, small_loop_height + loop_bottom_y + h_pad_height),
+            pya.DPoint(-delta_j / 2 - finger_margin, small_loop_height + loop_bottom_y),
         ]
-        bp_shape = polygon_with_vsym(bp_pts_left)
-        self._round_corners_and_append(bp_shape, junction_shapes_bottom, rounding_params)
-
-        bp_shadow_pts_left = [
-            bp_pts_left[0] + pya.DPoint(-self.shadow_margin, -self.shadow_margin),
-            bp_pts_left[1] + pya.DPoint(-self.shadow_margin, self.shadow_margin),
-            bp_pts_left[2] + pya.DPoint(self.shadow_margin, self.shadow_margin),
-            bp_pts_left[3] + pya.DPoint(self.shadow_margin, self.shadow_margin),
+        junction_shapes_top.append(polygon_with_vsym(small_hat).to_itype(self.layout.dbu))
+        if top_pad_layer != "SIS_junction":
+            junction_shapes_bottom.append(polygon_with_vsym(small_hat).to_itype(self.layout.dbu))
+        small_hat_shadow = [
+            small_hat[0] + pya.DPoint(-self.shadow_margin, self.shadow_margin),
+            small_hat[1] + pya.DPoint(-self.shadow_margin, self.shadow_margin),
+            small_hat[2] + pya.DPoint(-self.shadow_margin, self.shadow_margin),
+            small_hat[3] + pya.DPoint(-self.shadow_margin, -self.shadow_margin),
         ]
-        bp_shadow_shape = polygon_with_vsym(bp_shadow_pts_left)
-        self._round_corners_and_append(bp_shadow_shape, shadow_shapes, rounding_params)
+        shadow_shapes.append(polygon_with_vsym(small_hat_shadow).to_itype(self.layout.dbu))
+        small_hat[3].x += finger_margin
 
         # create rounded top part
-
         tp_pts_left = [
             pya.DPoint(-tp_width / 2, self.height),
             pya.DPoint(-tp_width / 2, self.height - tp_height),
@@ -189,12 +196,99 @@ class Manhattan(Squid):
         ]
         tp_shadow_shape = polygon_with_vsym(tp_shadow_pts_left)
         self._round_corners_and_append(tp_shadow_shape, shadow_shapes, rounding_params)
+        return small_hat
 
-    def _make_junctions(self, top_corner, b_corner_y, finger_margin=0):
+    # Create top junction pad for larger area
+
+    def produce_tp_large(
+        self,
+        delta_j,
+        finger_margin,
+        tp_height,
+        junction_shapes_top,
+        top_pad_layer,
+        junction_shapes_bottom,
+        shadow_shapes,
+        tp_width,
+        rounding_params,
+        h_pad_height,
+    ):
+        tp_brim_left = [
+            pya.DPoint(-delta_j / 2 - finger_margin, self.height - tp_height + h_pad_height),
+            pya.DPoint(-delta_j / 2 - finger_margin, self.height - tp_height),
+        ]
+        junction_shapes_top.append(polygon_with_vsym(tp_brim_left).to_itype(self.layout.dbu))
+        if top_pad_layer != "SIS_junction":
+            junction_shapes_bottom.append(polygon_with_vsym(tp_brim_left).to_itype(self.layout.dbu))
+        tp_brim_shadow_pts = [
+            tp_brim_left[0] + pya.DPoint(-self.shadow_margin, self.shadow_margin),
+            tp_brim_left[1] + pya.DPoint(-self.shadow_margin, -self.shadow_margin),
+        ]
+        shadow_shapes.append(polygon_with_vsym(tp_brim_shadow_pts).to_itype(self.layout.dbu))
+        tp_brim_left[1].x += finger_margin
+
+        # create rounded top part
+        tp_pts_left = [
+            pya.DPoint(-tp_width / 2, self.height),
+            pya.DPoint(-tp_width / 2, self.height - tp_height),
+        ]
+        tp_shape = polygon_with_vsym(tp_pts_left)
+        self._round_corners_and_append(tp_shape, junction_shapes_top, rounding_params)
+
+        # add top pad to bottom shapes in case another layer is used for the upper part of the squid
+
+        if top_pad_layer != "SIS_junction":
+            self._round_corners_and_append(tp_shape, junction_shapes_bottom, rounding_params)
+
+        tp_shadow_pts_left = [
+            tp_pts_left[0] + pya.DPoint(-self.shadow_margin, self.shadow_margin),
+            tp_pts_left[1] + pya.DPoint(-self.shadow_margin, -self.shadow_margin),
+        ]
+        tp_shadow_shape = polygon_with_vsym(tp_shadow_pts_left)
+        self._round_corners_and_append(tp_shadow_shape, shadow_shapes, rounding_params)
+        return tp_brim_left
+
+    # Create bottom junction pad
+
+    def produce_contact_pads(
+        self,
+        bp_height,
+        bp_gap_x,
+        tp_height,
+        big_loop_height,
+        junction_shapes_bottom,
+        rounding_params,
+        shadow_shapes,
+    ):
+        bp_pts_left = [
+            pya.DPoint(-self.width / 2, -0.5),
+            pya.DPoint(-self.width / 2, bp_height),
+            pya.DPoint(bp_gap_x, bp_height),
+            pya.DPoint(bp_gap_x, self.height - tp_height - big_loop_height),
+        ]
+        bp_shape = polygon_with_vsym(bp_pts_left)
+        self._round_corners_and_append(bp_shape, junction_shapes_bottom, rounding_params)
+
+        bp_shadow_pts_left = [
+            bp_pts_left[0] + pya.DPoint(-self.shadow_margin, -self.shadow_margin),
+            bp_pts_left[1] + pya.DPoint(-self.shadow_margin, self.shadow_margin),
+            bp_pts_left[2] + pya.DPoint(self.shadow_margin, self.shadow_margin),
+            bp_pts_left[3] + pya.DPoint(self.shadow_margin, self.shadow_margin),
+        ]
+        bp_shadow_shape = polygon_with_vsym(bp_shadow_pts_left)
+        self._round_corners_and_append(bp_shadow_shape, shadow_shapes, rounding_params)
+
+    def _make_junctions(
+        self,
+        top_corner,
+        b_corner_y,
+        finger_margin=0,
+    ):
         """Create junction fingers and add them to some SIS layer.
 
         Choose 'SIS_junction' layer by default but 'SIS_junction_2' if ``separate_junctions`` is True.
         """
+
         jx = top_corner.x - (top_corner.y - b_corner_y) / 2
         jy = (top_corner.y + b_corner_y) / 2
         ddb = self.junction_width * sqrt(0.5)
@@ -223,7 +317,9 @@ class Manhattan(Squid):
                 (pya.DTrans(jx - finger_margin, jy) * finger_top).to_itype(self.layout.dbu),
                 (pya.DTrans(3, False, jx - finger_margin, jy) * finger_bottom).to_itype(self.layout.dbu),
             ]
+
             # place refpoints at the middle of the junction. In this case, "l" and "r" coincide.
+
             self.refpoints["l"] = pya.DPoint(
                 jx - fo - finger_margin + self.finger_overshoot * squa, jy - fo + self.finger_overshoot * squa
             )
@@ -235,7 +331,9 @@ class Manhattan(Squid):
                 (pya.DTrans(3, False, jx - finger_margin, jy) * finger_bottom).to_itype(self.layout.dbu),
                 (pya.DTrans(3, False, jx - 2 * top_corner.x, jy) * finger_bottom).to_itype(self.layout.dbu),
             ]
+
             # place refpoints at the middle of the left and right junctions
+
             self.refpoints["l"] = pya.DPoint(
                 jx - fo - finger_margin + self.finger_overshoot * squa, jy - fo + self.finger_overshoot * squa
             )
@@ -249,17 +347,21 @@ class Manhattan(Squid):
 
     def _add_shapes(self, shapes, layer):
         """Merge shapes into a region and add it to layer."""
+
         region = pya.Region(shapes).merged()
         self.cell.shapes(self.get_layer(layer)).insert(region)
 
     def _add_refpoints(self):
         """Adds the "origin_squid" refpoint and port "common"."""
+
         self.refpoints["origin_squid"] = pya.DPoint(0, 0)
         self.add_port("common", pya.DPoint(0, self.metal_gap_top_y))
 
     def _produce_ground_metal_shapes(self):
         """Produces hardcoded shapes in metal gap and metal addition layers."""
+
         # metal additions bottom
+
         x0 = -12 if self.compact_geometry else -13
         y0 = -1
         bottom_pts = [
@@ -272,7 +374,9 @@ class Manhattan(Squid):
         ]
         shape = polygon_with_vsym(bottom_pts)
         self.cell.shapes(self.get_layer("base_metal_addition")).insert(shape)
+
         # metal additions top
+
         y0 = 12 if self.compact_geometry else 14.5
         top_pts = [
             pya.DPoint(-2, y0 + 3),
@@ -284,7 +388,9 @@ class Manhattan(Squid):
         ]
         shape = polygon_with_vsym(top_pts)
         self.cell.shapes(self.get_layer("base_metal_addition")).insert(shape)
+
         # metal gap
+
         if self.include_base_metal_gap:
             pts = bottom_pts[::-1] + [pya.DPoint(-20.5, -2), pya.DPoint(-20.5, self.metal_gap_top_y)] + top_pts[::-1]
             shape = polygon_with_vsym(pts)
@@ -292,12 +398,19 @@ class Manhattan(Squid):
 
     def _produce_ground_grid_avoidance(self):
         """Add ground grid avoidance."""
+
         w = self.cell.dbbox().width()
         h = self.cell.dbbox().height()
         protection = pya.DBox(-w / 2 - self.margin, -2 - self.margin, w / 2 + self.margin, h - 2 + self.margin)
         self.add_protection(protection)
 
-    def _round_corners_and_append(self, polygon, polygon_list, rounding_params):
+    def _round_corners_and_append(
+        self,
+        polygon,
+        polygon_list,
+        rounding_params,
+    ):
         """Rounds the corners of the polygon, converts it to integer coordinates, and adds it to the polygon list."""
+
         polygon = polygon.round_corners(rounding_params["rinner"], rounding_params["router"], rounding_params["n"])
         polygon_list.append(polygon.to_itype(self.layout.dbu))
