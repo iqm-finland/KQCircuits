@@ -484,7 +484,7 @@ run them directly from the terminal with <code class="docutils literal notransla
 <blockquote>
 <div><ol class="arabic">
 <li><p>Launch KLayout Editor and open the Macro IDE (F5).</p></li>
-<li><p>Add the following script to the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/masks">kqcircuits_scripts/masks</a> folder in
+<li><p>Add the following script to the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/masks">kqcircuits_scripts/masks</a> folder in
 the <code class="docutils literal notranslate"><span class="pre">Python</span></code> tab of the Macro IDE:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Imports required for any mask</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.masks.mask_set</span> <span class="kn">import</span> <span class="n">MaskSet</span>
@@ -535,7 +535,7 @@ the <code class="docutils literal notranslate"><span class="pre">Python</span></
 beginning and end of the script (creating the MaskSet object, and exporting the
 mask) are generally the same for any mask.</p>
 </li>
-<li><p>(Optional) Open <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/macros/logging_setup.lym">kqcircuits_scripts/macros/logging_setup</a> and run it.
+<li><p>(Optional) Open <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/macros/logging_setup.lym">kqcircuits_scripts/macros/logging_setup</a> and run it.
 This makes mask generation logs visible in the Macro console.</p></li>
 <li><p>With the mask script open, click “Run script from current tab” (Shift+F5). This generates the
 mask and exports the files to the folder defined by <code class="docutils literal notranslate"><span class="pre">kqcircuits.default.TMP_PATH</span></code> or to any
@@ -597,7 +597,7 @@ defined in the previous step.</p></li>
 are supposed to have elements in two different chip faces for a flip-chip
 process. However, the generated mask only contained the parts in “1t1”-face.
 To generate mask for also “2b1”-face chips, we need to add an
-additional <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/masks/mask_layout.py">mask_layout</a></p>
+additional <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits/masks/mask_layout.py">mask_layout</a></p>
 <ol class="arabic">
 <li><p>Add the following below the old <code class="docutils literal notranslate"><span class="pre">add_mask_layout()</span></code> call:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">test_mask</span><span class="o">.</span><span class="n">add_mask_layout</span><span class="p">([</span>

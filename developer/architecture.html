@@ -561,13 +561,13 @@ instance is then created or updated based on these new parameter values.</p></li
 with the <code class="docutils literal notranslate"><span class="pre">Param</span></code> descriptor class. These can be used like normal instance
 variables. The values of these parameters can be set from the KLayout GUI, or in
 the <code class="docutils literal notranslate"><span class="pre">create</span></code> or <code class="docutils literal notranslate"><span class="pre">add_element</span></code> methods in code.  The parameters of a class
-are automatically merged with its parent’s parameters (see <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/elements/element.py">element.py</a>), so
+are automatically merged with its parent’s parameters (see <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits/elements/element.py">element.py</a>), so
 an instance will contain the parameters of all its ancestors in the inheritance
 hierarchy. When building hierarchical elements the parameter values appropriate
 for a sub-element are transparently passed to it from the caller with
 <code class="docutils literal notranslate"><span class="pre">add_element</span></code> or <code class="docutils literal notranslate"><span class="pre">insert_cell</span></code>.</p>
 <p>It is possible to change inherited parameters default values in a per class
-basis using the <code class="docutils literal notranslate"><span class="pre">default_parameter_values</span></code> section of the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/defaults.py">defaults.py</a>
+basis using the <code class="docutils literal notranslate"><span class="pre">default_parameter_values</span></code> section of the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits/defaults.py">defaults.py</a>
 configuration file. Technically this creates a copy of the Param object with
 different default value.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">add_parameters_from</span></code>  or <code class="docutils literal notranslate"><span class="pre">add_parameter</span></code> decorator functions add some other class’
@@ -635,10 +635,10 @@ available for all derived classes.</p>
 </figcaption>
 </figure>
 <p>Libraries have a strict dependency order defined in <code class="docutils literal notranslate"><span class="pre">kqc_library_names</span></code> in
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/defaults.py">defaults.py</a>. KLayout loads them in this order. Classes <em>can not</em> use other
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits/defaults.py">defaults.py</a>. KLayout loads them in this order. Classes <em>can not</em> use other
 classes from other libraries downstream in the dependency graph.</p>
 <p>The elements in these libraries are automatically discovered and registered to
-KLayout by <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/util/library_helper.py">library_helper.py</a>. It finds all classes in KQCircuits
+KLayout by <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits/util/library_helper.py">library_helper.py</a>. It finds all classes in KQCircuits
 directory which inherit from <code class="docutils literal notranslate"><span class="pre">PCellDeclarationHelper</span></code>, and uses their
 <code class="docutils literal notranslate"><span class="pre">LIBRARY_NAME</span></code> attribute to register them to the correct library. Note
 that this requires all element classes to follow PascalCase naming
@@ -647,7 +647,7 @@ convention, as required by PEP-8.</p>
 <section id="pya-resolver">
 <h2>pya resolver<a class="headerlink" href="#pya-resolver" title="Permalink to this headline"></a></h2>
 <p>Any KLayout functions/classes/etc. should be imported using <code class="docutils literal notranslate"><span class="pre">pya_resolver</span></code>
-(see <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/pya_resolver.py">pya_resolver.py</a>). For example, you should write
+(see <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits/pya_resolver.py">pya_resolver.py</a>). For example, you should write
 <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">kqcircuits.pya_resolver</span> <span class="pre">import</span> <span class="pre">pya</span></code>, and <strong>not</strong> <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">pya</span></code> or
 <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">klayout.db</span></code>. This ensures that KQCircuits works both with KLayout
 GUI and the standalone module.</p>

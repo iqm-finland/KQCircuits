@@ -556,6 +556,35 @@ If None, picks a point in shape polygon, sorts points top to bottom then tie-bre
 <dd><p>A generator of available layer slots</p>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.xsection.xsection_export.visualise_xsection_cut_on_original_layout">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.xsection.xsection_export.</span></span><span class="sig-name descname"><span class="pre">visualise_xsection_cut_on_original_layout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><span class="pre">kqcircuits.simulations.simulation.Simulation</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cuts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">klayout.dbcore.DPoint</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">klayout.dbcore.DPoint</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">klayout.dbcore.DPoint</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">klayout.dbcore.DPoint</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cut_label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cut'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width_ratio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/xsection/xsection_export.html#visualise_xsection_cut_on_original_layout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.xsection.xsection_export.visualise_xsection_cut_on_original_layout" title="Permalink to this definition"></a></dt>
+<dd><p>Visualise requested xsection cuts on the original simulation layout.</p>
+<p>Will add a rectangle between two points of the cut, and two text points into layer “xsection_cut”:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">*</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cut_label</span><span class="si">}</span><span class="s2">_1&quot;</span> <span class="n">representing</span> <span class="n">the</span> <span class="n">left</span> <span class="n">side</span> <span class="n">of</span> <span class="n">the</span> <span class="n">cross</span> <span class="n">section</span> <span class="n">simulation</span>
+<span class="o">*</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cut_label</span><span class="si">}</span><span class="s2">_2&quot;</span> <span class="n">representing</span> <span class="n">the</span> <span class="n">right</span> <span class="n">side</span> <span class="n">of</span> <span class="n">the</span> <span class="n">cross</span> <span class="n">section</span> <span class="n">simulation</span>
+</pre></div>
+</div>
+<p>In case the export takes xsections for one simulation multiple times, this function
+can be called on same simulation sweep multiple times so that multiple cuts can be visualised
+in the same layout. In such case it is recommended to differentiate the cuts using <cite>cut_label</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>simulations</strong> – list of simulations from which xsections are taken. After this call these simulations
+will be modified to include the visualised cuts.</p></li>
+<li><p><strong>cuts</strong> – <ol class="arabic simple">
+<li><p>A tuple (p1, p2), where p1 and p2 are endpoints of a cross-section cut or</p></li>
+<li><p>a list of such tuples such that each Simulation object gets an individual cut</p></li>
+</ol>
+</p></li>
+<li><p><strong>cut_label</strong> – prefix of the two text points shown for the cut</p></li>
+<li><p><strong>width_ratio</strong> – rectangles visualising cuts will have a width of length of the cut multiplied by width_ratio</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <img alt="../_images/kqcircuits.simulations.export.xsection.xsection_export.png" src="../_images/kqcircuits.simulations.export.xsection.xsection_export.png" />
 </section>
 

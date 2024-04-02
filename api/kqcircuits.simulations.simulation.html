@@ -700,15 +700,14 @@ More precisely:
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.insert_layer">
-<span class="sig-name descname"><span class="pre">insert_layer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">region</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.insert_layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.insert_layer" title="Permalink to this definition"></a></dt>
-<dd><p>Merges points in the <cite>region</cite> and inserts the result in a target layer. The params are forwarded to the
-‘self.layers’ dictionary.</p>
+<span class="sig-name descname"><span class="pre">insert_layer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.insert_layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.insert_layer" title="Permalink to this definition"></a></dt>
+<dd><p>Adds layer parameters into ‘self.layers’ if region is non-empty.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.insert_stacked_up_layers">
 <span class="sig-name descname"><span class="pre">insert_stacked_up_layers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stack</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.insert_stacked_up_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.insert_stacked_up_layers" title="Permalink to this definition"></a></dt>
-<dd><p>Produces the layer stack-up and adds the layers into ‘self.layers’ dictionary.
+<dd><p>Produces the layer stack-up and adds the layers into ‘self.layers’.
 Each layer is split into sub-layers by their z-level.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -736,6 +735,17 @@ Each layer is split into sub-layers by their z-level.</p>
 thicknesses, materials, and other properties are stored in ‘self.layers’ parameter.</p>
 <p>In the simulation-specific layers, all geometry has been merged and converted to simple polygons, that is,
 polygons without holes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.produce_layers">
+<span class="sig-name descname"><span class="pre">produce_layers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.produce_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.produce_layers" title="Permalink to this definition"></a></dt>
+<dd><p>Finalizes and partitions self.layers.</p>
+<p>Metals and non-model objects are left without partitioning. We assume that these do not overlap.</p>
+<p>Vacuum or dielectric objects are partitioned if parts is not empty. If these objects overlap, the smaller is
+subtracted from larger.</p>
+<p>Non-model objects are subtracted from vacuum or dielectric objects only if non-model object is mentioned in
+subtract_keys of vacuum or dielectric object.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -875,7 +885,7 @@ access more than one sub-cell sharing the same ‘name’, but with different ap
 <li><p><strong>hollow_tsv</strong><em> (Boolean)</em><span> - Make TSVs hollow with vacuum inside and thin metal boundary.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>partition_regions</strong><em> (String)</em><span> - See constructor of the PartitionRegion class for parameter definitions.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[]</span></code></p></li>
 <li><p><strong>tls_layer_thickness</strong><em> (List)</em><span> - Thickness of TLS interface layers (MA, MS, and SA, respectively)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[0.0]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
-<li><p><strong>tls_layer_material</strong><em> (List)</em><span> - Use None to create non-model layers. Otherwise, use only keywords introduced in material_dict.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>tls_layer_material</strong><em> (List)</em><span> - Use only keywords introduced in material_dict.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['vacuum',</span> <span class="pre">'silicon',</span> <span class="pre">'silicon']</span></code></p></li>
 <li><p><strong>tls_sheet_approximation</strong><em> (Boolean)</em><span> - Approximate TLS interface layers as sheets</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>minimum_point_spacing</strong><em> (Double)</em><span> - Tolerance for merging adjacent points in polygon</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.01</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
 <li><p><strong>polygon_tolerance</strong><em> (Double)</em><span> - Tolerance for merging adjacent polygons in a layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.004</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>

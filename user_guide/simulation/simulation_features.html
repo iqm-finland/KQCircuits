@@ -591,25 +591,25 @@ That is, you create a simulation subclass, create an empty folder for export fil
 and call the <a class="reference internal" href="../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer" title="kqcircuits.simulations.export.elmer.elmer_export.export_elmer"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_elmer()</span></code></a> function with suitable
 <code class="docutils literal notranslate"><span class="pre">export_parameters</span></code>.
 An example for simulating coplanar-waveguide cross-section can be found in
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/cpw_cross_section_sim.py">klayout_package/python/scripts/simulations/cpw_cross_section_sim.py</a>.</p>
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations/cpw_cross_section_sim.py">klayout_package/python/scripts/simulations/cpw_cross_section_sim.py</a>.</p>
 <p>There is an additional <code class="docutils literal notranslate"><span class="pre">Xsection</span></code> tool to create cross-sectional geometries out of the x-y-layouts.
 The tool is described in more details in <a class="reference internal" href="../xsection.html#creating-cross-section-images"><span class="std std-ref">Creating cross section images</span></a> and an example simulation can be found in
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/waveguides_sim_xsection.py">klayout_package/python/scripts/simulations/waveguides_sim_xsection.py</a>.</p>
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations/waveguides_sim_xsection.py">klayout_package/python/scripts/simulations/waveguides_sim_xsection.py</a>.</p>
 </section>
 <section id="pyepr">
 <span id="py-epr"></span><h2>pyEPR<a class="headerlink" href="#pyepr" title="Permalink to this headline"></a></h2>
 <p><a class="reference external" href="https://github.com/zlatko-minev/pyEPR">pyEPR</a> is supported for HFSS eigenmode simulations.
 A pyEPR simulation is activated using <code class="docutils literal notranslate"><span class="pre">ansys_tool='eigenmode'</span></code> and <code class="docutils literal notranslate"><span class="pre">simulation_flags=['pyepr']</span></code> in the
 <code class="docutils literal notranslate"><span class="pre">export_ansys</span></code> function call.
-An example simulation is found at <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/xmons_direct_coupling_pyepr.py">klayout_package/python/scripts/simulations/xmons_direct_coupling_pyepr.py</a>.
+An example simulation is found at <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations/xmons_direct_coupling_pyepr.py">klayout_package/python/scripts/simulations/xmons_direct_coupling_pyepr.py</a>.
 See <a class="reference external" href="https://github.com/iqm-finland/KQCircuits-Examples/blob/main/notebooks/pyEPR_example.ipynb">pyEPR_example.ipynb</a>
 in the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits-Examples/">KQCircuits-Examples</a> repository for an example on using
 pyEPR itself.</p>
 <p>The pyEPR can be used for TLS-limited <span class="math notranslate nohighlight">\(T_1\)</span> estimation by using additional export parameter
 <code class="docutils literal notranslate"><span class="pre">intermediate_processing_command='python</span> <span class="pre">&quot;scripts/t1_estimate.py&quot;'</span></code>.
-This will run <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/t1_estimate.py">t1_estimate.py</a> between
+This will run <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations/ansys/t1_estimate.py">t1_estimate.py</a> between
 queued simulations and compute the electrical participations in the lossy interfaces.
-See <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/double_pads_sim.py">double_pads_sim.py</a> for an example and
+See <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations/double_pads_sim.py">double_pads_sim.py</a> for an example and
 <cite>N. Savola, ‘Design and modelling of long-coherence qubits using energy participation ratios’, Master’s thesis,
 Aalto University, 2023</cite>, for details on the method.</p>
 </section>

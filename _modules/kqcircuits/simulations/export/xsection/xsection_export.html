@@ -748,6 +748,45 @@
         <span class="k">yield</span> <span class="n">layer_index</span></div>
 
 
+<div class="viewcode-block" id="visualise_xsection_cut_on_original_layout"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.xsection.xsection_export.html#kqcircuits.simulations.export.xsection.xsection_export.visualise_xsection_cut_on_original_layout">[docs]</a><span class="k">def</span> <span class="nf">visualise_xsection_cut_on_original_layout</span><span class="p">(</span>
+    <span class="n">simulations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Simulation</span><span class="p">],</span>
+    <span class="n">cuts</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">]]],</span>
+    <span class="n">cut_label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;cut&quot;</span><span class="p">,</span>
+    <span class="n">width_ratio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Visualise requested xsection cuts on the original simulation layout.</span>
+
+<span class="sd">    Will add a rectangle between two points of the cut, and two text points into layer &quot;xsection_cut&quot;::</span>
+
+<span class="sd">        * f&quot;{cut_label}_1&quot; representing the left side of the cross section simulation</span>
+<span class="sd">        * f&quot;{cut_label}_2&quot; representing the right side of the cross section simulation</span>
+
+<span class="sd">    In case the export takes xsections for one simulation multiple times, this function</span>
+<span class="sd">    can be called on same simulation sweep multiple times so that multiple cuts can be visualised</span>
+<span class="sd">    in the same layout. In such case it is recommended to differentiate the cuts using `cut_label`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        simulations: list of simulations from which xsections are taken. After this call these simulations</span>
+<span class="sd">            will be modified to include the visualised cuts.</span>
+<span class="sd">        cuts: 1. A tuple (p1, p2), where p1 and p2 are endpoints of a cross-section cut or</span>
+<span class="sd">              2. a list of such tuples such that each Simulation object gets an individual cut</span>
+<span class="sd">        cut_label: prefix of the two text points shown for the cut</span>
+<span class="sd">        width_ratio: rectangles visualising cuts will have a width of length of the cut multiplied by width_ratio</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cuts</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">):</span>
+        <span class="n">cuts</span> <span class="o">=</span> <span class="p">[</span><span class="n">cuts</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">simulations</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">simulations</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cuts</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Number of cuts did not match the number of simulations&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">simulation</span><span class="p">,</span> <span class="n">cut</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="n">cuts</span><span class="p">):</span>
+        <span class="n">cut_length</span> <span class="o">=</span> <span class="p">(</span><span class="n">cut</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">cut</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
+        <span class="n">marker</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">(</span><span class="n">cut</span><span class="p">,</span> <span class="n">cut_length</span> <span class="o">*</span> <span class="n">width_ratio</span><span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
+        <span class="c1"># Not using get_sim_layer since this geometry is not part of any simulation</span>
+        <span class="n">cut_visualisation_layer</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="s2">&quot;xsection_cut&quot;</span><span class="p">)</span>
+        <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">cut_visualisation_layer</span><span class="p">)</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span>
+        <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">cut_visualisation_layer</span><span class="p">)</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cut_label</span><span class="si">}</span><span class="s2">_1&quot;</span><span class="p">,</span> <span class="n">cut</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">cut</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
+        <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">cut_visualisation_layer</span><span class="p">)</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cut_label</span><span class="si">}</span><span class="s2">_2&quot;</span><span class="p">,</span> <span class="n">cut</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">cut</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">y</span><span class="p">))</span></div>
+
+
 <span class="k">def</span> <span class="nf">_load_layout_options_for_xsection_output</span><span class="p">():</span>
     <span class="n">load_opts</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LoadLayoutOptions</span><span class="p">()</span>
     <span class="n">load_opts</span><span class="o">.</span><span class="n">cell_conflict_resolution</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LoadLayoutOptions</span><span class="o">.</span><span class="n">CellConflictResolution</span><span class="o">.</span><span class="n">RenameCell</span>

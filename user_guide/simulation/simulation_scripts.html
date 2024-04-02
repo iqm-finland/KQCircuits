@@ -472,7 +472,7 @@ For the details of the tool-specific arguments, please see the API of each funct
 <section id="ansys-export">
 <h2>Ansys export<a class="headerlink" href="#ansys-export" title="Permalink to this headline"></a></h2>
 <p>Before exporting the Ansys simulations make sure that the <code class="docutils literal notranslate"><span class="pre">ANSYS_EXECUTABLE</span></code> parameter in
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/defaults.py">kqcircuits/defaults.py</a> matches with your Ansys version and
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits/defaults.py">kqcircuits/defaults.py</a> matches with your Ansys version and
 installation location.
 The Ansys simulations are developed and tested with both Windows and Linux installation of the latest
 <a class="reference external" href="https://www.ansys.com/products/electronics">Ansys Electronics desktop</a>.</p>
@@ -511,7 +511,7 @@ After the execution, the output files are written to a folder in the KQCircuits 
 It calls internally the following functions:</p>
 <ul class="simple">
 <li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">copy_ansys_scripts_to_directory()</span></code>, which copies the folder
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys">scripts/simulations/ansys/</a> into the simulation
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations/ansys">scripts/simulations/ansys/</a> into the simulation
 directory. The folder contains needed IronPython scripts to run simulations in Ansys Electronics Desktop.</p></li>
 <li><p><a class="reference internal" href="../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys_json" title="kqcircuits.simulations.export.ansys.ansys_export.export_ansys_json"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_ansys_json()</span></code></a>, which exports x-y-shapes as GDSII file
 and other meta-data in json format for each simulation.</p></li>
@@ -519,7 +519,7 @@ and other meta-data in json format for each simulation.</p></li>
 all simulations in series.</p></li>
 </ul>
 <p>The simulations can be run by executing the <code class="docutils literal notranslate"><span class="pre">simulation.bat</span></code> script file.</p>
-<p>More examples of simulation scripts are available in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations">klayout_package/python/scripts/simulations</a>.</p>
+<p>More examples of simulation scripts are available in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations">klayout_package/python/scripts/simulations</a>.</p>
 </section>
 <section id="elmer-export">
 <h2>Elmer export<a class="headerlink" href="#elmer-export" title="Permalink to this headline"></a></h2>
@@ -541,7 +541,7 @@ two lines:</p>
 <ul class="simple">
 <li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">copy_elmer_scripts_to_directory()</span></code>, which copies the Gmsh and
 Elmer script folder
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/elmer/scripts">scripts/simulations/elmer/scripts/</a> into the
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations/elmer/scripts">scripts/simulations/elmer/scripts/</a> into the
 simulation directory.</p></li>
 <li><p><a class="reference internal" href="../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer_json" title="kqcircuits.simulations.export.elmer.elmer_export.export_elmer_json"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_elmer_json()</span></code></a>, which exports x-y-shapes as GDSII file
 and other meta-data in json format for each simulation.</p></li>
@@ -577,8 +577,8 @@ For more information, we refer API for <a class="reference internal" href="../..
 <p>An alternative way to export simulations is to draw the geometry (place elements or draw manually) in
 KLayout, and run one of the following macros.</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/macros/export/export_ansys.lym">scripts/macros/export/export_ansys.lym</a></p></li>
-<li><p><a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/macros/export/export_sonnet.lym">scripts/macros/export/export_sonnet.lym</a></p></li>
+<li><p><a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/macros/export/export_ansys.lym">scripts/macros/export/export_ansys.lym</a></p></li>
+<li><p><a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/macros/export/export_sonnet.lym">scripts/macros/export/export_sonnet.lym</a></p></li>
 </ul>
 <p>Similarly, the simulation instances can be created from an existing KLayout Cell <code class="docutils literal notranslate"><span class="pre">cell</span></code> in code:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">simulation</span> <span class="o">=</span> <span class="n">Simulation</span><span class="o">.</span><span class="n">from_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Dev&#39;</span><span class="p">,</span> <span class="n">margin</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>

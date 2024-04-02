@@ -468,10 +468,10 @@ writing Python code for new elements.</p>
 <section id="file-system-hierarchy">
 <h2>File system hierarchy<a class="headerlink" href="#file-system-hierarchy" title="Permalink to this headline"></a></h2>
 <p>In the KQCircuits root folder the most important folder for most users is the
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package">klayout_package</a> folder, which is also all that is included in the Salt
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package">klayout_package</a> folder, which is also all that is included in the Salt
 package. Other folders are mainly for automatic tests and documentation.
-KQCircuits code is divided into the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits">kqcircuits</a> and
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts">scripts</a> folders in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python">klayout_package/python</a>.
+KQCircuits code is divided into the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits">kqcircuits</a> and
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts">scripts</a> folders in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python">klayout_package/python</a>.
 These two folders are also (after installation process) linked as symbolic links <code class="docutils literal notranslate"><span class="pre">kqcircuits</span></code> and
 <code class="docutils literal notranslate"><span class="pre">kqcircuits_scripts</span></code> in the <code class="docutils literal notranslate"><span class="pre">~/.klayout</span></code> or <code class="docutils literal notranslate"><span class="pre">~/KLayout</span></code> folder.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">kqcircuits</span></code> folder contains all the KQCircuits elements and many
@@ -521,7 +521,7 @@ need to have:</p>
 <p>in a file <code class="docutils literal notranslate"><span class="pre">my_qubit.py</span></code> in <code class="docutils literal notranslate"><span class="pre">kqcircuits/qubits</span></code> folder.</p>
 <p>The registration
 of Element classes to different libraries is handled by KQCircuits code in
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/util/library_helper.py">library_helper.py</a> and <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/elements/element.py">element.py</a>. For more information about the underlying PCell
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits/util/library_helper.py">library_helper.py</a> and <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits/elements/element.py">element.py</a>. For more information about the underlying PCell
 libraries see the KLayout documentation pages
 <a class="reference external" href="https://www.klayout.de/doc-qt5/about/about_libraries.html">About Libraries</a>,
 <a class="reference external" href="https://www.klayout.de/doc-qt5/code/class_Library.html">Class Library</a>, and
@@ -655,7 +655,7 @@ KQCircuits chip library.</p>
 </div>
 <p>to make the chip have the correct launchers and size for fitting in an
 “SMA8”-type sampleholder. The available sampleholder types are  defined in
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/defaults.py">defaults.py</a>
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits/defaults.py">defaults.py</a>
 <code class="docutils literal notranslate"><span class="pre">default_sampleholders</span></code>. You can add new sampleholder types there, for
 example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;RF16&quot;</span><span class="p">:</span> <span class="p">{</span>
@@ -779,7 +779,7 @@ when the “Merge grid and other gaps into base_metal_gap layer” parameter is 
 in the geometry are also automatically resolved, such that elements that should touch connect without gaps.
 Hidden by default.</p></li>
 </ul>
-<p>Find more details in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/defaults.py">defaults.py</a>.</p>
+<p>Find more details in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits/defaults.py">defaults.py</a>.</p>
 </section>
 <section id="faces">
 <h2>Faces<a class="headerlink" href="#faces" title="Permalink to this headline"></a></h2>
@@ -787,7 +787,7 @@ Hidden by default.</p></li>
 bottom or top sides of it. To identify faces in multi chip configurations we number the chips from
 “1”. For technical reasons we permit multiple faces in a particular side. For example “2b1” denotes
 the bottom face of the 2nd chip in a typical flip-chip configuration. See more details in
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/layer_config/default_layer_config.py">default_layer_config.py</a>.</p>
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits/layer_config/default_layer_config.py">default_layer_config.py</a>.</p>
 <p>Elements support a concept of <strong>faces</strong>, used for 3D-integrated chips to place shapes in layers
 belonging to different sides of (possibly) different wafers. For example, an
 element may create shapes in face 0 and face 1, and the <code class="docutils literal notranslate"><span class="pre">face_ids</span></code> parameter
@@ -814,25 +814,25 @@ placed in:</p>
 <h3>Layer configuration files<a class="headerlink" href="#layer-configuration-files" title="Permalink to this headline"></a></h3>
 <p>Layer configuration files are used to define the names of layers and faces, and
 many other values related to them. The <code class="docutils literal notranslate"><span class="pre">layer_config_path</span></code> variable in
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/defaults.py">defaults.py</a>
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits/defaults.py">defaults.py</a>
 controls which layer configuration file is used, so you can define your own
 layer configuration with completely different layer names etc. and use it by
 changing <code class="docutils literal notranslate"><span class="pre">layer_config_path</span></code>.</p>
 <p>For more information on what to include in these layer configuration files, see
-the comments in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/defaults.py">defaults.py</a>
+the comments in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits/defaults.py">defaults.py</a>
 and the layer configuration files in
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/layer_config">layer_config</a>
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits/layer_config">layer_config</a>
 directory. Currently included are
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/layer_config/default_layer_config.py">default_layer_config.py</a>
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits/layer_config/default_layer_config.py">default_layer_config.py</a>
 (used by default in KQC) and a simpler
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/layer_config/example_layer_config.py">example_layer_config.py</a>
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits/layer_config/example_layer_config.py">example_layer_config.py</a>
 which may be useful as a starting point to define your own layer
 configuration file.</p>
 </section>
 <section id="adding-a-new-face">
 <h3>Adding a new face<a class="headerlink" href="#adding-a-new-face" title="Permalink to this headline"></a></h3>
 <p>New layers and new faces can be added in
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/defaults.py">defaults.py</a>
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits/defaults.py">defaults.py</a>
 by modifying <code class="docutils literal notranslate"><span class="pre">default_layers</span></code> and <code class="docutils literal notranslate"><span class="pre">default_faces</span></code>. As an example, let’s
 add a new face <code class="docutils literal notranslate"><span class="pre">x</span></code> with some layers that are in KQCircuits default faces
 and one new layer:</p>
@@ -870,7 +870,7 @@ directly or by modifying the layers list in GUI and saving them using KLayout
 </section>
 <section id="opening-element-or-chip-from-an-ide">
 <h2>Opening <a class="reference internal" href="../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a> or <a class="reference internal" href="../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip" title="kqcircuits.chips.chip.Chip"><code class="xref py py-class docutils literal notranslate"><span class="pre">Chip</span></code></a> from an IDE<a class="headerlink" href="#opening-element-or-chip-from-an-ide" title="Permalink to this headline"></a></h2>
-<p>You can use <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/util/create_element_from_path.py">util/create_element_from_path.py</a> to open a
+<p>You can use <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//util/create_element_from_path.py">util/create_element_from_path.py</a> to open a
 <a class="reference internal" href="../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a> or <a class="reference internal" href="../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip" title="kqcircuits.chips.chip.Chip"><code class="xref py py-class docutils literal notranslate"><span class="pre">Chip</span></code></a> in KLayout from your IDE (or just straight from the
 command-line).  The script is used as:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">klayout</span> <span class="o">-</span><span class="n">e</span> <span class="o">-</span><span class="n">rx</span> <span class="o">-</span><span class="n">rm</span> <span class="n">util</span><span class="o">/</span><span class="n">create_element_from_path</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">rd</span> <span class="n">element_path</span><span class="o">=</span><span class="n">kqcircuits</span><span class="o">/</span><span class="n">chips</span><span class="o">/</span><span class="n">demo</span><span class="o">.</span><span class="n">py</span>

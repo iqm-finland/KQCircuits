@@ -470,21 +470,21 @@ executing <cite>pytest</cite> or <cite>pytest -n &lt;NUM&gt;</cite> for some spe
 <p>All tests are placed in a separate
 <code class="docutils literal notranslate"><span class="pre">tests</span></code> folder in the project root. This folder should reflect the same hierarchy as
 for the kqcircuits source folder. For example, if you are writing tests for
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/util/library_helper.py">kqcircuits/util/library_helper.py</a>, then you would create and use the same path to
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits/util/library_helper.py">kqcircuits/util/library_helper.py</a>, then you would create and use the same path to
 the corresponding folder containing tests for <code class="docutils literal notranslate"><span class="pre">library_helper.py</span></code> such as
 <code class="docutils literal notranslate"><span class="pre">tests/util/library_helper</span></code>.</p>
 <p>For better organization and improved reporting, create a folder for each module
 that you test. This folder would then contain a module for each method that you
 want to test. Within that module, you would have test functions for each case
 that you want to test for that method. For example, continuing to use
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/util/library_helper.py">library_helper.py</a> to demonstrate the proposed structure, the <code class="docutils literal notranslate"><span class="pre">library_helper</span></code> folder
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits/util/library_helper.py">library_helper.py</a> to demonstrate the proposed structure, the <code class="docutils literal notranslate"><span class="pre">library_helper</span></code> folder
 would have a <code class="docutils literal notranslate"><span class="pre">test_load_library.py</span></code> module which may contain test cases such as
 <code class="docutils literal notranslate"><span class="pre">test_invalid_name</span></code>.</p>
 <p>The above approach helps us organize our test cases into files which can easily be located
 and do not get too large, while also producing pytest reports which are easy to understand.
 Unfortunately, the repetitive <code class="docutils literal notranslate"><span class="pre">test</span></code> prefixes are conventional and needed for pytest to find
 and/or filter tests at both module and function level. The required
-prefixes/postfixes for the tests are defined in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/pytest.ini">pytest.ini</a>. Do not change
+prefixes/postfixes for the tests are defined in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//pytest.ini">pytest.ini</a>. Do not change
 them without careful consideration, or the unit tests may not run properly.</p>
 <p>You can run all tests and view coverage by running
 the following command in the project root directory.</p>
@@ -498,7 +498,7 @@ points of failure, edge cases, and so on.</p>
 <p>Do not test private methods directly, but only their effects on the public methods that call them.</p>
 <p>Similarly, if you fix a bug, write a test that would have failed prior to your fix,
 so you can be sure that the bug wil not be reintroduced later.</p>
-<p>Please note that the empty <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/conftest.py">conftest.py</a> file in the project root is required
+<p>Please note that the empty <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//conftest.py">conftest.py</a> file in the project root is required
 so that pytest can follow imports to source code.</p>
 </section>
 </section>

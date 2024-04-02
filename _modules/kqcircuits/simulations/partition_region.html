@@ -469,78 +469,106 @@
 <span class="c1"># The software distribution should follow IQM trademark policy for open-source software</span>
 <span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
 <span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
-
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+
+
+<div class="viewcode-block" id="get_list_of_two"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.partition_region.html#kqcircuits.simulations.partition_region.get_list_of_two">[docs]</a><span class="k">def</span> <span class="nf">get_list_of_two</span><span class="p">(</span><span class="n">dims</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns list of two terms when &#39;dims&#39; is given as a scalar or list.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dims</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dims</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">dims</span><span class="p">,</span> <span class="n">dims</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="PartitionRegion"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.partition_region.html#kqcircuits.simulations.partition_region.PartitionRegion">[docs]</a><span class="k">class</span> <span class="nc">PartitionRegion</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to enable partitioning of simulation geometry into sub-regions&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;part&quot;</span><span class="p">,</span> <span class="n">vertical_dimensions</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">metal_edge_dimensions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">face_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;part&quot;</span><span class="p">,</span>
+        <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">z</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">face</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">vertical_dimensions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">metal_edge_dimensions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
 <span class="sd">            name: Suffix of the partition layers. Must not end with a number.</span>
-<span class="sd">            vertical_dimensions: Vertical dimensions of the partition region as scalar or list. The terms in the list</span>
-<span class="sd">                correspond to expansion dimensions into directions of substrate and vacuum, respectively. Scalar means</span>
-<span class="sd">                the substrate and vacuum expansions are equal.</span>
-<span class="sd">            metal_edge_dimensions: Lateral dimensions to limit the partition region next to the metal edges. If given as</span>
-<span class="sd">                list, the terms correspond to expansions into directions of gap and metal, respectively. If given as</span>
-<span class="sd">                scalar, the gap and metal expansions are equal. Use None to disable the metal edge limitation.</span>
 <span class="sd">            region: Area to which the partition region is limited. Can be given as pya.DBox, pya.DPolygon, or list of</span>
 <span class="sd">                pya.DPolygons. Use None to cover full domain.</span>
-<span class="sd">            face_ids: List of face names to which the partition region is applied. Use None to apply on all faces.</span>
+<span class="sd">            z: Lower and upper bound for the partition region as scalar or list. Use None to cover full height.</span>
+<span class="sd">            face: The face name to which the partition region is applied. If this is used, the vertical_dimensions</span>
+<span class="sd">                and metal_edge_dimensions are applied.</span>
+<span class="sd">            vertical_dimensions: Vertical dimensions of the partition region on face as scalar or list. The terms in the</span>
+<span class="sd">                list correspond to expansion dimensions into directions of substrate and vacuum, respectively. Scalar</span>
+<span class="sd">                means the substrate and vacuum expansions are equal. This is applied only if face is given.</span>
+<span class="sd">            metal_edge_dimensions: Lateral dimensions to limit the partition region next to the metal edges. If given as</span>
+<span class="sd">                list, the terms correspond to expansions into directions of gap and metal, respectively. If given as</span>
+<span class="sd">                scalar, the gap and metal expansions are equal. Use None to disable the metal edge limitation. This is</span>
+<span class="sd">                applied only if face is given.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">name</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="s2">&quot;0123456789&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PartitionRegion name must not end with a number, but </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> is given.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;PartitionRegion name must not be an empty string.&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">region</span> <span class="o">=</span> <span class="n">region</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">z</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">face</span> <span class="o">=</span> <span class="n">face</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vertical_dimensions</span> <span class="o">=</span> <span class="n">vertical_dimensions</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">metal_edge_dimensions</span> <span class="o">=</span> <span class="n">metal_edge_dimensions</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">region</span> <span class="o">=</span> <span class="n">region</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span> <span class="o">=</span> <span class="n">face_ids</span>
 
-<div class="viewcode-block" id="PartitionRegion.get_vertical_dimension"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.partition_region.html#kqcircuits.simulations.partition_region.PartitionRegion.get_vertical_dimension">[docs]</a>    <span class="k">def</span> <span class="nf">get_vertical_dimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the partition region expansion dimensions towards substrate and vacuum, respectively.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertical_dimensions</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertical_dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertical_dimensions</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertical_dimensions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertical_dimensions</span></div>
-
-<div class="viewcode-block" id="PartitionRegion.covers_face"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.partition_region.html#kqcircuits.simulations.partition_region.PartitionRegion.covers_face">[docs]</a>    <span class="k">def</span> <span class="nf">covers_face</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face_id</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns True only if the metal edge region covers given face name.</span>
+<div class="viewcode-block" id="PartitionRegion.limit_box"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.partition_region.html#kqcircuits.simulations.partition_region.PartitionRegion.limit_box">[docs]</a>    <span class="k">def</span> <span class="nf">limit_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bottom</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">dbu</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Limits the region and z-levels into simulation dimensions.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            face_id: name of the face as string</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="n">face_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span></div>
-
-<div class="viewcode-block" id="PartitionRegion.get_partition_region"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.partition_region.html#kqcircuits.simulations.partition_region.PartitionRegion.get_partition_region">[docs]</a>    <span class="k">def</span> <span class="nf">get_partition_region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metal_region</span><span class="p">,</span> <span class="n">etch_region</span><span class="p">,</span> <span class="n">full_region</span><span class="p">,</span> <span class="n">dbu</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the region of the partitioning.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            metal_region: metallization area</span>
-<span class="sd">            etch_region: area where metal is etched away</span>
-<span class="sd">            full_region: full area where partition region can be applied</span>
+<span class="sd">            bottom: bottom of the simulation domain.</span>
+<span class="sd">            top: top of the simulation domain.</span>
+<span class="sd">            box: lateral dimensions of simulation domain as pya.DBox.</span>
 <span class="sd">            dbu: layout database unit</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># update self.z using bottom and top</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">get_list_of_two</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">bottom</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">bottom</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">top</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">top</span>
+
+        <span class="c1"># update self.region using box</span>
+        <span class="n">box_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="n">dbu</span><span class="p">))</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">limited_region</span> <span class="o">=</span> <span class="n">full_region</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">region</span> <span class="o">=</span> <span class="n">box_region</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="n">limited_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="n">dbu</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">])</span> <span class="o">&amp;</span> <span class="n">full_region</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="n">dbu</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">])</span> <span class="o">&amp;</span> <span class="n">box_region</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">limited_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="n">dbu</span><span class="p">))</span> <span class="o">&amp;</span> <span class="n">full_region</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="n">dbu</span><span class="p">))</span> <span class="o">&amp;</span> <span class="n">box_region</span></div>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metal_edge_dimensions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">limited_region</span>
+<div class="viewcode-block" id="PartitionRegion.limit_face"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.partition_region.html#kqcircuits.simulations.partition_region.PartitionRegion.limit_face">[docs]</a>    <span class="k">def</span> <span class="nf">limit_face</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">sign</span><span class="p">,</span> <span class="n">metal_region</span><span class="p">,</span> <span class="n">etch_region</span><span class="p">,</span> <span class="n">dbu</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Limits the region and z-levels on face. Function limit_box should be called once before this.</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metal_edge_dimensions</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="n">dim_gap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metal_edge_dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">dim_metal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metal_edge_dimensions</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">dim_gap</span> <span class="o">=</span> <span class="n">dim_metal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metal_edge_dimensions</span>
-        <span class="k">return</span> <span class="n">metal_region</span><span class="o">.</span><span class="n">sized</span><span class="p">(</span><span class="n">dim_gap</span> <span class="o">/</span> <span class="n">dbu</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">etch_region</span><span class="o">.</span><span class="n">sized</span><span class="p">(</span><span class="n">dim_metal</span> <span class="o">/</span> <span class="n">dbu</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">limited_region</span></div></div>
+<span class="sd">        Args:</span>
+<span class="sd">            z: z-level of the face</span>
+<span class="sd">            sign: 1 if substrate is below vacuum, -1 otherwise</span>
+<span class="sd">            metal_region: metallization area as pya.Region</span>
+<span class="sd">            etch_region: area where metal is etched away as pya.Region</span>
+<span class="sd">            dbu: layout database unit</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Reset face to indicate that face limitation is applied</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">face</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># update self.z using self.vertical_dimensions</span>
+        <span class="n">vd</span> <span class="o">=</span> <span class="n">get_list_of_two</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertical_dimensions</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">vd</span><span class="p">[</span><span class="n">sign</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">z</span> <span class="o">-</span> <span class="n">vd</span><span class="p">[</span><span class="n">sign</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">z</span> <span class="o">-</span> <span class="n">vd</span><span class="p">[</span><span class="n">sign</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">vd</span><span class="p">[</span><span class="n">sign</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">z</span> <span class="o">+</span> <span class="n">vd</span><span class="p">[</span><span class="n">sign</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">z</span> <span class="o">+</span> <span class="n">vd</span><span class="p">[</span><span class="n">sign</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># update self.region using self.metal_edge_dimensions</span>
+        <span class="n">ed</span> <span class="o">=</span> <span class="n">get_list_of_two</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metal_edge_dimensions</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ed</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">region</span> <span class="o">&amp;=</span> <span class="n">metal_region</span><span class="o">.</span><span class="n">sized</span><span class="p">(</span><span class="n">ed</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">dbu</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ed</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">region</span> <span class="o">&amp;=</span> <span class="n">etch_region</span><span class="o">.</span><span class="n">sized</span><span class="p">(</span><span class="n">ed</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">dbu</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

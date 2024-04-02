@@ -458,7 +458,7 @@
              
   <section id="containers">
 <span id="docker-image"></span><h1>Containers<a class="headerlink" href="#containers" title="Permalink to this headline"></a></h1>
-<p>A Docker image for CLI and CI usage is included in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/ci/Dockerfile">ci/Dockerfile</a>.</p>
+<p>A Docker image for CLI and CI usage is included in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//ci/Dockerfile">ci/Dockerfile</a>.</p>
 <p>The image can be built manually from the root of the repository with <cite>-f ci/Dockerfile</cite>.
 Additionally, the KLayout version can be specified with <code class="docutils literal notranslate"><span class="pre">--build-arg</span></code> options by
 providing the name of the KLayout package as <code class="docutils literal notranslate"><span class="pre">KL_FILE</span></code> and its MD5 hash as <code class="docutils literal notranslate"><span class="pre">KL_HASH</span></code>:</p>
@@ -475,7 +475,7 @@ For example, to run a script <code class="docutils literal notranslate"><span cl
 </div>
 <p>This runs the script in a Docker container and on-default writes the output to <code class="docutils literal notranslate"><span class="pre">/kqc/tmp</span></code>,
 which is mounted to the working directory with <code class="docutils literal notranslate"><span class="pre">--volume</span></code>.
-More specifically, it executes the following command in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/ci/run_script.sh">ci/run_script.sh</a>:</p>
+More specifically, it executes the following command in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//ci/run_script.sh">ci/run_script.sh</a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">klayout</span> <span class="o">-</span><span class="n">e</span> <span class="o">-</span><span class="n">z</span> <span class="o">-</span><span class="n">nc</span> <span class="o">-</span><span class="n">rx</span> <span class="o">-</span><span class="n">r</span> <span class="n">tmp</span><span class="o">/</span><span class="n">m00x</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
 </div>
@@ -489,7 +489,7 @@ To this end, simply mount <code class="docutils literal notranslate"><span class
 </div>
 <p>If using the older HyperV backend on Windows, you might need to increase your RAM limit from the 1GB default depending on your usage.
 See <a class="reference external" href="https://docs.docker.com/config/containers/resource_constraints/#limit-a-containers-access-to-memory">Docker Runtime options with Memory</a> for details.</p>
-<p>To override <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/ci/run_script.sh">ci/run_script.sh</a> entirely, you can use the <a class="reference external" href="https://docs.docker.com/engine/reference/run/#entrypoint-default-command-to-execute-at-runtime">Docker entrypoint argument</a>.</p>
+<p>To override <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//ci/run_script.sh">ci/run_script.sh</a> entirely, you can use the <a class="reference external" href="https://docs.docker.com/engine/reference/run/#entrypoint-default-command-to-execute-at-runtime">Docker entrypoint argument</a>.</p>
 </section>
 <section id="docker-ci-usage">
 <span id="id1"></span><h2>Docker CI usage<a class="headerlink" href="#docker-ci-usage" title="Permalink to this headline"></a></h2>
@@ -503,11 +503,11 @@ whether they break the image.</p>
 <p>Singularity images are like docker images (<a class="reference external" href="https://sylabs.io/guides/3.0/user-guide/quick_start.html">https://sylabs.io/guides/3.0/user-guide/quick_start.html</a>) that work better
 in HPC environments (<a class="reference external" href="https://singularity-tutorial.github.io/">https://singularity-tutorial.github.io/</a>).
 The latest image can be downloaded from the GitHub Container registry. It should be downloaded to a <cite>libexec</cite> folder
-under <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/singularity">singularity</a> with the name <cite>kqclib</cite>. This is performed as follows at the root of the repo:</p>
+under <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//singularity">singularity</a> with the name <cite>kqclib</cite>. This is performed as follows at the root of the repo:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">singularity</span> <span class="n">pull</span> <span class="n">singularity</span><span class="o">/</span><span class="n">libexec</span><span class="o">/</span><span class="n">kqclib</span> <span class="n">oras</span><span class="p">:</span><span class="o">//</span><span class="n">ghcr</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">iqm</span><span class="o">-</span><span class="n">finland</span><span class="o">/</span><span class="n">kqcircuits</span><span class="p">:</span><span class="n">main</span><span class="o">-</span><span class="n">singularity</span>
 </pre></div>
 </div>
-<p>The image can also be built manually in the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/singularity">singularity</a> folder by running:</p>
+<p>The image can also be built manually in the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//singularity">singularity</a> folder by running:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">singularity</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
@@ -517,7 +517,7 @@ under <a class="reference external" href="https://github.com/iqm-finland/KQCircu
 successfully use this image the user also needs the corresponding <cite>$HOME/singularity_private.pem</cite> private key. See
 the <a class="reference external" href="https://docs.sylabs.io/guides/3.4/user-guide/encryption.html">Singularity docs</a> for further details.</p>
 </div>
-<p>After pulling or building, you can now run (again, in the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/singularity">singularity</a> folder):</p>
+<p>After pulling or building, you can now run (again, in the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//singularity">singularity</a> folder):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">create_links</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
@@ -555,7 +555,7 @@ to path-to-your-KQCircuits/singularity/bin).</p>
 <p class="admonition-title">Warning</p>
 <p>The singularity container can be used with Windows Subsystem for Linux (WSL) but problems with simulations
 getting stuck have been encountered while using the simple workload manager in
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/elmer/scripts/simple_workload_manager.py">klayout_package/python/scripts/simulations/elmer/scripts/simple_workload_manager.py</a>.</p>
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations/elmer/scripts/simple_workload_manager.py">klayout_package/python/scripts/simulations/elmer/scripts/simple_workload_manager.py</a>.</p>
 </div>
 <p>The simulation scripts are then prepared in a subfolder (for example <cite>$KQC_TMP_PATH/waveguides_sim_elmer</cite> in the
 affore mentioned example. The <cite>$KQC_TMP_PATH</cite> folder (is normally in <cite>../tmp/</cite>, remember to set it! If you do not,

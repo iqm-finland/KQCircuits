@@ -522,7 +522,7 @@ installation automatically. If you wish to unlink, then write in your terminal:<
 <section id="update">
 <h2>Update<a class="headerlink" href="#update" title="Permalink to this headline"></a></h2>
 <p>Updating an existing KQCircuits setup is easy. After updating KQCircuits code itself with <code class="docutils literal notranslate"><span class="pre">git</span>
-<span class="pre">pull</span></code> just run <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/setup_within_klayout.py">setup_within_klayout.py</a> again. This will take care of upgrading (or downgrading)
+<span class="pre">pull</span></code> just run <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//setup_within_klayout.py">setup_within_klayout.py</a> again. This will take care of upgrading (or downgrading)
 KQCircuits’ Python dependencies and installing new ones, as needed. Running KLayout will similarly
 update KQCircuits’ dependencies in its own Python environment.</p>
 <p>If the above didn’t work (usually in case of downgrading dependencies), there is an alternative way.
@@ -563,7 +563,7 @@ your secondary environment may get mixed up with the primary one.</p>
 python folder to your KQCircuits folder. Some Python packages must also be
 installed for KQCircuits to work. The details of these steps for different
 operating systems are explained in the following subsections. The script
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/setup_within_klayout.py">setup_within_klayout.py</a> used in the previous section attempts to
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//setup_within_klayout.py">setup_within_klayout.py</a> used in the previous section attempts to
 automatically do the same steps as explained below.</p>
 <section id="linux-or-macos">
 <h3>Linux or MacOS<a class="headerlink" href="#linux-or-macos" title="Permalink to this headline"></a></h3>
@@ -573,7 +573,7 @@ automatically do the same steps as explained below.</p>
 </pre></div>
 </div>
 <p>To install the required packages, open a terminal in your KQCircuits folder
-(which contains <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/requirements_within_klayout_unix.txt">requirements_within_klayout_unix.txt</a>), and write:</p>
+(which contains <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//requirements_within_klayout_unix.txt">requirements_within_klayout_unix.txt</a>), and write:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements_within_klayout_unix</span><span class="o">.</span><span class="n">txt</span>
 </pre></div>
 </div>
@@ -593,7 +593,7 @@ administrator privileges, and do:</p>
 </div>
 <p>(In PowerShell replace the first line by <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">~\KLayout\python</span></code>)</p>
 <p>Install the required packages by opening command prompt in your KQCircuits
-folder (which contains <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/requirements_within_klayout_windows.txt">requirements_within_klayout_windows.txt</a>), and writing:</p>
+folder (which contains <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//requirements_within_klayout_windows.txt">requirements_within_klayout_windows.txt</a>), and writing:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements_within_klayout_windows</span><span class="o">.</span><span class="n">txt</span> <span class="o">--</span><span class="n">target</span><span class="o">=%</span><span class="n">HOMEPATH</span><span class="o">%</span>\<span class="n">AppData</span>\<span class="n">Roaming</span>\<span class="n">KLayout</span>\<span class="n">lib</span>\<span class="n">python3</span><span class="mf">.7</span>\<span class="n">site</span><span class="o">-</span><span class="n">packages</span>
 </pre></div>
 </div>

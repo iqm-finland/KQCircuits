@@ -483,19 +483,19 @@ use other rulers for measurements.</p></li>
 <h2>XSection call in KQC code<a class="headerlink" href="#xsection-call-in-kqc-code" title="Permalink to this headline"></a></h2>
 <p>XSection plugin can be called from python code to automate cross-section geometry
 generation for simulation files.
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/simulations/export/xsection/xsection_export.py">klayout_package/python/kqcircuits/simulations/export/xsection/xsection_export.py</a> includes</p>
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits/simulations/export/xsection/xsection_export.py">klayout_package/python/kqcircuits/simulations/export/xsection/xsection_export.py</a> includes</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">create_xsections_from_simulations</span></code>, a high level method to take a cross-section
 for each simulation object using two <code class="docutils literal notranslate"><span class="pre">DPoint</span></code> values</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">xsection_call</span></code>, a low level method requiring a path to the input and output
 OAS files, two <code class="docutils literal notranslate"><span class="pre">DPoint</span></code> values and, optionally, a path to a process file.
-If <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/xsection/kqc_process.xs">xsection/kqc_process.xs</a> process file is used, make sure to
+If <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//xsection/kqc_process.xs">xsection/kqc_process.xs</a> process file is used, make sure to
 provide a path to the parameters json file as well.</p></li>
 </ul>
 </div></blockquote>
 <p>An example of using XSection tool to produce cross-section simulation files is
-demonstrated in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/waveguides_sim_xsection.py">klayout_package/python/scripts/simulations/waveguides_sim_xsection.py</a></p>
+demonstrated in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations/waveguides_sim_xsection.py">klayout_package/python/scripts/simulations/waveguides_sim_xsection.py</a></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>XSection 1.7 does not work immediately after package install due to the improvement
@@ -512,9 +512,9 @@ layers is defined in <code class="docutils literal notranslate"><span class="pre
 process files:</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li><p>Lightweight example process file <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/xsection/example.xs">xsection/example.xs</a>, intended for taking cross-sections
+<li><p>Lightweight example process file <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//xsection/example.xs">xsection/example.xs</a>, intended for taking cross-sections
 using a KLayout GUI tool</p></li>
-<li><p><a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/xsection/kqc_process.xs">xsection/kqc_process.xs</a> intended only for use by a <code class="docutils literal notranslate"><span class="pre">create_xsections_from_simulations</span></code>
+<li><p><a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//xsection/kqc_process.xs">xsection/kqc_process.xs</a> intended only for use by a <code class="docutils literal notranslate"><span class="pre">create_xsections_from_simulations</span></code>
 call in KQC code</p></li>
 </ol>
 </div></blockquote>
