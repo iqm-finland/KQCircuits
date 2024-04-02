@@ -70,3 +70,6 @@ class Airbridge(Element):
     def _produce_top_pads_and_bridge(self, pts):
         shape = pya.DPolygon(pts)
         self.cell.shapes(self.get_layer("airbridge_flyover")).insert(shape)
+
+    def transformation_from_shape_impl(self):  # pylint: disable=no-self-use
+        return pya.Trans()

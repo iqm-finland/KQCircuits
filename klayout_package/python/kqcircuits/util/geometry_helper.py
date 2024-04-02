@@ -266,7 +266,7 @@ def merge_points_and_match_on_edges(cell, layout, layers, tolerance=3):
     all_points = dict()
     for layer in layers:
         shapes = cell.shapes(layout.layer(layer))
-        for shape in shapes:
+        for shape in shapes.each():
             all_points.update({point: list() for point in shape.simple_polygon.each_point()})
     if not all_points:
         return  # nothing is done if no points exist
@@ -307,7 +307,7 @@ def merge_points_and_match_on_edges(cell, layout, layers, tolerance=3):
     for layer in layers:
         shapes = cell.shapes(layout.layer(layer))
         polygons = []
-        for shape in shapes:
+        for shape in shapes.each():
             points = list(shape.simple_polygon.each_point())
             new_points = []
             modified_points = set()
