@@ -955,7 +955,10 @@
 
     <span class="k">def</span> <span class="nf">_produce_top_pads_and_bridge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pts</span><span class="p">):</span>
         <span class="n">shape</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;airbridge_flyover&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;airbridge_flyover&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Airbridge.transformation_from_shape_impl"><a class="viewcode-back" href="../../../../api/kqcircuits.elements.airbridges.airbridge.html#kqcircuits.elements.airbridges.airbridge.Airbridge.transformation_from_shape_impl">[docs]</a>    <span class="k">def</span> <span class="nf">transformation_from_shape_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-use</span>
+        <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">Trans</span><span class="p">()</span></div></div>
 </pre></div>
 
            </div>
