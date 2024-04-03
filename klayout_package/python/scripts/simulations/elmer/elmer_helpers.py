@@ -167,7 +167,7 @@ def sif_linsys(method="mg", p_element_order=3, steady_state_error=None) -> Seque
         linsys += [
             "Linear System Solver = Iterative",
             "Linear System Iterative Method = GCR ",
-            "Linear System Max Iterations = 100",
+            "Linear System Max Iterations = 200",
             "Linear System Convergence Tolerance = 1.0e-10",
             "Linear System Abort Not Converged = False",
             "Linear System Residual Output = 10",
@@ -182,7 +182,7 @@ def sif_linsys(method="mg", p_element_order=3, steady_state_error=None) -> Seque
             "mglowest: Linear System Scaling = False",
             "mglowest: Linear System Iterative Method = CG !BiCGStabl",
             "mglowest: Linear System Preconditioning = ILU0",
-            "mglowest: Linear System Max Iterations = 100",
+            "mglowest: Linear System Max Iterations = 1000",
             "mglowest: Linear System Convergence Tolerance = 1.0e-4",
             f"Steady State Convergence Tolerance = {1e-9 if steady_state_error is None else steady_state_error*1e-1}",
         ]

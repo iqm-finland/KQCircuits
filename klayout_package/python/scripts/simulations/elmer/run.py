@@ -153,8 +153,8 @@ if tool == "cross-section":
         if json_data.get("integrate_energies", False):  # Compute quality factors with energy participation ratio method
             res = {**res, **get_energy_integrals(path.joinpath(name))}
 
-        with open(path.joinpath(f"{name}_result.json"), "w") as f:
-            json.dump(res, f, indent=4)
+        with open(path.joinpath(f"{name}_project_results.json"), "w") as f:
+            json.dump(res, f, indent=4, sort_keys=True)
 
 else:
     # Generate mesh

@@ -289,7 +289,7 @@ def get_cross_section_capacitance_and_inductance(json_data, folder_path):
     """
     try:
         c_matrix_file = Path(folder_path).joinpath("capacitance.dat")
-        c_matrix = pd.read_csv(c_matrix_file, delim_whitespace=True, header=None).values
+        c_matrix = pd.read_csv(c_matrix_file, sep=r"\s+", header=None).values
     except FileNotFoundError:
         return {"Cs": None, "Ls": None}
 
@@ -300,7 +300,7 @@ def get_cross_section_capacitance_and_inductance(json_data, folder_path):
             l_matrix_file = Path(folder_path).joinpath(l_matrix_file_name)
             if not l_matrix_file.is_file():
                 l_matrix_file = Path(folder_path).joinpath(f"{l_matrix_file_name}.0")
-            data = pd.read_csv(l_matrix_file, delim_whitespace=True, header=None)
+            data = pd.read_csv(l_matrix_file, sep=r"\s+", header=None)
             l_matrix_file = Path(folder_path).joinpath(l_matrix_file_name)
             with open(f"{l_matrix_file}.names") as names:
                 data.columns = [
@@ -312,7 +312,7 @@ def get_cross_section_capacitance_and_inductance(json_data, folder_path):
             l_matrix = np.array([np.imag(impedance) / angular_frequency])
         else:
             c0_matrix_file = Path(folder_path).joinpath("capacitance0.dat")
-            c0_matrix = pd.read_csv(c0_matrix_file, delim_whitespace=True, header=None).values
+            c0_matrix = pd.read_csv(c0_matrix_file, sep=r"\s+", header=None).values
             l_matrix = mu_0 * epsilon_0 * np.linalg.inv(c0_matrix)
     except FileNotFoundError:
         return {"Cs": c_matrix.tolist(), "Ls": None}
@@ -332,7 +332,7 @@ def get_energy_integrals(path):
     """
     try:
         energy_data, energy_layer_data = Path(path) / "energy.dat", Path(path) / "energy.dat.names"
-        energies = pd.read_csv(energy_data, delim_whitespace=True, header=None).values.flatten()
+        energies = pd.read_csv(energy_data, sep=r"\s+", header=None).values.flatten()
 
         with open(energy_layer_data) as fp:
             energy_layers = [

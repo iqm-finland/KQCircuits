@@ -358,6 +358,8 @@ def export_elmer_script(
 
                 script_filename_meshes = str(path.joinpath(simulation_name + "_meshes.sh"))
                 with open(script_filename_meshes, "w") as file:
+                    file.write("#!/bin/bash\n")
+                    file.write("set -e\n")
                     file.write('echo "Simulation {}/{} Gmsh"\n'.format(i + 1, len(json_filenames)))
                     file.write(
                         'srun -N 1 -n 1 -c {3} {2} "{0}" "{1}" --only-gmsh -q 2>&1 >> '
@@ -428,6 +430,8 @@ def export_elmer_script(
 
                 script_filename = str(path.joinpath(simulation_name + ".sh"))
                 with open(script_filename, "w") as file:
+                    file.write("#!/bin/bash\n")
+                    file.write("set -e\n")
                     file.write('echo "Simulation {}/{} Elmer"\n'.format(i + 1, len(json_filenames)))
 
                     n_sifs = len(sif_names)
@@ -489,6 +493,7 @@ def export_elmer_script(
         parallelize_workload = parallelization_level == "full_simulation" and n_workers > 1
 
         with open(main_script_filename, "w") as main_file:
+            main_file.write("#!/bin/bash\n")
 
             if parallelize_workload:
                 main_file.write("export OMP_NUM_THREADS={}\n".format(workflow["elmer_n_threads"]))
@@ -504,6 +509,7 @@ def export_elmer_script(
                 script_filename = str(path.joinpath(simulation_name + ".sh"))
                 with open(script_filename, "w") as file:
                     file.write("#!/bin/bash\n")
+                    file.write("set -e\n")
                     file.write('echo "Simulation {}/{} Gmsh"\n'.format(i + 1, len(json_filenames)))
                     file.write(
                         '{2} "{0}" "{1}" --only-gmsh 2>&1 >> "log_files/{3}.Gmsh.log"\n'.format(

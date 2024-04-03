@@ -30,7 +30,7 @@ def test_n_guides_1(tmp_path):
     export_and_run_test(tmp_path, "cpw_cross_section_sim", ["--number-of-cpws", "1"])
 
     project_ref_info = {
-        "project_results_file": "cpw_cross_section_1_0_result.json",
+        "project_results_file": "cpw_cross_section_1_0_project_results.json",
         "ref_project_results_file": "test_n_guides_1.json",
         "rtol": 1e-2,
         "atol": 1e-20,
@@ -50,7 +50,7 @@ def test_n_guides_2(tmp_path):
     export_and_run_test(tmp_path, "cpw_cross_section_sim", ["--number-of-cpws", "2"])
 
     project_ref_info = {
-        "project_results_file": "cpw_cross_section_2_0_result.json",
+        "project_results_file": "cpw_cross_section_2_0_project_results.json",
         "ref_project_results_file": "test_n_guides_2.json",
         "rtol": 1e-2,
         "atol": 1e-20,
@@ -70,7 +70,7 @@ def test_vertical_over_etching(tmp_path):
     export_and_run_test(tmp_path, "cpw_cross_section_sim", ["--number-of-cpws", "1", "--vertical-over-etching", "10"])
 
     project_ref_info = {
-        "project_results_file": "cpw_cross_section_1_10.0_result.json",
+        "project_results_file": "cpw_cross_section_1_10.0_project_results.json",
         "ref_project_results_file": "test_vertical_over_etching.json",
         "rtol": 1e-2,
         "atol": 1e-20,
@@ -89,7 +89,7 @@ def test_n_guides_1_axisymmetric(tmp_path):
     export_and_run_test(tmp_path, "cpw_cross_section_sim", ["--axisymmetric-test"])
 
     project_ref_info = {
-        "project_results_file": "cpw_cross_section_80_30.0_result.json",
+        "project_results_file": "cpw_cross_section_80_30.0_project_results.json",
         "ref_project_results_file": "test_n_guides_1_axisymmetric.json",
         "rtol": 1e-2,
         "atol": 1e-20,

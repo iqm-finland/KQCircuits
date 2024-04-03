@@ -199,23 +199,33 @@ def pool_run_cmds(n_workers: int, cmds: list, output_files: list = None, cwd=Non
     pool.join()
 
 
-def elmer_check_convergence(log_file, cwd=None):
+def elmer_check_warnings(log_file, cwd=None):
     """
-    Reads the Elmer log file and logs a warning in case a linear system did not converge
+    Reads the Elmer log file and propagates all warnings to python logging.warning
+
+    Also logs a warning in case a linear system did not converge
 
     Args:
-        log_file      (str): Path of the Elmer.log file
+        log_file      (str): Relative path of the Elmer.log file (from cwd)
         cwd      (str/Path): Working directory where the commands will be executed
     """
     if cwd is not None:
-        log_file = cwd.joinpath(log_file)
+        log_file = Path(cwd).joinpath(log_file)
+
+    log_file = Path(log_file).resolve()
 
     with open(log_file, "r") as f:
-        lines = [line.rstrip().lower() for line in f]
+        lines = [line.rstrip() for line in f]
 
+    # Only log each warning once
     for ind, l in enumerate(lines):
-        if "did not converge" in l:
-            logging.warning(f"Linear system iteration did not converge. See {log_file}:{ind+1}")
+        l_lower = l.lower()
+        if "warning" in l_lower:
+            logging.warning(f"{l.replace('WARNING::', '')}. See {log_file}:{ind+1}")
+        elif "did not converge" in l_lower:
+            logging.warning(f" Linear system iteration did not converge. See {log_file}:{ind+1}")
+        elif "solution trivially zero" in l_lower:
+            logging.warning(f" Solution trivially zero. See {log_file}:{ind+1}")
 
 
 def _run_elmer_solver(sim_name, sif_names, n_parallel_simulations, n_processes, n_threads, exec_path_override=None):
@@ -265,7 +275,7 @@ def _run_elmer_solver(sim_name, sif_names, n_parallel_simulations, n_processes, 
                 subprocess.check_call(cmd, cwd=exec_path_override, env=my_env, stdout=f)
 
     for f in output_files:
-        elmer_check_convergence(f, cwd=exec_path_override)
+        elmer_check_warnings(f, cwd=exec_path_override)
 
 
 def run_elmer_solver(json_data, exec_path_override=None):

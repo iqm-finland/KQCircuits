@@ -48,7 +48,7 @@ def get_mer_coefficients(key, reg, mer_correction_path, groups):
 
     """
     mer_coefficients = dict()
-    full_mer_path = Path(mer_correction_path).joinpath(key + "_result.json")
+    full_mer_path = Path(mer_correction_path).joinpath(key + "_project_results.json")
     if not os.path.isfile(full_mer_path):
         full_mer_path = "//wsl.localhost/Ubuntu" + str(full_mer_path)
         if not os.path.isfile(full_mer_path):
@@ -85,11 +85,15 @@ if len(sys.argv) > 1:
 
 # Find data files
 path = os.path.curdir
-result_files = [f for f in os.listdir(path) if f.endswith("_project_energy.csv") or f.endswith("_result.json")]
+result_files = [f for f in os.listdir(path) if f.endswith("_project_energy.csv") or f.endswith("_project_results.json")]
 if result_files:
     # Find parameters that are swept
     definition_files = [
-        f.replace("_result.json", ".json") if f.endswith("_result.json") else f.replace("_project_energy.csv", ".json")
+        (
+            f.replace("_project_results.json", ".json")
+            if f.endswith("_project_results.json")
+            else f.replace("_project_energy.csv", ".json")
+        )
         for f in result_files
     ]
     parameters, parameter_values = find_varied_parameters(definition_files)
@@ -97,7 +101,7 @@ if result_files:
     # Load result data
     epr_dict = {}
     for key, result_file in zip(parameter_values.keys(), result_files):
-        if result_file.endswith("_result.json"):
+        if result_file.endswith("_project_results.json"):
             # read results from Elmer output
             with open(result_file, "r") as f:
                 result = json.load(f)
