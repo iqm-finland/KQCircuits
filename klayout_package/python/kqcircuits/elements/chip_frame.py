@@ -46,7 +46,7 @@ class ChipFrame(Element):
         100,
         docstring="Margin of the ground grid avoidance layer for dicing edge",
     )
-    name_mask = Param(pdt.TypeString, "Name of the mask", "M000")
+    name_mask = Param(pdt.TypeString, "Name of the mask", "M000")  # string '_3' will leave empty space for M000
     name_chip = Param(pdt.TypeString, "Name of the chip", "CTest")
     name_copy = Param(pdt.TypeString, "Name of the copy", None)
     name_brand = Param(pdt.TypeString, "Name of the brand", default_brand)
@@ -90,8 +90,7 @@ class ChipFrame(Element):
         else:
             chip_name = self.name_chip
         labels = [self.name_mask, chip_name, self.name_copy, self.name_brand]
-        if self.name_mask:
-            self._produce_label(labels[0], pya.DPoint(x_min, y_max), LabelOrigin.TOPLEFT)
+        self._produce_label(labels[0], pya.DPoint(x_min, y_max), LabelOrigin.TOPLEFT)
         if self.name_chip:
             self._produce_label(labels[1], pya.DPoint(x_max, y_max), LabelOrigin.TOPRIGHT)
         self._produce_label(labels[2], pya.DPoint(x_max, y_min), LabelOrigin.BOTTOMRIGHT)

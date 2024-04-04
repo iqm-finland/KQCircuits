@@ -55,6 +55,9 @@ def produce_label(
     if not label:
         label = "A13"  # longest label on 6 inch wafer
         protection_only = True
+    elif label.startswith("_"):
+        label = "".join(["M"] + ["0"] * int(label.split("_")[1]))
+        protection_only = True
     else:
         protection_only = False
 
