@@ -63,15 +63,16 @@ oDefinitionManager = oProject.GetDefinitionManager()
 
 hfss_tools = {"hfss", "current", "voltage", "eigenmode"}
 
+design_name = ansys_tool.capitalize() + "Design"
 if ansys_tool == "eigenmode":
-    oProject.InsertDesign("HFSS", "HFSSDesign1", "Eigenmode", "")
-    oDesign = oProject.SetActiveDesign("HFSSDesign1")
+    oProject.InsertDesign("HFSS", design_name, "Eigenmode", "")
+    oDesign = oProject.SetActiveDesign(design_name)
 elif ansys_tool in hfss_tools:
-    oProject.InsertDesign("HFSS", "HFSSDesign1", "HFSS Terminal Network", "")
-    oDesign = oProject.SetActiveDesign("HFSSDesign1")
+    oProject.InsertDesign("HFSS", design_name, "HFSS Terminal Network", "")
+    oDesign = oProject.SetActiveDesign(design_name)
 elif ansys_tool == "q3d":
-    oProject.InsertDesign("Q3D Extractor", "Q3DDesign1", "", "")
-    oDesign = oProject.SetActiveDesign("Q3DDesign1")
+    oProject.InsertDesign("Q3D Extractor", design_name, "", "")
+    oDesign = oProject.SetActiveDesign(design_name)
 
 oEditor = oDesign.SetActiveEditor("3D Modeler")
 oBoundarySetup = oDesign.GetModule("BoundarySetup")
@@ -821,7 +822,7 @@ else:  # use ansys_project_template
 
     oDesktop.OpenProject(os.path.join(aedt_path, template_path))
     oProject = oDesktop.SetActiveProject(template_basename)
-    oDesign = oProject.SetActiveDesign("HFSSDesign1")
+    oDesign = oProject.GetActiveDesign()
     oEditor = oDesign.SetActiveEditor("3D Modeler")
     oEditor.Paste()
     oDesktop.CloseProject(build_geom_name)

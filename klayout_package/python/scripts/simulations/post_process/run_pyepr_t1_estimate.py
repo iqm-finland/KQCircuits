@@ -65,7 +65,7 @@ try:
     pinfo = epr.ProjectInfo(
         project_path=project_path,
         project_name=project_name,
-        design_name="HFSSDesign1",
+        design_name="EigenmodeDesign",
     )
     oDesign = pinfo.design
 
