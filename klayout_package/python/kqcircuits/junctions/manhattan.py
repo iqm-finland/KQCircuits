@@ -135,8 +135,8 @@ class Manhattan(Squid):
         self._add_shapes(junction_shapes_bottom, "SIS_junction")
         self._add_shapes(junction_shapes_top, top_pad_layer)
         self._add_shapes(shadow_shapes, "SIS_shadow")
-        self._produce_ground_grid_avoidance()
         self._produce_ground_metal_shapes()
+        self._produce_ground_grid_avoidance()
         self._add_refpoints()
 
     # Create top junction pad  for smaller area
