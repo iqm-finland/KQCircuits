@@ -18,11 +18,10 @@
 import csv
 import json
 import logging
-import copy
 import time
 import shutil
 from pathlib import Path
-from typing import Union, Sequence, Any, Dict
+from typing import Union, Sequence, Any, Dict, List
 from scipy.constants import epsilon_0
 from scipy.signal import find_peaks
 import numpy as np
@@ -100,7 +99,7 @@ def sif_common_header(
             f'Steady State Min Iterations = {json_data.get("minimum_passes", 1)}',
             ("" if angular_frequency is None else "Angular Frequency = {}".format(angular_frequency)),
             "Coordinate Scaling = {}".format(coordinate_scaling(json_data)),
-            f'Mesh Levels = {json_data.get("mesh_size", {}).get("mesh_levels", 1)}',
+            f'Mesh Levels = {json_data.get("mesh_levels", 1)}',
             "Discontinuous Boundary Full Angle = Logical True" if discontinuous_boundary else "",
         ],
     )
@@ -767,50 +766,42 @@ def sif_boundary_condition(ordinate, target_boundaries, conditions):
     return sif_block(f"Boundary Condition {ordinate}", value_list)
 
 
-def produce_sif_files(json_data: dict, path: Path):
+def produce_sif_files(json_data: dict, path: Path) -> List[Path]:
     """
     Exports an elmer simulation model to the simulation path.
 
     Args:
 
-        json_data(dict): Complete parameter json for simulation
-        path(Path): Location where to output the simulation model
+        json_data: Complete parameter json for simulation
+        path: Location where to output the simulation model
 
     Returns:
 
         sif_filepaths: Paths to exported sif files
 
     """
-    # we modify json_data in this call, copying to prevent side effects
-    json_data = copy.deepcopy(json_data)
-
+    path.mkdir(exist_ok=True, parents=True)
     sif_names = json_data["sif_names"]
 
     if json_data["tool"] == "capacitance" and len(sif_names) != 1:
         logging.warning(f"Capacitance tool only supports 1 sif name, given {len(sif_names)}")
 
-    freqs = json_data.get("frequency", None)
-
     sif_filepaths = []
     for ind, sif in enumerate(sif_names):
         if json_data["tool"] == "capacitance":
-            json_data["sif_names"] = sif
             content = sif_capacitance(json_data, path, vtu_name=path, angular_frequency=0, dim=3, with_zero=False)
         elif json_data["tool"] == "wave_equation":
+            freqs = json_data["frequency"]
             if len(freqs) != len(sif_names):
                 logging.warning(
-                    f"Number of sif names ({len(sif_names)})" "does not match the number of frequencies ({len(freqs)})"
+                    f"Number of sif names ({len(sif_names)}) does not match the number of frequencies ({len(freqs)})"
                 )
-
-            json_data["sif_names"] = sif
-            json_data["frequency"] = freqs[ind]
-            content = sif_wave_equation(json_data, path)
+            content = sif_wave_equation(json_data, path, frequency=freqs[ind])
         else:
             logging.warning(f"Unkown tool: {json_data['tool']}. No sif file created")
             return []
 
         sif_filepath = path.joinpath(f"{sif}.sif")
-        sif_filepath.parent.mkdir(exist_ok=True, parents=True)
         with open(sif_filepath, "w") as f:
             f.write(content)
         sif_filepaths.append(sif_filepath)
@@ -1010,7 +1001,7 @@ def sif_capacitance(
         )
     n_boundaries += len(cbody_map)
 
-    bc_dict = json_data.get("boundary conditions", None)
+    bc_dict = json_data.get("boundary_conditions", None)
     if bc_dict is not None:
         for bc in ["xmin", "xmax", "ymin", "ymax"]:
             bc_name = f"{bc}_boundary"
@@ -1179,13 +1170,18 @@ def get_port_from_boundary_physical_names(ports, name):
     return None
 
 
-def sif_wave_equation(json_data: dict, folder_path: Path):
+def sif_wave_equation(
+    json_data: dict,
+    folder_path: Path,
+    frequency: float = 10,
+) -> str:
     """
     Returns the wave equation solver sif.
 
     Args:
-        json_data(json): all the model data produced by `export_elmer_json`
-        folder_path(Path): folder path of the model files
+        json_data: All the model data produced by `export_elmer_json`
+        folder_path: Folder path of the model files
+        frequency: Frequency used in simulation in GHz
 
     Returns:
         (str): elmer solver input file for wave equation
@@ -1231,7 +1227,7 @@ def sif_wave_equation(json_data: dict, folder_path: Path):
 
     # Matc block
     matc_list = [
-        f'f0 = {1e9*json_data["frequency"]}',
+        f"f0 = {1e9*frequency}",
         "w=2*pi*(f0)",
         "mu0=4e-7*pi",
         "eps0 = 8.854e-12",
@@ -1262,7 +1258,7 @@ def sif_wave_equation(json_data: dict, folder_path: Path):
     matc_blocks = sif_matc_block(matc_list)
 
     # Solvers & Equations
-    result_file = f'SMatrix_{json_data["parameters"]["name"]}_f{str(json_data["frequency"]).replace(".", "_")}.dat'
+    result_file = f'SMatrix_{json_data["name"]}_f{str(frequency).replace(".", "_")}.dat'
     solvers = ""
     solver_ordinate = 1
     if not use_AV:
@@ -1283,7 +1279,7 @@ def sif_wave_equation(json_data: dict, folder_path: Path):
 
     solvers += get_result_output_solver(
         ordinate=solver_ordinate + 2,
-        output_file_name=Path(str(folder_path) + "_f" + str(json_data["frequency"]).replace(".", "_")),
+        output_file_name=Path(str(folder_path) + "_f" + str(frequency).replace(".", "_")),
         exec_solver="Always",
     )
 
@@ -1394,7 +1390,7 @@ def sif_wave_equation(json_data: dict, folder_path: Path):
                 ordinate=n_boundaries, target_boundaries=[name], conditions=conditions
             )
 
-        # 1D excitation for Av-solver, This will now totally skip edge ports
+        # 1D excitation for Av-solver, This will now totally skip internal ports
         if use_AV and port["type"] == "EdgePort":
             vacuum_bc_ind = port_part_bc_indices["vacuum"]
 
@@ -1445,8 +1441,19 @@ def sif_wave_equation(json_data: dict, folder_path: Path):
     return header + constants + matc_blocks + solvers + equations + materials + bodies + boundary_conditions
 
 
-def read_result_smatrix(s_matrix_filename, path: Path = None, polar_form: bool = True):
+def read_result_smatrix(s_matrix_filename: str, path: Path = None, polar_form: bool = True):
+    """
+    Read Elmer Smatrix output and transform the entries to polar format
 
+    Args:
+        s_matrix_filename: Relatvive Smatrix path
+        path: Optional basename for the path if `s_matrix_filename` does not exist
+                     Defaults to None.
+        polar_form: Transform the entries to polar form. Defaults to True.
+
+    Returns:
+        np.array: Smatrix as 2D numpy array
+    """
     if not Path(s_matrix_filename).exists() and path is not None:
         s_matrix_filename = path.joinpath(s_matrix_filename)
 
@@ -1489,7 +1496,7 @@ def write_project_results_json(json_data: dict, path: Path, msh_filepath, polar_
     sif_folder = path.joinpath(msh_filepath.stem)
     main_sim_folder = sif_folder.parent
     json_filename = main_sim_folder / (sif_folder.name + "_project_results.json")
-    simname = json_data["parameters"]["name"]
+    simname = json_data["name"]
 
     if tool == "capacitance":
         c_matrix_filename = sif_folder.joinpath("capacitance.dat")

@@ -19,10 +19,12 @@ import sys
 import logging
 import argparse
 from pathlib import Path
+from itertools import product
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.export.simulation_export import export_simulation_oas, sweep_simulation
 from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
+from kqcircuits.simulations.export.elmer.elmer_solution import ElmerSolution
 from kqcircuits.simulations.export.xsection.xsection_export import (
     create_xsections_from_simulations,
     separate_signal_layer_shapes,
@@ -60,8 +62,6 @@ args, unknown = parser.parse_known_args()
 sim_class = WaveGuidesSim  # pylint: disable=invalid-name
 
 multiface = args.flip_chip
-
-sweep_parameters = {"n_guides": args.n_guides}
 
 path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
@@ -106,7 +106,9 @@ mesh_size = {
 logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 layout = get_active_or_new_layout()
 
+sweep_parameters = {"n_guides": args.n_guides}
 simulations = sweep_simulation(layout, sim_class, sim_parameters, sweep_parameters)
+
 for simulation in simulations:
     separate_signal_layer_shapes(simulation)
 
@@ -135,17 +137,37 @@ loss_tangents = {
 open_with_klayout_or_default_application(export_simulation_oas(xsection_simulations, path))
 visualise_xsection_cut_on_original_layout(simulations, cuts)
 open_with_klayout_or_default_application(export_simulation_oas(simulations, path, file_prefix="xsection_cut_preview"))
-export_elmer(
-    xsection_simulations,
-    path,
-    tool="cross-section",
-    mesh_size=mesh_size,
-    workflow=workflow,
-    p_element_order=args.p_element_order,
-    linear_system_method="mg",
-    integrate_energies=True,
-    post_process=[
-        PostProcess("produce_q_factor_table.py", **loss_tangents),
-        PostProcess("produce_epr_table.py", groups=["ma", "ms", "sa", "substrate", "vacuum"]),
-    ],
-)
+
+
+# Cross-sweep with solution parameter: p_element_order
+do_solution_sweep = True
+sol_parameters = {
+    "tool": "cross-section",
+    "mesh_size": mesh_size,
+    "p_element_order": args.p_element_order,
+    "linear_system_method": "mg",
+    "integrate_energies": True,
+}
+solutions = sweep_simulation(None, ElmerSolution, sol_parameters, {"p_element_order": [1, 2, 3]})
+
+if do_solution_sweep:
+    export_elmer(
+        list(product(xsection_simulations, solutions)),
+        path,
+        workflow=workflow,
+        post_process=[
+            PostProcess("produce_q_factor_table.py", **loss_tangents),
+            PostProcess("produce_epr_table.py", groups=["ma", "ms", "sa", "substrate", "vacuum"]),
+        ],
+    )
+else:
+    export_elmer(
+        xsection_simulations,
+        path,
+        **sol_parameters,
+        workflow=workflow,
+        post_process=[
+            PostProcess("produce_q_factor_table.py", **loss_tangents),
+            PostProcess("produce_epr_table.py", groups=["ma", "ms", "sa", "substrate", "vacuum"]),
+        ],
+    )

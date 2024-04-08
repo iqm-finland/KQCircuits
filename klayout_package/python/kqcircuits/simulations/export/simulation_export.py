@@ -25,13 +25,13 @@ from kqcircuits.simulations.export.util import export_layers
 
 def get_combined_parameters(simulation, solution):
     """Return parameters of Simulation and Solution in a combined dictionary.
-    In case of common keys, 'simulation.' and 'solution.' prefixes are added.
+    In case of common keys, 'solution.' prefix is added to Solution parameter key.
     """
     sim_dict = simulation.get_parameters()
     sol_dict = solution.__dict__
     return {
-        **{f"simulation.{k}" if k in sol_dict else k: v for k, v in sim_dict.items()},
-        **{f"solution.{k}" if k in sim_dict else k: v for k, v in sol_dict.items()},
+        **{k: v for k, v in sim_dict.items() if k != "name"},
+        **{f"solution.{k}" if k in sim_dict else k: v for k, v in sol_dict.items() if k != "name"},
     }
 
 

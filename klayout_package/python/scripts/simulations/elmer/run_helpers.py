@@ -297,7 +297,7 @@ def run_elmer_solver(json_data, exec_path_override=None):
     n_threads = json_data["workflow"].get("elmer_n_threads", 1)
 
     _run_elmer_solver(
-        sim_name=json_data["parameters"]["name"],
+        sim_name=json_data["name"],
         sif_names=json_data["sif_names"],
         n_parallel_simulations=n_parallel_simulations,
         n_processes=n_processes,

@@ -23,66 +23,34 @@ import json
 import argparse
 
 from pathlib import Path
-from typing import Sequence
+from typing import Sequence, Union, Tuple, Dict, Optional
 
-from kqcircuits.simulations.export.simulation_export import copy_content_into_directory, get_post_process_command_lines
+from kqcircuits.simulations.export.simulation_export import (
+    copy_content_into_directory,
+    get_post_process_command_lines,
+    get_combined_parameters,
+)
 from kqcircuits.simulations.export.util import export_layers
 from kqcircuits.util.export_helper import write_commit_reference_file
 from kqcircuits.defaults import ELMER_SCRIPT_PATHS, KQC_REMOTE_ACCOUNT
 from kqcircuits.simulations.simulation import Simulation
 from kqcircuits.simulations.cross_section_simulation import CrossSectionSimulation
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
-
-import numpy as np
+from kqcircuits.simulations.export.elmer.elmer_solution import ElmerSolution
+from kqcircuits.simulations.post_process import PostProcess
 
 
 def export_elmer_json(
-    simulation,
-    path: Path,
-    tool="capacitance",
-    linear_system_method="bicgstab",
-    p_element_order=1,
-    frequency=5,
-    frequency_batch=3,
-    sweep_type="explicit",
-    max_delta_s=0.01,
-    mesh_size=None,
-    boundary_conditions=None,
-    workflow=None,
-    percent_error=0.005,
-    max_error_scale=2,
-    max_outlier_fraction=1e-3,
-    maximum_passes=1,
-    minimum_passes=1,
-    integrate_energies=False,
-    is_axisymmetric=False,
-    solver_options=None,
+    simulation: Union[Simulation, CrossSectionSimulation], solution: ElmerSolution, path: Path, workflow: dict
 ):
     """
     Export Elmer simulation into json and gds files.
 
     Args:
         simulation: The simulation to be exported.
-        path: Location where to write json.
-        tool(str): Available: "capacitance", "wave_equation" and "cross-section" (Default: capacitance)
-        linear_system_method(str): Available: 'bicgstab', 'mg' (Default: bicgstab)
-        p_element_order(int): polynomial order of p-elements (Default: 1)
-        frequency: Units are in GHz. To set up multifrequency analysis, use list of numbers.
-        mesh_size(dict): Parameters to determine mesh element sizes
-        boundary_conditions(dict): Parameters to determine boundary conditions
-        workflow(dict): Parameters for simulation workflow
-        percent_error(float): Stopping criterion in adaptive meshing.
-        max_error_scale(float): Maximum element error, relative to percent_error, allowed in individual elements.
-        max_outlier_fraction(float): Maximum fraction of outliers from the total number of elements
-        maximum_passes(int): Maximum number of adaptive meshing iterations.
-        minimum_passes(int): Minimum number of adaptive meshing iterations.
-        integrate_energies: Calculate energy integrals over each object
-        is_axisymmetric(bool): Simulate with Axi Symmetric coordinates along :math:`y\\Big|_{x=0}` (Default: False)
-
-        solver_options (dict): Can be used to set experimental solver options for Elmer wave-equation tool.
-                               Supports the options `use_av` (bool), `london_penetration_depth` (float),
-                               `conductivity` (float),`nested_iteration` (bool), `convergence_tolerance` (float),
-                               `max_iterations` (int), `quadratic_approximation` (bool), `second_kind_basis` (bool)
+        solution: The solution to be exported.
+        path: Location where to write json and gds files.
+        workflow: Parameters for simulation workflow
 
     Returns:
          Path to exported json file.
@@ -96,63 +64,51 @@ def export_elmer_json(
     if is_cross_section:
         layers = simulation.layer_dict
 
-    sim_data = {**simulation.get_simulation_data(), "parameters": simulation.get_parameters()}
-    simname = sim_data["parameters"]["name"]
-    if is_cross_section:
-        if sim_data.get("london_penetration_depth", 0.0) > 0:
-            sif_names = [f"{simname}_C", f"{simname}_L"]
-        else:
-            sif_names = [f"{simname}_C", f"{simname}_C0"]
-    elif tool == "wave_equation":
-        if sweep_type == "interpolating":
-            sif_names = []
-        else:
-            sif_names = [simname + "_f" + str(f).replace(".", "_") for f in frequency]
-    else:
-        sif_names = [simname]
-
-    gds_file = simulation.name + ".gds"
-    json_data = {
-        "tool": tool,
-        **sim_data,
-        **({"layers": {k: (v.layer, v.datatype) for k, v in layers.items()}} if is_cross_section else {}),
-        "mesh_size": {} if mesh_size is None else mesh_size,
-        "boundary conditions": boundary_conditions,
-        "workflow": workflow,
-        "percent_error": percent_error,
-        "max_error_scale": max_error_scale,
-        "max_outlier_fraction": max_outlier_fraction,
-        "maximum_passes": maximum_passes,
-        "minimum_passes": minimum_passes,
-        "frequency": frequency,
-        "frequency_batch": frequency_batch,
-        "sweep_type": sweep_type,
-        "max_delta_s": max_delta_s,
-        "integrate_energies": integrate_energies,
-        "linear_system_method": linear_system_method,
-        "p_element_order": p_element_order,
-        "is_axisymmetric": is_axisymmetric,
-        "sif_names": sif_names,
-        "gds_file": gds_file,
-        "solver_options": solver_options,
-    }
-
-    # write .json file
-    json_filename = str(path.joinpath(simulation.name + ".json"))
-    with open(json_filename, "w") as fp:
-        json.dump(json_data, fp, cls=GeometryJsonEncoder, indent=4)
-
     # write .gds file
-    gds_filename = str(path.joinpath(gds_file))
+    gds_file = simulation.name + ".gds"
+    gds_file_path = str(path.joinpath(gds_file))
     export_layers(
-        gds_filename,
+        gds_file_path,
         simulation.layout,
         [simulation.cell],
         output_format="GDS2",
         layers=layers.values() if is_cross_section else simulation.get_layers(),
     )
 
-    return json_filename
+    sim_data = simulation.get_simulation_data()
+    sol_data = solution.get_solution_data()
+    full_name = simulation.name + solution.name
+
+    if is_cross_section:
+        if sim_data.get("london_penetration_depth", 0.0) > 0:
+            sif_names = [f"{full_name}_C", f"{full_name}_L"]
+        else:
+            sif_names = [f"{full_name}_C", f"{full_name}_C0"]
+    elif solution.tool == "wave_equation":
+        if solution.sweep_type == "interpolating":
+            sif_names = []
+        else:
+            sif_names = [full_name + "_f" + str(f).replace(".", "_") for f in sol_data["frequency"]]
+    else:
+        sif_names = [full_name]
+
+    json_data = {
+        "name": full_name,
+        "workflow": workflow,
+        **sim_data,
+        **sol_data,
+        **({"layers": {k: (v.layer, v.datatype) for k, v in layers.items()}} if is_cross_section else {}),
+        "sif_names": sif_names,
+        "gds_file": gds_file,
+        "parameters": get_combined_parameters(simulation, solution),
+    }
+
+    # write .json file
+    json_file_path = str(path.joinpath(full_name + ".json"))
+    with open(json_file_path, "w") as fp:
+        json.dump(json_data, fp, cls=GeometryJsonEncoder, indent=4)
+
+    return json_file_path
 
 
 def export_elmer_script(
@@ -162,7 +118,6 @@ def export_elmer_script(
     file_prefix="simulation",
     execution_script="scripts/run.py",
     post_process=None,
-    n_simulations=1,
 ):
     """
     Create script files for running one or more simulations.
@@ -171,10 +126,9 @@ def export_elmer_script(
     Args:
         json_filenames: List of paths to json files to be included into the script.
         path: Location where to write the script file.
-        workflow(dict): Parameters for simulation workflow
+        workflow: Parameters for simulation workflow
         file_prefix: Name of the script file to be created.
         execution_script: The script file to be executed.
-        n_simulations: Total number of simulations
         post_process: List of PostProcess objects, a single PostProcess object, or None to be executed after simulations
 
     Returns:
@@ -253,7 +207,8 @@ def export_elmer_script(
 
         sbatch_parameters = workflow["sbatch_parameters"]
 
-        parallelization_level = sbatch_parameters.pop("_parallelization_level", "none")
+        parallelization_level = workflow["_parallelization_level"]
+        n_simulations = workflow["_n_simulations"]
         _n_workers = int(sbatch_parameters.pop("n_workers", 1))
 
         if parallelization_level == "full_simulation":
@@ -354,7 +309,7 @@ def export_elmer_script(
             for i, json_filename in enumerate(json_filenames):
                 with open(json_filename) as f:
                     json_data = json.load(f)
-                    simulation_name = json_data["parameters"]["name"]
+                    simulation_name = json_data["name"]
 
                 script_filename_meshes = str(path.joinpath(simulation_name + "_meshes.sh"))
                 with open(script_filename_meshes, "w") as file:
@@ -425,7 +380,7 @@ def export_elmer_script(
             for i, json_filename in enumerate(json_filenames):
                 with open(json_filename) as f:
                     json_data = json.load(f)
-                    simulation_name = json_data["parameters"]["name"]
+                    simulation_name = json_data["name"]
                     sif_names = json_data["sif_names"]
 
                 script_filename = str(path.joinpath(simulation_name + ".sh"))
@@ -489,7 +444,7 @@ def export_elmer_script(
 
     else:
         n_workers = workflow.get("n_workers", 1)
-        parallelization_level = workflow.get("_parallelization_level")
+        parallelization_level = workflow["_parallelization_level"]
         parallelize_workload = parallelization_level == "full_simulation" and n_workers > 1
 
         with open(main_script_filename, "w") as main_file:
@@ -502,9 +457,7 @@ def export_elmer_script(
             for i, json_filename in enumerate(json_filenames):
                 with open(json_filename) as f:
                     json_data = json.load(f)
-                    simulation_name = json_data["parameters"]["name"]
-
-                sif_names = json_data["sif_names"]
+                    simulation_name = json_data["name"]
 
                 script_filename = str(path.joinpath(simulation_name + ".sh"))
                 with open(script_filename, "w") as file:
@@ -575,120 +528,117 @@ def export_elmer_script(
 
 
 def export_elmer(
-    simulations: Sequence[Simulation],
+    simulations: Sequence[
+        Union[
+            Simulation,
+            Tuple[Simulation, ElmerSolution],
+            CrossSectionSimulation,
+            Tuple[CrossSectionSimulation, ElmerSolution],
+        ]
+    ],
     path: Path,
-    tool="capacitance",
-    script_folder="scripts",
-    linear_system_method="bicgstab",
-    p_element_order=3,
-    frequency=5,
-    frequency_batch=3,
-    sweep_type="explicit",
-    max_delta_s=0.01,
-    file_prefix="simulation",
-    script_file="run.py",
-    mesh_size=None,
-    boundary_conditions=None,
-    workflow=None,
-    percent_error=0.005,
-    max_error_scale=2,
-    max_outlier_fraction=1e-3,
-    maximum_passes=1,
-    minimum_passes=1,
-    integrate_energies=False,
-    is_axisymmetric=False,
-    skip_errors=False,
-    post_process=None,
-    solver_options=None,
-):
+    script_folder: str = "scripts",
+    file_prefix: str = "simulation",
+    script_file: str = "run.py",
+    workflow: Optional[Dict] = None,
+    skip_errors: bool = False,
+    post_process: Optional[Union[PostProcess, Sequence[PostProcess]]] = None,
+    **solution_params,
+) -> Path:
     """
     Exports an elmer simulation model to the simulation path.
 
     Args:
-
-        simulations(list(Simulation)): list of all the simulations
-        path(Path): Location where to output the simulation model
-        tool(str): Available: "capacitance", "wave_equation" and "cross-section"
+        simulations: List of Simulation objects or tuples containing Simulation and Solution objects.
+        path: Location where to output the simulation model
         script_folder: Path to the Elmer-scripts folder.
-        linear_system_method(str): Available: 'bicgstab', 'mg'
-        p_element_order(int): polynomial order of p-elements
-        frequency: Units are in GHz. To set up multifrequency analysis, use list of numbers.
         file_prefix: File prefix of the script file to be created.
         script_file: Name of the script file to run.
-        mesh_size(dict): Parameters to determine mesh element sizes
-        boundary_conditions(dict): Parameters to determine boundary conditions
-        workflow(dict): Parameters for simulation workflow
-        percent_error(float): Stopping criterion in adaptive meshing.
-        max_error_scale(float): Maximum element error, relative to percent_error, allowed in individual elements.
-        max_outlier_fraction(float): Maximum fraction of outliers from the total number of elements
-        maximum_passes(int): Maximum number of adaptive meshing iterations.
-        minimum_passes(int): Minimum number of adaptive meshing iterations.
-        integrate_energies: Calculate energy integrals over each object
-        is_axisymmetric(bool): Simulate with Axi Symmetric coordinates along :math:`y\\Big|_{x=0}` (Default: False)
-        skip_errors(bool): Skip simulations that cause errors. (Default: False)
+        workflow: Parameters for simulation workflow
+        skip_errors: Skip simulations that cause errors. (Default: False)
 
             .. warning::
 
                **Use this carefully**, some of your simulations might not make sense physically and
                you might end up wasting time on bad simulations.
         post_process: List of PostProcess objects, a single PostProcess object, or None to be executed after simulations
-
-        solver_options (dict): Can be used to set experimental solver options for Elmer wave-equation tool.
-                    Supports the options `use_av` (bool), `london_penetration_depth` (float),
-                    `conductivity` (float),`nested_iteration` (bool), `convergence_tolerance` (float),
-                    `max_iterations` (int), `quadratic_approximation` (bool), `second_kind_basis` (bool)
+        solution_params: ElmerSolution parameters if simulations is a list of Simulation objects.
 
     Returns:
-
         Path to exported script file.
     """
-    parser = argparse.ArgumentParser()
+    export_with_tuples = isinstance(simulations[0], Sequence)
+    if export_with_tuples:
+        common_solution = None
+    else:
+        common_solution = ElmerSolution(**solution_params)
 
-    parser.add_argument("-q", "--quiet", action="store_true")
-    args, _ = parser.parse_known_args()
+    _update_elmer_workflow(simulations, common_solution, workflow)
 
-    if args.quiet:
-        workflow.update(
-            {
-                "run_gmsh_gui": False,  # For GMSH: if true, the mesh is shown after it is done
-                # (for large meshes this can take a long time)
-                "run_paraview": False,  # this is visual view of the results
-            }
-        )
-    if solver_options is None:
-        solver_options = {}
+    write_commit_reference_file(path)
+    copy_content_into_directory(ELMER_SCRIPT_PATHS, path, script_folder)
+    json_filenames = []
 
-    if isinstance(frequency, np.ndarray):
-        frequency = frequency.tolist()
-    elif not isinstance(frequency, list):
-        frequency = [frequency]
+    for sim_sol in simulations:
+        simulation, solution = sim_sol if export_with_tuples else (sim_sol, common_solution)
 
+        try:
+            json_filenames.append(export_elmer_json(simulation, solution, path, workflow))
+        except (IndexError, ValueError, Exception) as e:  # pylint: disable=broad-except
+            if skip_errors:
+                logging.warning(
+                    f"Simulation {simulation.name} skipped due to {e.args}. "
+                    "Some of your other simulations might not make sense geometrically. "
+                    "Disable `skip_errors` to see the full traceback."
+                )
+            else:
+                raise UserWarning(
+                    "Generating simulation failed. You can discard the errors using `skip_errors` in `export_elmer`. "
+                    "Moreover, `skip_errors` enables visual inspection of failed and successful simulation "
+                    "geometry files."
+                ) from e
+
+    return export_elmer_script(
+        json_filenames,
+        path,
+        workflow,
+        file_prefix=file_prefix,
+        execution_script=Path(script_folder).joinpath(script_file),
+        post_process=post_process,
+    )
+
+
+def _update_elmer_workflow(simulations, common_solution, workflow):
+    """
+    Modify workflow based on number of simulations and available computing resources
+
+    Args:
+        simulations: List of Simulation objects or tuples containing Simulation and Solution objects.
+        common_solution: Solution object if not contained in `simulations`
+        workflow: workflow to be updated
+    """
     if workflow is not None:
-        num_freqs = len(frequency)
-        num_sims = len(simulations)
         parallelization_level = "none"
         n_worker_lim = 1
-        if num_freqs > 1:
-            if num_sims > 1:
-                raise NotImplementedError(
-                    "Simultaneous sweep of frequency and other" "simulation parameters is not supported"
-                )
+        num_sims = len(simulations)
 
-            parallelization_level = "elmer"
-            n_worker_lim = num_freqs
+        if num_sims == 1:
+            if common_solution is None:
+                num_freqs = len(simulations[0][1].frequency)
+            else:
+                num_freqs = len(common_solution.frequency)
 
-            if tool != "wave_equation":
-                raise NotImplementedError(
-                    "Elmer level parallelization currently" "supported only with wave-equation tool"
-                )
-        elif num_sims > 1:
-            parallelization_level = "full_simulation"
+            if num_freqs > 1:
+                parallelization_level = "elmer"
+                n_worker_lim = num_freqs
+        else:  # num_sims > 1
+            # TODO enable Elmer level parallelism
             n_worker_lim = num_sims
+            parallelization_level = "full_simulation"
 
         if "sbatch_parameters" in workflow:
             n_workers = workflow["sbatch_parameters"].get("n_workers", 1.0)
             workflow["sbatch_parameters"]["n_workers"] = min(int(n_workers), n_worker_lim)
-            workflow["sbatch_parameters"]["_parallelization_level"] = parallelization_level
             workflow.pop("elmer_n_processes", "")
             workflow.pop("elmer_n_threads", "")
             workflow.pop("n_workers", "")
@@ -729,6 +679,7 @@ def export_elmer(
             workflow["elmer_n_processes"] = n_processes
             workflow["elmer_n_threads"] = n_threads
             workflow["_parallelization_level"] = parallelization_level
+            workflow["_n_simulations"] = n_worker_lim
 
             gmsh_n_threads = workflow.get("gmsh_n_threads", 1)
             if gmsh_n_threads == -1:
@@ -739,55 +690,15 @@ def export_elmer(
     else:
         workflow = {}
 
-    write_commit_reference_file(path)
-    copy_content_into_directory(ELMER_SCRIPT_PATHS, path, script_folder)
-    json_filenames = []
-    for simulation in simulations:
-        try:
-            json_filenames.append(
-                export_elmer_json(
-                    simulation=simulation,
-                    path=path,
-                    tool=tool,
-                    linear_system_method=linear_system_method,
-                    p_element_order=p_element_order,
-                    frequency=frequency,
-                    frequency_batch=frequency_batch,
-                    sweep_type=sweep_type,
-                    max_delta_s=max_delta_s,
-                    mesh_size=mesh_size,
-                    boundary_conditions=boundary_conditions,
-                    workflow=workflow,
-                    percent_error=percent_error,
-                    max_error_scale=max_error_scale,
-                    max_outlier_fraction=max_outlier_fraction,
-                    maximum_passes=maximum_passes,
-                    minimum_passes=minimum_passes,
-                    integrate_energies=integrate_energies,
-                    is_axisymmetric=is_axisymmetric,
-                    solver_options=solver_options,
-                )
-            )
-        except (IndexError, ValueError, Exception) as e:  # pylint: disable=broad-except
-            if skip_errors:
-                logging.warning(
-                    f"Simulation {simulation.name} skipped due to {e.args}. "
-                    "Some of your other simulations might not make sense geometrically. "
-                    "Disable `skip_errors` to see the full traceback."
-                )
-            else:
-                raise UserWarning(
-                    "Generating simulation failed. You can discard the errors using `skip_errors` in `export_elmer`. "
-                    "Moreover, `skip_errors` enables visual inspection of failed and successful simulation "
-                    "geometry files."
-                ) from e
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-q", "--quiet", action="store_true")
+    args, _ = parser.parse_known_args()
 
-    return export_elmer_script(
-        json_filenames,
-        path,
-        workflow,
-        file_prefix=file_prefix,
-        execution_script=Path(script_folder).joinpath(script_file),
-        n_simulations=n_worker_lim,
-        post_process=post_process,
-    )
+    if args.quiet:
+        workflow.update(
+            {
+                "run_gmsh_gui": False,  # For GMSH: if true, the mesh is shown after it is done
+                # (for large meshes this can take a long time)
+                "run_paraview": False,  # this is visual view of the results
+            }
+        )

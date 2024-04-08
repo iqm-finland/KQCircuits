@@ -145,6 +145,7 @@ class CrossSectionSimulation:
             dictionary of relevant parameters for simulation
         """
         simulation_data = {
+            "simulation_name": self.name,
             "units": self.units,
             "box": self.box,
             "london_penetration_depth": self.london_penetration_depth,

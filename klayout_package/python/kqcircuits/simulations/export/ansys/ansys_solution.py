@@ -16,15 +16,15 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 from dataclasses import dataclass
 from typing import Optional, Union, List
+from kqcircuits.simulations.export.solution import Solution
 
 
 @dataclass
-class AnsysSolution:  # TODO: subclass from Solution
+class AnsysSolution(Solution):
     """
     A Base class for Ansys Solution and export parameters
 
     Args:
-        name: name of the solution
         ansys_tool: Determines whether to use 'hfss' (s-parameters), 'q3d', 'current', 'voltage', or 'eigenmode'.
         frequency_units: Units of frequency.
         frequency: Frequency for mesh refinement. To set up multifrequency analysis in HFSS use list of numbers.
@@ -51,7 +51,6 @@ class AnsysSolution:  # TODO: subclass from Solution
         hfss_capacitance_export: If True, the capacitance matrices are exported from HFSS simulations
     """
 
-    name: str = ""
     ansys_tool: str = "hfss"  # to be ClassVar
     frequency_units: str = "GHz"
     frequency: Union[float, List[float]] = 5
@@ -79,6 +78,7 @@ class AnsysSolution:  # TODO: subclass from Solution
     def get_solution_data(self):
         """Return the solution data in dictionary form."""
         return {
+            "solution_name": self.name,
             "ansys_tool": self.ansys_tool,
             "analysis_setup": {
                 "frequency_units": self.frequency_units,

@@ -1171,6 +1171,7 @@ class Simulation:
                 raise ValueError("Material '{}' used but not defined in Simulation.material_dict".format(name))
 
         return {
+            "simulation_name": self.name,
             "units": "um",  # hardcoded assumption in multiple places
             "layers": self.layers,
             "material_dict": mater_dict,

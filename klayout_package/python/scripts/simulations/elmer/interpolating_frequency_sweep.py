@@ -170,7 +170,7 @@ def interpolating_frequency_sweep(
 
     frequency_batch = json_data["frequency_batch"]
     max_delta_s = json_data["max_delta_s"]
-    simname = json_data["parameters"]["name"]
+    simname = json_data["name"]
 
     def mag_from_components(re_arr, im_arr):
         return np.sqrt(np.power(re_arr, 2) + np.power(im_arr, 2))

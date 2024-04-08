@@ -20,7 +20,7 @@ import stat
 
 import json
 import logging
-
+from typing import Optional, Union, Sequence, Tuple
 from pathlib import Path
 
 from kqcircuits.simulations.export.ansys.ansys_solution import AnsysSolution
@@ -34,6 +34,7 @@ from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
 from kqcircuits.simulations.export.util import export_layers
 from kqcircuits.defaults import ANSYS_EXECUTABLE, ANSYS_SCRIPT_PATHS
 from kqcircuits.simulations.simulation import Simulation
+from kqcircuits.simulations.post_process import PostProcess
 
 
 def export_ansys_json(simulation: Simulation, solution: AnsysSolution, path: Path):
@@ -58,9 +59,10 @@ def export_ansys_json(simulation: Simulation, solution: AnsysSolution, path: Pat
         export_layers(
             gds_file_path, simulation.layout, [simulation.cell], output_format="GDS2", layers=simulation.get_layers()
         )
-
+    full_name = simulation.name + solution.name
     # collect data for .json file
     json_data = {
+        "name": full_name,
         **solution.get_solution_data(),
         **simulation.get_simulation_data(),
         "gds_file": gds_file,
@@ -68,7 +70,7 @@ def export_ansys_json(simulation: Simulation, solution: AnsysSolution, path: Pat
     }
 
     # write .json file
-    json_file_path = str(path.joinpath(simulation.name + solution.name + ".json"))
+    json_file_path = str(path.joinpath(full_name + ".json"))
     with open(json_file_path, "w") as fp:
         json.dump(json_data, fp, cls=GeometryJsonEncoder, indent=4)
 
@@ -136,17 +138,17 @@ def export_ansys_bat(
 
 
 def export_ansys(
-    simulations,
+    simulations: Sequence[Union[Simulation, Tuple[Simulation, AnsysSolution]]],
     path: Path,
-    script_folder="scripts",
-    file_prefix="simulation",
-    exit_after_run=False,
-    import_script="import_and_simulate.py",
-    post_process=None,
-    use_rel_path=True,
-    skip_errors=False,
+    script_folder: str = "scripts",
+    file_prefix: str = "simulation",
+    exit_after_run: bool = False,
+    import_script: str = "import_and_simulate.py",
+    post_process: Optional[Union[PostProcess, Sequence[PostProcess]]] = None,
+    use_rel_path: bool = True,
+    skip_errors: bool = False,
     **solution_params,
-):
+) -> Path:
     """
     Export Ansys simulations by writing necessary scripts and json, gds, and bat files.
 
@@ -174,7 +176,7 @@ def export_ansys(
     copy_content_into_directory(ANSYS_SCRIPT_PATHS, path, script_folder)
     json_filenames = []
     for sim_sol in simulations:
-        if isinstance(sim_sol, tuple):
+        if isinstance(sim_sol, Sequence):
             simulation, solution = sim_sol
         else:
             simulation = sim_sol

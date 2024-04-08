@@ -184,4 +184,4 @@ else:
         write_project_results_json(json_data, path, path.joinpath(msh_file))
 
 if args.write_versions_file:
-    write_simulation_machine_versions_file(path, json_data["parameters"]["name"])
+    write_simulation_machine_versions_file(path, json_data["name"])
