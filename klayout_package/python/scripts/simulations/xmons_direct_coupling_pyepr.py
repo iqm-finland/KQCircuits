@@ -51,7 +51,7 @@ export_parameters = {
     "exit_after_run": True,
     "max_delta_f": 0.1,  # maximum relative difference for convergence in %
     "n_modes": 2,  # eigenmodes to solve
-    "frequency": 0.1,  # minimum allowed eigenmode frequency
+    "min_frequency": 0.1,  # minimum allowed eigenmode frequency
     "simulation_flags": ["pyepr"],  # required for setting up pyepr specific stuff
 }
 

@@ -23,7 +23,7 @@ import logging
 from typing import Optional, Union, Sequence, Tuple
 from pathlib import Path
 
-from kqcircuits.simulations.export.ansys.ansys_solution import AnsysSolution
+from kqcircuits.simulations.export.ansys.ansys_solution import AnsysSolution, get_ansys_solution
 from kqcircuits.simulations.export.simulation_export import (
     copy_content_into_directory,
     get_post_process_command_lines,
@@ -71,8 +71,13 @@ def export_ansys_json(simulation: Simulation, solution: AnsysSolution, path: Pat
 
     # write .json file
     json_file_path = str(path.joinpath(full_name + ".json"))
-    with open(json_file_path, "w") as fp:
-        json.dump(json_data, fp, cls=GeometryJsonEncoder, indent=4)
+    if not Path(json_file_path).exists():
+        with open(json_file_path, "w") as fp:
+            json.dump(json_data, fp, cls=GeometryJsonEncoder, indent=4)
+    else:
+        raise ValueError(
+            f"Json file '{full_name}.json' already exists. Make sure that simulations and solutions have unique names."
+        )
 
     return json_file_path
 
@@ -175,13 +180,9 @@ def export_ansys(
     write_commit_reference_file(path)
     copy_content_into_directory(ANSYS_SCRIPT_PATHS, path, script_folder)
     json_filenames = []
+    common_sol = None if all(isinstance(s, Sequence) for s in simulations) else get_ansys_solution(**solution_params)
     for sim_sol in simulations:
-        if isinstance(sim_sol, Sequence):
-            simulation, solution = sim_sol
-        else:
-            simulation = sim_sol
-            solution = AnsysSolution(**solution_params)
-
+        simulation, solution = sim_sol if isinstance(sim_sol, Sequence) else (sim_sol, common_sol)
         try:
             json_filenames.append(export_ansys_json(simulation, solution, path))
         except (IndexError, ValueError, Exception) as e:  # pylint: disable=broad-except

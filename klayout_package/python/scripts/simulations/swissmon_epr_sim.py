@@ -17,9 +17,11 @@
 
 import logging
 import sys
+from itertools import product
 from pathlib import Path
 
 from kqcircuits.qubits.swissmon import Swissmon
+from kqcircuits.simulations.export.ansys.ansys_solution import AnsysEigenmodeSolution, AnsysVoltageSolution
 from kqcircuits.simulations.post_process import PostProcess
 from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
 
@@ -32,67 +34,58 @@ from kqcircuits.util.export_helper import (
     open_with_klayout_or_default_application,
 )
 
-
-sim_class = get_single_element_sim_class(Swissmon)  # pylint: disable=invalid-name
-
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
 # Simulation parameters
+sim_class = get_single_element_sim_class(Swissmon)  # pylint: disable=invalid-name
 sim_parameters = {
+    "name": "swissmon_epr",
     "box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(1000, 1000)),
     "partition_regions": [{"face": "1t1", "vertical_dimensions": 1.0, "metal_edge_dimensions": 1.0}],
     "tls_sheet_approximation": True,
     "tls_layer_thickness": 0.01,
     "n": 24,
 }
-export_parameters = {
-    "eigenmode": {
-        "ansys_tool": "eigenmode",
-        "exit_after_run": True,
-        "max_delta_f": 0.05,
-        "n_modes": 1,
-        "frequency": 1.0,
-        "maximum_passes": 20,
-        "integrate_energies": True,
-    },
-    "voltage": {
-        "ansys_tool": "voltage",
-        "exit_after_run": True,
-        "max_delta_e": 0.001,
-        "frequency": 4.8,
-        "maximum_passes": 20,
-        "integrate_energies": True,
-    },
-}
 
 # Get layout
 logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 layout = get_active_or_new_layout()
 
-simulations = []
-for key, export_params in export_parameters.items():
-    sim_params = {
-        **sim_parameters,
-        "name": f"swissmon_epr_{key}",
-    }
-    sims = [sim_class(layout, **sim_params)]
+# Sweep solution type
+simulations = list(
+    product(
+        [sim_class(layout, **sim_parameters)],
+        [
+            AnsysEigenmodeSolution(
+                name="_eigenmode",
+                max_delta_f=0.05,
+                n_modes=1,
+                min_frequency=1.0,
+                maximum_passes=20,
+                integrate_energies=True,
+            ),
+            AnsysVoltageSolution(
+                name="_voltage", max_delta_e=0.001, frequency=4.8, maximum_passes=20, integrate_energies=True
+            ),
+        ],
+    )
+)
 
-    exp_params = {
-        **export_params,
-        "post_process": PostProcess(
-            "produce_epr_table.py",
-            sheet_approximations={
-                "MA": {"thickness": 1e-8, "eps_r": 8, "background_eps_r": 1.0},
-                "SA": {"thickness": 1e-8, "eps_r": 4, "background_eps_r": 11.45},
-                "MS": {"thickness": 1e-8, "eps_r": 11.4, "background_eps_r": 11.45},
-            },
-        ),
-    }
-
-    # Export simulation files
-    export_ansys(sims, path=dir_path, file_prefix=f"simulation_{key}", **exp_params)
-    simulations += sims
+# Export simulation files
+export_ansys(
+    simulations,
+    path=dir_path,
+    exit_after_run=True,
+    post_process=PostProcess(
+        "produce_epr_table.py",
+        sheet_approximations={
+            "MA": {"thickness": 1e-8, "eps_r": 8, "background_eps_r": 1.0},
+            "SA": {"thickness": 1e-8, "eps_r": 4, "background_eps_r": 11.45},
+            "MS": {"thickness": 1e-8, "eps_r": 11.4, "background_eps_r": 11.45},
+        },
+    ),
+)
 
 # Write and open oas file
 open_with_klayout_or_default_application(export_simulation_oas(simulations, dir_path))

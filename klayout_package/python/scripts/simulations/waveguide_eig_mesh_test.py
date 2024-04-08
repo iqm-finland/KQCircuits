@@ -61,7 +61,7 @@ export_parameters_ansys = {
     "exit_after_run": True,
     "max_delta_f": 0.1,  # maximum relative difference for convergence in %
     "n_modes": 1,  # eigenmodes to solve
-    "frequency": 10,  # minimum allowed eigenmode frequency
+    "min_frequency": 10,  # minimum allowed eigenmode frequency
 }
 
 # Get layout

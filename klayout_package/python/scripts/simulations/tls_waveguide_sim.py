@@ -23,7 +23,7 @@ from pathlib import Path
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
-from kqcircuits.simulations.export.ansys.ansys_solution import AnsysSolution
+from kqcircuits.simulations.export.ansys.ansys_solution import AnsysHfssSolution
 from kqcircuits.simulations.export.simulation_export import export_simulation_oas, sweep_simulation
 from kqcircuits.simulations.port import EdgePort
 from kqcircuits.simulations.post_process import PostProcess
@@ -72,7 +72,6 @@ sim_parameters = {
     },
 }
 sol_parameters = {
-    "ansys_tool": "hfss",
     "sweep_enabled": False,
     "mesh_size": {"1t1_layerMAwallmer": 0.15, "1t1_layerMAmer": 0.5, "1t1_layerMSmer": 0.5, "1t1_layerSAmer": 0.5},
     "integrate_energies": True,
@@ -98,7 +97,7 @@ layout = get_active_or_new_layout()
 simulations = list(
     product(
         sweep_simulation(layout, sim_class, sim_parameters, {"a": [2, 10]}),
-        sweep_simulation(None, AnsysSolution, sol_parameters, {"frequency": [2, 10]}),
+        sweep_simulation(None, AnsysHfssSolution, sol_parameters, {"frequency": [2, 10]}),
     )
 )
 export_ansys(simulations, **export_parameters)

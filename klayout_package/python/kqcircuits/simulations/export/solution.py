@@ -27,3 +27,7 @@ class Solution:
     """
 
     name: str = ""
+
+    def get_parameters(self):
+        """Returns class parameters (also ClassVar parameters) in dictionary form"""
+        return {**{k: getattr(self, k) for k in self.__annotations__.keys()}, **self.__dict__}

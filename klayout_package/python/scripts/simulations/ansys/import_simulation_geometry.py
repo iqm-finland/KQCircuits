@@ -731,16 +731,6 @@ if not ansys_project_template:
             ],
         )
     elif ansys_tool == "q3d":
-        if isinstance(type(setup["frequency"]), list):
-            setup["frequency"] = setup["frequency"][0]
-            oDesktop.AddMessage(
-                "",
-                "",
-                0,
-                "Multi-frequency is not supported in Q3D. Create setup with frequency "
-                "{}.".format(str(setup["frequency"]) + setup["frequency_units"]),
-            )
-
         oAnalysisSetup.InsertSetup(
             "Matrix",
             [
@@ -774,12 +764,10 @@ if not ansys_project_template:
         )
     elif ansys_tool == "eigenmode":
         # Create EM setup
-        min_freq_ghz = str(setup.get("frequency", 0.1)) + setup["frequency_units"]
-
         setup_list = [
             "NAME:Setup1",
             "MinimumFrequency:=",
-            min_freq_ghz,
+            str(setup["min_frequency"]) + setup["frequency_units"],
             "NumModes:=",
             setup["n_modes"],
             "MaxDeltaFreq:=",

@@ -114,7 +114,6 @@ else:
         "percent_error": 0.1,
         "maximum_passes": 20,
         "minimum_passes": 15,
-        "sweep_enabled": False,
     }
     export_ansys(simulations, **export_parameters)
 

@@ -31,23 +31,24 @@ def find_varied_parameters(json_files):
         - dictionary with json file prefix as key and list of parameter values as value
     """
     keys = [f.replace(".json", "") for f in json_files]
-    nominal = min(keys, key=len)
 
     # Load data from json files
+    nominal_parameters = {}
     parameter_dict = {}
     for key, json_file in zip(keys, json_files):
         with open(json_file, "r") as f:
             definition = json.load(f)
         parameter_dict[key] = definition["parameters"]
+        nominal_parameters.update(parameter_dict[key])
 
     # Find parameters that are varied
     parameters = []
-    for parameter in parameter_dict[nominal]:
-        if not all(parameter_dict[key][parameter] == parameter_dict[nominal][parameter] for key in keys):
-            parameters.append(parameter)
+    for k, v in nominal_parameters.items():
+        if any(k in parameter_dict[key] and parameter_dict[key][k] != v for key in keys):
+            parameters.append(k)
 
     # Return compressed parameter_dict including only varied parameters
-    parameter_values = {k: [v[p] for p in parameters] for k, v in parameter_dict.items()}
+    parameter_values = {k: [v[p] if p in v else None for p in parameters] for k, v in parameter_dict.items()}
     return parameters, parameter_values
 
 

@@ -57,7 +57,7 @@ export_parameters = {
     "minimum_passes": 1,
     "minimum_converged_passes": 1,
     "n_modes": 2,
-    "frequency": 0.5,  # minimum allowed frequency
+    "min_frequency": 0.5,  # minimum allowed frequency
 }
 
 

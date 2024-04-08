@@ -72,7 +72,7 @@ for sim_tool in sim_tools:
 
         # lossy eigenmode simulation settings
         'n_modes': 1,
-        'frequency': 0.5,  # minimum allowed eigenfrequency
+        'min_frequency': 0.5,  # minimum allowed eigenfrequency
         'simulation_flags': ['pyepr'],
 
         # The post-processing values are taken from the following literature:

@@ -28,7 +28,7 @@ def get_combined_parameters(simulation, solution):
     In case of common keys, 'solution.' prefix is added to Solution parameter key.
     """
     sim_dict = simulation.get_parameters()
-    sol_dict = solution.__dict__
+    sol_dict = solution.get_parameters()
     return {
         **{k: v for k, v in sim_dict.items() if k != "name"},
         **{f"solution.{k}" if k in sim_dict else k: v for k, v in sol_dict.items() if k != "name"},
