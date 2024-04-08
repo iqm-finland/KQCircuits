@@ -1,4 +1,4 @@
-klayout==0.28.17.post1
+klayout
 numpy
 scipy
 tqdm
