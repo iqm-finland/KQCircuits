@@ -941,6 +941,9 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">label</span><span class="p">:</span>
         <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;A13&quot;</span>  <span class="c1"># longest label on 6 inch wafer</span>
         <span class="n">protection_only</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">elif</span> <span class="n">label</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">):</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;M&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">label</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="n">protection_only</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">protection_only</span> <span class="o">=</span> <span class="kc">False</span>
 

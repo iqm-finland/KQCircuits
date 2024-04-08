@@ -942,6 +942,7 @@
     <span class="n">minimum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">integrate_energies</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">is_axisymmetric</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">solver_options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Export Elmer simulation into json and gds files.</span>
@@ -964,6 +965,11 @@
 <span class="sd">        integrate_energies: Calculate energy integrals over each object</span>
 <span class="sd">        is_axisymmetric(bool): Simulate with Axi Symmetric coordinates along :math:`y\\Big|_{x=0}` (Default: False)</span>
 
+<span class="sd">        solver_options (dict): Can be used to set experimental solver options for Elmer wave-equation tool.</span>
+<span class="sd">                               Supports the options `use_av` (bool), `london_penetration_depth` (float),</span>
+<span class="sd">                               `conductivity` (float),`nested_iteration` (bool), `convergence_tolerance` (float),</span>
+<span class="sd">                               `max_iterations` (int), `quadratic_approximation` (bool), `second_kind_basis` (bool)</span>
+
 <span class="sd">    Returns:</span>
 <span class="sd">         Path to exported json file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -976,7 +982,7 @@
     <span class="k">if</span> <span class="n">is_cross_section</span><span class="p">:</span>
         <span class="n">layers</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">layer_dict</span>
 
-    <span class="n">sim_data</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">get_simulation_data</span><span class="p">()</span>
+    <span class="n">sim_data</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">simulation</span><span class="o">.</span><span class="n">get_simulation_data</span><span class="p">(),</span> <span class="s2">&quot;parameters&quot;</span><span class="p">:</span> <span class="n">simulation</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">()}</span>
     <span class="n">simname</span> <span class="o">=</span> <span class="n">sim_data</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">is_cross_section</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">sim_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;london_penetration_depth&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -991,6 +997,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">sif_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">simname</span><span class="p">]</span>
 
+    <span class="n">gds_file</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.gds&quot;</span>
     <span class="n">json_data</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;tool&quot;</span><span class="p">:</span> <span class="n">tool</span><span class="p">,</span>
         <span class="o">**</span><span class="n">sim_data</span><span class="p">,</span>
@@ -1012,6 +1019,8 @@
         <span class="s2">&quot;p_element_order&quot;</span><span class="p">:</span> <span class="n">p_element_order</span><span class="p">,</span>
         <span class="s2">&quot;is_axisymmetric&quot;</span><span class="p">:</span> <span class="n">is_axisymmetric</span><span class="p">,</span>
         <span class="s2">&quot;sif_names&quot;</span><span class="p">:</span> <span class="n">sif_names</span><span class="p">,</span>
+        <span class="s2">&quot;gds_file&quot;</span><span class="p">:</span> <span class="n">gds_file</span><span class="p">,</span>
+        <span class="s2">&quot;solver_options&quot;</span><span class="p">:</span> <span class="n">solver_options</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="c1"># write .json file</span>
@@ -1020,7 +1029,7 @@
         <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">GeometryJsonEncoder</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 
     <span class="c1"># write .gds file</span>
-    <span class="n">gds_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.gds&quot;</span><span class="p">))</span>
+    <span class="n">gds_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">gds_file</span><span class="p">))</span>
     <span class="n">export_layers</span><span class="p">(</span>
         <span class="n">gds_filename</span><span class="p">,</span>
         <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span>
@@ -1470,6 +1479,7 @@
     <span class="n">is_axisymmetric</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">skip_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">post_process</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">solver_options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Exports an elmer simulation model to the simulation path.</span>
@@ -1503,6 +1513,10 @@
 <span class="sd">               you might end up wasting time on bad simulations.</span>
 <span class="sd">        post_process: List of PostProcess objects, a single PostProcess object, or None to be executed after simulations</span>
 
+<span class="sd">        solver_options (dict): Can be used to set experimental solver options for Elmer wave-equation tool.</span>
+<span class="sd">                    Supports the options `use_av` (bool), `london_penetration_depth` (float),</span>
+<span class="sd">                    `conductivity` (float),`nested_iteration` (bool), `convergence_tolerance` (float),</span>
+<span class="sd">                    `max_iterations` (int), `quadratic_approximation` (bool), `second_kind_basis` (bool)</span>
 
 <span class="sd">    Returns:</span>
 
@@ -1521,6 +1535,8 @@
                 <span class="s2">&quot;run_paraview&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>  <span class="c1"># this is visual view of the results</span>
             <span class="p">}</span>
         <span class="p">)</span>
+    <span class="k">if</span> <span class="n">solver_options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">solver_options</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frequency</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
         <span class="n">frequency</span> <span class="o">=</span> <span class="n">frequency</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
@@ -1629,6 +1645,7 @@
                     <span class="n">minimum_passes</span><span class="o">=</span><span class="n">minimum_passes</span><span class="p">,</span>
                     <span class="n">integrate_energies</span><span class="o">=</span><span class="n">integrate_energies</span><span class="p">,</span>
                     <span class="n">is_axisymmetric</span><span class="o">=</span><span class="n">is_axisymmetric</span><span class="p">,</span>
+                    <span class="n">solver_options</span><span class="o">=</span><span class="n">solver_options</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>

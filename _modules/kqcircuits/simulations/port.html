@@ -965,6 +965,7 @@
         <span class="n">face</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">junction</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">signal_layer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;signal&quot;</span><span class="p">,</span>
+        <span class="n">etch_width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
@@ -979,12 +980,27 @@
 <span class="sd">            junction: Whether this port models a SQUID/Junction. Used in EPR calculations.</span>
 <span class="sd">            signal_layer: Manual override for simulation signal layer.</span>
 <span class="sd">                May be used to set ports across the ground layer with ``ground``.</span>
+<span class="sd">            etch_width: Width of a trace between signal_location and ground_location, on which the metal is etched away.</span>
+<span class="sd">                Useful when adding a lumped port on a waveguide.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="n">resistance</span><span class="p">,</span> <span class="n">reactance</span><span class="p">,</span> <span class="n">inductance</span><span class="p">,</span> <span class="n">capacitance</span><span class="p">,</span> <span class="n">face</span><span class="p">,</span> <span class="n">junction</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">signal_location</span> <span class="o">=</span> <span class="n">signal_location</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">signal_layer</span> <span class="o">=</span> <span class="n">signal_layer</span>
         <span class="k">if</span> <span class="n">ground_location</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ground_location</span> <span class="o">=</span> <span class="n">ground_location</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ground_location</span> <span class="o">=</span> <span class="n">ground_location</span>
+        <span class="k">if</span> <span class="n">etch_width</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">etch_width</span> <span class="o">=</span> <span class="n">etch_width</span>
+
+<div class="viewcode-block" id="InternalPort.get_etch_polygon"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.port.html#kqcircuits.simulations.port.InternalPort.get_etch_polygon">[docs]</a>    <span class="k">def</span> <span class="nf">get_etch_polygon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns polygon under which the metal should be etched away&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">signal_location</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ground_location</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">etch_width</span> <span class="o">/</span> <span class="n">d</span><span class="o">.</span><span class="n">length</span><span class="p">())</span> <span class="o">*</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">-</span><span class="n">d</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span>
+                <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">signal_location</span> <span class="o">-</span> <span class="n">v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">signal_location</span> <span class="o">+</span> <span class="n">v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ground_location</span> <span class="o">+</span> <span class="n">v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ground_location</span> <span class="o">-</span> <span class="n">v</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">()</span></div></div>
 
 
 <div class="viewcode-block" id="EdgePort"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.port.html#kqcircuits.simulations.port.EdgePort">[docs]</a><span class="k">class</span> <span class="nc">EdgePort</span><span class="p">(</span><span class="n">Port</span><span class="p">):</span>

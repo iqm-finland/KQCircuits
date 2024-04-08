@@ -1450,7 +1450,16 @@
             <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">face_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">face_ids</span><span class="p">):</span>
                 <span class="n">metal_gap_region</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">region_from_layer</span><span class="p">(</span><span class="n">face_id</span><span class="p">,</span> <span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">)</span>
                 <span class="n">metal_add_region</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">region_from_layer</span><span class="p">(</span><span class="n">face_id</span><span class="p">,</span> <span class="s2">&quot;base_metal_addition&quot;</span><span class="p">)</span>
-                <span class="n">lithography_region</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simplified_region</span><span class="p">(</span><span class="n">metal_gap_region</span> <span class="o">-</span> <span class="n">metal_add_region</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">over_etching</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">over_etching</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">lithography_region</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simplified_region</span><span class="p">(</span><span class="n">metal_gap_region</span> <span class="o">-</span> <span class="n">metal_add_region</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">over_etching</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">lithography_region</span> <span class="o">=</span> <span class="n">ground_box_region</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">simplified_region</span><span class="p">(</span>
+                        <span class="n">ground_box_region</span> <span class="o">-</span> <span class="p">(</span><span class="n">metal_gap_region</span> <span class="o">-</span> <span class="n">metal_add_region</span><span class="p">),</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">over_etching</span>
+                    <span class="p">)</span>
+                <span class="k">for</span> <span class="n">port</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ports</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">resolve_face</span><span class="p">(</span><span class="n">port</span><span class="o">.</span><span class="n">face</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">)</span> <span class="o">==</span> <span class="n">face_id</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="s2">&quot;get_etch_polygon&quot;</span><span class="p">):</span>
+                        <span class="n">lithography_region</span> <span class="o">+=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">port</span><span class="o">.</span><span class="n">get_etch_polygon</span><span class="p">()</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
 
                 <span class="k">if</span> <span class="n">lithography_region</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
                     <span class="n">signal_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">()</span>
@@ -1789,10 +1798,10 @@
         <span class="n">turn_radius</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">a</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">b</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">over_etching</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">airbridge</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">face</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">etch_opposite_face</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">port_kwargs</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a waveguide connection from some `location` to a port, and add the corresponding port to</span>
 <span class="sd">        `simulation.ports`.</span>
@@ -1802,25 +1811,24 @@
 <span class="sd">            towards (pya.DPoint): Point that sets the direction of the waveguide.</span>
 <span class="sd">                The waveguide will start from `location` and go towards `towards`</span>
 <span class="sd">            port_nr (int): Port index for the simulation engine starting from 1</span>
-<span class="sd">            side (str): Indicate on which edge the port should be located. Ignored for internal ports.</span>
-<span class="sd">                Must be one of `left`, `right`, `top` or `bottom`. If `None` then direction is inferred from `towards`.</span>
-<span class="sd">            use_internal_ports (bool, optional): if True, ports will be inside the simulation. If False, ports will be</span>
-<span class="sd">                brought out to an edge of the box, determined by `side`.</span>
-<span class="sd">                Defaults to the value of the `use_internal_ports` parameter</span>
-<span class="sd">            waveguide_length (float, optional): length of the waveguide (μm), used only for internal ports</span>
-<span class="sd">                Defaults to the value of the `waveguide_length` parameter</span>
+<span class="sd">            side (str): Indicate on which edge the waveguide is routed to, either `left`, `right`, `top` or `bottom`.</span>
+<span class="sd">                Ignored when use_internal_ports=True. If `None` then the edge is inferred from waveguide direction.</span>
+<span class="sd">            use_internal_ports: If True, a lumped port is placed at the end of straight waveguide segment. If False,</span>
+<span class="sd">                the waveguide is brought out to a wave port at the edge of the box, determined by `side`.</span>
+<span class="sd">                If the value is a string &#39;at_edge&#39;, then a lumped port will be placed next to the edge.</span>
+<span class="sd">                Defaults to the value of the `use_internal_ports` parameter.</span>
+<span class="sd">            waveguide_length (float, optional): length of the straight waveguide starting from `location` (μm).</span>
+<span class="sd">                Defaults to the value of the `waveguide_length` parameter.</span>
 <span class="sd">            term1 (float, optional): Termination gap (μm) at `location`. Default 0</span>
-<span class="sd">            turn_radius (float, optional): Turn radius of the waveguide. Not relevant for internal ports.</span>
-<span class="sd">                Defaults to the value of the `r` parameter</span>
+<span class="sd">            turn_radius (float, optional): Turn radius of the waveguide. Defaults to the value of the `r` parameter.</span>
 <span class="sd">            a (float, optional): Center conductor width. Defaults to the value of the `a` parameter</span>
 <span class="sd">            b (float, optional): Conductor gap width. Defaults to the value of the `b` parameter</span>
-<span class="sd">            over_etching (float, optional): Expansion of gaps. Defaults to the value of the `over_etching` parameter</span>
 <span class="sd">            airbridge (bool, optional): if True, an airbridge will be inserted at `location`. Default False.</span>
 <span class="sd">            face: face to place waveguide and port on. Either 0 (default) or 1, for bottom or top face.</span>
+<span class="sd">            etch_opposite_face: If true, the metal on opposite face of the waveguide is etched away.</span>
+<span class="sd">            port_kwargs: keyword arguments passed for port</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">waveguide_safety_overlap</span> <span class="o">=</span> <span class="mf">0.005</span>  <span class="c1"># Extend waveguide by this amount to avoid gaps due to nm-scale rounding</span>
-        <span class="c1"># errors</span>
         <span class="n">waveguide_gap_extension</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># Extend gaps beyond waveguides into ground plane to define the ground port edge</span>
 
         <span class="k">if</span> <span class="n">turn_radius</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1829,16 +1837,10 @@
             <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span>
         <span class="k">if</span> <span class="n">b</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span>
-        <span class="k">if</span> <span class="n">over_etching</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">over_etching</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">over_etching</span>
         <span class="k">if</span> <span class="n">use_internal_ports</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">use_internal_ports</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_internal_ports</span>
         <span class="k">if</span> <span class="n">waveguide_length</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">waveguide_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">waveguide_length</span>
-
-        <span class="c1"># Create a new path in the direction of path but with length waveguide_length</span>
-        <span class="n">direction</span> <span class="o">=</span> <span class="n">towards</span> <span class="o">-</span> <span class="n">location</span>
-        <span class="n">direction</span> <span class="o">=</span> <span class="n">direction</span> <span class="o">/</span> <span class="n">direction</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
 
         <span class="n">waveguide_a</span> <span class="o">=</span> <span class="n">a</span>
         <span class="n">waveguide_b</span> <span class="o">=</span> <span class="n">b</span>
@@ -1850,35 +1852,48 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">first_node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">use_internal_ports</span><span class="p">:</span>
-            <span class="n">signal_point</span> <span class="o">=</span> <span class="n">location</span> <span class="o">+</span> <span class="p">(</span><span class="n">waveguide_length</span> <span class="o">+</span> <span class="n">over_etching</span><span class="p">)</span> <span class="o">*</span> <span class="n">direction</span>
-            <span class="n">ground_point</span> <span class="o">=</span> <span class="n">location</span> <span class="o">+</span> <span class="p">(</span><span class="n">waveguide_length</span> <span class="o">+</span> <span class="n">a</span> <span class="o">-</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">over_etching</span><span class="p">)</span> <span class="o">*</span> <span class="n">direction</span>
-
-            <span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">first_node</span><span class="p">,</span>
-                <span class="n">Node</span><span class="p">(</span><span class="n">signal_point</span> <span class="o">+</span> <span class="n">waveguide_safety_overlap</span> <span class="o">*</span> <span class="n">direction</span><span class="p">),</span>
-            <span class="p">]</span>
-            <span class="n">port</span> <span class="o">=</span> <span class="n">InternalPort</span><span class="p">(</span><span class="n">port_nr</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">etched_line</span><span class="p">(</span><span class="n">signal_point</span><span class="p">,</span> <span class="n">ground_point</span><span class="p">),</span> <span class="n">face</span><span class="o">=</span><span class="n">face</span><span class="p">)</span>
-
-            <span class="n">extension_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">Node</span><span class="p">(</span><span class="n">ground_point</span><span class="p">),</span> <span class="n">Node</span><span class="p">(</span><span class="n">ground_point</span> <span class="o">+</span> <span class="n">waveguide_gap_extension</span> <span class="o">*</span> <span class="n">direction</span><span class="p">)]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">corner_point</span> <span class="o">=</span> <span class="n">location</span> <span class="o">+</span> <span class="p">(</span><span class="n">waveguide_length</span> <span class="o">+</span> <span class="n">turn_radius</span><span class="p">)</span> <span class="o">*</span> <span class="n">direction</span>
-            <span class="k">if</span> <span class="n">side</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># infer EdgePort location if not given</span>
-                <span class="n">d</span> <span class="o">=</span> <span class="n">towards</span> <span class="o">-</span> <span class="n">location</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">towards</span> <span class="o">-</span> <span class="n">location</span>
+        <span class="n">direction</span> <span class="o">=</span> <span class="n">d</span> <span class="o">/</span> <span class="n">d</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
+        <span class="n">internal_port_length</span> <span class="o">=</span> <span class="n">a</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">over_etching</span>  <span class="c1"># compensated with over etching</span>
+        <span class="k">if</span> <span class="n">use_internal_ports</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;at_edge&quot;</span><span class="p">]:</span>  <span class="c1"># edge port or internal port next to edge</span>
+            <span class="k">if</span> <span class="n">side</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">side</span> <span class="o">=</span> <span class="p">((</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="s2">&quot;right&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;bottom&quot;</span><span class="p">,</span> <span class="s2">&quot;top&quot;</span><span class="p">))[</span><span class="nb">abs</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">y</span><span class="p">)][</span><span class="n">d</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">d</span><span class="o">.</span><span class="n">y</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">out_direction</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;left&quot;</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="s2">&quot;right&quot;</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="s2">&quot;top&quot;</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="s2">&quot;bottom&quot;</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+            <span class="p">}[</span><span class="n">side</span><span class="p">]</span>
+            <span class="n">turn_length</span> <span class="o">=</span> <span class="n">turn_radius</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">out_direction</span><span class="o">.</span><span class="n">vprod</span><span class="p">(</span><span class="n">direction</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">out_direction</span><span class="o">.</span><span class="n">sprod</span><span class="p">(</span><span class="n">direction</span><span class="p">))</span>
+            <span class="n">corner_point</span> <span class="o">=</span> <span class="n">location</span> <span class="o">+</span> <span class="p">(</span><span class="n">waveguide_length</span> <span class="o">+</span> <span class="n">turn_length</span><span class="p">)</span> <span class="o">*</span> <span class="n">direction</span>
             <span class="n">port_edge_point</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s2">&quot;left&quot;</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">corner_point</span><span class="o">.</span><span class="n">y</span><span class="p">),</span>
                 <span class="s2">&quot;right&quot;</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">right</span><span class="p">,</span> <span class="n">corner_point</span><span class="o">.</span><span class="n">y</span><span class="p">),</span>
                 <span class="s2">&quot;top&quot;</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">corner_point</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">top</span><span class="p">),</span>
                 <span class="s2">&quot;bottom&quot;</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">corner_point</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">bottom</span><span class="p">),</span>
             <span class="p">}[</span><span class="n">side</span><span class="p">]</span>
-
             <span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">first_node</span><span class="p">,</span>
                 <span class="n">Node</span><span class="p">(</span><span class="n">corner_point</span><span class="p">),</span>
                 <span class="n">Node</span><span class="p">(</span><span class="n">port_edge_point</span><span class="p">),</span>
             <span class="p">]</span>
-            <span class="n">port</span> <span class="o">=</span> <span class="n">EdgePort</span><span class="p">(</span><span class="n">port_nr</span><span class="p">,</span> <span class="n">port_edge_point</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="n">face</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">use_internal_ports</span> <span class="o">==</span> <span class="s2">&quot;at_edge&quot;</span><span class="p">:</span>
+                <span class="n">signal_point</span> <span class="o">=</span> <span class="n">port_edge_point</span> <span class="o">-</span> <span class="n">waveguide_gap_extension</span> <span class="o">*</span> <span class="n">out_direction</span>
+                <span class="n">ground_point</span> <span class="o">=</span> <span class="n">signal_point</span> <span class="o">-</span> <span class="n">internal_port_length</span> <span class="o">*</span> <span class="n">out_direction</span>
+                <span class="n">port</span> <span class="o">=</span> <span class="n">InternalPort</span><span class="p">(</span><span class="n">port_nr</span><span class="p">,</span> <span class="n">signal_point</span><span class="p">,</span> <span class="n">ground_point</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="n">face</span><span class="p">,</span> <span class="n">etch_width</span><span class="o">=</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">,</span> <span class="o">**</span><span class="n">port_kwargs</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">port</span> <span class="o">=</span> <span class="n">EdgePort</span><span class="p">(</span><span class="n">port_nr</span><span class="p">,</span> <span class="n">port_edge_point</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="n">face</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># internal port at the end of straight waveguide segment</span>
+            <span class="n">signal_point</span> <span class="o">=</span> <span class="n">location</span> <span class="o">+</span> <span class="n">waveguide_length</span> <span class="o">*</span> <span class="n">direction</span>
+            <span class="n">ground_point</span> <span class="o">=</span> <span class="n">signal_point</span> <span class="o">+</span> <span class="n">internal_port_length</span> <span class="o">*</span> <span class="n">direction</span>
+
+            <span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">first_node</span><span class="p">,</span>
+                <span class="n">Node</span><span class="p">(</span><span class="n">ground_point</span> <span class="o">+</span> <span class="p">(</span><span class="n">waveguide_gap_extension</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">over_etching</span><span class="p">)</span> <span class="o">*</span> <span class="n">direction</span><span class="p">),</span>
+            <span class="p">]</span>
+            <span class="n">port</span> <span class="o">=</span> <span class="n">InternalPort</span><span class="p">(</span><span class="n">port_nr</span><span class="p">,</span> <span class="n">signal_point</span><span class="p">,</span> <span class="n">ground_point</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="n">face</span><span class="p">,</span> <span class="n">etch_width</span><span class="o">=</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">,</span> <span class="o">**</span><span class="n">port_kwargs</span><span class="p">)</span>
 
         <span class="n">tl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span>
             <span class="n">WaveguideComposite</span><span class="p">,</span>
@@ -1893,22 +1908,8 @@
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span><span class="n">tl</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">()))</span>
-        <span class="n">feedline_length</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="n">use_internal_ports</span><span class="p">:</span>
-            <span class="n">port_end_piece</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span>
-                <span class="n">WaveguideComposite</span><span class="p">,</span>
-                <span class="n">nodes</span><span class="o">=</span><span class="n">extension_nodes</span><span class="p">,</span>
-                <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span>
-                <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">,</span>
-                <span class="n">term1</span><span class="o">=</span><span class="n">a</span> <span class="o">-</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">over_etching</span><span class="p">,</span>
-                <span class="n">term2</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                <span class="n">etch_opposite_face</span><span class="o">=</span><span class="n">etch_opposite_face</span><span class="p">,</span>
-                <span class="n">face_ids</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="n">face</span><span class="p">]],</span>
-            <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span><span class="n">port_end_piece</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">()))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">port</span><span class="o">.</span><span class="n">deembed_len</span> <span class="o">=</span> <span class="n">feedline_length</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">use_internal_ports</span><span class="p">:</span>
+            <span class="n">port</span><span class="o">.</span><span class="n">deembed_len</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ports</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">port</span><span class="p">)</span></div>
 
@@ -1947,7 +1948,7 @@
         <span class="k">if</span> <span class="n">simulation</span><span class="o">.</span><span class="n">use_ports</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">ports</span><span class="p">:</span>
                 <span class="c1"># Basic data from Port</span>
-                <span class="n">p_data</span> <span class="o">=</span> <span class="n">port</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span>
+                <span class="n">p_data</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">port</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()}</span>  <span class="c1"># Shallow copy to not modify the ports</span>
 
                 <span class="n">face_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="n">port</span><span class="o">.</span><span class="n">face</span><span class="p">]</span>
 
@@ -2042,13 +2043,11 @@
 <div class="viewcode-block" id="Simulation.get_simulation_data"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.get_simulation_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_simulation_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the simulation data in dictionary form. Contains following:</span>
 
-<span class="sd">        * gds_file: name of gds file to include geometry layers,</span>
 <span class="sd">        * units: length unit in simulations, &#39;um&#39;,</span>
 <span class="sd">        * layers: geometry data,</span>
 <span class="sd">        * material_dict: Dictionary of dielectric materials,</span>
 <span class="sd">        * box: Boundary box,</span>
 <span class="sd">        * ports: Port data in dictionary form, see self.get_port_data(),</span>
-<span class="sd">        * parameters: All Simulation class parameters in dictionary form,</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># check that materials are defined in material_dict</span>
         <span class="n">materials</span> <span class="o">=</span> <span class="p">[</span><span class="n">layer</span><span class="p">[</span><span class="s2">&quot;material&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="s2">&quot;material&quot;</span> <span class="ow">in</span> <span class="n">layer</span><span class="p">]</span>
@@ -2058,13 +2057,11 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Material &#39;</span><span class="si">{}</span><span class="s2">&#39; used but not defined in Simulation.material_dict&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;gds_file&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.gds&quot;</span><span class="p">,</span>
             <span class="s2">&quot;units&quot;</span><span class="p">:</span> <span class="s2">&quot;um&quot;</span><span class="p">,</span>  <span class="c1"># hardcoded assumption in multiple places</span>
             <span class="s2">&quot;layers&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">,</span>
             <span class="s2">&quot;material_dict&quot;</span><span class="p">:</span> <span class="n">mater_dict</span><span class="p">,</span>
             <span class="s2">&quot;box&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="p">,</span>
             <span class="s2">&quot;ports&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_port_data</span><span class="p">(),</span>
-            <span class="s2">&quot;parameters&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">(),</span>
         <span class="p">}</span></div>
 
 <div class="viewcode-block" id="Simulation.get_layers"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.get_layers">[docs]</a>    <span class="k">def</span> <span class="nf">get_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

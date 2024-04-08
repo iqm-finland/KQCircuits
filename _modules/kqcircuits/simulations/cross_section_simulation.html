@@ -1031,12 +1031,10 @@
 <span class="sd">            dictionary of relevant parameters for simulation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">simulation_data</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;gds_file&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.gds&quot;</span><span class="p">,</span>
             <span class="s2">&quot;units&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">,</span>
             <span class="s2">&quot;box&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="p">,</span>
             <span class="s2">&quot;london_penetration_depth&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">london_penetration_depth</span><span class="p">,</span>
             <span class="o">**</span><span class="p">{</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">_permittivity&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">permittivity_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
-            <span class="s2">&quot;parameters&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">(),</span>
         <span class="p">}</span>
         <span class="k">return</span> <span class="n">simulation_data</span></div></div>
 </pre></div>

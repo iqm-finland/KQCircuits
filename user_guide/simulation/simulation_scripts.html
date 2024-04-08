@@ -939,16 +939,13 @@ finally shows the simulation geometries in Klayout viewer.:</p>
 <p>The above script can be run as a regular python script, or in the KLayout macro editor.
 After the execution, the output files are written to a folder in the KQCircuits <code class="docutils literal notranslate"><span class="pre">tmp</span></code> directory.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">export_ansys</span></code> function produces files and scripts needed to run Ansys simulations.
-It calls internally the following functions:</p>
-<ul class="simple">
-<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">copy_ansys_scripts_to_directory()</span></code>, which copies the folder
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations/ansys">scripts/simulations/ansys/</a> into the simulation
-directory. The folder contains needed IronPython scripts to run simulations in Ansys Electronics Desktop.</p></li>
-<li><p><a class="reference internal" href="../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys_json" title="kqcircuits.simulations.export.ansys.ansys_export.export_ansys_json"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_ansys_json()</span></code></a>, which exports x-y-shapes as GDSII file
-and other meta-data in json format for each simulation.</p></li>
-<li><p><a class="reference internal" href="../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys_bat" title="kqcircuits.simulations.export.ansys.ansys_export.export_ansys_bat"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_ansys_bat()</span></code></a>, which creates a batch file for running
-all simulations in series.</p></li>
-</ul>
+First, it copies the folders <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations/ansys">scripts/simulations/ansys/</a>
+and <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations/post_process">scripts/simulations/post_process/</a> into the simulation
+directory.
+The first folder contains needed IronPython scripts to run simulations in Ansys Electronics Desktop and the second
+includes post processing scripts that can be run after the simulations.
+Then it exports x-y-shapes as GDSII file and other meta-data in json format for each simulation.
+Finally, it creates a batch file for running all simulations in series.</p>
 <p>The simulations can be run by executing the <code class="docutils literal notranslate"><span class="pre">simulation.bat</span></code> script file.</p>
 <p>More examples of simulation scripts are available in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations">klayout_package/python/scripts/simulations</a>.</p>
 </section>
@@ -968,17 +965,12 @@ two lines:</p>
 <span class="n">export_elmer</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="o">**</span><span class="n">export_parameters</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Similarly to <code class="docutils literal notranslate"><span class="pre">export_ansys</span></code>, the <code class="docutils literal notranslate"><span class="pre">export_elmer</span></code> calls internally the following functions:</p>
-<ul class="simple">
-<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">copy_elmer_scripts_to_directory()</span></code>, which copies the Gmsh and
-Elmer script folder
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations/elmer/scripts">scripts/simulations/elmer/scripts/</a> into the
-simulation directory.</p></li>
-<li><p><a class="reference internal" href="../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer_json" title="kqcircuits.simulations.export.elmer.elmer_export.export_elmer_json"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_elmer_json()</span></code></a>, which exports x-y-shapes as GDSII file
-and other meta-data in json format for each simulation.</p></li>
-<li><p><a class="reference internal" href="../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer_script" title="kqcircuits.simulations.export.elmer.elmer_export.export_elmer_script"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_elmer_script()</span></code></a>, which creates a script file for
-running all simulations in series.</p></li>
-</ul>
+<p>Similarly to <code class="docutils literal notranslate"><span class="pre">export_ansys</span></code>, the <code class="docutils literal notranslate"><span class="pre">export_elmer</span></code> copies the Gmsh and Elmer script folder
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations/elmer">scripts/simulations/elmer/</a> and post-processing
+script folder <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations/post_process">scripts/simulations/post_process/</a>
+into the simulation directory.
+It exports x-y-shapes as GDSII file and other meta-data in json format for each simulation and
+creates a script file for running all simulations in series.</p>
 <p>The Elmer simulations can be run by executing the <code class="docutils literal notranslate"><span class="pre">simulation.sh</span></code> script file.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.simulation &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.simulations.export.ansys.ansys_solution &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
@@ -25,8 +25,8 @@
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kqcircuits.simulations.single_element_simulation" href="kqcircuits.simulations.single_element_simulation.html" />
-    <link rel="prev" title="kqcircuits.simulations.post_process" href="kqcircuits.simulations.post_process.html" /> 
+    <link rel="next" title="kqcircuits.simulations.export.elmer" href="kqcircuits.simulations.export.elmer.html" />
+    <link rel="prev" title="kqcircuits.simulations.export.ansys.ansys_export" href="kqcircuits.simulations.export.ansys.ansys_export.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -534,8 +534,8 @@
 </ul>
 </li>
 <li class="toctree-l2 current"><a class="reference internal" href="kqcircuits.simulations.html">kqcircuits.simulations</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.export.html">kqcircuits.simulations.export</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.ansys.html">kqcircuits.simulations.export.ansys</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="kqcircuits.simulations.export.html">kqcircuits.simulations.export</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="kqcircuits.simulations.export.ansys.html">kqcircuits.simulations.export.ansys</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.elmer.html">kqcircuits.simulations.export.elmer</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.sonnet.html">kqcircuits.simulations.export.sonnet</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.xsection.html">kqcircuits.simulations.export.xsection</a></li>
@@ -574,9 +574,9 @@
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.post_process.html#kqcircuits.simulations.post_process.PostProcess"><code class="docutils literal notranslate"><span class="pre">PostProcess</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">kqcircuits.simulations.simulation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#kqcircuits.simulations.simulation.get_simulation_layer_by_name"><code class="docutils literal notranslate"><span class="pre">get_simulation_layer_by_name()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#kqcircuits.simulations.simulation.Simulation"><code class="docutils literal notranslate"><span class="pre">Simulation</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.simulation.html">kqcircuits.simulations.simulation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.get_simulation_layer_by_name"><code class="docutils literal notranslate"><span class="pre">get_simulation_layer_by_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation"><code class="docutils literal notranslate"><span class="pre">Simulation</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.single_element_simulation.html">kqcircuits.simulations.single_element_simulation</a><ul>
@@ -878,9 +878,11 @@
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="kqcircuits.html">API documentation</a></li>
           <li class="breadcrumb-item"><a href="kqcircuits.simulations.html">kqcircuits.simulations</a></li>
-      <li class="breadcrumb-item active">kqcircuits.simulations.simulation</li>
+          <li class="breadcrumb-item"><a href="kqcircuits.simulations.export.html">kqcircuits.simulations.export</a></li>
+          <li class="breadcrumb-item"><a href="kqcircuits.simulations.export.ansys.html">kqcircuits.simulations.export.ansys</a></li>
+      <li class="breadcrumb-item active">kqcircuits.simulations.export.ansys.ansys_solution</li>
       <li class="wy-breadcrumbs-aside">
-              <a href="https://github.com/iqm-finland/KQCircuits/blob/main/docs/api/kqcircuits.simulations.simulation.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/iqm-finland/KQCircuits/blob/main/docs/api/kqcircuits.simulations.export.ansys.ansys_solution.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
   </ul>
   <hr/>
@@ -888,460 +890,181 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-kqcircuits.simulations.simulation">
-<span id="kqcircuits-simulations-simulation"></span><h1>kqcircuits.simulations.simulation<a class="headerlink" href="#module-kqcircuits.simulations.simulation" title="Permalink to this heading"></a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.get_simulation_layer_by_name">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.simulation.</span></span><span class="sig-name descname"><span class="pre">get_simulation_layer_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#get_simulation_layer_by_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.get_simulation_layer_by_name" title="Permalink to this definition"></a></dt>
-<dd><p>Returns layer info of given name. If layer doesn’t exist, a new layer is created.
-New layers are created with data type = 0 and layer numbering starts from 1000.</p>
-</dd></dl>
-
+  <section id="module-kqcircuits.simulations.export.ansys.ansys_solution">
+<span id="kqcircuits-simulations-export-ansys-ansys-solution"></span><h1>kqcircuits.simulations.export.ansys.ansys_solution<a class="headerlink" href="#module-kqcircuits.simulations.export.ansys.ansys_solution" title="Permalink to this heading"></a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.simulation.</span></span><span class="sig-name descname"><span class="pre">Simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.ansys.ansys_solution.</span></span><span class="sig-name descname"><span class="pre">AnsysSolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ansys_tool</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'hfss'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency_units</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'GHz'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_delta_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_delta_e</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percent_error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percent_refinement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum_passes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minimum_passes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minimum_converged_passes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sweep_enabled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sweep_start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sweep_end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sweep_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">101</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sweep_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'interpolating'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_delta_f</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_modes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulation_flags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ansys_project_template</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integrate_energies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integrate_magnetic_flux</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hfss_capacitance_export</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/ansys/ansys_solution.html#AnsysSolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Base class for simulation geometries.</p>
-<p>Generally, this class is intended to be subclassed by a specific simulation implementation; the
-implementation defines the simulation geometry and ports in <cite>build</cite>.</p>
-<p>A convenience class method <cite>Simulation.from_cell</cite> is provided to create a Simulation from an
-existing cell. In this case no ports will be added.</p>
-<p>Basically, 3D layout is built of substrates, which are separated from each other by vacuum boxes, however, this rule
-is modifiable by setting substrate and vacuum thicknesses to zero. In principle, one can stack faces on any of the
-imaginable surface of a substrate. If substrate or vacuum thickness is set to zero, then there can be two
-faces touching each other. Faces can be stacked on bottom or top surface of the substrates.</p>
-<p>Number of substrate and vacuum boxes are determined with parameters face_stack and lower_box_height:
-- If lower_box_height &gt; 0, there will be a vacuum box below the lowest substrate, and the counting of faces will
-start from the bottom surface of the lowest substrate. Otherwise, the lowest substrate will be below the lowest
-vacuum box, and the counting of faces will start from the top surface of the lowest substrate.
-- Length of face_stack list describes how many surfaces are taken into account in the simulation.</p>
-<p>The terms in the face_stack indicate in which order the klayout faces are stacked in the 3D layout. Faces are
-counted from the lowest substrate surface to the highest. One can also introduce face_stack as list of lists.
-If a term in face_stack is a list, then all the faces given in the list are piled up on the corresponding surface
-in the respective order. That means, the first term in the inner list indicates the face that is closest to the
-surface of the substrate. One can use empty list in face_stack to leave certain surface
-without metallization.</p>
-<p>Heights of substrates (substrate_height) and vacuum boxes between surfaces (chip_distance) can be determined
-individually from bottom to top or with single value. Any of the heights can be left zero, to indicate that there
-is no vacuum between the substrates or substrate between the vacuum boxes. Also, the metal thickness (metal_height)
-can be set to zero, but that means the metal layer is modelled as infinitely thin sheet. The insulator dielectric
-can be set on any metal layer if non-zero dielectric_height is given.</p>
-<p>Initialize a Simulation.</p>
-<p>The initializer parses parameters, creates a top cell, and then calls <cite>self.build</cite> to create
-the simulation geometry, followed by <cite>self.create_simulation_layers</cite> to process the geometry
-so it is ready for exporting.</p>
+<p>A Base class for Ansys Solution and export parameters</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>layout</strong> – the layout on which to create the simulation</p>
-</dd>
-<dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>**kwargs</strong> – <p>Any parameter can be passed as a keyword argument.</p>
-<p>In addition, <cite>cell</cite> can be passed as keyword argument. If <cite>cell</cite> is supplied, it will be
-used as the top cell for the simulation. Otherwise, a new cell will be created. See
-<cite>Simulation.from_cell</cite> for creating simulations from existing cells.</p>
-</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – name of the solution</p></li>
+<li><p><strong>ansys_tool</strong> – Determines whether to use ‘hfss’ (s-parameters), ‘q3d’, ‘current’, ‘voltage’, or ‘eigenmode’.</p></li>
+<li><p><strong>frequency_units</strong> – Units of frequency.</p></li>
+<li><p><strong>frequency</strong> – Frequency for mesh refinement. To set up multifrequency analysis in HFSS use list of numbers.</p></li>
+<li><p><strong>max_delta_s</strong> – Stopping criterion in HFSS simulation.</p></li>
+<li><p><strong>max_delta_e</strong> – Stopping criterion in current or voltage excitation simulation.</p></li>
+<li><p><strong>percent_error</strong> – Stopping criterion in Q3D simulation.</p></li>
+<li><p><strong>percent_refinement</strong> – Percentage of mesh refinement on each iteration.</p></li>
+<li><p><strong>maximum_passes</strong> – Maximum number of iterations in simulation.</p></li>
+<li><p><strong>minimum_passes</strong> – Minimum number of iterations in simulation.</p></li>
+<li><p><strong>minimum_converged_passes</strong> – Determines how many iterations have to meet the stopping criterion to stop simulation.</p></li>
+<li><p><strong>sweep_enabled</strong> – Determines if HFSS frequency sweep is enabled.</p></li>
+<li><p><strong>sweep_start</strong> – The lowest frequency in the sweep.</p></li>
+<li><p><strong>sweep_end</strong> – The highest frequency in the sweep.</p></li>
+<li><p><strong>sweep_count</strong> – Number of frequencies in the sweep.</p></li>
+<li><p><strong>sweep_type</strong> – choices are “interpolating”, “discrete” or “fast”</p></li>
+<li><p><strong>max_delta_f</strong> – Maximum allowed relative difference in eigenfrequency (%). Used when <code class="docutils literal notranslate"><span class="pre">ansys_tool</span></code> is <em>eigenmode</em>.</p></li>
+<li><p><strong>n_modes</strong> – Number of eigenmodes to solve. Used when <code class="docutils literal notranslate"><span class="pre">ansys_tool</span></code> is ‘eigenmode’.</p></li>
+<li><p><strong>mesh_size</strong> – Dictionary to determine manual mesh refinement on layers. Set key as the layer name and value as the
+maximal mesh element length inside the layer.</p></li>
+<li><p><strong>simulation_flags</strong> – Optional export processing, given as list of strings. See Simulation Export in docs.</p></li>
+<li><p><strong>ansys_project_template</strong> – path to the simulation template</p></li>
+<li><p><strong>integrate_energies</strong> – Calculate energy integrals over each layer and save them into a file</p></li>
+<li><p><strong>integrate_magnetic_flux</strong> – Integrate magnetic fluxes through each non-pec sheet and save them into a file</p></li>
+<li><p><strong>hfss_capacitance_export</strong> – If True, the capacitance matrices are exported from HFSS simulations</p></li>
+</ul>
 </dd>
 </dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.LIBRARY_NAME">
-<span class="sig-name descname"><span class="pre">LIBRARY_NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.LIBRARY_NAME" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.name" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.ports">
-<span class="sig-name descname"><span class="pre">ports</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="kqcircuits.simulations.port.html#kqcircuits.simulations.port.Port" title="kqcircuits.simulations.port.Port"><span class="pre">Port</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.ports" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.ansys_tool">
+<span class="sig-name descname"><span class="pre">ansys_tool</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'hfss'</span></em><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.ansys_tool" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.frequency_units">
+<span class="sig-name descname"><span class="pre">frequency_units</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'GHz'</span></em><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.frequency_units" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.frequency">
+<span class="sig-name descname"><span class="pre">frequency</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.frequency" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.max_delta_s">
+<span class="sig-name descname"><span class="pre">max_delta_s</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.1</span></em><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.max_delta_s" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.max_delta_e">
+<span class="sig-name descname"><span class="pre">max_delta_e</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.1</span></em><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.max_delta_e" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.percent_error">
+<span class="sig-name descname"><span class="pre">percent_error</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.percent_error" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.percent_refinement">
+<span class="sig-name descname"><span class="pre">percent_refinement</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">30.0</span></em><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.percent_refinement" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.maximum_passes">
+<span class="sig-name descname"><span class="pre">maximum_passes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">12</span></em><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.maximum_passes" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.minimum_passes">
+<span class="sig-name descname"><span class="pre">minimum_passes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.minimum_passes" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.minimum_converged_passes">
+<span class="sig-name descname"><span class="pre">minimum_converged_passes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.minimum_converged_passes" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.sweep_enabled">
+<span class="sig-name descname"><span class="pre">sweep_enabled</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.sweep_enabled" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.sweep_start">
+<span class="sig-name descname"><span class="pre">sweep_start</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.sweep_start" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.sweep_end">
+<span class="sig-name descname"><span class="pre">sweep_end</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></em><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.sweep_end" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.sweep_count">
+<span class="sig-name descname"><span class="pre">sweep_count</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">101</span></em><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.sweep_count" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.sweep_type">
+<span class="sig-name descname"><span class="pre">sweep_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'interpolating'</span></em><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.sweep_type" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.max_delta_f">
+<span class="sig-name descname"><span class="pre">max_delta_f</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.1</span></em><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.max_delta_f" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.n_modes">
+<span class="sig-name descname"><span class="pre">n_modes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.n_modes" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.mesh_size">
+<span class="sig-name descname"><span class="pre">mesh_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.mesh_size" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.simulation_flags">
+<span class="sig-name descname"><span class="pre">simulation_flags</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.simulation_flags" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.ansys_project_template">
+<span class="sig-name descname"><span class="pre">ansys_project_template</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.ansys_project_template" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.integrate_energies">
+<span class="sig-name descname"><span class="pre">integrate_energies</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.integrate_energies" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.integrate_magnetic_flux">
+<span class="sig-name descname"><span class="pre">integrate_magnetic_flux</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.integrate_magnetic_flux" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.hfss_capacitance_export">
+<span class="sig-name descname"><span class="pre">hfss_capacitance_export</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.hfss_capacitance_export" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.from_cell">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.from_cell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.from_cell" title="Permalink to this definition"></a></dt>
-<dd><p>Create a Simulation from an existing cell.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>cell</strong> – existing top cell for the Simulation</p></li>
-<li><p><strong>margin</strong> – distance (μm) to expand the simulation box (ground plane) around the bounding
-box of the cell If the <cite>box</cite> keyword argument is given, margin is ignored.</p></li>
-<li><p><strong>grid_size</strong> – size of the simulation box will be rounded to this resolution
-If the <cite>box</cite> keyword argument is given, grid_size is ignored.</p></li>
-<li><p><strong>**kwargs</strong> – any simulation parameters passed</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Simulation instance</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.build">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.build" title="Permalink to this definition"></a></dt>
-<dd><p>Build simulation geometry.</p>
-<p>This method is to be overridden, and the overriding method should create the geometry to be
-simulated and add any ports to <cite>self.ports</cite>.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.get_schema">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_schema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">noparents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abstract_class</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.get_schema" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the combined parameters of the class “cls” and all its ancestor classes.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>noparents</strong> – If True then only return the parameters of “cls”, not including ancestors.</p></li>
-<li><p><strong>abstract_class</strong> – Return parameters up to this abstract class if specified.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.face">
-<span class="sig-name descname"><span class="pre">face</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">face_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.face" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the face dictionary corresponding to face_id.</p>
-<p>The face dictionary contains key “id” for the face ID and keys for all the available layers in that face.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>face_id</strong> – name or index of the face, default=0</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.insert_cell">
-<span class="sig-name descname"><span class="pre">insert_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trans</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inst_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_trans</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align_to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rec_levels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.insert_cell" title="Permalink to this definition"></a></dt>
-<dd><p>Inserts a subcell into the present cell.</p>
-<p>It will use the given <cite>cell</cite> object or if <cite>cell</cite> is an Element class’ name then directly
-take the provided keyword arguments to first create the cell object.</p>
-<p>If <cite>inst_name</cite> given, the refpoints of the cell are added to the <cite>self.refpoints</cite> with <cite>inst_name</cite> as a prefix,
-and also adds a label <cite>inst_name</cite> to “`”labels layer” at the <cite>base</cite> refpoint and <cite>label_trans</cite> transformation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>cell</strong> – cell object or Element class name</p></li>
-<li><p><strong>trans</strong> – used transformation for placement. None by default, which places the subcell into the coordinate
-origin of the parent cell. If <cite>align</cite> and <cite>align_to</cite> arguments are used, <cite>trans</cite> is applied to the
-<cite>cell</cite> before alignment transform which allows for example rotation of the <cite>cell</cite> before placement.</p></li>
-<li><p><strong>inst_name</strong> – possible instance name inserted into subcell properties under <cite>id</cite>. Default is None</p></li>
-<li><p><strong>label_trans</strong> – relative transformation for the instance name label</p></li>
-<li><p><strong>align_to</strong> – location in parent cell coordinates for alignment of cell. Can be either string indicating
-the parent refpoint name, <cite>DPoint</cite> or <cite>DVector</cite>. Default is None</p></li>
-<li><p><strong>align</strong> – name of the <cite>cell</cite> refpoint aligned to argument <cite>align_to</cite>. Default is None</p></li>
-<li><p><strong>rec_levels</strong> – recursion level when looking for refpoints from subcells. Set to 0 to disable recursion.</p></li>
-<li><p><strong>**parameters</strong> – PCell parameters for the element, as keyword argument</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>tuple of placed cell instance and reference points with the same transformation</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.get_refpoints">
-<span class="sig-name descname"><span class="pre">get_refpoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_transf=r0</span> <span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rec_levels=None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.get_refpoints" title="Permalink to this definition"></a></dt>
-<dd><p>See <cite>get_refpoints</cite>.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.add_element">
-<span class="sig-name descname"><span class="pre">add_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.add_element" title="Permalink to this definition"></a></dt>
-<dd><p>Create a new cell for the given element in this layout.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>cls</strong> – Element subclass to be created</p></li>
-<li><p><strong>**parameters</strong> – PCell parameters for the element as keyword arguments</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the created cell</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.get_layer">
-<span class="sig-name descname"><span class="pre">get_layer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.get_layer" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the specified Layer object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>layer_name</strong> – layer name text</p></li>
-<li><p><strong>face_id</strong> – Name or index of the face to use, default=0</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.pcell_params_by_name">
-<span class="sig-name descname"><span class="pre">pcell_params_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.pcell_params_by_name" title="Permalink to this definition"></a></dt>
-<dd><p>Give PCell parameters as a dictionary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>cls</strong> – Return only parameters present in this class. All by default.</p></li>
-<li><p><strong>**parameters</strong> – Optionally update with other keyword arguments</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A dictionary of all PCell parameter names and corresponding current values.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.face_stack_list_of_lists">
-<span class="sig-name descname"><span class="pre">face_stack_list_of_lists</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.face_stack_list_of_lists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.face_stack_list_of_lists" title="Permalink to this definition"></a></dt>
-<dd><p>Return self.face_stack forced to be list of lists</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.ith_value">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ith_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_or_constant</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.ith_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.ith_value" title="Permalink to this definition"></a></dt>
-<dd><p>Helper function to return value from list or constant corresponding to the ordinal number i.
-Too short lists are extended by duplicating the last value of the list.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.face_z_levels">
-<span class="sig-name descname"><span class="pre">face_z_levels</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.face_z_levels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.face_z_levels" title="Permalink to this definition"></a></dt>
-<dd><p>Returns dictionary of z-levels. The dictionary can be used either with integer or string key values: Integer
-keys return surface z-levels in ascending order (including domain boundary bottom and top). String keys
-(key = face_id) return the three z-levels of the face (metal bottom, metal-dielectric interface, dielectric top)</p>
-<p>The level z=0 is at lowest substrate top.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.region_from_layer">
-<span class="sig-name descname"><span class="pre">region_from_layer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">face_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.region_from_layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.region_from_layer" title="Permalink to this definition"></a></dt>
-<dd><p>Returns a <cite>Region</cite> containing all geometry from a specified layer</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.simplified_region">
-<span class="sig-name descname"><span class="pre">simplified_region</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">region</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expansion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.simplified_region"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.simplified_region" title="Permalink to this definition"></a></dt>
-<dd><p>Returns a region that is simplified by functions region_with_merged_polygons and region_with_merged_points.
-More precisely:
-- Merges polygons ignoring gaps that are smaller than self.polygon_tolerance
-- Expands/shrinks region by amount given by ‘expansion’
-- In each polygon of the region, removes points that are closer to other points than self.minimum_point_spacing</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.insert_layer">
-<span class="sig-name descname"><span class="pre">insert_layer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.insert_layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.insert_layer" title="Permalink to this definition"></a></dt>
-<dd><p>Adds layer parameters into ‘self.layers’ if region is non-empty.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.insert_stacked_up_layers">
-<span class="sig-name descname"><span class="pre">insert_stacked_up_layers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stack</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.insert_stacked_up_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.insert_stacked_up_layers" title="Permalink to this definition"></a></dt>
-<dd><p>Produces the layer stack-up and adds the layers into ‘self.layers’.
-Each layer is split into sub-layers by their z-level.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>stack</strong> – list of layers in form of tuples containing (region, layer name, thickness, material)</p></li>
-<li><p><strong>z0</strong> – the base z-level for the layer stack-up</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.insert_layers_between_faces">
-<span class="sig-name descname"><span class="pre">insert_layers_between_faces</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opp_i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.insert_layers_between_faces"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.insert_layers_between_faces" title="Permalink to this definition"></a></dt>
-<dd><p>Helper function to be used to produce indium bumps and TSVs</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.create_simulation_layers">
-<span class="sig-name descname"><span class="pre">create_simulation_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.create_simulation_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.create_simulation_layers" title="Permalink to this definition"></a></dt>
-<dd><p>Create the layers used for simulation export.</p>
-<p>Based on any geometry defined on the relevant lithography layers.</p>
-<p>This method is called from <cite>__init__</cite> after <cite>build</cite>, and should not be called directly.</p>
-<p>Geometry is added to layers created specifically for simulation purposes. The layer numbers, z-levels,
-thicknesses, materials, and other properties are stored in ‘self.layers’ parameter.</p>
-<p>In the simulation-specific layers, all geometry has been merged and converted to simple polygons, that is,
-polygons without holes.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.produce_layers">
-<span class="sig-name descname"><span class="pre">produce_layers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.produce_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.produce_layers" title="Permalink to this definition"></a></dt>
-<dd><p>Finalizes and partitions self.layers.</p>
-<p>Metals and non-model objects are left without partitioning. We assume that these do not overlap.</p>
-<p>Vacuum or dielectric objects are partitioned if parts is not empty. If these objects overlap, the smaller is
-subtracted from larger.</p>
-<p>Non-model objects are subtracted from vacuum or dielectric objects only if non-model object is mentioned in
-subtract_keys of vacuum or dielectric object.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.ground_grid_region">
-<span class="sig-name descname"><span class="pre">ground_grid_region</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">face_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.ground_grid_region"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.ground_grid_region" title="Permalink to this definition"></a></dt>
-<dd><p>Returns region of ground grid for the given face id.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.produce_waveguide_to_port">
-<span class="sig-name descname"><span class="pre">produce_waveguide_to_port</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">towards</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port_nr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">side</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_internal_ports</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">waveguide_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">term1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">turn_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">airbridge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">etch_opposite_face</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">port_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.produce_waveguide_to_port"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.produce_waveguide_to_port" title="Permalink to this definition"></a></dt>
-<dd><p>Create a waveguide connection from some <cite>location</cite> to a port, and add the corresponding port to
-<cite>simulation.ports</cite>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>location</strong> (<em>pya.DPoint</em>) – Point where the waveguide connects to the simulation</p></li>
-<li><p><strong>towards</strong> (<em>pya.DPoint</em>) – Point that sets the direction of the waveguide.
-The waveguide will start from <cite>location</cite> and go towards <cite>towards</cite></p></li>
-<li><p><strong>port_nr</strong> (<em>int</em>) – Port index for the simulation engine starting from 1</p></li>
-<li><p><strong>side</strong> (<em>str</em>) – Indicate on which edge the waveguide is routed to, either <cite>left</cite>, <cite>right</cite>, <cite>top</cite> or <cite>bottom</cite>.
-Ignored when use_internal_ports=True. If <cite>None</cite> then the edge is inferred from waveguide direction.</p></li>
-<li><p><strong>use_internal_ports</strong> – If True, a lumped port is placed at the end of straight waveguide segment. If False,
-the waveguide is brought out to a wave port at the edge of the box, determined by <cite>side</cite>.
-If the value is a string ‘at_edge’, then a lumped port will be placed next to the edge.
-Defaults to the value of the <cite>use_internal_ports</cite> parameter.</p></li>
-<li><p><strong>waveguide_length</strong> (<em>float</em><em>, </em><em>optional</em>) – length of the straight waveguide starting from <cite>location</cite> (μm).
-Defaults to the value of the <cite>waveguide_length</cite> parameter.</p></li>
-<li><p><strong>term1</strong> (<em>float</em><em>, </em><em>optional</em>) – Termination gap (μm) at <cite>location</cite>. Default 0</p></li>
-<li><p><strong>turn_radius</strong> (<em>float</em><em>, </em><em>optional</em>) – Turn radius of the waveguide. Defaults to the value of the <cite>r</cite> parameter.</p></li>
-<li><p><strong>a</strong> (<em>float</em><em>, </em><em>optional</em>) – Center conductor width. Defaults to the value of the <cite>a</cite> parameter</p></li>
-<li><p><strong>b</strong> (<em>float</em><em>, </em><em>optional</em>) – Conductor gap width. Defaults to the value of the <cite>b</cite> parameter</p></li>
-<li><p><strong>airbridge</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True, an airbridge will be inserted at <cite>location</cite>. Default False.</p></li>
-<li><p><strong>face</strong> – face to place waveguide and port on. Either 0 (default) or 1, for bottom or top face.</p></li>
-<li><p><strong>etch_opposite_face</strong> – If true, the metal on opposite face of the waveguide is etched away.</p></li>
-<li><p><strong>port_kwargs</strong> – keyword arguments passed for port</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.get_parameters">
-<span class="sig-name descname"><span class="pre">get_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.get_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.get_parameters" title="Permalink to this definition"></a></dt>
-<dd><p>Return dictionary with all parameters and their values.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.etched_line">
-<span class="sig-name descname"><span class="pre">etched_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DPoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DPoint</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.etched_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.etched_line" title="Permalink to this definition"></a></dt>
-<dd><p>Return the end points of line segment after extending it at both ends by amount of over_etching.
-This function must be used when initializing InternalPort.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>p1</strong> (<em>pya.DPoint</em>) – first end of line segment</p></li>
-<li><p><strong>p2</strong> (<em>pya.DPoint</em>) – second end of line segment</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>list of extended end points.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>[p1 - d, p2 + d]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.get_port_data">
-<span class="sig-name descname"><span class="pre">get_port_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.get_port_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.get_port_data" title="Permalink to this definition"></a></dt>
-<dd><p>Return the port data in dictionary form and add the information of port polygon. Includes following:</p>
-<ul class="simple">
-<li><p>Items from <cite>Port</cite> instance</p></li>
-<li><p>polygon: point coordinates of the port polygon</p></li>
-<li><p>signal_edge: point coordinates of the signal edge</p></li>
-<li><p>ground_edge: point coordinates of the ground edge</p></li>
-</ul>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.get_simulation_data">
-<span class="sig-name descname"><span class="pre">get_simulation_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.get_simulation_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.get_simulation_data" title="Permalink to this definition"></a></dt>
-<dd><p>Return the simulation data in dictionary form. Contains following:</p>
-<ul class="simple">
-<li><p>units: length unit in simulations, ‘um’,</p></li>
-<li><p>layers: geometry data,</p></li>
-<li><p>material_dict: Dictionary of dielectric materials,</p></li>
-<li><p>box: Boundary box,</p></li>
-<li><p>ports: Port data in dictionary form, see self.get_port_data(),</p></li>
-</ul>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.get_layers">
-<span class="sig-name descname"><span class="pre">get_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.get_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.get_layers" title="Permalink to this definition"></a></dt>
-<dd><p>Returns simulation layer numbers in list. Only return layers that are in use.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.delete_instances">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delete_instances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.delete_instances"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.delete_instances" title="Permalink to this definition"></a></dt>
-<dd><p>Allows for deleting a sub-cell of the top ‘cell’ with a specific ‘name’. The ‘index’ argument can be used to
-access more than one sub-cell sharing the same ‘name’, but with different appended ‘index’ to the ‘name’.</p>
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.get_solution_data">
+<span class="sig-name descname"><span class="pre">get_solution_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/ansys/ansys_solution.html#AnsysSolution.get_solution_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.get_solution_data" title="Permalink to this definition"></a></dt>
+<dd><p>Return the solution data in dictionary form.</p>
 </dd></dl>
 
 </dd></dl>
 
-<strong>PCell parameters:</strong><div class="line"><br /></div>
-<ul class="simple">
-<li><p><strong>box</strong><em> (Shape)</em><span> - Boundary box</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">(0,0;10000,10000)</span></code></p></li>
-<li><p><strong>ground_grid_box</strong><em> (Shape)</em><span> - Border</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">(0,0;10000,10000)</span></code></p></li>
-<li><p><strong>with_grid</strong><em> (Boolean)</em><span> - Make ground plane grid</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
-<li><p><strong>name</strong><em> (String)</em><span> - Name of the simulation</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Simulation</span></code></p></li>
-<li><p><strong>use_ports</strong><em> (Boolean)</em><span> - Turn off to disable all ports (for debugging)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
-<li><p><strong>use_internal_ports</strong><em> (Boolean)</em><span> - Use internal (lumped) ports. The alternative is wave ports.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
-<li><p><strong>port_size</strong><em> (Double)</em><span> - The port size can also be set as a list specifying the extensions from the center of the port to left, right, down and up, respectively.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">400.0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
-<li><p><strong>upper_box_height</strong><em> (Double)</em><span> - Height of vacuum above top substrate</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">1000.0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
-<li><p><strong>lower_box_height</strong><em> (Double)</em><span> - Set &gt; 0 to start face counting from substrate bottom layer.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
-<li><p><strong>fixed_level_stackup</strong><em> (Boolean)</em><span> - Use fixed level multi-face stack-up</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
-<li><p><strong>face_stack</strong><em> (List)</em><span> - The parameter can be set as list of lists to enable multi-face stack-up on substrate surfaces. Set term to empty list to not have metal on the surface.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['1t1']</span></code></p></li>
-<li><p><strong>substrate_height</strong><em> (List)</em><span> - The value can be scalar or list of scalars. Set as list to use individual substrate heights from bottom to top.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[550.0,</span> <span class="pre">375.0]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[µm]</span></code></p></li>
-<li><p><strong>substrate_box</strong><em> (List)</em><span> - Set as a list of pya.DBox objects to give substrate dimensions individually from bottom to top. If a value in the list is not pya.DBox object, the correspondingsubstrate covers fully the general boundary box.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[None]</span></code></p></li>
-<li><p><strong>substrate_material</strong><em> (List)</em><span> - Value can be string or list of strings. Use only keywords introduced in material_dict. Set as list to use individual materials from bottom to top.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['silicon']</span></code></p></li>
-<li><p><strong>material_dict</strong><em> (String)</em><span> - Material property keywords follow Ansys Electromagnetics property names. For example ‘permittivity’, ‘dielectric_loss_tangent’, etc.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">{'silicon':</span> <span class="pre">{'permittivity':</span> <span class="pre">11.45}}</span></code></p></li>
-<li><p><strong>chip_distance</strong><em> (List)</em><span> - The value can be scalar or list of scalars. Set as list to use individual chip distances from bottom to top. The chip distances are measured between the closest layers of the opposing chips.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[8.0]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[µm]</span></code></p></li>
-<li><p><strong>ground_metal_height</strong><em> (Double)</em><span> - Only used in Xsection tool and doesn’t affect the 3D model</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.2</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
-<li><p><strong>signal_metal_height</strong><em> (Double)</em><span> - Only used in Xsection tool and doesn’t affect the 3D model</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.2</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
-<li><p><strong>airbridge_height</strong><em> (Double)</em><span> - Height of airbridges.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">3.4</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
-<li><p><strong>metal_height</strong><em> (List)</em><span> - Height of metal sheet on each face.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[0.0]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
-<li><p><strong>dielectric_height</strong><em> (List)</em><span> - Height of insulator dielectric on each face.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[0.0]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
-<li><p><strong>dielectric_material</strong><em> (List)</em><span> - Use only keywords introduced in material_dict.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['silicon']</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
-<li><p><strong>waveguide_length</strong><em> (Double)</em><span> - Length of waveguide stubs or distance between couplers and waveguide turning point</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
-<li><p><strong>over_etching</strong><em> (Double)</em><span> - Expansion of metal gaps (negative to shrink the gaps).</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>vertical_over_etching</strong><em> (Double)</em><span> - Vertical over-etching into substrates at gaps.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>hollow_tsv</strong><em> (Boolean)</em><span> - Make TSVs hollow with vacuum inside and thin metal boundary.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
-<li><p><strong>partition_regions</strong><em> (String)</em><span> - See constructor of the PartitionRegion class for parameter definitions.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[]</span></code></p></li>
-<li><p><strong>tls_layer_thickness</strong><em> (List)</em><span> - Thickness of TLS interface layers (MA, MS, and SA, respectively)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[0.0]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
-<li><p><strong>tls_layer_material</strong><em> (List)</em><span> - Use only keywords introduced in material_dict.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['vacuum',</span> <span class="pre">'silicon',</span> <span class="pre">'silicon']</span></code></p></li>
-<li><p><strong>tls_sheet_approximation</strong><em> (Boolean)</em><span> - Approximate TLS interface layers as sheets</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
-<li><p><strong>minimum_point_spacing</strong><em> (Double)</em><span> - Tolerance for merging adjacent points in polygon</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.01</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
-<li><p><strong>polygon_tolerance</strong><em> (Double)</em><span> - Tolerance for merging adjacent polygons in a layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.004</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
-<li><p><strong>extra_json_data</strong><em> (None)</em><span> - This field may be used to store ‘virtual’ parameters useful for your simulations</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-<li><p><strong>junction_total_length</strong><em> (Double)</em><span> - Simulation junction total length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">33</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
-<li><p><strong>a</strong><em> (Double)</em><span> - Width of center conductor</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>b</strong><em> (Double)</em><span> - Width of gap</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">6</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>n</strong><em> (Int)</em><span> - Number of points on turns</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">64</span></code></p></li>
-<li><p><strong>r</strong><em> (Double)</em><span> - Turn radius</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>margin</strong><em> (Double)</em><span> - Margin of the protection layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>face_ids</strong><em> (List)</em><span> - Chip face IDs list</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['1t1',</span> <span class="pre">'2b1',</span> <span class="pre">'1b1',</span> <span class="pre">'2t1']</span></code></p></li>
-<li><p><strong>display_name</strong><em> (String)</em><span> - Name displayed in GUI (empty for default)</span><em>, default=</em><code class="docutils literal notranslate"></code></p></li>
-<li><p><strong>protect_opposite_face</strong><em> (Boolean)</em><span> - This applies only on signal carrying elements that typically include some metal between gaps.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
-<li><p><strong>opposing_face_id_groups</strong><em> (List)</em><span> - Opposing face ID groups (list of lists)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[['1t1',</span> <span class="pre">'2b1']]</span></code></p></li>
-<li><p><strong>etch_opposite_face</strong><em> (Boolean)</em><span> - Etch avoidance shaped gap on the opposite face too</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
-<li><p><strong>etch_opposite_face_margin</strong><em> (Double)</em><span> - Margin of the opposite face etch shape</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-</ul>
-<img alt="../_images/kqcircuits.simulations.simulation.png" src="../_images/kqcircuits.simulations.simulation.png" />
+<img alt="../_images/kqcircuits.simulations.export.ansys.ansys_solution.png" src="../_images/kqcircuits.simulations.export.ansys.ansys_solution.png" />
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="kqcircuits.simulations.post_process.html" class="btn btn-neutral float-left" title="kqcircuits.simulations.post_process" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="kqcircuits.simulations.single_element_simulation.html" class="btn btn-neutral float-right" title="kqcircuits.simulations.single_element_simulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kqcircuits.simulations.export.ansys.ansys_export.html" class="btn btn-neutral float-left" title="kqcircuits.simulations.export.ansys.ansys_export" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kqcircuits.simulations.export.elmer.html" class="btn btn-neutral float-right" title="kqcircuits.simulations.export.elmer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
