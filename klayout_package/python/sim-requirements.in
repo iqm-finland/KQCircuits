@@ -1,4 +1,5 @@
 gmsh
 pandas
 matplotlib
-skrf
+scikit-rf
+qutip<=4.7.5
