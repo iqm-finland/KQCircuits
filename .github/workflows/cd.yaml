@@ -13,8 +13,8 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  KL_FILE: klayout_0.28.8-1_amd64.deb
-  KL_HASH: 15a26f74cf396d8a10b7985ed70ab135
+  KL_FILE: klayout_0.29.0-1_amd64.deb
+  KL_HASH: 421df42661a3d795b534da5048261044
 
 jobs:
   build-and-push-docker:
@@ -25,6 +25,10 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10.x'
       - name: Log in to the Container registry
         uses: docker/login-action@v1
         with:

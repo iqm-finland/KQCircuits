@@ -95,10 +95,10 @@ verify_documentation:
 check_package_building:
   stage: test
   script:
-    - python3 -m pip install --upgrade build twine
+    - python -m pip install --upgrade build twine
     - cd klayout_package/python
-    - python3 -m build
-    - python3 -m twine check dist/*
+    - python -m build
+    - python -m twine check dist/*
   only:
     - merge_requests
   except:
@@ -186,8 +186,8 @@ deploy_image:
       --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
       --cache-repo=$CI_REGISTRY_IMAGE/cache
       --cache=true
-      --build-arg KL_FILE=klayout_0.28.8-1_amd64.deb
-      --build-arg KL_HASH=15a26f74cf396d8a10b7985ed70ab135
+      --build-arg KL_FILE=klayout_0.29.0-1_amd64.deb
+      --build-arg KL_HASH=421df42661a3d795b534da5048261044
       $LATEST
   only:
     - master
@@ -206,8 +206,8 @@ test_image:
       --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
       --cache-repo=$CI_REGISTRY_IMAGE/cache
       --cache=true
-      --build-arg KL_FILE=klayout_0.28.8-1_amd64.deb
-      --build-arg KL_HASH=15a26f74cf396d8a10b7985ed70ab135
+      --build-arg KL_FILE=klayout_0.29.0-1_amd64.deb
+      --build-arg KL_HASH=421df42661a3d795b534da5048261044
       --no-push
   only:
     refs:
