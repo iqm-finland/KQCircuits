@@ -295,8 +295,22 @@ class MaskLayout:
                     )
                 )
             chip_name, _, bbox, dtrans, position_label, _ = chips_to_replace[0]
-            new_chip_cell = self.chips_map_legend[new_chip_name]
+
             new_bounding_box = self.chip_bounding_boxes[new_chip_name]
+            if new_bounding_box.empty():
+                new_chip_cell = self.layout.create_cell("ept")
+                new_chip_cell.shapes(self.layout.layer(default_faces[self.face_id]["base_metal_gap_wo_grid"])).insert(
+                    pya.Region(bbox.to_itype(self.layout.dbu))
+                )
+                new_chip_cell.shapes(self.layout.layer(default_faces[self.face_id]["base_metal_gap"])).insert(
+                    pya.Region(bbox.to_itype(self.layout.dbu))
+                )
+                new_bounding_box = bbox
+                empty_bbox = True
+                new_chip_name = "ept"
+            else:
+                new_chip_cell = self.chips_map_legend[new_chip_name]
+                empty_bbox = False
             if new_bounding_box != bbox:
                 if round(bbox.width()) == round(new_bounding_box.width()) and round(bbox.height()) == round(
                     new_bounding_box.height()
@@ -319,8 +333,8 @@ class MaskLayout:
                 for x in self.added_chips
             ]
             self.chip_counts[chip_name] -= 1
-            self.chip_counts[new_chip_name] += 1
-
+            if not empty_bbox:
+                self.chip_counts[new_chip_name] += 1
             self.graphical_representation_inputs = [
                 tpl if tpl[2] != position_label else tuple([new_chip_name] + list(tpl)[1:])
                 for tpl in self.graphical_representation_inputs
