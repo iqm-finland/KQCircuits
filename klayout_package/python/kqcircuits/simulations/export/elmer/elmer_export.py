@@ -29,14 +29,14 @@ from kqcircuits.simulations.export.simulation_export import (
     copy_content_into_directory,
     get_post_process_command_lines,
     get_combined_parameters,
+    export_simulation_json,
 )
 from kqcircuits.simulations.export.util import export_layers
 from kqcircuits.util.export_helper import write_commit_reference_file
 from kqcircuits.defaults import ELMER_SCRIPT_PATHS, KQC_REMOTE_ACCOUNT
 from kqcircuits.simulations.simulation import Simulation
 from kqcircuits.simulations.cross_section_simulation import CrossSectionSimulation
-from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
-from kqcircuits.simulations.export.elmer.elmer_solution import ElmerSolution
+from kqcircuits.simulations.export.elmer.elmer_solution import ElmerSolution, get_elmer_solution
 from kqcircuits.simulations.post_process import PostProcess
 
 
@@ -67,13 +67,14 @@ def export_elmer_json(
     # write .gds file
     gds_file = simulation.name + ".gds"
     gds_file_path = str(path.joinpath(gds_file))
-    export_layers(
-        gds_file_path,
-        simulation.layout,
-        [simulation.cell],
-        output_format="GDS2",
-        layers=layers.values() if is_cross_section else simulation.get_layers(),
-    )
+    if not Path(gds_file_path).exists():
+        export_layers(
+            gds_file_path,
+            simulation.layout,
+            [simulation.cell],
+            output_format="GDS2",
+            layers=layers.values() if is_cross_section else simulation.get_layers(),
+        )
 
     sim_data = simulation.get_simulation_data()
     sol_data = solution.get_solution_data()
@@ -105,8 +106,7 @@ def export_elmer_json(
 
     # write .json file
     json_file_path = str(path.joinpath(full_name + ".json"))
-    with open(json_file_path, "w") as fp:
-        json.dump(json_data, fp, cls=GeometryJsonEncoder, indent=4)
+    export_simulation_json(json_data, json_file_path)
 
     return json_file_path
 
@@ -567,20 +567,16 @@ def export_elmer(
     Returns:
         Path to exported script file.
     """
-    export_with_tuples = isinstance(simulations[0], Sequence)
-    if export_with_tuples:
-        common_solution = None
-    else:
-        common_solution = ElmerSolution(**solution_params)
+    common_sol = None if all(isinstance(s, Sequence) for s in simulations) else get_elmer_solution(**solution_params)
 
-    _update_elmer_workflow(simulations, common_solution, workflow)
+    workflow = _update_elmer_workflow(simulations, common_sol, workflow)
 
     write_commit_reference_file(path)
     copy_content_into_directory(ELMER_SCRIPT_PATHS, path, script_folder)
     json_filenames = []
 
     for sim_sol in simulations:
-        simulation, solution = sim_sol if export_with_tuples else (sim_sol, common_solution)
+        simulation, solution = sim_sol if isinstance(sim_sol, Sequence) else (sim_sol, common_sol)
 
         try:
             json_filenames.append(export_elmer_json(simulation, solution, path, workflow))
@@ -616,79 +612,79 @@ def _update_elmer_workflow(simulations, common_solution, workflow):
         simulations: List of Simulation objects or tuples containing Simulation and Solution objects.
         common_solution: Solution object if not contained in `simulations`
         workflow: workflow to be updated
+
+    Returns:
+        Updated workflow
     """
-    if workflow is not None:
-        parallelization_level = "none"
-        n_worker_lim = 1
-        num_sims = len(simulations)
-
-        if num_sims == 1:
-            if common_solution is None:
-                num_freqs = len(simulations[0][1].frequency)
-            else:
-                num_freqs = len(common_solution.frequency)
-
-            if num_freqs > 1:
-                parallelization_level = "elmer"
-                n_worker_lim = num_freqs
-        else:  # num_sims > 1
-            # TODO enable Elmer level parallelism
-            n_worker_lim = num_sims
-            parallelization_level = "full_simulation"
-
-        if "sbatch_parameters" in workflow:
-            n_workers = workflow["sbatch_parameters"].get("n_workers", 1.0)
-            workflow["sbatch_parameters"]["n_workers"] = min(int(n_workers), n_worker_lim)
-            workflow.pop("elmer_n_processes", "")
-            workflow.pop("elmer_n_threads", "")
-            workflow.pop("n_workers", "")
-            workflow.pop("gmsh_n_threads", "")
-        else:
-
-            n_workers = workflow.get("n_workers", 1)
-            n_processes = workflow.get("elmer_n_processes", 1)
-            n_threads = workflow.get("elmer_n_threads", 1)
-
-            if n_processes > 1 and n_threads > 1:
-                logging.warning(
-                    "Using both process and thread level parallelization" " with Elmer might result in poor performance"
-                )
-
-            # for the moment avoid psutil.cpu_count(logical=False)
-            max_cpus = int(os.cpu_count() / 2 + 0.5)
-            workflow["local_machine_cpu_count"] = max_cpus
-
-            if n_workers == -1:
-                n_processes = 1 if n_processes == -1 else n_processes
-                n_threads = 1 if n_threads == -1 else n_threads
-                n_workers = max(max_cpus // (n_threads * n_processes), 1)
-                n_workers = min(n_workers, n_worker_lim)
-            elif n_processes == -1:
-                n_workers = min(n_workers, n_worker_lim)
-                n_threads = 1 if n_threads == -1 else n_threads
-                n_processes = max(max_cpus // (n_threads * n_workers), 1)
-            elif n_threads == -1:
-                n_workers = min(n_workers, n_worker_lim)
-                n_threads = max(max_cpus // (n_processes * n_workers), 1)
-
-            requested_cpus = n_workers * n_processes * n_threads
-            if requested_cpus > max_cpus:
-                logging.warning(f"Requested more CPUs ({requested_cpus}) than available ({max_cpus})")
-
-            workflow["n_workers"] = n_workers
-            workflow["elmer_n_processes"] = n_processes
-            workflow["elmer_n_threads"] = n_threads
-            workflow["_parallelization_level"] = parallelization_level
-            workflow["_n_simulations"] = n_worker_lim
-
-            gmsh_n_threads = workflow.get("gmsh_n_threads", 1)
-            if gmsh_n_threads == -1:
-                if parallelization_level == "full_simulation":
-                    workflow["gmsh_n_threads"] = max(max_cpus // n_workers, 1)
-                else:
-                    workflow["gmsh_n_threads"] = max_cpus
-    else:
+    if workflow is None:
         workflow = {}
+
+    parallelization_level = "none"
+    n_worker_lim = 1
+    num_sims = len(simulations)
+
+    if num_sims == 1:
+        sol_obj = simulations[0][1] if common_solution is None else common_solution
+
+        if sol_obj.tool == "wave_equation" and len(sol_obj.frequency) > 1:
+            parallelization_level = "elmer"
+            n_worker_lim = len(sol_obj.frequency)
+    elif num_sims > 1:
+        # TODO enable Elmer level parallelism with solution sweep
+        n_worker_lim = num_sims
+        parallelization_level = "full_simulation"
+
+    if "sbatch_parameters" in workflow:
+        n_workers = workflow["sbatch_parameters"].get("n_workers", 1.0)
+        workflow["sbatch_parameters"]["n_workers"] = min(int(n_workers), n_worker_lim)
+        workflow.pop("elmer_n_processes", "")
+        workflow.pop("elmer_n_threads", "")
+        workflow.pop("n_workers", "")
+        workflow.pop("gmsh_n_threads", "")
+    else:
+
+        n_workers = workflow.get("n_workers", 1)
+        n_processes = workflow.get("elmer_n_processes", 1)
+        n_threads = workflow.get("elmer_n_threads", 1)
+
+        if n_processes > 1 and n_threads > 1:
+            logging.warning(
+                "Using both process and thread level parallelization" " with Elmer might result in poor performance"
+            )
+
+        # for the moment avoid psutil.cpu_count(logical=False)
+        max_cpus = int(os.cpu_count() / 2 + 0.5)
+        workflow["local_machine_cpu_count"] = max_cpus
+
+        if n_workers == -1:
+            n_processes = 1 if n_processes == -1 else n_processes
+            n_threads = 1 if n_threads == -1 else n_threads
+            n_workers = max(max_cpus // (n_threads * n_processes), 1)
+            n_workers = min(n_workers, n_worker_lim)
+        elif n_processes == -1:
+            n_workers = min(n_workers, n_worker_lim)
+            n_threads = 1 if n_threads == -1 else n_threads
+            n_processes = max(max_cpus // (n_threads * n_workers), 1)
+        elif n_threads == -1:
+            n_workers = min(n_workers, n_worker_lim)
+            n_threads = max(max_cpus // (n_processes * n_workers), 1)
+
+        requested_cpus = n_workers * n_processes * n_threads
+        if requested_cpus > max_cpus:
+            logging.warning(f"Requested more CPUs ({requested_cpus}) than available ({max_cpus})")
+
+        workflow["n_workers"] = n_workers
+        workflow["elmer_n_processes"] = n_processes
+        workflow["elmer_n_threads"] = n_threads
+        workflow["_parallelization_level"] = parallelization_level
+        workflow["_n_simulations"] = n_worker_lim
+
+        gmsh_n_threads = workflow.get("gmsh_n_threads", 1)
+        if gmsh_n_threads == -1:
+            if parallelization_level == "full_simulation":
+                workflow["gmsh_n_threads"] = max(max_cpus // n_workers, 1)
+            else:
+                workflow["gmsh_n_threads"] = max_cpus
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-q", "--quiet", action="store_true")
@@ -702,3 +698,5 @@ def _update_elmer_workflow(simulations, common_solution, workflow):
                 "run_paraview": False,  # this is visual view of the results
             }
         )
+
+    return workflow

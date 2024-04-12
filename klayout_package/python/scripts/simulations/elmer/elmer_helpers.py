@@ -261,7 +261,17 @@ def get_port_solver(
     return sif_block(f"Solver {ordinate}", solver_lines)
 
 
-def get_vector_helmholtz(ordinate, angular_frequency, result_file, solver_options) -> str:
+def get_vector_helmholtz(
+    ordinate,
+    angular_frequency,
+    result_file,
+    use_av,
+    nested_iteration,
+    quadratic_approximation,
+    second_kind_basis,
+    convergence_tolerance,
+    max_iterations,
+) -> str:
     """
     Returns a vector Helmholtz equation solver in sif file format.
 
@@ -269,17 +279,11 @@ def get_vector_helmholtz(ordinate, angular_frequency, result_file, solver_option
         ordinate(int): solver ordinate
         angular_frequency(float): angular frequency of the solution
         result_file(str): filename for the result S-matrix
-        solver_options(dict): Additional solver options dict
+        See kqcircuits/simulations/export/elmer/elmer_solution.py for docstring of the solver related arguments
 
     Returns:
         (str): vector Helmholtz in sif file format
     """
-    nested_iteration = solver_options.get("nested_iteration", False)
-    use_AV = solver_options.get("use_av", False)
-    second_kind_basis = solver_options.get("second_kind_basis", False)
-    quadratic_approximation = solver_options.get("quadratic_approximation", False)
-    tol = solver_options.get("convergence_tolerance", 1.0e-10)
-    max_iterations = solver_options.get("max_iterations", 2000)
 
     lumping_lines = [
         "! Model lumping",
@@ -298,7 +302,7 @@ def get_vector_helmholtz(ordinate, angular_frequency, result_file, solver_option
         "Steady State Convergence Tolerance = 1e-09",
     ]
 
-    if use_AV:
+    if use_av:
         if nested_iteration:
             linear_system_lines += [
                 "! Activate nested iteration:",
@@ -315,7 +319,7 @@ def get_vector_helmholtz(ordinate, angular_frequency, result_file, solver_option
                 "! Linear system solver for the outer loop:",
                 "!-----------------------------------------",
                 'Outer: Linear System Solver = "Iterative"',
-                f"Outer: Linear System Convergence Tolerance = {tol}",
+                f"Outer: Linear System Convergence Tolerance = {convergence_tolerance}",
                 "Outer: Linear System Normwise Backward Error = True",
                 "Outer: Linear System Iterative Method = gcr",
                 "Outer: Linear System GCR Restart =  100",
@@ -352,7 +356,7 @@ def get_vector_helmholtz(ordinate, angular_frequency, result_file, solver_option
                 "Linear System Preconditioning = ILUT",
                 "Linear System ILUT Tolerance = 1.5e-1",
                 f"Linear System Max Iterations = Integer {max_iterations}",
-                f"Linear System Convergence Tolerance = {tol}",
+                f"Linear System Convergence Tolerance = {convergence_tolerance}",
                 "linear system abort not converged = Logical False",
                 "Linear System Residual Output = 1",
             ]
@@ -373,10 +377,10 @@ def get_vector_helmholtz(ordinate, angular_frequency, result_file, solver_option
         "exec solver = Always",
         'Equation = "VectorHelmholtz"',
         'Procedure = "VectorHelmholtz" "VectorHelmholtzSolver"',
-        "" if use_AV else "Variable = E[E re:1 E im:1]",
-        f"Optimize Bandwidth = Logical {not use_AV}",
-        f"Use Gauss Law = Logical {use_AV}",
-        f"Apply Conservation of Charge = Logical {use_AV}",
+        "" if use_av else "Variable = E[E re:1 E im:1]",
+        f"Optimize Bandwidth = Logical {not use_av}",
+        f"Use Gauss Law = Logical {use_av}",
+        f"Apply Conservation of Charge = Logical {use_av}",
         "Calculate Energy Norm = Logical True",
         f"Angular Frequency = Real {angular_frequency}",
         f"Second Kind Basis = Logical {second_kind_basis}",
@@ -1223,11 +1227,10 @@ def sif_wave_equation(
     Returns:
         (str): elmer solver input file for wave equation
     """
-    solver_options = json_data["solver_options"]
 
-    lpd = solver_options.get("london_penetration_depth", 0)
-    cond = solver_options.get("conductivity", 0)
-    use_AV = solver_options.get("use_av", False)
+    london_penetration_depth = json_data["london_penetration_depth"]
+    conductivity = json_data["conductivity"]
+    use_av = json_data["use_av"]
     metal_height = json_data["parameters"].get("metal_height", 0)
     if len(metal_height) > 1:
         logging.warning(
@@ -1237,7 +1240,7 @@ def sif_wave_equation(
     metal_height = metal_height[0]
 
     dim = 3
-    header = sif_common_header(json_data, folder_path, discontinuous_boundary=(use_AV and metal_height == 0))
+    header = sif_common_header(json_data, folder_path, discontinuous_boundary=(use_av and metal_height == 0))
     constants = sif_block("Constants", [f"Permittivity Of Vacuum = {epsilon_0}"])
 
     # Bodies and materials
@@ -1251,7 +1254,7 @@ def sif_wave_equation(
 
     for i, (body, perm) in enumerate(zip(body_list, permittivity_list), 1):
         material_parameters = [f'Name = "{body}"']
-        if body == "pec" and use_AV:
+        if body == "pec" and use_av:
             bodies += sif_block(f"Body {i}", [f"Target Bodies(1) = $ {body}", f"Material = {i}"])
         else:
             bodies += sif_body(ordinate=i, target_bodies=[body], equation=1, material=i)
@@ -1270,12 +1273,12 @@ def sif_wave_equation(
         "eps0 = 8.854e-12",
     ]
 
-    if lpd != 0:
+    if london_penetration_depth != 0:
         matc_list += [
-            f"lambda_l = {lpd}",
+            f"lambda_l = {london_penetration_depth}",
             "sigma = 1/(w*mu0*lambda_l^2)",
         ]
-    if use_AV:
+    if use_av:
         port_area = (json_data["parameters"]["port_size"] * 1e-6) ** 2
         # Use 200nm thickness for impedance calculation when using sheet metal
         signal_height = 200e-9 if metal_height == 0 else metal_height
@@ -1289,8 +1292,8 @@ def sif_wave_equation(
     else:
         matc_list += [*betas]
 
-    if cond != 0:
-        matc_list += [f"film_conductivity = {cond}"]
+    if conductivity != 0:
+        matc_list += [f"film_conductivity = {conductivity}"]
 
     matc_blocks = sif_matc_block(matc_list)
 
@@ -1298,7 +1301,7 @@ def sif_wave_equation(
     result_file = f'SMatrix_{json_data["name"]}_f{str(frequency).replace(".", "_")}.dat'
     solvers = ""
     solver_ordinate = 1
-    if not use_AV:
+    if not use_av:
         solvers += get_port_solver(
             ordinate=solver_ordinate,
             maximum_passes=json_data["maximum_passes"],
@@ -1310,7 +1313,15 @@ def sif_wave_equation(
         solver_ordinate += 1
 
     solvers += get_vector_helmholtz(
-        ordinate=solver_ordinate, angular_frequency="$ w", result_file=result_file, solver_options=solver_options
+        ordinate=solver_ordinate,
+        angular_frequency="$ w",
+        result_file=result_file,
+        use_av=use_av,
+        nested_iteration=json_data["nested_iteration"],
+        quadratic_approximation=json_data["quadratic_approximation"],
+        second_kind_basis=json_data["second_kind_basis"],
+        convergence_tolerance=json_data["convergence_tolerance"],
+        max_iterations=json_data["max_iterations"],
     )
     solvers += get_vector_helmholtz_calc_fields(ordinate=solver_ordinate + 1, angular_frequency="$ w")
 
@@ -1322,7 +1333,7 @@ def sif_wave_equation(
 
     # Equations
     equations = get_equation(ordinate=1, solver_ids=[solver_ordinate, solver_ordinate + 1])
-    if not use_AV:
+    if not use_av:
         equations += get_equation(ordinate=2, solver_ids=[1])
 
     # Boundary conditions
@@ -1332,15 +1343,15 @@ def sif_wave_equation(
     pec_box = grounds[-1]
     sc_grounds = grounds[:-1]
 
-    if use_AV:
+    if use_av:
         pec_conditions = ["AV re {e} = 0", "AV im {e} = 0", "AV re = Real 0", "AV im = Real 0"]
-        if lpd > 0:
+        if london_penetration_depth > 0:
             sc_metal_conditions = [
                 "Layer Thickness = $ lambda_l",
                 "Layer Electric Conductivity Im = $ sigma",
                 "Apply Conservation of Charge = Logical True",
             ]
-        elif cond > 0:
+        elif conductivity > 0:
             sc_metal_conditions = [
                 "Good Conductor BC = True",
                 "Layer Relative Reluctivity = Real 1.0",
@@ -1352,7 +1363,7 @@ def sif_wave_equation(
             sc_metal_conditions = ["AV re {e} = 0", "AV im {e} = 0", "AV re = Real 0", "AV im = Real 0"]
     else:
         pec_conditions = ["Potential = 0", "E re {e} = 0", "E im {e} = 0"]
-        if lpd > 0:
+        if london_penetration_depth > 0:
             sc_metal_conditions = ["Layer Thickness = $ lambda_l", "Layer Electric Conductivity Im = $ sigma"]
         else:
             sc_metal_conditions = ["E re {e} = 0", "E im {e} = 0"]
@@ -1360,8 +1371,8 @@ def sif_wave_equation(
     boundary_conditions += sif_boundary_condition(ordinate=1, target_boundaries=[pec_box], conditions=pec_conditions)
     n_boundaries = 1
 
-    sc_ground_conditions = sc_metal_conditions + ([] if use_AV else ["Potential = 0"])
-    sc_signal_conditions = sc_metal_conditions + ([] if use_AV else ["Potential = 1"])
+    sc_ground_conditions = sc_metal_conditions + ([] if use_av else ["Potential = 0"])
+    sc_signal_conditions = sc_metal_conditions + ([] if use_av else ["Potential = 1"])
 
     boundary_conditions += sif_boundary_condition(
         ordinate=2, target_boundaries=sc_grounds, conditions=sc_ground_conditions
@@ -1396,7 +1407,7 @@ def sif_wave_equation(
             n_boundaries += 1
             port_part_bc_indices[mat] = n_boundaries
             # Add boundary condition for the port
-            if use_AV:
+            if use_av:
                 conditions = ["AV re {e} = 0", "AV im {e} = 0"]
             else:
                 # Add body for the port equation, if it doesn't exist yet
@@ -1428,7 +1439,7 @@ def sif_wave_equation(
             )
 
         # 1D excitation for Av-solver, This will now totally skip internal ports
-        if use_AV and port["type"] == "EdgePort":
+        if use_av and port["type"] == "EdgePort":
             vacuum_bc_ind = port_part_bc_indices["vacuum"]
 
             if metal_height == 0:

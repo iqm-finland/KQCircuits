@@ -133,17 +133,6 @@ def produce_mesh(json_data, msh_file):
     gmsh.model.occ.synchronize()
 
     # Refine mesh
-    # Here json_data['mesh_size'] is assumed to be dictionary where key denotes material (string) and value (double)
-    # denotes the maximal length of mesh element. Additional terms can be determined, if the value type is list. Then,
-    # - term[0] = the maximal mesh element length inside at the entity and its expansion
-    # - term[1] = expansion distance in which the maximal mesh element length is constant (default=term[0])
-    # - term[2] = the slope of the increase in the maximal mesh element length outside the entity
-
-    # To refine material interface the material names by should be separated by '&' in the key. Key 'global_max' is
-    # reserved for setting global maximal element length. For example, if the dictionary is given as
-    # {'substrate': 10, 'substrate&vacuum': [2, 5], 'global_max': 100}, then the maximal mesh element length is 10
-    # inside the substrate and 2 on region which is less than 5 units away from the substrate-vacuum interface. Outside
-    # these regions, the mesh element size can increase up to 100.
     mesh_size = json_data.get("mesh_size", {})
     mesh_global_max_size = mesh_size.pop("global_max", bbox.perimeter())
     mesh_field_ids = []

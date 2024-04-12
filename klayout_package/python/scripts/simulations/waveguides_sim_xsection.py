@@ -24,7 +24,7 @@ from itertools import product
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.export.simulation_export import export_simulation_oas, sweep_simulation
 from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
-from kqcircuits.simulations.export.elmer.elmer_solution import ElmerSolution
+from kqcircuits.simulations.export.elmer.elmer_solution import ElmerCrossSectionSolution
 from kqcircuits.simulations.export.xsection.xsection_export import (
     create_xsections_from_simulations,
     separate_signal_layer_shapes,
@@ -142,15 +142,14 @@ open_with_klayout_or_default_application(export_simulation_oas(simulations, path
 # Cross-sweep with solution parameter: p_element_order
 do_solution_sweep = True
 sol_parameters = {
-    "tool": "cross-section",
     "mesh_size": mesh_size,
     "p_element_order": args.p_element_order,
     "linear_system_method": "mg",
     "integrate_energies": True,
 }
-solutions = sweep_simulation(None, ElmerSolution, sol_parameters, {"p_element_order": [1, 2, 3]})
 
 if do_solution_sweep:
+    solutions = sweep_simulation(None, ElmerCrossSectionSolution, sol_parameters, {"p_element_order": [1, 2, 3]})
     export_elmer(
         list(product(xsection_simulations, solutions)),
         path,
@@ -164,6 +163,7 @@ else:
     export_elmer(
         xsection_simulations,
         path,
+        tool="cross-section",
         **sol_parameters,
         workflow=workflow,
         post_process=[

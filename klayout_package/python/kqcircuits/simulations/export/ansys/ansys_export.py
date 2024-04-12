@@ -18,7 +18,6 @@
 import os
 import stat
 
-import json
 import logging
 from typing import Optional, Union, Sequence, Tuple
 from pathlib import Path
@@ -28,9 +27,9 @@ from kqcircuits.simulations.export.simulation_export import (
     copy_content_into_directory,
     get_post_process_command_lines,
     get_combined_parameters,
+    export_simulation_json,
 )
 from kqcircuits.util.export_helper import write_commit_reference_file
-from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
 from kqcircuits.simulations.export.util import export_layers
 from kqcircuits.defaults import ANSYS_EXECUTABLE, ANSYS_SCRIPT_PATHS
 from kqcircuits.simulations.simulation import Simulation
@@ -71,13 +70,7 @@ def export_ansys_json(simulation: Simulation, solution: AnsysSolution, path: Pat
 
     # write .json file
     json_file_path = str(path.joinpath(full_name + ".json"))
-    if not Path(json_file_path).exists():
-        with open(json_file_path, "w") as fp:
-            json.dump(json_data, fp, cls=GeometryJsonEncoder, indent=4)
-    else:
-        raise ValueError(
-            f"Json file '{full_name}.json' already exists. Make sure that simulations and solutions have unique names."
-        )
+    export_simulation_json(json_data, json_file_path)
 
     return json_file_path
 

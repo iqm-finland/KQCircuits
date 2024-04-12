@@ -16,11 +16,14 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 import logging
+import json
 from itertools import product
 from pathlib import Path
 from shutil import copytree
+from typing import Sequence
 
 from kqcircuits.simulations.export.util import export_layers
+from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
 
 
 def get_combined_parameters(simulation, solution):
@@ -71,11 +74,22 @@ def get_post_process_command_lines(post_process, path, json_filenames):
     return commands
 
 
+def export_simulation_json(json_data, json_file_path):
+    """Export simulation definitions json. Raise an error if file exists"""
+    if not Path(json_file_path).exists():
+        with open(json_file_path, "w") as fp:
+            json.dump(json_data, fp, cls=GeometryJsonEncoder, indent=4)
+    else:
+        raise ValueError(
+            f"Json file '{json_file_path}' already exists. Make sure that simulations and solutions have unique names."
+        )
+
+
 def export_simulation_oas(simulations, path: Path, file_prefix="simulation"):
     """
     Write single OASIS file containing all simulations in list.
     """
-    simulations = [simulation[0] if isinstance(simulation, tuple) else simulation for simulation in simulations]
+    simulations = [simulation[0] if isinstance(simulation, Sequence) else simulation for simulation in simulations]
     unique_layouts = {simulation.layout for simulation in simulations}
     if len(unique_layouts) != 1:
         raise ValueError("Cannot write batch OASIS file since not all simulations are on the same layout.")

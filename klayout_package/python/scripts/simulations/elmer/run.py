@@ -127,7 +127,7 @@ if args.q:
 # Set number of processes for elmer
 elmer_n_processes = workflow.get("elmer_n_processes", 1)
 
-tool = json_data.get("tool", "capacitance")
+tool = json_data["tool"]
 if tool == "cross-section":
     # Generate mesh
     msh_file = f"{name}.msh"
