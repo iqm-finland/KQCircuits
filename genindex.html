@@ -540,6 +540,7 @@
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.export.export_singularity.html">kqcircuits.simulations.export.export_singularity</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.export.remote_export_and_run.html">kqcircuits.simulations.export.remote_export_and_run</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.export.simulation_export.html">kqcircuits.simulations.export.simulation_export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.export.solution.html">kqcircuits.simulations.export.solution</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.export.util.html">kqcircuits.simulations.export.util</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.export.html#module-kqcircuits.simulations.export">Module contents</a></li>
 </ul>
@@ -1014,6 +1015,8 @@
 </li>
       <li><a href="api/kqcircuits.util.label.html#kqcircuits.util.label.LabelOrigin.BOTTOMRIGHT">BOTTOMRIGHT (kqcircuits.util.label.LabelOrigin attribute)</a>
 </li>
+      <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.boundary_conditions">boundary_conditions (kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution attribute)</a>
+</li>
       <li><a href="api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.box">box() (in module kqcircuits.simulations.export.sonnet.parser)</a>
 </li>
       <li><a href="api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.bspline_points">bspline_points() (in module kqcircuits.util.geometry_helper)</a>
@@ -1420,6 +1423,8 @@
 </li>
       <li><a href="api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.element_by_class_name">element_by_class_name() (in module kqcircuits.util.library_helper)</a>
 </li>
+      <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution">ElmerSolution (class in kqcircuits.simulations.export.elmer.elmer_solution)</a>
+</li>
       <li><a href="api/kqcircuits.chips.empty.html#kqcircuits.chips.empty.Empty">Empty (class in kqcircuits.chips.empty)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.empty_simulation.html#kqcircuits.simulations.empty_simulation.EmptySimulation">EmptySimulation (class in kqcircuits.simulations.empty_simulation)</a>
@@ -1450,10 +1455,10 @@
 </li>
       <li><a href="api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_docs">export_docs() (in module kqcircuits.masks.mask_export)</a>
 </li>
-      <li><a href="api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.export_drc">export_drc (kqcircuits.masks.mask_set.MaskSet attribute)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.export_drc">export_drc (kqcircuits.masks.mask_set.MaskSet attribute)</a>
+</li>
       <li><a href="api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.export_drc_report">export_drc_report() (in module kqcircuits.util.export_helper)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer">export_elmer() (in module kqcircuits.simulations.export.elmer.elmer_export)</a>
@@ -1542,10 +1547,10 @@
 </li>
       <li><a href="api/kqcircuits.simulations.export.util.html#kqcircuits.simulations.export.util.find_edge_from_point_in_polygons">find_edge_from_point_in_polygons() (in module kqcircuits.simulations.export.util)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.simulations.export.xsection.xsection_export.html#kqcircuits.simulations.export.xsection.xsection_export.find_layer_by_name">find_layer_by_name() (in module kqcircuits.simulations.export.xsection.xsection_export)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.elements.finger_capacitor_square.html#kqcircuits.elements.finger_capacitor_square.FingerCapacitorSquare.finger_area_length">finger_area_length() (kqcircuits.elements.finger_capacitor_square.FingerCapacitorSquare method)</a>
 </li>
       <li><a href="api/kqcircuits.elements.finger_capacitor_square.html#kqcircuits.elements.finger_capacitor_square.FingerCapacitorSquare.finger_area_width">finger_area_width() (kqcircuits.elements.finger_capacitor_square.FingerCapacitorSquare method)</a>
@@ -1571,6 +1576,12 @@
       <li><a href="api/kqcircuits.simulations.export.xsection.xsection_export.html#kqcircuits.simulations.export.xsection.xsection_export.free_layer_slots">free_layer_slots() (in module kqcircuits.simulations.export.xsection.xsection_export)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.frequency">frequency (kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution attribute)</a>
+
+      <ul>
+        <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.frequency">(kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.frequency_batch">frequency_batch (kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution attribute)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.frequency_units">frequency_units (kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution attribute)</a>
 </li>
@@ -1737,7 +1748,11 @@
       <li><a href="api/kqcircuits.simulations.single_element_simulation.html#kqcircuits.simulations.single_element_simulation.get_single_element_sim_class">get_single_element_sim_class() (in module kqcircuits.simulations.single_element_simulation)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.get_solution_data">get_solution_data() (kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution method)</a>
+
+      <ul>
+        <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.get_solution_data">(kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution method)</a>
 </li>
+      </ul></li>
       <li><a href="api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.get_tuned_junction_json">get_tuned_junction_json() (in module kqcircuits.util.replace_junctions)</a>
 </li>
       <li><a href="api/kqcircuits.util.gui_helper.html#kqcircuits.util.gui_helper.get_valid_node_elements">get_valid_node_elements() (in module kqcircuits.util.gui_helper)</a>
@@ -1786,17 +1801,23 @@
 </li>
       <li><a href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.insert_stacked_up_layers">insert_stacked_up_layers() (kqcircuits.simulations.simulation.Simulation method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node.inst_name">inst_name (kqcircuits.elements.waveguide_composite.Node attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.util.dependencies.html#kqcircuits.util.dependencies.install_kqc_dependencies">install_kqc_dependencies() (in module kqcircuits.util.dependencies)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.integrate_energies">integrate_energies (kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution attribute)</a>
+
+      <ul>
+        <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.integrate_energies">(kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.integrate_magnetic_flux">integrate_magnetic_flux (kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution attribute)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.port.html#kqcircuits.simulations.port.InternalPort">InternalPort (class in kqcircuits.simulations.port)</a>
+</li>
+      <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.is_axisymmetric">is_axisymmetric (kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution attribute)</a>
 </li>
       <li><a href="api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.is_clockwise">is_clockwise() (in module kqcircuits.util.geometry_helper)</a>
 </li>
@@ -2381,8 +2402,6 @@
         <li><a href="api/kqcircuits.layer_config.default_layer_config.html#module-kqcircuits.layer_config.default_layer_config">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     kqcircuits.layer_config.example_layer_config
 
@@ -2390,6 +2409,8 @@
         <li><a href="api/kqcircuits.layer_config.example_layer_config.html#module-kqcircuits.layer_config.example_layer_config">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     kqcircuits.masks
 
@@ -2552,6 +2573,13 @@
 </li>
       </ul></li>
       <li>
+    kqcircuits.simulations.export.elmer.elmer_solution
+
+      <ul>
+        <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#module-kqcircuits.simulations.export.elmer.elmer_solution">module</a>
+</li>
+      </ul></li>
+      <li>
     kqcircuits.simulations.export.export_and_run
 
       <ul>
@@ -2577,6 +2605,13 @@
 
       <ul>
         <li><a href="api/kqcircuits.simulations.export.simulation_export.html#module-kqcircuits.simulations.export.simulation_export">module</a>
+</li>
+      </ul></li>
+      <li>
+    kqcircuits.simulations.export.solution
+
+      <ul>
+        <li><a href="api/kqcircuits.simulations.export.solution.html#module-kqcircuits.simulations.export.solution">module</a>
 </li>
       </ul></li>
       <li>
@@ -3020,6 +3055,8 @@
 </li>
       <li><a href="api/kqcircuits.simulations.partition_region.html#kqcircuits.simulations.partition_region.PartitionRegion.limit_face">limit_face() (kqcircuits.simulations.partition_region.PartitionRegion method)</a>
 </li>
+      <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.linear_system_method">linear_system_method (kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution attribute)</a>
+</li>
       <li><a href="api/kqcircuits.chips.lithography_test.html#kqcircuits.chips.lithography_test.LithographyTest">LithographyTest (class in kqcircuits.chips.lithography_test)</a>
 </li>
       <li><a href="api/kqcircuits.chips.lithography_test_twoface.html#kqcircuits.chips.lithography_test_twoface.LithographyTestTwoface">LithographyTestTwoface (class in kqcircuits.chips.lithography_test_twoface)</a>
@@ -3085,9 +3122,21 @@
       <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.max_delta_f">max_delta_f (kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution attribute)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.max_delta_s">max_delta_s (kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution attribute)</a>
+
+      <ul>
+        <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.max_delta_s">(kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.max_error_scale">max_error_scale (kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution attribute)</a>
+</li>
+      <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.max_outlier_fraction">max_outlier_fraction (kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution attribute)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.maximum_passes">maximum_passes (kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution attribute)</a>
+
+      <ul>
+        <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.maximum_passes">(kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/kqcircuits.elements.meander.html#kqcircuits.elements.meander.Meander">Meander (class in kqcircuits.elements.meander)</a>
 </li>
       <li><a href="api/kqcircuits.util.merge.html#kqcircuits.util.merge.merge_layers">merge_layers() (in module kqcircuits.util.merge)</a>
@@ -3102,12 +3151,22 @@
       </ul></li>
       <li><a href="api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.merge_points_and_match_on_edges">merge_points_and_match_on_edges() (in module kqcircuits.util.geometry_helper)</a>
 </li>
-      <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.mesh_size">mesh_size (kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution attribute)</a>
+      <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.mesh_levels">mesh_levels (kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution attribute)</a>
 </li>
+      <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.mesh_size">mesh_size (kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution attribute)</a>
+
+      <ul>
+        <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.mesh_size">(kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution attribute)</a>
+</li>
+      </ul></li>
       <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.minimum_converged_passes">minimum_converged_passes (kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution attribute)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.minimum_passes">minimum_passes (kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution attribute)</a>
+
+      <ul>
+        <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.minimum_passes">(kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.mirror_labels">mirror_labels (kqcircuits.masks.mask_layout.MaskLayout attribute)</a>
 </li>
       <li><a href="api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.MissingUILibraryException">MissingUILibraryException</a>
@@ -3318,6 +3377,8 @@
 </li>
         <li><a href="api/kqcircuits.simulations.export.elmer.elmer_export.html#module-kqcircuits.simulations.export.elmer.elmer_export">kqcircuits.simulations.export.elmer.elmer_export</a>
 </li>
+        <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#module-kqcircuits.simulations.export.elmer.elmer_solution">kqcircuits.simulations.export.elmer.elmer_solution</a>
+</li>
         <li><a href="api/kqcircuits.simulations.export.export_and_run.html#module-kqcircuits.simulations.export.export_and_run">kqcircuits.simulations.export.export_and_run</a>
 </li>
         <li><a href="api/kqcircuits.simulations.export.export_singularity.html#module-kqcircuits.simulations.export.export_singularity">kqcircuits.simulations.export.export_singularity</a>
@@ -3325,6 +3386,8 @@
         <li><a href="api/kqcircuits.simulations.export.remote_export_and_run.html#module-kqcircuits.simulations.export.remote_export_and_run">kqcircuits.simulations.export.remote_export_and_run</a>
 </li>
         <li><a href="api/kqcircuits.simulations.export.simulation_export.html#module-kqcircuits.simulations.export.simulation_export">kqcircuits.simulations.export.simulation_export</a>
+</li>
+        <li><a href="api/kqcircuits.simulations.export.solution.html#module-kqcircuits.simulations.export.solution">kqcircuits.simulations.export.solution</a>
 </li>
         <li><a href="api/kqcircuits.simulations.export.sonnet.html#module-kqcircuits.simulations.export.sonnet">kqcircuits.simulations.export.sonnet</a>
 </li>
@@ -3452,7 +3515,7 @@
       <ul>
         <li><a href="api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.name">(kqcircuits.masks.mask_set.MaskSet attribute)</a>
 </li>
-        <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.name">(kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution attribute)</a>
+        <li><a href="api/kqcircuits.simulations.export.solution.html#kqcircuits.simulations.export.solution.Solution.name">(kqcircuits.simulations.export.solution.Solution attribute)</a>
 </li>
       </ul></li>
       <li><a href="api/kqcircuits.util.netlist_graph.html#kqcircuits.util.netlist_graph.network_as_graph">network_as_graph() (in module kqcircuits.util.netlist_graph)</a>
@@ -3491,6 +3554,8 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.p_element_order">p_element_order (kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution attribute)</a>
+</li>
       <li><a href="api/kqcircuits.util.parameters.html#kqcircuits.util.parameters.Param">Param (class in kqcircuits.util.parameters)</a>
 </li>
       <li><a href="api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.parameters_from_shape_impl">parameters_from_shape_impl() (kqcircuits.chips.chip.Chip method)</a>
@@ -3512,7 +3577,11 @@
       <li><a href="api/kqcircuits.util.parameters.html#kqcircuits.util.parameters.pdt">pdt (class in kqcircuits.util.parameters)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.percent_error">percent_error (kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution attribute)</a>
+
+      <ul>
+        <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.percent_error">(kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.percent_refinement">percent_refinement (kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution attribute)</a>
 </li>
       <li><a href="api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.place_junctions">place_junctions() (in module kqcircuits.util.replace_junctions)</a>
@@ -3845,9 +3914,13 @@
 </li>
       <li><a href="api/kqcircuits.elements.smooth_capacitor.html#kqcircuits.elements.smooth_capacitor.SmoothCapacitor">SmoothCapacitor (class in kqcircuits.elements.smooth_capacitor)</a>
 </li>
+      <li><a href="api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite.snap_point">snap_point() (kqcircuits.elements.waveguide_composite.WaveguideComposite method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite.snap_point">snap_point() (kqcircuits.elements.waveguide_composite.WaveguideComposite method)</a>
+      <li><a href="api/kqcircuits.simulations.export.solution.html#kqcircuits.simulations.export.solution.Solution">Solution (class in kqcircuits.simulations.export.solution)</a>
+</li>
+      <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.solver_options">solver_options (kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution attribute)</a>
 </li>
       <li><a href="api/kqcircuits.elements.spiral_resonator_polygon.html#kqcircuits.elements.spiral_resonator_polygon.SpiralResonatorPolygon">SpiralResonatorPolygon (class in kqcircuits.elements.spiral_resonator_polygon)</a>
 </li>
@@ -3872,7 +3945,11 @@
       <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.sweep_start">sweep_start (kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution attribute)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.sweep_type">sweep_type (kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution attribute)</a>
+
+      <ul>
+        <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.sweep_type">(kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/kqcircuits.qubits.swissmon.html#kqcircuits.qubits.swissmon.Swissmon">Swissmon (class in kqcircuits.qubits.swissmon)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.symmetry">symmetry() (in module kqcircuits.simulations.export.sonnet.parser)</a>
@@ -3896,6 +3973,8 @@
       <li><a href="api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.to_library_name">to_library_name() (in module kqcircuits.util.library_helper)</a>
 </li>
       <li><a href="api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.to_module_name">to_module_name() (in module kqcircuits.util.library_helper)</a>
+</li>
+      <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.tool">tool (kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution attribute)</a>
 </li>
       <li><a href="api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.top_cell">top_cell (kqcircuits.klayout_view.KLayoutView property)</a>
 

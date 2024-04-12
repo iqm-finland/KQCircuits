@@ -540,6 +540,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.export.export_singularity.html">kqcircuits.simulations.export.export_singularity</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.export.remote_export_and_run.html">kqcircuits.simulations.export.remote_export_and_run</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.export.simulation_export.html">kqcircuits.simulations.export.simulation_export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.export.solution.html">kqcircuits.simulations.export.solution</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.export.util.html">kqcircuits.simulations.export.util</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.export.html#module-kqcircuits.simulations.export">Module contents</a></li>
 </ul>
@@ -906,7 +907,7 @@
 
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.ansys.ansys_solution</span> <span class="kn">import</span> <span class="n">AnsysSolution</span>
@@ -920,6 +921,7 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.util</span> <span class="kn">import</span> <span class="n">export_layers</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">ANSYS_EXECUTABLE</span><span class="p">,</span> <span class="n">ANSYS_SCRIPT_PATHS</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.simulations.post_process</span> <span class="kn">import</span> <span class="n">PostProcess</span>
 
 
 <div class="viewcode-block" id="export_ansys_json"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys_json">[docs]</a><span class="k">def</span> <span class="nf">export_ansys_json</span><span class="p">(</span><span class="n">simulation</span><span class="p">:</span> <span class="n">Simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">:</span> <span class="n">AnsysSolution</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
@@ -944,9 +946,10 @@
         <span class="n">export_layers</span><span class="p">(</span>
             <span class="n">gds_file_path</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="p">[</span><span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="p">],</span> <span class="n">output_format</span><span class="o">=</span><span class="s2">&quot;GDS2&quot;</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
         <span class="p">)</span>
-
+    <span class="n">full_name</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="n">solution</span><span class="o">.</span><span class="n">name</span>
     <span class="c1"># collect data for .json file</span>
     <span class="n">json_data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">full_name</span><span class="p">,</span>
         <span class="o">**</span><span class="n">solution</span><span class="o">.</span><span class="n">get_solution_data</span><span class="p">(),</span>
         <span class="o">**</span><span class="n">simulation</span><span class="o">.</span><span class="n">get_simulation_data</span><span class="p">(),</span>
         <span class="s2">&quot;gds_file&quot;</span><span class="p">:</span> <span class="n">gds_file</span><span class="p">,</span>
@@ -954,7 +957,7 @@
     <span class="p">}</span>
 
     <span class="c1"># write .json file</span>
-    <span class="n">json_file_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="n">solution</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.json&quot;</span><span class="p">))</span>
+    <span class="n">json_file_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">full_name</span> <span class="o">+</span> <span class="s2">&quot;.json&quot;</span><span class="p">))</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_file_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
         <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">GeometryJsonEncoder</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 
@@ -1022,17 +1025,17 @@
 
 
 <div class="viewcode-block" id="export_ansys"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys">[docs]</a><span class="k">def</span> <span class="nf">export_ansys</span><span class="p">(</span>
-    <span class="n">simulations</span><span class="p">,</span>
+    <span class="n">simulations</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Simulation</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Simulation</span><span class="p">,</span> <span class="n">AnsysSolution</span><span class="p">]]],</span>
     <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
-    <span class="n">script_folder</span><span class="o">=</span><span class="s2">&quot;scripts&quot;</span><span class="p">,</span>
-    <span class="n">file_prefix</span><span class="o">=</span><span class="s2">&quot;simulation&quot;</span><span class="p">,</span>
-    <span class="n">exit_after_run</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">import_script</span><span class="o">=</span><span class="s2">&quot;import_and_simulate.py&quot;</span><span class="p">,</span>
-    <span class="n">post_process</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">use_rel_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">skip_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">script_folder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;scripts&quot;</span><span class="p">,</span>
+    <span class="n">file_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;simulation&quot;</span><span class="p">,</span>
+    <span class="n">exit_after_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">import_script</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;import_and_simulate.py&quot;</span><span class="p">,</span>
+    <span class="n">post_process</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">PostProcess</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">PostProcess</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">use_rel_path</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">skip_errors</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="o">**</span><span class="n">solution_params</span><span class="p">,</span>
-<span class="p">):</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Export Ansys simulations by writing necessary scripts and json, gds, and bat files.</span>
 
@@ -1060,7 +1063,7 @@
     <span class="n">copy_content_into_directory</span><span class="p">(</span><span class="n">ANSYS_SCRIPT_PATHS</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">script_folder</span><span class="p">)</span>
     <span class="n">json_filenames</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">sim_sol</span> <span class="ow">in</span> <span class="n">simulations</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sim_sol</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sim_sol</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
             <span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span> <span class="o">=</span> <span class="n">sim_sol</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">simulation</span> <span class="o">=</span> <span class="n">sim_sol</span>
