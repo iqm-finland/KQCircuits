@@ -157,7 +157,7 @@ def sif_linsys(method="mg", p_element_order=3, steady_state_error=None) -> Seque
             "Linear System Solver = Iterative",
             "Linear System Iterative Method = BiCGStab",
             "Linear System Max Iterations = 500",
-            "Linear System Convergence Tolerance = 1.0e-10",
+            "Linear System Convergence Tolerance = 1.0e-9",
             "Linear System Preconditioning = ILU1",
             "Linear System ILUT Tolerance = 1.0e-03",
             f"Steady State Convergence Tolerance = {1e-9 if steady_state_error is None else steady_state_error*1e-1}",
@@ -167,7 +167,7 @@ def sif_linsys(method="mg", p_element_order=3, steady_state_error=None) -> Seque
             "Linear System Solver = Iterative",
             "Linear System Iterative Method = GCR ",
             "Linear System Max Iterations = 200",
-            "Linear System Convergence Tolerance = 1.0e-10",
+            "Linear System Convergence Tolerance = 1.0e-9",
             "Linear System Abort Not Converged = False",
             "Linear System Residual Output = 10",
             "Linear System Preconditioning = multigrid !ILU2",
@@ -399,7 +399,7 @@ def get_vector_helmholtz_calc_fields(ordinate: Union[str, int], angular_frequenc
         "Calculate Magnetic Field Strength = Logical True",
         "Calculate Magnetic Flux Density = Logical True",
         "Calculate Poynting vector = Logical True",
-        "Calculate Div of Poynting Vector = Logical True",
+        "Calculate Div of Poynting Vector = Logical False",
         "Calculate Electric field = Logical True",
         "Calculate Energy Functional = Logical True",
         "Steady State Convergence Tolerance = 1",
@@ -590,6 +590,7 @@ def get_magneto_dynamics_calc_fields(ordinate: Union[str, int], p_element_order:
         'Procedure = "MagnetoDynamics" "MagnetoDynamicsCalcFields"',
         "Linear System Symmetric = True",
         'Potential Variable = String "A"',
+        "Skip Nodal Fields = True",
         "Calculate Current Density = Logical True",
         "Calculate Magnetic Vector Potential = Logical True",
         "Steady State Convergence Tolerance = 0",
@@ -950,7 +951,6 @@ def sif_capacitance(
         output_file_name=vtu_name,
         exec_solver="Always",
     )
-    solvers += get_save_data_solver(ordinate=3, result_file=name)
     equations = get_equation(
         ordinate=1,
         solver_ids=[1],
@@ -962,7 +962,7 @@ def sif_capacitance(
     permittivity_list = get_permittivities(json_data, with_zero=with_zero, dim=dim, mesh_names=mesh_names)
 
     if json_data.get("integrate_energies", False) and not with_zero:  # no EPR for inductance
-        solvers += get_save_energy_solver(ordinate=4, energy_file="energy.dat", bodies=body_list)
+        solvers += get_save_energy_solver(ordinate=3, energy_file="energy.dat", bodies=body_list)
 
     bodies = ""
     materials = ""
@@ -1001,6 +1001,7 @@ def sif_capacitance(
         )
     n_boundaries += len(cbody_map)
 
+    outer_bc_names = []
     bc_dict = json_data.get("boundary_conditions", None)
     if bc_dict is not None:
         for bc in ["xmin", "xmax", "ymin", "ymax"]:
@@ -1013,9 +1014,14 @@ def sif_capacitance(
                         ordinate=1 + n_boundaries, target_boundaries=[bc_name], conditions=conditions
                     )
                     n_boundaries += 1
+                    outer_bc_names.append(bc_name)
 
     # Add place-holder boundaries (if additional physical groups are given)
-    other_groups = [n for n in mesh_names if n not in body_list + grounds + signals and not n.startswith("port_")]
+    other_groups = [
+        n
+        for n in mesh_names
+        if n not in body_list + ground_boundaries + signals_boundaries + outer_bc_names and not n.startswith("port_")
+    ]
     for i, s in enumerate(other_groups, 1):
         boundary_conditions += sif_boundary_condition(
             ordinate=i + n_boundaries,
@@ -1079,11 +1085,24 @@ def sif_inductance(json_data, folder_path, angular_frequency, circuit_definition
     body_list = get_body_list(json_data, dim=2, mesh_names=mesh_names)
     others = list((set(body_list) - set(signals) - set(grounds)).union(["vacuum"]))
 
-    bodies = sif_body(ordinate=1, target_bodies=others, equation=1, material=1)
+    bodies = sif_body(
+        ordinate=1,
+        target_bodies=others,
+        equation=1,
+        material=1,
+        keywords=["Body Force = 1 ! No effect. Set to suppress warnings"],
+    )
     bodies += sif_body(ordinate=2, target_bodies=grounds, equation=1, material=2)
     bodies += sif_body(ordinate=3, target_bodies=signals, equation=1, material=2)
 
-    materials = sif_block("Material 1", ["Relative Permeability = 1", "Electric Conductivity = 1"])
+    materials = sif_block(
+        "Material 1",
+        [
+            "Relative Permeability = 1",
+            "Relative Permittivity = 1 ! No effect. Set to suppress warnings",
+            "Electric Conductivity = 1",
+        ],
+    )
 
     london_penetration_depth = json_data.get("london_penetration_depth", 0.0)
     if london_penetration_depth > 0:
@@ -1096,17 +1115,35 @@ def sif_inductance(json_data, folder_path, angular_frequency, circuit_definition
     else:
         opt_params = ["Electric Conductivity = 1e10"]
 
-    materials += sif_block("Material 2", ["Relative Permeability = 1", *opt_params])
+    materials += sif_block(
+        "Material 2",
+        [
+            "Relative Permeability = 1  ! No effect. Set to suppress warnings",
+            "Relative Permittivity = 1000",
+            *opt_params,
+        ],
+    )
 
     london_param = ["London Equations = Logical True"] if london_penetration_depth > 0 else []
 
     components = sif_component(ordinate=1, master_bodies=[3], coil_type="Massive", keywords=london_param)
 
-    res = header + equations + solvers + materials + bodies + components
+    body_force = sif_block("Body Force 1", ['Name = "Circuit"', "testsource Re = Real 1.0", "testsource Im = Real 0.0"])
 
-    res += sif_block("Body Force 1", ['Name = "Circuit"', "testsource Re = Real 1.0", "testsource Im = Real 0.0"])
+    # Add place-holder boundaries (if additional physical groups are given)
+    other_groups = [n for n in mesh_names if n not in body_list and not n.startswith("port_")]
+    boundary_conditions = ""
+    for i, s in enumerate(other_groups, 1):
+        boundary_conditions += sif_boundary_condition(
+            ordinate=i,
+            target_boundaries=[s],
+            conditions=[
+                "! This BC does not do anything, but",
+                "! MMG does not conserve GeometryIDs if there is no BC defined.",
+            ],
+        )
 
-    return res
+    return header + equations + solvers + materials + bodies + components + body_force + boundary_conditions
 
 
 def sif_circuit_definitions(json_data):
