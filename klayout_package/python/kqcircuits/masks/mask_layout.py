@@ -333,12 +333,13 @@ class MaskLayout:
         for params in self.graphical_representation_inputs:
             self._add_chip_graphical_representation_layer(*params)
 
-    def insert_chip_copy_labels(self, labels_cell, layers):
+    def insert_chip_copy_labels(self, labels_cell, layers, mask_name_for_chip=None):
         """Inserts chip copy labels to all chips in this mask layout and its submasks
 
         Args:
             labels_cell: Cell to which the labels are inserted
             layers: list of layer names (without face_ids) where the labels are produced
+            mask_name_for_chip: mask name to place on each chip, or None (default) to not add mask names to the chip.
         """
 
         # find labels_cell for this mask and each submask
@@ -401,7 +402,8 @@ class MaskLayout:
             # update position label into chips_dict
             chips_dict[(x, y)] = (chip_name, _, bbox, dtrans, position_label, mask_layout)
             used_position_labels.add(position_label)
-            bbox_x1 = bbox.left if (bool(dtrans.is_mirror()) ^ bool(self.mirror_labels)) else bbox.right
+            total_mirror_label = bool(dtrans.is_mirror()) ^ bool(self.mirror_labels)
+            bbox_x1, bbox_x2 = (bbox.left, bbox.right) if total_mirror_label else (bbox.right, bbox.left)
             produce_label(
                 labels_cell_2,
                 position_label,
@@ -413,9 +415,21 @@ class MaskLayout:
                 mask_layout.face()["ground_grid_avoidance"],
                 mirror=self.mirror_labels,
             )
-            bbox_x2 = bbox.right if dtrans.is_mirror() else bbox.left
+            if mask_name_for_chip is not None:
+                produce_label(
+                    labels_cell_2,
+                    mask_name_for_chip,
+                    dtrans * (pya.DPoint(bbox_x2, bbox.top)),
+                    LabelOrigin.TOPLEFT,
+                    mask_layout.dice_width,
+                    mask_layout.text_margin,
+                    [mask_layout.face()[layer] for layer in layers],
+                    mask_layout.face()["ground_grid_avoidance"],
+                    mirror=self.mirror_labels,
+                )
+            bbox_xr = bbox.right if dtrans.is_mirror() else bbox.left
             self.graphical_representation_inputs.append(
-                (chip_name, dtrans * (pya.DPoint(bbox_x2, bbox.bottom)), position_label, bbox.width(), labels_cell_2)
+                (chip_name, dtrans * (pya.DPoint(bbox_xr, bbox.bottom)), position_label, bbox.width(), labels_cell_2)
             )
 
             chip_box = pya.DBox(dtrans * bbox)

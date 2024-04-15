@@ -79,6 +79,7 @@ class MaskSet:
         export_drc=False,
         mask_export_layers=None,
         export_path=TMP_PATH,
+        add_mask_name_to_chips=False,
     ):
 
         self._time = {"INIT": perf_counter(), "ADD_CHIPS": 0, "BUILD": 0, "EXPORT": 0, "END": 0}
@@ -95,6 +96,7 @@ class MaskSet:
         self.mask_layouts = []
         self.mask_export_layers = mask_export_layers if mask_export_layers is not None else []
         self.used_chips = {}
+        self.add_mask_name_to_chips = add_mask_name_to_chips
         self._extra_params = {}
         self._mask_set_dir = Path(export_path) / f"{name}_v{version}"
 
@@ -327,12 +329,15 @@ class MaskSet:
         self.mask_layouts = submask_layouts + [ml for ml in self.mask_layouts if ml not in mask_layouts_to_remove]
 
         # add chip copy labels for every mask layout
+        mask_name_for_chip = self.name if self.add_mask_name_to_chips else None
         for mask_layout in tqdm(self.mask_layouts, desc="Adding chip copy labels", bar_format=default_bar_format):
 
             labels_cell = mask_layout.layout.create_cell("ChipLabels")
             mask_layout.top_cell.insert(pya.DCellInstArray(labels_cell.cell_index(), pya.DTrans(pya.DVector(0, 0))))
             if mask_layout not in submask_layouts:
-                chips_dict = mask_layout.insert_chip_copy_labels(labels_cell, chip_copy_label_layers)
+                chips_dict = mask_layout.insert_chip_copy_labels(
+                    labels_cell, chip_copy_label_layers, mask_name_for_chip
+                )
                 mask_layout.overwrite_chips_by_position_label(chips_dict)
                 # remove "$1" or similar unnecessary postfix from cell name
                 mask_layout.top_cell.name = f"{mask_layout.name}"
