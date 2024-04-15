@@ -29,7 +29,7 @@ from kqcircuits.defaults import TMP_PATH, SCRIPTS_PATH, ROOT_PATH
 logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 
 
-def run():
+def argument_parser():
     parser = argparse.ArgumentParser(description="KQC console scripts")
 
     subparser = parser.add_subparsers(dest="command")
@@ -101,16 +101,17 @@ def run():
     singularity_parser.add_argument(
         "--singularity-remote-path", type=str, help="Installation path for the singularity image on remote"
     )
+    return parser, subparser
 
-    args, args_for_script = parser.parse_known_args()
 
+def run_kqc(args, args_for_script):
     if args.command == "sim":
         if args.export_script == "ls":
             simdir = Path(SCRIPTS_PATH / "simulations")
             for f in listdir(simdir):
                 if isfile(join(simdir, f)):
                     print(f)
-            return
+            return True
 
         if args.remote:
             remote_host = str(args.export_script)
@@ -122,11 +123,11 @@ def run():
                 args.export_path_basename,
                 args_for_script,
             )
-            return
+            return True
         if args.remote_run_only:
             remote_host = str(args.export_script)
             remote_run_only(remote_host, args.kqc_remote_tmp_path, args.detach, args.poll_interval, args_for_script)
-            return
+            return True
 
         script_file = Path(args.export_script)
         if args.export_path_basename is not None:
@@ -138,26 +139,29 @@ def run():
             script_file = Path(SCRIPTS_PATH / "simulations" / script_file)
             if not script_file.is_file():
                 logging.error(f"Export script not found at {args.export_script} or {script_file}")
-                return
+                return True
         export_and_run(script_file, export_path, args.quiet, args.export_only, args_for_script)
+        return True
     elif args.command == "mask":
         if args.mask_script == "ls":
             maskdir = Path(SCRIPTS_PATH / "masks")
             for f in listdir(maskdir):
                 if isfile(join(maskdir, f)):
                     print(f)
-            return
+            return True
         script_file = Path(args.mask_script)
         if not script_file.is_file():
             script_file = Path(SCRIPTS_PATH / "masks" / args.mask_script)
             if not script_file.is_file():
                 logging.error(f"Mask script not found at {args.mask_script} or {script_file}")
-                return
+                return True
         if args.debug:
             subprocess.call([sys.executable, script_file, "-d"])
+            return True
         else:  # Windows needs this for multiprocessing
             with open(script_file) as mask_file:
                 exec(mask_file.read())  # pylint: disable=exec-used
+            return True
     elif args.command == "singularity":
         if args.build:
             chdir(Path(ROOT_PATH / "singularity"))
@@ -178,4 +182,13 @@ def run():
         elif args.push is not None:
             export_singularity(args.push, args.singularity_remote_path)
     else:
+        return False
+    return True
+
+
+def run():
+    """Main entry point for the KQC console command"""
+    parser, _ = argument_parser()
+    args, args_for_script = parser.parse_known_args()
+    if not run_kqc(args, args_for_script):
         parser.print_usage()
