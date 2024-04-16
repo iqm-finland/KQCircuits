@@ -16,8 +16,7 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-import math
-
+from kqcircuits.util.geometry_helper import get_angle
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.fluxlines.fluxline import Fluxline
 from kqcircuits.pya_resolver import pya
@@ -112,7 +111,7 @@ class Qubit(Element):
 
         return refpoints_rel
 
-    def produce_fluxline(self, rot=0, trans=pya.DVector(), **parameters):
+    def produce_fluxline(self, rot=0, displacement=pya.DVector(), **parameters):
         """Produces the fluxline.
 
         Creates the fluxline cell and inserts it as a subcell. The "flux" and "flux_corner" ports
@@ -123,7 +122,7 @@ class Qubit(Element):
 
         Args:
             rot: Extra rotation of the fluxline, in degrees
-            trans (DVector): fluxline x/y translation
+            displacement (DVector): fluxline x/y displacement (ignored if center alignment is available)
             parameters: parameters for the fluxline to overwrite default and subclass parameters
         """
 
@@ -134,9 +133,17 @@ class Qubit(Element):
 
         refpoints_so_far = self.get_refpoints(self.cell)
         squid_edge = refpoints_so_far["origin_squid"]
-        a = squid_edge - refpoints_so_far["port_common"]
-        rotation = math.atan2(a.y, a.x) / math.pi * 180 + 90
-        total_transformation = pya.DCplxTrans(1, rotation + rot, False, squid_edge - self.refpoints["base"] + trans)
+        rotation = get_angle(squid_edge - refpoints_so_far["port_common"]) + 90
+
+        refpoints_fluxline = self.get_refpoints(cell)
+        if "center_fluxline" in refpoints_fluxline and "center_squid" in refpoints_so_far:
+            total_transformation = pya.DCplxTrans(
+                1, rotation + rot, False, refpoints_so_far["center_squid"] - self.refpoints["base"]
+            ) * pya.DTrans(-refpoints_fluxline["center_fluxline"])
+        else:
+            total_transformation = pya.DCplxTrans(
+                1, rotation + rot, False, squid_edge - self.refpoints["base"] + displacement
+            )
 
         cell_inst, _ = self.insert_cell(cell, total_transformation)
         self.copy_port("flux", cell_inst)

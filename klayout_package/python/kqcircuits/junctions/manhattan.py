@@ -355,6 +355,7 @@ class Manhattan(Squid):
         """Adds the "origin_squid" refpoint and port "common"."""
 
         self.refpoints["origin_squid"] = pya.DPoint(0, 0)
+        self.refpoints["center_squid"] = pya.DPoint(0, 4.1 if self.loop_area < 100 else 6.5)
         self.add_port("common", pya.DPoint(0, self.metal_gap_top_y))
 
     def _produce_ground_metal_shapes(self):

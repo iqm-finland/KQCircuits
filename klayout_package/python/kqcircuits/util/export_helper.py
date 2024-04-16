@@ -177,7 +177,11 @@ def generate_probepoints_json(
             else:
                 site = probepoint_sites[0]
                 if "east" not in site:
-                    if probepoint_entry["x"] < site["west"]["x"]:
+                    assign_to_west = probepoint_entry["x"] < site["west"]["x"] or (
+                        probepoint_entry["x"] == site["west"]["x"]
+                        and recommended_probe_suffix_mapping.get(suffixes[0]) == "west"
+                    )
+                    if assign_to_west:
                         site["east"] = site["west"]
                         direction = "west"
                     else:
