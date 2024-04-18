@@ -1194,13 +1194,14 @@ label</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.masks.mask_layout.MaskLayout.insert_chip_copy_labels">
-<span class="sig-name descname"><span class="pre">insert_chip_copy_labels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels_cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layers</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/masks/mask_layout.html#MaskLayout.insert_chip_copy_labels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.insert_chip_copy_labels" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">insert_chip_copy_labels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels_cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_name_for_chip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/masks/mask_layout.html#MaskLayout.insert_chip_copy_labels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.insert_chip_copy_labels" title="Permalink to this definition"></a></dt>
 <dd><p>Inserts chip copy labels to all chips in this mask layout and its submasks</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>labels_cell</strong> – Cell to which the labels are inserted</p></li>
 <li><p><strong>layers</strong> – list of layer names (without face_ids) where the labels are produced</p></li>
+<li><p><strong>mask_name_for_chip</strong> – mask name to place on each chip, or None (default) to not add mask names to the chip.</p></li>
 </ul>
 </dd>
 </dl>
