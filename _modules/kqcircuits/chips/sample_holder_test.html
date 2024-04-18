@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.chips.sample_holder_test &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.chips.sample_holder_test &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=eeab0646" />
 
   
@@ -17,9 +17,9 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../../about.html" />
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -913,7 +913,9 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_composite</span> <span class="kn">import</span> <span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">Node</span>
 
 
-<div class="viewcode-block" id="SampleHolderTest"><a class="viewcode-back" href="../../../api/kqcircuits.chips.sample_holder_test.html#kqcircuits.chips.sample_holder_test.SampleHolderTest">[docs]</a><span class="k">class</span> <span class="nc">SampleHolderTest</span><span class="p">(</span><span class="n">Chip</span><span class="p">):</span>
+<div class="viewcode-block" id="SampleHolderTest">
+<a class="viewcode-back" href="../../../api/kqcircuits.chips.sample_holder_test.html#kqcircuits.chips.sample_holder_test.SampleHolderTest">[docs]</a>
+<span class="k">class</span> <span class="nc">SampleHolderTest</span><span class="p">(</span><span class="n">Chip</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The PCell declaration for a SampleHolderTest chip.</span>
 
@@ -927,7 +929,9 @@
     <span class="n">launcher_gap</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Launcher gap&quot;</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
     <span class="n">launcher_indent</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Launcher indent from edge&quot;</span><span class="p">,</span> <span class="mi">520</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SampleHolderTest.build"><a class="viewcode-back" href="../../../api/kqcircuits.chips.sample_holder_test.html#kqcircuits.chips.sample_holder_test.SampleHolderTest.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SampleHolderTest.build">
+<a class="viewcode-back" href="../../../api/kqcircuits.chips.sample_holder_test.html#kqcircuits.chips.sample_holder_test.SampleHolderTest.build">[docs]</a>
+    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">nr_pads_per_side</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_launchers</span> <span class="o">/</span> <span class="mf">4.0</span><span class="p">)</span>
 
         <span class="c1"># North edge</span>
@@ -979,7 +983,9 @@
             <span class="n">_produce_waveguide</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="mi">1200</span><span class="p">,</span> <span class="n">first_port</span><span class="o">=</span><span class="s2">&quot;IN&quot;</span><span class="p">,</span> <span class="n">second_port</span><span class="o">=</span><span class="s2">&quot;OUT&quot;</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nr_pads_per_side</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">nr_pads_per_side</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-            <span class="n">_produce_waveguide</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="mi">1200</span><span class="p">,</span> <span class="n">first_port</span><span class="o">=</span><span class="s2">&quot;OUT&quot;</span><span class="p">,</span> <span class="n">second_port</span><span class="o">=</span><span class="s2">&quot;IN&quot;</span><span class="p">)</span></div></div>
+            <span class="n">_produce_waveguide</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="mi">1200</span><span class="p">,</span> <span class="n">first_port</span><span class="o">=</span><span class="s2">&quot;OUT&quot;</span><span class="p">,</span> <span class="n">second_port</span><span class="o">=</span><span class="s2">&quot;IN&quot;</span><span class="p">)</span></div>
+</div>
+
 </pre></div>
 
            </div>

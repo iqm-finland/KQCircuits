@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.waveguides_sim &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.simulations.waveguides_sim &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=eeab0646" />
 
   
@@ -18,9 +18,9 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
@@ -892,10 +892,10 @@
            <div itemprop="articleBody">
              
   <section id="module-kqcircuits.simulations.waveguides_sim">
-<span id="kqcircuits-simulations-waveguides-sim"></span><h1>kqcircuits.simulations.waveguides_sim<a class="headerlink" href="#module-kqcircuits.simulations.waveguides_sim" title="Permalink to this heading"></a></h1>
+<span id="kqcircuits-simulations-waveguides-sim"></span><h1>kqcircuits.simulations.waveguides_sim<a class="headerlink" href="#module-kqcircuits.simulations.waveguides_sim" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="kqcircuits.simulations.waveguides_sim.WaveGuidesSim">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.waveguides_sim.</span></span><span class="sig-name descname"><span class="pre">WaveGuidesSim</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/waveguides_sim.html#WaveGuidesSim"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.waveguides_sim.WaveGuidesSim" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.waveguides_sim.</span></span><span class="sig-name descname"><span class="pre">WaveGuidesSim</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/waveguides_sim.html#WaveGuidesSim"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.waveguides_sim.WaveGuidesSim" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Simulation</span></code></a></p>
 <p>Initialize a Simulation.</p>
 <p>The initializer parses parameters, creates a top cell, and then calls <cite>self.build</cite> to create
@@ -915,7 +915,7 @@ used as the top cell for the simulation. Otherwise, a new cell will be created. 
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.simulations.waveguides_sim.WaveGuidesSim.build">
-<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/waveguides_sim.html#WaveGuidesSim.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.waveguides_sim.WaveGuidesSim.build" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/waveguides_sim.html#WaveGuidesSim.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.waveguides_sim.WaveGuidesSim.build" title="Link to this definition"></a></dt>
 <dd><p>Build simulation geometry.</p>
 <p>This method is to be overridden, and the overriding method should create the geometry to be
 simulated and add any ports to <cite>self.ports</cite>.</p>
@@ -923,17 +923,12 @@ simulated and add any ports to <cite>self.ports</cite>.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.simulations.waveguides_sim.WaveGuidesSim.produce_guides">
-<span class="sig-name descname"><span class="pre">produce_guides</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/waveguides_sim.html#WaveGuidesSim.produce_guides"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.waveguides_sim.WaveGuidesSim.produce_guides" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">produce_guides</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/waveguides_sim.html#WaveGuidesSim.produce_guides"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.waveguides_sim.WaveGuidesSim.produce_guides" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.simulations.waveguides_sim.WaveGuidesSim.produce_ground_bumps">
-<span class="sig-name descname"><span class="pre">produce_ground_bumps</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/waveguides_sim.html#WaveGuidesSim.produce_ground_bumps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.waveguides_sim.WaveGuidesSim.produce_ground_bumps" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="kqcircuits.simulations.waveguides_sim.WaveGuidesSim.ports">
-<span class="sig-name descname"><span class="pre">ports</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="kqcircuits.simulations.port.html#kqcircuits.simulations.port.Port" title="kqcircuits.simulations.port.Port"><span class="pre">Port</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#kqcircuits.simulations.waveguides_sim.WaveGuidesSim.ports" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">produce_ground_bumps</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/waveguides_sim.html#WaveGuidesSim.produce_ground_bumps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.waveguides_sim.WaveGuidesSim.produce_ground_bumps" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>

@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.cross_section_simulation &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.simulations.cross_section_simulation &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=eeab0646" />
 
   
@@ -18,9 +18,9 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
@@ -892,10 +892,10 @@
            <div itemprop="articleBody">
              
   <section id="module-kqcircuits.simulations.cross_section_simulation">
-<span id="kqcircuits-simulations-cross-section-simulation"></span><h1>kqcircuits.simulations.cross_section_simulation<a class="headerlink" href="#module-kqcircuits.simulations.cross_section_simulation" title="Permalink to this heading"></a></h1>
+<span id="kqcircuits-simulations-cross-section-simulation"></span><h1>kqcircuits.simulations.cross_section_simulation<a class="headerlink" href="#module-kqcircuits.simulations.cross_section_simulation" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.cross_section_simulation.</span></span><span class="sig-name descname"><span class="pre">CrossSectionSimulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/cross_section_simulation.html#CrossSectionSimulation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.cross_section_simulation.</span></span><span class="sig-name descname"><span class="pre">CrossSectionSimulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/cross_section_simulation.html#CrossSectionSimulation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Class for co-planar waveguide cross-section simulations.</p>
 <p>This class is intended to be subclassed by a specific simulation implementation;  The subclass should implement the
@@ -921,12 +921,12 @@ the simulation geometry.</p>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.LIBRARY_NAME">
-<span class="sig-name descname"><span class="pre">LIBRARY_NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.LIBRARY_NAME" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">LIBRARY_NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.LIBRARY_NAME" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_schema">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_schema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">noparents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abstract_class</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_schema" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_schema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">noparents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abstract_class</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_schema" title="Link to this definition"></a></dt>
 <dd><p>Returns the combined parameters of the class “cls” and all its ancestor classes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -940,39 +940,39 @@ the simulation geometry.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.build">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/cross_section_simulation.html#CrossSectionSimulation.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.build" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/cross_section_simulation.html#CrossSectionSimulation.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.build" title="Link to this definition"></a></dt>
 <dd><p>Build simulation geometry.</p>
 <p>This method is to be overridden, and the overriding method should create the geometry to be simulated.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.register_cell_layers_as_sim_layers">
-<span class="sig-name descname"><span class="pre">register_cell_layers_as_sim_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/cross_section_simulation.html#CrossSectionSimulation.register_cell_layers_as_sim_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.register_cell_layers_as_sim_layers" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">register_cell_layers_as_sim_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/cross_section_simulation.html#CrossSectionSimulation.register_cell_layers_as_sim_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.register_cell_layers_as_sim_layers" title="Link to this definition"></a></dt>
 <dd><p>Takes all layers that contain any geometry and registers them as simulation layers</p>
 <p>This method resets the internal simulation layer dictionary.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_sim_layer">
-<span class="sig-name descname"><span class="pre">get_sim_layer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/cross_section_simulation.html#CrossSectionSimulation.get_sim_layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_sim_layer" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_sim_layer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/cross_section_simulation.html#CrossSectionSimulation.get_sim_layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_sim_layer" title="Link to this definition"></a></dt>
 <dd><p>Returns layer of given name. If layer doesn’t exist, a new layer is created.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.set_permittivity">
-<span class="sig-name descname"><span class="pre">set_permittivity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permittivity</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/cross_section_simulation.html#CrossSectionSimulation.set_permittivity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.set_permittivity" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_permittivity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permittivity</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/cross_section_simulation.html#CrossSectionSimulation.set_permittivity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.set_permittivity" title="Link to this definition"></a></dt>
 <dd><p>Sets permittivity for layer of given name.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_parameters">
-<span class="sig-name descname"><span class="pre">get_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/cross_section_simulation.html#CrossSectionSimulation.get_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_parameters" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/cross_section_simulation.html#CrossSectionSimulation.get_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_parameters" title="Link to this definition"></a></dt>
 <dd><p>Return dictionary with all parameters and their values.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_simulation_data">
-<span class="sig-name descname"><span class="pre">get_simulation_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/cross_section_simulation.html#CrossSectionSimulation.get_simulation_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_simulation_data" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_simulation_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/cross_section_simulation.html#CrossSectionSimulation.get_simulation_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_simulation_data" title="Link to this definition"></a></dt>
 <dd><p>Return the simulation data in dictionary form.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>

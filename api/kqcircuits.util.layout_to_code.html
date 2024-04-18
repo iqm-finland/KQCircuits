@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.util.layout_to_code &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.util.layout_to_code &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=eeab0646" />
 
   
@@ -18,9 +18,9 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
@@ -892,10 +892,10 @@
            <div itemprop="articleBody">
              
   <section id="module-kqcircuits.util.layout_to_code">
-<span id="kqcircuits-util-layout-to-code"></span><h1>kqcircuits.util.layout_to_code<a class="headerlink" href="#module-kqcircuits.util.layout_to_code" title="Permalink to this heading"></a></h1>
+<span id="kqcircuits-util-layout-to-code"></span><h1>kqcircuits.util.layout_to_code<a class="headerlink" href="#module-kqcircuits.util.layout_to_code" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.util.layout_to_code.convert_cells_to_code">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.layout_to_code.</span></span><span class="sig-name descname"><span class="pre">convert_cells_to_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_waveguides_as_composite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_instance_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refpoint_snap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_snap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'insert_cell+chip'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_imports</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_create_with_refpoints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/layout_to_code.html#convert_cells_to_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.layout_to_code.convert_cells_to_code" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.layout_to_code.</span></span><span class="sig-name descname"><span class="pre">convert_cells_to_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_waveguides_as_composite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_instance_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refpoint_snap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_snap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'insert_cell+chip'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_imports</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_create_with_refpoints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/layout_to_code.html#convert_cells_to_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.layout_to_code.convert_cells_to_code" title="Link to this definition"></a></dt>
 <dd><p>Prints out the Python code required to create the cells in top_cell.</p>
 <p>For each instance that is selected in GUI, prints out an <cite>insert_cell()</cite> command that can be copy pasted to a chip’s
 <cite>build()</cite>. If no instances are selected, then it will do the same for all instances that are one level below
@@ -941,7 +941,7 @@ output_format is “create” or “create+macro”. Required if you want to use
 
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.util.layout_to_code.get_node_params">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.layout_to_code.</span></span><span class="sig-name descname"><span class="pre">get_node_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node" title="kqcircuits.elements.waveguide_composite.Node"><span class="pre">Node</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/layout_to_code.html#get_node_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.layout_to_code.get_node_params" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.layout_to_code.</span></span><span class="sig-name descname"><span class="pre">get_node_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node" title="kqcircuits.elements.waveguide_composite.Node"><span class="pre">Node</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/layout_to_code.html#get_node_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.layout_to_code.get_node_params" title="Link to this definition"></a></dt>
 <dd><p>Generate a list of parameters for Node in string form</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -958,7 +958,7 @@ element: class that implements the node’s element, or None if the node has no 
 
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.util.layout_to_code.extract_pcell_data_from_views">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.layout_to_code.</span></span><span class="sig-name descname"><span class="pre">extract_pcell_data_from_views</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/layout_to_code.html#extract_pcell_data_from_views"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.layout_to_code.extract_pcell_data_from_views" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.layout_to_code.</span></span><span class="sig-name descname"><span class="pre">extract_pcell_data_from_views</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/layout_to_code.html#extract_pcell_data_from_views"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.layout_to_code.extract_pcell_data_from_views" title="Link to this definition"></a></dt>
 <dd><p>Remove all PCells and return their data.</p>
 <dl class="simple">
 <dt>Returns: A list of lists. Each element corresponds to a view in KLayout and it is a list of</dt><dd><p><code class="docutils literal notranslate"><span class="pre">(type,</span> <span class="pre">location,</span> <span class="pre">parameters)</span></code> tuples. These tuples completely describe the type, position and
@@ -969,7 +969,7 @@ parameters of a single PCell in the “Top Cell” of this view.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.util.layout_to_code.restore_pcells_to_views">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.layout_to_code.</span></span><span class="sig-name descname"><span class="pre">restore_pcells_to_views</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">views</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/layout_to_code.html#restore_pcells_to_views"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.layout_to_code.restore_pcells_to_views" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.layout_to_code.</span></span><span class="sig-name descname"><span class="pre">restore_pcells_to_views</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">views</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/layout_to_code.html#restore_pcells_to_views"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.layout_to_code.restore_pcells_to_views" title="Link to this definition"></a></dt>
 <dd><p>Re-populate each view’s Top Cell with PCells as extracted by <code class="docutils literal notranslate"><span class="pre">extract_pcell_data_from_views</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

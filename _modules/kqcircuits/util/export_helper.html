@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.util.export_helper &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.util.export_helper &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=eeab0646" />
 
   
@@ -17,9 +17,9 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../../about.html" />
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -924,7 +924,6 @@
     <span class="n">default_probe_suffixes</span><span class="p">,</span>
     <span class="n">recommended_probe_suffix_mapping</span><span class="p">,</span>
     <span class="n">VERSION_PATHS</span><span class="p">,</span>
-    <span class="n">default_drc_runset</span><span class="p">,</span>
     <span class="n">DRC_PATH</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.klayout_view</span> <span class="kn">import</span> <span class="n">KLayoutView</span><span class="p">,</span> <span class="n">MissingUILibraryException</span>
@@ -941,7 +940,9 @@
 
 
 <span class="c1"># pylint: disable=dangerous-default-value</span>
-<div class="viewcode-block" id="generate_probepoints_json"><a class="viewcode-back" href="../../../api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.generate_probepoints_json">[docs]</a><span class="k">def</span> <span class="nf">generate_probepoints_json</span><span class="p">(</span>
+<div class="viewcode-block" id="generate_probepoints_json">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.generate_probepoints_json">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_probepoints_json</span><span class="p">(</span>
     <span class="n">cell</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">,</span>
     <span class="n">face</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;1t1&quot;</span><span class="p">,</span>
     <span class="n">flip_face</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1189,7 +1190,10 @@
     <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;groups&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">group</span><span class="p">}</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="o">.</span><span class="n">items</span><span class="p">()]}</span></div>
 
 
-<div class="viewcode-block" id="generate_probepoints_from_file"><a class="viewcode-back" href="../../../api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.generate_probepoints_from_file">[docs]</a><span class="k">def</span> <span class="nf">generate_probepoints_from_file</span><span class="p">(</span>
+
+<div class="viewcode-block" id="generate_probepoints_from_file">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.generate_probepoints_from_file">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_probepoints_from_file</span><span class="p">(</span>
     <span class="n">cell_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">face</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;1t1&quot;</span><span class="p">,</span>
     <span class="n">flip_face</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1231,7 +1235,10 @@
     <span class="k">return</span> <span class="n">generate_probepoints_json</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">face</span><span class="p">,</span> <span class="n">flip_face</span><span class="p">,</span> <span class="n">references</span><span class="p">,</span> <span class="n">contact</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="create_or_empty_tmp_directory"><a class="viewcode-back" href="../../../api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.create_or_empty_tmp_directory">[docs]</a><span class="k">def</span> <span class="nf">create_or_empty_tmp_directory</span><span class="p">(</span><span class="n">dir_name</span><span class="p">):</span>
+
+<div class="viewcode-block" id="create_or_empty_tmp_directory">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.create_or_empty_tmp_directory">[docs]</a>
+<span class="k">def</span> <span class="nf">create_or_empty_tmp_directory</span><span class="p">(</span><span class="n">dir_name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates directory into TMP_PATH or removes its content if it exists.</span>
 <span class="sd">    Returns directory path.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1259,7 +1266,10 @@
     <span class="k">return</span> <span class="n">dir_path</span></div>
 
 
-<div class="viewcode-block" id="get_simulation_directory"><a class="viewcode-back" href="../../../api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.get_simulation_directory">[docs]</a><span class="k">def</span> <span class="nf">get_simulation_directory</span><span class="p">(</span><span class="n">dir_name</span><span class="p">):</span>
+
+<div class="viewcode-block" id="get_simulation_directory">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.get_simulation_directory">[docs]</a>
+<span class="k">def</span> <span class="nf">get_simulation_directory</span><span class="p">(</span><span class="n">dir_name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns directory path consistent with `create_or_empty_tmp_directory`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1276,7 +1286,10 @@
     <span class="k">return</span> <span class="n">dir_path</span></div>
 
 
-<div class="viewcode-block" id="get_active_or_new_layout"><a class="viewcode-back" href="../../../api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.get_active_or_new_layout">[docs]</a><span class="k">def</span> <span class="nf">get_active_or_new_layout</span><span class="p">():</span>
+
+<div class="viewcode-block" id="get_active_or_new_layout">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.get_active_or_new_layout">[docs]</a>
+<span class="k">def</span> <span class="nf">get_active_or_new_layout</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Tries to return active layout in GUI or returns new layout when running standalone.&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">klayoutview</span> <span class="o">=</span> <span class="n">KLayoutView</span><span class="p">(</span><span class="n">current</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -1286,7 +1299,10 @@
         <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">Layout</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="write_commit_reference_file"><a class="viewcode-back" href="../../../api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.write_commit_reference_file">[docs]</a><span class="k">def</span> <span class="nf">write_commit_reference_file</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">write_versions_file</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+<div class="viewcode-block" id="write_commit_reference_file">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.write_commit_reference_file">[docs]</a>
+<span class="k">def</span> <span class="nf">write_commit_reference_file</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">write_versions_file</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Writes file COMMIT_REFERENCE into given file path. The file includes current git revision number.</span>
 <span class="sd">    If git repository is not found in given path, no file is written.</span>
@@ -1306,7 +1322,10 @@
         <span class="n">write_export_machine_versions_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="write_export_machine_versions_file"><a class="viewcode-back" href="../../../api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.write_export_machine_versions_file">[docs]</a><span class="k">def</span> <span class="nf">write_export_machine_versions_file</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+
+<div class="viewcode-block" id="write_export_machine_versions_file">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.write_export_machine_versions_file">[docs]</a>
+<span class="k">def</span> <span class="nf">write_export_machine_versions_file</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Writes file EXPORT_MACHINE_VERSIONS into given file path.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1319,7 +1338,10 @@
         <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">versions</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="open_with_klayout_or_default_application"><a class="viewcode-back" href="../../../api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.open_with_klayout_or_default_application">[docs]</a><span class="k">def</span> <span class="nf">open_with_klayout_or_default_application</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+
+<div class="viewcode-block" id="open_with_klayout_or_default_application">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.open_with_klayout_or_default_application">[docs]</a>
+<span class="k">def</span> <span class="nf">open_with_klayout_or_default_application</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Tries to open file with KLayout. If KLayout is not found, opens file with operating system&#39;s default application.</span>
 <span class="sd">    Implementation supports Windows, macOS, and Linux.</span>
@@ -1334,14 +1356,20 @@
         <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">((</span><span class="n">exe</span><span class="p">,</span> <span class="n">filepath</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="get_klayout_version"><a class="viewcode-back" href="../../../api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.get_klayout_version">[docs]</a><span class="k">def</span> <span class="nf">get_klayout_version</span><span class="p">():</span>
+
+<div class="viewcode-block" id="get_klayout_version">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.get_klayout_version">[docs]</a>
+<span class="k">def</span> <span class="nf">get_klayout_version</span><span class="p">():</span>
     <span class="k">if</span> <span class="n">is_standalone_session</span><span class="p">():</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;KLayout </span><span class="si">{</span><span class="n">importlib</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">version</span><span class="p">(</span><span class="s1">&#39;klayout&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">version</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="export_drc_report"><a class="viewcode-back" href="../../../api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.export_drc_report">[docs]</a><span class="k">def</span> <span class="nf">export_drc_report</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">drc_script</span><span class="o">=</span><span class="n">default_drc_runset</span><span class="p">):</span>
+
+<div class="viewcode-block" id="export_drc_report">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.export_drc_report">[docs]</a>
+<span class="k">def</span> <span class="nf">export_drc_report</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">drc_script</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Run a DRC script on ``path/name.oas`` and export results in ``path/name_drc_report.lyrdb``.&quot;&quot;&quot;</span>
 
     <span class="n">drc_runset_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DRC_PATH</span><span class="p">,</span> <span class="n">drc_script</span><span class="p">)</span>
@@ -1366,6 +1394,7 @@
         <span class="p">)</span>
     <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">output</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.export.util &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.simulations.export.util &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom.css?v=eeab0646" />
 
   
@@ -17,9 +17,9 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../../../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../../../about.html" />
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -911,7 +911,9 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_output_format</span>
 
 
-<div class="viewcode-block" id="export_layers"><a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.util.html#kqcircuits.simulations.export.util.export_layers">[docs]</a><span class="k">def</span> <span class="nf">export_layers</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_format</span><span class="o">=</span><span class="n">default_output_format</span><span class="p">):</span>
+<div class="viewcode-block" id="export_layers">
+<a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.util.html#kqcircuits.simulations.export.util.export_layers">[docs]</a>
+<span class="k">def</span> <span class="nf">export_layers</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_format</span><span class="o">=</span><span class="n">default_output_format</span><span class="p">):</span>
 
     <span class="n">svopt</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">SaveLayoutOptions</span><span class="p">()</span>
     <span class="n">svopt</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="n">output_format</span>
@@ -929,11 +931,15 @@
     <span class="n">layout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">svopt</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="find_edge_from_point_in_cell"><a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.util.html#kqcircuits.simulations.export.util.find_edge_from_point_in_cell">[docs]</a><span class="k">def</span> <span class="nf">find_edge_from_point_in_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">,</span> <span class="n">layer</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">point</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+
+<div class="viewcode-block" id="find_edge_from_point_in_cell">
+<a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.util.html#kqcircuits.simulations.export.util.find_edge_from_point_in_cell">[docs]</a>
+<span class="k">def</span> <span class="nf">find_edge_from_point_in_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">,</span> <span class="n">layer</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">point</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Finds the edge closest to a point, and returns the edge as well as it&#39;s polygon and edge index</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">find_edge_from_point_in_polygons</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Shapes</span><span class="o">.</span><span class="n">SPolygons</span><span class="p">),</span> <span class="n">point</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">)</span></div>
+
 
 
 <span class="k">def</span> <span class="nf">_dist</span><span class="p">(</span><span class="n">edge</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Edge</span><span class="p">,</span> <span class="n">point</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Point</span><span class="p">):</span>
@@ -958,7 +964,9 @@
     <span class="k">return</span> <span class="n">out</span>
 
 
-<div class="viewcode-block" id="find_edge_from_point_in_polygons"><a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.util.html#kqcircuits.simulations.export.util.find_edge_from_point_in_polygons">[docs]</a><span class="k">def</span> <span class="nf">find_edge_from_point_in_polygons</span><span class="p">(</span><span class="n">polygons</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">Polygon</span><span class="p">],</span> <span class="n">point</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+<div class="viewcode-block" id="find_edge_from_point_in_polygons">
+<a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.util.html#kqcircuits.simulations.export.util.find_edge_from_point_in_polygons">[docs]</a>
+<span class="k">def</span> <span class="nf">find_edge_from_point_in_polygons</span><span class="p">(</span><span class="n">polygons</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">Polygon</span><span class="p">],</span> <span class="n">point</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Finds the edge closest to a point, and returns the edge as well as it&#39;s polygon and edge index</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -976,7 +984,10 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No edge found at </span><span class="si">{</span><span class="n">point</span><span class="si">=}</span><span class="s2">, </span><span class="si">{</span><span class="n">nearest_edge</span><span class="si">=}</span><span class="s2">, </span><span class="si">{</span><span class="n">distance</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_enclosing_polygon"><a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.util.html#kqcircuits.simulations.export.util.get_enclosing_polygon">[docs]</a><span class="k">def</span> <span class="nf">get_enclosing_polygon</span><span class="p">(</span><span class="n">points</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]):</span>
+
+<div class="viewcode-block" id="get_enclosing_polygon">
+<a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.util.html#kqcircuits.simulations.export.util.get_enclosing_polygon">[docs]</a>
+<span class="k">def</span> <span class="nf">get_enclosing_polygon</span><span class="p">(</span><span class="n">points</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Order points in such a way that they form a polygon without intersecting</span>
 <span class="sd">    lines. The ordering is clockwise starting from the left-most point.</span>
@@ -1026,6 +1037,7 @@
     <span class="c1"># Note: the polygon is not closed.</span>
     <span class="n">pbelow</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">pleft</span><span class="p">]</span> <span class="o">+</span> <span class="n">pabove</span> <span class="o">+</span> <span class="p">[</span><span class="n">pright</span><span class="p">]</span> <span class="o">+</span> <span class="n">pbelow</span></div>
+
 </pre></div>
 
            </div>

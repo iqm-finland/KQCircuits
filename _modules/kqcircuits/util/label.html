@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.util.label &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.util.label &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=eeab0646" />
 
   
@@ -17,9 +17,9 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../../about.html" />
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -909,7 +909,9 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 
 
-<div class="viewcode-block" id="LabelOrigin"><a class="viewcode-back" href="../../../api/kqcircuits.util.label.html#kqcircuits.util.label.LabelOrigin">[docs]</a><span class="k">class</span> <span class="nc">LabelOrigin</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<div class="viewcode-block" id="LabelOrigin">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.label.html#kqcircuits.util.label.LabelOrigin">[docs]</a>
+<span class="k">class</span> <span class="nc">LabelOrigin</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Origin of the Text PCell. One of the four corners of the cell bounding box&quot;&quot;&quot;</span>
 
     <span class="n">BOTTOMLEFT</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
@@ -918,7 +920,10 @@
     <span class="n">TOPRIGHT</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="produce_label"><a class="viewcode-back" href="../../../api/kqcircuits.util.label.html#kqcircuits.util.label.produce_label">[docs]</a><span class="k">def</span> <span class="nf">produce_label</span><span class="p">(</span>
+
+<div class="viewcode-block" id="produce_label">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.label.html#kqcircuits.util.label.produce_label">[docs]</a>
+<span class="k">def</span> <span class="nf">produce_label</span><span class="p">(</span>
     <span class="n">cell</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">origin_offset</span><span class="p">,</span> <span class="n">margin</span><span class="p">,</span> <span class="n">layers</span><span class="p">,</span> <span class="n">layer_protection</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">350</span><span class="p">,</span> <span class="n">mirror</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Produces a Text PCell accounting for desired relative position of the text respect to the given location</span>
@@ -996,6 +1001,7 @@
         <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">subcells</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dbbox</span><span class="p">()</span><span class="o">.</span><span class="n">p2</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">margin</span><span class="p">,</span> <span class="n">subcells</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dbbox</span><span class="p">()</span><span class="o">.</span><span class="n">p2</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">margin</span><span class="p">),</span>
     <span class="p">)</span>
     <span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">layer_protection</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">trans</span><span class="o">.</span><span class="n">trans</span><span class="p">(</span><span class="n">protection</span><span class="p">))</span></div>
+
 </pre></div>
 
            </div>

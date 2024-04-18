@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.masks.mask_export &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.masks.mask_export &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=eeab0646" />
 
   
@@ -17,9 +17,9 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../../about.html" />
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -931,7 +931,9 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.util.replace_junctions</span> <span class="kn">import</span> <span class="n">extract_junctions</span><span class="p">,</span> <span class="n">get_tuned_junction_json</span>
 
 
-<div class="viewcode-block" id="export_mask_set"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_mask_set">[docs]</a><span class="k">def</span> <span class="nf">export_mask_set</span><span class="p">(</span><span class="n">mask_set</span><span class="p">,</span> <span class="n">skip_extras</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="export_mask_set">
+<a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_mask_set">[docs]</a>
+<span class="k">def</span> <span class="nf">export_mask_set</span><span class="p">(</span><span class="n">mask_set</span><span class="p">,</span> <span class="n">skip_extras</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Exports the designs, bitmap and documentation for the mask_set.&quot;&quot;&quot;</span>
 
     <span class="n">export_bitmaps</span><span class="p">(</span><span class="n">mask_set</span><span class="p">)</span>
@@ -940,14 +942,20 @@
         <span class="n">export_docs</span><span class="p">(</span><span class="n">mask_set</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="export_designs"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_designs">[docs]</a><span class="k">def</span> <span class="nf">export_designs</span><span class="p">(</span><span class="n">mask_set</span><span class="p">):</span>
+
+<div class="viewcode-block" id="export_designs">
+<a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_designs">[docs]</a>
+<span class="k">def</span> <span class="nf">export_designs</span><span class="p">(</span><span class="n">mask_set</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Exports .oas and .gds files of the mask_set.&quot;&quot;&quot;</span>
     <span class="c1"># export mask layouts</span>
     <span class="k">for</span> <span class="n">mask_layout</span> <span class="ow">in</span> <span class="n">mask_set</span><span class="o">.</span><span class="n">mask_layouts</span><span class="p">:</span>
         <span class="n">export_masks_of_face</span><span class="p">(</span><span class="n">mask_set</span><span class="o">.</span><span class="n">_mask_set_dir</span><span class="p">,</span> <span class="n">mask_layout</span><span class="p">,</span> <span class="n">mask_set</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="export_chip"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_chip">[docs]</a><span class="k">def</span> <span class="nf">export_chip</span><span class="p">(</span><span class="n">chip_cell</span><span class="p">,</span> <span class="n">chip_name</span><span class="p">,</span> <span class="n">chip_dir</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">export_drc</span><span class="p">,</span> <span class="n">alt_netlists</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">skip_extras</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+<div class="viewcode-block" id="export_chip">
+<a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_chip">[docs]</a>
+<span class="k">def</span> <span class="nf">export_chip</span><span class="p">(</span><span class="n">chip_cell</span><span class="p">,</span> <span class="n">chip_name</span><span class="p">,</span> <span class="n">chip_dir</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">export_drc</span><span class="p">,</span> <span class="n">alt_netlists</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">skip_extras</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Exports a chip used in a maskset.&quot;&quot;&quot;</span>
 
     <span class="n">is_pcell</span> <span class="o">=</span> <span class="n">chip_cell</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
@@ -1022,14 +1030,17 @@
 
         <span class="c1"># export drc report for the chip</span>
         <span class="k">if</span> <span class="n">export_drc</span><span class="p">:</span>
-            <span class="n">export_drc_report</span><span class="p">(</span><span class="n">chip_name</span><span class="p">,</span> <span class="n">chip_dir</span><span class="p">)</span>
+            <span class="n">export_drc_report</span><span class="p">(</span><span class="n">chip_name</span><span class="p">,</span> <span class="n">chip_dir</span><span class="p">,</span> <span class="n">export_drc</span><span class="p">)</span>
 
     <span class="c1"># delete the static cell which was only needed for export</span>
     <span class="k">if</span> <span class="n">static_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">()</span> <span class="o">!=</span> <span class="n">chip_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">():</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">delete_cell_rec</span><span class="p">(</span><span class="n">static_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">())</span></div>
 
 
-<div class="viewcode-block" id="export_masks_of_face"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_masks_of_face">[docs]</a><span class="k">def</span> <span class="nf">export_masks_of_face</span><span class="p">(</span><span class="n">export_dir</span><span class="p">,</span> <span class="n">mask_layout</span><span class="p">,</span> <span class="n">mask_set</span><span class="p">):</span>
+
+<div class="viewcode-block" id="export_masks_of_face">
+<a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_masks_of_face">[docs]</a>
+<span class="k">def</span> <span class="nf">export_masks_of_face</span><span class="p">(</span><span class="n">export_dir</span><span class="p">,</span> <span class="n">mask_layout</span><span class="p">,</span> <span class="n">mask_set</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Exports masks for layers of a single face of a mask_set.</span>
 
 <span class="sd">    Args:</span>
@@ -1066,7 +1077,10 @@
         <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">mask_json</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">GeometryJsonEncoder</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="export_mask"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_mask">[docs]</a><span class="k">def</span> <span class="nf">export_mask</span><span class="p">(</span><span class="n">export_dir</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">,</span> <span class="n">mask_layout</span><span class="p">,</span> <span class="n">mask_set</span><span class="p">):</span>
+
+<div class="viewcode-block" id="export_mask">
+<a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_mask">[docs]</a>
+<span class="k">def</span> <span class="nf">export_mask</span><span class="p">(</span><span class="n">export_dir</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">,</span> <span class="n">mask_layout</span><span class="p">,</span> <span class="n">mask_set</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Exports a mask from a single layer of a single face of a mask set.</span>
 
 <span class="sd">    Args:</span>
@@ -1115,7 +1129,10 @@
     <span class="n">layout</span><span class="o">.</span><span class="n">delete_layer</span><span class="p">(</span><span class="n">tmp_layer</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="export_docs"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_docs">[docs]</a><span class="k">def</span> <span class="nf">export_docs</span><span class="p">(</span><span class="n">mask_set</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;Mask_Documentation.md&quot;</span><span class="p">):</span>
+
+<div class="viewcode-block" id="export_docs">
+<a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_docs">[docs]</a>
+<span class="k">def</span> <span class="nf">export_docs</span><span class="p">(</span><span class="n">mask_set</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;Mask_Documentation.md&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Exports mask documentation containing mask layouts and parameters of all chips in the mask_set.&quot;&quot;&quot;</span>
     <span class="n">file_location</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">mask_set</span><span class="o">.</span><span class="n">_mask_set_dir</span> <span class="o">/</span> <span class="n">filename</span><span class="p">)</span>
 
@@ -1223,7 +1240,10 @@
         <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="export_bitmaps"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_bitmaps">[docs]</a><span class="k">def</span> <span class="nf">export_bitmaps</span><span class="p">(</span><span class="n">mask_set</span><span class="p">,</span> <span class="n">spec_layers</span><span class="o">=</span><span class="n">mask_bitmap_export_layers</span><span class="p">):</span>
+
+<div class="viewcode-block" id="export_bitmaps">
+<a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_bitmaps">[docs]</a>
+<span class="k">def</span> <span class="nf">export_bitmaps</span><span class="p">(</span><span class="n">mask_set</span><span class="p">,</span> <span class="n">spec_layers</span><span class="o">=</span><span class="n">mask_bitmap_export_layers</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Exports bitmaps for the mask_set.&quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=dangerous-default-value</span>
 
@@ -1251,6 +1271,7 @@
             <span class="n">view</span><span class="o">.</span><span class="n">export_all_layers_bitmap</span><span class="p">(</span><span class="n">chip_dir</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">view</span><span class="p">:</span>
         <span class="n">view</span><span class="o">.</span><span class="n">focus</span><span class="p">(</span><span class="n">mask_set</span><span class="o">.</span><span class="n">mask_layouts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">top_cell</span><span class="p">)</span></div>
+
 
 
 <span class="k">def</span> <span class="nf">_export_cell</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">cell</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">layers_to_export</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1289,11 +1310,16 @@
     <span class="k">return</span> <span class="n">directory</span>
 
 
-<div class="viewcode-block" id="get_mask_layout_full_name"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.get_mask_layout_full_name">[docs]</a><span class="k">def</span> <span class="nf">get_mask_layout_full_name</span><span class="p">(</span><span class="n">mask_set</span><span class="p">,</span> <span class="n">mask_layout</span><span class="p">):</span>
+<div class="viewcode-block" id="get_mask_layout_full_name">
+<a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.get_mask_layout_full_name">[docs]</a>
+<span class="k">def</span> <span class="nf">get_mask_layout_full_name</span><span class="p">(</span><span class="n">mask_set</span><span class="p">,</span> <span class="n">mask_layout</span><span class="p">):</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mask_set</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_v</span><span class="si">{</span><span class="n">mask_set</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">mask_layout</span><span class="o">.</span><span class="n">face_id</span><span class="si">}{</span><span class="n">mask_layout</span><span class="o">.</span><span class="n">extra_id</span><span class="si">}</span><span class="s2">&quot;</span></div>
 
 
-<div class="viewcode-block" id="export_junction_parameters"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_junction_parameters">[docs]</a><span class="k">def</span> <span class="nf">export_junction_parameters</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+
+<div class="viewcode-block" id="export_junction_parameters">
+<a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_junction_parameters">[docs]</a>
+<span class="k">def</span> <span class="nf">export_junction_parameters</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Exports a json file containing all parameter values for each junction in the given chip (as cell)&quot;&quot;&quot;</span>
     <span class="n">junctions</span> <span class="o">=</span> <span class="n">extract_junctions</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="p">{})</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">junctions</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -1301,6 +1327,7 @@
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
             <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">params_json</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exported tunable junction parameters to </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>

@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Simulation objects &mdash; KQCircuits  documentation</title>
+  <title>Simulation objects &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=eeab0646" />
 
   
@@ -18,9 +18,9 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../about.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -892,7 +892,7 @@
            <div itemprop="articleBody">
              
   <section id="simulation-objects">
-<h1>Simulation objects<a class="headerlink" href="#simulation-objects" title="Permalink to this heading"></a></h1>
+<h1>Simulation objects<a class="headerlink" href="#simulation-objects" title="Link to this heading"></a></h1>
 <p>The geometry of a simulation must be defined in a simulation object, which is an instance of a dedicated subclass of
 either <a class="reference internal" href="../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Simulation</span></code></a> or <a class="reference internal" href="../../api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation" title="kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">CrossSectionSimulation</span></code></a> classes.</p>
 <p>The <a class="reference internal" href="../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Simulation</span></code></a> is the base class for typical 3-dimensional simulation geometries.
@@ -902,7 +902,7 @@ Both are intended to be subclassed by a specific simulation implementation.</p>
 <p>This user guide mainly focuses on the usage of <a class="reference internal" href="../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Simulation</span></code></a> class.
 See the section <a class="reference internal" href="simulation_features.html#cross-sectional-simulations"><span class="std std-ref">Cross-sectional simulations</span></a> for more information on the cross-sectional simulations.</p>
 <section id="the-simulation-class">
-<h2>The Simulation class<a class="headerlink" href="#the-simulation-class" title="Permalink to this heading"></a></h2>
+<h2>The Simulation class<a class="headerlink" href="#the-simulation-class" title="Link to this heading"></a></h2>
 <p>The <a class="reference internal" href="../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Simulation</span></code></a> class works very similar with typical KQCircuits elements: the subclass should implement a
 <a class="reference internal" href="../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.build" title="kqcircuits.simulations.simulation.Simulation.build"><code class="xref py py-meth docutils literal notranslate"><span class="pre">build()</span></code></a> method which generates the geometry and ports, typically
 by inserting other elements into the model.
@@ -912,7 +912,7 @@ simulation object from an existing cell.
 In this case, the <a class="reference internal" href="../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Simulation</span></code></a> class doesn’t have to be subclassed and no ports will be added.
 See <a class="reference internal" href="simulation_scripts.html#geometry-from-klayout-gui"><span class="std std-ref">Geometry from Klayout GUI</span></a> for more information.</p>
 <section id="box">
-<h3>Box<a class="headerlink" href="#box" title="Permalink to this heading"></a></h3>
+<h3>Box<a class="headerlink" href="#box" title="Link to this heading"></a></h3>
 <p>The <a class="reference internal" href="../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Simulation</span></code></a> class introduces several PCell parameters to tune the simulation geometry.
 One of them is <code class="docutils literal notranslate"><span class="pre">box</span></code>, which defines the x- and y-dimensions of the simulation domain.
 The value of <code class="docutils literal notranslate"><span class="pre">box</span></code> should be given as <a class="reference external" href="https://www.klayout.de/doc-qt5/code/class_DBox.html"><code class="docutils literal notranslate"><span class="pre">pya.DBox</span></code></a>.</p>
@@ -921,7 +921,7 @@ and/or to define the margins around the relevant shapes.
 One should consider carefully on a case-by-case basis what is suitable simulation area for the purpose.</p>
 <img alt="../../_images/simulation_area.svg" src="../../_images/simulation_area.svg" /></section>
 <section id="ports">
-<h3>Ports<a class="headerlink" href="#ports" title="Permalink to this heading"></a></h3>
+<h3>Ports<a class="headerlink" href="#ports" title="Link to this heading"></a></h3>
 <p>Ports typically define the input source terms of the simulation and distinguish the signal and ground metals from each
 other.
 Two types of ports are supported, <a class="reference internal" href="../../api/kqcircuits.simulations.port.html#kqcircuits.simulations.port.InternalPort" title="kqcircuits.simulations.port.InternalPort"><code class="xref py py-class docutils literal notranslate"><span class="pre">InternalPort</span></code></a> between metal layers inside the geometry and
@@ -966,7 +966,7 @@ For qubits with multiple islands, usually a separate port is needed for each isl
 </div>
 </section>
 <section id="face-stack">
-<h3>Face stack<a class="headerlink" href="#face-stack" title="Permalink to this heading"></a></h3>
+<h3>Face stack<a class="headerlink" href="#face-stack" title="Link to this heading"></a></h3>
 <p>The 3-dimensional geometry is built of uniform thickness dielectric substrates, which are typically separated from
 each other by vacuum.
 The thin metal and dielectric layers and other objects can be applied on any of the imaginable substrate surface and
@@ -1003,7 +1003,7 @@ A dielectric layer is added on top of the metal layer if non-zero <code class="d
 </section>
 </section>
 <section id="simulation-subclass">
-<h2>Simulation subclass<a class="headerlink" href="#simulation-subclass" title="Permalink to this heading"></a></h2>
+<h2>Simulation subclass<a class="headerlink" href="#simulation-subclass" title="Link to this heading"></a></h2>
 <p>Subclassing the <a class="reference internal" href="../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Simulation</span></code></a> is similar to subclassing the <a class="reference internal" href="../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a>, since both classes support most
 of the same concepts.
 For example, <a class="reference internal" href="../python_workflow.html#python-workflow-refpoints"><span class="std std-ref">Refpoints</span></a> can be used to connect child elements together and
@@ -1011,7 +1011,7 @@ simulations can have <a class="reference internal" href="../python_workflow.html
 A simulation subclass can inherit parameters from regular elements with the <a class="reference internal" href="../../api/kqcircuits.util.parameters.html#kqcircuits.util.parameters.add_parameter" title="kqcircuits.util.parameters.add_parameter"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_parameter()</span></code></a> and
 <a class="reference internal" href="../../api/kqcircuits.util.parameters.html#kqcircuits.util.parameters.add_parameters_from" title="kqcircuits.util.parameters.add_parameters_from"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_parameters_from()</span></code></a> decorators.</p>
 <section id="single-element-subclass">
-<h3>Single element subclass<a class="headerlink" href="#single-element-subclass" title="Permalink to this heading"></a></h3>
+<h3>Single element subclass<a class="headerlink" href="#single-element-subclass" title="Link to this heading"></a></h3>
 <p>To save you the trouble of writing a <a class="reference internal" href="../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Simulation</span></code></a> subclass for single element simulations, you can use the
 <a class="reference internal" href="../../api/kqcircuits.simulations.single_element_simulation.html#kqcircuits.simulations.single_element_simulation.get_single_element_sim_class" title="kqcircuits.simulations.single_element_simulation.get_single_element_sim_class"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_single_element_sim_class()</span></code></a> class builder method, provided
 that the element class to be simulated has the <a class="reference internal" href="../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.get_sim_ports" title="kqcircuits.elements.element.Element.get_sim_ports"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_sim_ports()</span></code></a> method
@@ -1058,7 +1058,7 @@ simulation class builder, please consult the API docs for the method
 as well as the API docs for different implementations of the <a class="reference internal" href="../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.RefpointToSimPort" title="kqcircuits.util.refpoints.RefpointToSimPort"><code class="xref py py-class docutils literal notranslate"><span class="pre">RefpointToSimPort</span></code></a>.</p>
 </section>
 <section id="general-subclass">
-<h3>General subclass<a class="headerlink" href="#general-subclass" title="Permalink to this heading"></a></h3>
+<h3>General subclass<a class="headerlink" href="#general-subclass" title="Link to this heading"></a></h3>
 <p>Instead of using the class builder we can also create the simulation subclass manually. The following code snippet
 implements essentially the same simulation class as was returned by the
 <a class="reference internal" href="../../api/kqcircuits.simulations.single_element_simulation.html#kqcircuits.simulations.single_element_simulation.get_single_element_sim_class" title="kqcircuits.simulations.single_element_simulation.get_single_element_sim_class"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_single_element_sim_class()</span></code></a> class builder:</p>
@@ -1094,7 +1094,7 @@ into the same simulation or to simulate full chips or portions of the chip.</p>
 </section>
 </section>
 <section id="geometry-sweeps">
-<h2>Geometry sweeps<a class="headerlink" href="#geometry-sweeps" title="Permalink to this heading"></a></h2>
+<h2>Geometry sweeps<a class="headerlink" href="#geometry-sweeps" title="Link to this heading"></a></h2>
 <p>Once a simulation subclass is defined, instance of it can be created with desired parameter values by passing keyword
 arguments to the constructor.
 An instance of a simulation subclass (also called a simulation object) represents single geometry variation.

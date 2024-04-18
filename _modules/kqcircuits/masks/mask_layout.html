@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.masks.mask_layout &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.masks.mask_layout &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=eeab0646" />
 
   
@@ -17,9 +17,9 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../../about.html" />
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -927,7 +927,9 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.util.merge</span> <span class="kn">import</span> <span class="n">merge_layout_layers_on_face</span><span class="p">,</span> <span class="n">convert_child_instances_to_static</span>
 
 
-<div class="viewcode-block" id="MaskLayout"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout">[docs]</a><span class="k">class</span> <span class="nc">MaskLayout</span><span class="p">:</span>
+<div class="viewcode-block" id="MaskLayout">
+<a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout">[docs]</a>
+<span class="k">class</span> <span class="nc">MaskLayout</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class representing the mask for a certain face.</span>
 
 <span class="sd">    A MaskLayout is used to create the cells for the mask.</span>
@@ -1050,7 +1052,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_min_x</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_min_y</span> <span class="o">=</span> <span class="mi">0</span>
 
-<div class="viewcode-block" id="MaskLayout.add_chips_map"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.add_chips_map">[docs]</a>    <span class="k">def</span> <span class="nf">add_chips_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chips_map</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">align_to</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chip_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chip_trans</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="MaskLayout.add_chips_map">
+<a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.add_chips_map">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_chips_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chips_map</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">align_to</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chip_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chip_trans</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add additional chip maps to the main chip map.</span>
 
 <span class="sd">        The specified extra chip map, a.k.a. sub-grid, will be attached to the main grid. It may use</span>
@@ -1067,7 +1071,10 @@
         <span class="n">chip_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chip_size</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">chip_size</span> <span class="k">else</span> <span class="n">chip_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extra_chips_maps</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">chips_map</span><span class="p">,</span> <span class="n">chip_size</span><span class="p">,</span> <span class="n">align</span><span class="p">,</span> <span class="n">align_to</span><span class="p">,</span> <span class="n">chip_trans</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="MaskLayout.build"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chips_map_legend</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MaskLayout.build">
+<a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.build">[docs]</a>
+    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chips_map_legend</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Builds the cell hierarchy for this mask layout.</span>
 
 <span class="sd">        Inserts cells copied from chips_map_legend to self.top_cell at positions determined by self.chips_map. The</span>
@@ -1165,7 +1172,10 @@
         <span class="n">convert_child_instances_to_static</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="n">maskextra_cell</span><span class="p">,</span> <span class="n">only_elements</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">merge_layout_layers_on_face</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="n">maskextra_cell</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="MaskLayout.overwrite_chips_by_position_label"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.overwrite_chips_by_position_label">[docs]</a>    <span class="k">def</span> <span class="nf">overwrite_chips_by_position_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chips_dict</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MaskLayout.overwrite_chips_by_position_label">
+<a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.overwrite_chips_by_position_label">[docs]</a>
+    <span class="k">def</span> <span class="nf">overwrite_chips_by_position_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chips_dict</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Overwrites chips with ones configured to be placed at specific label positions.</span>
 
 <span class="sd">        Chips specified in the chips_placed_by_position_label dictionary replace existing chips with the same position</span>
@@ -1215,14 +1225,20 @@
                 <span class="k">for</span> <span class="n">tpl</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphical_representation_inputs</span>
             <span class="p">]</span></div>
 
-<div class="viewcode-block" id="MaskLayout.insert_chips"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.insert_chips">[docs]</a>    <span class="k">def</span> <span class="nf">insert_chips</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MaskLayout.insert_chips">
+<a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.insert_chips">[docs]</a>
+    <span class="k">def</span> <span class="nf">insert_chips</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Insert chips after resolving their position labels&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">chip_cell</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">dtrans</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">added_chips</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">top_cell</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span><span class="n">chip_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span> <span class="n">dtrans</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">params</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphical_representation_inputs</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_add_chip_graphical_representation_layer</span><span class="p">(</span><span class="o">*</span><span class="n">params</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="MaskLayout.insert_chip_copy_labels"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.insert_chip_copy_labels">[docs]</a>    <span class="k">def</span> <span class="nf">insert_chip_copy_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">labels_cell</span><span class="p">,</span> <span class="n">layers</span><span class="p">,</span> <span class="n">mask_name_for_chip</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MaskLayout.insert_chip_copy_labels">
+<a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.insert_chip_copy_labels">[docs]</a>
+    <span class="k">def</span> <span class="nf">insert_chip_copy_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">labels_cell</span><span class="p">,</span> <span class="n">layers</span><span class="p">,</span> <span class="n">mask_name_for_chip</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Inserts chip copy labels to all chips in this mask layout and its submasks</span>
 
 <span class="sd">        Args:</span>
@@ -1333,11 +1349,17 @@
             <span class="p">}</span>
         <span class="k">return</span> <span class="n">chips_dict</span></div>
 
-<div class="viewcode-block" id="MaskLayout.face"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.face">[docs]</a>    <span class="k">def</span> <span class="nf">face</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MaskLayout.face">
+<a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.face">[docs]</a>
+    <span class="k">def</span> <span class="nf">face</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the face dictionary for this mask layout&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">default_faces</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_id</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="MaskLayout.two_coordinates_to_position_label"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.two_coordinates_to_position_label">[docs]</a>    <span class="nd">@staticmethod</span>
+
+<div class="viewcode-block" id="MaskLayout.two_coordinates_to_position_label">
+<a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.two_coordinates_to_position_label">[docs]</a>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">two_coordinates_to_position_label</span><span class="p">(</span><span class="n">row</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts two integers to chip position label, e.g. (2,3) -&gt; &#39;C03&#39;&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">row</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">row</span> <span class="o">&gt;</span> <span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;Z&quot;</span><span class="p">):</span>
@@ -1346,7 +1368,10 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Column coordinate </span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2"> out of bounds&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">chr</span><span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">row</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">{:02d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">column</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="MaskLayout.position_label_to_two_coordinates"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.position_label_to_two_coordinates">[docs]</a>    <span class="nd">@staticmethod</span>
+
+<div class="viewcode-block" id="MaskLayout.position_label_to_two_coordinates">
+<a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.position_label_to_two_coordinates">[docs]</a>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">position_label_to_two_coordinates</span><span class="p">(</span><span class="n">position_label</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts chip position label to two integer coordinate, e.g. &#39;C03&#39; -&gt; (2,3)&quot;&quot;&quot;</span>
         <span class="n">row</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="nb">ord</span><span class="p">(</span><span class="n">position_label</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">position_label</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
@@ -1355,6 +1380,7 @@
         <span class="k">if</span> <span class="n">col</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">col</span> <span class="o">&gt;</span> <span class="mi">99</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number part in </span><span class="si">{</span><span class="n">position_label</span><span class="si">}</span><span class="s2"> out of bounds&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span></div>
+
 
     <span class="k">def</span> <span class="nf">_mask_create_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">y_clip</span> <span class="o">=</span> <span class="o">-</span><span class="mf">14.5e4</span>
@@ -1554,6 +1580,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirror_labels</span><span class="p">:</span>
             <span class="n">trans</span> <span class="o">*=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">trans</span><span class="o">.</span><span class="n">disp</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">cell_mask_name</span><span class="p">,</span> <span class="n">trans</span></div>
+
 </pre></div>
 
            </div>

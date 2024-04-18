@@ -15,14 +15,15 @@ duplicate macros and possibly other problems.
 Python
 ^^^^^^
 
-KQCircuits installation requires Python 3, which should be already installed on Linux. On Windows
-you may have to install it. If your Python installation does not already contain the ``pip`` package
+KQCircuits installation requires Python 3.10 minimum. This should already come pre-packaged at least
+with Ubuntu 22.04. On Windows platforms Python needs to be installed manually.
+If your Python installation does not already contain the ``pip`` package
 manager, you have to also install that.
 
 Successfully tested versions:
 
-- Ubuntu 18.04, 20.04 and 22.04 LTS with Python 3.6.9, 3.8.5 and 3.10.12
-- Windows: Python 3.7.6, 3.8.5, 3.11
+- Ubuntu 20.04 and 22.04 LTS with Python 3.10.14
+- Windows: Python 3.11.2
 
 Sources
 -------
@@ -156,9 +157,9 @@ administrator privileges, and do::
 Install the required packages by opening command prompt in your KQCircuits
 folder (which contains :git_url:`requirements_within_klayout_windows.txt`), and writing::
 
-    pip install -r requirements_within_klayout_windows.txt --target=%HOMEPATH%\AppData\Roaming\KLayout\lib\python3.7\site-packages
+    pip install -r requirements_within_klayout_windows.txt --target=%HOMEPATH%\AppData\Roaming\KLayout\lib\python3.10\site-packages
 
-(replace ``python3.7`` in this path by the python version used by your KLayout
+(replace ``python3.10`` in this path by the python version used by your KLayout
 version)
 
 The previous command installs the packages to KLayout's embedded Python

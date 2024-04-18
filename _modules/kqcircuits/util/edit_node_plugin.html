@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.util.edit_node_plugin &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.util.edit_node_plugin &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=eeab0646" />
 
   
@@ -17,9 +17,9 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../../about.html" />
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -909,7 +909,9 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.util.gui_helper</span> <span class="kn">import</span> <span class="n">node_from_text</span><span class="p">,</span> <span class="n">get_nodes_near_position</span><span class="p">,</span> <span class="n">replace_node</span><span class="p">,</span> <span class="n">node_to_text</span>
 
 
-<div class="viewcode-block" id="EditNodePlugin"><a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin">[docs]</a><span class="k">class</span> <span class="nc">EditNodePlugin</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Plugin</span><span class="p">):</span>
+<div class="viewcode-block" id="EditNodePlugin">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin">[docs]</a>
+<span class="k">class</span> <span class="nc">EditNodePlugin</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Plugin</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">manager</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">is_active</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">manager</span> <span class="o">=</span> <span class="n">manager</span>
@@ -920,7 +922,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">last_mouse_position</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">create_dialog</span><span class="p">()</span>
 
-<div class="viewcode-block" id="EditNodePlugin.create_dialog"><a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.create_dialog">[docs]</a>    <span class="k">def</span> <span class="nf">create_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="EditNodePlugin.create_dialog">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.create_dialog">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">dialog</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">QDialog</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">main_window</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dialog</span> <span class="o">=</span> <span class="n">dialog</span>
         <span class="n">dialog</span><span class="o">.</span><span class="n">windowTitle</span> <span class="o">=</span> <span class="s2">&quot;Edit Node&quot;</span>
@@ -949,7 +953,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">button_apply</span> <span class="o">=</span> <span class="n">add_row</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Apply&quot;</span><span class="p">,</span> <span class="n">dialog</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">button_apply</span><span class="o">.</span><span class="n">clicked</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_node_from_form</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="EditNodePlugin.update_node_from_form"><a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.update_node_from_form">[docs]</a>    <span class="k">def</span> <span class="nf">update_node_from_form</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="EditNodePlugin.update_node_from_form">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.update_node_from_form">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_node_from_form</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
 
@@ -975,7 +982,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">[</span><span class="s2">&quot;node&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_node</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="EditNodePlugin.update_form_from_node"><a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.update_form_from_node">[docs]</a>    <span class="k">def</span> <span class="nf">update_form_from_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+
+<div class="viewcode-block" id="EditNodePlugin.update_form_from_node">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.update_form_from_node">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_form_from_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
         <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">text_x</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">text_y</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
@@ -988,12 +998,18 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">text_params</span><span class="o">.</span><span class="n">plainText</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">=</span> <span class="n">node_to_text</span><span class="p">(</span><span class="n">node</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="EditNodePlugin.deselect"><a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.deselect">[docs]</a>    <span class="k">def</span> <span class="nf">deselect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="EditNodePlugin.deselect">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.deselect">[docs]</a>
+    <span class="k">def</span> <span class="nf">deselect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_dialog_position</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dialog</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dialog</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dialog</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="EditNodePlugin.select"><a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.select">[docs]</a>    <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">node_index</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+
+<div class="viewcode-block" id="EditNodePlugin.select">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.select">[docs]</a>
+    <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">node_index</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">deselect</span><span class="p">()</span>
 
@@ -1017,14 +1033,23 @@
             <span class="s2">&quot;marker&quot;</span><span class="p">:</span> <span class="n">marker</span><span class="p">,</span>
         <span class="p">}</span></div>
 
-<div class="viewcode-block" id="EditNodePlugin.activated"><a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.activated">[docs]</a>    <span class="k">def</span> <span class="nf">activated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="EditNodePlugin.activated">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.activated">[docs]</a>
+    <span class="k">def</span> <span class="nf">activated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">is_active</span> <span class="o">=</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="EditNodePlugin.deactivated"><a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.deactivated">[docs]</a>    <span class="k">def</span> <span class="nf">deactivated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="EditNodePlugin.deactivated">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.deactivated">[docs]</a>
+    <span class="k">def</span> <span class="nf">deactivated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">deselect</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">is_active</span> <span class="o">=</span> <span class="kc">False</span></div>
 
-<div class="viewcode-block" id="EditNodePlugin.mouse_click_event"><a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.mouse_click_event">[docs]</a>    <span class="k">def</span> <span class="nf">mouse_click_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">buttons</span><span class="p">,</span> <span class="n">prio</span><span class="p">):</span>
+
+<div class="viewcode-block" id="EditNodePlugin.mouse_click_event">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.mouse_click_event">[docs]</a>
+    <span class="k">def</span> <span class="nf">mouse_click_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">buttons</span><span class="p">,</span> <span class="n">prio</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">prio</span> <span class="ow">and</span> <span class="n">buttons</span> <span class="o">==</span> <span class="n">pya</span><span class="o">.</span><span class="n">ButtonState</span><span class="o">.</span><span class="n">LeftButton</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_active</span><span class="p">:</span>
             <span class="n">cell_view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">active_cellview</span><span class="p">()</span>
             <span class="n">node_data</span> <span class="o">=</span> <span class="n">get_nodes_near_position</span><span class="p">(</span><span class="n">cell_view</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">capture_range</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">viewport_trans</span><span class="p">()</span><span class="o">.</span><span class="n">mag</span><span class="p">)</span>
@@ -1037,31 +1062,47 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span></div>
 
-<div class="viewcode-block" id="EditNodePlugin.mouse_moved_event"><a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.mouse_moved_event">[docs]</a>    <span class="k">def</span> <span class="nf">mouse_moved_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">__</span><span class="p">):</span>
+
+<div class="viewcode-block" id="EditNodePlugin.mouse_moved_event">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.mouse_moved_event">[docs]</a>
+    <span class="k">def</span> <span class="nf">mouse_moved_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">__</span><span class="p">):</span>
         <span class="c1"># Store current mouse position for use in tracking_position</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_mouse_position</span> <span class="o">=</span> <span class="n">p</span></div>
 
-<div class="viewcode-block" id="EditNodePlugin.has_tracking_position"><a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.has_tracking_position">[docs]</a>    <span class="k">def</span> <span class="nf">has_tracking_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-use</span>
+
+<div class="viewcode-block" id="EditNodePlugin.has_tracking_position">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.has_tracking_position">[docs]</a>
+    <span class="k">def</span> <span class="nf">has_tracking_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-use</span>
         <span class="c1"># We provide a custom tracking position only if a node is selected</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="EditNodePlugin.tracking_position"><a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.tracking_position">[docs]</a>    <span class="k">def</span> <span class="nf">tracking_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="EditNodePlugin.tracking_position">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.tracking_position">[docs]</a>
+    <span class="k">def</span> <span class="nf">tracking_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">[</span><span class="s2">&quot;instance_trans&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">inverted</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_mouse_position</span>
             <span class="k">return</span> <span class="n">position</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># Only reached if something in the internal state is broken</span></div>
 
-<div class="viewcode-block" id="EditNodePlugin.update"><a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="EditNodePlugin.update">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.update">[docs]</a>
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Update marker size to stay constant in pixels</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">marker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">[</span><span class="s2">&quot;marker&quot;</span><span class="p">]</span>
             <span class="n">position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">[</span><span class="s2">&quot;instance_trans&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">[</span><span class="s2">&quot;node&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">position</span>
             <span class="n">size</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">capture_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">capture_range</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">viewport_trans</span><span class="p">()</span><span class="o">.</span><span class="n">mag</span>
-            <span class="n">marker</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">position</span> <span class="o">-</span> <span class="n">size</span><span class="p">,</span> <span class="n">position</span> <span class="o">+</span> <span class="n">size</span><span class="p">))</span></div></div>
+            <span class="n">marker</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">position</span> <span class="o">-</span> <span class="n">size</span><span class="p">,</span> <span class="n">position</span> <span class="o">+</span> <span class="n">size</span><span class="p">))</span></div>
+</div>
 
 
-<div class="viewcode-block" id="EditNodePluginFactory"><a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePluginFactory">[docs]</a><span class="k">class</span> <span class="nc">EditNodePluginFactory</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">PluginFactory</span><span class="p">):</span>
+
+<div class="viewcode-block" id="EditNodePluginFactory">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePluginFactory">[docs]</a>
+<span class="k">class</span> <span class="nc">EditNodePluginFactory</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">PluginFactory</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">pya</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">is_editable</span><span class="p">():</span>
             <span class="n">icon_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s2">&quot;edit_node_plugin.png&quot;</span><span class="p">)</span>
@@ -1072,8 +1113,12 @@
             <span class="k">if</span> <span class="n">toolbar_action</span><span class="p">:</span>
                 <span class="n">toolbar_action</span><span class="o">.</span><span class="n">tool_tip</span> <span class="o">=</span> <span class="s2">&quot;Edit individual Node properties of WaveguideComposite elements&quot;</span>
 
-<div class="viewcode-block" id="EditNodePluginFactory.create_plugin"><a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePluginFactory.create_plugin">[docs]</a>    <span class="k">def</span> <span class="nf">create_plugin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">manager</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-use</span>
-        <span class="k">return</span> <span class="n">EditNodePlugin</span><span class="p">(</span><span class="n">manager</span><span class="p">,</span> <span class="n">view</span><span class="p">)</span></div></div>
+<div class="viewcode-block" id="EditNodePluginFactory.create_plugin">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePluginFactory.create_plugin">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_plugin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">manager</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-use</span>
+        <span class="k">return</span> <span class="n">EditNodePlugin</span><span class="p">(</span><span class="n">manager</span><span class="p">,</span> <span class="n">view</span><span class="p">)</span></div>
+</div>
+
 </pre></div>
 
            </div>

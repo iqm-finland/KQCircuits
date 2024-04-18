@@ -19,7 +19,7 @@ Python 3 and ``pip`` installed.
 
 Successfully tested with
 
-- Python 3.7.6, 3.8.5, 3.10.12
+- Python 3.10.14, 3.11.2
 
 Older versions of klayout (<0.28) do not support certain new features of
 KQCircuits. If you want to use older klayout you may need to check out a

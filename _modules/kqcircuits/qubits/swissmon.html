@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.qubits.swissmon &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.qubits.swissmon &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=eeab0646" />
 
   
@@ -17,9 +17,9 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../../about.html" />
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -913,7 +913,9 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.util.refpoints</span> <span class="kn">import</span> <span class="n">JunctionSimPort</span>
 
 
-<div class="viewcode-block" id="Swissmon"><a class="viewcode-back" href="../../../api/kqcircuits.qubits.swissmon.html#kqcircuits.qubits.swissmon.Swissmon">[docs]</a><span class="k">class</span> <span class="nc">Swissmon</span><span class="p">(</span><span class="n">Qubit</span><span class="p">):</span>
+<div class="viewcode-block" id="Swissmon">
+<a class="viewcode-back" href="../../../api/kqcircuits.qubits.swissmon.html#kqcircuits.qubits.swissmon.Swissmon">[docs]</a>
+<span class="k">class</span> <span class="nc">Swissmon</span><span class="p">(</span><span class="n">Qubit</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The PCell declaration for a Swissmon qubit.</span>
 
 <span class="sd">    Swissmon type qubit. Each arm (West, North, East, South) has it&#39;s own arm gap width</span>
@@ -935,7 +937,9 @@
     <span class="n">cl_offset</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Chargeline offset (um, um)&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">])</span>
     <span class="n">island_r</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Center island rounding radius&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Swissmon.build"><a class="viewcode-back" href="../../../api/kqcircuits.qubits.swissmon.html#kqcircuits.qubits.swissmon.Swissmon.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Swissmon.build">
+<a class="viewcode-back" href="../../../api/kqcircuits.qubits.swissmon.html#kqcircuits.qubits.swissmon.Swissmon.build">[docs]</a>
+    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_produce_cross_and_squid</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_produce_chargeline</span><span class="p">()</span>  <span class="c1"># refpoint only ATM</span>
@@ -944,6 +948,7 @@
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_produce_coupler</span><span class="p">(</span><span class="n">i</span><span class="p">)</span></div>
+
 
     <span class="k">def</span> <span class="nf">_produce_chargeline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># shorthands</span>
@@ -1092,9 +1097,13 @@
         <span class="n">probepoint</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;probe_qb_c&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">probepoint</span>
 
-<div class="viewcode-block" id="Swissmon.get_sim_ports"><a class="viewcode-back" href="../../../api/kqcircuits.qubits.swissmon.html#kqcircuits.qubits.swissmon.Swissmon.get_sim_ports">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Swissmon.get_sim_ports">
+<a class="viewcode-back" href="../../../api/kqcircuits.qubits.swissmon.html#kqcircuits.qubits.swissmon.Swissmon.get_sim_ports">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_sim_ports</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">simulation</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">JunctionSimPort</span><span class="p">()]</span></div></div>
+        <span class="k">return</span> <span class="p">[</span><span class="n">JunctionSimPort</span><span class="p">()]</span></div>
+</div>
+
 </pre></div>
 
            </div>

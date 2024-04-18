@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.chips.single_xmons &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.chips.single_xmons &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=eeab0646" />
 
   
@@ -18,9 +18,9 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
@@ -892,10 +892,10 @@
            <div itemprop="articleBody">
              
   <section id="module-kqcircuits.chips.single_xmons">
-<span id="kqcircuits-chips-single-xmons"></span><h1>kqcircuits.chips.single_xmons<a class="headerlink" href="#module-kqcircuits.chips.single_xmons" title="Permalink to this heading"></a></h1>
+<span id="kqcircuits-chips-single-xmons"></span><h1>kqcircuits.chips.single_xmons<a class="headerlink" href="#module-kqcircuits.chips.single_xmons" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="kqcircuits.chips.single_xmons.SingleXmons">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.chips.single_xmons.</span></span><span class="sig-name descname"><span class="pre">SingleXmons</span></span><a class="reference internal" href="../_modules/kqcircuits/chips/single_xmons.html#SingleXmons"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.single_xmons.SingleXmons" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.chips.single_xmons.</span></span><span class="sig-name descname"><span class="pre">SingleXmons</span></span><a class="reference internal" href="../_modules/kqcircuits/chips/single_xmons.html#SingleXmons"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.single_xmons.SingleXmons" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip" title="kqcircuits.chips.chip.Chip"><code class="xref py py-class docutils literal notranslate"><span class="pre">Chip</span></code></a></p>
 <p>The PCell declaration for a SingleXmons chip.</p>
 <p>The SingleXmons chip has 6 qubits, which are coupled by readout resonators to the same feedline. The feedline
@@ -904,14 +904,14 @@ For each qubit, there is a chargeline connected to a launcher, but no fluxline. 
 resonators between the qubits.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="kqcircuits.chips.single_xmons.SingleXmons.launchers">
-<span class="sig-name descname"><span class="pre">launchers</span></span><a class="headerlink" href="#kqcircuits.chips.single_xmons.SingleXmons.launchers" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">launchers</span></span><a class="headerlink" href="#kqcircuits.chips.single_xmons.SingleXmons.launchers" title="Link to this definition"></a></dt>
 <dd><p>A dictionary where the keys are names of the launchers and values are tuples whose first elements
 are positions of the launchers.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="kqcircuits.chips.single_xmons.SingleXmons.qubits_refpoints">
-<span class="sig-name descname"><span class="pre">qubits_refpoints</span></span><a class="headerlink" href="#kqcircuits.chips.single_xmons.SingleXmons.qubits_refpoints" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">qubits_refpoints</span></span><a class="headerlink" href="#kqcircuits.chips.single_xmons.SingleXmons.qubits_refpoints" title="Link to this definition"></a></dt>
 <dd><p>A tuple where each element contains the refpoints for one of the qubits. The qubits are
 ordered such that 0,1,2 are the upper qubits (from left to right), while 3,4,5 are the lower qubits (from
 left to right).</p>
@@ -919,7 +919,7 @@ left to right).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.single_xmons.SingleXmons.build">
-<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/single_xmons.html#SingleXmons.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.single_xmons.SingleXmons.build" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/single_xmons.html#SingleXmons.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.single_xmons.SingleXmons.build" title="Link to this definition"></a></dt>
 <dd><p>Produces a SingleXmons PCell.</p>
 </dd></dl>
 

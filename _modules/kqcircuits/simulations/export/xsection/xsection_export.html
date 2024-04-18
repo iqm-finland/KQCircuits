@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.export.xsection.xsection_export &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.simulations.export.xsection.xsection_export &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/custom.css?v=eeab0646" />
 
   
@@ -17,9 +17,9 @@
   
         <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../../../../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../../../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../../../../about.html" />
     <link rel="index" title="Index" href="../../../../../genindex.html" />
@@ -919,7 +919,9 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_json_encoder</span> <span class="kn">import</span> <span class="n">GeometryJsonEncoder</span>
 
 
-<div class="viewcode-block" id="xsection_call"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.xsection.xsection_export.html#kqcircuits.simulations.export.xsection.xsection_export.xsection_call">[docs]</a><span class="k">def</span> <span class="nf">xsection_call</span><span class="p">(</span>
+<div class="viewcode-block" id="xsection_call">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.xsection.xsection_export.html#kqcircuits.simulations.export.xsection.xsection_export.xsection_call">[docs]</a>
+<span class="k">def</span> <span class="nf">xsection_call</span><span class="p">(</span>
     <span class="n">input_oas</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
     <span class="n">output_oas</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
     <span class="n">cut1</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">,</span>
@@ -980,6 +982,7 @@
     <span class="p">)</span></div>
 
 
+
 <span class="k">def</span> <span class="nf">_oxidise_layers</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">ma_thickness</span><span class="p">,</span> <span class="n">ms_thickness</span><span class="p">,</span> <span class="n">sa_thickness</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Take the cross section geometry and add oxide layers between substrate, metal and vacuum.</span>
 <span class="sd">    Will add geometry around metals and etch away substrate to insert oxide geometry.</span>
@@ -1028,7 +1031,9 @@
         <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">get_sim_layer</span><span class="p">(</span><span class="s2">&quot;sa_layer&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">sa_layer</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="create_xsections_from_simulations"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.xsection.xsection_export.html#kqcircuits.simulations.export.xsection.xsection_export.create_xsections_from_simulations">[docs]</a><span class="k">def</span> <span class="nf">create_xsections_from_simulations</span><span class="p">(</span>
+<div class="viewcode-block" id="create_xsections_from_simulations">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.xsection.xsection_export.html#kqcircuits.simulations.export.xsection.xsection_export.create_xsections_from_simulations">[docs]</a>
+<span class="k">def</span> <span class="nf">create_xsections_from_simulations</span><span class="p">(</span>
     <span class="n">simulations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Simulation</span><span class="p">],</span>
     <span class="n">output_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
     <span class="n">cuts</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">]]],</span>
@@ -1129,7 +1134,10 @@
     <span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="separate_signal_layer_shapes"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.xsection.xsection_export.html#kqcircuits.simulations.export.xsection.xsection_export.separate_signal_layer_shapes">[docs]</a><span class="k">def</span> <span class="nf">separate_signal_layer_shapes</span><span class="p">(</span><span class="n">simulation</span><span class="p">:</span> <span class="n">Simulation</span><span class="p">,</span> <span class="n">sort_key</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">pya</span><span class="o">.</span><span class="n">Shape</span><span class="p">],</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="separate_signal_layer_shapes">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.xsection.xsection_export.html#kqcircuits.simulations.export.xsection.xsection_export.separate_signal_layer_shapes">[docs]</a>
+<span class="k">def</span> <span class="nf">separate_signal_layer_shapes</span><span class="p">(</span><span class="n">simulation</span><span class="p">:</span> <span class="n">Simulation</span><span class="p">,</span> <span class="n">sort_key</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">pya</span><span class="o">.</span><span class="n">Shape</span><span class="p">],</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Separate shapes in signal layer to their own dedicated signal layers for each face</span>
 
 <span class="sd">    Args:</span>
@@ -1163,7 +1171,10 @@
         <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">signal_layer_idx</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="find_layer_by_name"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.xsection.xsection_export.html#kqcircuits.simulations.export.xsection.xsection_export.find_layer_by_name">[docs]</a><span class="k">def</span> <span class="nf">find_layer_by_name</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="n">layout</span><span class="p">):</span>
+
+<div class="viewcode-block" id="find_layer_by_name">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.xsection.xsection_export.html#kqcircuits.simulations.export.xsection.xsection_export.find_layer_by_name">[docs]</a>
+<span class="k">def</span> <span class="nf">find_layer_by_name</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="n">layout</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns layerinfo if there already is a layer by layer_name in layout. None if no such layer exists&quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">l</span><span class="o">.</span><span class="n">datatype</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">layer_name</span> <span class="o">==</span> <span class="n">l</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
@@ -1171,7 +1182,10 @@
     <span class="k">return</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="free_layer_slots"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.xsection.xsection_export.html#kqcircuits.simulations.export.xsection.xsection_export.free_layer_slots">[docs]</a><span class="k">def</span> <span class="nf">free_layer_slots</span><span class="p">(</span><span class="n">layout</span><span class="p">):</span>
+
+<div class="viewcode-block" id="free_layer_slots">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.xsection.xsection_export.html#kqcircuits.simulations.export.xsection.xsection_export.free_layer_slots">[docs]</a>
+<span class="k">def</span> <span class="nf">free_layer_slots</span><span class="p">(</span><span class="n">layout</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A generator of available layer slots&quot;&quot;&quot;</span>
     <span class="n">layer_index</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">reserved_layer_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span><span class="o">.</span><span class="n">layer</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">()</span> <span class="k">if</span> <span class="n">l</span><span class="o">.</span><span class="n">datatype</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
@@ -1182,7 +1196,10 @@
         <span class="k">yield</span> <span class="n">layer_index</span></div>
 
 
-<div class="viewcode-block" id="visualise_xsection_cut_on_original_layout"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.xsection.xsection_export.html#kqcircuits.simulations.export.xsection.xsection_export.visualise_xsection_cut_on_original_layout">[docs]</a><span class="k">def</span> <span class="nf">visualise_xsection_cut_on_original_layout</span><span class="p">(</span>
+
+<div class="viewcode-block" id="visualise_xsection_cut_on_original_layout">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.xsection.xsection_export.html#kqcircuits.simulations.export.xsection.xsection_export.visualise_xsection_cut_on_original_layout">[docs]</a>
+<span class="k">def</span> <span class="nf">visualise_xsection_cut_on_original_layout</span><span class="p">(</span>
     <span class="n">simulations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Simulation</span><span class="p">],</span>
     <span class="n">cuts</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">]]],</span>
     <span class="n">cut_label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;cut&quot;</span><span class="p">,</span>
@@ -1219,6 +1236,7 @@
         <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">cut_visualisation_layer</span><span class="p">)</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span>
         <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">cut_visualisation_layer</span><span class="p">)</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cut_label</span><span class="si">}</span><span class="s2">_1&quot;</span><span class="p">,</span> <span class="n">cut</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">cut</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
         <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">cut_visualisation_layer</span><span class="p">)</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cut_label</span><span class="si">}</span><span class="s2">_2&quot;</span><span class="p">,</span> <span class="n">cut</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">cut</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">y</span><span class="p">))</span></div>
+
 
 
 <span class="k">def</span> <span class="nf">_load_layout_options_for_xsection_output</span><span class="p">():</span>

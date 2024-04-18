@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.elements.capacitive_x_coupler &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.elements.capacitive_x_coupler &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=eeab0646" />
 
   
@@ -17,9 +17,9 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../../about.html" />
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -915,7 +915,9 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.util.refpoints</span> <span class="kn">import</span> <span class="n">RefpointToEdgePort</span>
 
 
-<div class="viewcode-block" id="CapacitiveXCoupler"><a class="viewcode-back" href="../../../api/kqcircuits.elements.capacitive_x_coupler.html#kqcircuits.elements.capacitive_x_coupler.CapacitiveXCoupler">[docs]</a><span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">FingerCapacitorSquare</span><span class="p">,</span> <span class="n">finger_gap_end</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<div class="viewcode-block" id="CapacitiveXCoupler">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.capacitive_x_coupler.html#kqcircuits.elements.capacitive_x_coupler.CapacitiveXCoupler">[docs]</a>
+<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">FingerCapacitorSquare</span><span class="p">,</span> <span class="n">finger_gap_end</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 <span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">FingerCapacitorTaper</span><span class="p">,</span> <span class="n">finger_width</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">finger_number</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">finger_gap</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">CapacitiveXCoupler</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -927,7 +929,9 @@
     <span class="n">x_coupler_variant</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;Coupler variant, either (+) or (x)&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">])</span>
     <span class="n">remove_capacitors</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Remove capacitors from the X Coupler&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CapacitiveXCoupler.build"><a class="viewcode-back" href="../../../api/kqcircuits.elements.capacitive_x_coupler.html#kqcircuits.elements.capacitive_x_coupler.CapacitiveXCoupler.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CapacitiveXCoupler.build">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.capacitive_x_coupler.html#kqcircuits.elements.capacitive_x_coupler.CapacitiveXCoupler.build">[docs]</a>
+    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_coupler_length</span>
         <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_coupler_height</span>
         <span class="k">if</span> <span class="n">length</span> <span class="o">&gt;</span> <span class="n">height</span><span class="p">:</span>
@@ -1040,14 +1044,19 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="n">nodes2</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="n">nodes3</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CapacitiveXCoupler.get_sim_ports"><a class="viewcode-back" href="../../../api/kqcircuits.elements.capacitive_x_coupler.html#kqcircuits.elements.capacitive_x_coupler.CapacitiveXCoupler.get_sim_ports">[docs]</a>    <span class="nd">@classmethod</span>
+
+<div class="viewcode-block" id="CapacitiveXCoupler.get_sim_ports">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.capacitive_x_coupler.html#kqcircuits.elements.capacitive_x_coupler.CapacitiveXCoupler.get_sim_ports">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_sim_ports</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">simulation</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
         <span class="k">return</span> <span class="p">[</span>
             <span class="n">RefpointToEdgePort</span><span class="p">(</span><span class="s2">&quot;p11&quot;</span><span class="p">),</span>
             <span class="n">RefpointToEdgePort</span><span class="p">(</span><span class="s2">&quot;p21&quot;</span><span class="p">),</span>
             <span class="n">RefpointToEdgePort</span><span class="p">(</span><span class="s2">&quot;p31&quot;</span><span class="p">),</span>
             <span class="n">RefpointToEdgePort</span><span class="p">(</span><span class="s2">&quot;p41&quot;</span><span class="p">),</span>
-        <span class="p">]</span></div></div>
+        <span class="p">]</span></div>
+</div>
+
 </pre></div>
 
            </div>

@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KLayout Standalone Usage &mdash; KQCircuits  documentation</title>
+  <title>KLayout Standalone Usage &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=eeab0646" />
 
   
@@ -18,9 +18,9 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
@@ -891,7 +891,7 @@
            <div itemprop="articleBody">
              
   <section id="klayout-standalone-usage">
-<span id="standalone"></span><h1>KLayout Standalone Usage<a class="headerlink" href="#klayout-standalone-usage" title="Permalink to this heading"></a></h1>
+<span id="standalone"></span><h1>KLayout Standalone Usage<a class="headerlink" href="#klayout-standalone-usage" title="Link to this heading"></a></h1>
 <p>The <a class="reference internal" href="setup.html#developer-setup"><span class="std std-ref">Developer Setup</span></a> or <a class="reference internal" href="../salt.html#salt-package"><span class="std std-ref">Getting started (Salt package)</span></a> sections described setting up KQCircuits for use
 with KLayout Editor (GUI). However, KQC can also be used without KLayout
 Editor by using the standalone KLayout Python module. This lets you develop
@@ -900,12 +900,12 @@ your choice, without running KLayout GUI. For example, any debugger can then
 be used and automated tests can be performed. The KQCircuits elements can
 also be visualized using any suitable viewer or library during development.</p>
 <section id="prerequisites">
-<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading"></a></h2>
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
 <p>If you want to run KQCircuits outside of the KLayout Editor, you will need
 Python 3 and <code class="docutils literal notranslate"><span class="pre">pip</span></code> installed.</p>
 <p>Successfully tested with</p>
 <ul class="simple">
-<li><p>Python 3.7.6, 3.8.5, 3.10.12</p></li>
+<li><p>Python 3.10.14, 3.11.2</p></li>
 </ul>
 <p>Older versions of klayout (&lt;0.28) do not support certain new features of
 KQCircuits. If you want to use older klayout you may need to check out a
@@ -914,7 +914,7 @@ compatible so you are safe using older KQCircuits versions with the latest
 KLayout.</p>
 </section>
 <section id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h2>
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
 <p>Set up a Python virtual environment, “venv”.</p>
 <p>If you have not yet done so, <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span></code> the KQCircuits source code from
 <a class="reference external" href="https://github.com/iqm-finland/KQCircuits">https://github.com/iqm-finland/KQCircuits</a> to a location of your choice.</p>
@@ -922,7 +922,7 @@ KLayout.</p>
 link to your local KQC repo is added to the python environment. When using
 KQC installed in this way, the version in your local repo is thus used.</p>
 <section id="standard-not-secure-installation">
-<h3>Standard, Not Secure Installation<a class="headerlink" href="#standard-not-secure-installation" title="Permalink to this heading"></a></h3>
+<h3>Standard, Not Secure Installation<a class="headerlink" href="#standard-not-secure-installation" title="Link to this heading"></a></h3>
 <p>To do this, activate your python environment and write in command prompt /
 terminal:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pip install -e klayout_package/python</span>
@@ -939,7 +939,7 @@ modifying the text in the square brackets. Note that there should not be any
 spaces within the brackets.</p>
 </section>
 <section id="reproducible-secure-installation">
-<h3>Reproducible, Secure Installation<a class="headerlink" href="#reproducible-secure-installation" title="Permalink to this heading"></a></h3>
+<h3>Reproducible, Secure Installation<a class="headerlink" href="#reproducible-secure-installation" title="Link to this heading"></a></h3>
 <p>This is just like the standard installation but with pinned and hashed
 dependencies resulting in a more secure and reproducible environment. You’ll
 need <code class="docutils literal notranslate"><span class="pre">pip-tools</span></code> installed for this.</p>
@@ -967,7 +967,7 @@ they are already present:</p>
 </div>
 </section>
 <section id="pypi-installation">
-<h3>PyPI Installation<a class="headerlink" href="#pypi-installation" title="Permalink to this heading"></a></h3>
+<h3>PyPI Installation<a class="headerlink" href="#pypi-installation" title="Link to this heading"></a></h3>
 <p>If you do not need all KQCircuits sources but only the core KQC classes you may simply run <code class="docutils literal notranslate"><span class="pre">pip</span>
 <span class="pre">install</span> <span class="pre">kqcircuits</span></code> to get the Python package only. You can use this the same way as the full
 developer installation but remember that scripts, masks, documentation and notebooks are not part of
@@ -980,7 +980,7 @@ supposed to run most of these from the source directory or you may need to speci
 </section>
 </section>
 <section id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h2>
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading"></a></h2>
 <p>The independence from KLayout GUI makes it possible to do all development of
 KQCircuits fully within a Python IDE of your choice. For example, standalone
 debuggers and automated testing (see <a class="reference internal" href="testing.html#testing"><span class="std std-ref">Testing</span></a>) can be done, which would
@@ -1010,7 +1010,7 @@ individual cells are used.</p>
 </div></blockquote>
 </section>
 <section id="jupyter-notebook-usage">
-<h2>Jupyter notebook usage<a class="headerlink" href="#jupyter-notebook-usage" title="Permalink to this heading"></a></h2>
+<h2>Jupyter notebook usage<a class="headerlink" href="#jupyter-notebook-usage" title="Link to this heading"></a></h2>
 <p>There is an example Jupyter notebook <a class="reference external" href="https://github.com/iqm-finland/KQCircuits-Examples/blob/main/notebooks/viewer.ipynb">KQCircuits-Examples/notebooks/viewer.ipynb</a> in the notebooks
 folder, which shows how to create and visualize KQCircuits elements with the
 standalone KLayout module. Run it like:</p>
@@ -1019,7 +1019,7 @@ standalone KLayout module. Run it like:</p>
 </div>
 </section>
 <section id="updating-the-required-dependencies">
-<h2>Updating the required dependencies<a class="headerlink" href="#updating-the-required-dependencies" title="Permalink to this heading"></a></h2>
+<h2>Updating the required dependencies<a class="headerlink" href="#updating-the-required-dependencies" title="Link to this heading"></a></h2>
 <p>Don’t do it unless absolutely necessary! The security model (TOFU) works best if
 dependencies are rarely changed. When updating dependencies try to verify that
 the new versions are legitimate.</p>

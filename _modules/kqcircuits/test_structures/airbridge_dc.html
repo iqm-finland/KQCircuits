@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.test_structures.airbridge_dc &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.test_structures.airbridge_dc &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=eeab0646" />
 
   
@@ -17,9 +17,9 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../../about.html" />
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -911,14 +911,18 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
 
 
-<div class="viewcode-block" id="AirbridgeDC"><a class="viewcode-back" href="../../../api/kqcircuits.test_structures.airbridge_dc.html#kqcircuits.test_structures.airbridge_dc.AirbridgeDC">[docs]</a><span class="k">class</span> <span class="nc">AirbridgeDC</span><span class="p">(</span><span class="n">TestStructure</span><span class="p">):</span>
+<div class="viewcode-block" id="AirbridgeDC">
+<a class="viewcode-back" href="../../../api/kqcircuits.test_structures.airbridge_dc.html#kqcircuits.test_structures.airbridge_dc.AirbridgeDC">[docs]</a>
+<span class="k">class</span> <span class="nc">AirbridgeDC</span><span class="p">(</span><span class="n">TestStructure</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The PCell declaration for an airbridge test structure for four-point DC measurements.&quot;&quot;&quot;</span>
 
     <span class="n">n_ab</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeInt</span><span class="p">,</span> <span class="s2">&quot;Number of airbridges&quot;</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
     <span class="n">pad_height</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Pad height&quot;</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
     <span class="n">width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Total width&quot;</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="AirbridgeDC.build"><a class="viewcode-back" href="../../../api/kqcircuits.test_structures.airbridge_dc.html#kqcircuits.test_structures.airbridge_dc.AirbridgeDC.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AirbridgeDC.build">
+<a class="viewcode-back" href="../../../api/kqcircuits.test_structures.airbridge_dc.html#kqcircuits.test_structures.airbridge_dc.AirbridgeDC.build">[docs]</a>
+    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="c1"># create airbridges and islands through which they are connected</span>
 
@@ -1045,7 +1049,9 @@
             <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
             <span class="mi">2</span> <span class="o">*</span> <span class="n">pad_width</span> <span class="o">+</span> <span class="n">pad_spacing_x</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">gap_extra</span><span class="p">,</span>
             <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_height</span> <span class="o">+</span> <span class="n">pad_spacing_y</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">gap_extra</span><span class="p">,</span>
-        <span class="p">)</span></div></div>
+        <span class="p">)</span></div>
+</div>
+
 </pre></div>
 
            </div>

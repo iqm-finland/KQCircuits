@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.elements.airbridges.airbridge &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.elements.airbridges.airbridge &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom.css?v=eeab0646" />
 
   
@@ -17,9 +17,9 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../../../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../../../about.html" />
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -913,7 +913,9 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span><span class="p">,</span> <span class="n">get_refpoints</span>
 
 
-<div class="viewcode-block" id="Airbridge"><a class="viewcode-back" href="../../../../api/kqcircuits.elements.airbridges.airbridge.html#kqcircuits.elements.airbridges.airbridge.Airbridge">[docs]</a><span class="k">class</span> <span class="nc">Airbridge</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+<div class="viewcode-block" id="Airbridge">
+<a class="viewcode-back" href="../../../../api/kqcircuits.elements.airbridges.airbridge.html#kqcircuits.elements.airbridges.airbridge.Airbridge">[docs]</a>
+<span class="k">class</span> <span class="nc">Airbridge</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Airbridge base class without actual produce function.</span>
 
 <span class="sd">    All subclasses should have ports &#39;a&#39; and &#39;b&#39; at positions (0, bridge_length) and (0, -bridge_length).</span>
@@ -927,7 +929,9 @@
     <span class="n">pad_length</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Pad length&quot;</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
     <span class="n">bridge_length</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Bridge length (from pad to pad)&quot;</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Airbridge.create"><a class="viewcode-back" href="../../../../api/kqcircuits.elements.airbridges.airbridge.html#kqcircuits.elements.airbridges.airbridge.Airbridge.create">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Airbridge.create">
+<a class="viewcode-back" href="../../../../api/kqcircuits.elements.airbridges.airbridge.html#kqcircuits.elements.airbridges.airbridge.Airbridge.create">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">airbridge_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create cell for an airbridge in layout.&quot;&quot;&quot;</span>
         <span class="n">cell</span><span class="p">,</span> <span class="n">code_generated</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">create_subtype</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="p">,</span> <span class="n">airbridge_type</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
@@ -940,6 +944,7 @@
             <span class="n">cell</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mi">90</span> <span class="o">-</span> <span class="n">orientation</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="o">-</span><span class="n">center</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">cell</span></div>
+
 
     <span class="k">def</span> <span class="nf">_produce_bottom_pads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pts</span><span class="p">):</span>
         <span class="n">shape</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span>
@@ -960,8 +965,12 @@
         <span class="n">shape</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;airbridge_flyover&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Airbridge.transformation_from_shape_impl"><a class="viewcode-back" href="../../../../api/kqcircuits.elements.airbridges.airbridge.html#kqcircuits.elements.airbridges.airbridge.Airbridge.transformation_from_shape_impl">[docs]</a>    <span class="k">def</span> <span class="nf">transformation_from_shape_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-use</span>
-        <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">Trans</span><span class="p">()</span></div></div>
+<div class="viewcode-block" id="Airbridge.transformation_from_shape_impl">
+<a class="viewcode-back" href="../../../../api/kqcircuits.elements.airbridges.airbridge.html#kqcircuits.elements.airbridges.airbridge.Airbridge.transformation_from_shape_impl">[docs]</a>
+    <span class="k">def</span> <span class="nf">transformation_from_shape_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-use</span>
+        <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">Trans</span><span class="p">()</span></div>
+</div>
+
 </pre></div>
 
            </div>

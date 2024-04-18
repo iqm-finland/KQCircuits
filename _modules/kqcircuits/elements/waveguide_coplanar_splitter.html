@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.elements.waveguide_coplanar_splitter &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.elements.waveguide_coplanar_splitter &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=eeab0646" />
 
   
@@ -17,9 +17,9 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../../about.html" />
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -912,7 +912,9 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.airbridges.airbridge</span> <span class="kn">import</span> <span class="n">Airbridge</span>
 
 
-<div class="viewcode-block" id="WaveguideCoplanarSplitter"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_splitter.html#kqcircuits.elements.waveguide_coplanar_splitter.WaveguideCoplanarSplitter">[docs]</a><span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Airbridge</span><span class="p">,</span> <span class="s2">&quot;airbridge_type&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="WaveguideCoplanarSplitter">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_splitter.html#kqcircuits.elements.waveguide_coplanar_splitter.WaveguideCoplanarSplitter">[docs]</a>
+<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Airbridge</span><span class="p">,</span> <span class="s2">&quot;airbridge_type&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">WaveguideCoplanarSplitter</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The PCell declaration of a multiway waveguide splitter. The number of ports is defined by the length of the</span>
@@ -942,7 +944,9 @@
     <span class="p">)</span>
     <span class="n">port_names</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Port names&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="s2">&quot;j&quot;</span><span class="p">])</span>
 
-<div class="viewcode-block" id="WaveguideCoplanarSplitter.build"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_splitter.html#kqcircuits.elements.waveguide_coplanar_splitter.WaveguideCoplanarSplitter.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="WaveguideCoplanarSplitter.build">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_splitter.html#kqcircuits.elements.waveguide_coplanar_splitter.WaveguideCoplanarSplitter.build">[docs]</a>
+    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="n">gap_shapes</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">trace_shapes</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1005,6 +1009,7 @@
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_protection</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">avoidance_shapes</span><span class="p">)</span><span class="o">.</span><span class="n">merged</span><span class="p">())</span></div>
 
+
     <span class="k">def</span> <span class="nf">_get_port_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle_rad</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">width</span><span class="p">):</span>
         <span class="c1"># Generate a shape consisting of a rectangle (length, width) starting at (0, 0), with a round cap at the origin</span>
         <span class="c1"># side.</span>
@@ -1040,7 +1045,10 @@
         <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span><span class="n">points</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="t_cross_parameters"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_splitter.html#kqcircuits.elements.waveguide_coplanar_splitter.t_cross_parameters">[docs]</a><span class="k">def</span> <span class="nf">t_cross_parameters</span><span class="p">(</span>
+
+<div class="viewcode-block" id="t_cross_parameters">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_splitter.html#kqcircuits.elements.waveguide_coplanar_splitter.t_cross_parameters">[docs]</a>
+<span class="k">def</span> <span class="nf">t_cross_parameters</span><span class="p">(</span>
     <span class="n">a</span><span class="o">=</span><span class="n">Element</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()[</span><span class="s2">&quot;a&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">default</span><span class="p">,</span>
     <span class="n">b</span><span class="o">=</span><span class="n">Element</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()[</span><span class="s2">&quot;b&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">default</span><span class="p">,</span>
     <span class="n">a2</span><span class="o">=</span><span class="n">Element</span><span class="o">.</span><span class="n">a</span><span class="p">,</span>
@@ -1072,6 +1080,7 @@
         <span class="s2">&quot;port_names&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="s2">&quot;bottom&quot;</span><span class="p">],</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">}</span></div>
+
 </pre></div>
 
            </div>

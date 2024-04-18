@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.single_xmons_full_chip_sim &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.simulations.single_xmons_full_chip_sim &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=eeab0646" />
 
   
@@ -17,9 +17,9 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../../about.html" />
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -912,7 +912,9 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_junction_test_pads_type</span>
 
 
-<div class="viewcode-block" id="SingleXmonsFullChipSim"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.single_xmons_full_chip_sim.html#kqcircuits.simulations.single_xmons_full_chip_sim.SingleXmonsFullChipSim">[docs]</a><span class="k">class</span> <span class="nc">SingleXmonsFullChipSim</span><span class="p">(</span><span class="n">Simulation</span><span class="p">):</span>
+<div class="viewcode-block" id="SingleXmonsFullChipSim">
+<a class="viewcode-back" href="../../../api/kqcircuits.simulations.single_xmons_full_chip_sim.html#kqcircuits.simulations.single_xmons_full_chip_sim.SingleXmonsFullChipSim">[docs]</a>
+<span class="k">class</span> <span class="nc">SingleXmonsFullChipSim</span><span class="p">(</span><span class="n">Simulation</span><span class="p">):</span>
     <span class="n">n</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">launchers</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">use_test_resonators</span><span class="p">:</span> <span class="nb">bool</span>
@@ -920,7 +922,9 @@
     <span class="n">launchers</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;True to include launchers in simulation&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
     <span class="n">use_test_resonators</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;True to include XS1-type test resonators. False produces XS2&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SingleXmonsFullChipSim.build"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.single_xmons_full_chip_sim.html#kqcircuits.simulations.single_xmons_full_chip_sim.SingleXmonsFullChipSim.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SingleXmonsFullChipSim.build">
+<a class="viewcode-back" href="../../../api/kqcircuits.simulations.single_xmons_full_chip_sim.html#kqcircuits.simulations.single_xmons_full_chip_sim.SingleXmonsFullChipSim.build">[docs]</a>
+    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">mask_parameters_for_chip</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;name_mask&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
             <span class="s2">&quot;name_copy&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
@@ -990,7 +994,9 @@
                         <span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;qb_</span><span class="si">{}</span><span class="s2">_port_squid_a&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">j</span><span class="p">)],</span> <span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;qb_</span><span class="si">{}</span><span class="s2">_port_squid_b&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">j</span><span class="p">)]</span>
                     <span class="p">),</span>
                 <span class="p">)</span>
-            <span class="p">)</span></div></div>
+            <span class="p">)</span></div>
+</div>
+
 </pre></div>
 
            </div>

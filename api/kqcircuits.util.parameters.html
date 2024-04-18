@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.util.parameters &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.util.parameters &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=eeab0646" />
 
   
@@ -18,9 +18,9 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
@@ -892,10 +892,10 @@
            <div itemprop="articleBody">
              
   <section id="module-kqcircuits.util.parameters">
-<span id="kqcircuits-util-parameters"></span><h1>kqcircuits.util.parameters<a class="headerlink" href="#module-kqcircuits.util.parameters" title="Permalink to this heading"></a></h1>
+<span id="kqcircuits-util-parameters"></span><h1>kqcircuits.util.parameters<a class="headerlink" href="#module-kqcircuits.util.parameters" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.util.parameters.add_parameters_from">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.parameters.</span></span><span class="sig-name descname"><span class="pre">add_parameters_from</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">param_names</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">param_with_default_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/parameters.html#add_parameters_from"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.parameters.add_parameters_from" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.parameters.</span></span><span class="sig-name descname"><span class="pre">add_parameters_from</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">param_names</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">param_with_default_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/parameters.html#add_parameters_from"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.parameters.add_parameters_from" title="Link to this definition"></a></dt>
 <dd><p>Decorator function to add parameters to the decorated class.</p>
 <p>Only the named parameters are added or changed. Use a starting wildcard (<code class="docutils literal notranslate"><span class="pre">&quot;*&quot;</span></code>) argument to
 get all parameters of <code class="docutils literal notranslate"><span class="pre">cls</span></code>. For simplicity, if nothing is specified it gets all parameters.</p>
@@ -914,7 +914,7 @@ useful together with <code class="docutils literal notranslate"><span class="pre
 
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.util.parameters.add_parameter">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.parameters.</span></span><span class="sig-name descname"><span class="pre">add_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">change</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/parameters.html#add_parameter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.parameters.add_parameter" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.parameters.</span></span><span class="sig-name descname"><span class="pre">add_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">change</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/parameters.html#add_parameter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.parameters.add_parameter" title="Link to this definition"></a></dt>
 <dd><p>Decorator function to add a single parameter to the decorated class.</p>
 <p>Makes it possible to have fine-grained control over the Parameter’s properties. Particularly,
 changing the “hidden” or the “choices” property of the parameter.</p>
@@ -931,54 +931,54 @@ changing the “hidden” or the “choices” property of the parameter.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="kqcircuits.util.parameters.pdt">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.util.parameters.</span></span><span class="sig-name descname"><span class="pre">pdt</span></span><a class="reference internal" href="../_modules/kqcircuits/util/parameters.html#pdt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.parameters.pdt" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.util.parameters.</span></span><span class="sig-name descname"><span class="pre">pdt</span></span><a class="reference internal" href="../_modules/kqcircuits/util/parameters.html#pdt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.parameters.pdt" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A namespace for pya.PCellParameterDeclaration types.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="kqcircuits.util.parameters.pdt.TypeDouble">
-<span class="sig-name descname"><span class="pre">TypeDouble</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#kqcircuits.util.parameters.pdt.TypeDouble" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">TypeDouble</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#kqcircuits.util.parameters.pdt.TypeDouble" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="kqcircuits.util.parameters.pdt.TypeInt">
-<span class="sig-name descname"><span class="pre">TypeInt</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#kqcircuits.util.parameters.pdt.TypeInt" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">TypeInt</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#kqcircuits.util.parameters.pdt.TypeInt" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="kqcircuits.util.parameters.pdt.TypeList">
-<span class="sig-name descname"><span class="pre">TypeList</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6</span></em><a class="headerlink" href="#kqcircuits.util.parameters.pdt.TypeList" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">TypeList</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6</span></em><a class="headerlink" href="#kqcircuits.util.parameters.pdt.TypeList" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="kqcircuits.util.parameters.pdt.TypeString">
-<span class="sig-name descname"><span class="pre">TypeString</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#kqcircuits.util.parameters.pdt.TypeString" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">TypeString</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#kqcircuits.util.parameters.pdt.TypeString" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="kqcircuits.util.parameters.pdt.TypeShape">
-<span class="sig-name descname"><span class="pre">TypeShape</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#kqcircuits.util.parameters.pdt.TypeShape" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">TypeShape</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#kqcircuits.util.parameters.pdt.TypeShape" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="kqcircuits.util.parameters.pdt.TypeBoolean">
-<span class="sig-name descname"><span class="pre">TypeBoolean</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#kqcircuits.util.parameters.pdt.TypeBoolean" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">TypeBoolean</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#kqcircuits.util.parameters.pdt.TypeBoolean" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="kqcircuits.util.parameters.pdt.TypeLayer">
-<span class="sig-name descname"><span class="pre">TypeLayer</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#kqcircuits.util.parameters.pdt.TypeLayer" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">TypeLayer</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#kqcircuits.util.parameters.pdt.TypeLayer" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="kqcircuits.util.parameters.pdt.TypeNone">
-<span class="sig-name descname"><span class="pre">TypeNone</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8</span></em><a class="headerlink" href="#kqcircuits.util.parameters.pdt.TypeNone" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">TypeNone</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8</span></em><a class="headerlink" href="#kqcircuits.util.parameters.pdt.TypeNone" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="kqcircuits.util.parameters.Param">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.util.parameters.</span></span><span class="sig-name descname"><span class="pre">Param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/parameters.html#Param"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.parameters.Param" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.util.parameters.</span></span><span class="sig-name descname"><span class="pre">Param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/parameters.html#Param"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.parameters.Param" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>PCell parameters as Element class attributes.</p>
 <p>This should be used for defining PCell parameters in Element subclasses. The attributes of Param are same
@@ -992,7 +992,7 @@ as <code class="docutils literal notranslate"><span class="pre">pya.PCellParamet
 </div></blockquote>
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.util.parameters.Param.get_all">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">owner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/parameters.html#Param.get_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.parameters.Param.get_all" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">owner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/parameters.html#Param.get_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.parameters.Param.get_all" title="Link to this definition"></a></dt>
 <dd><p>Get all parameters of given owner.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

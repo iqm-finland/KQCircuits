@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.util.plugin_startup &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.util.plugin_startup &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=eeab0646" />
 
   
@@ -17,9 +17,9 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../../about.html" />
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -911,7 +911,9 @@
 <span class="n">_plugins_registered</span> <span class="o">=</span> <span class="kc">False</span>
 
 
-<div class="viewcode-block" id="register_plugins"><a class="viewcode-back" href="../../../api/kqcircuits.util.plugin_startup.html#kqcircuits.util.plugin_startup.register_plugins">[docs]</a><span class="k">def</span> <span class="nf">register_plugins</span><span class="p">():</span>
+<div class="viewcode-block" id="register_plugins">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.plugin_startup.html#kqcircuits.util.plugin_startup.register_plugins">[docs]</a>
+<span class="k">def</span> <span class="nf">register_plugins</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Register KQC plugins into KLayout. Registration happens only one.</span>
 
 <span class="sd">    Note: For KLayout 0.28.0 and up, plugin registration must happen before any layout views are created.</span>
@@ -922,6 +924,7 @@
 
         <span class="c1"># Register the Edit Node plugin</span>
         <span class="n">EditNodePluginFactory</span><span class="p">()</span></div>
+
 </pre></div>
 
            </div>

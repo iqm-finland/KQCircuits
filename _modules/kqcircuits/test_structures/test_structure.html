@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.test_structures.test_structure &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.test_structures.test_structure &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=eeab0646" />
 
   
@@ -17,9 +17,9 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../../about.html" />
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -909,14 +909,18 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 
 
-<div class="viewcode-block" id="TestStructure"><a class="viewcode-back" href="../../../api/kqcircuits.test_structures.test_structure.html#kqcircuits.test_structures.test_structure.TestStructure">[docs]</a><span class="k">class</span> <span class="nc">TestStructure</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+<div class="viewcode-block" id="TestStructure">
+<a class="viewcode-back" href="../../../api/kqcircuits.test_structures.test_structure.html#kqcircuits.test_structures.test_structure.TestStructure">[docs]</a>
+<span class="k">class</span> <span class="nc">TestStructure</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base PCell declaration for test structures.&quot;&quot;&quot;</span>
 
     <span class="n">LIBRARY_NAME</span> <span class="o">=</span> <span class="s2">&quot;Test Structure Library&quot;</span>
     <span class="n">LIBRARY_DESCRIPTION</span> <span class="o">=</span> <span class="s2">&quot;Superconducting quantum circuit library for test structures.&quot;</span>
     <span class="n">LIBRARY_PATH</span> <span class="o">=</span> <span class="s2">&quot;test_structures&quot;</span>
 
-<div class="viewcode-block" id="TestStructure.produce_pad"><a class="viewcode-back" href="../../../api/kqcircuits.test_structures.test_structure.html#kqcircuits.test_structures.test_structure.TestStructure.produce_pad">[docs]</a>    <span class="k">def</span> <span class="nf">produce_pad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">pads_region</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">,</span> <span class="n">pad_height</span><span class="p">):</span>
+<div class="viewcode-block" id="TestStructure.produce_pad">
+<a class="viewcode-back" href="../../../api/kqcircuits.test_structures.test_structure.html#kqcircuits.test_structures.test_structure.TestStructure.produce_pad">[docs]</a>
+    <span class="k">def</span> <span class="nf">produce_pad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">pads_region</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">,</span> <span class="n">pad_height</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Inserts a square pad shape to pads_region.</span>
 
 <span class="sd">        Args:</span>
@@ -938,7 +942,10 @@
         <span class="p">)</span>
         <span class="n">pads_region</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pad</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="TestStructure.produce_four_point_pads"><a class="viewcode-back" href="../../../api/kqcircuits.test_structures.test_structure.html#kqcircuits.test_structures.test_structure.TestStructure.produce_four_point_pads">[docs]</a>    <span class="k">def</span> <span class="nf">produce_four_point_pads</span><span class="p">(</span>
+
+<div class="viewcode-block" id="TestStructure.produce_four_point_pads">
+<a class="viewcode-back" href="../../../api/kqcircuits.test_structures.test_structure.html#kqcircuits.test_structures.test_structure.TestStructure.produce_four_point_pads">[docs]</a>
+    <span class="k">def</span> <span class="nf">produce_four_point_pads</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">pads_region</span><span class="p">,</span>
         <span class="n">pad_width</span><span class="p">,</span>
@@ -1001,7 +1008,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">_ne&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">refpoint_prefix</span><span class="p">)]</span> <span class="o">=</span> <span class="n">pos_ne</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="n">pad_width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">refpoint_distance</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">_se&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">refpoint_prefix</span><span class="p">)]</span> <span class="o">=</span> <span class="n">pos_se</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="n">pad_width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">refpoint_distance</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TestStructure.produce_etched_region"><a class="viewcode-back" href="../../../api/kqcircuits.test_structures.test_structure.html#kqcircuits.test_structures.test_structure.TestStructure.produce_etched_region">[docs]</a>    <span class="k">def</span> <span class="nf">produce_etched_region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metal_region</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TestStructure.produce_etched_region">
+<a class="viewcode-back" href="../../../api/kqcircuits.test_structures.test_structure.html#kqcircuits.test_structures.test_structure.TestStructure.produce_etched_region">[docs]</a>
+    <span class="k">def</span> <span class="nf">produce_etched_region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metal_region</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Produces structures in metal gap layer.</span>
 
 <span class="sd">        Subtracts metal_region from a region defined by width and height, and inserts resulting</span>
@@ -1028,7 +1038,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">reg_etch</span><span class="p">)</span>
         <span class="c1"># grid avoidance region</span>
         <span class="n">reg_protect</span> <span class="o">=</span> <span class="n">reg_etch</span><span class="o">.</span><span class="n">extents</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">margin</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">reg_protect</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">reg_protect</span><span class="p">)</span></div>
+</div>
+
 </pre></div>
 
            </div>

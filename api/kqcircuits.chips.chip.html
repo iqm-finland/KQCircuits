@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.chips.chip &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.chips.chip &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=eeab0646" />
 
   
@@ -18,9 +18,9 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
@@ -892,56 +892,56 @@
            <div itemprop="articleBody">
              
   <section id="module-kqcircuits.chips.chip">
-<span id="kqcircuits-chips-chip"></span><h1>kqcircuits.chips.chip<a class="headerlink" href="#module-kqcircuits.chips.chip" title="Permalink to this heading"></a></h1>
+<span id="kqcircuits-chips-chip"></span><h1>kqcircuits.chips.chip<a class="headerlink" href="#module-kqcircuits.chips.chip" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.chips.chip.</span></span><span class="sig-name descname"><span class="pre">Chip</span></span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.chips.chip.</span></span><span class="sig-name descname"><span class="pre">Chip</span></span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a></p>
 <p>Base PCell declaration for chips.</p>
 <p>Produces labels in pixel corners, dicing edge, markers and optionally grid for all chip faces.
 Contains methods for producing launchers in face 0 and connectors between faces 0 and 1.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.LIBRARY_NAME">
-<span class="sig-name descname"><span class="pre">LIBRARY_NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Chip</span> <span class="pre">Library'</span></em><a class="headerlink" href="#kqcircuits.chips.chip.Chip.LIBRARY_NAME" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">LIBRARY_NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Chip</span> <span class="pre">Library'</span></em><a class="headerlink" href="#kqcircuits.chips.chip.Chip.LIBRARY_NAME" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.LIBRARY_DESCRIPTION">
-<span class="sig-name descname"><span class="pre">LIBRARY_DESCRIPTION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Superconducting</span> <span class="pre">quantum</span> <span class="pre">circuit</span> <span class="pre">library</span> <span class="pre">for</span> <span class="pre">chips.'</span></em><a class="headerlink" href="#kqcircuits.chips.chip.Chip.LIBRARY_DESCRIPTION" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">LIBRARY_DESCRIPTION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Superconducting</span> <span class="pre">quantum</span> <span class="pre">circuit</span> <span class="pre">library</span> <span class="pre">for</span> <span class="pre">chips.'</span></em><a class="headerlink" href="#kqcircuits.chips.chip.Chip.LIBRARY_DESCRIPTION" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.LIBRARY_PATH">
-<span class="sig-name descname"><span class="pre">LIBRARY_PATH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'chips'</span></em><a class="headerlink" href="#kqcircuits.chips.chip.Chip.LIBRARY_PATH" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">LIBRARY_PATH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'chips'</span></em><a class="headerlink" href="#kqcircuits.chips.chip.Chip.LIBRARY_PATH" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.display_text_impl">
-<span class="sig-name descname"><span class="pre">display_text_impl</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.display_text_impl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.display_text_impl" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">display_text_impl</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.display_text_impl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.display_text_impl" title="Link to this definition"></a></dt>
 <dd><p>default implementation</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.can_create_from_shape_impl">
-<span class="sig-name descname"><span class="pre">can_create_from_shape_impl</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.can_create_from_shape_impl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.can_create_from_shape_impl" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">can_create_from_shape_impl</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.can_create_from_shape_impl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.can_create_from_shape_impl" title="Link to this definition"></a></dt>
 <dd><p>default implementation</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.parameters_from_shape_impl">
-<span class="sig-name descname"><span class="pre">parameters_from_shape_impl</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.parameters_from_shape_impl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.parameters_from_shape_impl" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">parameters_from_shape_impl</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.parameters_from_shape_impl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.parameters_from_shape_impl" title="Link to this definition"></a></dt>
 <dd><p>default implementation</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.transformation_from_shape_impl">
-<span class="sig-name descname"><span class="pre">transformation_from_shape_impl</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.transformation_from_shape_impl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.transformation_from_shape_impl" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transformation_from_shape_impl</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.transformation_from_shape_impl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.transformation_from_shape_impl" title="Link to this definition"></a></dt>
 <dd><p>default implementation</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.get_launcher_assignments">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_launcher_assignments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chip_cell</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.get_launcher_assignments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.get_launcher_assignments" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_launcher_assignments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chip_cell</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.get_launcher_assignments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.get_launcher_assignments" title="Link to this definition"></a></dt>
 <dd><p>Returns a dictionary of launcher assignments (port_id: launcher_id) for the chip.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -952,7 +952,7 @@ Contains methods for producing launchers in face 0 and connectors between faces 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.produce_junction_tests">
-<span class="sig-name descname"><span class="pre">produce_junction_tests</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">junction_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Manhattan'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_junction_tests"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_junction_tests" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">produce_junction_tests</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">junction_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Manhattan'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_junction_tests"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_junction_tests" title="Link to this definition"></a></dt>
 <dd><p>Produces junction test pads in the chip.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -963,20 +963,20 @@ Contains methods for producing launchers in face 0 and connectors between faces 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.produce_opt_lit_tests">
-<span class="sig-name descname"><span class="pre">produce_opt_lit_tests</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_opt_lit_tests"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_opt_lit_tests" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">produce_opt_lit_tests</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_opt_lit_tests"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_opt_lit_tests" title="Link to this definition"></a></dt>
 <dd><p>Produces optical lithography test stripes at chip corners.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.produce_ground_grid">
-<span class="sig-name descname"><span class="pre">produce_ground_grid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_ground_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_ground_grid" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">produce_ground_grid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_ground_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_ground_grid" title="Link to this definition"></a></dt>
 <dd><p>Produces ground grid on all faces with ChipFrames.</p>
 <p>This method is called in build(). Override this method to produce a different set of chip frames.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.produce_ground_on_face_grid">
-<span class="sig-name descname"><span class="pre">produce_ground_on_face_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">box</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_ground_on_face_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_ground_on_face_grid" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">produce_ground_on_face_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">box</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_ground_on_face_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_ground_on_face_grid" title="Link to this definition"></a></dt>
 <dd><p>Produces ground grid in the given face of the chip.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -990,7 +990,7 @@ Contains methods for producing launchers in face 0 and connectors between faces 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.produce_frame">
-<span class="sig-name descname"><span class="pre">produce_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame_parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trans=r0</span> <span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_frame" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">produce_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame_parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trans=r0</span> <span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_frame" title="Link to this definition"></a></dt>
 <dd><p>Produces a chip frame and markers for the given face.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1004,7 +1004,7 @@ Contains methods for producing launchers in face 0 and connectors between faces 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.merge_layout_layers_on_face">
-<span class="sig-name descname"><span class="pre">merge_layout_layers_on_face</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">face</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.004</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.merge_layout_layers_on_face"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.merge_layout_layers_on_face" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">merge_layout_layers_on_face</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">face</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.004</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.merge_layout_layers_on_face"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.merge_layout_layers_on_face" title="Link to this definition"></a></dt>
 <dd><p>Creates “base_metal_gap” layer on given face.</p>
 <p>The layer shape is combination of three layers using subtract (-) and insert (+) operations:</p>
 <blockquote>
@@ -1022,7 +1022,7 @@ Contains methods for producing launchers in face 0 and connectors between faces 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.merge_layout_layers">
-<span class="sig-name descname"><span class="pre">merge_layout_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.merge_layout_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.merge_layout_layers" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">merge_layout_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.merge_layout_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.merge_layout_layers" title="Link to this definition"></a></dt>
 <dd><p>Creates “base_metal_gap” layers on all faces.</p>
 <blockquote>
 <div><p>The layer shape is combination of three layers using subtract (-) and insert (+) operations:</p>
@@ -1035,14 +1035,14 @@ Contains methods for producing launchers in face 0 and connectors between faces 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.produce_structures">
-<span class="sig-name descname"><span class="pre">produce_structures</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_structures"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_structures" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">produce_structures</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_structures"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_structures" title="Link to this definition"></a></dt>
 <dd><p>Produces chip frame and possibly other structures before the ground grid.</p>
 <p>This method is called in post_build(). Override this method to produce a different set of chip frames.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.get_box">
-<span class="sig-name descname"><span class="pre">get_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">face</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.get_box"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.get_box" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">face</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.get_box"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.get_box" title="Link to this definition"></a></dt>
 <dd><p>Get the chip frame box for the specified face, correctly resolving defaults.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1054,7 +1054,7 @@ Contains methods for producing launchers in face 0 and connectors between faces 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.get_filter_regions">
-<span class="sig-name descname"><span class="pre">get_filter_regions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_layer_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.get_filter_regions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.get_filter_regions" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_filter_regions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_layer_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.get_filter_regions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.get_filter_regions" title="Link to this definition"></a></dt>
 <dd><p>Transforms the filter_layer_list into filter_regions dictionary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1068,7 +1068,7 @@ Contains methods for producing launchers in face 0 and connectors between faces 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.insert_filtered_elements">
-<span class="sig-name descname"><span class="pre">insert_filtered_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element_cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape_layers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_regions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.insert_filtered_elements"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.insert_filtered_elements" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">insert_filtered_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element_cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape_layers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_regions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.insert_filtered_elements"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.insert_filtered_elements" title="Link to this definition"></a></dt>
 <dd><p>Inserts elements into given locations filtered by filter_regions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1088,7 +1088,7 @@ Contains methods for producing launchers in face 0 and connectors between faces 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.get_ground_bump_locations">
-<span class="sig-name descname"><span class="pre">get_ground_bump_locations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bump_box</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.get_ground_bump_locations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.get_ground_bump_locations" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_ground_bump_locations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bump_box</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.get_ground_bump_locations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.get_ground_bump_locations" title="Link to this definition"></a></dt>
 <dd><p>Define the locations for a grid. This method returns the full grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1100,13 +1100,13 @@ Contains methods for producing launchers in face 0 and connectors between faces 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.post_build">
-<span class="sig-name descname"><span class="pre">post_build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.post_build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.post_build" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">post_build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.post_build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.post_build" title="Link to this definition"></a></dt>
 <dd><p>Child classes may re-define this method for post-build operations.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.produce_launchers">
-<span class="sig-name descname"><span class="pre">produce_launchers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sampleholder_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">launcher_assignments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enabled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_launchers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_launchers" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">produce_launchers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sampleholder_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">launcher_assignments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enabled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_launchers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_launchers" title="Link to this definition"></a></dt>
 <dd><p>Produces launchers for typical sample holders and sets chip size (<code class="docutils literal notranslate"><span class="pre">self.box</span></code>) accordingly.</p>
 <p>This is a wrapper around <code class="docutils literal notranslate"><span class="pre">produce_n_launchers()</span></code> to generate typical launcher configurations.</p>
 <dl class="field-list simple">
@@ -1126,7 +1126,7 @@ Contains methods for producing launchers in face 0 and connectors between faces 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.produce_n_launchers">
-<span class="sig-name descname"><span class="pre">produce_n_launchers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">launcher_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">launcher_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">launcher_gap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">launcher_indent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad_pitch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">launcher_assignments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port_id_remap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">launcher_frame_gap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enabled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chip_box</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_n_launchers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_n_launchers" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">produce_n_launchers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">launcher_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">launcher_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">launcher_gap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">launcher_indent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad_pitch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">launcher_assignments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port_id_remap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">launcher_frame_gap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enabled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chip_box</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_n_launchers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_n_launchers" title="Link to this definition"></a></dt>
 <dd><p>Produces n launchers at default locations and optionally changes the chip size.</p>
 <p>Launcher pads are equally distributed around the chip. This may be overridden by specifying
 the number of pads desired per chip side if <code class="docutils literal notranslate"><span class="pre">n</span></code> is an array of 4 numbers.</p>
@@ -1163,7 +1163,7 @@ For example, to flip the launcher order by chip’s y-axis, set port_id_remap to
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.make_grid_locations">
-<span class="sig-name descname"><span class="pre">make_grid_locations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">box</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.make_grid_locations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.make_grid_locations" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">make_grid_locations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">box</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.make_grid_locations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.make_grid_locations" title="Link to this definition"></a></dt>
 <dd><p>Define the locations for a grid. This method returns the full grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1181,7 +1181,7 @@ For example, to flip the launcher order by chip’s y-axis, set port_id_remap to
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.get_ground_tsv_locations">
-<span class="sig-name descname"><span class="pre">get_ground_tsv_locations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tsv_box</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.get_ground_tsv_locations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.get_ground_tsv_locations" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_ground_tsv_locations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tsv_box</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.get_ground_tsv_locations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.get_ground_tsv_locations" title="Link to this definition"></a></dt>
 <dd><p>Define the locations for a grid. This method returns the full grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.qubits.swissmon &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.qubits.swissmon &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=eeab0646" />
 
   
@@ -18,9 +18,9 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
@@ -892,10 +892,10 @@
            <div itemprop="articleBody">
              
   <section id="module-kqcircuits.qubits.swissmon">
-<span id="kqcircuits-qubits-swissmon"></span><h1>kqcircuits.qubits.swissmon<a class="headerlink" href="#module-kqcircuits.qubits.swissmon" title="Permalink to this heading"></a></h1>
+<span id="kqcircuits-qubits-swissmon"></span><h1>kqcircuits.qubits.swissmon<a class="headerlink" href="#module-kqcircuits.qubits.swissmon" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="kqcircuits.qubits.swissmon.Swissmon">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.qubits.swissmon.</span></span><span class="sig-name descname"><span class="pre">Swissmon</span></span><a class="reference internal" href="../_modules/kqcircuits/qubits/swissmon.html#Swissmon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.qubits.swissmon.Swissmon" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.qubits.swissmon.</span></span><span class="sig-name descname"><span class="pre">Swissmon</span></span><a class="reference internal" href="../_modules/kqcircuits/qubits/swissmon.html#Swissmon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.qubits.swissmon.Swissmon" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="kqcircuits.qubits.qubit.html#kqcircuits.qubits.qubit.Qubit" title="kqcircuits.qubits.qubit.Qubit"><code class="xref py py-class docutils literal notranslate"><span class="pre">Qubit</span></code></a></p>
 <p>The PCell declaration for a Swissmon qubit.</p>
 <p>Swissmon type qubit. Each arm (West, North, East, South) has it’s own arm gap width
@@ -905,13 +905,13 @@ Length between the ports is from waveguide port to the rectangular part of the l
 Length of the fingers is also used for the length of the launcher pad.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.qubits.swissmon.Swissmon.build">
-<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/qubits/swissmon.html#Swissmon.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.qubits.swissmon.Swissmon.build" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/qubits/swissmon.html#Swissmon.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.qubits.swissmon.Swissmon.build" title="Link to this definition"></a></dt>
 <dd><p>Child classes re-define this method to build the PCell.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.qubits.swissmon.Swissmon.get_sim_ports">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_sim_ports</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulation</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/qubits/swissmon.html#Swissmon.get_sim_ports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.qubits.swissmon.Swissmon.get_sim_ports" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_sim_ports</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulation</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/qubits/swissmon.html#Swissmon.get_sim_ports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.qubits.swissmon.Swissmon.get_sim_ports" title="Link to this definition"></a></dt>
 <dd><p>List of RefpointToSimPort objects defining which refpoints
 should be turned to simulation ports for the given element class</p>
 <p>Returns empty list if not implemented for Element subclass.

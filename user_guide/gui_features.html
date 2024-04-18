@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GUI Features &mdash; KQCircuits  documentation</title>
+  <title>GUI Features &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=eeab0646" />
 
   
@@ -18,9 +18,9 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
@@ -891,13 +891,13 @@
            <div itemprop="articleBody">
              
   <section id="gui-features">
-<span id="id1"></span><h1>GUI Features<a class="headerlink" href="#gui-features" title="Permalink to this heading"></a></h1>
+<span id="id1"></span><h1>GUI Features<a class="headerlink" href="#gui-features" title="Link to this heading"></a></h1>
 <p>The GUI usage of KQCircuits is mostly the same as in KLayout without KQCircuits,
 so it is recommended to read the section <a class="reference external" href="https://www.klayout.de/doc-qt5/manual/basic.html">KLayout Basics</a> of the
 KLayout documentation. It explains for example cell hierarchy and other important concepts. In this section we explain
 KQCircuits-specific GUI features and highlight some useful features of the KLayout GUI.</p>
 <section id="useful-hotkeys">
-<h2>Useful hotkeys<a class="headerlink" href="#useful-hotkeys" title="Permalink to this heading"></a></h2>
+<h2>Useful hotkeys<a class="headerlink" href="#useful-hotkeys" title="Link to this heading"></a></h2>
 <p>Use the following hotkeys to navigate around, and if not all parts of the geometry are visible:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">*</span></code> makes the full cell hierarchy visible. Otherwise only cell frames may be
@@ -907,7 +907,7 @@ visible. Also accessible from <em>Display</em> -&gt; <em>Full hierarchy</em> in 
 </ul>
 </section>
 <section id="introduction-to-elements">
-<h2>Introduction to Elements<a class="headerlink" href="#introduction-to-elements" title="Permalink to this heading"></a></h2>
+<h2>Introduction to Elements<a class="headerlink" href="#introduction-to-elements" title="Link to this heading"></a></h2>
 <p>KQCircuits provides a collection of <code class="docutils literal notranslate"><span class="pre">Elements</span></code>, which are building blocks for creating complex designs. The elements
 are grouped into several <strong>Libraries</strong>, including the following:</p>
 <ul class="simple">
@@ -927,7 +927,7 @@ of cells in KLayout. The cell hierarchy is visible in KLayout in the <strong>Cel
 <strong>Top cell</strong> in the main window, right-click a cell and select <em>Show As New Top</em>. The top cell is shown in bold.</p>
 </section>
 <section id="placing-elements">
-<h2>Placing Elements<a class="headerlink" href="#placing-elements" title="Permalink to this heading"></a></h2>
+<h2>Placing Elements<a class="headerlink" href="#placing-elements" title="Link to this heading"></a></h2>
 <p>There are two ways to insert an <code class="docutils literal notranslate"><span class="pre">Element</span></code> into the layout:</p>
 <ol class="arabic simple">
 <li><p>dragging from <strong>Libraries</strong> toolbox</p></li>
@@ -939,7 +939,7 @@ If the corresponding <strong>PCell instance</strong> does not yet exist, corresp
 <img alt="../_images/placing_pcell.gif" src="../_images/placing_pcell.gif" />
 </section>
 <section id="modifying-element-parameters">
-<h2>Modifying Element parameters<a class="headerlink" href="#modifying-element-parameters" title="Permalink to this heading"></a></h2>
+<h2>Modifying Element parameters<a class="headerlink" href="#modifying-element-parameters" title="Link to this heading"></a></h2>
 <p>If an <code class="docutils literal notranslate"><span class="pre">Element</span></code> is in the layout, one can change its <strong>parameters</strong> by double clicking the <code class="docutils literal notranslate"><span class="pre">Element</span></code> which brings up
 the <strong>Object properties</strong> window. In the window there is a <strong>PCell parameters</strong> tab, where parameters can be changed.</p>
 <img alt="../_images/modifying_pcell.gif" src="../_images/modifying_pcell.gif" />
@@ -955,7 +955,7 @@ by accident, one can disable each type under <em>Edit</em> -&gt; <em>Select</em>
 </ul>
 </section>
 <section id="modifying-waveguides">
-<span id="id2"></span><h2>Modifying waveguides<a class="headerlink" href="#modifying-waveguides" title="Permalink to this heading"></a></h2>
+<span id="id2"></span><h2>Modifying waveguides<a class="headerlink" href="#modifying-waveguides" title="Link to this heading"></a></h2>
 <p>For some elements, the shape can be edited directly in the GUI. For example, <code class="docutils literal notranslate"><span class="pre">Waveguide</span> <span class="pre">Coplanar</span></code>,
 <code class="docutils literal notranslate"><span class="pre">Waveguide</span> <span class="pre">Composite</span></code> and <code class="docutils literal notranslate"><span class="pre">Spiral</span> <span class="pre">Resonator</span> <span class="pre">Polygon</span></code> have paths that can be edited with the <strong>Partial</strong> tool.</p>
 <p>The following operations are supported:</p>
@@ -971,7 +971,7 @@ by accident, one can disable each type under <em>Edit</em> -&gt; <em>Select</em>
 <em>Display</em> -&gt; <em>Cells</em> in the KLayout setup.</p>
 </section>
 <section id="editing-waveguidecomposite-nodes">
-<h2>Editing WaveguideComposite Nodes<a class="headerlink" href="#editing-waveguidecomposite-nodes" title="Permalink to this heading"></a></h2>
+<h2>Editing WaveguideComposite Nodes<a class="headerlink" href="#editing-waveguidecomposite-nodes" title="Link to this heading"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">Waveguide</span> <span class="pre">Composite</span></code> is a very flexible element, that can be used to route complex waveguides. It can include other
 elements that are automatically connected correctly inline with the waveguide, can insert meandering segments to
 meet a specific waveguide length, and can include airbridge crossings or flip-chip connectors to route signals in a
@@ -989,7 +989,7 @@ on a separate line. See the API documentation for the PCell parameters supported
 <img alt="../_images/edit_node.gif" src="../_images/edit_node.gif" />
 </section>
 <section id="converting-elements-placed-in-gui-into-code">
-<h2>Converting elements placed in GUI into code<a class="headerlink" href="#converting-elements-placed-in-gui-into-code" title="Permalink to this heading"></a></h2>
+<h2>Converting elements placed in GUI into code<a class="headerlink" href="#converting-elements-placed-in-gui-into-code" title="Link to this heading"></a></h2>
 <p>KQCircuits includes a macro <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/macros/export/export_cells_as_code.lym">export_cells_as_code.lym</a> that can be used to
 convert elements placed in GUI into code that can be used in chip PCells. For
 more information, see the docstring and comments in the macro. The following
@@ -1010,7 +1010,7 @@ needed if the next point would anyway be in the direction of
 the direction of the first waveguide segment aligned with the port.</p>
 </section>
 <section id="useful-menu-commands">
-<h2>Useful Menu Commands<a class="headerlink" href="#useful-menu-commands" title="Permalink to this heading"></a></h2>
+<h2>Useful Menu Commands<a class="headerlink" href="#useful-menu-commands" title="Link to this heading"></a></h2>
 <p>Several very useful macros are directly accessible from KLayout’s “<strong>KQCircuits</strong>”
 drop-down menu:</p>
 <ul class="simple">

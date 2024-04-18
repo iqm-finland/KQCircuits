@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.elements.element &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.elements.element &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=eeab0646" />
 
   
@@ -17,9 +17,9 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../../about.html" />
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -916,7 +916,9 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.util.refpoints</span> <span class="kn">import</span> <span class="n">Refpoints</span><span class="p">,</span> <span class="n">WaveguideToSimPort</span>
 
 
-<div class="viewcode-block" id="get_refpoints"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.get_refpoints">[docs]</a><span class="k">def</span> <span class="nf">get_refpoints</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">cell_transf</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(),</span> <span class="n">rec_levels</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_refpoints">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.get_refpoints">[docs]</a>
+<span class="k">def</span> <span class="nf">get_refpoints</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">cell_transf</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(),</span> <span class="n">rec_levels</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns Refpoints object for extracting reference points from given layer and cell.</span>
 
 <span class="sd">    Args:</span>
@@ -932,7 +934,10 @@
     <span class="k">return</span> <span class="n">Refpoints</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">cell_transf</span><span class="p">,</span> <span class="n">rec_levels</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="insert_cell_into"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.insert_cell_into">[docs]</a><span class="k">def</span> <span class="nf">insert_cell_into</span><span class="p">(</span>
+
+<div class="viewcode-block" id="insert_cell_into">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.insert_cell_into">[docs]</a>
+<span class="k">def</span> <span class="nf">insert_cell_into</span><span class="p">(</span>
     <span class="n">target_cell</span><span class="p">,</span>
     <span class="n">cell</span><span class="p">,</span>
     <span class="n">trans</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -991,14 +996,20 @@
     <span class="k">return</span> <span class="n">cell_inst</span><span class="p">,</span> <span class="n">refpoints_abs</span></div>
 
 
-<div class="viewcode-block" id="resolve_face"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.resolve_face">[docs]</a><span class="k">def</span> <span class="nf">resolve_face</span><span class="p">(</span><span class="n">face_id</span><span class="p">,</span> <span class="n">face_ids</span><span class="p">):</span>
+
+<div class="viewcode-block" id="resolve_face">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.resolve_face">[docs]</a>
+<span class="k">def</span> <span class="nf">resolve_face</span><span class="p">(</span><span class="n">face_id</span><span class="p">,</span> <span class="n">face_ids</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns face_id if the parameter is given as string or face_ids[face_id] otherwise.</span>
 <span class="sd">    The face_id as a string must be a key in default_faces but does not necessarily need to be in face_ids.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">face_id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">face_id</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">face_ids</span><span class="p">[</span><span class="n">face_id</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="Element"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element">[docs]</a><span class="k">class</span> <span class="nc">Element</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">PCellDeclarationHelper</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Element">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element">[docs]</a>
+<span class="k">class</span> <span class="nc">Element</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">PCellDeclarationHelper</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Element PCell declaration.</span>
 
 <span class="sd">    PCell parameters for an element are defined as class attributes of Param type.</span>
@@ -1068,12 +1079,17 @@
                     <span class="k">break</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_add_parameter</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">data_type</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">description</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="n">default</span><span class="p">,</span> <span class="o">**</span><span class="n">p</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Element.create_cell_from_shape"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.create_cell_from_shape">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Element.create_cell_from_shape">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.create_cell_from_shape">[docs]</a>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_cell_from_shape</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="n">load_libraries</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">Element</span><span class="o">.</span><span class="n">LIBRARY_PATH</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">layout</span><span class="o">.</span><span class="n">create_cell</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">Element</span><span class="o">.</span><span class="n">LIBRARY_NAME</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Element.create"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.create">[docs]</a>    <span class="nd">@classmethod</span>
+
+<div class="viewcode-block" id="Element.create">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.create">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create cell for this element in layout.</span>
 
@@ -1086,7 +1102,10 @@
         <span class="nb">setattr</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">get_cell_path_length</span><span class="p">(</span><span class="n">cell</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">cell</span></div>
 
-<div class="viewcode-block" id="Element.create_subtype"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.create_subtype">[docs]</a>    <span class="nd">@classmethod</span>
+
+<div class="viewcode-block" id="Element.create_subtype">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.create_subtype">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">create_subtype</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create cell from an abstract class using the specified sub-class type.</span>
 
@@ -1124,7 +1143,10 @@
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># fallback is the default</span>
             <span class="k">return</span> <span class="n">cl</span><span class="o">.</span><span class="n">create_subtype</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="p">,</span> <span class="n">cl</span><span class="o">.</span><span class="n">default_type</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Element.create_with_refpoints"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.create_with_refpoints">[docs]</a>    <span class="nd">@classmethod</span>
+
+<div class="viewcode-block" id="Element.create_with_refpoints">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.create_with_refpoints">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">create_with_refpoints</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refpoint_transform</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(),</span> <span class="n">rec_levels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span>
     <span class="p">):</span>
@@ -1141,7 +1163,10 @@
         <span class="n">refp</span> <span class="o">=</span> <span class="n">get_refpoints</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;refpoints&quot;</span><span class="p">]),</span> <span class="n">cell</span><span class="p">,</span> <span class="n">refpoint_transform</span><span class="p">,</span> <span class="n">rec_levels</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">cell</span><span class="p">,</span> <span class="n">refp</span></div>
 
-<div class="viewcode-block" id="Element.add_element"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.add_element">[docs]</a>    <span class="k">def</span> <span class="nf">add_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Element.add_element">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.add_element">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new cell for the given element in this layout.</span>
 
 <span class="sd">        Args:</span>
@@ -1154,7 +1179,10 @@
         <span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcell_params_by_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">LIBRARY_NAME</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Element.insert_cell"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.insert_cell">[docs]</a>    <span class="k">def</span> <span class="nf">insert_cell</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Element.insert_cell">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.insert_cell">[docs]</a>
+    <span class="k">def</span> <span class="nf">insert_cell</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">trans</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inst_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">label_trans</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">align_to</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rec_levels</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Inserts a subcell into the present cell.</span>
@@ -1199,7 +1227,10 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="n">new_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">pos</span>
         <span class="k">return</span> <span class="n">cell_inst</span><span class="p">,</span> <span class="n">refpoints_abs</span></div>
 
-<div class="viewcode-block" id="Element.face"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.face">[docs]</a>    <span class="k">def</span> <span class="nf">face</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Element.face">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.face">[docs]</a>
+    <span class="k">def</span> <span class="nf">face</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the face dictionary corresponding to face_id.</span>
 
 <span class="sd">        The face dictionary contains key &quot;id&quot; for the face ID and keys for all the available layers in that face.</span>
@@ -1209,7 +1240,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">default_faces</span><span class="p">[</span><span class="n">resolve_face</span><span class="p">(</span><span class="n">face_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">)]</span></div>
 
-<div class="viewcode-block" id="Element.pcell_params_by_name"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.pcell_params_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">pcell_params_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Element.pcell_params_by_name">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.pcell_params_by_name">[docs]</a>
+    <span class="k">def</span> <span class="nf">pcell_params_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Give PCell parameters as a dictionary.</span>
 
 <span class="sd">        Arguments:</span>
@@ -1235,7 +1269,10 @@
         <span class="n">p</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s2">&quot;refpoints&quot;</span><span class="p">}</span>
         <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">}</span></div>
 
-<div class="viewcode-block" id="Element.add_port"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.add_port">[docs]</a>    <span class="k">def</span> <span class="nf">add_port</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Element.add_port">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.add_port">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_port</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a port location to the list of reference points as well as ports layer for netlist extraction</span>
 
 <span class="sd">        Args:</span>
@@ -1255,7 +1292,10 @@
         <span class="k">if</span> <span class="n">direction</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="n">port_name</span> <span class="o">+</span> <span class="s2">&quot;_corner&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pos</span> <span class="o">+</span> <span class="n">direction</span> <span class="o">/</span> <span class="n">direction</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span></div>
 
-<div class="viewcode-block" id="Element.copy_port"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.copy_port">[docs]</a>    <span class="k">def</span> <span class="nf">copy_port</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">cell_inst</span><span class="p">,</span> <span class="n">new_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Element.copy_port">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.copy_port">[docs]</a>
+    <span class="k">def</span> <span class="nf">copy_port</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">cell_inst</span><span class="p">,</span> <span class="n">new_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Copy a port definition from a different cell and instance; typically used to expose a specific subcell port.</span>
 
 <span class="sd">        Args:</span>
@@ -1287,7 +1327,10 @@
                         <span class="bp">self</span><span class="o">.</span><span class="n">add_port</span><span class="p">(</span><span class="n">copy_name</span><span class="p">,</span> <span class="n">cell_refpoints</span><span class="p">[</span><span class="n">port_name</span><span class="p">],</span> <span class="n">face_id</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
                     <span class="k">break</span></div>
 
-<div class="viewcode-block" id="Element.get_schema"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.get_schema">[docs]</a>    <span class="nd">@classmethod</span>
+
+<div class="viewcode-block" id="Element.get_schema">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.get_schema">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_schema</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">noparents</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">abstract_class</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the combined parameters of the class &quot;cls&quot; and all its ancestor classes.</span>
 
@@ -1304,7 +1347,10 @@
                 <span class="k">break</span>
         <span class="k">return</span> <span class="n">schema</span></div>
 
-<div class="viewcode-block" id="Element.produce_impl"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Element.produce_impl">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.produce_impl">[docs]</a>
+    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;This method builds the PCell.</span>
 
 <span class="sd">        Adds all refpoints to user properties and draws their names to the annotation layer.</span>
@@ -1322,6 +1368,7 @@
             <span class="n">text</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DText</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">refpoint</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">refpoint</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;refpoints&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
 
+
     <span class="k">def</span> <span class="nf">_etch_opposite_face</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add opposite face etching, if enabled.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">etch_opposite_face</span><span class="p">:</span>
@@ -1336,23 +1383,37 @@
                             <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">,</span> <span class="n">other_face</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">etch_shape</span><span class="p">)</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">,</span> <span class="n">other_face</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">protection</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Element.build"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Element.build">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.build">[docs]</a>
+    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Child classes re-define this method to build the PCell.&quot;&quot;&quot;</span></div>
 
-<div class="viewcode-block" id="Element.post_build"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.post_build">[docs]</a>    <span class="k">def</span> <span class="nf">post_build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Element.post_build">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.post_build">[docs]</a>
+    <span class="k">def</span> <span class="nf">post_build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Child classes may re-define this method for post-build operations.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_etch_opposite_face</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Element.display_text_impl"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.display_text_impl">[docs]</a>    <span class="k">def</span> <span class="nf">display_text_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Element.display_text_impl">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.display_text_impl">[docs]</a>
+    <span class="k">def</span> <span class="nf">display_text_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">display_name</span>
         <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span></div>
 
-<div class="viewcode-block" id="Element.get_refpoints"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.get_refpoints">[docs]</a>    <span class="k">def</span> <span class="nf">get_refpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">cell_transf</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(),</span> <span class="n">rec_levels</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Element.get_refpoints">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.get_refpoints">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_refpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">cell_transf</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(),</span> <span class="n">rec_levels</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;See `get_refpoints`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">get_refpoints</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;refpoints&quot;</span><span class="p">]),</span> <span class="n">cell</span><span class="p">,</span> <span class="n">cell_transf</span><span class="p">,</span> <span class="n">rec_levels</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Element.get_layer"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.get_layer">[docs]</a>    <span class="k">def</span> <span class="nf">get_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Element.get_layer">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.get_layer">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the specified Layer object.</span>
 
 <span class="sd">        Args:</span>
@@ -1362,6 +1423,7 @@
         <span class="k">if</span> <span class="p">(</span><span class="n">face_id</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">layer_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="n">layer_name</span><span class="p">])</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">(</span><span class="n">face_id</span><span class="p">)[</span><span class="n">layer_name</span><span class="p">])</span></div>
+
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_create_cell</span><span class="p">(</span><span class="n">elem_cls</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">:</span>
@@ -1443,7 +1505,9 @@
                 <span class="n">param_decl</span><span class="o">.</span><span class="n">add_choice</span><span class="p">(</span><span class="n">choice</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">choice</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_param_decls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">param_decl</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Element.raise_error_on_cell"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.raise_error_on_cell">[docs]</a>    <span class="k">def</span> <span class="nf">raise_error_on_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error_msg</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">()):</span>
+<div class="viewcode-block" id="Element.raise_error_on_cell">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.raise_error_on_cell">[docs]</a>
+    <span class="k">def</span> <span class="nf">raise_error_on_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error_msg</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">()):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Replaces cell with error text in the annotation layer, and raises ValueError with the same error message.</span>
 
 <span class="sd">        Args:</span>
@@ -1458,7 +1522,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">error_text_cell</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">position</span> <span class="o">-</span> <span class="n">text_center</span><span class="p">))</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Element.add_protection"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.add_protection">[docs]</a>    <span class="k">def</span> <span class="nf">add_protection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Element.add_protection">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.add_protection">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_protection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add ground grid avoidance shape on given face (and on opposing face if self.protect_opposite_face is True).</span>
 <span class="sd">        Use this function to protect signal carrying elements that typically include some metal between gaps.</span>
 <span class="sd">        Do not use this function with pure flip-chip connectors, TSVs, or airbridges that doesn&#39;t include metal gaps.</span>
@@ -1477,7 +1544,10 @@
                             <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">,</span> <span class="n">other_face</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
                     <span class="k">break</span></div>
 
-<div class="viewcode-block" id="Element.sync_parameters"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.sync_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">sync_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">abc</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Element.sync_parameters">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.sync_parameters">[docs]</a>
+    <span class="k">def</span> <span class="nf">sync_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">abc</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Syncronise the calling class&#39; parameters with a JSON representation.</span>
 
 <span class="sd">        This is called several times from coerce_parameters_impl() while using the PCell editor GUI. Particularly, each</span>
@@ -1534,7 +1604,10 @@
                     <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">pname</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">json_str</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Element.get_sim_ports"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.get_sim_ports">[docs]</a>    <span class="nd">@classmethod</span>
+
+<div class="viewcode-block" id="Element.get_sim_ports">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.get_sim_ports">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_sim_ports</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">simulation</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;List of RefpointToSimPort objects defining which refpoints</span>
 <span class="sd">        should be turned to simulation ports for the given element class</span>
@@ -1556,7 +1629,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[]</span></div>
 
-<div class="viewcode-block" id="Element.left_and_right_waveguides"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.left_and_right_waveguides">[docs]</a>    <span class="nd">@staticmethod</span>
+
+<div class="viewcode-block" id="Element.left_and_right_waveguides">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.left_and_right_waveguides">[docs]</a>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">left_and_right_waveguides</span><span class="p">(</span><span class="n">simulation</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;A common implementation of get_sim_ports that adds left and right waveguides</span>
 <span class="sd">        to port_a and port_b respectively. The a and b values of right waveguide</span>
@@ -1569,7 +1645,10 @@
             <span class="n">WaveguideToSimPort</span><span class="p">(</span><span class="s2">&quot;port_b&quot;</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a2</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b2</span><span class="p">),</span>
         <span class="p">]</span></div>
 
-<div class="viewcode-block" id="Element.face_changer_waveguides"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.face_changer_waveguides">[docs]</a>    <span class="nd">@staticmethod</span>
+
+<div class="viewcode-block" id="Element.face_changer_waveguides">
+<a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.face_changer_waveguides">[docs]</a>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">face_changer_waveguides</span><span class="p">(</span><span class="n">simulation</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;A common implementation of get_sim_ports that adds waveguides on both sides of a face-changing element.</span>
 <span class="sd">        The port names are &#39;{face_ids[0]}_port&#39; and &#39;{face_ids[1]}_port&#39;.</span>
@@ -1588,7 +1667,9 @@
         <span class="k">return</span> <span class="p">[</span>
             <span class="n">WaveguideToSimPort</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">_port&quot;</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">),</span>
             <span class="n">WaveguideToSimPort</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">_port&quot;</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="n">side</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a2</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b2</span><span class="p">),</span>
-        <span class="p">]</span></div></div>
+        <span class="p">]</span></div>
+</div>
+
 </pre></div>
 
            </div>

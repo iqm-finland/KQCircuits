@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.util.refpoints &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.util.refpoints &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=eeab0646" />
 
   
@@ -17,9 +17,9 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../../about.html" />
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -906,7 +906,9 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 
 
-<div class="viewcode-block" id="Refpoints"><a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.Refpoints">[docs]</a><span class="k">class</span> <span class="nc">Refpoints</span><span class="p">:</span>
+<div class="viewcode-block" id="Refpoints">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.Refpoints">[docs]</a>
+<span class="k">class</span> <span class="nc">Refpoints</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper class for extracting reference points from given layer and cell.</span>
 
 <span class="sd">    Once Refpoints is initialized, it can be used similar way as dictionary, where reference point text (string) field</span>
@@ -930,7 +932,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">rec_levels</span> <span class="o">=</span> <span class="n">rec_levels</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="Refpoints.dict"><a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.Refpoints.dict">[docs]</a>    <span class="k">def</span> <span class="nf">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Refpoints.dict">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.Refpoints.dict">[docs]</a>
+    <span class="k">def</span> <span class="nf">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Extracts and returns reference points as dictionary, where text is the key and position is the value.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span> <span class="o">=</span> <span class="p">{}</span>
@@ -946,6 +950,7 @@
                 <span class="n">shapes_iter</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span></div>
 
+
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns iterator&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">())</span>
@@ -958,20 +963,32 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The [] operator to set a new reference point.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">()[</span><span class="n">item</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
-<div class="viewcode-block" id="Refpoints.items"><a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.Refpoints.items">[docs]</a>    <span class="k">def</span> <span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Refpoints.items">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.Refpoints.items">[docs]</a>
+    <span class="k">def</span> <span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a list of text-position pairs.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Refpoints.keys"><a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.Refpoints.keys">[docs]</a>    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Refpoints.keys">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.Refpoints.keys">[docs]</a>
+    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a list of texts.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Refpoints.values"><a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.Refpoints.values">[docs]</a>    <span class="k">def</span> <span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Refpoints.values">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.Refpoints.values">[docs]</a>
+    <span class="k">def</span> <span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a list of positions.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">()</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">()</span></div>
+</div>
 
 
-<div class="viewcode-block" id="RefpointToSimPort"><a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.RefpointToSimPort">[docs]</a><span class="k">class</span> <span class="nc">RefpointToSimPort</span><span class="p">:</span>
+
+<div class="viewcode-block" id="RefpointToSimPort">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.RefpointToSimPort">[docs]</a>
+<span class="k">class</span> <span class="nc">RefpointToSimPort</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class that takes a refpoint of an Element class with given string</span>
 <span class="sd">    and places appropriate Simulation port(s) at the refpoint&#39;s location</span>
 <span class="sd">    if the simulation object was instantiated using the `get_single_element_sim_class`</span>
@@ -986,7 +1003,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">refpoint</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span> <span class="o">=</span> <span class="n">refpoint</span><span class="p">,</span> <span class="n">face</span></div>
 
 
-<div class="viewcode-block" id="RefpointToInternalPort"><a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.RefpointToInternalPort">[docs]</a><span class="k">class</span> <span class="nc">RefpointToInternalPort</span><span class="p">(</span><span class="n">RefpointToSimPort</span><span class="p">):</span>
+
+<div class="viewcode-block" id="RefpointToInternalPort">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.RefpointToInternalPort">[docs]</a>
+<span class="k">class</span> <span class="nc">RefpointToInternalPort</span><span class="p">(</span><span class="n">RefpointToSimPort</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates an InternalPort at refpoint with given string&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -1013,7 +1033,10 @@
         <span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="n">ground_refpoint</span><span class="p">,</span> <span class="n">resistance</span><span class="p">,</span> <span class="n">reactance</span><span class="p">,</span> <span class="n">inductance</span><span class="p">,</span> <span class="n">capacitance</span><span class="p">,</span> <span class="n">junction</span><span class="p">,</span> <span class="n">signal_layer</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="RefpointToEdgePort"><a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.RefpointToEdgePort">[docs]</a><span class="k">class</span> <span class="nc">RefpointToEdgePort</span><span class="p">(</span><span class="n">RefpointToSimPort</span><span class="p">):</span>
+
+<div class="viewcode-block" id="RefpointToEdgePort">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.RefpointToEdgePort">[docs]</a>
+<span class="k">class</span> <span class="nc">RefpointToEdgePort</span><span class="p">(</span><span class="n">RefpointToSimPort</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates an EdgePort at refpoint with given string&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -1038,7 +1061,10 @@
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="WaveguideToSimPort"><a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.WaveguideToSimPort">[docs]</a><span class="k">class</span> <span class="nc">WaveguideToSimPort</span><span class="p">(</span><span class="n">RefpointToSimPort</span><span class="p">):</span>
+
+<div class="viewcode-block" id="WaveguideToSimPort">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.WaveguideToSimPort">[docs]</a>
+<span class="k">class</span> <span class="nc">WaveguideToSimPort</span><span class="p">(</span><span class="n">RefpointToSimPort</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A waveguide is created leading to the port at the refpoint with given string in the Simulation object</span>
 
 <span class="sd">    Attributes:</span>
@@ -1092,7 +1118,10 @@
         <span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="n">towards</span><span class="p">,</span> <span class="n">side</span><span class="p">,</span> <span class="n">use_internal_ports</span><span class="p">,</span> <span class="n">waveguide_length</span><span class="p">,</span> <span class="n">term1</span><span class="p">,</span> <span class="n">turn_radius</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">over_etching</span><span class="p">,</span> <span class="n">airbridge</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="JunctionSimPort"><a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.JunctionSimPort">[docs]</a><span class="k">class</span> <span class="nc">JunctionSimPort</span><span class="p">(</span><span class="n">RefpointToSimPort</span><span class="p">):</span>
+
+<div class="viewcode-block" id="JunctionSimPort">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.JunctionSimPort">[docs]</a>
+<span class="k">class</span> <span class="nc">JunctionSimPort</span><span class="p">(</span><span class="n">RefpointToSimPort</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates internal ports for a junction in the Simulation object.</span>
 
 <span class="sd">    Depending on the value of the `separate_island_internal_ports` parameter, will either create</span>
@@ -1108,6 +1137,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">refpoint</span><span class="o">=</span><span class="s2">&quot;port_squid_a&quot;</span><span class="p">,</span> <span class="n">other_refpoint</span><span class="o">=</span><span class="s2">&quot;port_squid_b&quot;</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">refpoint</span><span class="p">,</span> <span class="n">face</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">other_refpoint</span> <span class="o">=</span> <span class="n">other_refpoint</span></div>
+
 </pre></div>
 
            </div>

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.util.layout_to_code &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.util.layout_to_code &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=eeab0646" />
 
   
@@ -17,9 +17,9 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../../about.html" />
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -916,7 +916,9 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 
 
-<div class="viewcode-block" id="convert_cells_to_code"><a class="viewcode-back" href="../../../api/kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.convert_cells_to_code">[docs]</a><span class="k">def</span> <span class="nf">convert_cells_to_code</span><span class="p">(</span>
+<div class="viewcode-block" id="convert_cells_to_code">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.convert_cells_to_code">[docs]</a>
+<span class="k">def</span> <span class="nf">convert_cells_to_code</span><span class="p">(</span>
     <span class="n">top_cell</span><span class="p">,</span>
     <span class="n">print_waveguides_as_composite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">add_instance_names</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -1190,6 +1192,7 @@
     <span class="k">return</span> <span class="n">full_code</span></div>
 
 
+
 <span class="k">def</span> <span class="nf">_transform_as_string</span><span class="p">(</span><span class="n">inst</span><span class="p">):</span>
     <span class="n">trans</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">dcplx_trans</span>
     <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">trans</span><span class="o">.</span><span class="n">disp</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">trans</span><span class="o">.</span><span class="n">disp</span><span class="o">.</span><span class="n">y</span>
@@ -1273,7 +1276,9 @@
     <span class="k">return</span> <span class="n">instances</span>
 
 
-<div class="viewcode-block" id="get_node_params"><a class="viewcode-back" href="../../../api/kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.get_node_params">[docs]</a><span class="k">def</span> <span class="nf">get_node_params</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">Node</span><span class="p">):</span>
+<div class="viewcode-block" id="get_node_params">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.get_node_params">[docs]</a>
+<span class="k">def</span> <span class="nf">get_node_params</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">Node</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate a list of parameters for Node in string form</span>
 
@@ -1306,7 +1311,10 @@
     <span class="k">return</span> <span class="n">node_params</span><span class="p">,</span> <span class="n">elem</span></div>
 
 
-<div class="viewcode-block" id="extract_pcell_data_from_views"><a class="viewcode-back" href="../../../api/kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.extract_pcell_data_from_views">[docs]</a><span class="k">def</span> <span class="nf">extract_pcell_data_from_views</span><span class="p">():</span>
+
+<div class="viewcode-block" id="extract_pcell_data_from_views">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.extract_pcell_data_from_views">[docs]</a>
+<span class="k">def</span> <span class="nf">extract_pcell_data_from_views</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove all PCells and return their data.</span>
 
 <span class="sd">    Returns: A list of lists. Each element corresponds to a view in KLayout and it is a list of</span>
@@ -1334,7 +1342,10 @@
     <span class="k">return</span> <span class="n">views</span></div>
 
 
-<div class="viewcode-block" id="restore_pcells_to_views"><a class="viewcode-back" href="../../../api/kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.restore_pcells_to_views">[docs]</a><span class="k">def</span> <span class="nf">restore_pcells_to_views</span><span class="p">(</span><span class="n">views</span><span class="p">):</span>
+
+<div class="viewcode-block" id="restore_pcells_to_views">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.restore_pcells_to_views">[docs]</a>
+<span class="k">def</span> <span class="nf">restore_pcells_to_views</span><span class="p">(</span><span class="n">views</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Re-populate each view&#39;s Top Cell with PCells as extracted by ``extract_pcell_data_from_views``.</span>
 
 <span class="sd">    Args:</span>
@@ -1353,6 +1364,7 @@
             <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">def_params</span><span class="p">,</span> <span class="o">**</span><span class="n">pc</span><span class="p">[</span><span class="mi">2</span><span class="p">]}</span>
             <span class="n">insert_cell_into</span><span class="p">(</span><span class="n">top_cell</span><span class="p">,</span> <span class="n">pc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
         <span class="n">top_cell</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span></div>
+
 
 
 <span class="k">def</span> <span class="nf">_snap_waveguide_to_refpoints</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">refpoints</span><span class="p">,</span> <span class="n">refpoint_snap</span><span class="p">,</span> <span class="n">grid_snap</span><span class="p">):</span>

@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Simulation features &mdash; KQCircuits  documentation</title>
+  <title>Simulation features &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=eeab0646" />
 
   
@@ -18,9 +18,9 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../about.html" />
@@ -893,10 +893,10 @@
            <div itemprop="articleBody">
              
   <section id="simulation-features">
-<h1>Simulation features<a class="headerlink" href="#simulation-features" title="Permalink to this heading"></a></h1>
+<h1>Simulation features<a class="headerlink" href="#simulation-features" title="Link to this heading"></a></h1>
 <p>The simulation export covers following types of simulations.</p>
 <section id="s-parameter-matrix">
-<h2>S-parameter matrix<a class="headerlink" href="#s-parameter-matrix" title="Permalink to this heading"></a></h2>
+<h2>S-parameter matrix<a class="headerlink" href="#s-parameter-matrix" title="Link to this heading"></a></h2>
 <p>The output of a S-parameter (scattering parameter) simulation is a matrix of S-parameters between the ports.
 The dimensions of the matrix is equal to number of ports given in the simulation object.
 The rows and columns of the matrix are ordered by the port order number, i.e., the <code class="docutils literal notranslate"><span class="pre">number</span></code> parameter of
@@ -935,7 +935,7 @@ For other relevant export parameters, please consult API docs for the function
 <a class="reference internal" href="../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer" title="kqcircuits.simulations.export.elmer.elmer_export.export_elmer"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_elmer()</span></code></a>.</p>
 </section>
 <section id="capacitance-matrix">
-<h2>Capacitance matrix<a class="headerlink" href="#capacitance-matrix" title="Permalink to this heading"></a></h2>
+<h2>Capacitance matrix<a class="headerlink" href="#capacitance-matrix" title="Link to this heading"></a></h2>
 <p>The primary use case of a capacitance matrix simulation is to estimate capacitive couplings between different elements.
 The output of a capacitance simulation is a mutual capacitance matrix between islands of signal metals.
 In the mutual capacitance matrix, a non-diagonal term <code class="docutils literal notranslate"><span class="pre">C_i_j</span></code> is the capacitance between two signals <code class="docutils literal notranslate"><span class="pre">i</span></code> and <code class="docutils literal notranslate"><span class="pre">j</span></code>,
@@ -968,7 +968,7 @@ The Elmer capacitance matrix simulation can be activated by using <code class="d
 Please consult API docs of <a class="reference internal" href="../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer" title="kqcircuits.simulations.export.elmer.elmer_export.export_elmer"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_elmer()</span></code></a> for more information.</p>
 </section>
 <section id="eigenmode">
-<h2>Eigenmode<a class="headerlink" href="#eigenmode" title="Permalink to this heading"></a></h2>
+<h2>Eigenmode<a class="headerlink" href="#eigenmode" title="Link to this heading"></a></h2>
 <p>An eigenmode simulation provides results in terms of eigenmodes, i.e. resonances of a given structure.
 The output of an eigenmode simulation is a list of complex-valued eigenfrequencies, which
 can be used to estimate resonance frequencies and/or lifetimes of the resonances.
@@ -996,7 +996,7 @@ The other relevant parameters and their default values are:</p>
 </div>
 </section>
 <section id="energy-integrals-and-participation-ratio">
-<h2>Energy integrals and participation ratio<a class="headerlink" href="#energy-integrals-and-participation-ratio" title="Permalink to this heading"></a></h2>
+<h2>Energy integrals and participation ratio<a class="headerlink" href="#energy-integrals-and-participation-ratio" title="Link to this heading"></a></h2>
 <p>The energy integrals can be calculated from HFSS S-parameter or eigenmode simulations by setting export parameter
 <code class="docutils literal notranslate"><span class="pre">integrate_energies=True</span></code> in <code class="docutils literal notranslate"><span class="pre">ansys_export</span></code> function call.
 The energy integrals of each simulation are stored into file ending with <code class="docutils literal notranslate"><span class="pre">_energies.cvs</span></code>.
@@ -1008,7 +1008,7 @@ This is activated by export parameter <code class="docutils literal notranslate"
 The EPRs are saved into a file ending with <code class="docutils literal notranslate"><span class="pre">_epr.csv</span></code>.</p>
 </section>
 <section id="cross-sectional-simulations">
-<span id="id1"></span><h2>Cross-sectional simulations<a class="headerlink" href="#cross-sectional-simulations" title="Permalink to this heading"></a></h2>
+<span id="id1"></span><h2>Cross-sectional simulations<a class="headerlink" href="#cross-sectional-simulations" title="Link to this heading"></a></h2>
 <p>KQCircuits offers possibility to export Elmer cross-sectional simulations to calculate capacitance and inductance per
 unit length.
 In cross-sectional simulations, the geometry is technically 2-dimensional, which enables more precise accuracy than
@@ -1031,7 +1031,7 @@ The tool is described in more details in <a class="reference internal" href="../
 <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations/waveguides_sim_xsection.py">klayout_package/python/scripts/simulations/waveguides_sim_xsection.py</a>.</p>
 </section>
 <section id="pyepr">
-<span id="py-epr"></span><h2>pyEPR<a class="headerlink" href="#pyepr" title="Permalink to this heading"></a></h2>
+<span id="py-epr"></span><h2>pyEPR<a class="headerlink" href="#pyepr" title="Link to this heading"></a></h2>
 <p><a class="reference external" href="https://github.com/zlatko-minev/pyEPR">pyEPR</a> is supported for HFSS eigenmode simulations.
 A pyEPR simulation is activated using <code class="docutils literal notranslate"><span class="pre">ansys_tool='eigenmode'</span></code> and <code class="docutils literal notranslate"><span class="pre">simulation_flags=['pyepr']</span></code> in the
 <code class="docutils literal notranslate"><span class="pre">export_ansys</span></code> function call.

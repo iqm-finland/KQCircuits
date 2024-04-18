@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.util.geometry_helper &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.util.geometry_helper &mdash; KQCircuits 4.7.25 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=eeab0646" />
 
   
@@ -17,9 +17,9 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../../about.html" />
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -915,14 +915,19 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 
 
-<div class="viewcode-block" id="vector_length_and_direction"><a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.vector_length_and_direction">[docs]</a><span class="k">def</span> <span class="nf">vector_length_and_direction</span><span class="p">(</span><span class="n">vector</span><span class="p">):</span>
+<div class="viewcode-block" id="vector_length_and_direction">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.vector_length_and_direction">[docs]</a>
+<span class="k">def</span> <span class="nf">vector_length_and_direction</span><span class="p">(</span><span class="n">vector</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the direction and length of the pya.DVector &quot;vector&quot;.&quot;&quot;&quot;</span>
     <span class="n">length</span> <span class="o">=</span> <span class="n">vector</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
     <span class="n">direction</span> <span class="o">=</span> <span class="n">vector</span> <span class="o">/</span> <span class="n">length</span>
     <span class="k">return</span> <span class="n">length</span><span class="p">,</span> <span class="n">direction</span></div>
 
 
-<div class="viewcode-block" id="point_shift_along_vector"><a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.point_shift_along_vector">[docs]</a><span class="k">def</span> <span class="nf">point_shift_along_vector</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="point_shift_along_vector">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.point_shift_along_vector">[docs]</a>
+<span class="k">def</span> <span class="nf">point_shift_along_vector</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a point at a `distance` away from point `start` in the direction of point `other`.&quot;&quot;&quot;</span>
     <span class="n">v</span> <span class="o">=</span> <span class="n">other</span> <span class="o">-</span> <span class="n">start</span>
     <span class="k">if</span> <span class="n">distance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -931,7 +936,10 @@
         <span class="k">return</span> <span class="n">start</span> <span class="o">+</span> <span class="n">v</span></div>
 
 
-<div class="viewcode-block" id="get_direction"><a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.get_direction">[docs]</a><span class="k">def</span> <span class="nf">get_direction</span><span class="p">(</span><span class="n">angle</span><span class="p">):</span>
+
+<div class="viewcode-block" id="get_direction">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.get_direction">[docs]</a>
+<span class="k">def</span> <span class="nf">get_direction</span><span class="p">(</span><span class="n">angle</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the direction vector corresponding to `angle`.</span>
 
@@ -943,7 +951,10 @@
     <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="n">cos</span><span class="p">(</span><span class="n">radians</span><span class="p">(</span><span class="n">angle</span><span class="p">)),</span> <span class="n">sin</span><span class="p">(</span><span class="n">radians</span><span class="p">(</span><span class="n">angle</span><span class="p">)))</span></div>
 
 
-<div class="viewcode-block" id="get_angle"><a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.get_angle">[docs]</a><span class="k">def</span> <span class="nf">get_angle</span><span class="p">(</span><span class="n">vector</span><span class="p">):</span>
+
+<div class="viewcode-block" id="get_angle">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.get_angle">[docs]</a>
+<span class="k">def</span> <span class="nf">get_angle</span><span class="p">(</span><span class="n">vector</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the angle in degrees for a given DVector (or DPoint)</span>
 
@@ -955,7 +966,10 @@
     <span class="k">return</span> <span class="n">degrees</span><span class="p">(</span><span class="n">atan2</span><span class="p">(</span><span class="n">vector</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">vector</span><span class="o">.</span><span class="n">x</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="get_cell_path_length"><a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.get_cell_path_length">[docs]</a><span class="k">def</span> <span class="nf">get_cell_path_length</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="get_cell_path_length">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.get_cell_path_length">[docs]</a>
+<span class="k">def</span> <span class="nf">get_cell_path_length</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the length of the paths in the cell.</span>
 
 <span class="sd">    Adding together the cell&#39;s paths&#39; lengths in the &quot;1t1_waveguide_path&quot;, &quot;2b1_waveguide_path&quot; and</span>
@@ -974,6 +988,7 @@
         <span class="n">length</span> <span class="o">+=</span> <span class="n">_get_length_per_layer</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">path_layer</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">length</span></div>
+
 
 
 <span class="k">def</span> <span class="nf">_get_length_per_layer</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">layer</span><span class="p">):</span>
@@ -999,7 +1014,9 @@
     <span class="k">return</span> <span class="n">length</span>
 
 
-<div class="viewcode-block" id="get_object_path_length"><a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.get_object_path_length">[docs]</a><span class="k">def</span> <span class="nf">get_object_path_length</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_object_path_length">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.get_object_path_length">[docs]</a>
+<span class="k">def</span> <span class="nf">get_object_path_length</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns sum of lengths of all the paths in the object and its children</span>
 
 <span class="sd">    Arguments:</span>
@@ -1021,11 +1038,17 @@
     <span class="k">return</span> <span class="mi">0</span></div>
 
 
-<div class="viewcode-block" id="simple_region"><a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.simple_region">[docs]</a><span class="k">def</span> <span class="nf">simple_region</span><span class="p">(</span><span class="n">region</span><span class="p">):</span>
+
+<div class="viewcode-block" id="simple_region">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.simple_region">[docs]</a>
+<span class="k">def</span> <span class="nf">simple_region</span><span class="p">(</span><span class="n">region</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">([</span><span class="n">poly</span><span class="o">.</span><span class="n">to_simple_polygon</span><span class="p">()</span> <span class="k">for</span> <span class="n">poly</span> <span class="ow">in</span> <span class="n">region</span><span class="o">.</span><span class="n">each</span><span class="p">()])</span></div>
 
 
-<div class="viewcode-block" id="region_with_merged_points"><a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.region_with_merged_points">[docs]</a><span class="k">def</span> <span class="nf">region_with_merged_points</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">):</span>
+
+<div class="viewcode-block" id="region_with_merged_points">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.region_with_merged_points">[docs]</a>
+<span class="k">def</span> <span class="nf">region_with_merged_points</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;In each polygon of the region, removes points that are closer to other points than a given tolerance.</span>
 
 <span class="sd">    Arguments:</span>
@@ -1088,7 +1111,10 @@
     <span class="k">return</span> <span class="n">new_region</span></div>
 
 
-<div class="viewcode-block" id="region_with_merged_polygons"><a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.region_with_merged_polygons">[docs]</a><span class="k">def</span> <span class="nf">region_with_merged_polygons</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">expansion</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+
+<div class="viewcode-block" id="region_with_merged_polygons">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.region_with_merged_polygons">[docs]</a>
+<span class="k">def</span> <span class="nf">region_with_merged_polygons</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">expansion</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Merges polygons in given region. Ignores gaps that are smaller than given tolerance.</span>
 
 <span class="sd">    Arguments:</span>
@@ -1106,7 +1132,10 @@
     <span class="k">return</span> <span class="n">new_region</span></div>
 
 
-<div class="viewcode-block" id="merge_points_and_match_on_edges"><a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.merge_points_and_match_on_edges">[docs]</a><span class="k">def</span> <span class="nf">merge_points_and_match_on_edges</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">layers</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+
+<div class="viewcode-block" id="merge_points_and_match_on_edges">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.merge_points_and_match_on_edges">[docs]</a>
+<span class="k">def</span> <span class="nf">merge_points_and_match_on_edges</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">layers</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Merges adjacent points of layers.</span>
 <span class="sd">    Also goes through each polygon edge and splits the edge whenever it passes close to existing point.</span>
 
@@ -1119,37 +1148,44 @@
 <span class="sd">        tolerance: Tolerance in pixels</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">fixed_polygon</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="n">mod_pts</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Recursively fixes and possibly splits the polygon near modified points. Returns list of polygons.</span>
-<span class="sd">        - removes consecutive duplicate points</span>
+    <span class="k">def</span> <span class="nf">fixed_polygon</span><span class="p">(</span><span class="n">pts</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Recursively fixes and possibly splits the polygon. Returns list of polygons.</span>
+<span class="sd">        Assumes that len(pts) &gt;= 3 and consecutive points are not duplicates.</span>
 <span class="sd">        - removes spikes of overlapping edges</span>
 <span class="sd">        - splits polygon if parts of it are connected with overlapping edges</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">mod_pts</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[</span><span class="n">poly</span><span class="p">]</span>
+        <span class="c1"># Create mapping from point to list of indices</span>
+        <span class="n">instance_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">p</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pts</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pts</span><span class="p">):</span>
+            <span class="n">instance_map</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
 
-        <span class="n">pts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">poly</span><span class="o">.</span><span class="n">each_point</span><span class="p">())</span>
-        <span class="n">instances</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pts</span><span class="p">))</span> <span class="k">if</span> <span class="n">pts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">mod_pts</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
-        <span class="k">for</span> <span class="n">i0</span> <span class="ow">in</span> <span class="n">instances</span><span class="p">:</span>
-            <span class="n">post_pt</span> <span class="o">=</span> <span class="n">pts</span><span class="p">[(</span><span class="n">i0</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">pts</span><span class="p">)]</span>
-            <span class="k">if</span> <span class="n">post_pt</span> <span class="o">==</span> <span class="n">mod_pts</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-                <span class="k">return</span> <span class="n">fixed_polygon</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">SimplePolygon</span><span class="p">([</span><span class="n">pts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pts</span><span class="p">))</span> <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">i0</span><span class="p">],</span> <span class="kc">True</span><span class="p">),</span> <span class="n">mod_pts</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="n">instances</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">post_pt</span> <span class="o">==</span> <span class="n">pts</span><span class="p">[</span><span class="n">i1</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
-                    <span class="n">polys</span> <span class="o">=</span> <span class="p">[]</span>
-                    <span class="n">pts0</span> <span class="o">=</span> <span class="p">[</span><span class="n">pts</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">pts</span><span class="p">)]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i0</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">i1</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">i0</span> <span class="o">&gt;=</span> <span class="n">i1</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">pts</span><span class="p">))]</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pts0</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
-                        <span class="n">polys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">SimplePolygon</span><span class="p">(</span><span class="n">pts0</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
-                        <span class="k">if</span> <span class="n">polys</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">inside</span><span class="p">(</span><span class="n">mod_pts</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-                            <span class="k">break</span>
-                    <span class="n">pts1</span> <span class="o">=</span> <span class="p">[</span><span class="n">pts</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">pts</span><span class="p">)]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i1</span><span class="p">,</span> <span class="n">i0</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">i0</span> <span class="o">&lt;</span> <span class="n">i1</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">pts</span><span class="p">))]</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pts1</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
-                        <span class="n">polys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">SimplePolygon</span><span class="p">(</span><span class="n">pts1</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
-                        <span class="k">if</span> <span class="n">polys</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">inside</span><span class="p">(</span><span class="n">post_pt</span><span class="p">):</span>
-                            <span class="k">break</span>
-                    <span class="k">return</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">polys</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">fixed_polygon</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">mod_pts</span><span class="p">)]</span>
-
-        <span class="k">return</span> <span class="n">fixed_polygon</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="n">mod_pts</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="c1"># Go through all points. If same point has 2 or more instances, then possibly split polygon into smaller pieces.</span>
+        <span class="n">valid</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>  <span class="c1"># polygon is valid if there are no duplicate instances or there is a crossing next to any duplicate</span>
+        <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">instances</span> <span class="ow">in</span> <span class="n">instance_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">instances</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">valid</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># duplicate instance exists</span>
+            <span class="k">for</span> <span class="n">i0</span> <span class="ow">in</span> <span class="n">instances</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="n">instances</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">i0</span> <span class="o">==</span> <span class="n">i1</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="n">p0</span> <span class="o">=</span> <span class="n">pts</span><span class="p">[</span><span class="n">i0</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                    <span class="n">p1</span> <span class="o">=</span> <span class="n">pts</span><span class="p">[(</span><span class="n">i1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">pts</span><span class="p">)]</span>
+                    <span class="k">if</span> <span class="n">p0</span> <span class="o">==</span> <span class="n">p1</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="n">valid</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># crossing next to duplicate</span>
+                    <span class="n">p2</span> <span class="o">=</span> <span class="n">pts</span><span class="p">[</span><span class="n">i1</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">pya</span><span class="o">.</span><span class="n">Edge</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">side_of</span><span class="p">(</span><span class="n">p2</span><span class="p">)</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">Edge</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">p1</span><span class="p">)</span><span class="o">.</span><span class="n">side_of</span><span class="p">(</span><span class="n">p2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">pya</span><span class="o">.</span><span class="n">Edge</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">side_of</span><span class="p">(</span><span class="n">p1</span><span class="p">):</span>
+                        <span class="k">continue</span>  <span class="c1"># detected a hole connection at p</span>
+                    <span class="n">poly</span> <span class="o">=</span> <span class="n">fixed_polygon</span><span class="p">([</span><span class="n">pts</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">pts</span><span class="p">)]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i1</span><span class="p">,</span> <span class="n">i0</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">i0</span> <span class="o">&lt;</span> <span class="n">i1</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">pts</span><span class="p">))])</span>
+                    <span class="n">j0</span><span class="p">,</span> <span class="n">j1</span> <span class="o">=</span> <span class="n">i0</span><span class="p">,</span> <span class="n">i1</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">i0</span> <span class="o">&gt;</span> <span class="n">i1</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span>
+                    <span class="k">while</span> <span class="n">j1</span> <span class="o">-</span> <span class="n">j0</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">pts</span><span class="p">[(</span><span class="n">j0</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">pts</span><span class="p">)]</span> <span class="o">!=</span> <span class="n">pts</span><span class="p">[(</span><span class="n">j1</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">pts</span><span class="p">)]:</span>
+                            <span class="k">return</span> <span class="n">poly</span> <span class="o">+</span> <span class="n">fixed_polygon</span><span class="p">([</span><span class="n">pts</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">pts</span><span class="p">)]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">j0</span><span class="p">,</span> <span class="n">j1</span><span class="p">)])</span>
+                        <span class="n">j0</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="n">j1</span> <span class="o">-=</span> <span class="mi">1</span>
+                    <span class="k">return</span> <span class="n">poly</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">SimplePolygon</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="kc">True</span><span class="p">)]</span> <span class="k">if</span> <span class="n">valid</span> <span class="k">else</span> <span class="p">[]</span>
 
     <span class="c1"># Gather points from layers to `all_points` dictionary. This ignores duplicate points.</span>
     <span class="n">all_points</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -1199,29 +1235,30 @@
         <span class="k">for</span> <span class="n">shape</span> <span class="ow">in</span> <span class="n">shapes</span><span class="o">.</span><span class="n">each</span><span class="p">():</span>
             <span class="n">points</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">simple_polygon</span><span class="o">.</span><span class="n">each_point</span><span class="p">())</span>
             <span class="n">new_points</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="n">modified_points</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">p1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
                 <span class="n">p0</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
                 <span class="n">edge</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Edge</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">)</span>
                 <span class="c1"># Travel from p0 to p1 in Voronoi diagram</span>
                 <span class="k">while</span> <span class="n">p0</span> <span class="o">!=</span> <span class="n">p1</span><span class="p">:</span>
-                    <span class="c1"># List points that are on the edge towards p1</span>
-                    <span class="n">sq_dist</span> <span class="o">=</span> <span class="n">p0</span><span class="o">.</span><span class="n">sq_distance</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span>
-                    <span class="n">forward_points</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">all_points</span><span class="p">[</span><span class="n">p0</span><span class="p">]</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">sq_distance</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">sq_dist</span><span class="p">]</span>
-                    <span class="n">p_on_edge</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">forward_points</span> <span class="k">if</span> <span class="n">edge</span><span class="o">.</span><span class="n">distance_abs</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">tolerance</span><span class="p">]</span>
-                    <span class="k">if</span> <span class="n">p_on_edge</span><span class="p">:</span>
-                        <span class="c1"># Update p0 to be the point on edge towards p1 that is furthest from p1</span>
-                        <span class="n">p0</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">p_on_edge</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">p1</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">sq_distance</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
-                        <span class="c1"># Add the point to the polygon. Finally, p0 is equal to p1 here.</span>
+                    <span class="c1"># Find the next Voronoi cell through which the edge passes</span>
+                    <span class="n">next_cell</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">all_points</span><span class="p">[</span><span class="n">p0</span><span class="p">]:</span>
+                        <span class="n">dot</span> <span class="o">=</span> <span class="n">edge</span><span class="o">.</span><span class="n">d</span><span class="p">()</span><span class="o">.</span><span class="n">sprod</span><span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="n">p0</span><span class="p">)</span>  <span class="c1"># dot product between the edge vector and (p - p0)</span>
+                        <span class="k">if</span> <span class="n">dot</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+                            <span class="k">continue</span>
+                        <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">sq_distance</span><span class="p">(</span><span class="n">edge</span><span class="o">.</span><span class="n">p1</span><span class="p">)</span> <span class="o">-</span> <span class="n">p0</span><span class="o">.</span><span class="n">sq_distance</span><span class="p">(</span><span class="n">edge</span><span class="o">.</span><span class="n">p1</span><span class="p">))</span> <span class="o">/</span> <span class="n">dot</span>  <span class="c1"># distance to the Voronoi cell</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">next_cell</span> <span class="ow">or</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="n">next_cell</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                            <span class="n">next_cell</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span>
+                    <span class="c1"># The next_cell is found unless the Voronoi diagram is badly broken</span>
+                    <span class="n">p0</span> <span class="o">=</span> <span class="n">next_cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">edge</span><span class="o">.</span><span class="n">distance_abs</span><span class="p">(</span><span class="n">p0</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">tolerance</span><span class="p">:</span>
+                        <span class="c1"># Point is close to edge, so add the point to the polygon. Finally, p0 is equal to p1 here.</span>
                         <span class="n">new_points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">moved</span><span class="p">[</span><span class="n">p0</span><span class="p">]</span> <span class="k">if</span> <span class="n">p0</span> <span class="ow">in</span> <span class="n">moved</span> <span class="k">else</span> <span class="n">p0</span><span class="p">)</span>
-                        <span class="k">if</span> <span class="n">new_points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">p1</span><span class="p">:</span>
-                            <span class="n">modified_points</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new_points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="c1"># Update p0 to be the forward neighbour closest to edge</span>
-                        <span class="n">p0</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">forward_points</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">edge</span><span class="p">:</span> <span class="n">y</span><span class="o">.</span><span class="n">distance_abs</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 
-            <span class="c1"># Fix polygon if points are modified and update list of polygons</span>
-            <span class="n">polygons</span> <span class="o">+=</span> <span class="n">fixed_polygon</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">SimplePolygon</span><span class="p">(</span><span class="n">new_points</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="nb">list</span><span class="p">(</span><span class="n">modified_points</span><span class="p">))</span>
+            <span class="c1"># Remove consecutive duplicate points and update list of polygons by fixed polygons</span>
+            <span class="n">new_points_no_duplicates</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">new_points</span><span class="p">)</span> <span class="k">if</span> <span class="n">p</span> <span class="o">!=</span> <span class="n">new_points</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_points_no_duplicates</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">polygons</span> <span class="o">+=</span> <span class="n">fixed_polygon</span><span class="p">(</span><span class="n">new_points_no_duplicates</span><span class="p">)</span>
 
         <span class="c1"># Replace shapes with list of polygons</span>
         <span class="n">shapes</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
@@ -1229,7 +1266,10 @@
             <span class="n">shapes</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">new_polygon</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="is_clockwise"><a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.is_clockwise">[docs]</a><span class="k">def</span> <span class="nf">is_clockwise</span><span class="p">(</span><span class="n">polygon_points</span><span class="p">):</span>
+
+<div class="viewcode-block" id="is_clockwise">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.is_clockwise">[docs]</a>
+<span class="k">def</span> <span class="nf">is_clockwise</span><span class="p">(</span><span class="n">polygon_points</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns True if the polygon points are in clockwise order, False if they are counter-clockwise.</span>
 
 <span class="sd">    Args:</span>
@@ -1247,7 +1287,10 @@
     <span class="k">return</span> <span class="n">det</span> <span class="o">&lt;</span> <span class="mi">0</span></div>
 
 
-<div class="viewcode-block" id="circle_polygon"><a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.circle_polygon">[docs]</a><span class="k">def</span> <span class="nf">circle_polygon</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
+
+<div class="viewcode-block" id="circle_polygon">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.circle_polygon">[docs]</a>
+<span class="k">def</span> <span class="nf">circle_polygon</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a polygon for a full circle around the origin.</span>
 
@@ -1261,7 +1304,10 @@
     <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">([</span><span class="n">origin</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">cos</span><span class="p">(</span><span class="n">a</span> <span class="o">/</span> <span class="n">n</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span><span class="p">,</span> <span class="n">sin</span><span class="p">(</span><span class="n">a</span> <span class="o">/</span> <span class="n">n</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">)])</span></div>
 
 
-<div class="viewcode-block" id="arc_points"><a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.arc_points">[docs]</a><span class="k">def</span> <span class="nf">arc_points</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="n">pi</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
+
+<div class="viewcode-block" id="arc_points">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.arc_points">[docs]</a>
+<span class="k">def</span> <span class="nf">arc_points</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="n">pi</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns point describing an arc around the origin with specified start and stop angles. The start and stop angle</span>
 <span class="sd">    are included.</span>
@@ -1279,6 +1325,7 @@
     <span class="n">n_steps</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ceil</span><span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">stop</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">pi</span><span class="p">)),</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">step</span> <span class="o">=</span> <span class="p">(</span><span class="n">stop</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_steps</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">origin</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">cos</span><span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">a</span> <span class="o">*</span> <span class="n">step</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span><span class="p">,</span> <span class="n">sin</span><span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">a</span> <span class="o">*</span> <span class="n">step</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_steps</span><span class="p">)]</span></div>
+
 
 
 <span class="k">def</span> <span class="nf">_cubic_polynomial</span><span class="p">(</span>
@@ -1304,7 +1351,9 @@
     <span class="k">return</span> <span class="n">result_points</span>
 
 
-<div class="viewcode-block" id="bspline_points"><a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.bspline_points">[docs]</a><span class="k">def</span> <span class="nf">bspline_points</span><span class="p">(</span>
+<div class="viewcode-block" id="bspline_points">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.bspline_points">[docs]</a>
+<span class="k">def</span> <span class="nf">bspline_points</span><span class="p">(</span>
     <span class="n">control_points</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">],</span> <span class="n">sample_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">startpoint</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Samples points uniformly from the B-Spline constructed from a sequence of control points.</span>
@@ -1352,7 +1401,10 @@
     <span class="k">return</span> <span class="n">result_points</span></div>
 
 
-<div class="viewcode-block" id="bezier_points"><a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.bezier_points">[docs]</a><span class="k">def</span> <span class="nf">bezier_points</span><span class="p">(</span><span class="n">control_points</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">],</span> <span class="n">sample_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">]:</span>
+
+<div class="viewcode-block" id="bezier_points">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.bezier_points">[docs]</a>
+<span class="k">def</span> <span class="nf">bezier_points</span><span class="p">(</span><span class="n">control_points</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">],</span> <span class="n">sample_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Samples points uniformly from the Bezier curve constructed from a sequence of control points.</span>
 <span class="sd">    The curve is derived from a sequence of cubic splines for each subsequence of four-control points</span>
 <span class="sd">    such that subsequence shares one control point with the previous subsequence.</span>
@@ -1387,6 +1439,7 @@
             <span class="n">endpoint</span><span class="o">=</span><span class="p">(</span><span class="n">window_start</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">control_points</span><span class="p">)</span> <span class="o">-</span> <span class="mi">4</span><span class="p">),</span>
         <span class="p">)</span>
     <span class="k">return</span> <span class="n">result_points</span></div>
+
 </pre></div>
 
            </div>
