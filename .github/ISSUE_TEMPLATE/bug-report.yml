@@ -30,10 +30,10 @@ body:
       label: Versions
       description: Please specify the SW versions of KQCircuits, KLayout, Python and your OS.
       placeholder: |
-           KQCircuits: 4.6.5
-           KLayout: 0.28.5
-           Python: 3.8.10
-           OS: Ubuntu 20.04.5 LTS
+           KQCircuits: 4.7.22
+           KLayout: 0.29.0
+           Python: 3.10.14
+           OS: Ubuntu 22.04.4 LTS
     validations:
       required: true
 

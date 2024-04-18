@@ -5,7 +5,7 @@ description = "KQCircuits is a KLayout/Python-based superconducting quantum circ
 authors = [
     {name = "IQM Finland Oy", email = "kqcircuits@meetiqm.com"},
 ]
-requires-python = ">=3.6.9"
+requires-python = ">=3.10"
 readme = "README.md"
 license = {text = "GPL-3.0"}
 classifiers = [
