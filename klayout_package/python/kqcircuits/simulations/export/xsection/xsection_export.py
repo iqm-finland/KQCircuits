@@ -195,6 +195,7 @@ def create_xsections_from_simulations(
     """
     if isinstance(cuts, Tuple):
         cuts = [cuts] * len(simulations)
+    cuts = [tuple(c if isinstance(c, pya.DPoint) else c.to_p() for c in cut) for cut in cuts]
     if len(simulations) != len(cuts):
         raise Exception("Number of cuts did not match the number of simulations")
     if any(len(simulation.get_parameters()["face_stack"]) not in (1, 2) for simulation in simulations):
@@ -320,16 +321,13 @@ def visualise_xsection_cut_on_original_layout(
     """
     if isinstance(cuts, Tuple):
         cuts = [cuts] * len(simulations)
+    cuts = [tuple(c if isinstance(c, pya.DPoint) else c.to_p() for c in cut) for cut in cuts]
     if len(simulations) != len(cuts):
         raise Exception("Number of cuts did not match the number of simulations")
     for simulation, cut in zip(simulations, cuts):
         cut_length = (cut[1] - cut[0]).length()
         marker = pya.Region(pya.DPath(cut, cut_length * width_ratio).to_itype(simulation.layout.dbu))
-        # Not using get_sim_layer since this geometry is not part of any simulation
-        cut_visualisation_layer = simulation.layout.layer("xsection_cut")
-        simulation.cell.shapes(cut_visualisation_layer).insert(marker)
-        simulation.cell.shapes(cut_visualisation_layer).insert(pya.DText(f"{cut_label}_1", cut[0].x, cut[0].y))
-        simulation.cell.shapes(cut_visualisation_layer).insert(pya.DText(f"{cut_label}_2", cut[1].x, cut[1].y))
+        simulation.visualise_region(marker, cut_label, "xsection_cut", cut)
 
 
 def _load_layout_options_for_xsection_output():

@@ -753,6 +753,11 @@ class Simulation:
         # Eliminate gaps and overlaps caused by transformation to simple_polygon
         merge_points_and_match_on_edges(self.cell, self.layout, [get_simulation_layer_by_name(n) for n in self.layers])
 
+        # Visualise parititon regions
+        for part in parts:
+            if part.visualise:
+                self.visualise_region(part.region, part.name, f"part_reg_{part.name}")
+
     def produce_layers(self, parts):
         """Finalizes and partitions self.layers.
 
@@ -837,7 +842,7 @@ class Simulation:
                 "name": part.name,
                 "bottom": round(part.z[0], 12),
                 "top": round(part.z[1], 12),
-                "region": part.region,
+                "region": part.region.dup(),
             }
             for part in parts
             if part.face is None
@@ -1198,3 +1203,32 @@ class Simulation:
                     cell_to_be_deleted.delete()
                 except RuntimeError as e:
                     logging.warning(f"Attempt to delete cell {name}{index_name} caused following error: {e}")
+
+    def visualise_region(
+        self,
+        region: pya.Region,
+        label: str,
+        layer: str = "visualisation",
+        points: list[pya.DPoint] | pya.DPoint | None = None,
+    ) -> None:
+        """Visualises given region in a dedicated layer in the preview geometry file.
+
+        Arguments:
+            region: pya.Region to visualise
+            label: Label of the region, rendered using pya.DText objects
+            layer: Name of the KLayout layer to place the visualised region
+            points: pya.DPoint or list of DPoints to place as labels to the region.
+                By default places one point at the middle of the region's boundary box.
+        """
+        # Not using get_sim_layer since this geometry is not part of any simulation
+        visualisation_layer = self.layout.layer(layer)
+        self.cell.shapes(visualisation_layer).insert(region)
+        if points is None:
+            points = [region.bbox().to_dtype(self.layout.dbu).center()]
+        elif isinstance(points, pya.DPoint):
+            points = [points]
+        if len(points) <= 1:
+            self.cell.shapes(visualisation_layer).insert(pya.DText(label, points[0].x, points[0].y))
+        else:
+            for i, p in enumerate(points):
+                self.cell.shapes(visualisation_layer).insert(pya.DText(f"{label}_{i+1}", p.x, p.y))

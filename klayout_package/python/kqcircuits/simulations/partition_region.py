@@ -35,6 +35,7 @@ class PartitionRegion:
         face=None,
         vertical_dimensions=None,
         metal_edge_dimensions=None,
+        visualise=False,
     ):
         """
         Args:
@@ -51,6 +52,7 @@ class PartitionRegion:
                 list, the terms correspond to expansions into directions of gap and metal, respectively. If given as
                 scalar, the gap and metal expansions are equal. Use None to disable the metal edge limitation. This is
                 applied only if face is given.
+            visualise: Visualises the partition region in the preview of the simulation geometry.
         """
         if name[-1] in "0123456789":
             raise ValueError(f"PartitionRegion name must not end with a number, but {name} is given.")
@@ -62,6 +64,7 @@ class PartitionRegion:
         self.face = face
         self.vertical_dimensions = vertical_dimensions
         self.metal_edge_dimensions = metal_edge_dimensions
+        self.visualise = visualise
 
     def limit_box(self, bottom, top, box, dbu):
         """Limits the region and z-levels into simulation dimensions.
