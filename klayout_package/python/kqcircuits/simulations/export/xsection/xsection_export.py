@@ -214,6 +214,9 @@ def create_xsections_from_simulations(
         xsection_call(simulation_file, xsection_file, cut[0], cut[1], process_path, xsection_parameters)
 
         layout.read(str(xsection_file), load_opts)
+        for i in layout.layer_indexes():
+            if all(layout.begin_shapes(cell, i).at_end() for cell in layout.top_cells()):
+                layout.delete_layer(i)  # delete empty layers caused by bug in klayout 0.29.0
         xsection_cell = layout.top_cells()[-1]
         xsection_cell.name = simulation.cell.name
 
