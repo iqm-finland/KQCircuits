@@ -17,6 +17,7 @@
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 # pylint: disable=too-many-lines
 import csv
+import re
 import json
 import logging
 import time
@@ -26,10 +27,11 @@ from typing import Union, Sequence, Any, Dict, List
 from scipy.constants import epsilon_0
 from scipy.signal import find_peaks
 import numpy as np
+import pandas as pd
 
 
 def read_mesh_names(path):
-    """Returns names from mesh.names file"""
+    """Returns all names from mesh.names file"""
     list_of_names = []
     with open(path.joinpath("mesh.names")) as file:
         for line in file:
@@ -37,6 +39,41 @@ def read_mesh_names(path):
                 eq_sign = line.find(" =")
                 if eq_sign > 2:
                     list_of_names.append(line[2:eq_sign])
+    return list_of_names
+
+
+def read_mesh_bodies(path):
+    """Returns names of bodies from mesh.names file"""
+    list_of_names = []
+    with open(path.joinpath("mesh.names")) as file:
+        for line in file:
+            if "! ----- names for boundaries -----" in line:
+                break
+            if line.startswith("$ "):
+                eq_sign = line.find(" =")
+                if eq_sign > 2:
+                    list_of_names.append(line[2:eq_sign])
+    return list_of_names
+
+
+def read_mesh_boundaries(path):
+    """Returns names of boundaries from mesh.names file"""
+    with open(path.joinpath("mesh.names")) as file:
+        lines = [line.strip() for line in file]
+
+    i = 0
+    while i < len(lines) and "! ----- names for boundaries -----" not in lines[i]:
+        i += 1
+
+    list_of_names = []
+    for line in lines[i + 1 :]:
+        if line.startswith("$ "):
+            eq_sign = line.find(" =")
+            if eq_sign > 2:
+                list_of_names.append(line[2:eq_sign])
+        else:
+            logging.warning(f"Unexpected mesh boundary name: {line}")
+            break
     return list_of_names
 
 
@@ -61,6 +98,7 @@ def sif_common_header(
     def_file=None,
     dim="3",
     discontinuous_boundary=False,
+    constraint_modes_analysis=True,
 ) -> str:
     """
     Returns common header and simulation blocks of a sif file in string format.
@@ -81,7 +119,7 @@ def sif_common_header(
     res += sif_block(
         "Run Control",
         [
-            "Constraint Modes Analysis = True",
+            f"Constraint Modes Analysis = {constraint_modes_analysis}",
         ]
         + reset_adaptive_remesh_str,
     )
@@ -434,6 +472,7 @@ def get_electrostatics_solver(
     minimum_passes=1,
     convergence_tolerance=-1,
     max_iterations=-1,
+    c_matrix_output=True,
 ):
     """
     Returns electrostatics solver in sif file format.
@@ -448,6 +487,7 @@ def get_electrostatics_solver(
         max_outlier_fraction(float): Maximum fraction of outliers from the total number of elements
         minimum_passes(int): Maximum number of adaptive meshing iterations.
         minimum_passes(int): Minimum number of adaptive meshing iterations.
+        c_matrix_output(bool): Can be used to turn off capacitance matrix output
 
     Returns:
         (str): electrostatics solver in sif file format
@@ -459,7 +499,7 @@ def get_electrostatics_solver(
         "Equation = Electro Statics",
         f'Procedure = "{solver}" "StatElecSolver"',
         "Variable = Potential",
-        "Calculate Capacitance Matrix = True",
+        f"Calculate Capacitance Matrix = {c_matrix_output}",
         "Calculate Electric Field = True",
         "Calculate Elemental Fields = True",
         "Average Within Materials = False",
@@ -669,7 +709,7 @@ def get_save_data_solver(ordinate, result_file="results.dat"):
     return sif_block(f"Solver {ordinate}", solver_lines)
 
 
-def get_save_energy_solver(ordinate, energy_file, bodies):
+def get_save_energy_solver(ordinate, energy_file, bodies, sheet_bodies=None):
     """
     Returns save energy solver in sif file format.
 
@@ -677,6 +717,7 @@ def get_save_energy_solver(ordinate, energy_file, bodies):
         ordinate(int): solver ordinate
         energy_file(str): data file name for energy results
         bodies(list(str)): body names for energy calculation
+        sheet_bodies(list(str)): boundary names for energy calculation in 3D simulation
 
     Returns:
         (str): save energy solver in sif file format
@@ -687,21 +728,26 @@ def get_save_energy_solver(ordinate, energy_file, bodies):
         'Procedure = "SaveData" "SaveScalars"',
         f"Filename = {energy_file}",
         "Parallel Reduce = Logical True",
-        # Add all target bodies to the solver
-        *(
-            line
-            for layer_props in (
-                (
-                    f"Variable {i} = Potential",
-                    f"Operator {i} = body diffusive energy",
-                    f"Mask Name {i} = {interface}",
-                    f"Coefficient {i} = Relative Permittivity",
-                )
-                for i, interface in enumerate(bodies, 1)
-            )
-            for line in layer_props
-        ),
     ]
+    # Add all target bodies to the solver
+    for i, interface in enumerate(bodies, 1):
+        solver_lines += [
+            f"Variable {i} = Potential",
+            f"Operator {i} = body diffusive energy",
+            f"Mask Name {i} = {interface}",
+            f"Coefficient {i} = Relative Permittivity",
+        ]
+
+    # Add sheet body energies using a custom energy solver separating the energy into normal and tangential components
+    if sheet_bodies is not None:
+        i = len(bodies) + 1
+        for interface in sheet_bodies:
+            solver_lines += [
+                f"Variable {i} = {interface}_norm_component",
+                f"Variable {i+1} = {interface}_tan_component",
+            ]
+            i += 2
+
     return sif_block(f"Solver {ordinate}", solver_lines)
 
 
@@ -801,15 +847,17 @@ def produce_sif_files(json_data: dict, path: Path) -> List[Path]:
     """
     path.mkdir(exist_ok=True, parents=True)
     sif_names = json_data["sif_names"]
-
-    if json_data["tool"] == "capacitance" and len(sif_names) != 1:
+    tool = json_data["tool"]
+    if tool == "capacitance" and len(sif_names) != 1:
         logging.warning(f"Capacitance tool only supports 1 sif name, given {len(sif_names)}")
 
     sif_filepaths = []
     for ind, sif in enumerate(sif_names):
-        if json_data["tool"] == "capacitance":
+        if tool == "capacitance":
             content = sif_capacitance(json_data, path, vtu_name=path, angular_frequency=0, dim=3, with_zero=False)
-        elif json_data["tool"] == "wave_equation":
+        elif tool == "epr_3d":
+            content = sif_epr_3d(json_data, path, vtu_name=path)
+        elif tool == "wave_equation":
             freqs = json_data["frequency"]
             if len(freqs) != len(sif_names):
                 logging.warning(
@@ -817,7 +865,7 @@ def produce_sif_files(json_data: dict, path: Path) -> List[Path]:
                 )
             content = sif_wave_equation(json_data, path, frequency=freqs[ind])
         else:
-            logging.warning(f"Unkown tool: {json_data['tool']}. No sif file created")
+            logging.warning(f"Unkown tool: {tool}. No sif file created")
             return []
 
         sif_filepath = path.joinpath(f"{sif}.sif")
@@ -927,6 +975,154 @@ def get_grounds(json_data, dim, mesh_names):
     elif dim == 3:
         return [n for n in mesh_names if n.startswith("ground")]
     return []
+
+
+def sif_placeholder_boundaries(groups, n_boundaries):
+    boundary_conditions = ""
+    for i, s in enumerate(groups, 1):
+        boundary_conditions += sif_boundary_condition(
+            ordinate=i + n_boundaries,
+            target_boundaries=[s],
+            conditions=[
+                "! This BC does not do anything, but",
+                "! MMG does not conserve GeometryIDs if there is no BC defined.",
+            ],
+        )
+    return boundary_conditions
+
+
+def sif_epr_3d(json_data: dict, folder_path: Path, vtu_name: str):
+    """
+    Returns 3D EPR simulation sif
+
+    This solution assumes that signals and grounds are 3d bodies
+    Also mesh boundaries are assumed to contain only tls layers and no ports
+
+    Args:
+        json_data: all the model data produced by `export_elmer_json`
+        folder_path: folder path of the model files
+        vtu_name: name of the paraview file
+    """
+
+    header = sif_common_header(json_data, folder_path, angular_frequency=0, dim=3, constraint_modes_analysis=False)
+    constants = sif_block("Constants", [f"Permittivity Of Vacuum = {epsilon_0}"])
+
+    solvers = get_electrostatics_solver(
+        ordinate=1,
+        capacitance_file="none",
+        method=json_data["linear_system_method"],
+        p_element_order=json_data["p_element_order"],
+        maximum_passes=json_data["maximum_passes"],
+        minimum_passes=json_data["minimum_passes"],
+        percent_error=json_data["percent_error"],
+        max_error_scale=json_data["max_error_scale"],
+        max_outlier_fraction=json_data["max_outlier_fraction"],
+        convergence_tolerance=json_data["convergence_tolerance"],
+        max_iterations=json_data["max_iterations"],
+        c_matrix_output=False,
+    )
+    solvers += get_result_output_solver(
+        ordinate=2,
+        output_file_name=vtu_name,
+        exec_solver="Always" if json_data.get("vtu_output", True) else "Never",
+    )
+    equations = get_equation(
+        ordinate=1,
+        solver_ids=[1],
+    )
+
+    mesh_bodies = read_mesh_bodies(folder_path)
+    mesh_boundaries = read_mesh_boundaries(folder_path)
+
+    grounds = [n for n in mesh_bodies if n.startswith("ground")]
+    signals = [n for n in mesh_bodies if n.startswith("signal")]
+    mesh_bodies = [n for n in mesh_bodies if n not in grounds + signals]
+
+    permittivity_list = []
+    for b in mesh_bodies:
+        # mesh names have gmsh prefix if layer starts with number
+        mat = json_data["layers"].get(b.removeprefix("gmsh_"), {}).get("material", "vacuum")
+        perm = 1.0
+        if mat in json_data["material_dict"]:
+            perm = json_data["material_dict"][mat]["permittivity"]
+        elif mat != "vacuum":
+            logging.warning(f"Material {mat} not in material_dict. Using permittivity 1.0")
+        permittivity_list.append(perm)
+
+    # Solver(s) with masks for saving energy
+    solver_lines = [
+        "Exec Solver = " + ("Always" if len(mesh_boundaries) > 0 else "Never"),
+        'Equation = "SaveBoundaryEnergy"',
+        'Procedure = "SaveBoundaryEnergy" "SaveBoundaryEnergyComponents"',
+    ]
+    solvers += sif_block("Solver 3", solver_lines)
+
+    solvers += get_save_energy_solver(
+        ordinate=4,
+        energy_file="energy.dat",
+        bodies=mesh_bodies,
+        sheet_bodies=mesh_boundaries,
+    )
+
+    bodies = ""
+    materials = ""
+    n_bodies = 0
+    for i, (body, perm) in enumerate(zip(mesh_bodies, permittivity_list), 1):
+        bodies += sif_body(
+            ordinate=i, target_bodies=[body], equation=1, material=i, keywords=[f"{body} = Logical True"]
+        )
+        materials += sif_block(f"Material {i}", [f"Relative Permittivity = {perm}"])
+        n_bodies += 1
+
+    # add material for pec
+    pec_material_index = n_bodies + 1
+    materials += sif_block(f"Material {pec_material_index}", ["Relative Permittivity = 1.0"])
+
+    if len(signals) == 0:
+        raise RuntimeError("No signals in the system!")
+    if len(signals) > 1:
+        logging.warning("Multiple signals in the system. All of them will be set to 1V at once")
+
+    # grounds
+    bodies += sif_body(
+        ordinate=n_bodies + 1,
+        target_bodies=grounds,
+        equation=1,
+        material=pec_material_index,
+        keywords=["Body Force = 2"],
+    )
+    n_bodies += 1
+
+    # signals
+    bodies += sif_body(
+        ordinate=n_bodies + 1,
+        target_bodies=signals,
+        equation=1,
+        material=pec_material_index,
+        keywords=["Body Force = 1"],
+    )
+    n_bodies += 1
+
+    body_forces = ""
+    body_forces += sif_block("Body Force 1", ["Potential = Real 1.0"])
+    body_forces += sif_block("Body Force 2", ["Potential = Real 0.0"])
+
+    boundary_conditions = ""
+    # tls bcs
+    for i, s in enumerate(mesh_boundaries, 1):
+        boundary_conditions += sif_boundary_condition(
+            ordinate=i,
+            target_boundaries=[s],
+            conditions=[f'Boundary Energy Name = String "{s}"'],
+        )
+
+    # If there are no boundary conditions, add one to suppress warnings
+    if not boundary_conditions:
+        boundary_conditions += sif_block(
+            "Boundary Condition 1", ["Target Boundaries(0)", "! Placeholder boundary to suppress warnings"]
+        )
+
+    return header + constants + solvers + equations + materials + bodies + body_forces + boundary_conditions
 
 
 def sif_capacitance(
@@ -1044,15 +1240,7 @@ def sif_capacitance(
         for n in mesh_names
         if n not in body_list + ground_boundaries + signals_boundaries + outer_bc_names and not n.startswith("port_")
     ]
-    for i, s in enumerate(other_groups, 1):
-        boundary_conditions += sif_boundary_condition(
-            ordinate=i + n_boundaries,
-            target_boundaries=[s],
-            conditions=[
-                "! This BC does not do anything, but",
-                "! MMG does not conserve GeometryIDs if there is no BC defined.",
-            ],
-        )
+    boundary_conditions += sif_placeholder_boundaries(other_groups, n_boundaries)
     n_boundaries += len(other_groups)
 
     return header + constants + solvers + equations + materials + bodies + boundary_conditions
@@ -1154,16 +1342,7 @@ def sif_inductance(json_data, folder_path, angular_frequency, circuit_definition
 
     # Add place-holder boundaries (if additional physical groups are given)
     other_groups = [n for n in mesh_names if n not in body_list and not n.startswith("port_")]
-    boundary_conditions = ""
-    for i, s in enumerate(other_groups, 1):
-        boundary_conditions += sif_boundary_condition(
-            ordinate=i,
-            target_boundaries=[s],
-            conditions=[
-                "! This BC does not do anything, but",
-                "! MMG does not conserve GeometryIDs if there is no BC defined.",
-            ],
-        )
+    boundary_conditions = "" + sif_placeholder_boundaries(other_groups, 0)
 
     return header + equations + solvers + materials + bodies + components + body_force + boundary_conditions
 
@@ -1553,6 +1732,46 @@ def read_result_smatrix(s_matrix_filename: str, path: Path = None, polar_form: b
     return smatrix_full
 
 
+def get_energy_integrals(path):
+    """
+    Return electric energy integrals
+
+    Args:
+        path(Path): folder path of the model result files
+
+    Returns:
+        (dict): energies stored
+    """
+    try:
+        energy_data, energy_layer_data = Path(path) / "energy.dat", Path(path) / "energy.dat.names"
+        energies = pd.read_csv(energy_data, sep=r"\s+", header=None).values.flatten()
+
+        energy_layers = []
+        with open(energy_layer_data) as fp:
+            reached_data = False
+            for line in fp:
+                if not reached_data and "Variables in columns of matrix:" in line:
+                    reached_data = True
+                    continue
+
+                if reached_data:
+                    matches = [
+                        match.group(1) for match in re.finditer("diffusive energy: potential mask ([a-z_0-9]+)", line)
+                    ]
+                    if matches:
+                        energy_layers += matches
+                    else:
+                        matches = line.strip().partition(": ")[2]
+                        if matches:
+                            energy_layers += [matches]
+
+        return {f"E_{k}": energy for k, energy in zip(energy_layers, energies)}
+
+    except FileNotFoundError:
+        logging.warning(f"Energy file not found in {path}")
+        return {"total_energy": None}
+
+
 def write_project_results_json(json_data: dict, path: Path, msh_filepath, polar_form: bool = True):
     """
     Writes the solution data in '_project_results.json' format for one Elmer simulation.
@@ -1586,17 +1805,50 @@ def write_project_results_json(json_data: dict, path: Path, msh_filepath, polar_
                 for net_j in range(len(c_matrix))
                 for net_i in range(len(c_matrix))
             }
+            results = {
+                "CMatrix": c_matrix,
+                "Cdata": c_data,
+                "Frequency": [0],
+            }
+            if json_data["integrate_energies"]:
+                results.update(get_energy_integrals(sif_folder))
 
             with open(json_filename, "w") as outfile:
                 json.dump(
-                    {
-                        "CMatrix": c_matrix,
-                        "Cdata": c_data,
-                        "Frequency": [0],
-                    },
+                    results,
                     outfile,
                     indent=4,
                 )
+    elif tool == "epr_3d":
+
+        def _rename_energy_key(e_name):
+            # Remove "gmsh_" prefix from layer names
+            e_name = e_name.replace("_gmsh_", "_")
+            # Change 2-component energies to same naming as used in Ansys
+            if e_name.endswith("_norm_component"):
+                e_name = "Ez" + e_name.removesuffix("_norm_component").removeprefix("E")
+            elif e_name.endswith("_tan_component"):
+                e_name = "Exy" + e_name.removesuffix("_tan_component").removeprefix("E")
+
+            # Elmer forces all keys to be lowercase so let's capitalise the interface abbreviations
+            # to correspond to Ansys naming
+            for k in ("MA", "MS", "SA"):
+                elmer_int_key = "_layer" + k.lower()
+                if elmer_int_key in e_name:
+                    e_name = e_name.replace(elmer_int_key, "_layer" + k)
+                    break
+
+            return e_name
+
+        energies = {_rename_energy_key(k): v for k, v in get_energy_integrals(sif_folder).items()}
+
+        with open(json_filename, "w") as outfile:
+            json.dump(
+                energies,
+                outfile,
+                indent=4,
+            )
+
     elif tool == "wave_equation":
 
         frequencies = json_data["frequency"]

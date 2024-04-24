@@ -173,6 +173,28 @@ class ElmerCrossSectionSolution(ElmerSolution):
     run_inductance_sim: bool = True
 
 
+@dataclass
+class ElmerEPR3DSolution(ElmerSolution):
+    """
+    Class for Elmer 3D EPR simulations. Similar to electrostatics simulations done with ElmerCapacitanceSolution,
+    but supports separating energies by PartitionRegions and produces no capacitance matrix
+
+    Args:
+        p_element_order: polynomial order of p-elements
+        linear_system_method: Options: 1. mg (multigrid), 2. bicgstab or any other iterative solver mentioned in
+                              ElmerSolver manual section 4.3.1
+        convergence_tolerance: Convergence tolerance of the iterative solver.
+        max_iterations: Maximum number of iterations for the iterative solver.
+    """
+
+    tool: ClassVar[str] = "epr_3d"
+
+    p_element_order: int = 3
+    linear_system_method: str = "bicgstab"
+    convergence_tolerance: float = 1.0e-9
+    max_iterations: int = 1000
+
+
 def get_elmer_solution(tool="capacitance", **solution_params):
     """Returns an instance of ElmerSolution subclass.
 
@@ -180,7 +202,7 @@ def get_elmer_solution(tool="capacitance", **solution_params):
         tool: Determines the subclass of ElmerSolution.
         solution_params: Arguments passed for  ElmerSolution subclass.
     """
-    for c in [ElmerVectorHelmholtzSolution, ElmerCapacitanceSolution, ElmerCrossSectionSolution]:
+    for c in [ElmerVectorHelmholtzSolution, ElmerCapacitanceSolution, ElmerCrossSectionSolution, ElmerEPR3DSolution]:
         if tool == c.tool:
             return c(**solution_params)
     raise ValueError(f"No ElmerSolution found for tool={tool}.")

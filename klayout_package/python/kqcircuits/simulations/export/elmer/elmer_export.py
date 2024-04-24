@@ -22,6 +22,7 @@ import stat
 import logging
 import json
 import argparse
+import platform
 
 from pathlib import Path
 from typing import Sequence, Union, Tuple, Dict, Optional
@@ -34,10 +35,10 @@ from kqcircuits.simulations.export.simulation_export import (
 )
 from kqcircuits.simulations.export.util import export_layers
 from kqcircuits.util.export_helper import write_commit_reference_file
-from kqcircuits.defaults import ELMER_SCRIPT_PATHS, KQC_REMOTE_ACCOUNT
+from kqcircuits.defaults import ELMER_SCRIPT_PATHS, KQC_REMOTE_ACCOUNT, SIM_SCRIPT_PATH
 from kqcircuits.simulations.simulation import Simulation
 from kqcircuits.simulations.cross_section_simulation import CrossSectionSimulation
-from kqcircuits.simulations.export.elmer.elmer_solution import ElmerSolution, get_elmer_solution
+from kqcircuits.simulations.export.elmer.elmer_solution import ElmerEPR3DSolution, ElmerSolution, get_elmer_solution
 from kqcircuits.simulations.post_process import PostProcess
 
 
@@ -118,9 +119,11 @@ def export_elmer_script(
     json_filenames,
     path: Path,
     workflow=None,
-    file_prefix="simulation",
-    execution_script="scripts/run.py",
+    script_folder: str = "scripts",
+    file_prefix: str = "simulation",
+    script_file: str = "run.py",
     post_process=None,
+    compile_elmer_modules=False,
 ):
     """
     Create script files for running one or more simulations.
@@ -130,9 +133,11 @@ def export_elmer_script(
         json_filenames: List of paths to json files to be included into the script.
         path: Location where to write the script file.
         workflow: Parameters for simulation workflow
-        file_prefix: Name of the script file to be created.
-        execution_script: The script file to be executed.
+        script_folder: Path to the Elmer-scripts folder.
+        file_prefix: File prefix of the script file to be created.
+        script_file: Name of the script file to run.
         post_process: List of PostProcess objects, a single PostProcess object, or None to be executed after simulations
+        compile_elmer_modules: Compile custom Elmer energy integration module at runtime. Not supported on Windows.
 
     Returns:
 
@@ -145,6 +150,7 @@ def export_elmer_script(
 
     python_executable = workflow.get("python_executable", "python")
     main_script_filename = str(path.joinpath(file_prefix + ".sh"))
+    execution_script = Path(script_folder).joinpath(script_file)
 
     path.joinpath("log_files").mkdir(parents=True, exist_ok=True)
 
@@ -309,6 +315,12 @@ def export_elmer_script(
             main_file.write("export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK\n")
             main_file.write("\n")
 
+            if compile_elmer_modules:
+                main_file.write('echo "Compiling Elmer modules"\n')
+                main_file.write(
+                    f"elmerf90 -fcheck=all {script_folder}/SaveBoundaryEnergy.F90 -o SaveBoundaryEnergy > /dev/null\n"
+                )
+
             for i, json_filename in enumerate(json_filenames):
                 with open(json_filename) as f:
                     json_data = json.load(f)
@@ -453,9 +465,17 @@ def export_elmer_script(
         with open(main_script_filename, "w") as main_file:
             main_file.write("#!/bin/bash\n")
 
+            if compile_elmer_modules:
+                main_file.write('echo "Compiling Elmer modules"\n')
+                main_file.write(
+                    f"elmerf90 -fcheck=all {script_folder}/SaveBoundaryEnergy.F90 -o SaveBoundaryEnergy > /dev/null\n"
+                )
+
             if parallelize_workload:
                 main_file.write("export OMP_NUM_THREADS={}\n".format(workflow["elmer_n_threads"]))
-                main_file.write("{} scripts/simple_workload_manager.py {}".format(python_executable, n_workers))
+                main_file.write(
+                    "{} {}/simple_workload_manager.py {}".format(python_executable, script_folder, n_workers)
+                )
 
             for i, json_filename in enumerate(json_filenames):
                 with open(json_filename) as f:
@@ -574,8 +594,13 @@ def export_elmer(
 
     workflow = _update_elmer_workflow(simulations, common_sol, workflow)
 
+    # If doing 3D epr simulations the custom Elmer energy integration module is compiled at runtime
+    epr_sim = _is_epr_sim(simulations, common_sol)
+    script_paths = ELMER_SCRIPT_PATHS + [SIM_SCRIPT_PATH / "elmer_modules"] if epr_sim else ELMER_SCRIPT_PATHS
+
     write_commit_reference_file(path)
-    copy_content_into_directory(ELMER_SCRIPT_PATHS, path, script_folder)
+    copy_content_into_directory(script_paths, path, script_folder)
+
     json_filenames = []
 
     for sim_sol in simulations:
@@ -601,10 +626,26 @@ def export_elmer(
         json_filenames,
         path,
         workflow,
+        script_folder=script_folder,
         file_prefix=file_prefix,
-        execution_script=Path(script_folder).joinpath(script_file),
+        script_file=script_file,
         post_process=post_process,
+        compile_elmer_modules=epr_sim,
     )
+
+
+def _is_epr_sim(simulations, common_sol):
+    """Helper to check if doing 3D epr simulation"""
+    epr_sim = False
+    if common_sol is None:
+        if any(isinstance(simsol[1], ElmerEPR3DSolution) for simsol in simulations):
+            epr_sim = True
+    elif isinstance(common_sol, ElmerEPR3DSolution):
+        epr_sim = True
+
+    if epr_sim and platform.system() == "Windows":
+        logging.warning("Elmer 3D EPR Simulations are not supported on Windows")
+    return epr_sim
 
 
 def _update_elmer_workflow(simulations, common_solution, workflow):

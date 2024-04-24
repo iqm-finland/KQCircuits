@@ -74,10 +74,10 @@ def run_export_script(export_script: Path, export_path: Path, quiet: bool = Fals
     )
     # Run export script and capture stdout to be processed
     with subprocess.Popen(export_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) as process:
-        process_stdout, _ = process.communicate()
+        process_stdout, process_stderr = process.communicate()
         print(process_stdout)
+        print(process_stderr, file=sys.stderr)
         if process.returncode:
-            # This provides full traceback so error doesn't need to be captured in process.communicate()
             raise subprocess.CalledProcessError(process.returncode, export_cmd)
 
     # Parse export paths from stdout printed in `create_or_empty_tmp_directory`

@@ -21,13 +21,12 @@ import argparse
 
 from interpolating_frequency_sweep import interpolating_frequency_sweep
 from gmsh_helpers import produce_mesh
-from elmer_helpers import produce_sif_files, write_project_results_json
+from elmer_helpers import produce_sif_files, write_project_results_json, get_energy_integrals
 from run_helpers import run_elmer_grid, run_elmer_solver, run_paraview, write_simulation_machine_versions_file
 from cross_section_helpers import (
     produce_cross_section_mesh,
     produce_cross_section_sif_files,
     get_cross_section_capacitance_and_inductance,
-    get_energy_integrals,
 )
 
 parser = argparse.ArgumentParser(description="Run script for Gmsh-Elmer workflow")

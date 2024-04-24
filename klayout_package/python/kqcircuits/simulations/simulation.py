@@ -240,6 +240,13 @@ class Simulation:
         docstring="Use only keywords introduced in material_dict.",
     )
     tls_sheet_approximation = Param(pdt.TypeBoolean, "Approximate TLS interface layers as sheets", False)
+    detach_tls_sheets_from_body = Param(
+        pdt.TypeBoolean,
+        "TLS interface layers are created `tls_layer_thickness` above or below the interface of 3D bodies",
+        True,
+        docstring="Only has an effect when tls_sheet_approximation=True."
+        "Setting to False when using `ElmerEPR3DSolution` significantly improves simulation performance",
+    )
 
     minimum_point_spacing = Param(pdt.TypeDouble, "Tolerance for merging adjacent points in polygon", 0.01, unit="µm")
     polygon_tolerance = Param(pdt.TypeDouble, "Tolerance for merging adjacent polygons in a layer", 0.004, unit="µm")
@@ -699,7 +706,10 @@ class Simulation:
                 layer_top_z = layer_z + [sign, -sign, -sign][layer_num] * thickness
                 material = self.ith_value(self.tls_layer_material, layer_num)
                 if self.tls_sheet_approximation:
-                    z_params = {"z0": layer_top_z, "z1": layer_top_z}
+                    if self.detach_tls_sheets_from_body:
+                        z_params = {"z0": layer_top_z, "z1": layer_top_z}
+                    else:
+                        z_params = {"z0": layer_z, "z1": layer_z}
                 elif thickness != 0.0:
                     z_params = {"z0": layer_z, "z1": layer_top_z}
 

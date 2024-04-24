@@ -4,7 +4,7 @@ function create_link () {
 	ln -sfv "$PWD"/libexec/kqclib.sh bin/"$1"
 }
 
-EXECUTABLES=("ElmerSolver" "ElmerSolver_mpi" "ElmerGrid" "klayout" "kqclib" "paraview" "python")
+EXECUTABLES=("ElmerSolver" "ElmerSolver_mpi" "ElmerGrid" "klayout" "kqclib" "paraview" "python" "elmerf90")
 
 echo "Creating symbolic links to the singularity image software"
 mkdir -p bin

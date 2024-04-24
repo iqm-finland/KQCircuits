@@ -16,7 +16,6 @@
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
-import re
 from pathlib import Path
 
 import numpy as np
@@ -317,30 +316,3 @@ def get_cross_section_capacitance_and_inductance(json_data, folder_path):
         return {"Cs": c_matrix.tolist(), "Ls": None}
 
     return {"Cs": c_matrix.tolist(), "Ls": l_matrix.tolist()}
-
-
-def get_energy_integrals(path):
-    """
-    Return electric energy integrals
-
-    Args:
-        path(Path): folder path of the model result files
-
-    Returns:
-        (dict): energies stored
-    """
-    try:
-        energy_data, energy_layer_data = Path(path) / "energy.dat", Path(path) / "energy.dat.names"
-        energies = pd.read_csv(energy_data, sep=r"\s+", header=None).values.flatten()
-
-        with open(energy_layer_data) as fp:
-            energy_layers = [
-                match.group(1)
-                for line in fp
-                for match in re.finditer("diffusive energy: potential mask ([a-z_0-9]+)", line)
-            ]
-
-        return {f"E_{k}": energy for k, energy in zip(energy_layers, energies)}
-
-    except FileNotFoundError:
-        return {"total_energy": None}
