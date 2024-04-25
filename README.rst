@@ -54,7 +54,7 @@ Getting started
 ---------------
 
 KQCircuits is a KLayout extension. KLayout can be used either using a graphical user interface or as
-a standalone python module. KQCircuits supports both modes of operation. For the first time users,
+a standalone python module. For the first time users,
 the graphical user interface (GUI) mode is recommended.
 
 Video tutorials for the GUI installation can be found on YouTube.
@@ -95,42 +95,60 @@ Video tutorials for the GUI installation can be found on YouTube.
    </div>
 
 
-Install
-^^^^^^^
+Install GUI
+^^^^^^^^^^^
 
-KQCircuits can be used in either Salt package or developer setup mode.
+`First install KLayout <https://www.klayout.de/build.html>`__.
+Afterwards you can install KQCircuits as a plug-in to use KQCircuits features
+within your KLayout GUI editor session.
+
+Salt installation
+"""""""""""""""""
+
+To quickly try out KQCircuits GUI features we recommend installing the Salt package of KQCircuits
+inside your KLayout application.
 The Salt package is easier to install and get started, but the built-in elements cannot be modified.
-The developer setup is recommended for advanced users and to contribute to the project.
-
-Salt installation and getting started
-"""""""""""""""""""""""""""""""""""""
-
-Follow the instructions in the `getting started documentation <https://iqm-finland.github.io/KQCircuits/salt.html>`__.
+`See Salt installation guide here  <https://iqm-finland.github.io/KQCircuits/salt.html>`__.
 
 Developer setup
 """""""""""""""
 
-`Install KLayout <https://www.klayout.de/build.html>`__ and run:
+The developer setup is recommended for advanced users who want to modify KQCircuits code and to contribute to the project.
+
+After installing KLayout run:
 
 .. code-block:: console
 
    python setup_within_klayout.py
 
-then KLayout will contain KQCircuits.
-You may have to write ``python3`` or ``py`` instead of ``python`` depending on your OS and Python installation,
-just make sure that the command refers to Python 3. For further details see the `developer setup
+For further details see the `developer setup
 documentation <https://iqm-finland.github.io/KQCircuits/developer/setup.html>`__.
 
-For *legacy , not secure* install in stand-alone mode you may run
+Install standalone python module
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Installing KQCircuits as a standalone python module allows you to use KQCircuits features
+in your own python code with:
 
 .. code-block:: console
 
-   python -m pip install -e "klayout_package/python[docs,tests]"
+   import kqcircuits
 
-Then scripts may be run and documentation can be built. For further details see the `documentation
-<https://iqm-finland.github.io/KQCircuits/developer/setup.html>`__.
+You will also get access to kqc related terminal commands such as:
 
-For a secure and reproducible stand-alone environment see `documentation
+.. code-block:: console
+
+   kqc mask quick_demo.py              # To build a wafer mask, in this case quick_demo.py
+   kqc sim waveguides_sim_compare.py   # To export and run waveguide simulation
+
+For standalone installation run command
+
+.. code-block:: console
+
+   python -m pip install -e "klayout_package/python[docs,tests,sim]"
+
+For improved security you can also validate the fetched dependencies of KQCircuits.
+Further details available in the `documentation
 <https://iqm-finland.github.io/KQCircuits/developer/standalone.html>`__.
 
 Documentation

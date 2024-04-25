@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        klayout_version: [0.28.1, 1.latest]
+        klayout_version: [klayout27, klayout28, latest]
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python
@@ -25,7 +25,8 @@ jobs:
       - name: Init KQCircuits
         run: ci/init_kqc.sh
       - name: Select KLayout version
-        run: pip install --force-reinstall "klayout<=${{ matrix.klayout_version }}"
+        run: pip install --force-reinstall -r "ci/requirements/${{ matrix.klayout_version }}-requirements.txt"
+        if: ${{ matrix.klayout_version != 'latest' }}
       - name: Run tests
         run: tox -e matrix
       - name: Upload test results
@@ -42,10 +43,12 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest, macos-latest]
-        klayout_version: [0.28.1, 1.latest]
-        exclude:
-          - os: macos-latest
-            klayout_version: 0.28.1
+        klayout_version: [klayout27, klayout28, latest]
+        include:
+          - os-folder: win
+            os: windows-latest
+          - os-folder: mac
+            os: macos-latest
 
     steps:
       - uses: actions/checkout@v2
@@ -56,13 +59,17 @@ jobs:
       - name: macOS setup
         run: |
           brew install python
-          ln -s -f /usr/local/bin/python3.7 /usr/local/bin/python
+          ln -s -f /usr/local/bin/python3.10 /usr/local/bin/python
         if: ${{ matrix.os == 'macos-latest' }}
       - name: Init KQCircuits
-        run: pip3 install -e "klayout_package/python[docs,tests]" --only-binary=klayout
-        continue-on-error: true
+        run: |
+          python -m pip install -r ci/requirements/tomli-requirements.txt
+          python -m pip install -r klayout_package/python/requirements/${{ matrix.os-folder }}/pip-requirements.txt
+          pip-sync klayout_package/python/requirements/${{ matrix.os-folder }}/requirements.txt klayout_package/python/requirements/linux/test-requirements.txt
+          pip3 install --no-deps -e "klayout_package/python/"
       - name: Select KLayout version
-        run: pip3 install --force-reinstall --only-binary=klayout "klayout<=${{matrix.klayout_version }}"
+        run: pip3 install --force-reinstall -r "ci/requirements/${{ matrix.klayout_version }}-requirements.txt"
+        if: ${{ matrix.klayout_version != 'latest' }}
       - name: Run tests
         run: tox -e matrix
       - name: Upload test results
@@ -191,7 +198,8 @@ jobs:
         run: |
           git fetch --unshallow --tags
           echo "GIT_TAG=$(git tag --contains HEAD | grep -P '^v\d+\.\d+\.\d+.*')" >> $GITHUB_ENV
-          python -m pip install --upgrade build twine
+          python -m pip install -r klayout_package/python/requirements/linux/pip-requirements.txt
+          python -m pip install -r ci/requirements/twine-requirements.txt
           cd klayout_package/python
           python -m build
           python -m twine check dist/*

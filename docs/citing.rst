@@ -16,6 +16,9 @@ the following ``.bib`` file can be used::
 
    @software{kqcircuits,
      author       = {Cucurachi, Daniele and
+                     Das, Soumya Ranjan and
+                     Giri, Rakshyakar and
+                     Gusenkova, Daria and
                      Guthrie, Andrew and
                      Heinsoo, Johannes and
                      Inel, Sinan and
@@ -24,11 +27,14 @@ the following ``.bib`` file can be used::
                      Juliusson, Kristinn and
                      Kotilahti, Janne and
                      Landra, Alessandro and
+                     Moretti, Roberto and
+                     Mylläri, Tuomas and
                      Ockeloen-Korppi, Caspar and
                      Räbinä, Jukka and
                      Savola, Niko and
                      Smirnov, Pavel and
-                     Takala, Eelis},
+                     Takala, Eelis and
+                     Wubben, Leon},
      title        = {{KQCircuits}},
      month        = jun,
      year         = 2021,

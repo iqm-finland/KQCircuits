@@ -15,9 +15,9 @@ test:
   stage: test
   parallel:
     matrix:
-      - KLAYOUT_VERSION: [0.28.1, 1.latest]
+      - KLAYOUT_VERSION: [klayout27, klayout28, latest]
   script:
-    - pip install --force-reinstall "klayout<=$KLAYOUT_VERSION"
+    - if [ $KLAYOUT_VERSION != "latest" ]; then pip install --force-reinstall -r "ci/requirements/${KLAYOUT_VERSION}-requirements.txt"; fi
     - tox -e matrix
   artifacts:
     reports:
@@ -32,7 +32,7 @@ test:
 static_analysis:
   stage: test
   script:
-    - pip install pylint-gitlab
+    - pip install -r ci/requirements/pylint-gitlab-requirements.txt
     - export CODEQUALITY_JSON=codeclimate.json
     - >
       tox -e static_analysis --
@@ -95,7 +95,7 @@ verify_documentation:
 check_package_building:
   stage: test
   script:
-    - python -m pip install --upgrade build twine
+    - python -m pip install -r ci/requirements/twine-requirements.txt
     - cd klayout_package/python
     - python -m build
     - python -m twine check dist/*
@@ -220,7 +220,7 @@ test_image:
 copy_github_issues:
   stage: test
   before_script:
-    - pip install requests
+    - pip install -r ci/requirements/requests-requirements.txt
   script:
     - python ci/copy_github_issues.py $ACCESS_TOKEN ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/issues $LABELS
   only:

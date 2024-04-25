@@ -6,16 +6,19 @@ Installation
 There are three distinct ways of installing KQCircuits suitable for different use cases.
 
 The simplest way is installing the latest KQCircuits Salt Package with KLayout's package manager.
-This gives the user instant access to KQCircuits but in a slightly limited read-only way. See
+This gives the user instant access to KQCircuits from KLayout GUI but in a slightly limited read-only way. See
 :ref:`salt_package`.
 
-Developers should rather install git, check out the source code and run KQCircuits from there, see
-the :ref:`developer_setup`. This is the most powerful and most complex installation method but it
-gives full access to everything: creating and modifying chips, running tests and simulations,
-building documentation, etc.
+Developers should rather install git, clone the source code of KQCircuits and link it to the KLayout application.
+See the :ref:`developer_setup`. This way the KQCircuits extension in the KLayout GUI application
+will use the exact codebase present in the cloned, version-controlled local repository.
 
-It is also possible to use KQCircuits with the standalone KLayout Python module, for that see
-:ref:`standalone`.
+For GUI-less features developers should also install KQCircuits as a standalone KLayout Python module, for that see
+:ref:`standalone`. This allows developers to make use of KQCircuits features in their own
+python code by importing the ``kqcircuits`` module. This also enables terminal commands such as::
+
+  kqc sim <simulation_script> # to export simulation data and then to process it with a third-party simulator
+  kqc mask <mask_script>      # to export mask layout files for fabrication
 
 .. _klayout:
 
@@ -29,14 +32,20 @@ these instructions, that KLayout has been installed in the default location.
 
 KLayout is an actively maintained project with regular feature updates, bugfixes and
 stability improvements. We recommend using the latest version. KQCircuits is automatically
-tested on the following versions:
+tested using KLayout versions:
 
-- Linux (Ubuntu 18.04/20.04 LTS, 64-bit): KLayout 0.26.12, 0.27.13, and the latest version of 0.28
-- MacOS: the latest version of 0.28
-- Windows 10 (64-bit): KLayout 0.26.12, and the latest version of 0.28
+- 0.27.13
+- 0.28.17
+- latest version of 0.29
+
+on the following platforms:
+
+- Linux: Ubuntu 22.04 LTS, 64-bit
+- MacOS: latest github image
+- Microsoft Windows Server 2022, OS version 10
 
 .. note::
-    KQC documetation uses Linux conventions and examples unless explicitly talking about Windows or
+    KQC documentation uses Linux conventions and examples unless explicitly talking about Windows or
     MacOS. For example a Windows user should mentally translate path separator ``/`` to ``\``,
     klayout executable ``klayout`` to ``%APPDATA%\KLayout\klayout_app.exe`` or the KLayout
     environment directory ``~/.klayout`` to ``%HOMEPATH%\KLayout``.
@@ -73,3 +82,8 @@ The KLAYOUT-PACKAGE-DIR should be the path to the site-packages directory
 used by KLayout. If you don't know where that is, you can find it by opening
 the KLayout macro editor and writing ``import pip`` and then ``pip.__path__``
 in the console.
+
+Notice that this only affects the GUI installation of KQCircuits.
+The standalone, GUI-less KQCircuits installation will use whatever Python environment
+where it was explicitly installed in, which is most likely separate from the Python
+environment used by KLayout.
