@@ -26,7 +26,6 @@ class ElmerSolution(Solution):
     A Base class for Elmer Solution parameters
 
     Args:
-        p_element_order: polynomial order of p-elements
         percent_error: Stopping criterion in adaptive meshing.
         max_error_scale: Maximum element error, relative to percent_error, allowed in individual elements.
         max_outlier_fraction: Maximum fraction of outliers from the total number of elements
@@ -45,12 +44,13 @@ class ElmerSolution(Solution):
             {'substrate': 10, 'substrate&vacuum': [2, 5], 'global_max': 100}, then the maximal mesh element length is 10
             inside the substrate and 2 on region which is less than 5 units away from the substrate-vacuum interface.
             Outside these regions, the mesh element size can increase up to 100.
+        vtu_output: Output vtu files to view fields in Paraview.
+                    Turning this off will make the simulations slightly faster
 
     """
 
     tool: ClassVar[str] = ""
 
-    p_element_order: int = 3
     percent_error: float = 0.005
     max_error_scale: float = 2.0
     max_outlier_fraction: float = 1e-3
@@ -59,6 +59,7 @@ class ElmerSolution(Solution):
     is_axisymmetric: bool = False
     mesh_levels: int = 1
     mesh_size: dict = field(default_factory=dict)
+    vtu_output: bool = True
 
     def get_solution_data(self):
         """Return the solution data in dictionary form."""
@@ -88,7 +89,8 @@ class ElmerVectorHelmholtzSolution(ElmerSolution):
         conductivity: Adds a specified film conductivity on metal boundaries. Applies only when `use_av=True`
         nested_iteration: Enables alternative nested iterative solver to be used. Applies only when `use_av=True`
         convergence_tolerance: Convergence tolerance of the iterative solver. Applies only when `use_av=True`
-        max_iterations: Maximum number of iterations for the iterative solver. Applies only when `use_av=True`
+        max_iterations: Maximum number of iterations for the iterative solver.
+                        Applies only when `use_av=True` and only to the main solver (not to calc fields or port solver)
     """
 
     tool: ClassVar[str] = "wave_equation"
@@ -98,14 +100,14 @@ class ElmerVectorHelmholtzSolution(ElmerSolution):
     sweep_type: str = "explicit"
     max_delta_s: float = 0.01
     london_penetration_depth: float = 0
-    quadratic_approximation: bool = False  # TODO generalize to other solvers
-    second_kind_basis: bool = False  # TODO generalize to other solvers
+    quadratic_approximation: bool = False
+    second_kind_basis: bool = False
 
     use_av: bool = False
     conductivity: float = 0
     nested_iteration: bool = False
-    convergence_tolerance: float = 1.0e-10  # TODO generalize to other solvers
-    max_iterations: int = 2000  # TODO generalize to other solvers
+    convergence_tolerance: float = 1.0e-10
+    max_iterations: int = 2000
 
     def __post_init__(self):
         """Cast frequency to list. Automatically called after init"""
@@ -121,34 +123,54 @@ class ElmerCapacitanceSolution(ElmerSolution):
     Class for Elmer capacitance solution parameters
 
     Args:
-        linear_system_method: Available: 'bicgstab', 'mg' TODO Generalise to other tools
+        p_element_order: polynomial order of p-elements
+        linear_system_method: Options: 1. mg (multigrid), 2. bicgstab or any other iterative solver mentioned in
+                              ElmerSolver manual section 4.3.1
         integrate_energies: Calculate energy integrals over each object. Used in EPR simulations
+        convergence_tolerance: Convergence tolerance of the iterative solver.
+        max_iterations: Maximum number of iterations for the iterative solver.
     """
 
     tool: ClassVar[str] = "capacitance"
 
-    linear_system_method: str = "bicgstab"
+    p_element_order: int = 3
+    linear_system_method: str = "mg"
     integrate_energies: bool = False
+    convergence_tolerance: float = 1.0e-9
+    max_iterations: int = 500
 
 
 @dataclass
 class ElmerCrossSectionSolution(ElmerSolution):
     """
-    Class for Elmer cross-section solution parameters
+    Class for Elmer cross-section solution parameters.
+    By default both 2D Capacitance and 2D Inductance simulation will be run when using this
 
     Args:
-        linear_system_method: Available: 'bicgstab', 'mg'
+        p_element_order: polynomial order of p-elements
+        linear_system_method: Options: 1. mg (multigrid), 2. bicgstab or any other iterative solver mentioned in
+                              ElmerSolver manual section 4.3.1
         integrate_energies: Calculate energy integrals over each object. Used in EPR simulations
-        boundary_conditions: Parameters to determine boundary conditions for potentil on the edges
+        boundary_conditions: Parameters to determine boundary conditions for potential on the edges
                              of simulation box. Supported keys are `xmin` , `xmax` ,`ymin` and `ymax`
                              Example: `boundary_conditions = {"xmin": {"potential": 0}}`
+        convergence_tolerance: Convergence tolerance of the iterative solver.
+                               Applies only to capacitance part of the simulation
+        max_iterations: Maximum number of iterations for the iterative solver.
+                        Applies only to capacitance part of the simulation
+        run_inductance_sim: Can be used to skip running the inductance simulation and just do 2D capacitance.
+                            No impendance can then be calculated but useful for making EPR simulations faster
     """
 
     tool: ClassVar[str] = "cross-section"
 
-    linear_system_method: str = "bicgstab"
+    p_element_order: int = 3
+    linear_system_method: str = "mg"
     integrate_energies: bool = False
     boundary_conditions: dict = field(default_factory=dict)
+    convergence_tolerance: float = 1.0e-9
+    max_iterations: int = 500
+    run_inductance_sim: bool = True
 
 
 def get_elmer_solution(tool="capacitance", **solution_params):

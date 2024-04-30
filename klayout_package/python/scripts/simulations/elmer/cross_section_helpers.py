@@ -17,7 +17,6 @@
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
 import re
-import logging
 from pathlib import Path
 
 import numpy as np
@@ -247,8 +246,6 @@ def produce_cross_section_sif_files(json_data, folder_path):
         return file_name
 
     sif_names = json_data["sif_names"]
-    if len(sif_names) != 2:
-        logging.warning(f"Cross-section tool requires 2 sif names, given {len(sif_names)}")
 
     sif_files = [
         save(
@@ -256,24 +253,25 @@ def produce_cross_section_sif_files(json_data, folder_path):
             sif_capacitance(json_data, folder_path, vtu_name=sif_names[0], angular_frequency=0, dim=2, with_zero=False),
         )
     ]
-    london_penetration_depth = json_data.get("london_penetration_depth", 0.0)
-    if london_penetration_depth > 0:
-        circuit_definitions_file = save("inductance.definitions", sif_circuit_definitions(json_data))
-        sif_files.append(
-            save(
-                f"{sif_names[1]}.sif",
-                sif_inductance(json_data, folder_path, angular_frequency, circuit_definitions_file),
+    if json_data["run_inductance_sim"]:
+        london_penetration_depth = json_data.get("london_penetration_depth", 0.0)
+        if london_penetration_depth > 0:
+            circuit_definitions_file = save("inductance.definitions", sif_circuit_definitions(json_data))
+            sif_files.append(
+                save(
+                    f"{sif_names[1]}.sif",
+                    sif_inductance(json_data, folder_path, angular_frequency, circuit_definitions_file),
+                )
             )
-        )
-    else:
-        sif_files.append(
-            save(
-                f"{sif_names[1]}.sif",
-                sif_capacitance(
-                    json_data, folder_path, vtu_name=sif_names[1], angular_frequency=0, dim=2, with_zero=True
-                ),
+        else:
+            sif_files.append(
+                save(
+                    f"{sif_names[1]}.sif",
+                    sif_capacitance(
+                        json_data, folder_path, vtu_name=sif_names[1], angular_frequency=0, dim=2, with_zero=True
+                    ),
+                )
             )
-        )
     return sif_files
 
 

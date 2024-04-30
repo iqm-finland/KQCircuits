@@ -141,35 +141,31 @@ def sif_matc_block(data: Sequence[str]) -> str:
     return res
 
 
-def sif_linsys(method="mg", p_element_order=3, steady_state_error=None) -> Sequence[str]:
+def sif_linsys(
+    method="mg", p_element_order=3, steady_state_error=None, convergence_tolerance=-1, max_iterations=-1
+) -> Sequence[str]:
     """
     Returns a linear system definition in sif format.
 
     Args:
-        method(str): linear system method (options: 1. bicgstab, 2. mg)
-        p_element_order(int): p-element order (usully order 3 is quite ok for a regular solution)
+        method(str): linear system method. Options: 1. mg, 2. bicgstab or any other iterative solver mentioned in
+                     ElmerSolver manual section 4.3.1
+        p_element_order(int): p-element order (usually order 3 is quite ok for a regular solution)
 
     Returns:
         (str): linear system definitions in sif file format
     """
-    linsys = ["$pn={}".format(p_element_order)]
-    if method == "bicgstab":
+    linsys = [
+        f"$pn={p_element_order}",
+        "Linear System Solver = Iterative",
+        f"Linear System Max Iterations = Integer {max_iterations}",
+        f"Linear System Convergence Tolerance = {convergence_tolerance}",
+        "Linear System Abort Not Converged = False",
+    ]
+
+    if method == "mg":
         linsys += [
-            "Linear System Solver = Iterative",
-            "Linear System Iterative Method = BiCGStab",
-            "Linear System Max Iterations = 500",
-            "Linear System Convergence Tolerance = 1.0e-9",
-            "Linear System Preconditioning = ILU1",
-            "Linear System ILUT Tolerance = 1.0e-03",
-            f"Steady State Convergence Tolerance = {1e-9 if steady_state_error is None else steady_state_error*1e-1}",
-        ]
-    elif method == "mg":
-        linsys += [
-            "Linear System Solver = Iterative",
             "Linear System Iterative Method = GCR ",
-            "Linear System Max Iterations = 200",
-            "Linear System Convergence Tolerance = 1.0e-9",
-            "Linear System Abort Not Converged = False",
             "Linear System Residual Output = 10",
             "Linear System Preconditioning = multigrid !ILU2",
             "Linear System Refactorize = False",
@@ -186,6 +182,14 @@ def sif_linsys(method="mg", p_element_order=3, steady_state_error=None) -> Seque
             "mglowest: Linear System Convergence Tolerance = 1.0e-4",
             f"Steady State Convergence Tolerance = {1e-9 if steady_state_error is None else steady_state_error*1e-1}",
         ]
+    else:
+        linsys += [
+            f"Linear System Iterative Method = {method}",
+            "Linear System Preconditioning = ILU1",
+            "Linear System ILUT Tolerance = 1.0e-03",
+            f"Steady State Convergence Tolerance = {1e-9 if steady_state_error is None else steady_state_error*1e-1}",
+        ]
+
     return linsys
 
 
@@ -428,6 +432,8 @@ def get_electrostatics_solver(
     max_outlier_fraction=1e-3,
     maximum_passes=1,
     minimum_passes=1,
+    convergence_tolerance=-1,
+    max_iterations=-1,
 ):
     """
     Returns electrostatics solver in sif file format.
@@ -462,7 +468,14 @@ def get_electrostatics_solver(
         "Nonlinear System Consistent Norm = True",
     ]
 
-    solver_lines += sif_linsys(method=method, p_element_order=p_element_order, steady_state_error=percent_error)
+    solver_lines += sif_linsys(
+        method=method,
+        p_element_order=p_element_order,
+        steady_state_error=percent_error,
+        convergence_tolerance=convergence_tolerance,
+        max_iterations=max_iterations,
+    )
+
     if maximum_passes > 1:
         solver_lines += sif_adaptive_mesh(
             percent_error=percent_error,
@@ -556,7 +569,7 @@ def get_magneto_dynamics_2d_harmonic_solver(
         "Linear System Preconditioning = None",
         "Linear System Complex = Logical True",
         "Linear System Convergence Tolerance = 1.e-10",
-        "Linear System Max Iterations = 3000",
+        "Linear System Max Iterations = 3000",  # TODO inductanceSolution
         "Linear System Residual Output = 10",
         "Linear System Abort not Converged = False",
         "Linear System ILUT Tolerance=1e-8",
@@ -950,12 +963,16 @@ def sif_capacitance(
         percent_error=json_data["percent_error"],
         max_error_scale=json_data["max_error_scale"],
         max_outlier_fraction=json_data["max_outlier_fraction"],
+        convergence_tolerance=json_data["convergence_tolerance"],
+        max_iterations=json_data["max_iterations"],
     )
+
     solvers += get_result_output_solver(
         ordinate=2,
         output_file_name=vtu_name,
-        exec_solver="Always",
+        exec_solver="Always" if json_data["vtu_output"] else "Never",
     )
+
     equations = get_equation(
         ordinate=1,
         solver_ids=[1],
@@ -1077,7 +1094,7 @@ def sif_inductance(json_data, folder_path, angular_frequency, circuit_definition
     solvers += get_result_output_solver(
         ordinate=4,
         output_file_name="inductance",
-        exec_solver="Always",
+        exec_solver="Always" if json_data["vtu_output"] else "Never",
     )
 
     solvers += get_circuit_output_solver(ordinate=5, exec_solver="Always")
@@ -1232,13 +1249,13 @@ def sif_wave_equation(
     london_penetration_depth = json_data["london_penetration_depth"]
     conductivity = json_data["conductivity"]
     use_av = json_data["use_av"]
-    metal_height = json_data["parameters"].get("metal_height", 0)
-    if len(metal_height) > 1:
+    metal_heights = [data["thickness"] for name, data in json_data["layers"].items() if "signal" in name]
+    if len(set(metal_heights)) > 1:
         logging.warning(
-            "Simulation contains multiple metal layers, This is not yet supported with"
-            f"elmer wave-equation tool. Using thickness {metal_height[0]}um for all ports"
+            "Simulation contains multiple metal layers with varying thicknesses, This is not supported with"
+            f"elmer wave-equation tool. Using thickness {metal_heights[0]}um for all ports"
         )
-    metal_height = metal_height[0]
+    metal_height = metal_heights[0]
 
     dim = 3
     header = sif_common_header(json_data, folder_path, discontinuous_boundary=(use_av and metal_height == 0))
@@ -1274,15 +1291,23 @@ def sif_wave_equation(
         "eps0 = 8.854e-12",
     ]
 
+    def _port_polygon_area_3d(polygon):
+        """Assumes that the polygon is rectangle with the listed coordinates in order"""
+        len1 = sum((p1 - p2) * (p1 - p2) for p1, p2 in zip(polygon[0], polygon[1]))
+        len2 = sum((p1 - p2) * (p1 - p2) for p1, p2 in zip(polygon[0], polygon[-1]))
+        return (len1 * len2) ** 0.5
+
     if london_penetration_depth != 0:
         matc_list += [
             f"lambda_l = {london_penetration_depth}",
             "sigma = 1/(w*mu0*lambda_l^2)",
         ]
     if use_av:
-        port_area = (json_data["parameters"]["port_size"] * 1e-6) ** 2
+        # TODO generalise for other shapes and ports having different sizes
+        port_area = _port_polygon_area_3d(json_data["ports"][0]["polygon"]) * 1e-12
         # Use 200nm thickness for impedance calculation when using sheet metal
         signal_height = 200e-9 if metal_height == 0 else metal_height
+        # TODO how to get trace width "a" without taking it from "parameters"
         signal_area = signal_height * json_data["parameters"].get("a", 10) * 1e-12
         matc_list += [
             "V0 = 1",
@@ -1329,7 +1354,7 @@ def sif_wave_equation(
     solvers += get_result_output_solver(
         ordinate=solver_ordinate + 2,
         output_file_name=Path(str(folder_path) + "_f" + str(frequency).replace(".", "_")),
-        exec_solver="Always",
+        exec_solver="Always" if json_data["vtu_output"] else "Never",
     )
 
     # Equations
@@ -1469,7 +1494,7 @@ def sif_wave_equation(
                         f"Intersection BC(2) = {signal_ind} {signal_edge_bc_ind}",
                         "Layer Thickness = Real $ lambda_l",
                         "Electric Transfer Coefficient = Real $ 1.0/(Z0*signal_area)",
-                        "Incident Voltage = $ V0",
+                        "Incident Voltage = Real $ V0",
                         f"Material = Integer {material_ind}",
                     ]
                     n_boundaries += 1
@@ -1646,6 +1671,13 @@ def filter_resonant_vtus(results, sif_folder, simname):
         sif_folder (str): Folder containing sif and vtu files
         simname (str): simulation name
     """
+    available_vtus = list(sif_folder.glob("*.pvtu"))
+    vtu_partitioned = len(available_vtus) != 0
+    if not vtu_partitioned:
+        available_vtus = list(sif_folder.glob("*.vtu"))
+
+    if len(available_vtus) == 0:
+        return
 
     s_f = np.array([r["frequency"] for r in results])
     nports = len(results[0]["smatrix"])
@@ -1659,10 +1691,6 @@ def filter_resonant_vtus(results, sif_folder, simname):
     peak_inds = list(set(peak_inds))
     f_peaks = s_f[peak_inds]
 
-    available_vtus = list(sif_folder.glob("*.pvtu"))
-    vtu_partitioned = len(available_vtus) != 0
-    if not vtu_partitioned:
-        available_vtus = sif_folder.glob("*.vtu")
     extension_l = len("_t0001.pvtu") if vtu_partitioned else len("_t0001.vtu")
     available_f = np.array(
         list({float(str(v.name)[len(simname) + 2 : -extension_l].replace("_", ".")) for v in available_vtus})

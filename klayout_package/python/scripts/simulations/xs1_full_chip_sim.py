@@ -65,7 +65,6 @@ if use_elmer:
         "path": dir_path,
         "tool": "wave_equation",
         "frequency": target_frequency,
-        "p_element_order": 3,
     }
 
     workflow = {

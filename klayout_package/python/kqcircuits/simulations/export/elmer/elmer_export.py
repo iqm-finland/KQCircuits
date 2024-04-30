@@ -82,10 +82,12 @@ def export_elmer_json(
     full_name = simulation.name + solution.name
 
     if is_cross_section:
-        if sim_data.get("london_penetration_depth", 0.0) > 0:
-            sif_names = [f"{full_name}_C", f"{full_name}_L"]
-        else:
-            sif_names = [f"{full_name}_C", f"{full_name}_C0"]
+        sif_names = [f"{full_name}_C"]
+        if sol_data["run_inductance_sim"]:
+            if sim_data.get("london_penetration_depth", 0.0) > 0:
+                sif_names += [f"{full_name}_L"]
+            else:
+                sif_names += [f"{full_name}_C0"]
     elif solution.tool == "wave_equation":
         if solution.sweep_type == "interpolating":
             sif_names = []
