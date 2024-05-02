@@ -21,11 +21,23 @@ The Q-factor of the port is the calculated from y-parameters by imag(y) / real(y
 """
 import json
 import os
-import sys
 import skrf
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "util"))
-from post_process_helpers import read_snp_network  # pylint: disable=wrong-import-position, no-name-in-module
+
+def read_snp_network(snp_file):
+    """Read sNp file and returns network and list of z0 for each port"""
+    snp_network = skrf.Network(snp_file)
+
+    # skrf.Network fails to read multiple Z0 terms from s2p file, so we do it separately.
+    with open(snp_file) as file:
+        lines = file.readlines()
+        for line in lines:
+            if line.startswith("# GHz S MA R "):
+                z0s = [float(z) for z in line[13:].split()]
+                if len(z0s) > 1:
+                    return snp_network, z0s
+    return snp_network, snp_network.z0[0]
+
 
 # Find data files
 path = os.path.curdir
