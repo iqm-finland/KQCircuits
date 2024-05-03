@@ -17,7 +17,6 @@
 
 import logging
 import sys
-from itertools import product
 from pathlib import Path
 
 from kqcircuits.qubits.swissmon import Swissmon
@@ -27,7 +26,7 @@ from kqcircuits.simulations.single_element_simulation import get_single_element_
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
-from kqcircuits.simulations.export.simulation_export import export_simulation_oas
+from kqcircuits.simulations.export.simulation_export import export_simulation_oas, cross_combine
 from kqcircuits.util.export_helper import (
     create_or_empty_tmp_directory,
     get_active_or_new_layout,
@@ -53,23 +52,21 @@ logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 layout = get_active_or_new_layout()
 
 # Sweep solution type
-simulations = list(
-    product(
-        [sim_class(layout, **sim_parameters)],
-        [
-            AnsysEigenmodeSolution(
-                name="_eigenmode",
-                max_delta_f=0.05,
-                n_modes=1,
-                min_frequency=1.0,
-                maximum_passes=20,
-                integrate_energies=True,
-            ),
-            AnsysVoltageSolution(
-                name="_voltage", max_delta_e=0.001, frequency=4.8, maximum_passes=20, integrate_energies=True
-            ),
-        ],
-    )
+simulations = cross_combine(
+    sim_class(layout, **sim_parameters),
+    [
+        AnsysEigenmodeSolution(
+            name="_eigenmode",
+            max_delta_f=0.05,
+            n_modes=1,
+            min_frequency=1.0,
+            maximum_passes=20,
+            integrate_energies=True,
+        ),
+        AnsysVoltageSolution(
+            name="_voltage", max_delta_e=0.001, frequency=4.8, maximum_passes=20, integrate_energies=True
+        ),
+    ],
 )
 
 # Export simulation files

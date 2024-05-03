@@ -19,10 +19,14 @@ import sys
 import logging
 import argparse
 from pathlib import Path
-from itertools import product
 
 from kqcircuits.pya_resolver import pya
-from kqcircuits.simulations.export.simulation_export import export_simulation_oas, sweep_simulation
+from kqcircuits.simulations.export.simulation_export import (
+    export_simulation_oas,
+    sweep_simulation,
+    sweep_solution,
+    cross_combine,
+)
 from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
 from kqcircuits.simulations.export.elmer.elmer_solution import ElmerCrossSectionSolution
 from kqcircuits.simulations.export.xsection.xsection_export import (
@@ -149,9 +153,9 @@ sol_parameters = {
 }
 
 if do_solution_sweep:
-    solutions = sweep_simulation(None, ElmerCrossSectionSolution, sol_parameters, {"p_element_order": [1, 2, 3]})
+    solutions = sweep_solution(ElmerCrossSectionSolution, sol_parameters, {"p_element_order": [1, 2, 3]})
     export_elmer(
-        list(product(xsection_simulations, solutions)),
+        cross_combine(xsection_simulations, solutions),
         path,
         workflow=workflow,
         post_process=[

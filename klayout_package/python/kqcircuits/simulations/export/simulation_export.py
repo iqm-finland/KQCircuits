@@ -117,7 +117,7 @@ def sweep_simulation(layout, sim_class, sim_parameters, sweeps):
 
 
 def cross_sweep_simulation(layout, sim_class, sim_parameters, sweeps):
-    """Create simulation sweep by cross varying all parameters. Return list of simulations."""
+    """Create simulation sweep by cross-varying all parameters. Return list of simulations."""
     simulations = []
     keys = list(sweeps)
     sets = [list(prod) for prod in product(*sweeps.values())]
@@ -129,3 +129,31 @@ def cross_sweep_simulation(layout, sim_class, sim_parameters, sweeps):
         parameters["name"] = sim_parameters.get("name", "") + "_" + "_".join([str(value) for value in values])
         simulations.append(sim_class(**parameters) if layout is None else sim_class(layout, **parameters))
     return simulations
+
+
+def sweep_solution(sol_class, sol_parameters, sweeps):
+    """Create solution sweep by varying one parameter at time. Return list of solutions."""
+    return sweep_simulation(None, sol_class, sol_parameters, sweeps)
+
+
+def cross_sweep_solution(sol_class, sol_parameters, sweeps):
+    """Create solution sweep by cross-varying all parameters. Return list of solutions."""
+    return cross_sweep_simulation(None, sol_class, sol_parameters, sweeps)
+
+
+def cross_combine(simulations, solutions):
+    """Combines simulations and solutions into list of tuples.
+
+    Args:
+        simulations: A Simulation object or a list of Simulation objects.
+        solutions: A Solution object or a list of Solution objects.
+    Returns:
+        A list of tuples containing all combinations of simulations and solutions.
+
+    """
+    return list(
+        product(
+            simulations if isinstance(simulations, Sequence) else [simulations],
+            solutions if isinstance(solutions, Sequence) else [solutions],
+        )
+    )
