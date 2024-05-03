@@ -72,7 +72,7 @@ The other relevant parameters and their default values are::
 The capacitance matrix simulations are also available with Ansys HFSS framework, which is useful in case if only HFSS
 license is available.
 For the usage one must perform a HFSS S-parameter simulation as indicated above and use the export parameter
-``hfss_capacitance_export=True``.
+``capacitance_export=True``.
 This method assumes a purely capacitive model and is valid as long as the resulting ``C_i_j`` are constant over
 frequency.
 
@@ -102,7 +102,8 @@ The other relevant parameters and their default values are::
 
     export_parameters.update({
         'ansys_tool': 'eigenmode',  # Determines whether to use HFSS ('hfss'), Q3D Extractor ('q3d') or HFSS eigenmode ('eigenmode')
-        'frequency': 5,  # the lower limit for eigenfrequency.
+        'frequency_units': "GHz",  # Units of frequency.
+        'min_frequency': 5,  # the lower limit for eigenfrequency.
         'max_delta_f': 0.1,  # Maximum allowed relative difference in eigenfrequency (%).
         'n_modes': 2,  # Number of eigenmodes to solve.
         'percent_refinement': 30,  # Percentage of mesh refinement on each iteration.

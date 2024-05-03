@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Simulation features &mdash; KQCircuits 4.7.25 documentation</title>
+  <title>Simulation features &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
@@ -18,7 +18,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -959,7 +959,7 @@ The other relevant parameters and their default values are:</p>
 <p>The capacitance matrix simulations are also available with Ansys HFSS framework, which is useful in case if only HFSS
 license is available.
 For the usage one must perform a HFSS S-parameter simulation as indicated above and use the export parameter
-<code class="docutils literal notranslate"><span class="pre">hfss_capacitance_export=True</span></code>.
+<code class="docutils literal notranslate"><span class="pre">capacitance_export=True</span></code>.
 This method assumes a purely capacitive model and is valid as long as the resulting <code class="docutils literal notranslate"><span class="pre">C_i_j</span></code> are constant over
 frequency.</p>
 <p>The Elmer export provides the open source alternative for capacitance matrix simulations.
@@ -984,7 +984,8 @@ The eigenmode simulations are activated by using <code class="docutils literal n
 The other relevant parameters and their default values are:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export_parameters</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
     <span class="s1">&#39;ansys_tool&#39;</span><span class="p">:</span> <span class="s1">&#39;eigenmode&#39;</span><span class="p">,</span>  <span class="c1"># Determines whether to use HFSS (&#39;hfss&#39;), Q3D Extractor (&#39;q3d&#39;) or HFSS eigenmode (&#39;eigenmode&#39;)</span>
-    <span class="s1">&#39;frequency&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>  <span class="c1"># the lower limit for eigenfrequency.</span>
+    <span class="s1">&#39;frequency_units&#39;</span><span class="p">:</span> <span class="s2">&quot;GHz&quot;</span><span class="p">,</span>  <span class="c1"># Units of frequency.</span>
+    <span class="s1">&#39;min_frequency&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>  <span class="c1"># the lower limit for eigenfrequency.</span>
     <span class="s1">&#39;max_delta_f&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>  <span class="c1"># Maximum allowed relative difference in eigenfrequency (%).</span>
     <span class="s1">&#39;n_modes&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>  <span class="c1"># Number of eigenmodes to solve.</span>
     <span class="s1">&#39;percent_refinement&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>  <span class="c1"># Percentage of mesh refinement on each iteration.</span>

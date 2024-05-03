@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.export.ansys.ansys_solution &mdash; KQCircuits 4.7.25 documentation</title>
+  <title>kqcircuits.simulations.export.ansys.ansys_solution &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../../_static/documentation_options.js?v=31aee0b5"></script>
+        <script src="../../../../../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/js/theme.js"></script>
@@ -904,7 +904,7 @@
 <span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
 <span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">ClassVar</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.solution</span> <span class="kn">import</span> <span class="n">Solution</span>
 
 
@@ -913,58 +913,33 @@
 <span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">AnsysSolution</span><span class="p">(</span><span class="n">Solution</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A Base class for Ansys Solution and export parameters</span>
+<span class="sd">    A Base class for Ansys solution parameters</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        ansys_tool: Determines whether to use &#39;hfss&#39; (s-parameters), &#39;q3d&#39;, &#39;current&#39;, &#39;voltage&#39;, or &#39;eigenmode&#39;.</span>
-<span class="sd">        frequency_units: Units of frequency.</span>
-<span class="sd">        frequency: Frequency for mesh refinement. To set up multifrequency analysis in HFSS use list of numbers.</span>
-<span class="sd">        max_delta_s: Stopping criterion in HFSS simulation.</span>
-<span class="sd">        max_delta_e: Stopping criterion in current or voltage excitation simulation.</span>
-<span class="sd">        percent_error: Stopping criterion in Q3D simulation.</span>
 <span class="sd">        percent_refinement: Percentage of mesh refinement on each iteration.</span>
 <span class="sd">        maximum_passes: Maximum number of iterations in simulation.</span>
 <span class="sd">        minimum_passes: Minimum number of iterations in simulation.</span>
 <span class="sd">        minimum_converged_passes: Determines how many iterations have to meet the stopping criterion to stop simulation.</span>
-<span class="sd">        sweep_enabled: Determines if HFSS frequency sweep is enabled.</span>
-<span class="sd">        sweep_start: The lowest frequency in the sweep.</span>
-<span class="sd">        sweep_end: The highest frequency in the sweep.</span>
-<span class="sd">        sweep_count: Number of frequencies in the sweep.</span>
-<span class="sd">        sweep_type: choices are &quot;interpolating&quot;, &quot;discrete&quot; or &quot;fast&quot;</span>
-<span class="sd">        max_delta_f: Maximum allowed relative difference in eigenfrequency (%). Used when ``ansys_tool`` is *eigenmode*.</span>
-<span class="sd">        n_modes: Number of eigenmodes to solve. Used when ``ansys_tool`` is &#39;eigenmode&#39;.</span>
+<span class="sd">        frequency_units: Units of frequency.</span>
 <span class="sd">        mesh_size: Dictionary to determine manual mesh refinement on layers. Set key as the layer name and value as the</span>
 <span class="sd">            maximal mesh element length inside the layer.</span>
 <span class="sd">        simulation_flags: Optional export processing, given as list of strings. See Simulation Export in docs.</span>
 <span class="sd">        ansys_project_template: path to the simulation template</span>
 <span class="sd">        integrate_energies: Calculate energy integrals over each layer and save them into a file</span>
 <span class="sd">        integrate_magnetic_flux: Integrate magnetic fluxes through each non-pec sheet and save them into a file</span>
-<span class="sd">        hfss_capacitance_export: If True, the capacitance matrices are exported from HFSS simulations</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">ansys_tool</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;hfss&quot;</span>  <span class="c1"># to be ClassVar</span>
-    <span class="n">frequency_units</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;GHz&quot;</span>
-    <span class="n">frequency</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">5</span>
-    <span class="n">max_delta_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span>
-    <span class="n">max_delta_e</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span>
-    <span class="n">percent_error</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">ansys_tool</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="n">percent_refinement</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">30.0</span>
     <span class="n">maximum_passes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">12</span>
     <span class="n">minimum_passes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">minimum_converged_passes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="n">sweep_enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">sweep_start</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">sweep_end</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span>
-    <span class="n">sweep_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">101</span>
-    <span class="n">sweep_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;interpolating&quot;</span>
-    <span class="n">max_delta_f</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span>
-    <span class="n">n_modes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">frequency_units</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;GHz&quot;</span>
     <span class="n">mesh_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">simulation_flags</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">ansys_project_template</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">integrate_energies</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">integrate_magnetic_flux</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">hfss_capacitance_export</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 
 <div class="viewcode-block" id="AnsysSolution.get_solution_data">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.get_solution_data">[docs]</a>
@@ -974,31 +949,221 @@
             <span class="s2">&quot;solution_name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
             <span class="s2">&quot;ansys_tool&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ansys_tool</span><span class="p">,</span>
             <span class="s2">&quot;analysis_setup&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;frequency_units&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency_units</span><span class="p">,</span>
-                <span class="s2">&quot;frequency&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span><span class="p">,</span>
-                <span class="s2">&quot;max_delta_s&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_delta_s</span><span class="p">,</span>  <span class="c1"># stopping criterion for HFSS</span>
-                <span class="s2">&quot;max_delta_e&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_delta_e</span><span class="p">,</span>  <span class="c1"># stopping criterion for current or voltage excitation simulation</span>
-                <span class="s2">&quot;percent_error&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">percent_error</span><span class="p">,</span>  <span class="c1"># stopping criterion for Q3D</span>
                 <span class="s2">&quot;percent_refinement&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">percent_refinement</span><span class="p">,</span>
                 <span class="s2">&quot;maximum_passes&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">maximum_passes</span><span class="p">,</span>
                 <span class="s2">&quot;minimum_passes&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">minimum_passes</span><span class="p">,</span>
                 <span class="s2">&quot;minimum_converged_passes&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">minimum_converged_passes</span><span class="p">,</span>
-                <span class="s2">&quot;sweep_enabled&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sweep_enabled</span><span class="p">,</span>
-                <span class="s2">&quot;sweep_start&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sweep_start</span><span class="p">,</span>
-                <span class="s2">&quot;sweep_end&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sweep_end</span><span class="p">,</span>
-                <span class="s2">&quot;sweep_count&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sweep_count</span><span class="p">,</span>
-                <span class="s2">&quot;sweep_type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sweep_type</span><span class="p">,</span>
-                <span class="s2">&quot;max_delta_f&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_delta_f</span><span class="p">,</span>
-                <span class="s2">&quot;n_modes&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_modes</span><span class="p">,</span>
+                <span class="s2">&quot;frequency_units&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency_units</span><span class="p">,</span>
             <span class="p">},</span>
             <span class="s2">&quot;mesh_size&quot;</span><span class="p">:</span> <span class="p">{}</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_size</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_size</span><span class="p">,</span>
             <span class="s2">&quot;simulation_flags&quot;</span><span class="p">:</span> <span class="p">[]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation_flags</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation_flags</span><span class="p">,</span>
             <span class="s2">&quot;integrate_energies&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrate_energies</span><span class="p">,</span>
             <span class="s2">&quot;integrate_magnetic_flux&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrate_magnetic_flux</span><span class="p">,</span>
-            <span class="s2">&quot;hfss_capacitance_export&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">hfss_capacitance_export</span><span class="p">,</span>
             <span class="o">**</span><span class="p">({}</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ansys_project_template</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{</span><span class="s2">&quot;ansys_project_template&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ansys_project_template</span><span class="p">}),</span>
         <span class="p">}</span></div>
 </div>
+
+
+
+<div class="viewcode-block" id="AnsysHfssSolution">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysHfssSolution">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">AnsysHfssSolution</span><span class="p">(</span><span class="n">AnsysSolution</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for Ansys S-parameter (HFSS) solution parameters</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        frequency: Frequency for mesh refinement. To set up multifrequency analysis in HFSS use list of numbers.</span>
+<span class="sd">        max_delta_s: Stopping criterion in HFSS simulation.</span>
+<span class="sd">        sweep_enabled: Determines if HFSS frequency sweep is enabled.</span>
+<span class="sd">        sweep_start: The lowest frequency in the sweep.</span>
+<span class="sd">        sweep_end: The highest frequency in the sweep.</span>
+<span class="sd">        sweep_count: Number of frequencies in the sweep.</span>
+<span class="sd">        sweep_type: choices are &quot;interpolating&quot;, &quot;discrete&quot; or &quot;fast&quot;</span>
+<span class="sd">        capacitance_export: If True, the capacitance matrices are exported from S-parameter simulation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ansys_tool</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;hfss&quot;</span>
+    <span class="n">frequency</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">max_delta_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span>
+    <span class="n">sweep_enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">sweep_start</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">sweep_end</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">sweep_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">101</span>
+    <span class="n">sweep_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;interpolating&quot;</span>
+    <span class="n">capacitance_export</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="AnsysHfssSolution.get_solution_data">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysHfssSolution.get_solution_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_solution_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the solution data in dictionary form.&quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_solution_data</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="o">**</span><span class="n">data</span><span class="p">,</span>
+            <span class="s2">&quot;analysis_setup&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="o">**</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;analysis_setup&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;frequency&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span><span class="p">,</span>
+                <span class="s2">&quot;max_delta_s&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_delta_s</span><span class="p">,</span>
+                <span class="s2">&quot;sweep_enabled&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sweep_enabled</span><span class="p">,</span>
+                <span class="s2">&quot;sweep_start&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sweep_start</span><span class="p">,</span>
+                <span class="s2">&quot;sweep_end&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sweep_end</span><span class="p">,</span>
+                <span class="s2">&quot;sweep_count&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sweep_count</span><span class="p">,</span>
+                <span class="s2">&quot;sweep_type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sweep_type</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;capacitance_export&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">capacitance_export</span><span class="p">,</span>
+        <span class="p">}</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="AnsysQ3dSolution">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysQ3dSolution">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">AnsysQ3dSolution</span><span class="p">(</span><span class="n">AnsysSolution</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for Ansys capacitance matrix (Q3D) solution parameters</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        frequency: Nominal solution frequency (has no effect on capacitance matrix at the moment).</span>
+<span class="sd">        percent_error: Stopping criterion in Q3D simulation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ansys_tool</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;q3d&quot;</span>
+    <span class="n">frequency</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">percent_error</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span>
+
+<div class="viewcode-block" id="AnsysQ3dSolution.get_solution_data">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysQ3dSolution.get_solution_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_solution_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the solution data in dictionary form.&quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_solution_data</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="o">**</span><span class="n">data</span><span class="p">,</span>
+            <span class="s2">&quot;analysis_setup&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="o">**</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;analysis_setup&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;frequency&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span><span class="p">,</span>
+                <span class="s2">&quot;percent_error&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">percent_error</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">}</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="AnsysEigenmodeSolution">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysEigenmodeSolution">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">AnsysEigenmodeSolution</span><span class="p">(</span><span class="n">AnsysSolution</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for Ansys eigenmode solution parameters</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        min_frequency: Minimum allowed eigenmode frequency</span>
+<span class="sd">        max_delta_f: Maximum allowed relative difference in eigenfrequency (%)</span>
+<span class="sd">        n_modes: Number of eigenmodes to solve.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ansys_tool</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;eigenmode&quot;</span>
+    <span class="n">min_frequency</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span>
+    <span class="n">max_delta_f</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span>
+    <span class="n">n_modes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>
+
+<div class="viewcode-block" id="AnsysEigenmodeSolution.get_solution_data">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysEigenmodeSolution.get_solution_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_solution_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the solution data in dictionary form.&quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_solution_data</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="o">**</span><span class="n">data</span><span class="p">,</span>
+            <span class="s2">&quot;analysis_setup&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="o">**</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;analysis_setup&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;min_frequency&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_frequency</span><span class="p">,</span>
+                <span class="s2">&quot;max_delta_f&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_delta_f</span><span class="p">,</span>
+                <span class="s2">&quot;n_modes&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_modes</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">}</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="AnsysCurrentSolution">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysCurrentSolution">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">AnsysCurrentSolution</span><span class="p">(</span><span class="n">AnsysSolution</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for Ansys current excitation solution parameters</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        frequency: Frequency of alternating current excitation.</span>
+<span class="sd">        max_delta_e: Stopping criterion in current excitation simulation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ansys_tool</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;current&quot;</span>
+    <span class="n">frequency</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span>
+    <span class="n">max_delta_e</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span>
+
+<div class="viewcode-block" id="AnsysCurrentSolution.get_solution_data">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysCurrentSolution.get_solution_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_solution_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the solution data in dictionary form.&quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_solution_data</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="o">**</span><span class="n">data</span><span class="p">,</span>
+            <span class="s2">&quot;analysis_setup&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="o">**</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;analysis_setup&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;frequency&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span><span class="p">,</span>
+                <span class="s2">&quot;max_delta_e&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_delta_e</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">}</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="AnsysVoltageSolution">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysVoltageSolution">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">AnsysVoltageSolution</span><span class="p">(</span><span class="n">AnsysSolution</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for Ansys voltage excitation solution parameters</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        frequency: Frequency of alternating voltage excitation.</span>
+<span class="sd">        max_delta_e: Stopping criterion in voltage excitation simulation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ansys_tool</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;voltage&quot;</span>
+    <span class="n">frequency</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">max_delta_e</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span>
+
+<div class="viewcode-block" id="AnsysVoltageSolution.get_solution_data">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysVoltageSolution.get_solution_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_solution_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the solution data in dictionary form.&quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_solution_data</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="o">**</span><span class="n">data</span><span class="p">,</span>
+            <span class="s2">&quot;analysis_setup&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="o">**</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;analysis_setup&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;frequency&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span><span class="p">,</span>
+                <span class="s2">&quot;max_delta_e&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_delta_e</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">}</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="get_ansys_solution">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.get_ansys_solution">[docs]</a>
+<span class="k">def</span> <span class="nf">get_ansys_solution</span><span class="p">(</span><span class="n">ansys_tool</span><span class="o">=</span><span class="s2">&quot;hfss&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">solution_params</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns an instance of AnsysSolution subclass.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ansys_tool: Determines the subclass of AnsysSolution.</span>
+<span class="sd">        solution_params: Arguments passed for AnsysSolution subclass.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">[</span><span class="n">AnsysHfssSolution</span><span class="p">,</span> <span class="n">AnsysQ3dSolution</span><span class="p">,</span> <span class="n">AnsysEigenmodeSolution</span><span class="p">,</span> <span class="n">AnsysCurrentSolution</span><span class="p">,</span> <span class="n">AnsysVoltageSolution</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">ansys_tool</span> <span class="o">==</span> <span class="n">c</span><span class="o">.</span><span class="n">ansys_tool</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">c</span><span class="p">(</span><span class="o">**</span><span class="n">solution_params</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No AnsysSolution found for ansys_tool=</span><span class="si">{</span><span class="n">ansys_tool</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
 
 </pre></div>
 
