@@ -18,6 +18,7 @@ kqcircuits.chips
    kqcircuits.chips.launchers
    kqcircuits.chips.lithography_test
    kqcircuits.chips.lithography_test_twoface
+   kqcircuits.chips.munch_qubits
    kqcircuits.chips.quality_factor
    kqcircuits.chips.quality_factor_twoface
    kqcircuits.chips.sample_holder_test

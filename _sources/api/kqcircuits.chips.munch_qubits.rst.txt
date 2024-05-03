@@ -1,0 +1,10 @@
+kqcircuits.chips.munch\_qubits
+==============================
+
+.. automodule:: kqcircuits.chips.munch_qubits
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.chips.munch_qubits
+.. image:: ../pcell_images/kqcircuits.chips.munch_qubits.png

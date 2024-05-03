@@ -1,0 +1,10 @@
+kqcircuits.qubits.circular\_transmon\_single\_island
+====================================================
+
+.. automodule:: kqcircuits.qubits.circular_transmon_single_island
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.qubits.circular_transmon_single_island
+.. image:: ../pcell_images/kqcircuits.qubits.circular_transmon_single_island.png
