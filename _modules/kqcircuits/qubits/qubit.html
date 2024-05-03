@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.qubits.qubit &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.qubits.qubit &mdash; KQCircuits 4.7.26 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../_static/documentation_options.js?v=06566adf"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -905,8 +905,7 @@
 <span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
 
 
-<span class="kn">import</span> <span class="nn">math</span>
-
+<span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_helper</span> <span class="kn">import</span> <span class="n">get_angle</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.fluxlines.fluxline</span> <span class="kn">import</span> <span class="n">Fluxline</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
@@ -1011,7 +1010,7 @@
 
 <div class="viewcode-block" id="Qubit.produce_fluxline">
 <a class="viewcode-back" href="../../../api/kqcircuits.qubits.qubit.html#kqcircuits.qubits.qubit.Qubit.produce_fluxline">[docs]</a>
-    <span class="k">def</span> <span class="nf">produce_fluxline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rot</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">trans</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(),</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">produce_fluxline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rot</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">displacement</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(),</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Produces the fluxline.</span>
 
 <span class="sd">        Creates the fluxline cell and inserts it as a subcell. The &quot;flux&quot; and &quot;flux_corner&quot; ports</span>
@@ -1022,7 +1021,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            rot: Extra rotation of the fluxline, in degrees</span>
-<span class="sd">            trans (DVector): fluxline x/y translation</span>
+<span class="sd">            displacement (DVector): fluxline x/y displacement (ignored if center alignment is available)</span>
 <span class="sd">            parameters: parameters for the fluxline to overwrite default and subclass parameters</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -1033,9 +1032,17 @@
 
         <span class="n">refpoints_so_far</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_refpoints</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
         <span class="n">squid_edge</span> <span class="o">=</span> <span class="n">refpoints_so_far</span><span class="p">[</span><span class="s2">&quot;origin_squid&quot;</span><span class="p">]</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="n">squid_edge</span> <span class="o">-</span> <span class="n">refpoints_so_far</span><span class="p">[</span><span class="s2">&quot;port_common&quot;</span><span class="p">]</span>
-        <span class="n">rotation</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">+</span> <span class="mi">90</span>
-        <span class="n">total_transformation</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">rotation</span> <span class="o">+</span> <span class="n">rot</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">squid_edge</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">trans</span><span class="p">)</span>
+        <span class="n">rotation</span> <span class="o">=</span> <span class="n">get_angle</span><span class="p">(</span><span class="n">squid_edge</span> <span class="o">-</span> <span class="n">refpoints_so_far</span><span class="p">[</span><span class="s2">&quot;port_common&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="mi">90</span>
+
+        <span class="n">refpoints_fluxline</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_refpoints</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;center_fluxline&quot;</span> <span class="ow">in</span> <span class="n">refpoints_fluxline</span> <span class="ow">and</span> <span class="s2">&quot;center_squid&quot;</span> <span class="ow">in</span> <span class="n">refpoints_so_far</span><span class="p">:</span>
+            <span class="n">total_transformation</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span>
+                <span class="mi">1</span><span class="p">,</span> <span class="n">rotation</span> <span class="o">+</span> <span class="n">rot</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">refpoints_so_far</span><span class="p">[</span><span class="s2">&quot;center_squid&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]</span>
+            <span class="p">)</span> <span class="o">*</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="o">-</span><span class="n">refpoints_fluxline</span><span class="p">[</span><span class="s2">&quot;center_fluxline&quot;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">total_transformation</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span>
+                <span class="mi">1</span><span class="p">,</span> <span class="n">rotation</span> <span class="o">+</span> <span class="n">rot</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">squid_edge</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">displacement</span>
+            <span class="p">)</span>
 
         <span class="n">cell_inst</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">total_transformation</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">copy_port</span><span class="p">(</span><span class="s2">&quot;flux&quot;</span><span class="p">,</span> <span class="n">cell_inst</span><span class="p">)</span></div>

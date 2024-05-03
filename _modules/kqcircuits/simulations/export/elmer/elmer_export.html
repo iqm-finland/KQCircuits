@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.export.elmer.elmer_export &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.simulations.export.elmer.elmer_export &mdash; KQCircuits 4.7.26 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../../../_static/documentation_options.js?v=06566adf"></script>
         <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/js/theme.js"></script>
@@ -918,14 +918,14 @@
     <span class="n">copy_content_into_directory</span><span class="p">,</span>
     <span class="n">get_post_process_command_lines</span><span class="p">,</span>
     <span class="n">get_combined_parameters</span><span class="p">,</span>
+    <span class="n">export_simulation_json</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.util</span> <span class="kn">import</span> <span class="n">export_layers</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.export_helper</span> <span class="kn">import</span> <span class="n">write_commit_reference_file</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">ELMER_SCRIPT_PATHS</span><span class="p">,</span> <span class="n">KQC_REMOTE_ACCOUNT</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.cross_section_simulation</span> <span class="kn">import</span> <span class="n">CrossSectionSimulation</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_json_encoder</span> <span class="kn">import</span> <span class="n">GeometryJsonEncoder</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.elmer.elmer_solution</span> <span class="kn">import</span> <span class="n">ElmerSolution</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.elmer.elmer_solution</span> <span class="kn">import</span> <span class="n">ElmerSolution</span><span class="p">,</span> <span class="n">get_elmer_solution</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.post_process</span> <span class="kn">import</span> <span class="n">PostProcess</span>
 
 
@@ -958,13 +958,14 @@
     <span class="c1"># write .gds file</span>
     <span class="n">gds_file</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.gds&quot;</span>
     <span class="n">gds_file_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">gds_file</span><span class="p">))</span>
-    <span class="n">export_layers</span><span class="p">(</span>
-        <span class="n">gds_file_path</span><span class="p">,</span>
-        <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span>
-        <span class="p">[</span><span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="p">],</span>
-        <span class="n">output_format</span><span class="o">=</span><span class="s2">&quot;GDS2&quot;</span><span class="p">,</span>
-        <span class="n">layers</span><span class="o">=</span><span class="n">layers</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">is_cross_section</span> <span class="k">else</span> <span class="n">simulation</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
-    <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">Path</span><span class="p">(</span><span class="n">gds_file_path</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">export_layers</span><span class="p">(</span>
+            <span class="n">gds_file_path</span><span class="p">,</span>
+            <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span>
+            <span class="p">[</span><span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="p">],</span>
+            <span class="n">output_format</span><span class="o">=</span><span class="s2">&quot;GDS2&quot;</span><span class="p">,</span>
+            <span class="n">layers</span><span class="o">=</span><span class="n">layers</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">is_cross_section</span> <span class="k">else</span> <span class="n">simulation</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+        <span class="p">)</span>
 
     <span class="n">sim_data</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">get_simulation_data</span><span class="p">()</span>
     <span class="n">sol_data</span> <span class="o">=</span> <span class="n">solution</span><span class="o">.</span><span class="n">get_solution_data</span><span class="p">()</span>
@@ -996,8 +997,7 @@
 
     <span class="c1"># write .json file</span>
     <span class="n">json_file_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">full_name</span> <span class="o">+</span> <span class="s2">&quot;.json&quot;</span><span class="p">))</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_file_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">GeometryJsonEncoder</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">export_simulation_json</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="n">json_file_path</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">json_file_path</span></div>
 
@@ -1464,20 +1464,16 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        Path to exported script file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">export_with_tuples</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simulations</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Sequence</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">export_with_tuples</span><span class="p">:</span>
-        <span class="n">common_solution</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">common_solution</span> <span class="o">=</span> <span class="n">ElmerSolution</span><span class="p">(</span><span class="o">**</span><span class="n">solution_params</span><span class="p">)</span>
+    <span class="n">common_sol</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">simulations</span><span class="p">)</span> <span class="k">else</span> <span class="n">get_elmer_solution</span><span class="p">(</span><span class="o">**</span><span class="n">solution_params</span><span class="p">)</span>
 
-    <span class="n">_update_elmer_workflow</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="n">common_solution</span><span class="p">,</span> <span class="n">workflow</span><span class="p">)</span>
+    <span class="n">workflow</span> <span class="o">=</span> <span class="n">_update_elmer_workflow</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="n">common_sol</span><span class="p">,</span> <span class="n">workflow</span><span class="p">)</span>
 
     <span class="n">write_commit_reference_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="n">copy_content_into_directory</span><span class="p">(</span><span class="n">ELMER_SCRIPT_PATHS</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">script_folder</span><span class="p">)</span>
     <span class="n">json_filenames</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">for</span> <span class="n">sim_sol</span> <span class="ow">in</span> <span class="n">simulations</span><span class="p">:</span>
-        <span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span> <span class="o">=</span> <span class="n">sim_sol</span> <span class="k">if</span> <span class="n">export_with_tuples</span> <span class="k">else</span> <span class="p">(</span><span class="n">sim_sol</span><span class="p">,</span> <span class="n">common_solution</span><span class="p">)</span>
+        <span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span> <span class="o">=</span> <span class="n">sim_sol</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sim_sol</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">sim_sol</span><span class="p">,</span> <span class="n">common_sol</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">json_filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">export_elmer_json</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">workflow</span><span class="p">))</span>
@@ -1514,79 +1510,79 @@
 <span class="sd">        simulations: List of Simulation objects or tuples containing Simulation and Solution objects.</span>
 <span class="sd">        common_solution: Solution object if not contained in `simulations`</span>
 <span class="sd">        workflow: workflow to be updated</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Updated workflow</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">workflow</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">parallelization_level</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span>
-        <span class="n">n_worker_lim</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="n">num_sims</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">simulations</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">num_sims</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">common_solution</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">num_freqs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">simulations</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">frequency</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">num_freqs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">common_solution</span><span class="o">.</span><span class="n">frequency</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">num_freqs</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">parallelization_level</span> <span class="o">=</span> <span class="s2">&quot;elmer&quot;</span>
-                <span class="n">n_worker_lim</span> <span class="o">=</span> <span class="n">num_freqs</span>
-        <span class="k">else</span><span class="p">:</span>  <span class="c1"># num_sims &gt; 1</span>
-            <span class="c1"># TODO enable Elmer level parallelism</span>
-            <span class="n">n_worker_lim</span> <span class="o">=</span> <span class="n">num_sims</span>
-            <span class="n">parallelization_level</span> <span class="o">=</span> <span class="s2">&quot;full_simulation&quot;</span>
-
-        <span class="k">if</span> <span class="s2">&quot;sbatch_parameters&quot;</span> <span class="ow">in</span> <span class="n">workflow</span><span class="p">:</span>
-            <span class="n">n_workers</span> <span class="o">=</span> <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;sbatch_parameters&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;n_workers&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
-            <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;sbatch_parameters&quot;</span><span class="p">][</span><span class="s2">&quot;n_workers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">n_workers</span><span class="p">),</span> <span class="n">n_worker_lim</span><span class="p">)</span>
-            <span class="n">workflow</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;elmer_n_processes&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-            <span class="n">workflow</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;elmer_n_threads&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-            <span class="n">workflow</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;n_workers&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-            <span class="n">workflow</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;gmsh_n_threads&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-
-            <span class="n">n_workers</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;n_workers&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="n">n_processes</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;elmer_n_processes&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="n">n_threads</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;elmer_n_threads&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">n_processes</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">n_threads</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="s2">&quot;Using both process and thread level parallelization&quot;</span> <span class="s2">&quot; with Elmer might result in poor performance&quot;</span>
-                <span class="p">)</span>
-
-            <span class="c1"># for the moment avoid psutil.cpu_count(logical=False)</span>
-            <span class="n">max_cpus</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
-            <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;local_machine_cpu_count&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_cpus</span>
-
-            <span class="k">if</span> <span class="n">n_workers</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-                <span class="n">n_processes</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">n_processes</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="n">n_processes</span>
-                <span class="n">n_threads</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">n_threads</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="n">n_threads</span>
-                <span class="n">n_workers</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_cpus</span> <span class="o">//</span> <span class="p">(</span><span class="n">n_threads</span> <span class="o">*</span> <span class="n">n_processes</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
-                <span class="n">n_workers</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">n_workers</span><span class="p">,</span> <span class="n">n_worker_lim</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">n_processes</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-                <span class="n">n_workers</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">n_workers</span><span class="p">,</span> <span class="n">n_worker_lim</span><span class="p">)</span>
-                <span class="n">n_threads</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">n_threads</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="n">n_threads</span>
-                <span class="n">n_processes</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_cpus</span> <span class="o">//</span> <span class="p">(</span><span class="n">n_threads</span> <span class="o">*</span> <span class="n">n_workers</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">n_threads</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-                <span class="n">n_workers</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">n_workers</span><span class="p">,</span> <span class="n">n_worker_lim</span><span class="p">)</span>
-                <span class="n">n_threads</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_cpus</span> <span class="o">//</span> <span class="p">(</span><span class="n">n_processes</span> <span class="o">*</span> <span class="n">n_workers</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
-
-            <span class="n">requested_cpus</span> <span class="o">=</span> <span class="n">n_workers</span> <span class="o">*</span> <span class="n">n_processes</span> <span class="o">*</span> <span class="n">n_threads</span>
-            <span class="k">if</span> <span class="n">requested_cpus</span> <span class="o">&gt;</span> <span class="n">max_cpus</span><span class="p">:</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Requested more CPUs (</span><span class="si">{</span><span class="n">requested_cpus</span><span class="si">}</span><span class="s2">) than available (</span><span class="si">{</span><span class="n">max_cpus</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-
-            <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;n_workers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_workers</span>
-            <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;elmer_n_processes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_processes</span>
-            <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;elmer_n_threads&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_threads</span>
-            <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;_parallelization_level&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">parallelization_level</span>
-            <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;_n_simulations&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_worker_lim</span>
-
-            <span class="n">gmsh_n_threads</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gmsh_n_threads&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">gmsh_n_threads</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">parallelization_level</span> <span class="o">==</span> <span class="s2">&quot;full_simulation&quot;</span><span class="p">:</span>
-                    <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;gmsh_n_threads&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_cpus</span> <span class="o">//</span> <span class="n">n_workers</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;gmsh_n_threads&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_cpus</span>
-    <span class="k">else</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">workflow</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">workflow</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">parallelization_level</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span>
+    <span class="n">n_worker_lim</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">num_sims</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">simulations</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">num_sims</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">sol_obj</span> <span class="o">=</span> <span class="n">simulations</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">common_solution</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">common_solution</span>
+
+        <span class="k">if</span> <span class="n">sol_obj</span><span class="o">.</span><span class="n">tool</span> <span class="o">==</span> <span class="s2">&quot;wave_equation&quot;</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">sol_obj</span><span class="o">.</span><span class="n">frequency</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">parallelization_level</span> <span class="o">=</span> <span class="s2">&quot;elmer&quot;</span>
+            <span class="n">n_worker_lim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sol_obj</span><span class="o">.</span><span class="n">frequency</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">num_sims</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="c1"># TODO enable Elmer level parallelism with solution sweep</span>
+        <span class="n">n_worker_lim</span> <span class="o">=</span> <span class="n">num_sims</span>
+        <span class="n">parallelization_level</span> <span class="o">=</span> <span class="s2">&quot;full_simulation&quot;</span>
+
+    <span class="k">if</span> <span class="s2">&quot;sbatch_parameters&quot;</span> <span class="ow">in</span> <span class="n">workflow</span><span class="p">:</span>
+        <span class="n">n_workers</span> <span class="o">=</span> <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;sbatch_parameters&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;n_workers&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;sbatch_parameters&quot;</span><span class="p">][</span><span class="s2">&quot;n_workers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">n_workers</span><span class="p">),</span> <span class="n">n_worker_lim</span><span class="p">)</span>
+        <span class="n">workflow</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;elmer_n_processes&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">workflow</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;elmer_n_threads&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">workflow</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;n_workers&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">workflow</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;gmsh_n_threads&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+
+        <span class="n">n_workers</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;n_workers&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">n_processes</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;elmer_n_processes&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">n_threads</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;elmer_n_threads&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">n_processes</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">n_threads</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Using both process and thread level parallelization&quot;</span> <span class="s2">&quot; with Elmer might result in poor performance&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># for the moment avoid psutil.cpu_count(logical=False)</span>
+        <span class="n">max_cpus</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;local_machine_cpu_count&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_cpus</span>
+
+        <span class="k">if</span> <span class="n">n_workers</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">n_processes</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">n_processes</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="n">n_processes</span>
+            <span class="n">n_threads</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">n_threads</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="n">n_threads</span>
+            <span class="n">n_workers</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_cpus</span> <span class="o">//</span> <span class="p">(</span><span class="n">n_threads</span> <span class="o">*</span> <span class="n">n_processes</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">n_workers</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">n_workers</span><span class="p">,</span> <span class="n">n_worker_lim</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">n_processes</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">n_workers</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">n_workers</span><span class="p">,</span> <span class="n">n_worker_lim</span><span class="p">)</span>
+            <span class="n">n_threads</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">n_threads</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="n">n_threads</span>
+            <span class="n">n_processes</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_cpus</span> <span class="o">//</span> <span class="p">(</span><span class="n">n_threads</span> <span class="o">*</span> <span class="n">n_workers</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">n_threads</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">n_workers</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">n_workers</span><span class="p">,</span> <span class="n">n_worker_lim</span><span class="p">)</span>
+            <span class="n">n_threads</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_cpus</span> <span class="o">//</span> <span class="p">(</span><span class="n">n_processes</span> <span class="o">*</span> <span class="n">n_workers</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">requested_cpus</span> <span class="o">=</span> <span class="n">n_workers</span> <span class="o">*</span> <span class="n">n_processes</span> <span class="o">*</span> <span class="n">n_threads</span>
+        <span class="k">if</span> <span class="n">requested_cpus</span> <span class="o">&gt;</span> <span class="n">max_cpus</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Requested more CPUs (</span><span class="si">{</span><span class="n">requested_cpus</span><span class="si">}</span><span class="s2">) than available (</span><span class="si">{</span><span class="n">max_cpus</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+        <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;n_workers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_workers</span>
+        <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;elmer_n_processes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_processes</span>
+        <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;elmer_n_threads&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_threads</span>
+        <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;_parallelization_level&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">parallelization_level</span>
+        <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;_n_simulations&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_worker_lim</span>
+
+        <span class="n">gmsh_n_threads</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gmsh_n_threads&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">gmsh_n_threads</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">parallelization_level</span> <span class="o">==</span> <span class="s2">&quot;full_simulation&quot;</span><span class="p">:</span>
+                <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;gmsh_n_threads&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_cpus</span> <span class="o">//</span> <span class="n">n_workers</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;gmsh_n_threads&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_cpus</span>
 
     <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-q&quot;</span><span class="p">,</span> <span class="s2">&quot;--quiet&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">)</span>
@@ -1600,6 +1596,8 @@
                 <span class="s2">&quot;run_paraview&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>  <span class="c1"># this is visual view of the results</span>
             <span class="p">}</span>
         <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">workflow</span>
 </pre></div>
 
            </div>

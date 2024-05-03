@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.masks.mask_layout &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.masks.mask_layout &mdash; KQCircuits 4.7.26 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../_static/documentation_options.js?v=06566adf"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -1194,8 +1194,22 @@
                     <span class="p">)</span>
                 <span class="p">)</span>
             <span class="n">chip_name</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">bbox</span><span class="p">,</span> <span class="n">dtrans</span><span class="p">,</span> <span class="n">position_label</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">chips_to_replace</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">new_chip_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chips_map_legend</span><span class="p">[</span><span class="n">new_chip_name</span><span class="p">]</span>
+
             <span class="n">new_bounding_box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chip_bounding_boxes</span><span class="p">[</span><span class="n">new_chip_name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">new_bounding_box</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+                <span class="n">new_chip_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">create_cell</span><span class="p">(</span><span class="s2">&quot;ept&quot;</span><span class="p">)</span>
+                <span class="n">new_chip_cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_faces</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_id</span><span class="p">][</span><span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">]))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
+                    <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
+                <span class="p">)</span>
+                <span class="n">new_chip_cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_faces</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_id</span><span class="p">][</span><span class="s2">&quot;base_metal_gap&quot;</span><span class="p">]))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
+                    <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
+                <span class="p">)</span>
+                <span class="n">new_bounding_box</span> <span class="o">=</span> <span class="n">bbox</span>
+                <span class="n">empty_bbox</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">new_chip_name</span> <span class="o">=</span> <span class="s2">&quot;ept&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">new_chip_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chips_map_legend</span><span class="p">[</span><span class="n">new_chip_name</span><span class="p">]</span>
+                <span class="n">empty_bbox</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">if</span> <span class="n">new_bounding_box</span> <span class="o">!=</span> <span class="n">bbox</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">round</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">width</span><span class="p">())</span> <span class="o">==</span> <span class="nb">round</span><span class="p">(</span><span class="n">new_bounding_box</span><span class="o">.</span><span class="n">width</span><span class="p">())</span> <span class="ow">and</span> <span class="nb">round</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">height</span><span class="p">())</span> <span class="o">==</span> <span class="nb">round</span><span class="p">(</span>
                     <span class="n">new_bounding_box</span><span class="o">.</span><span class="n">height</span><span class="p">()</span>
@@ -1218,8 +1232,8 @@
                 <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">added_chips</span>
             <span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">chip_counts</span><span class="p">[</span><span class="n">chip_name</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">chip_counts</span><span class="p">[</span><span class="n">new_chip_name</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">empty_bbox</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">chip_counts</span><span class="p">[</span><span class="n">new_chip_name</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">graphical_representation_inputs</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">tpl</span> <span class="k">if</span> <span class="n">tpl</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="n">position_label</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">new_chip_name</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">tpl</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span>
                 <span class="k">for</span> <span class="n">tpl</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphical_representation_inputs</span>

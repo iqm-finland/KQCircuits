@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.export.elmer.elmer_solution &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.simulations.export.elmer.elmer_solution &mdash; KQCircuits 4.7.26 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
@@ -18,7 +18,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/documentation_options.js?v=06566adf"></script>
         <script src="../_static/doctools.js?v=9a2dae69"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -898,14 +898,12 @@
 <span id="kqcircuits-simulations-export-elmer-elmer-solution"></span><h1>kqcircuits.simulations.export.elmer.elmer_solution<a class="headerlink" href="#module-kqcircuits.simulations.export.elmer.elmer_solution" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.elmer.elmer_solution.</span></span><span class="sig-name descname"><span class="pre">ElmerSolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tool:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'capacitance'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linear_system_method:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'bicgstab'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_element_order:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percent_error:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_error_scale:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_outlier_fraction:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum_passes:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minimum_passes:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_axisymmetric:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_levels:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency:</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">~typing.List[float]</span> <span class="pre">=</span> <span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency_batch:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sweep_type:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'explicit'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_delta_s:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary_conditions:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integrate_energies:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_size:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_options:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/elmer/elmer_solution.html#ElmerSolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.elmer.elmer_solution.</span></span><span class="sig-name descname"><span class="pre">ElmerSolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_element_order:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percent_error:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_error_scale:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_outlier_fraction:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum_passes:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minimum_passes:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_axisymmetric:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_levels:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_size:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/elmer/elmer_solution.html#ElmerSolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="kqcircuits.simulations.export.solution.html#kqcircuits.simulations.export.solution.Solution" title="kqcircuits.simulations.export.solution.Solution"><code class="xref py py-class docutils literal notranslate"><span class="pre">Solution</span></code></a></p>
 <p>A Base class for Elmer Solution parameters</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tool</strong> – Available: “capacitance”, “wave_equation” and “cross-section”</p></li>
-<li><p><strong>linear_system_method</strong> – Available: ‘bicgstab’, ‘mg’. Currently only applies to Capacitance Solver</p></li>
 <li><p><strong>p_element_order</strong> – polynomial order of p-elements</p></li>
 <li><p><strong>percent_error</strong> – Stopping criterion in adaptive meshing.</p></li>
 <li><p><strong>max_error_scale</strong> – Maximum element error, relative to percent_error, allowed in individual elements.</p></li>
@@ -915,30 +913,22 @@
 <li><p><strong>is_axisymmetric</strong> – Simulate with Axi Symmetric coordinates along <span class="math notranslate nohighlight">\(y\Big|_{x=0}\)</span> (Default: False)</p></li>
 <li><p><strong>mesh_levels</strong> – If set larger than 1 Elmer will make the mesh finer by dividing each element
 into 2^(dim) elements mesh_levels times. Default 1.</p></li>
-<li><p><strong>frequency</strong> – Units are in GHz. Give a list of frequencies if using interpolating sweep.</p></li>
-<li><p><strong>frequency_batch</strong> – Number of frequencies calculated between each round of fitting in interpolating sweep</p></li>
-<li><p><strong>sweep_type</strong> – Type of frequency sweep. Options “explicit” and “interpolating”.</p></li>
-<li><p><strong>max_delta_s</strong> – Convergence tolerance in interpolating sweep</p></li>
-<li><p><strong>boundary_conditions</strong> – Parameters to determine boundary conditions</p></li>
-<li><p><strong>integrate_energies</strong> – Calculate energy integrals over each object. Used in EPR simulations</p></li>
-<li><p><strong>mesh_levels</strong> – If set larger than 1 Elmer will make the mesh finer by dividing each element
-into 2^(dim) elements mesh_levels times. Default 1.</p></li>
-<li><p><strong>mesh_size</strong> – Parameters to determine mesh element sizes</p></li>
-<li><p><strong>solver_options</strong> – Can be used to set experimental solver options for Elmer wave-equation tool.
-Supports the options <cite>use_av</cite> (bool), <cite>london_penetration_depth</cite> (float),
-<cite>conductivity</cite> (float),`nested_iteration` (bool), <cite>convergence_tolerance</cite> (float),
-<cite>max_iterations</cite> (int), <cite>quadratic_approximation</cite> (bool), <cite>second_kind_basis</cite> (bool)</p></li>
+<li><p><strong>mesh_size</strong> – Dictionary to determine mesh size where key (string) denotes material and value (double) denotes the
+maximal length of mesh element. Additional mesh size terms can be determined, if the value type is
+list. Then, term[0] is the maximal mesh element length inside at the entity and its expansion,
+term[1] is expansion distance in which the maximal mesh element length is constant (default=term[0]),
+and term[2] is the slope of the increase in the maximal mesh element length outside the entity.
+To refine material interface the material names by should be separated by ‘&amp;’ in the key. Key ‘global_max’
+is reserved for setting global maximal element length. For example, if the dictionary is given as
+{‘substrate’: 10, ‘substrate&amp;vacuum’: [2, 5], ‘global_max’: 100}, then the maximal mesh element length is 10
+inside the substrate and 2 on region which is less than 5 units away from the substrate-vacuum interface.
+Outside these regions, the mesh element size can increase up to 100.</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.tool">
-<span class="sig-name descname"><span class="pre">tool</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'capacitance'</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.tool" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.linear_system_method">
-<span class="sig-name descname"><span class="pre">linear_system_method</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bicgstab'</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.linear_system_method" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">tool</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.tool" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -977,36 +967,6 @@ Supports the options <cite>use_av</cite> (bool), <cite>london_penetration_depth<
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.frequency">
-<span class="sig-name descname"><span class="pre">frequency</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.frequency" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.frequency_batch">
-<span class="sig-name descname"><span class="pre">frequency_batch</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.frequency_batch" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.sweep_type">
-<span class="sig-name descname"><span class="pre">sweep_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'explicit'</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.sweep_type" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.max_delta_s">
-<span class="sig-name descname"><span class="pre">max_delta_s</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.01</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.max_delta_s" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.boundary_conditions">
-<span class="sig-name descname"><span class="pre">boundary_conditions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.boundary_conditions" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.integrate_energies">
-<span class="sig-name descname"><span class="pre">integrate_energies</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.integrate_energies" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.mesh_levels">
 <span class="sig-name descname"><span class="pre">mesh_levels</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.mesh_levels" title="Link to this definition"></a></dt>
 <dd></dd></dl>
@@ -1016,17 +976,187 @@ Supports the options <cite>use_av</cite> (bool), <cite>london_penetration_depth<
 <span class="sig-name descname"><span class="pre">mesh_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.mesh_size" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.solver_options">
-<span class="sig-name descname"><span class="pre">solver_options</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.solver_options" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.get_solution_data">
 <span class="sig-name descname"><span class="pre">get_solution_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/elmer/elmer_solution.html#ElmerSolution.get_solution_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.get_solution_data" title="Link to this definition"></a></dt>
 <dd><p>Return the solution data in dictionary form.</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.elmer.elmer_solution.</span></span><span class="sig-name descname"><span class="pre">ElmerVectorHelmholtzSolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_element_order:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percent_error:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_error_scale:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_outlier_fraction:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum_passes:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minimum_passes:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_axisymmetric:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_levels:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_size:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency:</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">~typing.List[float]</span> <span class="pre">=</span> <span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency_batch:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sweep_type:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'explicit'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_delta_s:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">london_penetration_depth:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quadratic_approximation:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second_kind_basis:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_av:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conductivity:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nested_iteration:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convergence_tolerance:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">1e-10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iterations:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">2000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/elmer/elmer_solution.html#ElmerVectorHelmholtzSolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution" title="kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElmerSolution</span></code></a></p>
+<p>Class for Elmer wave-equation solution parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>frequency</strong> – Units are in GHz. Give a list of frequencies if using interpolating sweep.</p></li>
+<li><p><strong>frequency_batch</strong> – Number of frequencies calculated between each round of fitting in interpolating sweep</p></li>
+<li><p><strong>sweep_type</strong> – Type of frequency sweep. Options “explicit” and “interpolating”.</p></li>
+<li><p><strong>max_delta_s</strong> – Convergence tolerance in interpolating sweep</p></li>
+<li><p><strong>london_penetration_depth</strong> – Allows supercurrent to flow on the metal boundaries within a layer
+of thickness <cite>london_penetration_depth</cite></p></li>
+<li><p><strong>quadratic_approximation</strong> – Use edge finite elements of second degree</p></li>
+<li><p><strong>second_kind_basis</strong> – Use Nedelec finite elements of second kind</p></li>
+<li><p><strong>use_av</strong> – Use a formulation of VectorHelmHoltz equation based on potentials A-V instead of electric field E.
+For details see <a class="reference external" href="https://www.nic.funet.fi/pub/sci/physics/elmer/doc/ElmerModelsManual.pdf">https://www.nic.funet.fi/pub/sci/physics/elmer/doc/ElmerModelsManual.pdf</a>
+WARNING: This option is experimental and might lead to poor convergence.</p></li>
+<li><p><strong>conductivity</strong> – Adds a specified film conductivity on metal boundaries. Applies only when <cite>use_av=True</cite></p></li>
+<li><p><strong>nested_iteration</strong> – Enables alternative nested iterative solver to be used. Applies only when <cite>use_av=True</cite></p></li>
+<li><p><strong>convergence_tolerance</strong> – Convergence tolerance of the iterative solver. Applies only when <cite>use_av=True</cite></p></li>
+<li><p><strong>max_iterations</strong> – Maximum number of iterations for the iterative solver. Applies only when <cite>use_av=True</cite></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.tool">
+<span class="sig-name descname"><span class="pre">tool</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'wave_equation'</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.tool" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.frequency">
+<span class="sig-name descname"><span class="pre">frequency</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.frequency" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.frequency_batch">
+<span class="sig-name descname"><span class="pre">frequency_batch</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.frequency_batch" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.sweep_type">
+<span class="sig-name descname"><span class="pre">sweep_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'explicit'</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.sweep_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.max_delta_s">
+<span class="sig-name descname"><span class="pre">max_delta_s</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.01</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.max_delta_s" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.london_penetration_depth">
+<span class="sig-name descname"><span class="pre">london_penetration_depth</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.london_penetration_depth" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.quadratic_approximation">
+<span class="sig-name descname"><span class="pre">quadratic_approximation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.quadratic_approximation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.second_kind_basis">
+<span class="sig-name descname"><span class="pre">second_kind_basis</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.second_kind_basis" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.use_av">
+<span class="sig-name descname"><span class="pre">use_av</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.use_av" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.conductivity">
+<span class="sig-name descname"><span class="pre">conductivity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.conductivity" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.nested_iteration">
+<span class="sig-name descname"><span class="pre">nested_iteration</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.nested_iteration" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.convergence_tolerance">
+<span class="sig-name descname"><span class="pre">convergence_tolerance</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1e-10</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.convergence_tolerance" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.max_iterations">
+<span class="sig-name descname"><span class="pre">max_iterations</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2000</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.max_iterations" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerCapacitanceSolution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.elmer.elmer_solution.</span></span><span class="sig-name descname"><span class="pre">ElmerCapacitanceSolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_element_order:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percent_error:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_error_scale:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_outlier_fraction:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum_passes:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minimum_passes:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_axisymmetric:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_levels:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_size:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linear_system_method:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'bicgstab'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integrate_energies:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/elmer/elmer_solution.html#ElmerCapacitanceSolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerCapacitanceSolution" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution" title="kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElmerSolution</span></code></a></p>
+<p>Class for Elmer capacitance solution parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>linear_system_method</strong> – Available: ‘bicgstab’, ‘mg’ TODO Generalise to other tools</p></li>
+<li><p><strong>integrate_energies</strong> – Calculate energy integrals over each object. Used in EPR simulations</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerCapacitanceSolution.tool">
+<span class="sig-name descname"><span class="pre">tool</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'capacitance'</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerCapacitanceSolution.tool" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerCapacitanceSolution.linear_system_method">
+<span class="sig-name descname"><span class="pre">linear_system_method</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bicgstab'</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerCapacitanceSolution.linear_system_method" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerCapacitanceSolution.integrate_energies">
+<span class="sig-name descname"><span class="pre">integrate_energies</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerCapacitanceSolution.integrate_energies" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerCrossSectionSolution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.elmer.elmer_solution.</span></span><span class="sig-name descname"><span class="pre">ElmerCrossSectionSolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_element_order:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percent_error:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_error_scale:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_outlier_fraction:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum_passes:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minimum_passes:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_axisymmetric:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_levels:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_size:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linear_system_method:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'bicgstab'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integrate_energies:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary_conditions:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/elmer/elmer_solution.html#ElmerCrossSectionSolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerCrossSectionSolution" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution" title="kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElmerSolution</span></code></a></p>
+<p>Class for Elmer cross-section solution parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>linear_system_method</strong> – Available: ‘bicgstab’, ‘mg’</p></li>
+<li><p><strong>integrate_energies</strong> – Calculate energy integrals over each object. Used in EPR simulations</p></li>
+<li><p><strong>boundary_conditions</strong> – Parameters to determine boundary conditions for potentil on the edges
+of simulation box. Supported keys are <cite>xmin</cite> , <cite>xmax</cite> ,`ymin` and <cite>ymax</cite>
+Example: <cite>boundary_conditions = {“xmin”: {“potential”: 0}}</cite></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerCrossSectionSolution.tool">
+<span class="sig-name descname"><span class="pre">tool</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'cross-section'</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerCrossSectionSolution.tool" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerCrossSectionSolution.linear_system_method">
+<span class="sig-name descname"><span class="pre">linear_system_method</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bicgstab'</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerCrossSectionSolution.linear_system_method" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerCrossSectionSolution.integrate_energies">
+<span class="sig-name descname"><span class="pre">integrate_energies</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerCrossSectionSolution.integrate_energies" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerCrossSectionSolution.boundary_conditions">
+<span class="sig-name descname"><span class="pre">boundary_conditions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerCrossSectionSolution.boundary_conditions" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.get_elmer_solution">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.elmer.elmer_solution.</span></span><span class="sig-name descname"><span class="pre">get_elmer_solution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'capacitance'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">solution_params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/elmer/elmer_solution.html#get_elmer_solution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.get_elmer_solution" title="Link to this definition"></a></dt>
+<dd><p>Returns an instance of ElmerSolution subclass.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tool</strong> – Determines the subclass of ElmerSolution.</p></li>
+<li><p><strong>solution_params</strong> – Arguments passed for  ElmerSolution subclass.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <img alt="../_images/kqcircuits.simulations.export.elmer.elmer_solution.png" src="../_images/kqcircuits.simulations.export.elmer.elmer_solution.png" />

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.qubits.qubit &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.qubits.qubit &mdash; KQCircuits 4.7.26 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
@@ -18,7 +18,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/documentation_options.js?v=06566adf"></script>
         <script src="../_static/doctools.js?v=9a2dae69"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -966,7 +966,7 @@ the arms</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.qubits.qubit.Qubit.produce_fluxline">
-<span class="sig-name descname"><span class="pre">produce_fluxline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rot=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trans=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/qubits/qubit.html#Qubit.produce_fluxline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.qubits.qubit.Qubit.produce_fluxline" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">produce_fluxline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rot=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">displacement=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/qubits/qubit.html#Qubit.produce_fluxline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.qubits.qubit.Qubit.produce_fluxline" title="Link to this definition"></a></dt>
 <dd><p>Produces the fluxline.</p>
 <p>Creates the fluxline cell and inserts it as a subcell. The “flux” and “flux_corner” ports
 are made available for the qubit. By default, fluxlines align their “origin_fluxline” refpoint to
@@ -977,7 +977,7 @@ to achieve the desired design parameters.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>rot</strong> – Extra rotation of the fluxline, in degrees</p></li>
-<li><p><strong>trans</strong> (<em>DVector</em>) – fluxline x/y translation</p></li>
+<li><p><strong>displacement</strong> (<em>DVector</em>) – fluxline x/y displacement (ignored if center alignment is available)</p></li>
 <li><p><strong>parameters</strong> – parameters for the fluxline to overwrite default and subclass parameters</p></li>
 </ul>
 </dd>
