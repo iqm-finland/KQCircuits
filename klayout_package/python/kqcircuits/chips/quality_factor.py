@@ -23,11 +23,7 @@ from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.chips.chip import Chip
 from kqcircuits.defaults import default_airbridge_type, default_sampleholders
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
-from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter, t_cross_parameters
-from kqcircuits.elements.airbridges.airbridge import Airbridge
-from kqcircuits.elements.airbridge_connection import AirbridgeConnection
-from kqcircuits.util.coupler_lib import cap_params
-from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
+from kqcircuits.elements.quarter_wave_cpw_resonator import QuarterWaveCpwResonator
 
 
 class QualityFactor(Chip):
@@ -158,108 +154,45 @@ class QualityFactor(Chip):
 
         resonators = len(self.res_lengths)
         v_res_step = (tl_end - tl_start) * (1.0 / resonators)
-        cell_cross = self.add_element(
-            WaveguideCoplanarSplitter,
-            **t_cross_parameters(length_extra_side=2 * self.a, a=self.a, b=self.b, a2=self.a, b2=self.b),
-        )
-
-        # Airbridge crossing resonators
-        cell_ab_crossing = self.add_element(Airbridge)
 
         for i in range(resonators):
             resonator_up = self.resonators_both_sides and (i % 2) == 0
 
-            # Cross
-            cross_trans = pya.DTrans(0, resonator_up, tl_start + v_res_step * (i + 0.5))
-            _, cross_refpoints_abs = self.insert_cell(cell_cross, cross_trans)
-
-            # Coupler
-            _, cplr_refpoints_abs = self.insert_cell(
-                trans=pya.DTrans.R270 if resonator_up else pya.DTrans.R90,
-                align="port_b",
-                align_to=cross_refpoints_abs["port_bottom"],
-                **cap_params(
-                    n_fingers[i],
-                    l_fingers[i],
-                    type_coupler[i],
-                    element_key="cell",
-                    a=res_a[i],
-                    b=res_b[i],
-                    a2=self.a,
-                    b2=self.b,
-                ),
-            )
-
-            pos_res_start = cplr_refpoints_abs["port_a"]
-            sign = 1 if resonator_up else -1
-            pos_res_end = pos_res_start + sign * pya.DVector(0, min(res_lengths[i], self.max_res_len))
-            self.refpoints["resonator_{}_end".format(i)] = pos_res_end
-
-            # create resonator using WaveguideComposite
-            if res_beg[i] == "airbridge":
-                node_beg = Node(pos_res_start, AirbridgeConnection, with_side_airbridges=False)
-            else:
-                node_beg = Node(pos_res_start)
-
-            length_increment = res_lengths[i] - self.max_res_len if res_lengths[i] > self.max_res_len else None
-            bridge_length = res_a[i] + 2 * res_b[i] + 38
-            if res_term[i] == "airbridge":
-                node_end = Node(
-                    pos_res_end,
-                    AirbridgeConnection,
-                    with_side_airbridges=False,
-                    with_right_waveguide=False,
-                    n_bridges=n_ab[i],
-                    bridge_length=bridge_length,
-                    length_increment=length_increment,
-                )
-            else:
-                node_end = Node(
-                    pos_res_end, n_bridges=n_ab[i], bridge_length=bridge_length, length_increment=length_increment
-                )
-
-            airbridge_type = default_airbridge_type
-            if i < len(self.res_airbridge_types):
-                airbridge_type = self.res_airbridge_types[i]
-            wg = self.add_element(
-                WaveguideComposite,
-                nodes=[node_beg, node_end],
-                a=res_a[i],
-                b=res_b[i],
+            # Add resonator element
+            _, refp = self.insert_cell(
+                QuarterWaveCpwResonator,
+                trans=pya.DTrans(2 if resonator_up else 0, False, tl_start + (i + 0.5) * v_res_step),
+                probeline_len=120.0,
+                resonator_length=res_lengths[i],
+                max_res_len=max_res_len,
+                res_beg=res_beg[i],
+                res_term=res_term[i],
+                n_ab=n_ab[i],
+                res_airbridge_types=str(self.res_airbridge_types[i]),
+                tl_airbridges=self.tl_airbridges,
+                n_fingers=n_fingers[i],
+                l_fingers=l_fingers[i],
                 ground_grid_in_trace=int(self.ground_grid_in_trace[i]),
-                airbridge_type=airbridge_type,
+                type_coupler=type_coupler[i],
+                res_a=res_a[i],
+                res_b=res_b[i],
             )
-            self.insert_cell(wg)
 
-            # Feedline
+            # Add segment of feedline
             self.insert_cell(
                 WaveguideCoplanar,
                 **{
                     **self.cell.pcell_parameters_by_name(),
                     **{
-                        "path": pya.DPath(points_fl + [cross_refpoints_abs["port_left"]], 1),
+                        "path": pya.DPath(points_fl + [refp["port_b" if resonator_up else "port_a"]], 1),
                         "term2": 0,
                         "ground_grid_in_trace": False,
                     },
                 },
             )
-            points_fl = [cross_refpoints_abs["port_right"]]
+            points_fl = [refp["port_a" if resonator_up else "port_b"]]
 
-            # airbridges on the left and right side of the couplers
-            if self.tl_airbridges:
-                ab_dist_to_coupler = 60.0
-                ab_coupler_left = pya.DPoint(
-                    (cross_refpoints_abs["port_left"].x) - ab_dist_to_coupler, (cross_refpoints_abs["port_left"].y)
-                )
-                ab_coupler_right = pya.DPoint(
-                    (cross_refpoints_abs["port_right"].x) + ab_dist_to_coupler, (cross_refpoints_abs["port_right"].y)
-                )
-
-                self.insert_cell(cell_ab_crossing, pya.DTrans(0, False, ab_coupler_left))
-                self.insert_cell(cell_ab_crossing, pya.DTrans(0, False, ab_coupler_right))
-
-        # Last feedline
-
+        # Add the last segment of feedline
         self.insert_cell(
             WaveguideCoplanar,
             **{
