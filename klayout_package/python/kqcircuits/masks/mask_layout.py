@@ -335,6 +335,7 @@ class MaskLayout:
             self.chip_counts[chip_name] -= 1
             if not empty_bbox:
                 self.chip_counts[new_chip_name] += 1
+                self.chip_copies[position_label].update({"name_chip": new_chip_name})
             self.graphical_representation_inputs = [
                 tpl if tpl[2] != position_label else tuple([new_chip_name] + list(tpl)[1:])
                 for tpl in self.graphical_representation_inputs
