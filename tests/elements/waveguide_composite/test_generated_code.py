@@ -35,7 +35,7 @@ def test_generated_code_of_waveguide_composite():
     code1 = xml[start_ind:end_ind]
     view1 = _run_macro(code1)
 
-    code2 = convert_cells_to_code(view1.top_cell, output_format="create+macro")
+    code2 = convert_cells_to_code(view1.top_cell, add_instance_names=False, output_format="macro")
     view2 = _run_macro(code2)
     print(code2)
 

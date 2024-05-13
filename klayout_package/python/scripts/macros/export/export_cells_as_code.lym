@@ -8,6 +8,7 @@
  <doc/>
  <autorun>false</autorun>
  <autorun-early>false</autorun-early>
+ <priority>0</priority>
  <shortcut/>
  <show-in-menu>false</show-in-menu>
  <group-name/>
@@ -67,24 +68,15 @@ refpoint_snap = 50.0
 # equal to `grid_snap`
 grid_snap = 1.0
 # Determines the format of the code for placing cells and if some extra code is printed. Has the following options:
-#
-#   "insert_cell": only insert_cell() calls which can be copied to existing chip's/element's build method
-#   "insert_cell+chip": same as previous, but prints also the chip code, can copy to empty file to create new chip
-#   "create": only create() and cell.insert() calls which can be copied to an existing macro with layout and top_cell
-#   "create+macro": same as previous, but includes initial lines for macro, can copy to empty file to create new macro
-output_format = "create+macro"
+#    "build": Creates code that can be used inside the ``build`` method of a ``Chip`` or ``Element``
+#    "chip": Same as the above, but also outputs a full ``Chip`` class definition
+#    "macro": Creates code that can be used in a stand-alone KLayout macro or python script
+output_format = "chip"
 # If true, then import statements for all used elements are included in the generated code
 include_imports = True
-# If true, then create_with_refpoints() is used instead of create(). Only used when output_format is "create" or
-# "create+macro". Required if you want to use refpoints as waveguide points.
-use_create_with_refpoints = True
 
 top_cell = KLayoutView(current=True).active_cell
-# the code is returned by the function
 full_code = convert_cells_to_code(top_cell, print_waveguides_as_composite, add_instance_names, refpoint_snap,
-                                  grid_snap, output_format, include_imports, use_create_with_refpoints)
-print(full_code)
-# capturing to clipboard can be done for example with Pandas as follows:
-# import pandas as pd
-# pd.DataFrame([full_code]).to_clipboard(index=False, header=False)</text>
+                                  grid_snap, output_format, include_imports)
+print(full_code)</text>
 </klayout-macro>
