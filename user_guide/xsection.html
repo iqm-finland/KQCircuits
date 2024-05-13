@@ -4,10 +4,10 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Creating cross section images &mdash; KQCircuits 4.7.26 documentation</title>
+  <title>Creating cross section images &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=eeab0646" />
 
   
@@ -18,8 +18,8 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=06566adf"></script>
-        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
@@ -172,7 +172,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../developer/setup.html">Developer Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../developer/setup.html">Developer GUI Setup</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#prerequisites">Prerequisites</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../developer/setup.html#python">Python</a></li>
 </ul>
@@ -189,11 +189,13 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../developer/standalone.html">KLayout Standalone Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../developer/standalone.html">Developer Standalone module Setup</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#installation">Installation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../developer/standalone.html#standard-not-secure-installation">Standard, Not Secure Installation</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../developer/standalone.html#reproducible-secure-installation">Reproducible, Secure Installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/standalone.html#basic-installation">1. Basic installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/standalone.html#reproducible-secure-installation">2. Reproducible, Secure Installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/standalone.html#kqcircuits-exclusive-python-environment">3. KQCircuits exclusive python environment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/standalone.html#dependency-extensions">Dependency extensions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../developer/standalone.html#pypi-installation">PyPI Installation</a></li>
 </ul>
 </li>
@@ -940,11 +942,8 @@ provide a path to the parameters json file as well.</p></li>
 demonstrated in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations/waveguides_sim_xsection.py">klayout_package/python/scripts/simulations/waveguides_sim_xsection.py</a></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>XSection 1.7 does not work immediately after package install due to the improvement
-to backwards compatibility with older Ruby versions. To mitigate the issue,
-you need to make a change in the XSection code. From you KLayout environment directory,
-open <code class="docutils literal notranslate"><span class="pre">.klayout/salt/xsection/ruby/xsection_script.rb</span></code> file in editor and change line 200
-from <code class="docutils literal notranslate"><span class="pre">pts</span> <span class="pre">&lt;&lt;</span> <span class="pre">[[[</span> <span class="pre">p1,</span> <span class="pre">p2</span> <span class="pre">]]]</span></code> to <code class="docutils literal notranslate"><span class="pre">pts</span> <span class="pre">&lt;&lt;</span> <span class="pre">[[</span> <span class="pre">p1,</span> <span class="pre">p2</span> <span class="pre">]]</span></code></p>
+<p>XSection 1.7 does not work with KQCircuits. If you have such version installed, please
+update to the newest release of XSection.</p>
 </div>
 </section>
 <section id="process-files-xs">

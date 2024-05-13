@@ -4,10 +4,10 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installation &mdash; KQCircuits 4.7.26 documentation</title>
+  <title>Installation &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=eeab0646" />
 
   
@@ -18,8 +18,8 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=06566adf"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="about.html" />
@@ -172,7 +172,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="developer/index.html">Developer Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="developer/setup.html">Developer Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="developer/setup.html">Developer GUI Setup</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="developer/setup.html#prerequisites">Prerequisites</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="developer/setup.html#python">Python</a></li>
 </ul>
@@ -189,11 +189,13 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="developer/standalone.html">KLayout Standalone Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="developer/standalone.html">Developer Standalone module Setup</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="developer/standalone.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="developer/standalone.html#installation">Installation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="developer/standalone.html#standard-not-secure-installation">Standard, Not Secure Installation</a></li>
-<li class="toctree-l4"><a class="reference internal" href="developer/standalone.html#reproducible-secure-installation">Reproducible, Secure Installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="developer/standalone.html#basic-installation">1. Basic installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="developer/standalone.html#reproducible-secure-installation">2. Reproducible, Secure Installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="developer/standalone.html#kqcircuits-exclusive-python-environment">3. KQCircuits exclusive python environment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="developer/standalone.html#dependency-extensions">Dependency extensions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="developer/standalone.html#pypi-installation">PyPI Installation</a></li>
 </ul>
 </li>
@@ -901,14 +903,18 @@
 <span id="getting-started"></span><h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
 <p>There are three distinct ways of installing KQCircuits suitable for different use cases.</p>
 <p>The simplest way is installing the latest KQCircuits Salt Package with KLayout’s package manager.
-This gives the user instant access to KQCircuits but in a slightly limited read-only way. See
+This gives the user instant access to KQCircuits from KLayout GUI but in a slightly limited read-only way. See
 <a class="reference internal" href="salt.html#salt-package"><span class="std std-ref">Getting started (Salt package)</span></a>.</p>
-<p>Developers should rather install git, check out the source code and run KQCircuits from there, see
-the <a class="reference internal" href="developer/setup.html#developer-setup"><span class="std std-ref">Developer Setup</span></a>. This is the most powerful and most complex installation method but it
-gives full access to everything: creating and modifying chips, running tests and simulations,
-building documentation, etc.</p>
-<p>It is also possible to use KQCircuits with the standalone KLayout Python module, for that see
-<a class="reference internal" href="developer/standalone.html#standalone"><span class="std std-ref">KLayout Standalone Usage</span></a>.</p>
+<p>Developers should rather install git, clone the source code of KQCircuits and link it to the KLayout application.
+See the <a class="reference internal" href="developer/setup.html#developer-setup"><span class="std std-ref">Developer GUI Setup</span></a>. This way the KQCircuits extension in the KLayout GUI application
+will use the exact codebase present in the cloned, version-controlled local repository.</p>
+<p>For GUI-less features developers should also install KQCircuits as a standalone KLayout Python module, for that see
+<a class="reference internal" href="developer/standalone.html#standalone"><span class="std std-ref">Developer Standalone module Setup</span></a>. This allows developers to make use of KQCircuits features in their own
+python code by importing the <code class="docutils literal notranslate"><span class="pre">kqcircuits</span></code> module. This also enables terminal commands such as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">kqc</span> <span class="n">sim</span> <span class="o">&lt;</span><span class="n">simulation_script</span><span class="o">&gt;</span> <span class="c1"># to export simulation data and then to process it with a third-party simulator</span>
+<span class="n">kqc</span> <span class="n">mask</span> <span class="o">&lt;</span><span class="n">mask_script</span><span class="o">&gt;</span>      <span class="c1"># to export mask layout files for fabrication</span>
+</pre></div>
+</div>
 <section id="klayout">
 <span id="id1"></span><h2>KLayout<a class="headerlink" href="#klayout" title="Link to this heading"></a></h2>
 <p>Download and install KLayout from <a class="reference external" href="https://www.klayout.de/build.html">https://www.klayout.de/build.html</a>. Builds
@@ -917,15 +923,21 @@ for your OS. Otherwise you need to build KLayout yourself. We will assume in
 these instructions, that KLayout has been installed in the default location.</p>
 <p>KLayout is an actively maintained project with regular feature updates, bugfixes and
 stability improvements. We recommend using the latest version. KQCircuits is automatically
-tested on the following versions:</p>
+tested using KLayout versions:</p>
 <ul class="simple">
-<li><p>Linux (Ubuntu 18.04/20.04 LTS, 64-bit): KLayout 0.26.12, 0.27.13, and the latest version of 0.28</p></li>
-<li><p>MacOS: the latest version of 0.28</p></li>
-<li><p>Windows 10 (64-bit): KLayout 0.26.12, and the latest version of 0.28</p></li>
+<li><p>0.27.13</p></li>
+<li><p>0.28.17</p></li>
+<li><p>latest version of 0.29</p></li>
+</ul>
+<p>on the following platforms:</p>
+<ul class="simple">
+<li><p>Linux: Ubuntu 22.04 LTS, 64-bit</p></li>
+<li><p>MacOS: latest github image</p></li>
+<li><p>Microsoft Windows Server 2022, OS version 10</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>KQC documetation uses Linux conventions and examples unless explicitly talking about Windows or
+<p>KQC documentation uses Linux conventions and examples unless explicitly talking about Windows or
 MacOS. For example a Windows user should mentally translate path separator <code class="docutils literal notranslate"><span class="pre">/</span></code> to <code class="docutils literal notranslate"><span class="pre">\</span></code>,
 klayout executable <code class="docutils literal notranslate"><span class="pre">klayout</span></code> to <code class="docutils literal notranslate"><span class="pre">%APPDATA%\KLayout\klayout_app.exe</span></code> or the KLayout
 environment directory <code class="docutils literal notranslate"><span class="pre">~/.klayout</span></code> to <code class="docutils literal notranslate"><span class="pre">%HOMEPATH%\KLayout</span></code>.</p>
@@ -957,6 +969,10 @@ Python environment. To install a different version of some package, use:</p>
 used by KLayout. If you don’t know where that is, you can find it by opening
 the KLayout macro editor and writing <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">pip</span></code> and then <code class="docutils literal notranslate"><span class="pre">pip.__path__</span></code>
 in the console.</p>
+<p>Notice that this only affects the GUI installation of KQCircuits.
+The standalone, GUI-less KQCircuits installation will use whatever Python environment
+where it was explicitly installed in, which is most likely separate from the Python
+environment used by KLayout.</p>
 </section>
 </section>
 </section>

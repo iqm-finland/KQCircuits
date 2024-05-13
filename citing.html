@@ -4,10 +4,10 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Citing &mdash; KQCircuits 4.7.26 documentation</title>
+  <title>Citing &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=eeab0646" />
 
   
@@ -18,8 +18,8 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=06566adf"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="about.html" />
@@ -172,7 +172,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="developer/index.html">Developer Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="developer/setup.html">Developer Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="developer/setup.html">Developer GUI Setup</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="developer/setup.html#prerequisites">Prerequisites</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="developer/setup.html#python">Python</a></li>
 </ul>
@@ -189,11 +189,13 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="developer/standalone.html">KLayout Standalone Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="developer/standalone.html">Developer Standalone module Setup</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="developer/standalone.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="developer/standalone.html#installation">Installation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="developer/standalone.html#standard-not-secure-installation">Standard, Not Secure Installation</a></li>
-<li class="toctree-l4"><a class="reference internal" href="developer/standalone.html#reproducible-secure-installation">Reproducible, Secure Installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="developer/standalone.html#basic-installation">1. Basic installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="developer/standalone.html#reproducible-secure-installation">2. Reproducible, Secure Installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="developer/standalone.html#kqcircuits-exclusive-python-environment">3. KQCircuits exclusive python environment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="developer/standalone.html#dependency-extensions">Dependency extensions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="developer/standalone.html#pypi-installation">PyPI Installation</a></li>
 </ul>
 </li>
@@ -907,6 +909,9 @@ including <code class="docutils literal notranslate"><span class="pre">.bib</spa
 the following <code class="docutils literal notranslate"><span class="pre">.bib</span></code> file can be used:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@software</span><span class="p">{</span><span class="n">kqcircuits</span><span class="p">,</span>
   <span class="n">author</span>       <span class="o">=</span> <span class="p">{</span><span class="n">Cucurachi</span><span class="p">,</span> <span class="n">Daniele</span> <span class="ow">and</span>
+                  <span class="n">Das</span><span class="p">,</span> <span class="n">Soumya</span> <span class="n">Ranjan</span> <span class="ow">and</span>
+                  <span class="n">Giri</span><span class="p">,</span> <span class="n">Rakshyakar</span> <span class="ow">and</span>
+                  <span class="n">Gusenkova</span><span class="p">,</span> <span class="n">Daria</span> <span class="ow">and</span>
                   <span class="n">Guthrie</span><span class="p">,</span> <span class="n">Andrew</span> <span class="ow">and</span>
                   <span class="n">Heinsoo</span><span class="p">,</span> <span class="n">Johannes</span> <span class="ow">and</span>
                   <span class="n">Inel</span><span class="p">,</span> <span class="n">Sinan</span> <span class="ow">and</span>
@@ -915,11 +920,14 @@ the following <code class="docutils literal notranslate"><span class="pre">.bib<
                   <span class="n">Juliusson</span><span class="p">,</span> <span class="n">Kristinn</span> <span class="ow">and</span>
                   <span class="n">Kotilahti</span><span class="p">,</span> <span class="n">Janne</span> <span class="ow">and</span>
                   <span class="n">Landra</span><span class="p">,</span> <span class="n">Alessandro</span> <span class="ow">and</span>
+                  <span class="n">Moretti</span><span class="p">,</span> <span class="n">Roberto</span> <span class="ow">and</span>
+                  <span class="n">Mylläri</span><span class="p">,</span> <span class="n">Tuomas</span> <span class="ow">and</span>
                   <span class="n">Ockeloen</span><span class="o">-</span><span class="n">Korppi</span><span class="p">,</span> <span class="n">Caspar</span> <span class="ow">and</span>
                   <span class="n">Räbinä</span><span class="p">,</span> <span class="n">Jukka</span> <span class="ow">and</span>
                   <span class="n">Savola</span><span class="p">,</span> <span class="n">Niko</span> <span class="ow">and</span>
                   <span class="n">Smirnov</span><span class="p">,</span> <span class="n">Pavel</span> <span class="ow">and</span>
-                  <span class="n">Takala</span><span class="p">,</span> <span class="n">Eelis</span><span class="p">},</span>
+                  <span class="n">Takala</span><span class="p">,</span> <span class="n">Eelis</span> <span class="ow">and</span>
+                  <span class="n">Wubben</span><span class="p">,</span> <span class="n">Leon</span><span class="p">},</span>
   <span class="n">title</span>        <span class="o">=</span> <span class="p">{{</span><span class="n">KQCircuits</span><span class="p">}},</span>
   <span class="n">month</span>        <span class="o">=</span> <span class="n">jun</span><span class="p">,</span>
   <span class="n">year</span>         <span class="o">=</span> <span class="mi">2021</span><span class="p">,</span>

@@ -4,10 +4,10 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.export.simulation_export &mdash; KQCircuits 4.7.26 documentation</title>
+  <title>kqcircuits.simulations.export.simulation_export &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=eeab0646" />
 
   
@@ -18,8 +18,8 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=06566adf"></script>
-        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
@@ -172,7 +172,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../developer/setup.html">Developer Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../developer/setup.html">Developer GUI Setup</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#prerequisites">Prerequisites</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../developer/setup.html#python">Python</a></li>
 </ul>
@@ -189,11 +189,13 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../developer/standalone.html">KLayout Standalone Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../developer/standalone.html">Developer Standalone module Setup</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#installation">Installation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../developer/standalone.html#standard-not-secure-installation">Standard, Not Secure Installation</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../developer/standalone.html#reproducible-secure-installation">Reproducible, Secure Installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/standalone.html#basic-installation">1. Basic installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/standalone.html#reproducible-secure-installation">2. Reproducible, Secure Installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/standalone.html#kqcircuits-exclusive-python-environment">3. KQCircuits exclusive python environment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/standalone.html#dependency-extensions">Dependency extensions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../developer/standalone.html#pypi-installation">PyPI Installation</a></li>
 </ul>
 </li>
@@ -963,7 +965,36 @@ In case of common keys, ‘solution.’ prefix is added to Solution parameter ke
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_export.cross_sweep_simulation">
 <span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.simulation_export.</span></span><span class="sig-name descname"><span class="pre">cross_sweep_simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sweeps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_export.html#cross_sweep_simulation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_export.cross_sweep_simulation" title="Link to this definition"></a></dt>
-<dd><p>Create simulation sweep by cross varying all parameters. Return list of simulations.</p>
+<dd><p>Create simulation sweep by cross-varying all parameters. Return list of simulations.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_export.sweep_solution">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.simulation_export.</span></span><span class="sig-name descname"><span class="pre">sweep_solution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sol_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sol_parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sweeps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_export.html#sweep_solution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_export.sweep_solution" title="Link to this definition"></a></dt>
+<dd><p>Create solution sweep by varying one parameter at time. Return list of solutions.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_export.cross_sweep_solution">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.simulation_export.</span></span><span class="sig-name descname"><span class="pre">cross_sweep_solution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sol_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sol_parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sweeps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_export.html#cross_sweep_solution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_export.cross_sweep_solution" title="Link to this definition"></a></dt>
+<dd><p>Create solution sweep by cross-varying all parameters. Return list of solutions.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_export.cross_combine">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.simulation_export.</span></span><span class="sig-name descname"><span class="pre">cross_combine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solutions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_export.html#cross_combine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_export.cross_combine" title="Link to this definition"></a></dt>
+<dd><p>Combines simulations and solutions into list of tuples.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>simulations</strong> – A Simulation object or a list of Simulation objects.</p></li>
+<li><p><strong>solutions</strong> – A Solution object or a list of Solution objects.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of tuples containing all combinations of simulations and solutions.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <img alt="../_images/kqcircuits.simulations.export.simulation_export.png" src="../_images/kqcircuits.simulations.export.simulation_export.png" />

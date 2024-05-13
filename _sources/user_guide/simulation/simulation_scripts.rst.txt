@@ -70,7 +70,7 @@ Elmer export
 The Elmer simulations are developed and tested with Linux systems.
 Running the simulations requires installation of
 
-* Gmsh python API ``pip install gmsh``
+* Gmsh python API ``pip install gmsh`` or in secure mode ``pip install -r path/to/sim-requirements.txt``
 * Elmerfem solver, see https://github.com/ElmerCSC/elmerfem
 * Paraview https://www.paraview.org/
 

@@ -4,10 +4,10 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Developer Setup &mdash; KQCircuits 4.7.26 documentation</title>
+  <title>Developer GUI Setup &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=eeab0646" />
 
   
@@ -18,14 +18,14 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=06566adf"></script>
-        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="KLayout Standalone Usage" href="standalone.html" />
+    <link rel="next" title="Developer Standalone module Setup" href="standalone.html" />
     <link rel="prev" title="Developer Guide" href="index.html" /> 
 </head>
 
@@ -172,7 +172,7 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Developer Guide</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Developer Setup</a><ul>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Developer GUI Setup</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#python">Python</a></li>
 </ul>
@@ -189,11 +189,13 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="standalone.html">KLayout Standalone Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="standalone.html">Developer Standalone module Setup</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="standalone.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="standalone.html#installation">Installation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="standalone.html#standard-not-secure-installation">Standard, Not Secure Installation</a></li>
-<li class="toctree-l4"><a class="reference internal" href="standalone.html#reproducible-secure-installation">Reproducible, Secure Installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="standalone.html#basic-installation">1. Basic installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="standalone.html#reproducible-secure-installation">2. Reproducible, Secure Installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="standalone.html#kqcircuits-exclusive-python-environment">3. KQCircuits exclusive python environment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="standalone.html#dependency-extensions">Dependency extensions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="standalone.html#pypi-installation">PyPI Installation</a></li>
 </ul>
 </li>
@@ -888,7 +890,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="index.html">Developer Guide</a></li>
-      <li class="breadcrumb-item active">Developer Setup</li>
+      <li class="breadcrumb-item active">Developer GUI Setup</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/iqm-finland/KQCircuits/blob/main/docs/developer/setup.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
@@ -898,14 +900,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="developer-setup">
-<span id="id1"></span><h1>Developer Setup<a class="headerlink" href="#developer-setup" title="Link to this heading"></a></h1>
+  <section id="developer-gui-setup">
+<span id="developer-setup"></span><h1>Developer GUI Setup<a class="headerlink" href="#developer-gui-setup" title="Link to this heading"></a></h1>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
 <p>First install <a class="reference internal" href="../installation.html#klayout"><span class="std std-ref">KLayout</span></a>.</p>
-<p>Developer setup may be done independently from the GUI based installation of the KQCircuits Salt
-package. But you should not do both without removing the other one. Otherwise there will be
-duplicate macros and possibly other problems.</p>
+<p>If using existing KLayout installation which has KQCircuits Salt package installed, we recommend
+to remove such package from the Salt package manager. Two concurrent GUI setups may lead to many
+problems such as duplicate macros etc.</p>
 <section id="python">
 <h3>Python<a class="headerlink" href="#python" title="Link to this heading"></a></h3>
 <p>KQCircuits installation requires Python 3.10 minimum. This should already come pre-packaged at least
@@ -923,17 +925,12 @@ manager, you have to also install that.</p>
 <h2>Sources<a class="headerlink" href="#sources" title="Link to this heading"></a></h2>
 <p>Get KQCircuits’ sources with:</p>
 <pre class="literal-block">git clone <a class="reference external" href="https://github.com/iqm-finland/KQCircuits">https://github.com/iqm-finland/KQCircuits</a></pre>
-<p>Alternatively, you may re-use the Salt package itself for quick tests, it is under the
-<code class="docutils literal notranslate"><span class="pre">.klayout/salt/KQCircuits</span></code> directory. In this case creating symbolic links or installing some
-dependencies may not be required. Beware, a Salt package update <strong>will overwrite your code</strong> in this
-directory without any warning!</p>
 </section>
 <section id="install">
 <h2>Install<a class="headerlink" href="#install" title="Link to this heading"></a></h2>
 <p>This section explains basic installation, where the required packages
 are automatically installed in the default locations where KLayout looks for
-them. If you want to have more control over the installation process, see the
-next section.</p>
+them. If you want to have more control over the installation process, see section <a class="reference internal" href="#manual-installation"><span class="std std-ref">Manual installation</span></a>.</p>
 <p>Open a command line / terminal and <code class="docutils literal notranslate"><span class="pre">cd</span></code> to your KQCircuits folder. Then write:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="n">setup_within_klayout</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
@@ -964,7 +961,7 @@ installation automatically. If you wish to unlink, then write in your terminal:<
 </section>
 <section id="update">
 <h2>Update<a class="headerlink" href="#update" title="Link to this heading"></a></h2>
-<p>Updating an existing KQCircuits setup is easy. After updating KQCircuits code itself with <code class="docutils literal notranslate"><span class="pre">git</span>
+<p>Updating an existing KQCircuits GUI setup is easy. After updating KQCircuits code itself with <code class="docutils literal notranslate"><span class="pre">git</span>
 <span class="pre">pull</span></code> just run <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//setup_within_klayout.py">setup_within_klayout.py</a> again. This will take care of upgrading (or downgrading)
 KQCircuits’ Python dependencies and installing new ones, as needed. Running KLayout will similarly
 update KQCircuits’ dependencies in its own Python environment.</p>
@@ -997,11 +994,11 @@ out KQCircuits under some different name:</p>
 <blockquote>
 <div><p>KLAYOUT_HOME=~/.klayout_alt/KQC_2nd klayout</p>
 </div></blockquote>
-<p>Remember to set up a new <code class="docutils literal notranslate"><span class="pre">venv</span></code> before attempting <a class="reference internal" href="standalone.html#standalone"><span class="std std-ref">KLayout Standalone Usage</span></a> in this directory. Otherwise
+<p>Remember to set up a new <code class="docutils literal notranslate"><span class="pre">venv</span></code> before attempting <a class="reference internal" href="standalone.html#standalone"><span class="std std-ref">Developer Standalone module Setup</span></a> in this directory. Otherwise
 your secondary environment may get mixed up with the primary one.</p>
 </section>
 <section id="manual-installation">
-<h2>Manual installation<a class="headerlink" href="#manual-installation" title="Link to this heading"></a></h2>
+<span id="id1"></span><h2>Manual installation<a class="headerlink" href="#manual-installation" title="Link to this heading"></a></h2>
 <p>To use KQCircuits in KLayout Editor, symlinks must be created from KLayout’s
 python folder to your KQCircuits folder. Some Python packages must also be
 installed for KQCircuits to work. The details of these steps for different
@@ -1058,7 +1055,7 @@ is already included with KLayout, so this shouldn’t be a problem.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="index.html" class="btn btn-neutral float-left" title="Developer Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="standalone.html" class="btn btn-neutral float-right" title="KLayout Standalone Usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="standalone.html" class="btn btn-neutral float-right" title="Developer Standalone module Setup" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

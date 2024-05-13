@@ -156,7 +156,7 @@ Gmsh can also be parallelized using OpenMP:
 
 Please note that running the example requires the installation of
 
-* Gmsh python API ``pip install gmsh`` or in secure mode ``pip-sync requirements.txt sim-requirements.txt [...]``
+* Gmsh python API ``pip install gmsh`` or in secure mode ``pip install -r path/to/sim-requirements.txt``
 * Elmerfem solver,
   see https://github.com/ElmerCSC/elmerfem
 * Paraview

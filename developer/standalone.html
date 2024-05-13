@@ -4,10 +4,10 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KLayout Standalone Usage &mdash; KQCircuits 4.7.26 documentation</title>
+  <title>Developer Standalone module Setup &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=eeab0646" />
 
   
@@ -18,15 +18,15 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=06566adf"></script>
-        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Containers" href="containers.html" />
-    <link rel="prev" title="Developer Setup" href="setup.html" /> 
+    <link rel="prev" title="Developer GUI Setup" href="setup.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -172,7 +172,7 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Developer Guide</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="setup.html">Developer Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="setup.html">Developer GUI Setup</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="setup.html#prerequisites">Prerequisites</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="setup.html#python">Python</a></li>
 </ul>
@@ -189,11 +189,13 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">KLayout Standalone Usage</a><ul>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Developer Standalone module Setup</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#installation">Installation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#standard-not-secure-installation">Standard, Not Secure Installation</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#reproducible-secure-installation">Reproducible, Secure Installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#basic-installation">1. Basic installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#reproducible-secure-installation">2. Reproducible, Secure Installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#kqcircuits-exclusive-python-environment">3. KQCircuits exclusive python environment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dependency-extensions">Dependency extensions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pypi-installation">PyPI Installation</a></li>
 </ul>
 </li>
@@ -888,7 +890,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="index.html">Developer Guide</a></li>
-      <li class="breadcrumb-item active">KLayout Standalone Usage</li>
+      <li class="breadcrumb-item active">Developer Standalone module Setup</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/iqm-finland/KQCircuits/blob/main/docs/developer/standalone.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
@@ -898,9 +900,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="klayout-standalone-usage">
-<span id="standalone"></span><h1>KLayout Standalone Usage<a class="headerlink" href="#klayout-standalone-usage" title="Link to this heading"></a></h1>
-<p>The <a class="reference internal" href="setup.html#developer-setup"><span class="std std-ref">Developer Setup</span></a> or <a class="reference internal" href="../salt.html#salt-package"><span class="std std-ref">Getting started (Salt package)</span></a> sections described setting up KQCircuits for use
+  <section id="developer-standalone-module-setup">
+<span id="standalone"></span><h1>Developer Standalone module Setup<a class="headerlink" href="#developer-standalone-module-setup" title="Link to this heading"></a></h1>
+<p>The <a class="reference internal" href="setup.html#developer-setup"><span class="std std-ref">Developer GUI Setup</span></a> or <a class="reference internal" href="../salt.html#salt-package"><span class="std std-ref">Getting started (Salt package)</span></a> sections described setting up KQCircuits for use
 with KLayout Editor (GUI). However, KQC can also be used without KLayout
 Editor by using the standalone KLayout Python module. This lets you develop
 and use KQCircuits completely within any Python development environment of
@@ -923,23 +925,24 @@ KLayout.</p>
 </section>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
-<p>Set up a Python virtual environment, “venv”.</p>
+<p>We recommend setting up a Python virtual environment, <a class="reference external" href="https://docs.python.org/3/library/venv.html">“venv”</a>.
+This helps with containing the set of dependencies, not letting them interfere with other environments in your system.</p>
 <p>If you have not yet done so, <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span></code> the KQCircuits source code from
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits">https://github.com/iqm-finland/KQCircuits</a> to a location of your choice.</p>
-<p>This section explains how to install KQC in “development mode”, so that a
-link to your local KQC repo is added to the python environment. When using
-KQC installed in this way, the version in your local repo is thus used.</p>
-<section id="standard-not-secure-installation">
-<h3>Standard, Not Secure Installation<a class="headerlink" href="#standard-not-secure-installation" title="Link to this heading"></a></h3>
-<p>To do this, activate your python environment and write in command prompt /
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits">https://github.com/iqm-finland/KQCircuits</a> to a location of your choice.
+Same cloned local repository used for GUI developer installation (<a class="reference internal" href="setup.html#developer-setup"><span class="std std-ref">Developer GUI Setup</span></a>)
+can be used for standalone installation.</p>
+<p>Consider one of three types of installation.</p>
+<section id="basic-installation">
+<h3>1. Basic installation<a class="headerlink" href="#basic-installation" title="Link to this heading"></a></h3>
+<p>Activate your virtual environment (if you have one) and write in command prompt /
 terminal:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pip install -e klayout_package/python</span>
 </pre></div>
 </div>
 <p>The previous command installs only the packages which are always required
-when using KQC. Other packages may be required for specific purposes, and
-these can be installed by using instead a command like:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pip install -e &quot;klayout_package/python[docs,tests,notebooks,simulations]&quot;</span>
+when using KQC. Other packages may be required for specific purposes,
+see <a class="reference internal" href="#dependency-extensions"><span class="std std-ref">Dependency extensions</span></a>. A command that installs every dependency is:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pip install -e &quot;klayout_package/python[docs,tests,notebooks,simulations,graphs]&quot;</span>
 </pre></div>
 </div>
 <p>You can choose for which purposes you want to install the requirements by
@@ -947,44 +950,62 @@ modifying the text in the square brackets. Note that there should not be any
 spaces within the brackets.</p>
 </section>
 <section id="reproducible-secure-installation">
-<h3>Reproducible, Secure Installation<a class="headerlink" href="#reproducible-secure-installation" title="Link to this heading"></a></h3>
-<p>This is just like the standard installation but with pinned and hashed
-dependencies resulting in a more secure and reproducible environment. You’ll
-need <code class="docutils literal notranslate"><span class="pre">pip-tools</span></code> installed for this.</p>
-<p>First install KQCircuits’ dependencies and any other set of requirements you
-may need. This needs to be done only once per venv at initial setup time or
-when any of the used <code class="docutils literal notranslate"><span class="pre">*requirements.txt</span></code> files change. In this example we
-only install KQCircuits’, documentation building’s and pytest’s dependencies:</p>
+<h3>2. Reproducible, Secure Installation<a class="headerlink" href="#reproducible-secure-installation" title="Link to this heading"></a></h3>
+<p>For improved security, the dependencies can be installed such that every version
+of every dependency package is controlled and their hashes generated and validated.
+We host trusted dependency versions at <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/requirements">klayout_package/python/requirements</a>.
+If installed that way, it is also easier to troubleshoot problems since the environment will be identical
+to the one main developers of KQCircuits have.</p>
+<p>Install minimum requirements of KQCircuits, subsituting <code class="docutils literal notranslate"><span class="pre">&lt;platform&gt;</span></code> with <code class="docutils literal notranslate"><span class="pre">win</span></code>, <code class="docutils literal notranslate"><span class="pre">mac</span></code> or <code class="docutils literal notranslate"><span class="pre">linux</span></code>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd klayout_package/python</span>
-<span class="go">pip-sync requirements.txt doc-requirements.txt test-requirements.txt</span>
+<span class="go">python -m pip install -r requirements/&lt;platform&gt;/requirements.txt</span>
+<span class="go">python -m pip install --no-deps -e .</span>
 </pre></div>
 </div>
-<p>Note the other <code class="docutils literal notranslate"><span class="pre">*requirement.txt</span></code> files in this folder. Any combination of them
-is allowed but KQCircuits’ requirements  (<code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code>) are always needed.</p>
-<p>Also note the OS-prefixes, <code class="docutils literal notranslate"><span class="pre">win-</span></code> or <code class="docutils literal notranslate"><span class="pre">mac-</span></code>, you are supposed to use these
-when running on Windows or Mac. The prefixless files are for Linux and also for
-other platforms when the platform specific version is not present.</p>
-<p>Finally install KQCircuits itself in editable mode and without dependencies, as
-they are already present:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install --no-deps -e .</span>
+<p>You can afterwards install other requirements needed for specific purposes (in this case doc and test):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pip install -r requirements/&lt;platform&gt;/doc-requirements.txt -r requirements/&lt;platform&gt;/test-requirements.txt</span>
 </pre></div>
 </div>
-<p>or from the top level:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install --no-deps -e klayout_package/python/</span>
+<p>See <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/requirements">klayout_package/python/requirements</a> and <a class="reference internal" href="#dependency-extensions"><span class="std std-ref">Dependency extensions</span></a> for full list of requirements files.</p>
+</section>
+<section id="kqcircuits-exclusive-python-environment">
+<h3>3. KQCircuits exclusive python environment<a class="headerlink" href="#kqcircuits-exclusive-python-environment" title="Link to this heading"></a></h3>
+<p>If you have <code class="docutils literal notranslate"><span class="pre">pip-tools</span></code> installed, you can use the <code class="docutils literal notranslate"><span class="pre">pip-sync</span></code> command to completely rewrite you python environment
+to only use the pinned KQCircuits requirements, removing other packages.
+Only do this kind of installation on a virtual environment specifically created for using KQCircuits.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd klayout_package/python</span>
+<span class="go">python -m pip install -r requirements/&lt;platform&gt;/pip-requirements.txt</span>
+<span class="go">pip-sync requirements/&lt;platform&gt;/requirements.txt requirements/&lt;platform&gt;/test-requirements.txt</span>
+<span class="go">python -m pip install --no-deps -e .</span>
 </pre></div>
 </div>
+<p>We first install requirements needed for <code class="docutils literal notranslate"><span class="pre">pip-sync</span></code> command compiled in the <code class="docutils literal notranslate"><span class="pre">pip-requirements.txt</span></code> file,
+then we run the actual <code class="docutils literal notranslate"><span class="pre">pip-sync</span></code> command. Since <code class="docutils literal notranslate"><span class="pre">pip-sync</span></code> will completely wipe out your virtual environment,
+you will need to know in advance which dependency extensions you will need and list them within the single <code class="docutils literal notranslate"><span class="pre">pip-sync</span></code>
+command.</p>
+</section>
+<section id="dependency-extensions">
+<span id="id1"></span><h3>Dependency extensions<a class="headerlink" href="#dependency-extensions" title="Link to this heading"></a></h3>
+<p>We divided dependencies used by KQCircuits into following categories:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code>: Dependencies needed to use core KQCircuits API</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tests</span></code>, <code class="docutils literal notranslate"><span class="pre">test-requirements.txt</span></code>: Dependencies needed to run unit tests (see <a class="reference internal" href="testing.html#testing"><span class="std std-ref">Testing</span></a>) and linter. Recommended for developers of KQCircuits code.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">docs</span></code>, <code class="docutils literal notranslate"><span class="pre">doc-requirements.txt</span></code>: Dependencies needed to generate KQCircuits documentation, see <a class="reference internal" href="documentation.html#documentation"><span class="std std-ref">Documentation</span></a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">simulations</span></code>, <code class="docutils literal notranslate"><span class="pre">sim-requirements.txt</span></code>: Dependencies needed to export and run simulations, see <a class="reference internal" href="../user_guide/simulation/export_and_run.html#export-and-run"><span class="std std-ref">Run and export in one line</span></a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">notebooks</span></code>, <code class="docutils literal notranslate"><span class="pre">notebook-reqruiements.txt</span></code>: Dependencies needed to run Jupyter notebooks for demonstrations or for calculating needed designs.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">graphs</span></code>, <code class="docutils literal notranslate"><span class="pre">graph-reqruiements.txt</span></code>: Dependencies needed to visualise graphs, for example <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//util/netlist_as_graph.py">util/netlist_as_graph.py</a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pip-requirements.txt</span></code>: Dependencies needed for <code class="docutils literal notranslate"><span class="pre">pip-tools</span></code>.</p></li>
+</ul>
 </section>
 <section id="pypi-installation">
 <h3>PyPI Installation<a class="headerlink" href="#pypi-installation" title="Link to this heading"></a></h3>
-<p>If you do not need all KQCircuits sources but only the core KQC classes you may simply run <code class="docutils literal notranslate"><span class="pre">pip</span>
-<span class="pre">install</span> <span class="pre">kqcircuits</span></code> to get the Python package only. You can use this the same way as the full
-developer installation but remember that scripts, masks, documentation and notebooks are not part of
-the Python package. A new Python package is automatically uploaded to PyPI for every tagged commit
-in GitHub.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">kqcircuits</span></code> Python package may be used with an independently downloaded KQCircuits source
-directory to run tests, simulation scripts or build documentation or masks from there. You are
-supposed to run most of these from the source directory or you may need to specify the
-<code class="docutils literal notranslate"><span class="pre">KQC_ROOT_PATH</span></code> environment variable so that <code class="docutils literal notranslate"><span class="pre">kqcircuits</span></code> finds the sources.</p>
+<p>KQCircuits is also publicly available in the PyPI index and can be installed using:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install kqcircuits</span>
+</pre></div>
+</div>
+<p>You won’t be able to easily modify KQCircuits code and you won’t have access to many features such as
+scripts, masks, documentation and notebooks.
+A new Python package is automatically uploaded to PyPI for every tagged commit in GitHub.</p>
 </section>
 </section>
 <section id="usage">
@@ -995,7 +1016,7 @@ debuggers and automated testing (see <a class="reference internal" href="testing
 not be possible without the standalone KLayout module.</p>
 <p>It is possible to generate masks, run simulation scripts or even the actual simulations on the
 command line:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python klayout_package/python/scripts/masks/quick_demo.py</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">kqc mask quick_demo.py</span>
 <span class="go">python klayout_package/python/scripts/simulations/double_pads_sim.py -q</span>
 <span class="go">kqc sim waveguides_sim_compare.py -q</span>
 </pre></div>
@@ -1034,14 +1055,19 @@ the new versions are legitimate.</p>
 <p>Edit the <code class="docutils literal notranslate"><span class="pre">*requirements.in</span></code> files according to your needs. Try to keep &gt;=, &lt;=
 and == version constraints to a minimum. Try to improve other dependencies too,
 not only the ones your need.</p>
-<p>Compile the new <code class="docutils literal notranslate"><span class="pre">*requirements.txt</span></code> files:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip-compile --generate-hashes requirements.in &gt; requirements.txt</span>
-<span class="go">pip-compile --generate-hashes doc-requirements.in &gt; doc-requirements.txt</span>
+<p>Compile the new <code class="docutils literal notranslate"><span class="pre">requirements/&lt;platform&gt;/*requirements.txt</span></code> files for
+every source <code class="docutils literal notranslate"><span class="pre">*requirements.in</span></code> file you changed (make sure you have <code class="docutils literal notranslate"><span class="pre">pip-tools</span></code> installed):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd klayout_package/python</span>
+<span class="go">pip-compile --allow-unsafe --generate-hashes --upgrade --output-file=requirements/&lt;platform&gt;/requirements.txt requirements.in</span>
+<span class="go">pip-compile --allow-unsafe --generate-hashes --upgrade --output-file=requirements/&lt;platform&gt;/doc-requirements.txt doc-requirements.in</span>
 <span class="go">[...]</span>
 </pre></div>
 </div>
-<p>You’ll need to compile the Windows and Mac versions too. If they are different
-from the common (Linux) versions then remember to commit those files too.</p>
+<p>Substitute <code class="docutils literal notranslate"><span class="pre">&lt;platform&gt;</span></code> with <code class="docutils literal notranslate"><span class="pre">win</span></code>, <code class="docutils literal notranslate"><span class="pre">mac</span></code> or <code class="docutils literal notranslate"><span class="pre">linux</span></code>, and please make sure that
+the files will get compiled for other platforms too, not just the one you are using.</p>
+<p>Some requirements files don’t have their corresponding <code class="docutils literal notranslate"><span class="pre">*reqruirements.in</span></code> source file.
+One such file is <code class="docutils literal notranslate"><span class="pre">requirements/&lt;platform&gt;/pip-requirements.txt</span></code>, which compiles requirements of <code class="docutils literal notranslate"><span class="pre">pip-tool</span></code>
+for each platform. Other requirements files are only used for CI operations.</p>
 </section>
 </section>
 
@@ -1049,7 +1075,7 @@ from the common (Linux) versions then remember to commit those files too.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="setup.html" class="btn btn-neutral float-left" title="Developer Setup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="setup.html" class="btn btn-neutral float-left" title="Developer GUI Setup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="containers.html" class="btn btn-neutral float-right" title="Containers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

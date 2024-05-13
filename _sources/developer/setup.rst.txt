@@ -1,16 +1,16 @@
 .. _developer_setup:
 
-Developer Setup
-===============
+Developer GUI Setup
+===================
 
 Prerequisites
 -------------
 
 First install :ref:`klayout`.
 
-Developer setup may be done independently from the GUI based installation of the KQCircuits Salt
-package. But you should not do both without removing the other one. Otherwise there will be
-duplicate macros and possibly other problems.
+If using existing KLayout installation which has KQCircuits Salt package installed, we recommend
+to remove such package from the Salt package manager. Two concurrent GUI setups may lead to many
+problems such as duplicate macros etc.
 
 Python
 ^^^^^^
@@ -34,18 +34,12 @@ Get KQCircuits' sources with:
 
     git clone |GIT_CLONE_URL|
 
-Alternatively, you may re-use the Salt package itself for quick tests, it is under the
-``.klayout/salt/KQCircuits`` directory. In this case creating symbolic links or installing some
-dependencies may not be required. Beware, a Salt package update **will overwrite your code** in this
-directory without any warning!
-
 Install
 -------
 
 This section explains basic installation, where the required packages
 are automatically installed in the default locations where KLayout looks for
-them. If you want to have more control over the installation process, see the
-next section.
+them. If you want to have more control over the installation process, see section :ref:`manual_installation`.
 
 Open a command line / terminal and ``cd`` to your KQCircuits folder. Then write::
 
@@ -79,7 +73,7 @@ installation automatically. If you wish to unlink, then write in your terminal::
 Update
 ------
 
-Updating an existing KQCircuits setup is easy. After updating KQCircuits code itself with ``git
+Updating an existing KQCircuits GUI setup is easy. After updating KQCircuits code itself with ``git
 pull`` just run :git_url:`setup_within_klayout.py` again. This will take care of upgrading (or downgrading)
 KQCircuits' Python dependencies and installing new ones, as needed. Running KLayout will similarly
 update KQCircuits' dependencies in its own Python environment.
@@ -113,6 +107,8 @@ KLayout needs to know about this secondary environment, for example:
 
 Remember to set up a new ``venv`` before attempting :ref:`standalone` in this directory. Otherwise
 your secondary environment may get mixed up with the primary one.
+
+.. _manual_installation:
 
 Manual installation
 -------------------

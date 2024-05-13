@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; KQCircuits 4.7.26 documentation</title>
+  <title>Index &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=eeab0646" />
 
   
@@ -17,8 +17,8 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=06566adf"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="about.html" />
@@ -169,7 +169,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="developer/index.html">Developer Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="developer/setup.html">Developer Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="developer/setup.html">Developer GUI Setup</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="developer/setup.html#prerequisites">Prerequisites</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="developer/setup.html#python">Python</a></li>
 </ul>
@@ -186,11 +186,13 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="developer/standalone.html">KLayout Standalone Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="developer/standalone.html">Developer Standalone module Setup</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="developer/standalone.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="developer/standalone.html#installation">Installation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="developer/standalone.html#standard-not-secure-installation">Standard, Not Secure Installation</a></li>
-<li class="toctree-l4"><a class="reference internal" href="developer/standalone.html#reproducible-secure-installation">Reproducible, Secure Installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="developer/standalone.html#basic-installation">1. Basic installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="developer/standalone.html#reproducible-secure-installation">2. Reproducible, Secure Installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="developer/standalone.html#kqcircuits-exclusive-python-environment">3. KQCircuits exclusive python environment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="developer/standalone.html#dependency-extensions">Dependency extensions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="developer/standalone.html#pypi-installation">PyPI Installation</a></li>
 </ul>
 </li>
@@ -1295,10 +1297,10 @@
 </li>
       <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.conductivity">conductivity (kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.control">control() (in module kqcircuits.simulations.export.sonnet.parser)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.convergence_tolerance">convergence_tolerance (kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution attribute)</a>
 </li>
       <li><a href="api/kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.convert_cells_to_code">convert_cells_to_code() (in module kqcircuits.util.layout_to_code)</a>
@@ -1369,7 +1371,11 @@
 </li>
       <li><a href="api/kqcircuits.simulations.export.xsection.xsection_export.html#kqcircuits.simulations.export.xsection.xsection_export.create_xsections_from_simulations">create_xsections_from_simulations() (in module kqcircuits.simulations.export.xsection.xsection_export)</a>
 </li>
+      <li><a href="api/kqcircuits.simulations.export.simulation_export.html#kqcircuits.simulations.export.simulation_export.cross_combine">cross_combine() (in module kqcircuits.simulations.export.simulation_export)</a>
+</li>
       <li><a href="api/kqcircuits.simulations.export.simulation_export.html#kqcircuits.simulations.export.simulation_export.cross_sweep_simulation">cross_sweep_simulation() (in module kqcircuits.simulations.export.simulation_export)</a>
+</li>
+      <li><a href="api/kqcircuits.simulations.export.simulation_export.html#kqcircuits.simulations.export.simulation_export.cross_sweep_solution">cross_sweep_solution() (in module kqcircuits.simulations.export.simulation_export)</a>
 </li>
       <li><a href="api/kqcircuits.chips.crossing_twoface.html#kqcircuits.chips.crossing_twoface.CrossingTwoface">CrossingTwoface (class in kqcircuits.chips.crossing_twoface)</a>
 </li>
@@ -4032,10 +4038,10 @@
 </li>
       <li><a href="api/kqcircuits.elements.smooth_capacitor.html#kqcircuits.elements.smooth_capacitor.SmoothCapacitor">SmoothCapacitor (class in kqcircuits.elements.smooth_capacitor)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite.snap_point">snap_point() (kqcircuits.elements.waveguide_composite.WaveguideComposite method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.simulations.export.solution.html#kqcircuits.simulations.export.solution.Solution">Solution (class in kqcircuits.simulations.export.solution)</a>
 </li>
       <li><a href="api/kqcircuits.elements.spiral_resonator_polygon.html#kqcircuits.elements.spiral_resonator_polygon.SpiralResonatorPolygon">SpiralResonatorPolygon (class in kqcircuits.elements.spiral_resonator_polygon)</a>
@@ -4057,6 +4063,8 @@
       <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysHfssSolution.sweep_end">sweep_end (kqcircuits.simulations.export.ansys.ansys_solution.AnsysHfssSolution attribute)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.export.simulation_export.html#kqcircuits.simulations.export.simulation_export.sweep_simulation">sweep_simulation() (in module kqcircuits.simulations.export.simulation_export)</a>
+</li>
+      <li><a href="api/kqcircuits.simulations.export.simulation_export.html#kqcircuits.simulations.export.simulation_export.sweep_solution">sweep_solution() (in module kqcircuits.simulations.export.simulation_export)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysHfssSolution.sweep_start">sweep_start (kqcircuits.simulations.export.ansys.ansys_solution.AnsysHfssSolution attribute)</a>
 </li>
