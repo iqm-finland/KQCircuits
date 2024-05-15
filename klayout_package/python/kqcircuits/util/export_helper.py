@@ -459,6 +459,9 @@ def export_drc_report(name, path, drc_script):
     """Run a DRC script on ``path/name.oas`` and export results in ``path/name_drc_report.lyrdb``."""
 
     drc_runset_path = os.path.join(DRC_PATH, drc_script)
+    if not os.path.exists(drc_runset_path):
+        raise FileNotFoundError(f"DRC script {drc_script} does not exist")
+
     input_file = os.path.join(path, f"{name}.oas")
     output_file = os.path.join(path, f"{name}_drc_report.lyrdb")
     logging.info("Exporting DRC report to %s", output_file)
