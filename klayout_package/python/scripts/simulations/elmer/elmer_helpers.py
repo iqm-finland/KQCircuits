@@ -171,7 +171,7 @@ def sif_linsys(
             "Linear System Refactorize = False",
             "MG Method = p",
             "MG Levels = $pn",
-            "MG Smoother = SGS ! cg",
+            "MG Smoother = CG",  # SGS could be used in serial, but has poor parallel convergence
             "MG Pre Smoothing iterations = 2",
             "MG Post Smoothing Iterations = 2",
             "MG Lowest Linear Solver = iterative",
