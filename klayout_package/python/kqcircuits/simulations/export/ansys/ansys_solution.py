@@ -35,8 +35,6 @@ class AnsysSolution(Solution):
             maximal mesh element length inside the layer.
         simulation_flags: Optional export processing, given as list of strings. See Simulation Export in docs.
         ansys_project_template: path to the simulation template
-        integrate_energies: Calculate energy integrals over each layer and save them into a file
-        integrate_magnetic_flux: Integrate magnetic fluxes through each non-pec sheet and save them into a file
     """
 
     ansys_tool: ClassVar[str] = ""
@@ -48,8 +46,6 @@ class AnsysSolution(Solution):
     mesh_size: Optional[dict] = None
     simulation_flags: Optional[List[str]] = None
     ansys_project_template: Optional[str] = None
-    integrate_energies: bool = False
-    integrate_magnetic_flux: bool = False
 
     def get_solution_data(self):
         """Return the solution data in dictionary form."""
@@ -65,8 +61,6 @@ class AnsysSolution(Solution):
             },
             "mesh_size": {} if self.mesh_size is None else self.mesh_size,
             "simulation_flags": [] if self.simulation_flags is None else self.simulation_flags,
-            "integrate_energies": self.integrate_energies,
-            "integrate_magnetic_flux": self.integrate_magnetic_flux,
             **({} if self.ansys_project_template is None else {"ansys_project_template": self.ansys_project_template}),
         }
 
@@ -85,6 +79,8 @@ class AnsysHfssSolution(AnsysSolution):
         sweep_count: Number of frequencies in the sweep.
         sweep_type: choices are "interpolating", "discrete" or "fast"
         capacitance_export: If True, the capacitance matrices are exported from S-parameter simulation
+        integrate_energies: Calculate energy integrals over each layer and save them into a file
+        integrate_magnetic_flux: Integrate magnetic fluxes through each non-pec sheet and save them into a file
     """
 
     ansys_tool: ClassVar[str] = "hfss"
@@ -96,6 +92,8 @@ class AnsysHfssSolution(AnsysSolution):
     sweep_count: int = 101
     sweep_type: str = "interpolating"
     capacitance_export: bool = False
+    integrate_energies: bool = False
+    integrate_magnetic_flux: bool = False
 
     def get_solution_data(self):
         """Return the solution data in dictionary form."""
@@ -113,6 +111,8 @@ class AnsysHfssSolution(AnsysSolution):
                 "sweep_type": self.sweep_type,
             },
             "capacitance_export": self.capacitance_export,
+            "integrate_energies": self.integrate_energies,
+            "integrate_magnetic_flux": self.integrate_magnetic_flux,
         }
 
 
@@ -152,12 +152,16 @@ class AnsysEigenmodeSolution(AnsysSolution):
         min_frequency: Minimum allowed eigenmode frequency
         max_delta_f: Maximum allowed relative difference in eigenfrequency (%)
         n_modes: Number of eigenmodes to solve.
+        integrate_energies: Calculate energy integrals over each layer and save them into a file
+        integrate_magnetic_flux: Integrate magnetic fluxes through each non-pec sheet and save them into a file
     """
 
     ansys_tool: ClassVar[str] = "eigenmode"
     min_frequency: float = 0.1
     max_delta_f: float = 0.1
     n_modes: int = 2
+    integrate_energies: bool = False
+    integrate_magnetic_flux: bool = False
 
     def get_solution_data(self):
         """Return the solution data in dictionary form."""
@@ -170,6 +174,8 @@ class AnsysEigenmodeSolution(AnsysSolution):
                 "max_delta_f": self.max_delta_f,
                 "n_modes": self.n_modes,
             },
+            "integrate_energies": self.integrate_energies,
+            "integrate_magnetic_flux": self.integrate_magnetic_flux,
         }
 
 
@@ -181,11 +187,15 @@ class AnsysCurrentSolution(AnsysSolution):
     Args:
         frequency: Frequency of alternating current excitation.
         max_delta_e: Stopping criterion in current excitation simulation.
+        integrate_energies: Calculate energy integrals over each layer and save them into a file
+        integrate_magnetic_flux: Integrate magnetic fluxes through each non-pec sheet and save them into a file
     """
 
     ansys_tool: ClassVar[str] = "current"
     frequency: float = 0.1
     max_delta_e: float = 0.1
+    integrate_energies: bool = False
+    integrate_magnetic_flux: bool = False
 
     def get_solution_data(self):
         """Return the solution data in dictionary form."""
@@ -197,6 +207,8 @@ class AnsysCurrentSolution(AnsysSolution):
                 "frequency": self.frequency,
                 "max_delta_e": self.max_delta_e,
             },
+            "integrate_energies": self.integrate_energies,
+            "integrate_magnetic_flux": self.integrate_magnetic_flux,
         }
 
 
@@ -208,11 +220,15 @@ class AnsysVoltageSolution(AnsysSolution):
     Args:
         frequency: Frequency of alternating voltage excitation.
         max_delta_e: Stopping criterion in voltage excitation simulation.
+        integrate_energies: Calculate energy integrals over each layer and save them into a file
+        integrate_magnetic_flux: Integrate magnetic fluxes through each non-pec sheet and save them into a file
     """
 
     ansys_tool: ClassVar[str] = "voltage"
     frequency: float = 5
     max_delta_e: float = 0.1
+    integrate_energies: bool = False
+    integrate_magnetic_flux: bool = False
 
     def get_solution_data(self):
         """Return the solution data in dictionary form."""
@@ -224,6 +240,8 @@ class AnsysVoltageSolution(AnsysSolution):
                 "frequency": self.frequency,
                 "max_delta_e": self.max_delta_e,
             },
+            "integrate_energies": self.integrate_energies,
+            "integrate_magnetic_flux": self.integrate_magnetic_flux,
         }
 
 
