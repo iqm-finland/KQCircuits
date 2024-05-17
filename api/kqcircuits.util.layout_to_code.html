@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.util.layout_to_code &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.util.layout_to_code &mdash; KQCircuits 4.7.27 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
@@ -18,7 +18,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/documentation_options.js?v=a22eeec6"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -905,7 +905,7 @@
 <span id="kqcircuits-util-layout-to-code"></span><h1>kqcircuits.util.layout_to_code<a class="headerlink" href="#module-kqcircuits.util.layout_to_code" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.util.layout_to_code.convert_cells_to_code">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.layout_to_code.</span></span><span class="sig-name descname"><span class="pre">convert_cells_to_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_waveguides_as_composite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_instance_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refpoint_snap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_snap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'insert_cell+chip'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_imports</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_create_with_refpoints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/layout_to_code.html#convert_cells_to_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.layout_to_code.convert_cells_to_code" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.layout_to_code.</span></span><span class="sig-name descname"><span class="pre">convert_cells_to_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_waveguides_as_composite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_instance_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refpoint_snap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_snap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'chip'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_imports</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/layout_to_code.html#convert_cells_to_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.layout_to_code.convert_cells_to_code" title="Link to this definition"></a></dt>
 <dd><p>Prints out the Python code required to create the cells in top_cell.</p>
 <p>For each instance that is selected in GUI, prints out an <cite>insert_cell()</cite> command that can be copy pasted to a chip’s
 <cite>build()</cite>. If no instances are selected, then it will do the same for all instances that are one level below
@@ -922,21 +922,14 @@ if you want to have waveguides connect to refpoints of elements that were placed
 at that refpoint.</p></li>
 <li><p><strong>grid_snap</strong> – If a waveguide point was not close enough to a refpoint, it will be snapped to a square grid with
 square side length equal to <cite>grid_snap</cite></p></li>
-<li><p><strong>output_format</strong> – <p>Determines the format of the code for placing cells and if some extra code is printed. Has the
-following options:</p>
+<li><p><strong>output_format</strong> – <p>Determines the format of the code for placing cells. Has the following options:</p>
 <ul>
-<li><p>”insert_cell”: only insert_cell() calls which can be copied to existing chip’s/element’s build method</p></li>
-<li><p>”insert_cell+chip”: same as previous, but prints also the chip code, can copy to empty file to create
-new chip</p></li>
-<li><p>”create”: only create() and cell.insert() calls which can be copied to an existing macro with layout
-and top_cell</p></li>
-<li><p>”create+macro”: same as previous, but includes initial lines for macro, can copy to empty file to
-create new macro</p></li>
+<li><p>”build”: Creates code that can be used inside the <code class="docutils literal notranslate"><span class="pre">build</span></code> method of a <code class="docutils literal notranslate"><span class="pre">Chip</span></code> or <code class="docutils literal notranslate"><span class="pre">Element</span></code></p></li>
+<li><p>”chip”: Same as the above, but also outputs a full <code class="docutils literal notranslate"><span class="pre">Chip</span></code> class definition</p></li>
+<li><p>”macro”: Creates code that can be used in a stand-alone KLayout macro or python script</p></li>
 </ul>
 </p></li>
 <li><p><strong>include_imports</strong> – If true, then import statements for all used elements are included in the generated code</p></li>
-<li><p><strong>use_create_with_refpoints</strong> – If true, then create_with_refpoints() is used instead of create(). Only used when
-output_format is “create” or “create+macro”. Required if you want to use refpoints as waveguide points.</p></li>
 <li><p><strong>create_code</strong> – if False then does not export code but snap cells to refpoints in place</p></li>
 </ul>
 </dd>
