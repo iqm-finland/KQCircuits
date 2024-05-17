@@ -21,8 +21,9 @@ import ast
 import json
 import os
 import subprocess
+from itertools import product
 from pathlib import Path
-from typing import Callable, List, Tuple, Union
+from typing import Callable, List, Tuple
 from kqcircuits.defaults import STARTUPINFO, XSECTION_PROCESS_PATH
 from kqcircuits.pya_resolver import pya, klayout_executable_command
 from kqcircuits.simulations.export.util import export_layers
@@ -96,15 +97,25 @@ def _oxidise_layers(simulation, ma_thickness, ms_thickness, sa_thickness):
     """Take the cross section geometry and add oxide layers between substrate, metal and vacuum.
     Will add geometry around metals and etch away substrate to insert oxide geometry.
     """
-    substrate_layers = [layer for layer in simulation.layout.layer_infos() if layer.name.endswith("_substrate")]
+    substrate_layers = [
+        layer
+        for layer in simulation.layout.layer_infos()
+        if layer.name.startswith("substrate_") or layer.name == "substrate"
+    ]
     substrate = _combine_region_from_layers(simulation, substrate_layers)
+    used_faces = []
+    for face_group in simulation.get_parameters()["face_stack"]:
+        if isinstance(face_group, List):
+            used_faces.extend(face_group)
+        else:
+            used_faces.append(face_group)
     metal_layers = [
         layer
         for layer in simulation.layout.layer_infos()
-        if layer.name in ["b_ground", "t_ground", "b_signal", "t_signal"]
+        if layer.name in [f"{f}_{l}" for f, l in product(used_faces, ["ground", "signal"])]
     ]
-    metal_layers += [layer for layer in simulation.layout.layer_infos() if layer.name.startswith("b_signal_")]
-    metal_layers += [layer for layer in simulation.layout.layer_infos() if layer.name.startswith("t_signal_")]
+    for f in used_faces:
+        metal_layers += [layer for layer in simulation.layout.layer_infos() if layer.name.startswith(f"{f}_signal_")]
     metals = _combine_region_from_layers(simulation, metal_layers)
     metal_edges = metals.edges()
     substrate_edges = substrate.edges()
@@ -141,9 +152,9 @@ def _oxidise_layers(simulation, ma_thickness, ms_thickness, sa_thickness):
 
 
 def create_xsections_from_simulations(
-    simulations: List[Simulation],
+    simulations: list[Simulation],
     output_path: Path,
-    cuts: Union[Tuple[pya.DPoint, pya.DPoint], List[Tuple[pya.DPoint, pya.DPoint]]],
+    cuts: Tuple[pya.DPoint, pya.DPoint] | list[Tuple[pya.DPoint, pya.DPoint]],
     process_path: Path = XSECTION_PROCESS_PATH,
     post_processing_function: Callable[[CrossSectionSimulation], None] = None,
     oxidise_layers_function: Callable[[CrossSectionSimulation, float, float, float], None] = _oxidise_layers,
@@ -153,11 +164,11 @@ def create_xsections_from_simulations(
     ma_thickness: float = 0,
     ms_thickness: float = 0,
     sa_thickness: float = 0,
-    vertical_cull: Union[None, Tuple[float, float]] = None,
-    mer_box: Union[None, pya.DBox] = None,
-    london_penetration_depth: float = 0,
+    vertical_cull: Tuple[float, float] | None = None,
+    mer_box: pya.DBox | None = None,
+    london_penetration_depth: float | list = 0,
     magnification_order: int = 0,
-) -> List[Simulation]:
+) -> list[Simulation]:
     """Create cross-sections of all simulation geometries in the list.
     Will set 'box' and 'cell' parameters according to the produced cross-section geometry data.
 
@@ -299,8 +310,8 @@ def free_layer_slots(layout):
 
 
 def visualise_xsection_cut_on_original_layout(
-    simulations: List[Simulation],
-    cuts: Union[Tuple[pya.DPoint, pya.DPoint], List[Tuple[pya.DPoint, pya.DPoint]]],
+    simulations: list[Simulation],
+    cuts: Tuple[pya.DPoint, pya.DPoint] | list[Tuple[pya.DPoint, pya.DPoint]],
     cut_label: str = "cut",
     width_ratio: float = 0.0,
 ):
@@ -340,15 +351,6 @@ def _load_layout_options_for_xsection_output():
     return load_opts
 
 
-def _remap_face(layer_name, faces_of_flipchip):
-    """Rename face to b_*, t_* convention based on faces_of_flipchip list"""
-    if len(faces_of_flipchip) > 0 and layer_name.startswith(f"{faces_of_flipchip[0]}_"):
-        return f"b_{layer_name[len(faces_of_flipchip[0]) + 1:]}"
-    if len(faces_of_flipchip) > 1 and layer_name.startswith(f"{faces_of_flipchip[1]}_"):
-        return f"t_{layer_name[len(faces_of_flipchip[1]) + 1:]}"
-    return layer_name
-
-
 def _dump_xsection_parameters(xsection_dir, simulation):
     """If we're sweeping xsection specific parameters,
     dump them in external file for xsection process file to pick up
@@ -359,10 +361,7 @@ def _dump_xsection_parameters(xsection_dir, simulation):
         if not isinstance(param_value, pya.DBox)
     }  # Hack: ignore non-serializable params
     # Also dump all used layers in the simulation cell
-    sim_layers = {
-        _remap_face(l.name, simulation_params["face_stack"]): f"{l.layer}/{l.datatype}"
-        for l in simulation.layout.layer_infos()
-    }
+    sim_layers = {l.name: f"{l.layer}/{l.datatype}" for l in simulation.layout.layer_infos()}
     # Find avaiable layer numbers for substrate layers
     gen_free_layer_slots = free_layer_slots(simulation.layout)
     sim_layers["b_substrate"] = f"{next(gen_free_layer_slots)}/0"
@@ -609,10 +608,11 @@ def _construct_cross_section_simulation(
             t_substrate_permittivity = material_dict[substrate_material[1]]["permittivity"]
         xsection_simulation.set_permittivity("t_substrate", t_substrate_permittivity)
 
-    if post_processing_function is not None:
+    if post_processing_function:
         post_processing_function(xsection_simulation)
 
-    oxidise_layers_function(xsection_simulation, ma_thickness, ms_thickness, sa_thickness)
+    if oxidise_layers_function:
+        oxidise_layers_function(xsection_simulation, ma_thickness, ms_thickness, sa_thickness)
 
     if vertical_cull is not None:
 

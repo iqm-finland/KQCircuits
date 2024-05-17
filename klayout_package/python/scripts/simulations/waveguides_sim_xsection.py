@@ -79,6 +79,7 @@ sim_parameters = {
     ),
     "cpw_length": cpw_length,
     "face_stack": ["1t1", "2b1"] if multiface else ["1t1"],
+    "metal_height": 0.2,
     "etch_whole_opposite_face": args.etch_whole_opposite_face,
 }
 
@@ -96,16 +97,16 @@ workflow = {
 
 mesh_size = {
     "vacuum": 100,
-    "b_substrate": 100,
-    # 'b_signal_1': 1,
-    # 'b_signal_2': 1,
-    # 'b_signal_3': 1,
-    "b_simulation_ground": 4,
+    "substrate_0" if multiface else "substrate": 100,
+    # '1t1_signal_1': 1,
+    # '1t1_signal_2': 1,
+    # '1t1_signal_3': 1,
+    "1t1_ground": 4,
     "ma_layer": 1,
     "ms_layer": 1,
     "sa_layer": 1,
-    "t_substrate": 100,
-    "t_simulation_ground": 4,
+    "substrate_1": 100,
+    "2b1_ground": 4,
 }
 
 # Get layout
@@ -135,7 +136,7 @@ xsection_simulations = create_xsections_from_simulations(
     london_penetration_depth=args.london_penetration_depth,
 )
 loss_tangents = {
-    "b_substrate": 5e-7,
+    "substrate_0" if multiface else "substrate": 5e-7,
     "ma_layer": 9.9e-3,
     "ms_layer": 2.6e-3,
     "sa_layer": 2.1e-3,

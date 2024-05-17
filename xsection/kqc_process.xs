@@ -24,8 +24,7 @@ sim_layers = Hash.new
 
 face_stack = []
 substrate_height = []
-ground_metal_height = 0.2
-signal_metal_height = 0.2
+metal_height = []
 airbridge_height = 3.4
 vertical_over_etching = 0.0
 ubm_height = 0.02
@@ -58,15 +57,35 @@ if File.exists? $xs_params
   end
 end
 
+# Some validations of parameters
 if face_stack.length() == 2
   is_flip_chip = true
+  if face_stack[1].is_a? Array
+    face_stack[1] = face_stack[1][0]
+  end
 elsif face_stack.length() == 1
   is_flip_chip = false
 else
   raise "face_stack list has #{face_stack.length()} elements. Only 1- or 2-face cross-sections are supported"
 end
+if face_stack[0].is_a? Array
+  face_stack[0] = face_stack[0][0]
+end
 
-_cd = chip_distance[0] + ground_metal_height * 2
+# metal_height should have same construction as face_stack
+if metal_height.is_a? Float
+  if is_flip_chip
+    metal_height = [metal_height, metal_height]
+  else
+    metal_height = [metal_height]
+  end
+end
+
+_cd = chip_distance[0] + metal_height[0]
+if is_flip_chip
+  _cd += metal_height[1]
+end
+
 # Basic options
 if is_flip_chip
   depth(substrate_height[0] + _cd + substrate_height[1])
@@ -75,29 +94,6 @@ else
 end
 # Declare the basic accuracy used to remove artefacts for example:
 delta(5 * dbu)
-
-# Input layers from layout
-
-layer_b_gap = layer(sim_layers['b_gap'])
-layer_b_ground = layer(sim_layers['b_ground'])
-layer_b_signal = layer(sim_layers['b_signal'])
-layer_b_SIS_junction = layer(sim_layers['b_SIS_junction'])
-layer_b_SIS_shadow = layer(sim_layers['b_SIS_shadow'])
-layer_b_airbridge_pads = layer(sim_layers['b_airbridge_pads'])
-layer_b_airbridge_flyover = layer(sim_layers['b_airbridge_flyover'])
-layer_b_underbump_metallization = layer(sim_layers['b_underbump_metallization'])
-layer_b_indium_bump = layer(sim_layers['b_indium_bump'])
-
-layer_t_gap = layer(sim_layers['t_gap'])
-layer_t_ground = layer(sim_layers['t_ground'])
-layer_t_signal = layer(sim_layers['t_signal'])
-layer_t_SIS_junction = layer(sim_layers['t_SIS_junction'])
-layer_t_SIS_shadow = layer(sim_layers['t_SIS_shadow'])
-layer_t_airbridge_pads = layer(sim_layers['t_airbridge_pads'])
-layer_t_airbridge_flyover = layer(sim_layers['t_airbridge_flyover'])
-layer_t_underbump_metallization = layer(sim_layers['t_underbump_metallization'])
-layer_t_indium_bump = layer(sim_layers['t_indium_bump'])
-
 
 ################# Bottom chip ##################
 
@@ -109,15 +105,30 @@ material_b_substrate = bulk # creates a substrate with top edge at y=0
 # the bottom wafer first, so that later a top chip can be created there.
 if is_flip_chip
   etch(_cd + substrate_height[1], :into => material_b_substrate)
+else
+  # Increase processing window for non flipchips
+  height(_cd)
 end
 
+b_face = face_stack[0]
+# Input layers from layout
+layer_b_ground = layer(sim_layers["#{b_face}_ground"])
+layer_b_signal = layer(sim_layers["#{b_face}_signal"])
+layer_b_gap = (layer_b_ground.or(layer_b_signal)).inverted
+layer_b_SIS_junction = layer(sim_layers["#{b_face}_SIS_junction"])
+layer_b_SIS_shadow = layer(sim_layers["#{b_face}_SIS_shadow"])
+layer_b_airbridge_pads = layer(sim_layers["#{b_face}_airbridge_pads"])
+layer_b_airbridge_flyover = layer(sim_layers["#{b_face}_airbridge_flyover"])
+layer_b_underbump_metallization = layer(sim_layers["#{b_face}_underbump_metallization"])
+layer_b_indium_bump = layer(sim_layers["#{b_face}_indium_bump"])
+
 # deposit base metal
-material_b_ground = mask(layer_b_ground).grow(ground_metal_height)
-material_b_signal = mask(layer_b_signal).grow(signal_metal_height)
+material_b_ground = mask(layer_b_ground).grow(metal_height[0])
+material_b_signal = mask(layer_b_signal).grow(metal_height[0])
 signal_materials = Hash.new
 sim_layers.each do |layer_name, layer_id|
-  if layer_name.start_with? "b_signal"
-    signal_materials["#{layer_name}(#{layer_id})"] = mask(layer(layer_id)).grow(signal_metal_height)
+  if layer_name.start_with? "#{b_face}_signal"
+    signal_materials["#{layer_name}(#{layer_id})"] = mask(layer(layer_id)).grow(metal_height[0])
   end
 end
 etched_materials = [ material_b_ground, material_b_signal, material_b_substrate ] + signal_materials.values
@@ -140,22 +151,27 @@ planarize(:downto => material_b_substrate, :into => material_b_airbridge_resist)
 # deposit underbump metallization
 material_b_underbump_metallization = mask(layer_b_underbump_metallization).grow(ubm_height, -0.1, :mode => :round)
 # deposit indium bumps
-material_b_indium_bump = mask(layer_b_indium_bump).grow(_cd / 2 - ubm_height - ground_metal_height, 0.1, :mode => :round)
+material_b_indium_bump = mask(layer_b_indium_bump).grow(_cd / 2 - ubm_height - metal_height[0], 0.1, :mode => :round)
 
 # output the material data for bottom chip to the target layout
-output("b_substrate(#{sim_layers['b_substrate']})", material_b_substrate)
-output("b_ground(#{sim_layers['b_ground']})", material_b_ground)
-output("b_signal(#{sim_layers['b_signal']})", material_b_signal)
+output("#{b_face}_ground(#{sim_layers["#{b_face}_ground"]})", material_b_ground)
+output("#{b_face}_signal(#{sim_layers["#{b_face}_signal"]})", material_b_signal)
 signal_materials.each do |layer_name, material|
   output(layer_name, material)
 end
-output("b_SIS_junction(#{sim_layers['b_SIS_junction']})", material_b_SIS_junction)
-output("b_SIS_shadow(#{sim_layers['b_SIS_shadow']})", material_b_SIS_shadow)
+output("#{b_face}_SIS_junction(#{sim_layers["#{b_face}_SIS_junction"]})", material_b_SIS_junction)
+output("#{b_face}_SIS_shadow(#{sim_layers["#{b_face}_SIS_shadow"]})", material_b_SIS_shadow)
 # TODO: fix airbridge cross-sections with non-zero vertical_over_etching
-#output("b_airbridge_resist(#{sim_layers['b_airbridge_resist']})", material_b_airbridge_resist)
-output("b_airbridge_metal(#{sim_layers['b_airbridge_metal']})", material_b_airbridge_metal)
-output("b_underbump_metallization(#{sim_layers['b_underbump_metallization']})", material_b_underbump_metallization)
-output("b_indium_bump(#{sim_layers['b_indium_bump']})", material_b_indium_bump)
+#output("#{b_face}_airbridge_resist(#{sim_layers["#{b_face}_airbridge_resist"]})", material_b_airbridge_resist)
+output("#{b_face}_airbridge_metal(#{sim_layers["#{b_face}_airbridge_metal"]})", material_b_airbridge_metal)
+output("#{b_face}_underbump_metallization(#{sim_layers["#{b_face}_underbump_metallization"]})", material_b_underbump_metallization)
+output("#{b_face}_indium_bump(#{sim_layers["#{b_face}_indium_bump"]})", material_b_indium_bump)
+
+if is_flip_chip
+  output("substrate_0(#{sim_layers["substrate_0"]})", material_b_substrate)
+else
+  output("substrate(#{sim_layers["substrate"]})", material_b_substrate)
+end
 
 ################# Top chip ##################
 
@@ -166,32 +182,44 @@ if is_flip_chip
   # Remove the part of top chip substrate which is within bottom chip area (see earlier comment for bottom chip).
   etch(substrate_height[0] + _cd, :into => material_t_substrate)
 
+  t_face = face_stack[1]
+  # Input layers from layout
+  layer_t_ground = layer(sim_layers["#{t_face}_ground"])
+  layer_t_signal = layer(sim_layers["#{t_face}_signal"])
+  layer_t_gap = (layer_t_ground.or(layer_t_signal)).inverted
+  layer_t_SIS_junction = layer(sim_layers["#{t_face}_SIS_junction"])
+  layer_t_SIS_shadow = layer(sim_layers["#{t_face}_SIS_shadow"])
+  layer_t_airbridge_pads = layer(sim_layers["#{t_face}_airbridge_pads"])
+  layer_t_airbridge_flyover = layer(sim_layers["#{t_face}_airbridge_flyover"])
+  layer_t_underbump_metallization = layer(sim_layers["#{t_face}_underbump_metallization"])
+  layer_t_indium_bump = layer(sim_layers["#{t_face}_indium_bump"])
+
   # deposit base metal
-  material_t_ground = mask(layer_t_ground).grow(ground_metal_height)
-  material_t_signal = mask(layer_t_signal).grow(signal_metal_height)
+  material_t_ground = mask(layer_t_ground).grow(metal_height[1])
+  material_t_signal = mask(layer_t_signal).grow(metal_height[1])
   signal_materials = Hash.new
   sim_layers.each do |layer_name, layer_id|
-    if layer_name.start_with? "t_signal"
-      signal_materials["#{layer_name}(#{layer_id})"] = mask(layer(layer_id)).grow(signal_metal_height)
+    if layer_name.start_with? "#{t_face}_signal"
+      signal_materials["#{layer_name}(#{layer_id})"] = mask(layer(layer_id)).grow(metal_height[1])
     end
   end
-  etched_materials = [ material_b_ground, material_b_signal, material_b_substrate ] + signal_materials.values
+  etched_materials = [ material_t_ground, material_t_signal, material_t_substrate ] + signal_materials.values
 
-  # etch substrate
-  mask(layer_t_gap).etch(vertical_over_etching, :into => [ material_t_ground, material_t_signal, material_t_substrate ])
+  # etch substrate (gap layer already positive geometry for simulation layers)
+  mask(layer_t_gap).etch(vertical_over_etching, :into => etched_materials)
 
   # deposit underbump metallization
   material_t_underbump_metallization = mask(layer_t_underbump_metallization).grow(ubm_height, -0.1, :mode => :round)
   # deposit indium bumps
-  material_t_indium_bump = mask(layer_t_indium_bump).grow(_cd / 2 - ubm_height - ground_metal_height, 0.1, :mode => :round)
+  material_t_indium_bump = mask(layer_t_indium_bump).grow(_cd / 2 - ubm_height - metal_height[1], 0.1, :mode => :round)
 
   # output the material data for top chip to the target layout
-  output("t_substrate(#{sim_layers['t_substrate']})", material_t_substrate)
-  output("t_ground(#{sim_layers['t_ground']})", material_t_ground)
-  output("t_signal(#{sim_layers['t_signal']})", material_t_signal)
+  output("#{t_face}_ground(#{sim_layers["#{t_face}_ground"]})", material_t_ground)
+  output("#{t_face}_signal(#{sim_layers["#{t_face}_signal"]})", material_t_signal)
   signal_materials.each do |layer_name, material|
     output(layer_name, material)
   end
-  output("t_underbump_metallization(#{sim_layers['t_underbump_metallization']})", material_t_underbump_metallization)
-  output("t_indium_bump(#{sim_layers['t_indium_bump']})", material_t_indium_bump)
+  output("#{t_face}_underbump_metallization(#{sim_layers["#{t_face}_underbump_metallization"]})", material_t_underbump_metallization)
+  output("#{t_face}_indium_bump(#{sim_layers["#{t_face}_indium_bump"]})", material_t_indium_bump)
+  output("substrate_1(#{sim_layers['substrate_1']})", material_t_substrate)
 end

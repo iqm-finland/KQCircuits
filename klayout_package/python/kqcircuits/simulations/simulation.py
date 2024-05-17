@@ -187,20 +187,6 @@ class Simulation:
         "distances from bottom to top. The chip distances are measured between "
         "the closest layers of the opposing chips.",
     )
-    ground_metal_height = Param(
-        pdt.TypeDouble,
-        "Height of the grounded metal (in Xsection tool)",
-        0.2,
-        unit="µm",
-        docstring="Only used in Xsection tool and doesn't affect the 3D model",
-    )
-    signal_metal_height = Param(
-        pdt.TypeDouble,
-        "Height of the trace metal (in Xsection tool)",
-        0.2,
-        unit="µm",
-        docstring="Only used in Xsection tool and doesn't affect the 3D model",
-    )
 
     airbridge_height = Param(pdt.TypeDouble, "Height of airbridges.", 3.4, unit="µm")
     metal_height = Param(pdt.TypeList, "Height of metal sheet on each face.", [0.0], unit="µm")

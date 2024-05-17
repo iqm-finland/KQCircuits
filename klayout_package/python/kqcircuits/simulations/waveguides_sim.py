@@ -48,7 +48,7 @@ class WaveGuidesSim(Simulation):
         spacing = self.spacing
         tot_y = (n_guides - 1) * spacing
         guide_face_id = self.guide_face_id
-        face_id = {"1t1": 0, "2b1": 1}
+        face_id = {f: i for i, f in enumerate(self.face_ids)}
 
         for i in range(n_guides):
             y_pos = i * spacing - tot_y / 2.0

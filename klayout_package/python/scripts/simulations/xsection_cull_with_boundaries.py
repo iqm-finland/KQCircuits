@@ -91,16 +91,16 @@ workflow = {
 
 mesh_size = {
     "vacuum": 100,
-    "b_substrate": 100,
-    # 'b_signal_1': 1,
-    # 'b_signal_2': 1,
-    # 'b_signal_3': 1,
-    "b_simulation_ground": 4,
+    "substrate_0" if multiface else "substrate": 100,
+    # '1t1_signal_1': 1,
+    # '1t1_signal_2': 1,
+    # '1t1_signal_3': 1,
+    "1t1_ground": 4,
     "ma_layer": 0.02,
     "ms_layer": 0.02,
     "sa_layer": 0.02,
-    "t_substrate": 100,
-    "t_simulation_ground": 4,
+    "substrate_1": 100,
+    "2b1_ground": 4,
 }
 
 # Get layout
