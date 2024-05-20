@@ -679,16 +679,17 @@ def _update_elmer_workflow(simulations, common_solution, workflow):
         if requested_cpus > max_cpus:
             logging.warning(f"Requested more CPUs ({requested_cpus}) than available ({max_cpus})")
 
-        workflow["n_workers"] = n_workers
-        workflow["elmer_n_processes"] = n_processes
-        workflow["elmer_n_threads"] = n_threads
-
         gmsh_n_threads = workflow.get("gmsh_n_threads", 1)
         if gmsh_n_threads == -1:
             if parallelization_level == "full_simulation":
-                workflow["gmsh_n_threads"] = max(max_cpus // n_workers, 1)
+                gmsh_n_threads = max(max_cpus // n_workers, 1)
             else:
-                workflow["gmsh_n_threads"] = max_cpus
+                gmsh_n_threads = max_cpus
+
+        workflow["n_workers"] = n_workers
+        workflow["elmer_n_processes"] = n_processes
+        workflow["elmer_n_threads"] = n_threads
+        workflow["gmsh_n_threads"] = gmsh_n_threads
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-q", "--quiet", action="store_true")

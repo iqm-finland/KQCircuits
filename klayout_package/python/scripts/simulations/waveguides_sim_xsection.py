@@ -91,6 +91,7 @@ workflow = {
     "python_executable": "python",  # use 'kqclib' when using singularity image (you can also put a full path)
     "elmer_n_processes": -1,  # -1 means all the physical cores
     "elmer_n_threads": 1,  # number of omp threads
+    "gmsh_n_threads": -1,
 }
 
 mesh_size = {
@@ -155,27 +156,16 @@ sol_parameters = {
     "run_inductance_sim": False,
     "vtu_output": False,
 }
+post_process = [
+    PostProcess("produce_q_factor_table.py", **loss_tangents),
+    PostProcess("produce_epr_table.py", groups=["ma", "ms", "sa", "substrate", "vacuum"]),
+    PostProcess("elmer_profiler.py"),
+]
 
 if do_solution_sweep:
     solutions = sweep_solution(ElmerCrossSectionSolution, sol_parameters, {"p_element_order": [1, 2, 3]})
-    export_elmer(
-        cross_combine(xsection_simulations, solutions),
-        path,
-        workflow=workflow,
-        post_process=[
-            PostProcess("produce_q_factor_table.py", **loss_tangents),
-            PostProcess("produce_epr_table.py", groups=["ma", "ms", "sa", "substrate", "vacuum"]),
-        ],
-    )
+    export_elmer(cross_combine(xsection_simulations, solutions), path, workflow=workflow, post_process=post_process)
 else:
     export_elmer(
-        xsection_simulations,
-        path,
-        tool="cross-section",
-        **sol_parameters,
-        workflow=workflow,
-        post_process=[
-            PostProcess("produce_q_factor_table.py", **loss_tangents),
-            PostProcess("produce_epr_table.py", groups=["ma", "ms", "sa", "substrate", "vacuum"]),
-        ],
+        xsection_simulations, path, tool="cross-section", **sol_parameters, workflow=workflow, post_process=post_process
     )
