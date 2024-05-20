@@ -23,6 +23,18 @@ try:
 except ImportError:
     import klayout.db as pya
 
+# prefix to use in case a layer name starts with number or other special character
+MESH_LAYER_PREFIX = "elmer_prefix_"
+
+
+def get_elmer_layers(data):
+    """Prefixes dict keys if starting with number. Returns new modified dict"""
+    return {apply_elmer_layer_prefix(k): v for k, v in data.items()}
+
+
+def apply_elmer_layer_prefix(name):
+    return name if name[0].isalpha() else MESH_LAYER_PREFIX + name
+
 
 def produce_mesh(json_data, msh_file):
     """
@@ -139,16 +151,19 @@ def produce_mesh(json_data, msh_file):
     mesh_field_ids = []
     for name, size in mesh_size.items():
         intersection = set()
-        for sname in name.split("&"):
-            if sname in new_tags:
+        split_names = name.split("&")
+        if all((name in new_tags for name in split_names)):
+            for sname in split_names:
                 family = get_recursive_children(new_tags[sname]).union(new_tags[sname])
                 intersection = intersection.intersection(family) if intersection else family
 
-        mesh_field_ids += set_mesh_size_field(
-            list(intersection - get_recursive_children(intersection)),
-            mesh_global_max_size,
-            *(size if isinstance(size, list) else [size]),
-        )
+            mesh_field_ids += set_mesh_size_field(
+                list(intersection - get_recursive_children(intersection)),
+                mesh_global_max_size,
+                *(size if isinstance(size, list) else [size]),
+            )
+        else:
+            print(f'WARNING: No layers corresponding to mesh_size keys "{split_names}" found')
 
     # Set meshing options
     workflow = json_data.get("workflow", dict())
@@ -177,7 +192,7 @@ def produce_mesh(json_data, msh_file):
 
         edge_material = data.get("edge_material", None)
         if edge_material in accepted_thin_materials:
-            filtered_tags_with_material["gmsh_" + "&" + name] += [
+            filtered_tags_with_material["&" + name] += [
                 (d, t, material) for d, t in new_tags.get("&" + name, []) if d == 2
             ]
 
@@ -242,10 +257,7 @@ def produce_mesh(json_data, msh_file):
         # also remove 3d pec body containing all of these
 
         phys_group_tags = {
-            # Elmer doesn't support layer names starting with number so prefix them with gmsh_
-            (k if k[0].isalpha() else "gmsh_" + k): [(d, t) for d, t, _ in dts]
-            for k, dts in filtered_tags_with_material.items()
-            if dts[0][2] != "pec"
+            k: [(d, t) for d, t, _ in dts] for k, dts in filtered_tags_with_material.items() if dts[0][2] != "pec"
         }
 
         if material_dim_tags["pec"]:
@@ -267,7 +279,9 @@ def produce_mesh(json_data, msh_file):
     for name, dts in phys_group_tags.items():
         no_port_dts = [dt for dt in dts if dt not in ports_dts]
         if no_port_dts:
-            gmsh.model.addPhysicalGroup(max(dt[0] for dt in no_port_dts), [dt[1] for dt in no_port_dts], name=f"{name}")
+            gmsh.model.addPhysicalGroup(
+                max(dt[0] for dt in no_port_dts), [dt[1] for dt in no_port_dts], name=apply_elmer_layer_prefix(name)
+            )
 
     if json_data["tool"] != "epr_3d":
         # port physical groups

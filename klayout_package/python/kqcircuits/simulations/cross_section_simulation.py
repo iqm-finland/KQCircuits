@@ -23,7 +23,7 @@ import logging
 
 from kqcircuits.elements.element import Element
 from kqcircuits.pya_resolver import pya
-from kqcircuits.simulations.simulation import Simulation, get_simulation_layer_by_name
+from kqcircuits.simulations.simulation import Simulation, get_simulation_layer_by_name, to_1d_list
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 
 
@@ -47,7 +47,7 @@ class CrossSectionSimulation:
     LIBRARY_NAME = None  # This is needed by some methods inherited from Element.
 
     london_penetration_depth = Param(
-        pdt.TypeDouble,
+        pdt.TypeList,
         "London penetration depth of metals",
         0.0,
         unit="m",
@@ -139,6 +139,21 @@ class CrossSectionSimulation:
         """Return dictionary with all parameters and their values."""
         return {param: getattr(self, param) for param in (self.xsection_source_class or type(self)).get_schema()}
 
+    def get_dict_by_layers(self, param_name):
+        """Helper function to cast a parameter given as a list of same length as the face stack into
+        a dict of the format simulation_layer -> value"""
+        face_list = to_1d_list(self.face_stack) if hasattr(self, "face_stack") else [""]
+        data_list = to_1d_list(getattr(self, param_name))
+
+        num_faces = len(face_list)
+        if len(data_list) == 1 and num_faces > 1:
+            data_list = num_faces * [data_list[0]]
+        elif len(data_list) != num_faces:
+            logging.warning(f"Number of faces and {param_name} do not match ({num_faces} vs {len(data_list)})")
+
+        metal_layers = [n for n in self.layer_dict if "signal" in n or "ground" in n]
+        return {layer: v for face, v in zip(face_list, data_list) for layer in metal_layers if layer.startswith(face)}
+
     def get_simulation_data(self):
         """Return the simulation data in dictionary form.
 
@@ -149,7 +164,7 @@ class CrossSectionSimulation:
             "simulation_name": self.name,
             "units": self.units,
             "box": self.box,
-            "london_penetration_depth": self.london_penetration_depth,
+            "london_penetration_depth": self.get_dict_by_layers("london_penetration_depth"),
             **{"{}_permittivity".format(k): v for k, v in self.permittivity_dict.items()},
         }
         return simulation_data

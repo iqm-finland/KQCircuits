@@ -97,7 +97,7 @@ workflow = {
 
 mesh_size = {
     "vacuum": 100,
-    "substrate_0" if multiface else "substrate": 100,
+    "substrate_1": 100,
     # '1t1_signal_1': 1,
     # '1t1_signal_2': 1,
     # '1t1_signal_3': 1,
@@ -105,7 +105,7 @@ mesh_size = {
     "ma_layer": 1,
     "ms_layer": 1,
     "sa_layer": 1,
-    "substrate_1": 100,
+    "substrate_2": 100,
     "2b1_ground": 4,
 }
 
@@ -136,7 +136,7 @@ xsection_simulations = create_xsections_from_simulations(
     london_penetration_depth=args.london_penetration_depth,
 )
 loss_tangents = {
-    "substrate_0" if multiface else "substrate": 5e-7,
+    "substrate_1": 5e-7,
     "ma_layer": 9.9e-3,
     "ms_layer": 2.6e-3,
     "sa_layer": 2.1e-3,
@@ -153,9 +153,9 @@ sol_parameters = {
     "p_element_order": args.p_element_order,
     "linear_system_method": "mg",
     "integrate_energies": True,
-    # For faster sweep turn of vtu image output and skip inductance simulations
-    "run_inductance_sim": False,
-    "vtu_output": False,
+    # For faster sweep vtu image output and inductance simulations can be turned off
+    "run_inductance_sim": True,
+    "vtu_output": True,
 }
 post_process = [
     PostProcess("produce_q_factor_table.py", **loss_tangents),

@@ -167,11 +167,7 @@ output("#{b_face}_airbridge_metal(#{sim_layers["#{b_face}_airbridge_metal"]})", 
 output("#{b_face}_underbump_metallization(#{sim_layers["#{b_face}_underbump_metallization"]})", material_b_underbump_metallization)
 output("#{b_face}_indium_bump(#{sim_layers["#{b_face}_indium_bump"]})", material_b_indium_bump)
 
-if is_flip_chip
-  output("substrate_0(#{sim_layers["substrate_0"]})", material_b_substrate)
-else
-  output("substrate(#{sim_layers["substrate"]})", material_b_substrate)
-end
+output("substrate_1(#{sim_layers["substrate_1"]})", material_b_substrate)
 
 ################# Top chip ##################
 
@@ -221,5 +217,5 @@ if is_flip_chip
   end
   output("#{t_face}_underbump_metallization(#{sim_layers["#{t_face}_underbump_metallization"]})", material_t_underbump_metallization)
   output("#{t_face}_indium_bump(#{sim_layers["#{t_face}_indium_bump"]})", material_t_indium_bump)
-  output("substrate_1(#{sim_layers['substrate_1']})", material_t_substrate)
+  output("substrate_2(#{sim_layers['substrate_2']})", material_t_substrate)
 end

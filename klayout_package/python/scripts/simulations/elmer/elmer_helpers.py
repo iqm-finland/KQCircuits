@@ -24,6 +24,8 @@ import time
 import shutil
 from pathlib import Path
 from typing import Union, Sequence, Any, Dict, List
+from gmsh_helpers import get_elmer_layers, MESH_LAYER_PREFIX
+
 from scipy.constants import epsilon_0
 from scipy.signal import find_peaks
 import numpy as np
@@ -890,7 +892,7 @@ def get_body_list(json_data, dim, mesh_names):
     """
     body_list = []
     if dim == 2:
-        body_list = [n for n in ["vacuum", *json_data["layers"].keys()] if n in mesh_names]
+        body_list = [n for n in ["vacuum", *get_elmer_layers(json_data["layers"]).keys()] if n in mesh_names]
     elif dim == 3:
         body_list = [n for n in ["vacuum", "pec", *json_data["material_dict"].keys()] if n in mesh_names]
 
@@ -950,7 +952,7 @@ def get_signals(json_data, dim, mesh_names):
         (list(str)): list of signals
     """
     if dim == 2:
-        return [n for n in json_data["layers"].keys() if "signal" in n and n in mesh_names]
+        return [n for n in get_elmer_layers(json_data["layers"]).keys() if "signal" in n and n in mesh_names]
     elif dim == 3:
         port_numbers = sorted([port["number"] for port in json_data["ports"]])
         return [n for n in [f"signal_{i}" for i in port_numbers] if n in mesh_names]
@@ -971,7 +973,11 @@ def get_grounds(json_data, dim, mesh_names):
     """
     if dim == 2:
         signals = get_signals(json_data, dim, mesh_names)
-        return [n for n in json_data["layers"].keys() if "ground" in n and n not in signals and n in mesh_names]
+        return [
+            n
+            for n in get_elmer_layers(json_data["layers"]).keys()
+            if "ground" in n and n not in signals and n in mesh_names
+        ]
     elif dim == 3:
         return [n for n in mesh_names if n.startswith("ground")]
     return []
@@ -1041,7 +1047,7 @@ def sif_epr_3d(json_data: dict, folder_path: Path, vtu_name: str):
     permittivity_list = []
     for b in mesh_bodies:
         # mesh names have gmsh prefix if layer starts with number
-        mat = json_data["layers"].get(b.removeprefix("gmsh_"), {}).get("material", "vacuum")
+        mat = get_elmer_layers(json_data["layers"]).get(b, {}).get("material", "vacuum")
         perm = 1.0
         if mat in json_data["material_dict"]:
             perm = json_data["material_dict"][mat]["permittivity"]
@@ -1295,6 +1301,14 @@ def sif_inductance(json_data, folder_path, angular_frequency, circuit_definition
     body_list = get_body_list(json_data, dim=2, mesh_names=mesh_names)
     others = list((set(body_list) - set(signals) - set(grounds)).union(["vacuum"]))
 
+    if len(signals) == 0:
+        raise ValueError("No signals found in system. Cannot do inductance simulation")
+    if len(signals) > 1:
+        logging.warning(f"Multiple signals ({len(signals)}) found in inductance simulation!")
+        logging.warning(f'Treating "{signals[0]}" as signal and "{signals[1:]}" as grounds')
+        grounds = grounds + signals[1:]
+        signals = signals[0:1]
+
     bodies = sif_body(
         ordinate=1,
         target_bodies=others,
@@ -1302,8 +1316,6 @@ def sif_inductance(json_data, folder_path, angular_frequency, circuit_definition
         material=1,
         keywords=["Body Force = 1 ! No effect. Set to suppress warnings"],
     )
-    bodies += sif_body(ordinate=2, target_bodies=grounds, equation=1, material=2)
-    bodies += sif_body(ordinate=3, target_bodies=signals, equation=1, material=2)
 
     materials = sif_block(
         "Material 1",
@@ -1314,29 +1326,43 @@ def sif_inductance(json_data, folder_path, angular_frequency, circuit_definition
         ],
     )
 
-    london_penetration_depth = json_data.get("london_penetration_depth", 0.0)
-    if london_penetration_depth > 0:
-        opt_params = [
-            "Electric Conductivity = 0",
-            "$ lambda_l = {}".format(london_penetration_depth),
-            "$ mu_0 = 4e-7*pi",
-            "London Lambda = Real $ mu_0 * lambda_l^2",
-        ]
-    else:
-        opt_params = ["Electric Conductivity = 1e10"]
+    londons_dict = get_elmer_layers(json_data["london_penetration_depth"])
+    use_london_eq = any((london > 0 for london in londons_dict.values()))
 
-    materials += sif_block(
-        "Material 2",
-        [
-            "Relative Permeability = 1  ! No effect. Set to suppress warnings",
-            "Relative Permittivity = 1000",
-            *opt_params,
-        ],
+    metals = signals + grounds
+    for l, metal_body in enumerate(metals, 2):
+        if metal_body not in londons_dict:
+            logging.warning(f"No london penetration depth found for {metal_body}")
+
+        lambda_l = londons_dict.get(metal_body, 0.0)
+        bodies += sif_body(ordinate=l, target_bodies=[metal_body], equation=1, material=l)
+
+        if lambda_l > 0:
+            opt_params = [
+                "Electric Conductivity = 0",
+                "$ lambda_l = {}".format(lambda_l),
+                "$ mu_0 = 4e-7*pi",
+                "London Lambda = Real $ mu_0 * lambda_l^2",
+            ]
+        else:
+            opt_params = ["Electric Conductivity = 1e10"]
+
+        materials += sif_block(
+            f"Material {l}",
+            [
+                "Relative Permeability = 1  ! No effect. Set to suppress warnings",
+                "Relative Permittivity = 1000",
+                *opt_params,
+            ],
+        )
+
+    london_param = ["London Equations = Logical True"] if use_london_eq else []
+    components = sif_component(
+        ordinate=1,
+        master_bodies=list(range(2, 2 + len(signals))),
+        coil_type="Massive",
+        keywords=london_param,
     )
-
-    london_param = ["London Equations = Logical True"] if london_penetration_depth > 0 else []
-
-    components = sif_component(ordinate=1, master_bodies=[3], coil_type="Massive", keywords=london_param)
 
     body_force = sif_block("Body Force 1", ['Name = "Circuit"', "testsource Re = Real 1.0", "testsource Im = Real 0.0"])
 
@@ -1357,8 +1383,9 @@ def sif_circuit_definitions(json_data):
     res = "$ Circuits = 1\n"
 
     # Define variable count and initialize circuit matrices.
-    london_penetration_depth = json_data.get("london_penetration_depth", 0.0)
-    n_equations = 4 + int(london_penetration_depth > 0.0)
+    use_london_eq = any((london > 0 for london in json_data["london_penetration_depth"].values()))
+
+    n_equations = 4 + int(use_london_eq)
     res += f"\n$ C.1.perm = zeros({n_equations})\n"
     for i in range(n_equations):
         res += f"$ C.1.perm({i % (n_equations - 1) + 1 if i > 0 and n_equations == 4 else i}) = {i}\n"
@@ -1370,7 +1397,7 @@ def sif_circuit_definitions(json_data):
     # Define variables
     res += "\n"
     var_names = ["i_testsource", "v_testsource", "i_component(1)", "v_component(1)"]
-    if london_penetration_depth > 0.0:
+    if use_london_eq:
         # If London equations are activated, phi_component(1) takes the role and place of v_component(1).
         # Then v_component(1) becomes nothing but a conventional circuit variable and the user has to write d_t phi = v,
         # if he wishes to drive the SC with voltage.
@@ -1391,7 +1418,7 @@ def sif_circuit_definitions(json_data):
     res += "$ C.1.B(2,2) = -1\n"
 
     # 4th equation: (d_t phi_component(1) - v_component(1) = 0)
-    if london_penetration_depth > 0.0:
+    if use_london_eq:
         res += "\n$ C.1.A(4,3) = 1\n"
         res += "$ C.1.B(4,4) = -1\n"
 
@@ -1765,7 +1792,7 @@ def get_energy_integrals(path):
                         if matches:
                             energy_layers += [matches]
 
-        return {f"E_{k}": energy for k, energy in zip(energy_layers, energies)}
+        return {f"E_{k.removeprefix(MESH_LAYER_PREFIX)}": energy for k, energy in zip(energy_layers, energies)}
 
     except FileNotFoundError:
         logging.warning(f"Energy file not found in {path}")
@@ -1822,8 +1849,6 @@ def write_project_results_json(json_data: dict, path: Path, msh_filepath, polar_
     elif tool == "epr_3d":
 
         def _rename_energy_key(e_name):
-            # Remove "gmsh_" prefix from layer names
-            e_name = e_name.replace("_gmsh_", "_")
             # Change 2-component energies to same naming as used in Ansys
             if e_name.endswith("_norm_component"):
                 e_name = "Ez" + e_name.removesuffix("_norm_component").removeprefix("E")

@@ -20,15 +20,16 @@
 import ast
 import json
 import os
+import logging
 import subprocess
 from itertools import product
 from pathlib import Path
-from typing import Callable, List, Tuple
+from typing import Callable
 from kqcircuits.defaults import STARTUPINFO, XSECTION_PROCESS_PATH
 from kqcircuits.pya_resolver import pya, klayout_executable_command
 from kqcircuits.simulations.export.util import export_layers
 from kqcircuits.simulations.cross_section_simulation import CrossSectionSimulation
-from kqcircuits.simulations.simulation import Simulation
+from kqcircuits.simulations.simulation import Simulation, to_1d_list
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
 
 
@@ -105,7 +106,7 @@ def _oxidise_layers(simulation, ma_thickness, ms_thickness, sa_thickness):
     substrate = _combine_region_from_layers(simulation, substrate_layers)
     used_faces = []
     for face_group in simulation.get_parameters()["face_stack"]:
-        if isinstance(face_group, List):
+        if isinstance(face_group, list):
             used_faces.extend(face_group)
         else:
             used_faces.append(face_group)
@@ -151,10 +152,16 @@ def _oxidise_layers(simulation, ma_thickness, ms_thickness, sa_thickness):
         simulation.cell.shapes(simulation.get_sim_layer("sa_layer")).insert(sa_layer)
 
 
+def _check_metal_heights(simulation):
+    for i, h in enumerate(to_1d_list(simulation.metal_height), 1):
+        if h == 0:
+            logging.warning(f"Encountered zero metal height in CrossSectionSimulation (face {i}).")
+
+
 def create_xsections_from_simulations(
     simulations: list[Simulation],
     output_path: Path,
-    cuts: Tuple[pya.DPoint, pya.DPoint] | list[Tuple[pya.DPoint, pya.DPoint]],
+    cuts: tuple[pya.DPoint, pya.DPoint] | list[tuple[pya.DPoint, pya.DPoint]],
     process_path: Path = XSECTION_PROCESS_PATH,
     post_processing_function: Callable[[CrossSectionSimulation], None] = None,
     oxidise_layers_function: Callable[[CrossSectionSimulation, float, float, float], None] = _oxidise_layers,
@@ -164,7 +171,7 @@ def create_xsections_from_simulations(
     ma_thickness: float = 0,
     ms_thickness: float = 0,
     sa_thickness: float = 0,
-    vertical_cull: Tuple[float, float] | None = None,
+    vertical_cull: tuple[float, float] | None = None,
     mer_box: pya.DBox | None = None,
     london_penetration_depth: float | list = 0,
     magnification_order: int = 0,
@@ -205,7 +212,7 @@ def create_xsections_from_simulations(
     Returns:
         List of CrossSectionSimulation objects for each Simulation object in simulations
     """
-    if isinstance(cuts, Tuple):
+    if isinstance(cuts, tuple):
         cuts = [cuts] * len(simulations)
     cuts = [tuple(c if isinstance(c, pya.DPoint) else c.to_p() for c in cut) for cut in cuts]
     if len(simulations) != len(cuts):
@@ -219,6 +226,7 @@ def create_xsections_from_simulations(
     layout = pya.Layout()
     load_opts = _load_layout_options_for_xsection_output()
     for simulation, cut in zip(simulations, cuts):
+        _check_metal_heights(simulation)
         xsection_parameters = _dump_xsection_parameters(xsection_dir, simulation)
         simulation_file = xsection_dir / f"original_{simulation.cell.name}.oas"
         xsection_file = xsection_dir / f"xsection_{simulation.cell.name}.oas"
@@ -311,7 +319,7 @@ def free_layer_slots(layout):
 
 def visualise_xsection_cut_on_original_layout(
     simulations: list[Simulation],
-    cuts: Tuple[pya.DPoint, pya.DPoint] | list[Tuple[pya.DPoint, pya.DPoint]],
+    cuts: tuple[pya.DPoint, pya.DPoint] | list[tuple[pya.DPoint, pya.DPoint]],
     cut_label: str = "cut",
     width_ratio: float = 0.0,
 ):
@@ -334,7 +342,7 @@ def visualise_xsection_cut_on_original_layout(
         cut_label: prefix of the two text points shown for the cut
         width_ratio: rectangles visualising cuts will have a width of length of the cut multiplied by width_ratio
     """
-    if isinstance(cuts, Tuple):
+    if isinstance(cuts, tuple):
         cuts = [cuts] * len(simulations)
     cuts = [tuple(c if isinstance(c, pya.DPoint) else c.to_p() for c in cut) for cut in cuts]
     if len(simulations) != len(cuts):
@@ -361,12 +369,7 @@ def _dump_xsection_parameters(xsection_dir, simulation):
         if not isinstance(param_value, pya.DBox)
     }  # Hack: ignore non-serializable params
     # Also dump all used layers in the simulation cell
-    sim_layers = {l.name: f"{l.layer}/{l.datatype}" for l in simulation.layout.layer_infos()}
-    # Find avaiable layer numbers for substrate layers
-    gen_free_layer_slots = free_layer_slots(simulation.layout)
-    sim_layers["b_substrate"] = f"{next(gen_free_layer_slots)}/0"
-    sim_layers["t_substrate"] = f"{next(gen_free_layer_slots)}/0"
-    simulation_params["sim_layers"] = sim_layers
+    simulation_params["sim_layers"] = {l.name: f"{l.layer}/{l.datatype}" for l in simulation.layout.layer_infos()}
     xsection_parameters_file = xsection_dir / f"parameters_{simulation.cell.name}.json"
     with open(xsection_parameters_file, "w") as sweep_file:
         json.dump(simulation_params, sweep_file, cls=GeometryJsonEncoder)
@@ -600,13 +603,14 @@ def _construct_cross_section_simulation(
     material_dict = xsection_parameters["material_dict"]
     material_dict = ast.literal_eval(material_dict) if isinstance(material_dict, str) else material_dict
     substrate_material = xsection_parameters["substrate_material"]
-    b_substrate_permittivity = material_dict[substrate_material[0]]["permittivity"]
-    xsection_simulation.set_permittivity("b_substrate", b_substrate_permittivity)
+    substrate_1_permittivity = material_dict[substrate_material[0]]["permittivity"]
+
+    xsection_simulation.set_permittivity("substrate_1", substrate_1_permittivity)
     if len(xsection_parameters["face_stack"]) == 2:
-        t_substrate_permittivity = b_substrate_permittivity
+        substrate_2_permittivity = substrate_1_permittivity
         if len(substrate_material) > 1:
-            t_substrate_permittivity = material_dict[substrate_material[1]]["permittivity"]
-        xsection_simulation.set_permittivity("t_substrate", t_substrate_permittivity)
+            substrate_2_permittivity = material_dict[substrate_material[1]]["permittivity"]
+        xsection_simulation.set_permittivity("substrate_2", substrate_2_permittivity)
 
     if post_processing_function:
         post_processing_function(xsection_simulation)

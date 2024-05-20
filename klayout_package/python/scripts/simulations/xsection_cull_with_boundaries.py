@@ -44,9 +44,6 @@ parser.add_argument(
 )
 parser.add_argument("--p-element-order", default=3, type=int, help="Order of p-elements in the FEM computation")
 parser.add_argument(
-    "--london-penetration-depth", default=0.0, type=float, help="London penetration depth of superconductor in [m]"
-)
-parser.add_argument(
     "--etch-whole-opposite-face", action="store_true", help="If true, the top face metal will be etched away"
 )
 
@@ -74,7 +71,9 @@ sim_parameters = {
     "face_stack": ["1t1", "2b1"] if multiface else ["1t1"],
     "etch_whole_opposite_face": args.etch_whole_opposite_face,
     "n_guides": 1,
+    "metal_height": [0.2, 0.1] if multiface else [0.2],
 }
+
 
 boundary_conditions = {"xmin": {"potential": 0}, "ymax": {"potential": 0}}
 
@@ -91,7 +90,7 @@ workflow = {
 
 mesh_size = {
     "vacuum": 100,
-    "substrate_0" if multiface else "substrate": 100,
+    "substrate_1": 100,
     # '1t1_signal_1': 1,
     # '1t1_signal_2': 1,
     # '1t1_signal_3': 1,
@@ -99,7 +98,7 @@ mesh_size = {
     "ma_layer": 0.02,
     "ms_layer": 0.02,
     "sa_layer": 0.02,
-    "substrate_1": 100,
+    "substrate_2": 100,
     "2b1_ground": 4,
 }
 
@@ -108,7 +107,6 @@ logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 layout = get_active_or_new_layout()
 
 simulations = [sim_class(layout, **sim_parameters)]
-
 for simulation in simulations:
     separate_signal_layer_shapes(simulation)
 
@@ -126,8 +124,15 @@ xsection_simulations = create_xsections_from_simulations(
     ms_thickness=0.0003,
     sa_thickness=0.0024,
     magnification_order=3,  # Zoom to nanometers due to thin oxide layers
-    london_penetration_depth=args.london_penetration_depth,
-    vertical_cull=(-3, 3),
+    london_penetration_depth=[100e-9, 200e-9] if multiface else [100e-9],
+    vertical_cull=(
+        (
+            -simulations[0].substrate_height[1] + 3,
+            -simulations[0].substrate_height[1] - simulations[0].chip_distance[0] - 3,
+        )
+        if multiface
+        else (-3, 3)
+    ),
 )
 open_with_klayout_or_default_application(export_simulation_oas(xsection_simulations, path))
 visualise_xsection_cut_on_original_layout(simulations, cuts)

@@ -56,6 +56,20 @@ def get_simulation_layer_by_name(layer_name):
     return simulation_layer_dict[layer_name]
 
 
+def to_1d_list(data):
+    """Helper function to cast a scalar or a nested list into a one dimensional list"""
+
+    def _scalar_to_list(data):
+        return data if isinstance(data, list) else [data]
+
+    data = _scalar_to_list(data)
+
+    while any(isinstance(d, list) for d in data):
+        data = [y for x in data for y in _scalar_to_list(x)]
+
+    return data
+
+
 @add_parameters_from(Element)
 @add_parameters_from(Sim, "junction_total_length")
 class Simulation:
@@ -728,7 +742,7 @@ class Simulation:
         # Insert substrates
         for i in range(int(self.lower_box_height > 0), len(face_stack) + 1, 2):
             self.insert_layer(
-                "substrate" if len(face_stack) - int(self.lower_box_height > 0) < 2 else f"substrate_{i // 2}",
+                f"substrate_{(i // 2) + 1}",
                 pya.Region(self._face_box(i).to_itype(self.layout.dbu)),
                 z[i],
                 z[i + 1],

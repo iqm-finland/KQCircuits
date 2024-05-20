@@ -22,6 +22,8 @@ import numpy as np
 import pandas as pd
 import gmsh
 from scipy.constants import mu_0, epsilon_0
+
+
 from elmer_helpers import sif_capacitance, sif_inductance, sif_circuit_definitions
 
 
@@ -31,6 +33,7 @@ from gmsh_helpers import (
     set_mesh_size_field,
     get_recursive_children,
     set_meshing_options,
+    apply_elmer_layer_prefix,
 )
 
 try:
@@ -134,16 +137,19 @@ def produce_cross_section_mesh(json_data, msh_file):
     mesh_field_ids = []
     for name, size in mesh_size.items():
         intersection = set()
-        for sname in name.split("&"):
-            if sname in new_tags:
+        split_names = name.split("&")
+        if all((name in new_tags for name in split_names)):
+            for sname in split_names:
                 family = get_recursive_children(new_tags[sname]).union(new_tags[sname])
                 intersection = intersection.intersection(family) if intersection else family
 
-        mesh_field_ids += set_mesh_size_field(
-            list(intersection - get_recursive_children(intersection)),
-            mesh_global_max_size,
-            *(size if isinstance(size, list) else [size]),
-        )
+            mesh_field_ids += set_mesh_size_field(
+                list(intersection - get_recursive_children(intersection)),
+                mesh_global_max_size,
+                *(size if isinstance(size, list) else [size]),
+            )
+        else:
+            print(f'WARNING: No layers corresponding to mesh_size keys "{split_names}" found')
 
     # Set meshing options
     workflow = json_data.get("workflow", dict())
@@ -153,11 +159,11 @@ def produce_cross_section_mesh(json_data, msh_file):
 
     # Add physical groups
     for n in new_tags:
-        gmsh.model.addPhysicalGroup(2, [t[1] for t in new_tags[n]], name=n)
+        gmsh.model.addPhysicalGroup(2, [t[1] for t in new_tags[n]], name=apply_elmer_layer_prefix(n))
     metals = [n for n in new_tags if "signal" in n or "ground" in n]
     for n in metals:
         metal_boundary = gmsh.model.getBoundary(new_tags[n], combined=False, oriented=False, recursive=False)
-        gmsh.model.addPhysicalGroup(1, [t[1] for t in metal_boundary], name=f"{n}_boundary")
+        gmsh.model.addPhysicalGroup(1, [t[1] for t in metal_boundary], name=f"{apply_elmer_layer_prefix(n)}_boundary")
 
     set_outer_bcs(bbox, layout)
 
@@ -253,8 +259,7 @@ def produce_cross_section_sif_files(json_data, folder_path):
         )
     ]
     if json_data["run_inductance_sim"]:
-        london_penetration_depth = json_data.get("london_penetration_depth", 0.0)
-        if london_penetration_depth > 0:
+        if any((london > 0 for london in json_data["london_penetration_depth"].values())):
             circuit_definitions_file = save("inductance.definitions", sif_circuit_definitions(json_data))
             sif_files.append(
                 save(
@@ -291,9 +296,8 @@ def get_cross_section_capacitance_and_inductance(json_data, folder_path):
     except FileNotFoundError:
         return {"Cs": None, "Ls": None}
 
-    london_penetration_depth = json_data.get("london_penetration_depth", 0.0)
     try:
-        if london_penetration_depth > 0:
+        if any((london > 0 for london in json_data["london_penetration_depth"].values())):
             l_matrix_file_name = "inductance.dat"
             l_matrix_file = Path(folder_path).joinpath(l_matrix_file_name)
             if not l_matrix_file.is_file():
