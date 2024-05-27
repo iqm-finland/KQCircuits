@@ -5,7 +5,9 @@ define_variables () {
     # Config variables #
     ####################
 
+    # Only applies to CentOS. Ubuntu uses the latest python
     export PYTHON_VERSION="3.10.11"
+
     export OPENSSL_VERSION="1.1.1t"
     # KLayout version
     # Target CPU architecture for compilation, see https://gcc.gnu.org/onlinedocs/gcc/x86-Options.html
@@ -15,7 +17,7 @@ define_variables () {
 
     # Target MPI implementation: `openmpi` or `mpich`
     export TARGET_MPI="openmpi"
-    export MPI_VERSION="4.0.3"
+    export MPI_VERSION="4.1.4"
 
     # export TARGET_MPI="mpich"
     # export MPI_VERSION="4.0.2"
@@ -24,6 +26,15 @@ define_variables () {
     export ELMER_HOME="/opt/elmer"
     export PATH=$ELMER_HOME/bin:$PATH
     export LD_LIBRARY_PATH=/usr/lib/:$ELMER_HOME/include:$ELMER_HOME/lib:/opt/elmer/share/elmersolver/lib:/opt/hypre/lib:/opt/scalapack/lib:/opt/mumps/lib:/opt/netcdf/lib:/opt/mmg/lib:/opt/parmmg/lib:/opt/nn/lib:/opt/csa/lib:$LD_LIBRARY_PATH
+}
+
+install_kqcircuits_package () {
+    git clone https://github.com/iqm-finland/KQCircuits.git && cd KQCircuits || exit
+    cd klayout_package/python || exit
+    python -m pip install -r requirements/linux/requirements.txt
+    python -m pip install --no-deps -e .
+    python -m pip install -r requirements/linux/sim-requirements.txt
+    ln -sf /usr/bin/python /usr/bin/kqclib
 }
 
 install_yum_packages () {
@@ -56,8 +67,9 @@ install_deb_packages () {
     apt update ; apt install -y apt-utils; apt upgrade -y
     DEBIAN_FRONTEND=noninteractive apt install -y tzdata
     apt install -y wget python-is-python3 python3-pip git libcurl4 libglu1-mesa libxft-dev
-    apt install -y libopenblas-dev m4 libhdf5-dev gfortran paraview build-essential cmake
-
+    apt install -y libopenblas-dev m4 libhdf5-dev gfortran build-essential cmake
+    # These were needed by gmsh
+    apt install -y libxcursor-dev libgl1 libglib2.0-0 libxinerama1
     wget -q https://www.klayout.org/downloads/Ubuntu-22/$KL_FILE
     echo "$KL_HASH  $KL_FILE" > klayout.md5
     md5sum --check klayout.md5 || exit
@@ -65,13 +77,14 @@ install_deb_packages () {
     apt clean -y
     rm -rf /var/lib/apt/lists/* ./klayout*
 
+    # This is needed to use pip without venv
+    python -m pip config set global.break-system-packages true
     python -m pip install --upgrade pip
-    rm -rf /usr/lib/python3/dist-packages/klayout /usr/lib/python3/dist-packages/klayout.egg-info
-    git clone https://github.com/iqm-finland/KQCircuits.git
-    cd KQCircuits || exit
-    python -m pip install -e klayout_package/python
-    python -m pip install gmsh pandas
-    ln -sf /usr/bin/python /usr/bin/kqclib
+    rm -rf /usr/lib/python3/dist-packages/klayout /usr/lib/python3/dist-packages/klayout.egg-info 
+    install_kqcircuits_package
+
+    # Installing paraview via apt causes secondary python with conflicting packages to be installed
+    # apt install -y paraview
 }
 
 ######################
@@ -291,7 +304,7 @@ compile_elmer () {
     fi
 }
 
-install_kqcircuits_compile () {
+install_kqcircuits_and_deps_centos () {
     ###########################
     # KQCircuits installation #
     ###########################
@@ -375,7 +388,7 @@ install_kqcircuits_compile () {
     alternatives --install /usr/bin/python python "/usr/local/bin/python$PYTHON_BIN_VERSION" 1
     alternatives --set python "/usr/local/bin/python$PYTHON_BIN_VERSION"
 
-
+    # TODO switch to using pinned requirements by using install_kqcircuits_package()
     python -m pip install --upgrade pip
     rm -rf /usr/lib/python3/dist-packages/klayout /usr/lib/python3/dist-packages/klayout.egg-info
     git clone https://github.com/iqm-finland/KQCircuits.git && cd KQCircuits || exit
@@ -408,4 +421,5 @@ compile_mmg_and_parmmg
 compile_NN
 compile_csa
 compile_elmer true
-#install_kqcircuits # only for centos
+
+#install_kqcircuits_and_deps_centos
