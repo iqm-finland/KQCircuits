@@ -1,6 +1,0 @@
-# Packages required to use KQC in KLayout Editor in Linux or MacOS
-
-numpy>=1.16
-scipy>=1.2
-tqdm==4.61
-networkx>=3.2.1

@@ -16,8 +16,8 @@
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
-from kqcircuits.util.dependencies import install_kqc_dependencies
+from kqcircuits.util.dependencies import install_kqc_gui_dependencies
 
 
 # Check for needed dependencies and install if missing.
-install_kqc_dependencies()
+install_kqc_gui_dependencies()

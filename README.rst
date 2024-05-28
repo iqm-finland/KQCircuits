@@ -99,6 +99,7 @@ Install GUI
 ^^^^^^^^^^^
 
 `First install KLayout <https://www.klayout.de/build.html>`__.
+(For mac users we recommend using `HomeBrew <https://formulae.brew.sh/cask/klayout>`__).
 Afterwards you can install KQCircuits as a plug-in to use KQCircuits features
 within your KLayout GUI editor session.
 

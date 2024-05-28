@@ -117,9 +117,11 @@ We divided dependencies used by KQCircuits into following categories:
 - ``tests``, ``test-requirements.txt``: Dependencies needed to run unit tests (see :ref:`testing`) and linter. Recommended for developers of KQCircuits code.
 - ``docs``, ``doc-requirements.txt``: Dependencies needed to generate KQCircuits documentation, see :ref:`documentation`.
 - ``simulations``, ``sim-requirements.txt``: Dependencies needed to export and run simulations, see :ref:`export_and_run`.
-- ``notebooks``, ``notebook-reqruiements.txt``: Dependencies needed to run Jupyter notebooks for demonstrations or for calculating needed designs.
-- ``graphs``, ``graph-reqruiements.txt``: Dependencies needed to visualise graphs, for example :git_url:`util/netlist_as_graph.py`.
+- ``notebooks``, ``notebook-requirements.txt``: Dependencies needed to run Jupyter notebooks for demonstrations or for calculating needed designs.
+- ``graphs``, ``graph-requirements.txt``: Dependencies needed to visualise graphs, for example :git_url:`util/netlist_as_graph.py`.
 - ``pip-requirements.txt``: Dependencies needed for ``pip-tools``.
+- ``gui-requirements.txt``: Dependencies needed for KQCircuits GUI installation, used by :git_url:`setup_within_klayout.py` and on KLayout startup.
+  Should be targeted to the ``site-packages`` directory that the KLayout installation uses.
 
 PyPI Installation
 ^^^^^^^^^^^^^^^^^
@@ -202,6 +204,6 @@ every source ``*requirements.in`` file you changed (make sure you have ``pip-too
 Substitute ``<platform>`` with ``win``, ``mac`` or ``linux``, and please make sure that
 the files will get compiled for other platforms too, not just the one you are using.
 
-Some requirements files don't have their corresponding ``*reqruirements.in`` source file.
+Some requirements files don't have their corresponding ``*requirements.in`` source file.
 One such file is ``requirements/<platform>/pip-requirements.txt``, which compiles requirements of ``pip-tool``
 for each platform. Other requirements files are only used for CI operations.

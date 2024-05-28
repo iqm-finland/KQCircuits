@@ -1,5 +1,5 @@
 # This code is part of KQCircuits
-# Copyright (C) 2021 IQM Finland Oy
+# Copyright (C) 2024 IQM Finland Oy
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 # License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
@@ -16,21 +16,19 @@
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
-from importlib import util, import_module
-
-# Record dependencies in requirements.in too:
-kqc_python_dependencies = {
-    "numpy": "numpy>=1.16",
-    "scipy": "scipy>=1.2",
-    "tqdm": "tqdm>=4.61",
-    "networkx": "networkx>=3.2.1",
-}
+from importlib import import_module
+from io import IOBase
+from pathlib import Path
+from sys import platform
+import os
+import site
+import setuptools
 
 
-def install_kqc_dependencies():
-    """Check KQCircuits' dependencies and install/upgrade if missing.
+def install_kqc_gui_dependencies():
+    """Check KQCircuits' dependencies against klayout-requirements.txt file and install/upgrade if missing.
 
-    This is *only* for KLayout. Stand-alone mode needs manual pip install or pip-sync, preferably in a venv.
+    This is *only* for KLayout GUI. Stand-alone mode needs manual pip install or pip-sync, preferably in a venv.
     This function should run only once at KLayout startup.
     """
     # pylint: disable=import-outside-toplevel
@@ -41,20 +39,73 @@ def install_kqc_dependencies():
     if not hasattr(pya, "MessageBox"):
         return
 
-    missing_pkgs = []
-
-    for pkg, pkg_ver in kqc_python_dependencies.items():
-        if util.find_spec(pkg) is None:
-            missing_pkgs.append(pkg)
+    detected_os = None
+    if os.name == "nt":  # Windows
+        detected_os = "win"
+    elif os.name == "posix":
+        if platform == "darwin":  # macOS
+            detected_os = "mac"
         else:
-            mod = import_module(pkg)
-            v_inst = tuple(map(int, (mod.__version__.split("."))))
-            v_reqd = tuple(map(int, (pkg_ver.rsplit("=", maxsplit=1)[-1].split("."))))
-            if v_reqd > v_inst:
-                missing_pkgs.append(pkg)
+            detected_os = "linux"
+    else:
+        raise SystemError("Unsupported operating system.")
 
-    if not missing_pkgs:
+    target_dir = os.path.split(setuptools.__path__[0])[0]
+    test_file = IOBase()
+    try:
+        test_file_path = os.path.join(target_dir, ".test.file")
+        # Following throws PermissionError if target_dir needs sudo
+        test_file = open(test_file_path, "x")  # pylint: disable=R1732
+        test_file.close()
+        if os.path.exists(test_file_path):
+            os.remove(test_file_path)
+    except PermissionError:
+        target_dir = site.USER_SITE
+    finally:
+        test_file.close()
+
+    mismatch = {}
+    # Check path expected after Developer guide installation
+    requirements_dir = Path(f"{os.path.dirname(__file__)}/../../kqcircuits_requirements")
+    if not requirements_dir.exists():
+        # Check path expected after SALT installation
+        requirements_dir = Path(f"{os.path.dirname(__file__)}/../../requirements")
+        if not requirements_dir.exists():
+            raise FileNotFoundError(
+                "Can't find gui-requirements.txt file. "
+                + "If you used a developer GUI setup, try running 'python3 setup_within_klayout.py'"
+            )
+    requirements_file = f"{requirements_dir}/{detected_os}/gui-requirements.txt"
+    with open(requirements_file) as f:
+        for line in f:
+            line = line.split("#")[0]
+            tokens = line.split("==")
+            if len(tokens) < 2:
+                continue
+            package = tokens[0].strip()
+            version = tokens[1].split("\\")[0].strip()
+            try:
+                mod = import_module(package)
+                if not hasattr(mod, "__version__"):
+                    raise ModuleNotFoundError()
+                if mod.__version__ != version:
+                    mismatch[package] = (version, mod.__version__)
+            except ModuleNotFoundError:
+                mismatch[package] = (version, None)
+
+    if not mismatch:
         return
+
+    mismatch_msg = "\n".join(
+        [
+            (
+                f"  '{package}' ({expected_version}) - not installed"
+                if not installed_version
+                else f"  '{package}' expected version {expected_version}, got {installed_version}"
+            )
+            for package, (expected_version, installed_version) in mismatch.items()
+        ]
+    )
 
     # Install missing modules inside KLayout.
     from pip import __main__
@@ -65,9 +116,31 @@ def install_kqc_dependencies():
         from pip._internal.cli.main import main
 
     ask = pya.MessageBox.warning(
-        "Install packages?",
-        "Install missing packages using 'pip': " + ", ".join(missing_pkgs),
+        "Dependencies out of date",
+        "Some dependencies for KQCircuits GUI were found to be out of date, according to\n"
+        + f"{requirements_file}\n\n"
+        + "The affected dependencies are:\n\n"
+        + mismatch_msg
+        + "\n\nInstall up to date dependencies?",
         pya.MessageBox.Yes + pya.MessageBox.No,
     )
     if ask == pya.MessageBox.Yes:
-        main(["install"] + [kqc_python_dependencies[pkg] for pkg in missing_pkgs])
+        main(["install", "-r", requirements_file, "--upgrade", f"--target={target_dir}"])
+        error_msg = ""
+        for package, (expected_version, _) in mismatch.items():
+            try:
+                mod = import_module(package)
+                if not hasattr(mod, "__version__"):
+                    raise ModuleNotFoundError()
+                if mod.__version__ != expected_version:
+                    error_msg += f"{package} still has version {mod.__version__} instead of {expected_version}\n"
+            except ModuleNotFoundError:
+                error_msg += f"{package} still not installed\n"
+        if error_msg:
+            pya.MessageBox.warning(
+                "Dependency update not in effect",
+                f"{error_msg}\nDependency update has not come into effect, KLayout restart is needed.\n\n"
+                + "If a prompt related to dependencies appears again, "
+                + "this means something went wrong with the update.\n",
+                0,
+            )

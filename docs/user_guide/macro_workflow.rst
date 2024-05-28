@@ -22,6 +22,7 @@ step.
 #. Open "[Local - python branch]", where you should see the "kqcircuits scripts"
    directory
 #. Open :git_url:`kqcircuits_scripts/macros/generate/demo_placing_a_pcell.lym <klayout_package/python/scripts/macros/generate/demo_placing_a_pcell.lym>`
+#. Make sure debugging mode is off (bug icon is not pressed in)
 #. Click on the green play symbol with the exclamation mark ("Run script
    from the current tab"), or use Shift+F5.
 #. A chip cell should appear in the main KLayout window.

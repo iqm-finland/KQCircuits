@@ -17,7 +17,9 @@
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
 import os
+import platform
 import subprocess
+from shutil import which
 
 
 # Retuns KLayout's configuration directory already associated with `root_path`.
@@ -81,3 +83,47 @@ def setup_symlinks(root_path, configdir, link_map, unlink=False):
             else:
                 os.symlink(link_target, link_name, target_is_directory=True)
             print(f'Created symlink "{link_name}" to "{link_target}"')
+
+
+# Returns the python version, expected platform and site-packages path of KLayout's python distribution.
+# A small script is run by KLayout in batch mode, and the output is read from external file.
+def get_klayout_python_info():
+    if platform.system() == "Windows":
+        klayout_path = which("klayout_app.exe")
+        if klayout_path is None:  # try the default location
+            dwp = os.path.join(os.getenv("APPDATA"), "KLayout", "klayout_app.exe")
+            if os.path.exists(dwp):
+                klayout_path = str(dwp)
+    else:
+        klayout_path = which("klayout")  # Linux is simple :)
+        if klayout_path is None and platform.system() == "Darwin":
+            dwp = "/Applications/klayout.app/Contents/MacOS/klayout"
+            if os.path.exists(dwp):
+                klayout_path = dwp
+            dwp = "/Applications/KLayout/klayout.app/Contents/MacOS/klayout"
+            if os.path.exists(dwp):
+                klayout_path = dwp
+    if not klayout_path:
+        raise Exception("Can't find klayout executable command!")
+    if os.path.exists(".klayout-python.info"):
+        os.remove(".klayout-python.info")
+    subprocess.check_call([klayout_path, "-b", "-r", os.path.join("util", "get_klayout_python_info.py")])
+    while not os.path.exists(".klayout-python.info"):
+        continue
+    klayout_py_version, klayout_py_platforms, klayout_site_packages = None, [], None
+    for _ in range(10):
+        with open(".klayout-python.info") as f:
+            for line in f:
+                if line.startswith("KLayout python platform: "):
+                    klayout_py_platforms.append(line.split("KLayout python platform: ")[1].strip())
+                elif line.startswith("KLayout python version: "):
+                    klayout_py_version = line.split("KLayout python version: ")[1].strip()
+                elif line.startswith("KLayout site-packages: "):
+                    klayout_site_packages = line.split("KLayout site-packages: ")[1].strip()
+        if klayout_py_platforms and klayout_py_version and klayout_site_packages:
+            break
+    if os.path.exists(".klayout-python.info"):
+        os.remove(".klayout-python.info")
+    if not (klayout_py_platforms and klayout_py_version and klayout_site_packages):
+        raise Exception("Couldn't get KLayout python's info")
+    return klayout_py_version, klayout_py_platforms, klayout_site_packages
