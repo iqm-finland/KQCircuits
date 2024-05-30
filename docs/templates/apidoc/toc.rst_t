@@ -1,3 +1,6 @@
+:github_url: hide
+{{"\n"}}
+
 {{ header | heading }}
 
 .. toctree::
