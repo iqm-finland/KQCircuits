@@ -44,8 +44,9 @@ def get_simulation(layout):
 
 @pytest.fixture
 def perform_test_ansys_export_produces_output_files(tmp_path, get_simulation):
-    def perform_test_ansys_export_produces_output_implementation(cls, **parameters):
-        bat_filename = export_ansys([get_simulation(cls, **parameters)], path=tmp_path)
+    def perform_test_ansys_export_produces_output_implementation(cls, ansys_solution=None, **parameters):
+        simulation = get_simulation(cls, **parameters)
+        bat_filename = export_ansys([(simulation, ansys_solution) if ansys_solution else simulation], path=tmp_path)
         assert Path(bat_filename).exists()
 
     return perform_test_ansys_export_produces_output_implementation

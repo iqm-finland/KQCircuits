@@ -25,6 +25,7 @@ from typing import Sequence
 
 from kqcircuits.simulations.export.util import export_layers
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
+from kqcircuits.simulations.export.simulation_validate import ValidateSim
 
 
 def get_combined_parameters(simulation, solution):
@@ -158,3 +159,18 @@ def cross_combine(simulations, solutions):
             solutions if isinstance(solutions, Sequence) else [solutions],
         )
     )
+
+
+def validate_simulation(simulation, solution):
+    """Analyses a Simulation object or list and raises an error if specific inconsistencies are found.
+
+    Args:
+        simulations: A Simulation object.
+        solutions: A Solution object.
+    Raises:
+        Errors when validation criteria are not met.
+    """
+    validate_sim = ValidateSim()
+    validate_sim.has_no_ports_when_required(simulation, solution)
+    validate_sim.has_edgeport_when_forbidden(simulation, solution)
+    validate_sim.flux_integration_layer_exists_if_needed(simulation, solution)
