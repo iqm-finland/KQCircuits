@@ -32,6 +32,7 @@ from kqcircuits.simulations.export.simulation_export import (
     get_post_process_command_lines,
     get_combined_parameters,
     export_simulation_json,
+    validate_simulation,
 )
 from kqcircuits.simulations.export.util import export_layers
 from kqcircuits.util.export_helper import write_commit_reference_file
@@ -590,6 +591,7 @@ def export_elmer(
     Returns:
         Path to exported script file.
     """
+
     common_sol = None if all(isinstance(s, Sequence) for s in simulations) else get_elmer_solution(**solution_params)
 
     workflow = _update_elmer_workflow(simulations, common_sol, workflow)
@@ -605,7 +607,7 @@ def export_elmer(
 
     for sim_sol in simulations:
         simulation, solution = sim_sol if isinstance(sim_sol, Sequence) else (sim_sol, common_sol)
-
+        validate_simulation(simulation, solution)
         try:
             json_filenames.append(export_elmer_json(simulation, solution, path, workflow))
         except (IndexError, ValueError, Exception) as e:  # pylint: disable=broad-except

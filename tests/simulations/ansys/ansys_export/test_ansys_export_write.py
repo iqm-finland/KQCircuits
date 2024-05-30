@@ -18,7 +18,8 @@
 
 
 from kqcircuits.simulations.empty_simulation import EmptySimulation
+from kqcircuits.simulations.export.ansys.ansys_solution import AnsysSolution
 
 
 def test_export_produces_output_files(perform_test_ansys_export_produces_output_files):
-    perform_test_ansys_export_produces_output_files(EmptySimulation)
+    perform_test_ansys_export_produces_output_files(EmptySimulation, ansys_solution=AnsysSolution())
