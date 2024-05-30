@@ -16,11 +16,11 @@
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 from dataclasses import dataclass
-from typing import Optional, Union, List, ClassVar
+from typing import ClassVar
 from kqcircuits.simulations.export.solution import Solution
 
 
-@dataclass
+@dataclass(kw_only=True, frozen=True)
 class AnsysSolution(Solution):
     """
     A Base class for Ansys solution parameters
@@ -43,9 +43,9 @@ class AnsysSolution(Solution):
     minimum_passes: int = 1
     minimum_converged_passes: int = 1
     frequency_units: str = "GHz"
-    mesh_size: Optional[dict] = None
-    simulation_flags: Optional[List[str]] = None
-    ansys_project_template: Optional[str] = None
+    mesh_size: dict | None = None
+    simulation_flags: list[str] | None = None
+    ansys_project_template: str | None = None
 
     def get_solution_data(self):
         """Return the solution data in dictionary form."""
@@ -65,7 +65,7 @@ class AnsysSolution(Solution):
         }
 
 
-@dataclass
+@dataclass(kw_only=True, frozen=True)
 class AnsysHfssSolution(AnsysSolution):
     """
     Class for Ansys S-parameter (HFSS) solution parameters
@@ -84,7 +84,7 @@ class AnsysHfssSolution(AnsysSolution):
     """
 
     ansys_tool: ClassVar[str] = "hfss"
-    frequency: Union[float, List[float]] = 5
+    frequency: float | list[float] = 5
     max_delta_s: float = 0.1
     sweep_enabled: bool = True
     sweep_start: float = 0
@@ -116,7 +116,7 @@ class AnsysHfssSolution(AnsysSolution):
         }
 
 
-@dataclass
+@dataclass(kw_only=True, frozen=True)
 class AnsysQ3dSolution(AnsysSolution):
     """
     Class for Ansys capacitance matrix (Q3D) solution parameters
@@ -143,7 +143,7 @@ class AnsysQ3dSolution(AnsysSolution):
         }
 
 
-@dataclass
+@dataclass(kw_only=True, frozen=True)
 class AnsysEigenmodeSolution(AnsysSolution):
     """
     Class for Ansys eigenmode solution parameters
@@ -179,7 +179,7 @@ class AnsysEigenmodeSolution(AnsysSolution):
         }
 
 
-@dataclass
+@dataclass(kw_only=True, frozen=True)
 class AnsysCurrentSolution(AnsysSolution):
     """
     Class for Ansys current excitation solution parameters
@@ -212,7 +212,7 @@ class AnsysCurrentSolution(AnsysSolution):
         }
 
 
-@dataclass
+@dataclass(kw_only=True, frozen=True)
 class AnsysVoltageSolution(AnsysSolution):
     """
     Class for Ansys voltage excitation solution parameters
@@ -245,7 +245,7 @@ class AnsysVoltageSolution(AnsysSolution):
         }
 
 
-@dataclass
+@dataclass(kw_only=True, frozen=True)
 class AnsysCrossSectionSolution(AnsysSolution):
     """
     Class for Ansys cross-section solution parameters. Produces capacitance and inductance per unit length.

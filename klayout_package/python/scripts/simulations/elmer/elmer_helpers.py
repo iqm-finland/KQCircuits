@@ -23,8 +23,9 @@ import logging
 import time
 import shutil
 from pathlib import Path
-from typing import Union, Sequence, Any, Dict, List
+from typing import Any
 from gmsh_helpers import get_elmer_layers, MESH_LAYER_PREFIX
+
 
 from scipy.constants import epsilon_0
 from scipy.signal import find_peaks
@@ -32,7 +33,7 @@ import numpy as np
 import pandas as pd
 
 
-def read_mesh_names(path):
+def read_mesh_names(path: Path) -> list[str]:
     """Returns all names from mesh.names file"""
     list_of_names = []
     with open(path.joinpath("mesh.names")) as file:
@@ -44,7 +45,7 @@ def read_mesh_names(path):
     return list_of_names
 
 
-def read_mesh_bodies(path):
+def read_mesh_bodies(path: Path) -> list[str]:
     """Returns names of bodies from mesh.names file"""
     list_of_names = []
     with open(path.joinpath("mesh.names")) as file:
@@ -58,7 +59,7 @@ def read_mesh_bodies(path):
     return list_of_names
 
 
-def read_mesh_boundaries(path):
+def read_mesh_boundaries(path: Path) -> list[str]:
     """Returns names of boundaries from mesh.names file"""
     with open(path.joinpath("mesh.names")) as file:
         lines = [line.strip() for line in file]
@@ -79,28 +80,28 @@ def read_mesh_boundaries(path):
     return list_of_names
 
 
-def coordinate_scaling(json_data: Dict[str, Any]) -> float:
+def coordinate_scaling(json_data: dict[str, Any]) -> float:
     """
     Returns coordinate scaling, which is determined by parameters 'units' in json_data.
 
     Args:
-        json_data(json): all the model data produced by `export_elmer_json`
+        json_data: all the model data produced by `export_elmer_json`
 
     Returns:
-        (float): unit multiplier
+        unit multiplier
     """
     units = json_data.get("units", "").lower()
     return {"nm": 1e-9, "um": 1e-6, "µm": 1e-6, "mm": 1e-3}.get(units, 1.0)
 
 
 def sif_common_header(
-    json_data: Dict[str, Any],
-    folder_path: Union[Path, str],
-    angular_frequency=None,
-    def_file=None,
-    dim="3",
-    discontinuous_boundary=False,
-    constraint_modes_analysis=True,
+    json_data: dict[str, Any],
+    folder_path: Path | str,
+    angular_frequency: str | float | None = None,
+    def_file: str | None = None,
+    dim: int = 3,
+    discontinuous_boundary: bool = False,
+    constraint_modes_analysis: bool = True,
 ) -> str:
     """
     Returns common header and simulation blocks of a sif file in string format.
@@ -133,7 +134,7 @@ def sif_common_header(
             (
                 'Coordinate System = "Axi Symmetric"'
                 if json_data.get("is_axisymmetric", False)
-                else f'Coordinate System = "Cartesian {dim}D"'
+                else f'Coordinate System = "Cartesian {str(dim)}D"'
             ),
             'Simulation Type = "Steady State"',
             f'Steady State Max Iterations = {json_data.get("maximum_passes", 1)}',
@@ -147,7 +148,7 @@ def sif_common_header(
     return res
 
 
-def sif_block(block_name: str, data: Sequence[str]) -> str:
+def sif_block(block_name: str, data: list[str]) -> str:
     """Returns block segment of sif file in string format. Argument data is list of lines inside the block.
     The block is of shape:
 
@@ -165,7 +166,7 @@ def sif_block(block_name: str, data: Sequence[str]) -> str:
     return res
 
 
-def sif_matc_block(data: Sequence[str]) -> str:
+def sif_matc_block(data: list[str]) -> str:
     """Returns several matc statements to be used in sif (user does not need to type $-sign in front of lines).
     The block is of shape:
       $ data[0]
@@ -181,29 +182,27 @@ def sif_matc_block(data: Sequence[str]) -> str:
     return res
 
 
-def sif_linsys(
-    method="mg", p_element_order=3, steady_state_error=None, convergence_tolerance=-1, max_iterations=-1
-) -> Sequence[str]:
+def sif_linsys(json_data: dict) -> list[str]:
     """
     Returns a linear system definition in sif format.
 
     Args:
-        method(str): linear system method. Options: 1. mg, 2. bicgstab or any other iterative solver mentioned in
-                     ElmerSolver manual section 4.3.1
-        p_element_order(int): p-element order (usually order 3 is quite ok for a regular solution)
+        json_data: all the model data produced by `export_elmer_json`
+            See kqcircuits/simulations/export/elmer/elmer_solution.py for docstring of the parameters used from the json
 
     Returns:
-        (str): linear system definitions in sif file format
+        linear system definitions in sif file format
     """
     linsys = [
-        f"$pn={p_element_order}",
+        f"$pn={json_data['p_element_order']}",
         "Linear System Solver = Iterative",
-        f"Linear System Max Iterations = Integer {max_iterations}",
-        f"Linear System Convergence Tolerance = {convergence_tolerance}",
+        f"Linear System Max Iterations = Integer {json_data['max_iterations']}",
+        f"Linear System Convergence Tolerance = {json_data['convergence_tolerance']}",
         "Linear System Abort Not Converged = False",
     ]
 
-    if method == "mg":
+    percent_error = json_data["percent_error"]
+    if json_data["linear_system_method"] == "mg":
         linsys += [
             "Linear System Iterative Method = GCR ",
             "Linear System Residual Output = 10",
@@ -217,34 +216,31 @@ def sif_linsys(
             "MG Lowest Linear Solver = iterative",
             "mglowest: Linear System Scaling = False",
             "mglowest: Linear System Iterative Method = CG !BiCGStabl",
-            "mglowest: Linear System Preconditioning = ILU0",
+            f"mglowest: Linear System Preconditioning = {json_data['linear_system_preconditioning']}",
             "mglowest: Linear System Max Iterations = 1000",
             "mglowest: Linear System Convergence Tolerance = 1.0e-4",
-            f"Steady State Convergence Tolerance = {1e-9 if steady_state_error is None else steady_state_error*1e-1}",
+            f"Steady State Convergence Tolerance = {1e-9 if percent_error is None else percent_error*1e-1}",
         ]
     else:
         linsys += [
-            f"Linear System Iterative Method = {method}",
-            "Linear System Preconditioning = ILU1",
+            f"Linear System Iterative Method = {json_data['linear_system_method']}",
+            f"Linear System Preconditioning = {json_data['linear_system_preconditioning']}",
             "Linear System ILUT Tolerance = 1.0e-03",
-            f"Steady State Convergence Tolerance = {1e-9 if steady_state_error is None else steady_state_error*1e-1}",
+            f"Steady State Convergence Tolerance = {1e-9 if percent_error is None else percent_error*1e-1}",
         ]
 
     return linsys
 
 
-def sif_adaptive_mesh(
-    percent_error=0.005, max_error_scale=2, max_outlier_fraction=1e-3, minimum_passes=1
-) -> Sequence[str]:
+def sif_adaptive_mesh(json_data: dict) -> list[str]:
     """Returns a definition of adaptive meshing settings in sif format.
 
     Args:
-        percent_error(float): Stopping criterion in adaptive meshing.
-        max_error_scale(float): Maximum element error, relative to percent_error, allowed in individual elements.
-        max_outlier_fraction(float): Maximum fraction of outliers from the total number of elements
+        json_data: all the model data produced by `export_elmer_json`
+            See kqcircuits/simulations/export/elmer/elmer_solution.py for docstring of the parameters used from the json
 
     Returns:
-        (str): adaptive meshing definitions in sif format.
+        adaptive meshing definitions in sif format.
 
     Note:
         ``maximum_passes`` is already set in :func:`~sif_common_header`
@@ -253,33 +249,28 @@ def sif_adaptive_mesh(
         "Run Control Constraint Modes = Logical True",
         "Adaptive Mesh Refinement = True",
         "Adaptive Remesh = True",
-        f"Adaptive Error Limit = {percent_error}",
+        f"Adaptive Error Limit = {json_data['percent_error']}",
         "Adaptive Remesh Use MMG = Logical True",
         "Adaptive Mesh Numbering = False",
-        f"Adaptive Min Depth = {minimum_passes}",
-        f"Adaptive Max Error Scale = Real {max_error_scale}",
-        f"Adaptive Max Outlier Fraction = Real {max_outlier_fraction}",
+        f"Adaptive Min Depth = {json_data['minimum_passes']}",
+        f"Adaptive Max Error Scale = Real {json_data['max_error_scale']}",
+        f"Adaptive Max Outlier Fraction = Real {json_data['max_outlier_fraction']}",
         "MMG niter = Integer 1",
     ]
     return adaptive_lines
 
 
-def get_port_solver(
-    ordinate, percent_error=0.005, max_error_scale=2, max_outlier_fraction=1e-3, maximum_passes=1, minimum_passes=1
-) -> str:
+def get_port_solver(json_data: dict[str, Any], ordinate: int | str) -> str:
     """
     Returns a port solver for wave equation in sif format.
 
     Args:
-        ordinate(int): solver ordinate
-        percent_error(float): Stopping criterion in adaptive meshing.
-        max_error_scale(float): Maximum element error, relative to percent_error, allowed in individual elements.
-        max_outlier_fraction(float): Maximum fraction of outliers from the total number of elements
-        maximum_passes(int): Maximum number of adaptive meshing iterations.
-        minimum_passes(int): Minimum number of adaptive meshing iterations.
+        json_data: all the model data produced by `export_elmer_json`
+            See kqcircuits/simulations/export/elmer/elmer_solution.py for docstring of the parameters used from the json
+        ordinate: solver ordinate
 
     Returns:
-        (str): port solver in sif format.
+        port solver in sif format.
     """
     solver_lines = [
         'Equation = "port-calculator"',
@@ -296,39 +287,32 @@ def get_port_solver(
         "Linear System Max Iterations = 5000",
         "linear system abort not converged = false",
     ]
-    if maximum_passes > 1:
-        solver_lines += sif_adaptive_mesh(
-            percent_error=percent_error,
-            max_error_scale=max_error_scale,
-            max_outlier_fraction=max_outlier_fraction,
-            minimum_passes=minimum_passes,
-        )
+    if json_data["maximum_passes"] > 1:
+        solver_lines += sif_adaptive_mesh(json_data)
+
     return sif_block(f"Solver {ordinate}", solver_lines)
 
 
 def get_vector_helmholtz(
-    ordinate,
-    angular_frequency,
-    result_file,
-    use_av,
-    nested_iteration,
-    quadratic_approximation,
-    second_kind_basis,
-    convergence_tolerance,
-    max_iterations,
+    json_data: dict[str, Any],
+    ordinate: str | int,
+    angular_frequency: str | int,
+    result_file: str,
 ) -> str:
     """
     Returns a vector Helmholtz equation solver in sif file format.
 
     Args:
-        ordinate(int): solver ordinate
-        angular_frequency(float): angular frequency of the solution
-        result_file(str): filename for the result S-matrix
-        See kqcircuits/simulations/export/elmer/elmer_solution.py for docstring of the solver related arguments
+        json_data: all the model data produced by `export_elmer_json`
+            See kqcircuits/simulations/export/elmer/elmer_solution.py for docstring of the parameters used from the json
+        ordinate: solver ordinate
+        angular_frequency: angular frequency of the solution
+        result_file: filename for the result S-matrix
 
     Returns:
-        (str): vector Helmholtz in sif file format
+        vector Helmholtz in sif file format
     """
+    use_av = json_data["use_av"]
 
     lumping_lines = [
         "! Model lumping",
@@ -348,7 +332,7 @@ def get_vector_helmholtz(
     ]
 
     if use_av:
-        if nested_iteration:
+        if json_data["nested_iteration"]:
             linear_system_lines += [
                 "! Activate nested iteration:",
                 "!-----------------------------------------",
@@ -364,7 +348,7 @@ def get_vector_helmholtz(
                 "! Linear system solver for the outer loop:",
                 "!-----------------------------------------",
                 'Outer: Linear System Solver = "Iterative"',
-                f"Outer: Linear System Convergence Tolerance = {convergence_tolerance}",
+                f"Outer: Linear System Convergence Tolerance = {json_data['convergence_tolerance']}",
                 "Outer: Linear System Normwise Backward Error = True",
                 "Outer: Linear System Iterative Method = gcr",
                 "Outer: Linear System GCR Restart =  100",
@@ -400,8 +384,8 @@ def get_vector_helmholtz(
                 "linear system normwise backward error = Logical True",
                 "Linear System Preconditioning = ILUT",
                 "Linear System ILUT Tolerance = 1.5e-1",
-                f"Linear System Max Iterations = Integer {max_iterations}",
-                f"Linear System Convergence Tolerance = {convergence_tolerance}",
+                f"Linear System Max Iterations = Integer {json_data['max_iterations']}",
+                f"Linear System Convergence Tolerance = {json_data['convergence_tolerance']}",
                 "linear system abort not converged = Logical False",
                 "Linear System Residual Output = 1",
             ]
@@ -428,15 +412,15 @@ def get_vector_helmholtz(
         f"Apply Conservation of Charge = Logical {use_av}",
         "Calculate Energy Norm = Logical True",
         f"Angular Frequency = Real {angular_frequency}",
-        f"Second Kind Basis = Logical {second_kind_basis}",
-        f"Quadratic Approximation = Logical {quadratic_approximation}",
+        f"Second Kind Basis = Logical {json_data['second_kind_basis']}",
+        f"Quadratic Approximation = Logical {json_data['quadratic_approximation']}",
         *linear_system_lines,
         *lumping_lines,
     ]
     return sif_block(f"Solver {ordinate}", solver_lines)
 
 
-def get_vector_helmholtz_calc_fields(ordinate: Union[str, int], angular_frequency: Union[str, float]) -> str:
+def get_vector_helmholtz_calc_fields(ordinate: str | int, angular_frequency: str | float) -> str:
     solver_lines = [
         'Equation = "calcfields"',
         "Optimize Bandwidth = False",
@@ -463,39 +447,26 @@ def get_vector_helmholtz_calc_fields(ordinate: Union[str, int], angular_frequenc
 
 
 def get_electrostatics_solver(
-    ordinate: Union[str, int],
-    capacitance_file: Union[Path, str],
-    method="mg",
-    p_element_order=3,
-    percent_error=0.005,
-    max_error_scale=2,
-    max_outlier_fraction=1e-3,
-    maximum_passes=1,
-    minimum_passes=1,
-    convergence_tolerance=-1,
-    max_iterations=-1,
-    c_matrix_output=True,
-):
+    json_data: dict[str, Any],
+    ordinate: str | int,
+    capacitance_file: Path | str,
+    c_matrix_output: bool = True,
+) -> str:
     """
     Returns electrostatics solver in sif file format.
 
     Args:
-        ordinate(int): solver ordinate
-        capacitance_file(str): name of the capacitance matrix data file
-        method(str): linear system method, see `sif_linsys`
-        p_element_order(int): p-element order, see `sif_linsys`
-        percent_error(float): Stopping criterion in adaptive meshing.
-        max_error_scale(float): Maximum element error, relative to percent_error, allowed in individual elements.
-        max_outlier_fraction(float): Maximum fraction of outliers from the total number of elements
-        minimum_passes(int): Maximum number of adaptive meshing iterations.
-        minimum_passes(int): Minimum number of adaptive meshing iterations.
-        c_matrix_output(bool): Can be used to turn off capacitance matrix output
+        json_data: all the model data produced by `export_elmer_json`
+            See kqcircuits/simulations/export/elmer/elmer_solution.py for docstring of the parameters used from the json
+        ordinate: solver ordinate
+        capacitance_file: name of the capacitance matrix data file
+        c_matrix_output: Can be used to turn off capacitance matrix output
 
     Returns:
-        (str): electrostatics solver in sif file format
+        electrostatics solver in sif file format
     """
     # Adaptive meshing not yet working with vectorised version (github.com/ElmerCSC/elmerfem/issues/401)
-    useVectorised = p_element_order > 1
+    useVectorised = json_data["p_element_order"] > 1
     solver = "StatElecSolveVec" if useVectorised else "StatElecSolve"
     solver_lines = [
         "Equation = Electro Statics",
@@ -510,21 +481,11 @@ def get_electrostatics_solver(
         "Nonlinear System Consistent Norm = True",
     ]
 
-    solver_lines += sif_linsys(
-        method=method,
-        p_element_order=p_element_order,
-        steady_state_error=percent_error,
-        convergence_tolerance=convergence_tolerance,
-        max_iterations=max_iterations,
-    )
+    solver_lines += sif_linsys(json_data)
 
-    if maximum_passes > 1:
-        solver_lines += sif_adaptive_mesh(
-            percent_error=percent_error,
-            max_error_scale=max_error_scale,
-            max_outlier_fraction=max_outlier_fraction,
-            minimum_passes=minimum_passes,
-        )
+    if json_data["maximum_passes"] > 1:
+        solver_lines += sif_adaptive_mesh(json_data)
+
     if useVectorised:
         solver_lines += ["Vector Assembly = True"]
         solver_lines += ["Element = p:$pn"]
@@ -533,17 +494,17 @@ def get_electrostatics_solver(
     return sif_block(f"Solver {ordinate}", solver_lines)
 
 
-def get_circuit_solver(ordinate: Union[str, int], p_element_order: int, exec_solver="Always"):
+def get_circuit_solver(ordinate: str | int, p_element_order: int, exec_solver="Always") -> str:
     """
     Returns circuit solver in sif file format.
 
     Args:
-        ordinate(int): solver ordinate
-        p_element_order(int): p-element order, see `sif_linsys`
-        exec_solver(str): Execute solver (options: 'Always', 'After Timestep')
+        ordinate: solver ordinate
+        p_element_order: p-element order, see `sif_linsys`
+        exec_solver: Execute solver (options: 'Always', 'After Timestep', 'Never')
 
     Returns:
-        (str): circuit solver in sif file format
+        circuit solver in sif file format
     """
     solver_lines = [
         f"Exec Solver = {exec_solver}",
@@ -557,17 +518,17 @@ def get_circuit_solver(ordinate: Union[str, int], p_element_order: int, exec_sol
     return sif_block(f"Solver {ordinate}", solver_lines)
 
 
-def get_circuit_output_solver(ordinate: Union[str, int], exec_solver="Always"):
+def get_circuit_output_solver(ordinate: str | int, exec_solver="Always") -> str:
     """
     Returns circuit output solver in sif file format.
     This solver writes the circuit variables.
 
     Args:
-        ordinate(int): solver ordinate
-        exec_solver(str): Execute solver (options: 'Always', 'After Timestep')
+        ordinate: solver ordinate
+        exec_solver: Execute solver (options: 'Always', 'After Timestep', 'Never')
 
     Returns:
-        (str): circuit output solver in sif file format
+        circuit output solver in sif file format
     """
     solver_lines = [
         f"Exec Solver = {exec_solver}",
@@ -578,26 +539,19 @@ def get_circuit_output_solver(ordinate: Union[str, int], exec_solver="Always"):
 
 
 def get_magneto_dynamics_2d_harmonic_solver(
-    ordinate: Union[str, int],
-    percent_error=0.005,
-    max_error_scale=2,
-    max_outlier_fraction=1e-3,
-    maximum_passes=1,
-    minimum_passes=1,
-):
+    json_data: dict[str, Any],
+    ordinate: str | int,
+) -> str:
     """
     Returns magneto-dynamics 2d solver in sif file format.
 
     Args:
-        ordinate(int): solver ordinate
-        percent_error(float): Stopping criterion in adaptive meshing.
-        max_error_scale(float): Maximum element error, relative to percent_error, allowed in individual elements.
-        max_outlier_fraction(float): Maximum fraction of outliers from the total number of elements
-        maximum_passes(int): Maximum number of adaptive meshing iterations.
-        minimum_passes(int): Minimum number of adaptive meshing iterations.
+        json_data: all the model data produced by `export_elmer_json`
+            See kqcircuits/simulations/export/elmer/elmer_solution.py for docstring of the parameters used from the json
+        ordinate: solver ordinate
 
     Returns:
-        (str): magneto-dynamics 2d solver in sif file format
+        magneto-dynamics 2d solver in sif file format
     """
     solver_lines = [
         'Equation = "Mag"',
@@ -618,13 +572,9 @@ def get_magneto_dynamics_2d_harmonic_solver(
         "BicgStabL Polynomial Degree = 6",
         "Steady State Convergence Tolerance = 1e-05",
     ]
-    if maximum_passes > 1:
-        solver_lines += sif_adaptive_mesh(
-            percent_error=percent_error,
-            max_error_scale=max_error_scale,
-            max_outlier_fraction=max_outlier_fraction,
-            minimum_passes=minimum_passes,
-        )
+    if json_data["maximum_passes"] > 1:
+        solver_lines += sif_adaptive_mesh(json_data)
+
     solver_lines += [
         "Vector Assembly = True",
         "Element = p:$pn",
@@ -633,16 +583,16 @@ def get_magneto_dynamics_2d_harmonic_solver(
     return sif_block(f"Solver {ordinate}", solver_lines)
 
 
-def get_magneto_dynamics_calc_fields(ordinate: Union[str, int], p_element_order: int):
+def get_magneto_dynamics_calc_fields(ordinate: str | int, p_element_order: int) -> str:
     """
     Returns magneto-dynamics calculate fields solver in sif file format.
 
     Args:
-        ordinate(int): solver ordinate
-        p_element_order(int): p-element order, see `sif_linsys`
+        ordinate: solver ordinate
+        p_element_order: p-element order, see `sif_linsys`
 
     Returns:
-        (str): magneto-dynamics calculate fields solver in sif file format
+        magneto-dynamics calculate fields solver in sif file format
     """
     solver_lines = [
         "Exec Solver = Always",
@@ -666,16 +616,17 @@ def get_magneto_dynamics_calc_fields(ordinate: Union[str, int], p_element_order:
     return sif_block(f"Solver {ordinate}", solver_lines)
 
 
-def get_result_output_solver(ordinate, output_file_name, exec_solver="Always"):
+def get_result_output_solver(ordinate: str | int, output_file_name: str | Path, exec_solver: str = "Always") -> str:
     """
     Returns result output solver in sif file format.
 
     Args:
-        ordinate(int): solver ordinate
-        output_file_name(Path): output file name
+        ordinate: solver ordinate
+        output_file_name: output file name
+        exec_solver: Execute solver (options: 'Always', 'After Timestep', 'Never')
 
     Returns:
-        (str): result ouput solver in sif file format
+        result ouput solver in sif file format
     """
     solver_lines = [
         f"Exec Solver = {exec_solver}",
@@ -691,16 +642,16 @@ def get_result_output_solver(ordinate, output_file_name, exec_solver="Always"):
     return sif_block(f"Solver {ordinate}", solver_lines)
 
 
-def get_save_data_solver(ordinate, result_file="results.dat"):
+def get_save_data_solver(ordinate: str | int, result_file: str = "results.dat") -> str:
     """
     Returns save data solver in sif file format.
 
     Args:
-        ordinate(int): solver ordinate
-        result_file(str): data file name for results
+        ordinate: solver ordinate
+        result_file: data file name for results
 
     Returns:
-        (str): save data solver in sif file format
+        save data solver in sif file format
     """
     solver_lines = [
         "Exec Solver = After All",
@@ -711,18 +662,20 @@ def get_save_data_solver(ordinate, result_file="results.dat"):
     return sif_block(f"Solver {ordinate}", solver_lines)
 
 
-def get_save_energy_solver(ordinate, energy_file, bodies, sheet_bodies=None):
+def get_save_energy_solver(
+    ordinate: str | int, energy_file: str, bodies: list[str], sheet_bodies: list[str] | None = None
+) -> str:
     """
     Returns save energy solver in sif file format.
 
     Args:
-        ordinate(int): solver ordinate
-        energy_file(str): data file name for energy results
-        bodies(list(str)): body names for energy calculation
-        sheet_bodies(list(str)): boundary names for energy calculation in 3D simulation
+        ordinate: solver ordinate
+        energy_file: data file name for energy results
+        bodies: body names for energy calculation
+        sheet_bodies: boundary names for energy calculation in 3D simulation
 
     Returns:
-        (str): save energy solver in sif file format
+        save energy solver in sif file format
     """
     solver_lines = [
         "Exec Solver = Always",
@@ -753,36 +706,42 @@ def get_save_energy_solver(ordinate, energy_file, bodies, sheet_bodies=None):
     return sif_block(f"Solver {ordinate}", solver_lines)
 
 
-def get_equation(ordinate, solver_ids, keywords=None):
+def get_equation(ordinate: str | int, solver_ids: list[int], keywords: list[str] | None = None) -> str:
     """
     Returns equation in sif file format.
 
     Args:
-        ordinate(int): equation ordinate
-        solver_ids(list(int)): list of active solvers (ordinates)
-        keywords(list(str)): keywords for equation
+        ordinate: equation ordinate
+        solver_ids: list of active solvers (ordinates)
+        keywords: keywords for equation
 
     Returns:
-        (str): equation in sif file format
+        equation in sif file format
     """
     keywords = [] if keywords is None else keywords
     equation_lines = [f'Active Solvers({len(solver_ids)}) = {" ".join([str(sid) for sid in solver_ids])}']
     return sif_block(f"Equation {ordinate}", equation_lines + keywords)
 
 
-def sif_body(ordinate, target_bodies, equation, material, keywords=None):
+def sif_body(
+    ordinate: str | int,
+    target_bodies: list[str],
+    equation: int,
+    material: int,
+    keywords: list[str] | None = None,
+) -> str:
     """
     Returns body in sif file format.
 
     Args:
-        ordinate(int): equation ordinate
-        target_bodies(list(int)): list of target bodies
-        equation(int): active equations
-        material(int): assigned material
-        keywords(list(str)): keywords for body
+        ordinate: equation ordinate
+        target_bodies: list of target bodies
+        equation: active equations
+        material: assigned material
+        keywords: keywords for body
 
     Returns:
-        (str): body in sif file format
+        body in sif file format
     """
     keywords = [] if keywords is None else keywords
     value_list = [
@@ -793,20 +752,22 @@ def sif_body(ordinate, target_bodies, equation, material, keywords=None):
     return sif_block(f"Body {ordinate}", value_list + keywords)
 
 
-def sif_component(ordinate, master_bodies, coil_type, keywords=None):
+def sif_component(
+    ordinate: str | int, master_bodies: list[int], coil_type: str, keywords: list[str] | None = None
+) -> str:
     """
     Returns component in sif file format.
 
     Args:
-        ordinate(int): equation ordinate
-        master_bodies(list(int)): list of bodies
-        coil_type(str): coil type (options: 'stranded', 'massive', 'foil')
-        keywords(list(str)): keywords for body
+        ordinate: equation ordinate
+        master_bodies: list of bodies
+        coil_type: coil type (options: 'stranded', 'massive', 'foil')
+        keywords: keywords for body
 
     Returns:
-        (str): component in sif file format
+        component in sif file format
     """
-    keywords = {} if keywords is None else keywords
+    keywords = [] if keywords is None else keywords
     value_list = [
         f'Master Bodies({len(master_bodies)}) = $ {" ".join([str(body) for body in master_bodies])}',
         f"Coil Type = {str(coil_type)}",
@@ -814,17 +775,17 @@ def sif_component(ordinate, master_bodies, coil_type, keywords=None):
     return sif_block(f"Component {ordinate}", value_list + keywords)
 
 
-def sif_boundary_condition(ordinate, target_boundaries, conditions):
+def sif_boundary_condition(ordinate: str | int, target_boundaries: list[str], conditions: list[str]) -> str:
     """
     Returns boundary condition in sif file format.
 
     Args:
-        ordinate(int): equation ordinate
-        target_boundaries(list(int)): list of target boundaries
-        conditions(list(str)): keywords for boundary condition
+        ordinate: equation ordinate
+        target_boundaries: list of target boundaries
+        conditions: keywords for boundary condition
 
     Returns:
-        (str): boundary condition in sif file format
+        boundary condition in sif file format
     """
     value_list = [
         f'Target Boundaries({len(target_boundaries)}) = $ {" ".join(target_boundaries)}',
@@ -833,7 +794,7 @@ def sif_boundary_condition(ordinate, target_boundaries, conditions):
     return sif_block(f"Boundary Condition {ordinate}", value_list)
 
 
-def produce_sif_files(json_data: dict, path: Path) -> List[Path]:
+def produce_sif_files(json_data: dict[str, Any], path: Path) -> list[Path]:
     """
     Exports an elmer simulation model to the simulation path.
 
@@ -878,17 +839,17 @@ def produce_sif_files(json_data: dict, path: Path) -> List[Path]:
     return sif_filepaths
 
 
-def get_body_list(json_data, dim, mesh_names):
+def get_body_list(json_data: dict[str, Any], dim: int, mesh_names: list[str]) -> list[str]:
     """
     Returns body list for 2d or 3d model.
 
     Args:
-        json_data(json): all the model data produced by `export_elmer_json`
-        dim(int): dimensionality of the model (options: 2 or 3)
-        mesh_names(list): list of physical group names from the mesh.names file
+        json_data: all the model data produced by `export_elmer_json`
+        dim: dimensionality of the model (options: 2 or 3)
+        mesh_names: list of physical group names from the mesh.names file
 
     Returns:
-        (list(str)): list of model bodies
+        list of model bodies
     """
     body_list = []
     if dim == 2:
@@ -896,11 +857,11 @@ def get_body_list(json_data, dim, mesh_names):
     elif dim == 3:
         body_list = [n for n in ["vacuum", "pec", *json_data["material_dict"].keys()] if n in mesh_names]
 
-    unique_bodies = set()
-    return [n for n in body_list if not (n in unique_bodies or unique_bodies.add(n))]
+    # remove duplicate elements
+    return list(dict.fromkeys(body_list))
 
 
-def get_permittivities(json_data, with_zero, dim, mesh_names):
+def get_permittivities(json_data: dict[str, Any], with_zero: bool, dim: int, mesh_names: list[str]) -> list[float]:
     """
     Returns permittivities of bodies.
 
@@ -910,16 +871,16 @@ def get_permittivities(json_data, with_zero, dim, mesh_names):
     If such hit is also not found default to 1.0
 
     Args:
-        json_data(json): all the model data produced by `export_elmer_json`
-        with_zero(bool): without dielectrics if true
-        dim(int): dimensionality of the model (options: 2 or 3)
-        mesh_names(list): list of physical group names from the mesh.names file
+        json_data: all the model data produced by `export_elmer_json`
+        with_zero: without dielectrics if true
+        dim: dimensionality of the model (options: 2 or 3)
+        mesh_names: list of physical group names from the mesh.names file
 
     Returns:
-        (list(str)): list of body permittivities
+        list of body permittivities
     """
 
-    def _search_permittivity(json_data, body):
+    def _search_permittivity(json_data: dict[str, Any], body: str) -> float:
         json_bodies = [k[:-13] for k in json_data.keys() if k.endswith("_permittivity")]
         for p in json_bodies:
             if body.startswith(p):
@@ -939,17 +900,17 @@ def get_permittivities(json_data, with_zero, dim, mesh_names):
     return []
 
 
-def get_signals(json_data, dim, mesh_names):
+def get_signals(json_data: dict[str, Any], dim: int, mesh_names: list[str]) -> list[str]:
     """
     Returns model signals.
 
     Args:
-        json_data(json): all the model data produced by `export_elmer_json`
-        dim(int): dimensionality of the model (options: 2 or 3)
-        mesh_names(list): list of physical group names from the mesh.names file
+        json_data: all the model data produced by `export_elmer_json`
+        dim: dimensionality of the model (options: 2 or 3)
+        mesh_names: list of physical group names from the mesh.names file
 
     Returns:
-        (list(str)): list of signals
+        list of signals
     """
     if dim == 2:
         return [n for n in get_elmer_layers(json_data["layers"]).keys() if "signal" in n and n in mesh_names]
@@ -959,17 +920,17 @@ def get_signals(json_data, dim, mesh_names):
     return []
 
 
-def get_grounds(json_data, dim, mesh_names):
+def get_grounds(json_data: dict[str, Any], dim: int, mesh_names: list[str]) -> list[str]:
     """
     Returns model grounds.
 
     Args:
-        json_data(json): all the model data produced by `export_elmer_json`
-        dim(int): dimensionality of the model (options: 2 or 3)
-        mesh_names(list): list of physical group names from the mesh.names file
+        json_data: all the model data produced by `export_elmer_json`
+        dim: dimensionality of the model (options: 2 or 3)
+        mesh_names: list of physical group names from the mesh.names file
 
     Returns:
-        (list(str)): list of grounds
+        list of grounds
     """
     if dim == 2:
         signals = get_signals(json_data, dim, mesh_names)
@@ -983,7 +944,7 @@ def get_grounds(json_data, dim, mesh_names):
     return []
 
 
-def sif_placeholder_boundaries(groups, n_boundaries):
+def sif_placeholder_boundaries(groups: list[str], n_boundaries: int) -> str:
     boundary_conditions = ""
     for i, s in enumerate(groups, 1):
         boundary_conditions += sif_boundary_condition(
@@ -997,7 +958,7 @@ def sif_placeholder_boundaries(groups, n_boundaries):
     return boundary_conditions
 
 
-def sif_epr_3d(json_data: dict, folder_path: Path, vtu_name: str):
+def sif_epr_3d(json_data: dict[str, Any], folder_path: Path, vtu_name: str | Path) -> str:
     """
     Returns 3D EPR simulation sif
 
@@ -1006,25 +967,21 @@ def sif_epr_3d(json_data: dict, folder_path: Path, vtu_name: str):
 
     Args:
         json_data: all the model data produced by `export_elmer_json`
+            See kqcircuits/simulations/export/elmer/elmer_solution.py for docstring of the parameters used from the json
         folder_path: folder path of the model files
         vtu_name: name of the paraview file
+
+    Returns:
+        Elmer solver input file for 3D EPR simulation
     """
 
     header = sif_common_header(json_data, folder_path, angular_frequency=0, dim=3, constraint_modes_analysis=False)
     constants = sif_block("Constants", [f"Permittivity Of Vacuum = {epsilon_0}"])
 
     solvers = get_electrostatics_solver(
+        json_data,
         ordinate=1,
         capacitance_file="none",
-        method=json_data["linear_system_method"],
-        p_element_order=json_data["p_element_order"],
-        maximum_passes=json_data["maximum_passes"],
-        minimum_passes=json_data["minimum_passes"],
-        percent_error=json_data["percent_error"],
-        max_error_scale=json_data["max_error_scale"],
-        max_outlier_fraction=json_data["max_outlier_fraction"],
-        convergence_tolerance=json_data["convergence_tolerance"],
-        max_iterations=json_data["max_iterations"],
         c_matrix_output=False,
     )
     solvers += get_result_output_solver(
@@ -1132,22 +1089,28 @@ def sif_epr_3d(json_data: dict, folder_path: Path, vtu_name: str):
 
 
 def sif_capacitance(
-    json_data: dict, folder_path: Path, vtu_name: str, angular_frequency: float, dim: int, with_zero: bool = False
-):
+    json_data: dict[str, Any],
+    folder_path: Path,
+    vtu_name: str | Path,
+    angular_frequency: float,
+    dim: int,
+    with_zero: bool = False,
+) -> str:
     """
     Returns the capacitance solver sif. If `with_zero` is true then all the permittivities are set to 1.0.
     It is used in computing capacitances without dielectrics (so called 'capacitance0')
 
     Args:
-        json_data(json): all the model data produced by `export_elmer_json`
-        folder_path(Path): folder path of the model files
-        vtu_name(str): name of the paraview file
-        angular_frequency(float): angular frequency of the solution
-        dim(int): model dimensionality (2 or 3)
-        with_zero(bool): without dielectrics if true
+        json_data: all the model data produced by `export_elmer_json`
+            See kqcircuits/simulations/export/elmer/elmer_solution.py for docstring of the parameters used from the json
+        folder_path: folder path of the model files
+        vtu_name: name of the paraview file
+        angular_frequency: angular frequency of the solution
+        dim: model dimensionality (2 or 3)
+        with_zero: without dielectrics if true
 
     Returns:
-        (str): elmer solver input file for capacitance
+        elmer solver input file for capacitance
     """
 
     name = "capacitance0" if with_zero else "capacitance"
@@ -1156,17 +1119,9 @@ def sif_capacitance(
     constants = sif_block("Constants", [f"Permittivity Of Vacuum = {epsilon_0}"])
 
     solvers = get_electrostatics_solver(
+        json_data,
         ordinate=1,
         capacitance_file=folder_path / f"{name}.dat",
-        method=json_data["linear_system_method"],
-        p_element_order=json_data["p_element_order"],
-        maximum_passes=json_data["maximum_passes"],
-        minimum_passes=json_data["minimum_passes"],
-        percent_error=json_data["percent_error"],
-        max_error_scale=json_data["max_error_scale"],
-        max_outlier_fraction=json_data["max_outlier_fraction"],
-        convergence_tolerance=json_data["convergence_tolerance"],
-        max_iterations=json_data["max_iterations"],
     )
 
     solvers += get_result_output_solver(
@@ -1211,7 +1166,7 @@ def sif_capacitance(
     signals = get_signals(json_data, dim=dim, mesh_names=mesh_names)
     signals_boundaries = [f"{s}_boundary" for s in signals] if dim == 2 else signals
 
-    cbody_map = {}
+    cbody_map: dict[str, int] = {}
     for i, s in enumerate(signals_boundaries, 1):
         s_wo_mer = s.replace("_mer", "")
         if s_wo_mer in cbody_map.keys():
@@ -1252,7 +1207,9 @@ def sif_capacitance(
     return header + constants + solvers + equations + materials + bodies + boundary_conditions
 
 
-def sif_inductance(json_data, folder_path, angular_frequency, circuit_definitions_file):
+def sif_inductance(
+    json_data: dict[str, Any], folder_path: Path, angular_frequency: float | str, circuit_definitions_file: str
+) -> str:
     """
     Returns inductance sif file content for a cross section model
     in string format. The sif file corresponds to the mesh produced by
@@ -1261,13 +1218,13 @@ def sif_inductance(json_data, folder_path, angular_frequency, circuit_definition
     TODO: Allow multiple traces and for each trace multiple metal layers
 
     Args:
-        json_data(json): all the model data produced by `export_elmer_json`
-        folder_path(Path): folder path for the sif file
-        angular_frequency(float): angular frequency of the solution
-        circuit_definitions_file(Path): file name for circuit definitions
+        json_data: all the model data produced by `export_elmer_json`
+        folder_path: folder path for the sif file
+        angular_frequency: angular frequency of the solution
+        circuit_definitions_file: file name for circuit definitions
 
     Returns:
-        (str): elmer solver input file for inductance computation
+        elmer solver input file for inductance computation
     """
     header = sif_common_header(json_data, folder_path, angular_frequency, circuit_definitions_file, dim=2)
     equations = get_equation(ordinate=1, solver_ids=[1, 2, 3])
@@ -1275,12 +1232,8 @@ def sif_inductance(json_data, folder_path, angular_frequency, circuit_definition
     solvers = get_circuit_solver(ordinate=1, p_element_order=json_data["p_element_order"], exec_solver="Always")
 
     solvers += get_magneto_dynamics_2d_harmonic_solver(
+        json_data,
         ordinate=2,
-        maximum_passes=json_data["maximum_passes"],
-        minimum_passes=json_data["minimum_passes"],
-        percent_error=json_data["percent_error"],
-        max_error_scale=json_data["max_error_scale"],
-        max_outlier_fraction=json_data["max_outlier_fraction"],
     )
 
     solvers += get_magneto_dynamics_calc_fields(ordinate=3, p_element_order=json_data["p_element_order"])
@@ -1373,12 +1326,12 @@ def sif_inductance(json_data, folder_path, angular_frequency, circuit_definition
     return header + equations + solvers + materials + bodies + components + body_force + boundary_conditions
 
 
-def sif_circuit_definitions(json_data):
+def sif_circuit_definitions(json_data: dict[str, Any]) -> str:
     """
     Returns content of circuit definitions in string format.
 
     Args:
-        json_data(json): all the model data produced by `export_elmer_json`
+        json_data: all the model data produced by `export_elmer_json`
     """
     res = "$ Circuits = 1\n"
 
@@ -1428,6 +1381,7 @@ def sif_circuit_definitions(json_data):
 
 
 def get_port_from_boundary_physical_names(ports, name):
+    # TODO remove deprecated
     for port in ports:
         print(name, port["physical_names"])
         if name in [t[1] for t in port["physical_names"]]:
@@ -1436,7 +1390,7 @@ def get_port_from_boundary_physical_names(ports, name):
 
 
 def sif_wave_equation(
-    json_data: dict,
+    json_data: dict[str, Any],
     folder_path: Path,
     frequency: float = 10,
 ) -> str:
@@ -1445,11 +1399,12 @@ def sif_wave_equation(
 
     Args:
         json_data: All the model data produced by `export_elmer_json`
+            See kqcircuits/simulations/export/elmer/elmer_solution.py for docstring of the parameters used from the json
         folder_path: Folder path of the model files
         frequency: Frequency used in simulation in GHz
 
     Returns:
-        (str): elmer solver input file for wave equation
+        elmer solver input file for wave equation
     """
 
     london_penetration_depth = json_data["london_penetration_depth"]
@@ -1497,7 +1452,7 @@ def sif_wave_equation(
         "eps0 = 8.854e-12",
     ]
 
-    def _port_polygon_area_3d(polygon):
+    def _port_polygon_area_3d(polygon: list[list[float]]) -> float:
         """Assumes that the polygon is rectangle with the listed coordinates in order"""
         len1 = sum((p1 - p2) * (p1 - p2) for p1, p2 in zip(polygon[0], polygon[1]))
         len2 = sum((p1 - p2) * (p1 - p2) for p1, p2 in zip(polygon[0], polygon[-1]))
@@ -1535,25 +1490,16 @@ def sif_wave_equation(
     solver_ordinate = 1
     if not use_av:
         solvers += get_port_solver(
+            json_data,
             ordinate=solver_ordinate,
-            maximum_passes=json_data["maximum_passes"],
-            minimum_passes=json_data["minimum_passes"],
-            percent_error=json_data["percent_error"],
-            max_error_scale=json_data["max_error_scale"],
-            max_outlier_fraction=json_data["max_outlier_fraction"],
         )
         solver_ordinate += 1
 
     solvers += get_vector_helmholtz(
+        json_data,
         ordinate=solver_ordinate,
         angular_frequency="$ w",
         result_file=result_file,
-        use_av=use_av,
-        nested_iteration=json_data["nested_iteration"],
-        quadratic_approximation=json_data["quadratic_approximation"],
-        second_kind_basis=json_data["second_kind_basis"],
-        convergence_tolerance=json_data["convergence_tolerance"],
-        max_iterations=json_data["max_iterations"],
     )
     solvers += get_vector_helmholtz_calc_fields(ordinate=solver_ordinate + 1, angular_frequency="$ w")
 
@@ -1621,7 +1567,7 @@ def sif_wave_equation(
     n_boundaries += len(signals)
 
     # Port boundaries
-    body_ids = {b: None for b in body_list}
+    body_ids: dict[str, Any] = {b: None for b in body_list}
     constraint_ind = 1  # for enumerating edge port constraint modes in av
     for i, port in enumerate(json_data["ports"], 1):
         port_name = f'port_{port["number"]}'
@@ -1721,12 +1667,12 @@ def sif_wave_equation(
     return header + constants + matc_blocks + solvers + equations + materials + bodies + boundary_conditions
 
 
-def read_result_smatrix(s_matrix_filename: str, path: Path = None, polar_form: bool = True):
+def read_result_smatrix(s_matrix_filename: str | Path, path: Path | None = None, polar_form: bool = True) -> np.ndarray:
     """
     Read Elmer Smatrix output and transform the entries to polar format
 
     Args:
-        s_matrix_filename: Relatvive Smatrix path
+        s_matrix_filename: Relative Smatrix path
         path: Optional basename for the path if `s_matrix_filename` does not exist
                      Defaults to None.
         polar_form: Transform the entries to polar form. Defaults to True.
@@ -1759,15 +1705,15 @@ def read_result_smatrix(s_matrix_filename: str, path: Path = None, polar_form: b
     return smatrix_full
 
 
-def get_energy_integrals(path):
+def get_energy_integrals(path: Path | str) -> dict:
     """
     Return electric energy integrals
 
     Args:
-        path(Path): folder path of the model result files
+        path: folder path of the model result files
 
     Returns:
-        (dict): energies stored
+        energies formatted as dictionary
     """
     try:
         energy_data, energy_layer_data = Path(path) / "energy.dat", Path(path) / "energy.dat.names"
@@ -1788,9 +1734,9 @@ def get_energy_integrals(path):
                     if matches:
                         energy_layers += matches
                     else:
-                        matches = line.strip().partition(": ")[2]
-                        if matches:
-                            energy_layers += [matches]
+                        matches_custom_e_module = line.strip().partition(": ")[2]
+                        if matches_custom_e_module:
+                            energy_layers += [matches_custom_e_module]
 
         return {f"E_{k.removeprefix(MESH_LAYER_PREFIX)}": energy for k, energy in zip(energy_layers, energies)}
 
@@ -1799,7 +1745,7 @@ def get_energy_integrals(path):
         return {"total_energy": None}
 
 
-def write_project_results_json(json_data: dict, path: Path, msh_filepath, polar_form: bool = True):
+def write_project_results_json(json_data: dict[str, Any], path: Path, msh_filepath, polar_form: bool = True) -> None:
     """
     Writes the solution data in '_project_results.json' format for one Elmer simulation.
 
@@ -1807,10 +1753,10 @@ def write_project_results_json(json_data: dict, path: Path, msh_filepath, polar_
     If tool is wave_equation, writes S-matrix both in '_project_results.json' and touchstone format
 
     Args:
-        json_data(dict): Complete parameter json for simulation
-        path(Path): Location where to output the simulation model
-        msh_filepath(Path): Location of msh file in `Path` format
-        polar_form  (bool): Save Smatrix in polar or cartesian form
+        json_data: Complete parameter json for simulation
+        path: Location where to output the simulation model
+        msh_filepath: Location of msh file in `Path` format
+        polar_form: Save Smatrix in polar or cartesian form
     """
     tool = json_data["tool"]
     sif_folder = path.joinpath(msh_filepath.stem)
@@ -1848,7 +1794,8 @@ def write_project_results_json(json_data: dict, path: Path, msh_filepath, polar_
                 )
     elif tool == "epr_3d":
 
-        def _rename_energy_key(e_name):
+        def _rename_energy_key(e_name: str) -> str:
+            """Rename energy dictionary keys from Elmer results to correspond to the Ansys result format"""
             # Change 2-component energies to same naming as used in Ansys
             if e_name.endswith("_norm_component"):
                 e_name = "Ez" + e_name.removesuffix("_norm_component").removeprefix("E")
@@ -1888,13 +1835,13 @@ def write_project_results_json(json_data: dict, path: Path, msh_filepath, polar_
         data_folder = main_sim_folder.joinpath("elmer_data")
         data_folder.mkdir(parents=True, exist_ok=True)
 
-        results = []
+        results_list = []
         for f in frequencies:
             s_matrix_filename = main_sim_folder.joinpath(f'SMatrix_{simname}_f{str(f).replace(".", "_")}.dat')
             smatrix_full = read_result_smatrix(
                 s_matrix_filename, path=path.joinpath(msh_filepath.stem), polar_form=polar_form
             )
-            results.append(
+            results_list.append(
                 {
                     "frequency": f,
                     "renormalization": renormalizations[0],
@@ -1904,7 +1851,7 @@ def write_project_results_json(json_data: dict, path: Path, msh_filepath, polar_
             )
 
         with open(json_filename, "w") as outfile:
-            json.dump(results, outfile, indent=4)
+            json.dump(results_list, outfile, indent=4)
 
         for f in main_sim_folder.rglob("*.dat*"):
             shutil.move(f, data_folder / f.name)
@@ -1923,7 +1870,7 @@ def write_project_results_json(json_data: dict, path: Path, msh_filepath, polar_
                     f"! Port {p['number']}: {p['type']} R {p['resistance']} "
                     f"X {p['reactance']} L {p['inductance']} C {p['capacitance']}\n"
                 )
-            for res in results:
+            for res in results_list:
                 smatrix_full = res["smatrix"]
                 for row_ind, row in enumerate(smatrix_full):
                     if row_ind == 0:
@@ -1934,19 +1881,19 @@ def write_project_results_json(json_data: dict, path: Path, msh_filepath, polar_
                         touchstone_file.write("{:25s} {:35s}".format(str(elem[0]), str(elem[1])))
                     touchstone_file.write("\n")
 
-        filter_resonant_vtus(results, sif_folder, simname)
+        filter_resonant_vtus(results_list, sif_folder, simname)
 
 
-def filter_resonant_vtus(results, sif_folder, simname):
+def filter_resonant_vtus(results: list[dict], sif_folder: Path, simname: str) -> None:
     """
     Roughly find vtus corresponding to resonances and move them to a separate
     folder `simname/resonant_vtus`. Also includes the ends of sweep interval. Rest of
     the vtus are moved to a folder `simname/filtered_vtus`
 
     Args:
-        results (list[dict]): results in a list of dicts as saved to the json
-        sif_folder (str): Folder containing sif and vtu files
-        simname (str): simulation name
+        results: results in a list of dicts as saved to the json
+        sif_folder: Folder containing sif and vtu files
+        simname: simulation name
     """
     available_vtus = list(sif_folder.glob("*.pvtu"))
     vtu_partitioned = len(available_vtus) != 0
@@ -1976,8 +1923,7 @@ def filter_resonant_vtus(results, sif_folder, simname):
 
     saved_f = [available_f[0], available_f[-1]]
     for f_p in f_peaks:
-        i = np.argmin(np.abs(available_f - f_p))
-        saved_f.append(available_f[i])
+        saved_f.append(available_f[np.argmin(np.abs(available_f - f_p))])
     filtered_f = list(set(available_f) - set(saved_f))
 
     filter_folder = sif_folder.joinpath("filtered_vtus")

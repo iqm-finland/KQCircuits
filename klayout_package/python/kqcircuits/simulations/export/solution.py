@@ -19,7 +19,7 @@
 from dataclasses import dataclass
 
 
-@dataclass
+@dataclass(kw_only=True, frozen=True)
 class Solution:
     """A Base class for both Elmer and Ansys Solution parameters
 

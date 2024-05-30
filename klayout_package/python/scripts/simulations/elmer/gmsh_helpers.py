@@ -15,6 +15,8 @@
 # (meetiqm.com/iqm-open-source-trademark-policy). IQM welcomes contributions to the code.
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
+from pathlib import Path
+from typing import Any, Sequence, Iterable
 import gmsh
 import numpy as np
 
@@ -26,6 +28,9 @@ except ImportError:
 # prefix to use in case a layer name starts with number or other special character
 MESH_LAYER_PREFIX = "elmer_prefix_"
 
+# type alias for dimtag
+DimTag = tuple[int, int]
+
 
 def get_elmer_layers(data):
     """Prefixes dict keys if starting with number. Returns new modified dict"""
@@ -36,13 +41,13 @@ def apply_elmer_layer_prefix(name):
     return name if name[0].isalpha() else MESH_LAYER_PREFIX + name
 
 
-def produce_mesh(json_data, msh_file):
+def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
     """
     Produces mesh and optionally runs the Gmsh GUI
 
     Args:
-        json_data(json): all the model data produced by `export_elmer_json`
-        msh_file(Path): mesh file name
+        json_data: all the model data produced by `export_elmer_json`
+        msh_file: mesh file name
     """
 
     # Initialize gmsh
@@ -150,7 +155,7 @@ def produce_mesh(json_data, msh_file):
     mesh_global_max_size = mesh_size.pop("global_max", bbox.perimeter())
     mesh_field_ids = []
     for name, size in mesh_size.items():
-        intersection = set()
+        intersection: set[tuple[int, int]] = set()
         split_names = name.split("&")
         if all((name in new_tags for name in split_names)):
             for sname in split_names:
@@ -197,7 +202,7 @@ def produce_mesh(json_data, msh_file):
             ]
 
     # Group dim tags by material
-    material_dim_tags = {m: [] for m in materials}
+    material_dim_tags: dict[str, list[DimTag]] = {m: [] for m in materials}
     for _, tags in filtered_tags_with_material.items():
         material = tags[0][2]
         material_dim_tags[material] += [(d, t) for d, t, _ in tags]
@@ -290,7 +295,7 @@ def produce_mesh(json_data, msh_file):
             if port_name in new_tags:
                 if port["type"] == "EdgePort":
                     port_dts = set(new_tags[port_name])
-                    key_dts = {"signal": [], "ground": []}
+                    key_dts: dict[str, list[DimTag]] = {"signal": [], "ground": []}
                     for mat, dts in material_dim_tags.items():
                         if mat.startswith("signal"):
                             key_dts["signal"] += [(d, t) for d, t in port_dts.intersection(dts) if d == 2]
@@ -317,31 +322,31 @@ def produce_mesh(json_data, msh_file):
     gmsh.finalize()
 
 
-def coord_dist(coord1: [], coord2: []):
+def coord_dist(coord1: Sequence[float], coord2: Sequence[float]) -> float:
     """
     Returns the distance between two points.
 
     Args:
-        coord1(list(float)): coordinates (x, y, z) of point 1.
-        coord2(list(float)): coordinates (x, y, z) of point 2.
+        coord1: coordinates (x, y, z) of point 1.
+        coord2: coordinates (x, y, z) of point 2.
 
     Returns:
-        (float): distance between point 1 and 2
+        distance between point 1 and 2
     """
-    return np.linalg.norm(np.array(coord1) - np.array(coord2))
+    return float(np.linalg.norm(np.array(coord1) - np.array(coord2)))
 
 
-def add_polygon(point_coordinates: [], mesh_size=0):
+def add_polygon(point_coordinates: Sequence[Sequence[float]], mesh_size: float = 0) -> tuple[int, list[int]]:
     """
     Adds the geometry entities in the OpenCASCADE model for generating a polygon and keeps track of all the entities.
     Returns the geometry entity id.
 
     Args:
-        point_coordinates(list(float)): list of point coordinates that frame the polygon
-        mesh_size(float): mesh element size, default=0
+        point_coordinates: list of point coordinates that frame the polygon
+        mesh_size: mesh element size, default=0
 
     Returns:
-        tuple (int, int): entity id of the polygon and list of entity ids of edge lines
+        entity id of the polygon and list of entity ids of edge lines
     """
     points = [gmsh.model.occ.addPoint(*coord, mesh_size) for coord in point_coordinates]
     lines = [gmsh.model.occ.addLine(points[i - 1], points[i]) for i in range(1, len(points))]
@@ -350,7 +355,7 @@ def add_polygon(point_coordinates: [], mesh_size=0):
     return gmsh.model.occ.addPlaneSurface(loops), lines
 
 
-def separated_hull_and_holes(polygon):
+def separated_hull_and_holes(polygon: pya.Polygon | pya.SimplePolygon) -> pya.Polygon | pya.SimplePolygon:
     """Returns Polygon with holes separated from hull. Takes Polygon or SimplePolygon as the argument."""
     bbox = polygon.bbox().enlarged(10, 10)
     region = pya.Region(bbox) - pya.Region(polygon)
@@ -364,7 +369,14 @@ def separated_hull_and_holes(polygon):
     return new_poly
 
 
-def set_mesh_size(dim_tags, min_mesh_size, max_mesh_size, dist_min, dist_max, sampling=None):
+def set_mesh_size(
+    dim_tags: Sequence[DimTag],
+    min_mesh_size: float,
+    max_mesh_size: float,
+    dist_min: float,
+    dist_max: float,
+    sampling: float | None = None,
+) -> list[int]:
     """
     Set the mesh size such that it is `min_mesh_size` when near the curves of boundaries defined by the entities of
     dim_tags and gradually increasing to `max_mesh_size`.
@@ -387,11 +399,11 @@ def set_mesh_size(dim_tags, min_mesh_size, max_mesh_size, dist_min, dist_max, sa
                 * dimension(int): the dimension of the entity (0=point, 1=line, 2=surface, 3=volume)
                 * tag(int): the id of the entity
 
-        min_mesh_size(float): minimum mesh size
-        max_mesh_size(float): maximum mesh size
-        dist_min(float): distance to which the minimum mesh size is used
-        dist_max(float): distance after which the maximum mesh size is used
-        sampling(fload): number of sampling points when computing the distance from the curve. The default
+        min_mesh_size: minimum mesh size
+        max_mesh_size: maximum mesh size
+        dist_min: distance to which the minimum mesh size is used
+        dist_max: distance after which the maximum mesh size is used
+        sampling: number of sampling points when computing the distance from the curve. The default
                          value is None. In that case the value is determined by 1.5 times the maximum reachable
                          distance in the bounding box of the entity (curve) divided by the minimum mesh size. At
                          the moment there is no obvious way to implement curve_length/min_mesh_size type of
@@ -432,7 +444,13 @@ def set_mesh_size(dim_tags, min_mesh_size, max_mesh_size, dist_min, dist_max, sa
     return mesh_field_ids
 
 
-def set_mesh_size_field(dim_tags, global_max, size, distance=None, slope=1.0):
+def set_mesh_size_field(
+    dim_tags: Sequence[DimTag],
+    global_max: float,
+    size: float,
+    distance: float | None = None,
+    slope: float = 1.0,
+) -> list[int]:
     """
     Set the maximal mesh element length in the neighbourhood of the entities given in `dim_tags`. The element size near
     the entities is determined by 'size', 'expansion_dist', and 'expansion_rate'. Further away from the entities the
@@ -459,23 +477,23 @@ def set_mesh_size_field(dim_tags, global_max, size, distance=None, slope=1.0):
     return set_mesh_size(dim_tags, size, global_max, dist, dist + (global_max - size) / slope)
 
 
-def get_recursive_children(dim_tags):
+def get_recursive_children(dim_tags: Iterable[DimTag]) -> set[DimTag]:
     """Returns children and all recursive grand children of given parent entities
 
     Args:
         dim_tags: list of dim tags of parent entities
 
     Returns:
-        list of dim tags of all children and recursive grand children
+        set of dim tags of all children and recursive grand children
     """
-    children = set()
+    children: set[DimTag] = set()
     while dim_tags:
         dim_tags = gmsh.model.getBoundary(list(dim_tags), combined=False, oriented=False, recursive=False)
         children = children.union(dim_tags)
     return children
 
 
-def set_meshing_options(mesh_field_ids, max_size, n_threads):
+def set_meshing_options(mesh_field_ids: list[int], max_size: float, n_threads: int) -> None:
     """Setup meshing options including mesh size fields and number of parallel threads.
 
     Args:

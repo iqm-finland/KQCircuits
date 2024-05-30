@@ -26,6 +26,7 @@ import platform
 import json
 import glob
 from pathlib import Path
+from typing import Any
 from multiprocessing import Pool
 import importlib.util
 
@@ -34,11 +35,11 @@ if has_tqdm:
     from tqdm import tqdm
 
 
-def write_simulation_machine_versions_file(path, name):
+def write_simulation_machine_versions_file(path: Path, name: str) -> None:
     """
     Writes file SIMULATION_MACHINE_VERSIONS into given file path.
     """
-    versions = {}
+    versions: dict[str, Any] = {}
     versions["platform"] = platform.platform()
     versions["python"] = sys.version_info
 
@@ -75,7 +76,8 @@ def write_simulation_machine_versions_file(path, name):
         json.dump(versions, file)
 
 
-def run_elmer_grid(msh_path, n_processes, exec_path_override=None):
+def run_elmer_grid(msh_path: Path | str, n_processes: int, exec_path_override: Path | None = None) -> None:
+    """Run ElmerGrid to process meshes from .msh format to Elmer's mesh format. Partitions mesh if n_processes > 1"""
     elmergrid_executable = shutil.which("ElmerGrid")
     if elmergrid_executable is not None:
         subprocess.check_call([elmergrid_executable, "14", "2", msh_path], cwd=exec_path_override)
@@ -100,8 +102,8 @@ def run_elmer_grid(msh_path, n_processes, exec_path_override=None):
         sys.exit()
 
 
-# Helper function to check if wsl is used
-def is_microsoft(exec_path_override=None) -> bool:
+def is_microsoft(exec_path_override: Path | str | None = None) -> bool:
+    """Helper function to check if wsl is used"""
     # See if version file contains the string microsoft -> wsl
     run_cmd = ["grep", "-qi", "microsoft", "/proc/version"]
     ret = subprocess.call(run_cmd, cwd=exec_path_override)
@@ -111,9 +113,10 @@ def is_microsoft(exec_path_override=None) -> bool:
     return not ret
 
 
-# Helper function to check if Elmer is run with singularity
-# Note that this function only works when run OUTSIDE of singularity
-def is_singularity(exec_path_override=None) -> bool:
+def is_singularity(exec_path_override: Path | str | None = None) -> bool:
+    """Helper function to check if Elmer is run with singularity
+    NOTE This function only works when run OUTSIDE of singularity
+    """
     # Follow the symbolic link pointing to ElmerSolver and check if path contains "singularity"
     run_cmd = ["readlink", "-f", "$(which", "ElmerSolver)", "|", "grep", "-qi", "singularity"]
     ret = subprocess.call(" ".join(run_cmd), shell=True, cwd=exec_path_override)
@@ -123,15 +126,15 @@ def is_singularity(exec_path_override=None) -> bool:
     return not ret
 
 
-def worker(command, outfile, cwd, env):
+def worker(command: str, outfile: Path | str, cwd: Path | str, env: dict) -> int:
     """
     Worker for first level parallelization using Pool
 
     Args:
-        command (str):       Command to be executed
-        outfile (str/Path):  If not None the output will be written to this file
-        cwd     (str/Path):  Working directory where the command will be executed
-        env     (dict):      Environment variables
+        command :       Command to be executed
+        outfile :  If not None the output will be written to this file
+        cwd     :  Working directory where the command will be executed
+        env     :      Environment variables
 
     Returns:
         Exit code of the process
@@ -150,20 +153,26 @@ def worker(command, outfile, cwd, env):
         logging.warning(err)
         if is_windows and "is not recognized as an internal or external command" in err.stderr:
             logging.warning("Do you have Bash (e.g. Git Bash or MSYS2) installed?")
-        return err
+        return err.returncode
 
 
-def pool_run_cmds(n_workers: int, cmds: list, output_files: list = None, cwd=None, env=None):
+def pool_run_cmds(
+    n_workers: int,
+    cmds: list[list[str]],
+    output_files: list | None = None,
+    cwd: Path | str | None = None,
+    env: dict | None = None,
+) -> None:
     """
     Workload manager for running multiple commands (Elmer instances) in parallel
 
     Args:
-        n_workers           (int):   Max number of parallel processes
-        cmds           (list[str]):  list of commands
-        output_files   (list[str]):  list of output files, if none will print to stdout
-        cwd             (str/Path):  Working directory where the commands will be executed
-                                     (usually KQCircuits/tmp/sim_name)
-        env                 (dict):  Environment variables
+        n_workers    :   Max number of parallel processes
+        cmds         :  list of commands
+        output_files :  list of output files, if none will print to stdout
+        cwd          :  Working directory where the commands will be executed
+                        (usually KQCircuits/tmp/sim_name)
+        env          :  Environment variables
 
     """
     pool = Pool(n_workers)  # pylint: disable=consider-using-with
@@ -200,15 +209,15 @@ def pool_run_cmds(n_workers: int, cmds: list, output_files: list = None, cwd=Non
     pool.join()
 
 
-def elmer_check_warnings(log_file, cwd=None):
+def elmer_check_warnings(log_file: Path | str, cwd: Path | str | None = None):
     """
     Reads the Elmer log file and propagates all warnings to python logging.warning
 
     Also logs a warning in case a linear system did not converge
 
     Args:
-        log_file      (str): Relative path of the Elmer.log file (from cwd)
-        cwd      (str/Path): Working directory where the commands will be executed
+        log_file   : Relative path of the Elmer.log file (from cwd)
+        cwd        : Working directory where the commands will be executed
     """
     if cwd is not None:
         log_file = Path(cwd).joinpath(log_file)
@@ -229,17 +238,24 @@ def elmer_check_warnings(log_file, cwd=None):
             logging.warning(f" Solution trivially zero. See {log_file}:{ind+1}")
 
 
-def _run_elmer_solver(sim_name, sif_names, n_parallel_simulations, n_processes, n_threads, exec_path_override=None):
+def _run_elmer_solver(
+    sim_name: str,
+    sif_names: list[str],
+    n_parallel_simulations: int,
+    n_processes: int,
+    n_threads: int,
+    exec_path_override: Path | str | None = None,
+) -> None:
     """
     Internal function for running ElmerSolver based on explicit variables instead of the json file
 
     Args:
-        sim_name (str): Simulation name e.g name of the folder with sif files
-        sif_names (list[str]): Simulation sif names. These sifs need to already exist when calling this function
-        n_parallel_simulations (int): Number of parallel simulations
-        n_processes (int): Number of dependent processes for each simulation
-        n_threads (int): Number of threads to be used with elmer
-        exec_path_override (str/Path): Working directory where the commands will be executed
+        sim_name              : Simulation name e.g name of the folder with sif files
+        sif_names             : Simulation sif names. These sifs need to already exist when calling this function
+        n_parallel_simulations: Number of parallel simulations
+        n_processes           : Number of dependent processes for each simulation
+        n_threads             : Number of threads to be used with elmer
+        exec_path_override    : Working directory where the commands will be executed
                                        (usually KQCircuits/tmp/sim_name)
     """
 
@@ -249,7 +265,7 @@ def _run_elmer_solver(sim_name, sif_names, n_parallel_simulations, n_processes, 
     elmersolver_executable = shutil.which("ElmerSolver")
     elmersolver_mpi_executable = shutil.which("ElmerSolver_mpi")
 
-    sif_paths = [Path(sim_name).joinpath(f"{sif_file}.sif") for sif_file in sif_names]
+    sif_paths = [str(Path(sim_name).joinpath(f"{sif_file}.sif")) for sif_file in sif_names]
 
     if n_processes > 1 and elmersolver_mpi_executable is not None:
         if is_microsoft(exec_path_override) and is_singularity(exec_path_override):
@@ -275,18 +291,18 @@ def _run_elmer_solver(sim_name, sif_names, n_parallel_simulations, n_processes, 
             with open(out, "w") as f:
                 subprocess.check_call(cmd, cwd=exec_path_override, env=my_env, stdout=f)
 
-    for f in output_files:
-        elmer_check_warnings(f, cwd=exec_path_override)
+    for outfile in output_files:
+        elmer_check_warnings(outfile, cwd=exec_path_override)
 
 
-def run_elmer_solver(json_data, exec_path_override=None):
+def run_elmer_solver(json_data: dict[str, Any], exec_path_override: Path | str | None = None) -> None:
     """
     Runs Elmersolver for the sif files defined in json_data
     The meshes and .sif files must be already prepared and found in `exec_path_override` directory
 
     Args:
-        json_data (dict): Simulation data loaded from the .json in simulation tmp folder
-        exec_path_override(Path): Working directory from where the simulations are run (usually KQCircuits/tmp/sim_name)
+        json_data         : Simulation data loaded from the .json in simulation tmp folder
+        exec_path_override: Working directory from where the simulations are run (usually KQCircuits/tmp/sim_name)
 
     """
     if json_data["workflow"]["_parallelization_level"] == "elmer":
@@ -307,7 +323,8 @@ def run_elmer_solver(json_data, exec_path_override=None):
     )
 
 
-def run_paraview(result_path, n_processes, exec_path_override=None):
+def run_paraview(result_path: Path | str, n_processes: int, exec_path_override: Path | str | None = None):
+    """Open simulation results in paraview"""
     paraview_executable = shutil.which("paraview")
     if paraview_executable is not None:
         if n_processes > 1:

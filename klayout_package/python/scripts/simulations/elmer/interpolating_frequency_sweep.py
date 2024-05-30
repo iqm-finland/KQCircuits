@@ -20,6 +20,8 @@
 import logging
 import importlib.util
 import copy
+from typing import Any, Callable
+from pathlib import Path
 from elmer_helpers import read_result_smatrix, produce_sif_files
 from run_helpers import _run_elmer_solver
 
@@ -33,27 +35,30 @@ if has_polyrat:
     from polyrat import StabilizedSKRationalApproximation as SK_fit
 
 
-def rational_fit(f, s_data, num_order, denom_order):
+def rational_fit(
+    f: np.ndarray, s_data: np.ndarray, num_order: int, denom_order: int
+) -> tuple[float, Callable[[np.ndarray], np.ndarray]]:
     """
     Args:
-        f        (np.array): Independent variable of the fit (frequency)
-        s_data   (np.array): Dependent variable of the fit (s matrix component)
-        min_num_order (int): Order of the numerator of the fitted rational function
-        max_num_order (int): Order of the denominator of the fitted rational function
+        f             : Independent variable of the fit (frequency)
+        s_data        : Dependent variable of the fit (s matrix component)
+        min_num_order : Order of the numerator of the fitted rational function
+        max_num_order : Order of the denominator of the fitted rational function
 
     Returns:
-        residual (float): redisual of the fit
-        func (float -> float): function of the fit
+        tuple:
+         - residual of the fit
+         - function of the fit
 
     """
     if has_polyrat:
         fit_obj = SK_fit(num_order, denom_order, verbose=False, maxiter=50, xtol=1e-9)
         fit_obj.fit(f.reshape(-1, 1), s_data)
 
-        def func(x):
+        def func(x: np.ndarray) -> np.ndarray:
             return fit_obj(x.reshape(-1, 1))
 
-        residual = np.linalg.norm(func(f.reshape(-1, 1)) - s_data)
+        residual = float(np.linalg.norm(func(f.reshape(-1, 1)) - s_data))
     else:
 
         def _rational_fun(x, coefs_num, coefs_denom):
@@ -74,9 +79,9 @@ def rational_fit(f, s_data, num_order, denom_order):
         try:
             fit_func = _create_rational_fun_for_fit(num_order, denom_order)
             popt, _, infodict, mesg, _ = curve_fit(fit_func, f, s_data, p0=initial_guess, full_output=True)
-            residual = np.linalg.norm(infodict["fvec"])
+            residual = float(np.linalg.norm(infodict["fvec"]))
 
-            def func(x):
+            def func(x: np.ndarray) -> np.ndarray:
                 return fit_func(x, *popt)
 
         except RuntimeError:
@@ -87,29 +92,34 @@ def rational_fit(f, s_data, num_order, denom_order):
             logging.warning(mesg)
             residual = float("inf")
 
-            def func(x):
+            def func(x: np.ndarray) -> np.ndarray:
                 return x
 
     return (residual, func)
 
 
-def sweep_orders_and_fit(f_all, s_all, min_num_order=0, max_num_order=10, min_denom_order=2, max_denom_order=20):
+def sweep_orders_and_fit(
+    f_all: np.ndarray,
+    s_all: np.ndarray,
+    min_num_order: int = 0,
+    max_num_order: int = 10,
+    min_denom_order: int = 2,
+    max_denom_order: int = 20,
+) -> tuple[Callable[[np.ndarray], np.ndarray], tuple[int, int]]:
     """
     Args:
-        f_all     (np.array): All frequencies calculated so far
-        s_all     (np.array): Single S-matrix component at all of the frequencies
-        min_num_order  (int): minimum order of the numerator of the fitted rational function
-        max_num_order  (int): maximum order of the numerator of the fitted rational function
-        min_denom_order (int): minimum order of the denominator of the fitted rational function
-        max_denom_order (int): maximum order of the denominator of the fitted rational function
+        f_all           : All frequencies calculated so far
+        s_all           : Single S-matrix component at all of the frequencies
+        min_num_order   : minimum order of the numerator of the fitted rational function
+        max_num_order   : maximum order of the numerator of the fitted rational function
+        min_denom_order : minimum order of the denominator of the fitted rational function
+        max_denom_order : maximum order of the denominator of the fitted rational function
 
     Returns:
-        min_func (float -> float): function of the best fit
-        orders (tuple): orders of the numerator and denominator for the best fit
+        min_func: function of the best fit
+        orders: orders of the numerator and denominator for the best fit
     """
     min_residual = float("inf")
-    min_func = None
-    orders = (0, 0)
     for num_order in range(min_num_order, max_num_order + 1):
         effective_len = len(f_all) if len(f_all) < 10 else len(f_all) // 2
         cur_max_denom_order = min(effective_len - num_order - 1, max_denom_order + 1)
@@ -119,31 +129,37 @@ def sweep_orders_and_fit(f_all, s_all, min_num_order=0, max_num_order=10, min_de
                 min_residual = residual
                 min_func = func
                 orders = (num_order, denom_order)
+
+    if min_residual == float("inf"):
+        raise RuntimeError("Least squares fit failed with all orders in interpolated frequency sweep.")
+
     return min_func, orders
 
 
 def interpolating_frequency_sweep(
-    json_data, exec_path_override=None, fit_index=1, fit_magnitude=False, max_iter=20, plot_results=True
-):
+    json_data: dict[str, Any],
+    exec_path_override: Path,
+    fit_index: int = 1,
+    fit_magnitude: bool = False,
+    max_iter: int = 20,
+    plot_results: bool = True,
+) -> None:
     """
     Run interpolated frequency sweep
 
     Args:
-        json_data             (dict): Simulation data loaded from the .json in simulation tmp folder
-        n_parallel_simulations (int): Number of parallel simulations
-        n_processes            (int): Number of dependent processes for each simulation
-        n_threads              (int): Number of threads to be used with elmer
-        exec_path_override    (Path): Working directory from where the simulations are run
-                                      (usually KQCircuits/tmp/sim_name)
-        fit_index              (int): Smatrix component S(0, fit_index) used for fitting and interpolating
-                                      Note that indexing starts from 0, e.g fitindex 0 is S11 and 1 is S12
-        fit_magnitude         (bool): If true fits the magnitude component of S(0, fit_index),
-                                      If False fits real and imaginary parts separately.
-                                      For now Only applies to intermediate steps. The final result fitting is
-                                      done separately for real and im parts
-        max_iter               (int):  Maximum number of interpolation steps with new simulations
-        plot_results          (bool): If True saves plots for intermediate and final S matrix fitting
-                                      results as png files
+        json_data           : Simulation data loaded from the .json in simulation tmp folder
+        exec_path_override  : Working directory from where the simulations are run
+                                (usually KQCircuits/tmp/sim_name)
+        fit_index           : Smatrix component S(0, fit_index) used for fitting and interpolating
+                                Note that indexing starts from 0, e.g fitindex 0 is S11 and 1 is S12
+        fit_magnitude       : If true fits the magnitude component of S(0, fit_index),
+                                If False fits real and imaginary parts separately.
+                                For now Only applies to intermediate steps. The final result fitting is
+                                done separately for real and im parts
+        max_iter            : Maximum number of interpolation steps with new simulations
+        plot_results        : If True saves plots for intermediate and final S matrix fitting
+                                results as png files
 
     """
     if not has_polyrat:
@@ -173,22 +189,30 @@ def interpolating_frequency_sweep(
     max_delta_s = json_data["max_delta_s"]
     simname = json_data["name"]
 
-    def mag_from_components(re_arr, im_arr):
+    def mag_from_components(re_arr: np.ndarray, im_arr: np.ndarray) -> np.ndarray:
+        """Calculates componentwise magnitude sqrt(x^2 + y^2) of 2 numpy arrays x and y"""
         return np.sqrt(np.power(re_arr, 2) + np.power(im_arr, 2))
 
-    def _sample_on_slope(func, f_sampled, s_sampled, batch_size, max_p_factor=5, nevals=10000):
+    def _sample_on_slope(
+        func: Callable[[np.ndarray], np.ndarray],
+        f_sampled: np.ndarray,
+        s_sampled: np.ndarray,
+        batch_size: int,
+        max_p_factor: float = 5,
+        nevals: int = 10000,
+    ) -> np.ndarray:
         """
         Args:
-            func (float -> float): fitted magnitude of S-matrix component
-            f_sampled (np.array): list of frequencies sampled on previous iterations
-            s_sampled (np.array): list of S-matrix magnitudes used for the sampling
-            batch_size (int): how many frequencies are sampled
-            max_p_factor (float): How many times more likely to sample the point with highest gradient
+            func         : fitted magnitude of S-matrix component
+            f_sampled    : list of frequencies sampled on previous iterations
+            s_sampled    : list of S-matrix magnitudes used for the sampling
+            batch_size   : how many frequencies are sampled
+            max_p_factor : How many times more likely to sample the point with highest gradient
                                   vs the point with lowest gradient.
-            nevals (int): Number of evaluations of func for evaluation of gradients and peak finding
+            nevals       : Number of evaluations of func for evaluation of gradients and peak finding
 
         Returns:
-            list of frequencies for the next batch of simulations
+            frequencies for the next batch of simulations
 
         Samples:
         1. The most prominent peak from the previous iteration fit
@@ -287,11 +311,11 @@ def interpolating_frequency_sweep(
 
     s_error = float("inf")
     iteration_count = 1
-    prev_func_re = None
-    prev_func_im = None
-    min_func_re = None
-    min_func_im = None
-    s_mag_fit = None
+    prev_func_re = lambda x: x  # initialize with identity function
+    prev_func_im = lambda x: x
+    # min_func_re = None
+    # min_func_im = None
+    s_mag_fit = np.array([])
 
     f_all, s_all = np.array([]), np.array([])
 
@@ -326,16 +350,16 @@ def interpolating_frequency_sweep(
             exec_path_override=exec_path_override,
         )
 
-        s_new = []
+        s_new_list = []
         for f in cur_freqs:
             smatrix_filaname = f'SMatrix_{simname}_f{str(f).replace(".", "_")}.dat'
-            s_new.append(
+            s_new_list.append(
                 np.array(
                     read_result_smatrix(smatrix_filaname, path=exec_path_override.joinpath(simname), polar_form=False)
                 )
             )
 
-        s_new = np.stack(s_new, axis=0)
+        s_new = np.stack(s_new_list, axis=0)
         if iteration_count == 1:
             s_all = s_new
             f_all = cur_freqs

@@ -164,7 +164,7 @@ def test_flux_integration_layer_exists_if_needed_passes_if_no_layers(mock_simula
 )
 def test_flux_integration_layer_exists_if_needed_passes_if_has_needed_layer(mock_simulation, solution):
     mock_simulation.layers["flux_integration_layer"] = {"z": 0.0, "thickness": 0.0, "material": "non-pec"}
-    solution.integrate_magnetic_flux = True
+    object.__setattr__(solution, "integrate_magnetic_flux", True)
     flux_integration_layer_exists_if_needed(mock_simulation, solution)
 
 
@@ -175,7 +175,7 @@ def test_flux_integration_layer_exists_if_needed_passes_if_has_needed_layer_and_
     mock_simulation.layers["flux_integration_layer"] = {"z": 0.0, "thickness": 0.0, "material": "non-pec"}
     mock_simulation.layers["thick_non_pec"] = {"z": 0.0, "thickness": 0.1, "material": "non-pec"}
     mock_simulation.layers["sheet_pec"] = {"z": 0.0, "thickness": 0.0, "material": "pec"}
-    solution.integrate_magnetic_flux = True
+    object.__setattr__(solution, "integrate_magnetic_flux", True)
     flux_integration_layer_exists_if_needed(mock_simulation, solution)
 
 
@@ -183,7 +183,7 @@ def test_flux_integration_layer_exists_if_needed_passes_if_has_needed_layer_and_
     "solution", [AnsysHfssSolution(), AnsysEigenmodeSolution(), AnsysCurrentSolution(), AnsysVoltageSolution()]
 )
 def test_flux_integration_layer_passes_if_not_integrating_flux(mock_simulation, solution):
-    solution.integrate_magnetic_flux = False
+    object.__setattr__(solution, "integrate_magnetic_flux", False)
     mock_simulation.layers["thick_non_pec"] = {"z": 0.0, "thickness": 0.1, "material": "non-pec"}
     mock_simulation.layers["sheet_pec"] = {"z": 0.0, "thickness": 0.0, "material": "pec"}
     flux_integration_layer_exists_if_needed(mock_simulation, solution)
@@ -193,7 +193,7 @@ def test_flux_integration_layer_passes_if_not_integrating_flux(mock_simulation, 
     "solution", [AnsysHfssSolution(), AnsysEigenmodeSolution(), AnsysCurrentSolution(), AnsysVoltageSolution()]
 )
 def test_raise_flux_integration_error_if_has_no_needed_layer(mock_simulation, solution):
-    solution.integrate_magnetic_flux = True
+    object.__setattr__(solution, "integrate_magnetic_flux", True)
     with pytest.raises(ValidateSimError) as expected_error:
         flux_integration_layer_exists_if_needed(mock_simulation, solution)
     assert expected_error.value.validation_type == "flux_integration_layer_exists_if_needed"
@@ -203,7 +203,7 @@ def test_raise_flux_integration_error_if_has_no_needed_layer(mock_simulation, so
     "solution", [AnsysHfssSolution(), AnsysEigenmodeSolution(), AnsysCurrentSolution(), AnsysVoltageSolution()]
 )
 def test_raise_flux_integration_error_if_has_no_needed_layer_and_others(mock_simulation, solution):
-    solution.integrate_magnetic_flux = True
+    object.__setattr__(solution, "integrate_magnetic_flux", True)
     mock_simulation.layers["thick_non_pec"] = {"z": 0.0, "thickness": 0.1, "material": "non-pec"}
     mock_simulation.layers["sheet_pec"] = {"z": 0.0, "thickness": 0.0, "material": "pec"}
     with pytest.raises(ValidateSimError) as expected_error:

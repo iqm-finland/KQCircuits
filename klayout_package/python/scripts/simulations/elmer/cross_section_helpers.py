@@ -17,6 +17,7 @@
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -46,13 +47,13 @@ angular_frequency = 5e2  # a constant for inductance simulations.
 # howewer, if very high, might have an unwanted effect
 
 
-def produce_cross_section_mesh(json_data, msh_file):
+def produce_cross_section_mesh(json_data: dict[str, Any], msh_file: Path | str) -> None:
     """
-    Produces mesh and optionally runs the Gmsh GUI
+    Produces 2D cross-section mesh and optionally runs the Gmsh GUI
 
     Args:
-        json_data(json): all the model data produced by `export_elmer_json`
-        msh_file(Path): mesh file name
+        json_data: all the model data produced by `export_elmer_json`
+        msh_file: mesh file name
     """
 
     # Initialize gmsh
@@ -117,7 +118,7 @@ def produce_cross_section_mesh(json_data, msh_file):
     mesh_global_max_size = mesh_size.pop("global_max", bbox.perimeter())
     mesh_field_ids = []
     for name, size in mesh_size.items():
-        intersection = set()
+        intersection: set[tuple[int, int]] = set()
         split_names = name.split("&")
         if all((name in new_tags for name in split_names)):
             for sname in split_names:
@@ -159,7 +160,7 @@ def produce_cross_section_mesh(json_data, msh_file):
     gmsh.finalize()
 
 
-def set_outer_bcs(bbox, layout, beps=1e-6):
+def set_outer_bcs(bbox: pya.DBox, layout: pya.Layout, beps: float = 1e-6) -> None:
     """
     Sets the outer boundaries so that `xmin`, `xmax`, `ymin` and `ymax` can be accessed as physical groups.
     This is a desperate attempt because occ module seems buggy: tried to new draw lines and add them to the
@@ -167,9 +168,9 @@ def set_outer_bcs(bbox, layout, beps=1e-6):
     using a bounding box search.
 
     Args:
-        bbox(pya.DBox): bounding box in klayout format
-        layout(pya.Layout): klayout layout
-        beps(float): tolerance for the search bounding box
+        bbox: bounding box in klayout format
+        layout: klayout layout
+        beps: tolerance for the search bounding box
     """
     outer_bc_dim_tags = {}
     outer_bc_dim_tags["xmin"] = gmsh.model.occ.getEntitiesInBoundingBox(
@@ -213,19 +214,19 @@ def set_outer_bcs(bbox, layout, beps=1e-6):
         gmsh.model.addPhysicalGroup(1, [t[1] for t in v], name=f"{n}_boundary")
 
 
-def produce_cross_section_sif_files(json_data, folder_path):
+def produce_cross_section_sif_files(json_data: dict[str, Any], folder_path: Path) -> list[str]:
     """
     Produces sif files required for capacitance and inductance simulations.
 
     Args:
-        json_data(json): all the model data produced by `export_elmer_json`
-        folder_path(Path): folder path for the sif files
+        json_data: all the model data produced by `export_elmer_json`
+        folder_path: folder path for the sif files
 
     Returns:
-        (list(Path)): sif file paths
+        sif file paths
     """
 
-    def save(file_name, content):
+    def save(file_name: str, content: str) -> str:
         """Saves file with content given in string format. Returns name of the saved file."""
         with open(Path(folder_path).joinpath(file_name), "w") as f:
             f.write(content)
@@ -260,16 +261,18 @@ def produce_cross_section_sif_files(json_data, folder_path):
     return sif_files
 
 
-def get_cross_section_capacitance_and_inductance(json_data, folder_path):
+def get_cross_section_capacitance_and_inductance(
+    json_data: dict[str, Any], folder_path: Path
+) -> dict[str, list[list[float]] | None]:
     """
     Returns capacitance and inductance matrices stored in simulation output files.
 
     Args:
-        json_data(json): all the model data produced by `export_elmer_json`
-        folder_path(Path): folder path for the sif files
+        json_data: all the model data produced by `export_elmer_json`
+        folder_path: folder path for the sif files
 
     Returns:
-        (dict()): Cs and Ls matrices
+        Cs and Ls matrices
     """
     try:
         c_matrix_file = Path(folder_path).joinpath("capacitance.dat")

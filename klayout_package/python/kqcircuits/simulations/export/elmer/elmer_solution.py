@@ -16,11 +16,11 @@
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 from dataclasses import dataclass, field
-from typing import Union, List, ClassVar
+from typing import ClassVar
 from kqcircuits.simulations.export.solution import Solution
 
 
-@dataclass
+@dataclass(kw_only=True, frozen=True)
 class ElmerSolution(Solution):
     """
     A Base class for Elmer Solution parameters
@@ -68,7 +68,7 @@ class ElmerSolution(Solution):
         return sol_dict
 
 
-@dataclass
+@dataclass(kw_only=True, frozen=True)
 class ElmerVectorHelmholtzSolution(ElmerSolution):
     """
     Class for Elmer wave-equation solution parameters
@@ -95,7 +95,7 @@ class ElmerVectorHelmholtzSolution(ElmerSolution):
 
     tool: ClassVar[str] = "wave_equation"
 
-    frequency: Union[float, List[float]] = 5
+    frequency: float | list[float] = 5
     frequency_batch: int = 3
     sweep_type: str = "explicit"
     max_delta_s: float = 0.01
@@ -112,12 +112,13 @@ class ElmerVectorHelmholtzSolution(ElmerSolution):
     def __post_init__(self):
         """Cast frequency to list. Automatically called after init"""
         if isinstance(self.frequency, (float, int)):
-            self.frequency = [self.frequency]
+            # hack to modify the attributes of frozen dataclass
+            object.__setattr__(self, "frequency", [self.frequency])
         elif not isinstance(self.frequency, list):
-            self.frequency = list(self.frequency)
+            object.__setattr__(self, "frequency", list(self.frequency))
 
 
-@dataclass
+@dataclass(kw_only=True, frozen=True)
 class ElmerCapacitanceSolution(ElmerSolution):
     """
     Class for Elmer capacitance solution parameters
@@ -129,6 +130,7 @@ class ElmerCapacitanceSolution(ElmerSolution):
         integrate_energies: Calculate energy integrals over each object. Used in EPR simulations
         convergence_tolerance: Convergence tolerance of the iterative solver.
         max_iterations: Maximum number of iterations for the iterative solver.
+        linear_system_preconditioning: Choice of preconditioner before using an iterative linear system solver
     """
 
     tool: ClassVar[str] = "capacitance"
@@ -138,9 +140,10 @@ class ElmerCapacitanceSolution(ElmerSolution):
     integrate_energies: bool = False
     convergence_tolerance: float = 1.0e-9
     max_iterations: int = 500
+    linear_system_preconditioning: str = "ILU0"
 
 
-@dataclass
+@dataclass(kw_only=True, frozen=True)
 class ElmerCrossSectionSolution(ElmerSolution):
     """
     Class for Elmer cross-section solution parameters.
@@ -160,6 +163,7 @@ class ElmerCrossSectionSolution(ElmerSolution):
                         Applies only to capacitance part of the simulation
         run_inductance_sim: Can be used to skip running the inductance simulation and just do 2D capacitance.
                             No impendance can then be calculated but useful for making EPR simulations faster
+        linear_system_preconditioning: Choice of preconditioner before using an iterative linear system solver
     """
 
     tool: ClassVar[str] = "cross-section"
@@ -171,9 +175,10 @@ class ElmerCrossSectionSolution(ElmerSolution):
     convergence_tolerance: float = 1.0e-9
     max_iterations: int = 500
     run_inductance_sim: bool = True
+    linear_system_preconditioning: str = "ILU0"
 
 
-@dataclass
+@dataclass(kw_only=True, frozen=True)
 class ElmerEPR3DSolution(ElmerSolution):
     """
     Class for Elmer 3D EPR simulations. Similar to electrostatics simulations done with ElmerCapacitanceSolution,
@@ -185,14 +190,16 @@ class ElmerEPR3DSolution(ElmerSolution):
                               ElmerSolver manual section 4.3.1
         convergence_tolerance: Convergence tolerance of the iterative solver.
         max_iterations: Maximum number of iterations for the iterative solver.
+        linear_system_preconditioning: Choice of preconditioner before using an iterative linear system solver
     """
 
     tool: ClassVar[str] = "epr_3d"
 
     p_element_order: int = 3
-    linear_system_method: str = "bicgstab"
+    linear_system_method: str = "mg"
     convergence_tolerance: float = 1.0e-9
     max_iterations: int = 1000
+    linear_system_preconditioning: str = "ILU0"
 
 
 def get_elmer_solution(tool="capacitance", **solution_params):
