@@ -1,3 +1,5 @@
+:github_url: hide
+
 kqcircuits.elements.markers.mask\_marker\_fc
 ============================================
 

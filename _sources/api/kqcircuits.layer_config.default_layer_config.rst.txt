@@ -1,3 +1,5 @@
+:github_url: hide
+
 kqcircuits.layer\_config.default\_layer\_config
 ===============================================
 

@@ -1,3 +1,5 @@
+:github_url: hide
+
 kqcircuits.simulations.single\_xmons\_full\_chip\_sim
 =====================================================
 

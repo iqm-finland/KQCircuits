@@ -1,3 +1,5 @@
+:github_url: hide
+
 kqcircuits.util.edit\_node\_plugin
 ==================================
 

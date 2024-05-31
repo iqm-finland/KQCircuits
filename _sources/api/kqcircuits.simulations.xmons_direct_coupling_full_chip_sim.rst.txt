@@ -1,3 +1,5 @@
+:github_url: hide
+
 kqcircuits.simulations.xmons\_direct\_coupling\_full\_chip\_sim
 ===============================================================
 

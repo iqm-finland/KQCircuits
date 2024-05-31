@@ -1,3 +1,5 @@
+:github_url: hide
+
 kqcircuits.simulations.single\_element\_simulation
 ==================================================
 

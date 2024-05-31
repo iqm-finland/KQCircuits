@@ -1,3 +1,5 @@
+:github_url: hide
+
 kqcircuits.elements.finger\_capacitor\_taper
 ============================================
 

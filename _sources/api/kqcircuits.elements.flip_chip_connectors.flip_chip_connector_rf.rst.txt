@@ -1,3 +1,5 @@
+:github_url: hide
+
 kqcircuits.elements.flip\_chip\_connectors.flip\_chip\_connector\_rf
 ====================================================================
 

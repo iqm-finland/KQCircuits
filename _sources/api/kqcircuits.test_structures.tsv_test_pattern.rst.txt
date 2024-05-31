@@ -1,3 +1,5 @@
+:github_url: hide
+
 kqcircuits.test\_structures.tsv\_test\_pattern
 ==============================================
 
