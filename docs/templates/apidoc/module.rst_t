@@ -1,3 +1,6 @@
+:github_url: hide
+{{"\n"}}
+
 {%- if show_headings %}
 {{- basename | e | heading }}
 

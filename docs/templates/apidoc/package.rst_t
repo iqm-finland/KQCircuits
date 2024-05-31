@@ -1,3 +1,6 @@
+:github_url: hide
+{{"\n"}}
+
 {%- macro automodule(modname, options) -%}
 .. automodule:: {{ modname }}
 {%- for option in options %}
