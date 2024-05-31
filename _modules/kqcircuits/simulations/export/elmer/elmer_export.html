@@ -1587,16 +1587,17 @@
         <span class="k">if</span> <span class="n">requested_cpus</span> <span class="o">&gt;</span> <span class="n">max_cpus</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Requested more CPUs (</span><span class="si">{</span><span class="n">requested_cpus</span><span class="si">}</span><span class="s2">) than available (</span><span class="si">{</span><span class="n">max_cpus</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
 
-        <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;n_workers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_workers</span>
-        <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;elmer_n_processes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_processes</span>
-        <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;elmer_n_threads&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_threads</span>
-
         <span class="n">gmsh_n_threads</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gmsh_n_threads&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">gmsh_n_threads</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">parallelization_level</span> <span class="o">==</span> <span class="s2">&quot;full_simulation&quot;</span><span class="p">:</span>
-                <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;gmsh_n_threads&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_cpus</span> <span class="o">//</span> <span class="n">n_workers</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">gmsh_n_threads</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_cpus</span> <span class="o">//</span> <span class="n">n_workers</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;gmsh_n_threads&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_cpus</span>
+                <span class="n">gmsh_n_threads</span> <span class="o">=</span> <span class="n">max_cpus</span>
+
+        <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;n_workers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_workers</span>
+        <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;elmer_n_processes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_processes</span>
+        <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;elmer_n_threads&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_threads</span>
+        <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;gmsh_n_threads&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gmsh_n_threads</span>
 
     <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-q&quot;</span><span class="p">,</span> <span class="s2">&quot;--quiet&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">)</span>
