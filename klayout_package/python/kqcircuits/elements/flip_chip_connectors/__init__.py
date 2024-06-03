@@ -20,7 +20,5 @@
 """PCell classes for flip-chip connectors."""
 
 connector_type_choices = [
-    "Single",
-    "GSG",
-    "Coax",
+    "Flip Chip Connector Dc",
 ]

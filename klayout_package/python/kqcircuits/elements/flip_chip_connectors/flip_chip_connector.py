@@ -17,9 +17,9 @@
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
 from kqcircuits.elements.element import Element
-from kqcircuits.util.geometry_helper import circle_polygon
 from kqcircuits.util.parameters import Param, pdt
-from kqcircuits.defaults import default_bump_parameters
+from kqcircuits.defaults import default_bump_type, default_bump_parameters
+from kqcircuits.elements.flip_chip_connectors import connector_type_choices
 
 
 class FlipChipConnector(Element):
@@ -29,20 +29,14 @@ class FlipChipConnector(Element):
     Origin is at the geometric center.
     """
 
+    default_type = default_bump_type
     ubm_diameter = Param(
         pdt.TypeDouble, "Under-bump metalization diameter", default_bump_parameters["under_bump_diameter"], unit="μm"
     )
     bump_diameter = Param(pdt.TypeDouble, "Bump diameter", default_bump_parameters["bump_diameter"], unit="μm")
+    bump_type = Param(pdt.TypeString, "Bump type", default_bump_type, choices=connector_type_choices)
 
-    def create_bump_connector(self):
-        ubm_shape = circle_polygon(self.ubm_diameter / 2, self.n)
-        self.cell.shapes(self.get_layer("underbump_metallization", 0)).insert(ubm_shape)
-        self.cell.shapes(self.get_layer("underbump_metallization", 1)).insert(ubm_shape)
-
-        avoidance_shape = circle_polygon(self.ubm_diameter / 2 + self.margin, self.n)
-        self.cell.shapes(self.get_layer("ground_grid_avoidance", 0)).insert(avoidance_shape)
-        self.cell.shapes(self.get_layer("ground_grid_avoidance", 1)).insert(avoidance_shape)
-
-        bump_shape = circle_polygon(self.bump_diameter / 2, self.n)
-        self.cell.shapes(self.get_layer("indium_bump", 0)).insert(bump_shape)  # bottom In bump
-        self.cell.shapes(self.get_layer("indium_bump", 1)).insert(bump_shape)  # top In bump
+    @classmethod
+    def create(cls, layout, library=None, bump_type=None, **parameters):
+        """Create a bump cell in layout."""
+        return cls.create_subtype(layout, library, bump_type, **parameters)[0]

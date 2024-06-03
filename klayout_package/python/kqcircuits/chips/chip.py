@@ -40,12 +40,11 @@ from kqcircuits.test_structures.junction_test_pads.junction_test_pads import Jun
 from kqcircuits.test_structures.stripes_test import StripesTest
 from kqcircuits.util.groundgrid import make_grid
 from kqcircuits.elements.tsvs.tsv import Tsv
-from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc import FlipChipConnectorDc
-from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf import FlipChipConnectorRf
+from kqcircuits.elements.flip_chip_connectors.flip_chip_connector import FlipChipConnector
 
 
 @add_parameters_from(Tsv, "tsv_type")
-@add_parameters_from(FlipChipConnectorRf, "connector_type")
+@add_parameters_from(FlipChipConnector, "bump_type")
 @add_parameter(ChipFrame, "box", hidden=True)
 @add_parameters_from(
     ChipFrame,
@@ -403,6 +402,11 @@ class Chip(Element):
         """
         return self.make_grid_locations(bump_box, delta_x=self.bump_grid_spacing, delta_y=self.bump_grid_spacing)
 
+    @classmethod
+    def _get_ground_bump_element(cls):
+        """Return the element which will be used for the ground bumps"""
+        return FlipChipConnector
+
     def _produce_ground_bumps(self, faces=[0, 1]):  # pylint: disable=dangerous-default-value
         """Produces a grid of indium bumps between given faces.
 
@@ -417,7 +421,7 @@ class Chip(Element):
         existing_bump_count = existing_bump_region.merged().count()
 
         # Specify bump element, filter regions, and locations
-        bump = self.add_element(FlipChipConnectorDc, face_ids=[self.face_ids[face] for face in faces])
+        bump = self.add_element(self._get_ground_bump_element(), face_ids=[self.face_ids[face] for face in faces])
         shape_layers = [("underbump_metallization", face) for face in faces]
         filter_regions = self.get_filter_regions(
             [("ground_grid_avoidance", face, 0) for face in faces]

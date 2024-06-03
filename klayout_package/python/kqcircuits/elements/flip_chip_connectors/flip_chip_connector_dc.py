@@ -18,6 +18,7 @@
 
 
 from kqcircuits.elements.flip_chip_connectors.flip_chip_connector import FlipChipConnector
+from kqcircuits.util.geometry_helper import circle_polygon
 
 
 class FlipChipConnectorDc(FlipChipConnector):
@@ -27,4 +28,15 @@ class FlipChipConnectorDc(FlipChipConnector):
     """
 
     def build(self):
-        self.create_bump_connector()
+
+        ubm_shape = circle_polygon(self.ubm_diameter / 2, self.n)
+        self.cell.shapes(self.get_layer("underbump_metallization", 0)).insert(ubm_shape)
+        self.cell.shapes(self.get_layer("underbump_metallization", 1)).insert(ubm_shape)
+
+        avoidance_shape = circle_polygon(self.ubm_diameter / 2 + self.margin, self.n)
+        self.cell.shapes(self.get_layer("ground_grid_avoidance", 0)).insert(avoidance_shape)
+        self.cell.shapes(self.get_layer("ground_grid_avoidance", 1)).insert(avoidance_shape)
+
+        bump_shape = circle_polygon(self.bump_diameter / 2, self.n)
+        self.cell.shapes(self.get_layer("indium_bump", 0)).insert(bump_shape)  # bottom In bump
+        self.cell.shapes(self.get_layer("indium_bump", 1)).insert(bump_shape)  # top In bump

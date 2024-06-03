@@ -21,30 +21,23 @@ import logging
 
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
-from kqcircuits.elements.flip_chip_connectors import connector_type_choices
 from kqcircuits.elements.flip_chip_connectors.flip_chip_connector import FlipChipConnector
-from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc import FlipChipConnectorDc
 from kqcircuits.elements.launcher import Launcher
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 
 
 @add_parameters_from(FingerCapacitorSquare, "a2", "b2")
-class FlipChipConnectorRf(FlipChipConnector):
+@add_parameters_from(FlipChipConnector, bump_type="Flip Chip Connector Dc")
+class FlipChipConnectorRf(Element):
     """PCell declaration for an inter-chip rf connector.
 
     Flip chip connector with two coplanar waveguide connections and different ground bump configurations.
     The input port is on the first face and on the left. The output port is on the second face and rotated as chosen.
 
-    About connector_type choices:
-        * ``Single``: the bump connects the two sides
-        * ``GSG``: ground-signal-ground indium bumps
-        * ``Coax``: signal transmitting bump is surrounded by four ground bumps
-
     .. MARKERS_FOR_PNG 0,0 15,0 0,-40 -28,0
     """
 
-    connector_type = Param(pdt.TypeString, "Connector type", "Coax", choices=connector_type_choices)
     inter_bump_distance = Param(pdt.TypeDouble, "Distance between In bumps", 100, unit="μm")
     output_rotation = Param(pdt.TypeDouble, "Rotation of output port w.r.t. input port", 180, unit="degrees")
     connector_a = Param(pdt.TypeDouble, "Conductor width at the connector area", 40, unit="μm")
@@ -120,15 +113,15 @@ class FlipChipConnectorRf(FlipChipConnector):
 
         else:
             # Taper geometry
-            s = self.ubm_diameter + (self.n_center_bumps - 1) * self.inter_bump_distance
-            trans = pya.DCplxTrans(1, 0, False, bump_ref["base"] + pya.DPoint(-self.ubm_diameter - s / 2, 0))
+            s = self.connector_a + (self.n_center_bumps - 1) * self.inter_bump_distance
+            trans = pya.DCplxTrans(1, 0, False, bump_ref["base"] + pya.DPoint(-self.connector_a - s / 2, 0))
             tt = pya.DCplxTrans(1, self.output_rotation, False, 0, 0)
             self.insert_cell(
                 Launcher,
                 trans,
                 self.face_ids[0],
                 s=s,
-                l=self.ubm_diameter,
+                l=self.connector_a,
                 a_launcher=self.connector_a,
                 b_launcher=self.connector_b,
                 launcher_frame_gap=self.connector_b,
@@ -141,7 +134,7 @@ class FlipChipConnectorRf(FlipChipConnector):
             # Launcher's gap overlaps with the others center conductor.
             add_metal = False
             if int(self.output_rotation) not in (0, 180) and self.n_center_bumps > 1:
-                ubm = self.ubm_diameter
+                ubm = self.connector_a
                 ibm = self.inter_bump_distance
                 l = (self.n_center_bumps - 1) * ibm / 2
                 pts = [
@@ -177,7 +170,7 @@ class FlipChipConnectorRf(FlipChipConnector):
                 tt * trans,
                 self.face_ids[1],
                 s=s,
-                l=self.ubm_diameter,
+                l=self.connector_a,
                 a_launcher=self.connector_a,
                 b_launcher=self.connector_b,
                 launcher_frame_gap=self.connector_b,
@@ -191,19 +184,15 @@ class FlipChipConnectorRf(FlipChipConnector):
 
     def _insert_ground_bumps(self, bump):
         # Insert ground bumps
-        if self.connector_type == "GSG":
-            self.insert_cell(bump, pya.DCplxTrans(1, 0, False, 0, self.inter_bump_distance))
-            self.insert_cell(bump, pya.DCplxTrans(1, 0, False, 0, -self.inter_bump_distance))
-        elif self.connector_type == "Coax":
-            dist_y = 0.5**0.5 * self.inter_bump_distance
-            dist_x = dist_y + self.inter_bump_distance * (self.n_center_bumps - 1) / 2
-            self.insert_cell(bump, pya.DCplxTrans(1, 0, False, dist_x, dist_y))
-            self.insert_cell(bump, pya.DCplxTrans(1, 0, False, -dist_x, dist_y))
-            self.insert_cell(bump, pya.DCplxTrans(1, 0, False, dist_x, -dist_y))
-            self.insert_cell(bump, pya.DCplxTrans(1, 0, False, -dist_x, -dist_y))
+        dist_y = 0.5**0.5 * self.inter_bump_distance
+        dist_x = dist_y + self.inter_bump_distance * (self.n_center_bumps - 1) / 2
+        self.insert_cell(bump, pya.DCplxTrans(1, 0, False, dist_x, dist_y))
+        self.insert_cell(bump, pya.DCplxTrans(1, 0, False, -dist_x, dist_y))
+        self.insert_cell(bump, pya.DCplxTrans(1, 0, False, dist_x, -dist_y))
+        self.insert_cell(bump, pya.DCplxTrans(1, 0, False, -dist_x, -dist_y))
 
     def _get_bump(self):
-        return self.add_element(FlipChipConnectorDc, face_ids=self.face_ids)
+        return self.add_element(FlipChipConnector, face_ids=self.face_ids, bump_type=self.bump_type)
 
     @classmethod
     def get_sim_ports(cls, simulation):
