@@ -16,7 +16,6 @@
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
-from math import isinf
 from sys import float_info
 import textwrap
 
