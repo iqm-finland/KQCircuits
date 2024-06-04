@@ -357,8 +357,19 @@ def get_node_params(node: Node):
     return node_params, elem
 
 
+def remove_kqc_pcells():
+    """Remove all KQCircuits PCells."""
+
+    main_window = pya.Application.instance().main_window()
+    for vid in range(main_window.views()):
+        top_cell = main_window.view(vid).active_cellview().cell
+        for inst in top_cell.each_inst():
+            if isinstance(inst.pcell_declaration(), Element):
+                inst.delete()
+
+
 def extract_pcell_data_from_views():
-    """Remove all KQCircuits PCells and return their data.
+    """Iterate over all KQCircuits PCells and return their data.
 
     Returns: A list of lists. Each element corresponds to a view in KLayout and it is a list of
         ``(type, location, parameters)`` tuples. These tuples completely describe the type, position and
@@ -379,7 +390,6 @@ def extract_pcell_data_from_views():
                     if params[k] == v.default:
                         del params[k]
                 pcells.append((pc.__class__, inst.dtrans, params))
-                inst.delete()
         views.append(pcells)
 
     return views
