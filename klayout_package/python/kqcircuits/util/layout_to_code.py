@@ -16,6 +16,7 @@
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
+from math import isinf
 from sys import float_info
 import textwrap
 
@@ -358,7 +359,7 @@ def get_node_params(node: Node):
 
 
 def extract_pcell_data_from_views():
-    """Remove all PCells and return their data.
+    """Remove all KQCircuits PCells and return their data.
 
     Returns: A list of lists. Each element corresponds to a view in KLayout and it is a list of
         ``(type, location, parameters)`` tuples. These tuples completely describe the type, position and
@@ -372,7 +373,7 @@ def extract_pcell_data_from_views():
         pcells = []
         for inst in top_cell.each_inst():
             pc = inst.pcell_declaration()
-            if pc:
+            if isinstance(pc, Element):
                 params = inst.pcell_parameters_by_name()
                 def_params = pc.__class__.get_schema()
                 for k, v in def_params.items():
