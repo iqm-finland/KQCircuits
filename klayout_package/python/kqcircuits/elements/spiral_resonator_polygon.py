@@ -31,6 +31,7 @@ from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 
 
 @add_parameters_from(AirbridgeMultiFace)
+@add_parameters_from(FlipChipConnectorRf, "connector_a", "connector_b", "round_connector")
 @add_parameters_from(WaveguideCoplanar, "term1", "term2")
 class SpiralResonatorPolygon(Element):
     """The PCell declaration for a polygon shaped spiral resonator.
