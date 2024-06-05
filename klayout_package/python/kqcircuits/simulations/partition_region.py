@@ -60,6 +60,8 @@ class PartitionRegion:
             raise ValueError(f"PartitionRegion name must not end with a number, but {name} is given.")
         if name == "":
             raise ValueError("PartitionRegion name must not be an empty string.")
+        if any(n in name for n in ["layerMA", "layerMS", "layerSA", "substrate", "vacuum"]):
+            raise ValueError(f"PartitionRegion name {name} contains reserved layer name.")
         self.name = name
         self.region = region
         self.z = z

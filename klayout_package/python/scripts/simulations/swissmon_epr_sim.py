@@ -42,7 +42,15 @@ sim_class = get_single_element_sim_class(Swissmon)  # pylint: disable=invalid-na
 sim_parameters = {
     "name": "swissmon_epr",
     "box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(1000, 1000)),
-    "partition_regions": [{"face": "1t1", "vertical_dimensions": 1.0, "metal_edge_dimensions": 1.0}],
+    "partition_regions": [
+        {
+            "name": "mer",
+            "face": "1t1",
+            "vertical_dimensions": 3.0,
+            "metal_edge_dimensions": 4.0,
+            "region": [pya.DBox(465, 325, 535, 675), pya.DBox(325, 465, 675, 535)],
+        }
+    ],
     "tls_sheet_approximation": True,
     "tls_layer_thickness": 0.01,
     "n": 24,
