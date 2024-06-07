@@ -84,6 +84,8 @@ def load_libraries(flush=False, path=""):
     Returns:
          A dictionary of libraries that have been loaded, keys are library names and values are libraries.
     """
+    # Try reloading all pcells before deleting libraries, otherwise classes are lost in case of errors
+    all_pcell_classes = _get_all_pcell_classes(flush, path)
 
     if flush:
         delete_all_libraries()
@@ -95,7 +97,7 @@ def load_libraries(flush=False, path=""):
             if lib_path == path:
                 return {key: value[0] for key, value in _kqc_libraries.items()}
 
-    for cls in _get_all_pcell_classes(flush, path):
+    for cls in all_pcell_classes:
 
         library_name = cls.LIBRARY_NAME
         library_path = cls.LIBRARY_PATH

@@ -38,14 +38,15 @@ Note that this does not reload the ``defaults`` file.
 """
 
 from kqcircuits.util.library_helper import load_libraries
-from kqcircuits.util.layout_to_code import remove_kqc_pcells, extract_pcell_data_from_views, restore_pcells_to_views
+from kqcircuits.util.layout_to_code import extract_pcell_data_from_views, restore_pcells_to_views
 
-views = extract_pcell_data_from_views()
+views, instances = extract_pcell_data_from_views()
 try:
   load_libraries(flush=True)
 except:
   raise RuntimeError("Failed to reload KQCircuits libraries, keeping current views.")
-remove_kqc_pcells()
+for inst in instances:
+  inst.delete()
 restore_pcells_to_views(views)
 </text>
 </klayout-macro>

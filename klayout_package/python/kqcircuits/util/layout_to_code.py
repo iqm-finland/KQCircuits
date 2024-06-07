@@ -357,26 +357,18 @@ def get_node_params(node: Node):
     return node_params, elem
 
 
-def remove_kqc_pcells():
-    """Remove all KQCircuits PCells."""
-
-    main_window = pya.Application.instance().main_window()
-    for vid in range(main_window.views()):
-        top_cell = main_window.view(vid).active_cellview().cell
-        for inst in top_cell.each_inst():
-            if isinstance(inst.pcell_declaration(), Element):
-                inst.delete()
-
-
 def extract_pcell_data_from_views():
-    """Iterate over all KQCircuits PCells and return their data.
+    """Iterate over all KQCircuits PCells and return their data and instances.
 
-    Returns: A list of lists. Each element corresponds to a view in KLayout and it is a list of
-        ``(type, location, parameters)`` tuples. These tuples completely describe the type, position and
-        parameters of a single PCell in the "Top Cell" of this view.
+    Returns: a tuple (views, instances) where
+        views: a list of lists. Each element corresponds to a view in KLayout and it is a list of
+        ``(type, location, parameters)`` tuples. These tuples completely describe the type, position 
+        and parameters of a single PCell in the "Top Cell" of this view.
+        instances: flattened list of all instances of KQCircuits PCells found.
     """
 
     views = []
+    instances = []
     main_window = pya.Application.instance().main_window()
     for vid in range(main_window.views()):
         top_cell = main_window.view(vid).active_cellview().cell
@@ -384,6 +376,7 @@ def extract_pcell_data_from_views():
         for inst in top_cell.each_inst():
             pc = inst.pcell_declaration()
             if isinstance(pc, Element):
+                instances.append(inst)
                 params = inst.pcell_parameters_by_name()
                 def_params = pc.__class__.get_schema()
                 for k, v in def_params.items():
@@ -392,7 +385,7 @@ def extract_pcell_data_from_views():
                 pcells.append((pc.__class__, inst.dtrans, params))
         views.append(pcells)
 
-    return views
+    return views, instances
 
 
 def restore_pcells_to_views(views):
