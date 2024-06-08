@@ -362,7 +362,7 @@ def extract_pcell_data_from_views():
 
     Returns: a tuple (views, instances) where
         views: a list of lists. Each element corresponds to a view in KLayout and it is a list of
-        ``(type, location, parameters)`` tuples. These tuples completely describe the type, position 
+        ``(type, location, parameters)`` tuples. These tuples completely describe the type, position
         and parameters of a single PCell in the "Top Cell" of this view.
         instances: flattened list of all instances of KQCircuits PCells found.
     """
