@@ -1269,31 +1269,34 @@
 <div class="viewcode-block" id="extract_pcell_data_from_views">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.extract_pcell_data_from_views">[docs]</a>
 <span class="k">def</span> <span class="nf">extract_pcell_data_from_views</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove all PCells and return their data.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Iterate over all KQCircuits PCells and return their data and instances.</span>
 
-<span class="sd">    Returns: A list of lists. Each element corresponds to a view in KLayout and it is a list of</span>
-<span class="sd">        ``(type, location, parameters)`` tuples. These tuples completely describe the type, position and</span>
-<span class="sd">        parameters of a single PCell in the &quot;Top Cell&quot; of this view.</span>
+<span class="sd">    Returns: a tuple (views, instances) where</span>
+<span class="sd">        views: a list of lists. Each element corresponds to a view in KLayout and it is a list of</span>
+<span class="sd">        ``(type, location, parameters)`` tuples. These tuples completely describe the type, position</span>
+<span class="sd">        and parameters of a single PCell in the &quot;Top Cell&quot; of this view.</span>
+<span class="sd">        instances: flattened list of all instances of KQCircuits PCells found.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">views</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">instances</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">main_window</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">main_window</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">vid</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">main_window</span><span class="o">.</span><span class="n">views</span><span class="p">()):</span>
         <span class="n">top_cell</span> <span class="o">=</span> <span class="n">main_window</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">vid</span><span class="p">)</span><span class="o">.</span><span class="n">active_cellview</span><span class="p">()</span><span class="o">.</span><span class="n">cell</span>
         <span class="n">pcells</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">top_cell</span><span class="o">.</span><span class="n">each_inst</span><span class="p">():</span>
             <span class="n">pc</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">pc</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pc</span><span class="p">,</span> <span class="n">Element</span><span class="p">):</span>
+                <span class="n">instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span>
                 <span class="n">params</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">pcell_parameters_by_name</span><span class="p">()</span>
                 <span class="n">def_params</span> <span class="o">=</span> <span class="n">pc</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()</span>
                 <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">def_params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">==</span> <span class="n">v</span><span class="o">.</span><span class="n">default</span><span class="p">:</span>
                         <span class="k">del</span> <span class="n">params</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
                 <span class="n">pcells</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">pc</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">inst</span><span class="o">.</span><span class="n">dtrans</span><span class="p">,</span> <span class="n">params</span><span class="p">))</span>
-                <span class="n">inst</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
         <span class="n">views</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pcells</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">views</span></div>
+    <span class="k">return</span> <span class="n">views</span><span class="p">,</span> <span class="n">instances</span></div>
 
 
 

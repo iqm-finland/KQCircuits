@@ -989,6 +989,8 @@
 <span class="sd">    Returns:</span>
 <span class="sd">         A dictionary of libraries that have been loaded, keys are library names and values are libraries.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Try reloading all pcells before deleting libraries, otherwise classes are lost in case of errors</span>
+    <span class="n">all_pcell_classes</span> <span class="o">=</span> <span class="n">_get_all_pcell_classes</span><span class="p">(</span><span class="n">flush</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">flush</span><span class="p">:</span>
         <span class="n">delete_all_libraries</span><span class="p">()</span>
@@ -1000,7 +1002,7 @@
             <span class="k">if</span> <span class="n">lib_path</span> <span class="o">==</span> <span class="n">path</span><span class="p">:</span>
                 <span class="k">return</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">_kqc_libraries</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 
-    <span class="k">for</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="n">_get_all_pcell_classes</span><span class="p">(</span><span class="n">flush</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="k">for</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="n">all_pcell_classes</span><span class="p">:</span>
 
         <span class="n">library_name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">LIBRARY_NAME</span>
         <span class="n">library_path</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">LIBRARY_PATH</span>
