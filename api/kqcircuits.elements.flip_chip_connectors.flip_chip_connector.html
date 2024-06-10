@@ -910,10 +910,16 @@
 <p>Connector between matching faces of two chips.</p>
 <p>The connector makes a galvanic contact between the flipped over top chip and the bottom chip.
 Origin is at the geometric center.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.elements.flip_chip_connectors.flip_chip_connector.FlipChipConnector.create_bump_connector">
-<span class="sig-name descname"><span class="pre">create_bump_connector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/flip_chip_connectors/flip_chip_connector.html#FlipChipConnector.create_bump_connector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.flip_chip_connectors.flip_chip_connector.FlipChipConnector.create_bump_connector" title="Link to this definition"></a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.elements.flip_chip_connectors.flip_chip_connector.FlipChipConnector.default_type">
+<span class="sig-name descname"><span class="pre">default_type</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Flip</span> <span class="pre">Chip</span> <span class="pre">Connector</span> <span class="pre">Dc'</span></em><a class="headerlink" href="#kqcircuits.elements.flip_chip_connectors.flip_chip_connector.FlipChipConnector.default_type" title="Link to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.flip_chip_connectors.flip_chip_connector.FlipChipConnector.create">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">library</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bump_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/flip_chip_connectors/flip_chip_connector.html#FlipChipConnector.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.flip_chip_connectors.flip_chip_connector.FlipChipConnector.create" title="Link to this definition"></a></dt>
+<dd><p>Create a bump cell in layout.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -921,6 +927,7 @@ Origin is at the geometric center.</p>
 <ul class="simple">
 <li><p><strong>ubm_diameter</strong><em> (Double)</em><span> - Under-bump metalization diameter</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">40</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>bump_diameter</strong><em> (Double)</em><span> - Bump diameter</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">25</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>bump_type</strong><em> (String)</em><span> - Bump type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Flip</span> <span class="pre">Chip</span> <span class="pre">Connector</span> <span class="pre">Dc</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Flip</span> <span class="pre">Chip</span> <span class="pre">Connector</span> <span class="pre">Dc']</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.elements.flip_chip_connectors.flip_chip_connector.png" src="../_images/kqcircuits.elements.flip_chip_connectors.flip_chip_connector.png" />
 </section>

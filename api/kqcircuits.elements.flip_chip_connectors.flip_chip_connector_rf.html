@@ -906,18 +906,10 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf.FlipChipConnectorRf">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf.</span></span><span class="sig-name descname"><span class="pre">FlipChipConnectorRf</span></span><a class="reference internal" href="../_modules/kqcircuits/elements/flip_chip_connectors/flip_chip_connector_rf.html#FlipChipConnectorRf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf.FlipChipConnectorRf" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="kqcircuits.elements.flip_chip_connectors.flip_chip_connector.html#kqcircuits.elements.flip_chip_connectors.flip_chip_connector.FlipChipConnector" title="kqcircuits.elements.flip_chip_connectors.flip_chip_connector.FlipChipConnector"><code class="xref py py-class docutils literal notranslate"><span class="pre">FlipChipConnector</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a></p>
 <p>PCell declaration for an inter-chip rf connector.</p>
 <p>Flip chip connector with two coplanar waveguide connections and different ground bump configurations.
 The input port is on the first face and on the left. The output port is on the second face and rotated as chosen.</p>
-<dl class="simple">
-<dt>About connector_type choices:</dt><dd><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">Single</span></code>: the bump connects the two sides</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">GSG</span></code>: ground-signal-ground indium bumps</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Coax</span></code>: signal transmitting bump is surrounded by four ground bumps</p></li>
-</ul>
-</dd>
-</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf.FlipChipConnectorRf.build">
 <span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/flip_chip_connectors/flip_chip_connector_rf.html#FlipChipConnectorRf.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf.FlipChipConnectorRf.build" title="Link to this definition"></a></dt>
@@ -953,13 +945,13 @@ for RefpointToSimPort objects based on simulation’s parameters</p></li>
 
 <strong>PCell parameters:</strong><div class="line"><br /></div>
 <ul class="simple">
-<li><p><strong>connector_type</strong><em> (String)</em><span> - Connector type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Coax</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Single',</span> <span class="pre">'GSG',</span> <span class="pre">'Coax']</span></code></p></li>
 <li><p><strong>inter_bump_distance</strong><em> (Double)</em><span> - Distance between In bumps</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>output_rotation</strong><em> (Double)</em><span> - Rotation of output port w.r.t. input port</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">180</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">degrees</span></code></p></li>
 <li><p><strong>connector_a</strong><em> (Double)</em><span> - Conductor width at the connector area</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">40</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>connector_b</strong><em> (Double)</em><span> - Gap width at the connector area</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">40</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>round_connector</strong><em> (Boolean)</em><span> - Use round connector shape</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>n_center_bumps</strong><em> (Int)</em><span> - Number of center bumps in series</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">1</span></code></p></li>
+<li><p><strong>bump_type</strong><em> (String)</em><span> - Bump type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Flip</span> <span class="pre">Chip</span> <span class="pre">Connector</span> <span class="pre">Dc</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Flip</span> <span class="pre">Chip</span> <span class="pre">Connector</span> <span class="pre">Dc']</span></code></p></li>
 <li><p><strong>a2</strong><em> (Double)</em><span> - Non-physical value ‘-1’ means that the default size ‘a’ is used.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">-1</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>b2</strong><em> (Double)</em><span> - Non-physical value ‘-1’ means that the default size ‘b’ is used.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">-1</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 </ul>
