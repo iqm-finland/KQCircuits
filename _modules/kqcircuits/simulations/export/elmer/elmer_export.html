@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.export.elmer.elmer_export &mdash; KQCircuits 4.7.27 documentation</title>
+  <title>kqcircuits.simulations.export.elmer.elmer_export &mdash; KQCircuits 4.7.28 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../../_static/documentation_options.js?v=a22eeec6"></script>
+        <script src="../../../../../_static/documentation_options.js?v=4a344d04"></script>
         <script src="../../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/js/theme.js"></script>
@@ -925,6 +925,7 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">platform</span>
 
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
@@ -937,10 +938,10 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.util</span> <span class="kn">import</span> <span class="n">export_layers</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.export_helper</span> <span class="kn">import</span> <span class="n">write_commit_reference_file</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">ELMER_SCRIPT_PATHS</span><span class="p">,</span> <span class="n">KQC_REMOTE_ACCOUNT</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">ELMER_SCRIPT_PATHS</span><span class="p">,</span> <span class="n">KQC_REMOTE_ACCOUNT</span><span class="p">,</span> <span class="n">SIM_SCRIPT_PATH</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.cross_section_simulation</span> <span class="kn">import</span> <span class="n">CrossSectionSimulation</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.elmer.elmer_solution</span> <span class="kn">import</span> <span class="n">ElmerSolution</span><span class="p">,</span> <span class="n">get_elmer_solution</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.elmer.elmer_solution</span> <span class="kn">import</span> <span class="n">ElmerEPR3DSolution</span><span class="p">,</span> <span class="n">ElmerSolution</span><span class="p">,</span> <span class="n">get_elmer_solution</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.post_process</span> <span class="kn">import</span> <span class="n">PostProcess</span>
 
 
@@ -1026,9 +1027,11 @@
     <span class="n">json_filenames</span><span class="p">,</span>
     <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
     <span class="n">workflow</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">file_prefix</span><span class="o">=</span><span class="s2">&quot;simulation&quot;</span><span class="p">,</span>
-    <span class="n">execution_script</span><span class="o">=</span><span class="s2">&quot;scripts/run.py&quot;</span><span class="p">,</span>
+    <span class="n">script_folder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;scripts&quot;</span><span class="p">,</span>
+    <span class="n">file_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;simulation&quot;</span><span class="p">,</span>
+    <span class="n">script_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;run.py&quot;</span><span class="p">,</span>
     <span class="n">post_process</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">compile_elmer_modules</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create script files for running one or more simulations.</span>
@@ -1038,9 +1041,11 @@
 <span class="sd">        json_filenames: List of paths to json files to be included into the script.</span>
 <span class="sd">        path: Location where to write the script file.</span>
 <span class="sd">        workflow: Parameters for simulation workflow</span>
-<span class="sd">        file_prefix: Name of the script file to be created.</span>
-<span class="sd">        execution_script: The script file to be executed.</span>
+<span class="sd">        script_folder: Path to the Elmer-scripts folder.</span>
+<span class="sd">        file_prefix: File prefix of the script file to be created.</span>
+<span class="sd">        script_file: Name of the script file to run.</span>
 <span class="sd">        post_process: List of PostProcess objects, a single PostProcess object, or None to be executed after simulations</span>
+<span class="sd">        compile_elmer_modules: Compile custom Elmer energy integration module at runtime. Not supported on Windows.</span>
 
 <span class="sd">    Returns:</span>
 
@@ -1053,6 +1058,7 @@
 
     <span class="n">python_executable</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;python_executable&quot;</span><span class="p">,</span> <span class="s2">&quot;python&quot;</span><span class="p">)</span>
     <span class="n">main_script_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">file_prefix</span> <span class="o">+</span> <span class="s2">&quot;.sh&quot;</span><span class="p">))</span>
+    <span class="n">execution_script</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">script_folder</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">script_file</span><span class="p">)</span>
 
     <span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;log_files&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -1217,6 +1223,12 @@
             <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
+            <span class="k">if</span> <span class="n">compile_elmer_modules</span><span class="p">:</span>
+                <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;echo &quot;Compiling Elmer modules&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;elmerf90 -fcheck=all </span><span class="si">{</span><span class="n">script_folder</span><span class="si">}</span><span class="s2">/SaveBoundaryEnergy.F90 -o SaveBoundaryEnergy &gt; /dev/null</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">json_filename</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">):</span>
                 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                     <span class="n">json_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
@@ -1361,9 +1373,17 @@
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">main_script_filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">main_file</span><span class="p">:</span>
             <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;#!/bin/bash</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
+            <span class="k">if</span> <span class="n">compile_elmer_modules</span><span class="p">:</span>
+                <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;echo &quot;Compiling Elmer modules&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;elmerf90 -fcheck=all </span><span class="si">{</span><span class="n">script_folder</span><span class="si">}</span><span class="s2">/SaveBoundaryEnergy.F90 -o SaveBoundaryEnergy &gt; /dev/null</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
             <span class="k">if</span> <span class="n">parallelize_workload</span><span class="p">:</span>
                 <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;export OMP_NUM_THREADS=</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;elmer_n_threads&quot;</span><span class="p">]))</span>
-                <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> scripts/simple_workload_manager.py </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">python_executable</span><span class="p">,</span> <span class="n">n_workers</span><span class="p">))</span>
+                <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">/simple_workload_manager.py </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">python_executable</span><span class="p">,</span> <span class="n">script_folder</span><span class="p">,</span> <span class="n">n_workers</span><span class="p">)</span>
+                <span class="p">)</span>
 
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">json_filename</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">):</span>
                 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -1485,8 +1505,13 @@
 
     <span class="n">workflow</span> <span class="o">=</span> <span class="n">_update_elmer_workflow</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="n">common_sol</span><span class="p">,</span> <span class="n">workflow</span><span class="p">)</span>
 
+    <span class="c1"># If doing 3D epr simulations the custom Elmer energy integration module is compiled at runtime</span>
+    <span class="n">epr_sim</span> <span class="o">=</span> <span class="n">_is_epr_sim</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="n">common_sol</span><span class="p">)</span>
+    <span class="n">script_paths</span> <span class="o">=</span> <span class="n">ELMER_SCRIPT_PATHS</span> <span class="o">+</span> <span class="p">[</span><span class="n">SIM_SCRIPT_PATH</span> <span class="o">/</span> <span class="s2">&quot;elmer_modules&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">epr_sim</span> <span class="k">else</span> <span class="n">ELMER_SCRIPT_PATHS</span>
+
     <span class="n">write_commit_reference_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-    <span class="n">copy_content_into_directory</span><span class="p">(</span><span class="n">ELMER_SCRIPT_PATHS</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">script_folder</span><span class="p">)</span>
+    <span class="n">copy_content_into_directory</span><span class="p">(</span><span class="n">script_paths</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">script_folder</span><span class="p">)</span>
+
     <span class="n">json_filenames</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">for</span> <span class="n">sim_sol</span> <span class="ow">in</span> <span class="n">simulations</span><span class="p">:</span>
@@ -1512,11 +1537,27 @@
         <span class="n">json_filenames</span><span class="p">,</span>
         <span class="n">path</span><span class="p">,</span>
         <span class="n">workflow</span><span class="p">,</span>
+        <span class="n">script_folder</span><span class="o">=</span><span class="n">script_folder</span><span class="p">,</span>
         <span class="n">file_prefix</span><span class="o">=</span><span class="n">file_prefix</span><span class="p">,</span>
-        <span class="n">execution_script</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">script_folder</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">script_file</span><span class="p">),</span>
+        <span class="n">script_file</span><span class="o">=</span><span class="n">script_file</span><span class="p">,</span>
         <span class="n">post_process</span><span class="o">=</span><span class="n">post_process</span><span class="p">,</span>
+        <span class="n">compile_elmer_modules</span><span class="o">=</span><span class="n">epr_sim</span><span class="p">,</span>
     <span class="p">)</span></div>
 
+
+
+<span class="k">def</span> <span class="nf">_is_epr_sim</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="n">common_sol</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper to check if doing 3D epr simulation&quot;&quot;&quot;</span>
+    <span class="n">epr_sim</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">common_sol</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">simsol</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">ElmerEPR3DSolution</span><span class="p">)</span> <span class="k">for</span> <span class="n">simsol</span> <span class="ow">in</span> <span class="n">simulations</span><span class="p">):</span>
+            <span class="n">epr_sim</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">common_sol</span><span class="p">,</span> <span class="n">ElmerEPR3DSolution</span><span class="p">):</span>
+        <span class="n">epr_sim</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">if</span> <span class="n">epr_sim</span> <span class="ow">and</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Windows&quot;</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Elmer 3D EPR Simulations are not supported on Windows&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">epr_sim</span>
 
 
 <span class="k">def</span> <span class="nf">_update_elmer_workflow</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="n">common_solution</span><span class="p">,</span> <span class="n">workflow</span><span class="p">):</span>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.export.elmer.elmer_solution &mdash; KQCircuits 4.7.27 documentation</title>
+  <title>kqcircuits.simulations.export.elmer.elmer_solution &mdash; KQCircuits 4.7.28 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
@@ -18,7 +18,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=a22eeec6"></script>
+        <script src="../_static/documentation_options.js?v=4a344d04"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -1200,6 +1200,50 @@ No impendance can then be calculated but useful for making EPR simulations faste
 <dl class="py attribute">
 <dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerCrossSectionSolution.run_inductance_sim">
 <span class="sig-name descname"><span class="pre">run_inductance_sim</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerCrossSectionSolution.run_inductance_sim" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerEPR3DSolution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.elmer.elmer_solution.</span></span><span class="sig-name descname"><span class="pre">ElmerEPR3DSolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percent_error:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_error_scale:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_outlier_fraction:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum_passes:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minimum_passes:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_axisymmetric:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_levels:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_size:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vtu_output:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_element_order:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linear_system_method:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'bicgstab'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convergence_tolerance:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">1e-09</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iterations:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/elmer/elmer_solution.html#ElmerEPR3DSolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerEPR3DSolution" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution" title="kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElmerSolution</span></code></a></p>
+<p>Class for Elmer 3D EPR simulations. Similar to electrostatics simulations done with ElmerCapacitanceSolution,
+but supports separating energies by PartitionRegions and produces no capacitance matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p_element_order</strong> – polynomial order of p-elements</p></li>
+<li><p><strong>linear_system_method</strong> – Options: 1. mg (multigrid), 2. bicgstab or any other iterative solver mentioned in
+ElmerSolver manual section 4.3.1</p></li>
+<li><p><strong>convergence_tolerance</strong> – Convergence tolerance of the iterative solver.</p></li>
+<li><p><strong>max_iterations</strong> – Maximum number of iterations for the iterative solver.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerEPR3DSolution.tool">
+<span class="sig-name descname"><span class="pre">tool</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'epr_3d'</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerEPR3DSolution.tool" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerEPR3DSolution.p_element_order">
+<span class="sig-name descname"><span class="pre">p_element_order</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerEPR3DSolution.p_element_order" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerEPR3DSolution.linear_system_method">
+<span class="sig-name descname"><span class="pre">linear_system_method</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bicgstab'</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerEPR3DSolution.linear_system_method" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerEPR3DSolution.convergence_tolerance">
+<span class="sig-name descname"><span class="pre">convergence_tolerance</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1e-09</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerEPR3DSolution.convergence_tolerance" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_solution.ElmerEPR3DSolution.max_iterations">
+<span class="sig-name descname"><span class="pre">max_iterations</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1000</span></em><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerEPR3DSolution.max_iterations" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>

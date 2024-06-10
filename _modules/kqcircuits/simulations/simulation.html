@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.simulation &mdash; KQCircuits 4.7.27 documentation</title>
+  <title>kqcircuits.simulations.simulation &mdash; KQCircuits 4.7.28 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=a22eeec6"></script>
+        <script src="../../../_static/documentation_options.js?v=4a344d04"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -1148,6 +1148,13 @@
         <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Use only keywords introduced in material_dict.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">tls_sheet_approximation</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Approximate TLS interface layers as sheets&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">detach_tls_sheets_from_body</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span>
+        <span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span>
+        <span class="s2">&quot;TLS interface layers are created `tls_layer_thickness` above or below the interface of 3D bodies&quot;</span><span class="p">,</span>
+        <span class="kc">True</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Only has an effect when tls_sheet_approximation=True.&quot;</span>
+        <span class="s2">&quot;Setting to False when using `ElmerEPR3DSolution` significantly improves simulation performance&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="n">minimum_point_spacing</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Tolerance for merging adjacent points in polygon&quot;</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;µm&quot;</span><span class="p">)</span>
     <span class="n">polygon_tolerance</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Tolerance for merging adjacent polygons in a layer&quot;</span><span class="p">,</span> <span class="mf">0.004</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;µm&quot;</span><span class="p">)</span>
@@ -1639,7 +1646,10 @@
                 <span class="n">layer_top_z</span> <span class="o">=</span> <span class="n">layer_z</span> <span class="o">+</span> <span class="p">[</span><span class="n">sign</span><span class="p">,</span> <span class="o">-</span><span class="n">sign</span><span class="p">,</span> <span class="o">-</span><span class="n">sign</span><span class="p">][</span><span class="n">layer_num</span><span class="p">]</span> <span class="o">*</span> <span class="n">thickness</span>
                 <span class="n">material</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ith_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tls_layer_material</span><span class="p">,</span> <span class="n">layer_num</span><span class="p">)</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tls_sheet_approximation</span><span class="p">:</span>
-                    <span class="n">z_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;z0&quot;</span><span class="p">:</span> <span class="n">layer_top_z</span><span class="p">,</span> <span class="s2">&quot;z1&quot;</span><span class="p">:</span> <span class="n">layer_top_z</span><span class="p">}</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">detach_tls_sheets_from_body</span><span class="p">:</span>
+                        <span class="n">z_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;z0&quot;</span><span class="p">:</span> <span class="n">layer_top_z</span><span class="p">,</span> <span class="s2">&quot;z1&quot;</span><span class="p">:</span> <span class="n">layer_top_z</span><span class="p">}</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">z_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;z0&quot;</span><span class="p">:</span> <span class="n">layer_z</span><span class="p">,</span> <span class="s2">&quot;z1&quot;</span><span class="p">:</span> <span class="n">layer_z</span><span class="p">}</span>
                 <span class="k">elif</span> <span class="n">thickness</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
                     <span class="n">z_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;z0&quot;</span><span class="p">:</span> <span class="n">layer_z</span><span class="p">,</span> <span class="s2">&quot;z1&quot;</span><span class="p">:</span> <span class="n">layer_top_z</span><span class="p">}</span>
 

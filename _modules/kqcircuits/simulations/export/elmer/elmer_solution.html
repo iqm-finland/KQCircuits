@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.export.elmer.elmer_solution &mdash; KQCircuits 4.7.27 documentation</title>
+  <title>kqcircuits.simulations.export.elmer.elmer_solution &mdash; KQCircuits 4.7.28 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../../_static/documentation_options.js?v=a22eeec6"></script>
+        <script src="../../../../../_static/documentation_options.js?v=4a344d04"></script>
         <script src="../../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/js/theme.js"></script>
@@ -1091,6 +1091,31 @@
 
 
 
+<div class="viewcode-block" id="ElmerEPR3DSolution">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerEPR3DSolution">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">ElmerEPR3DSolution</span><span class="p">(</span><span class="n">ElmerSolution</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for Elmer 3D EPR simulations. Similar to electrostatics simulations done with ElmerCapacitanceSolution,</span>
+<span class="sd">    but supports separating energies by PartitionRegions and produces no capacitance matrix</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        p_element_order: polynomial order of p-elements</span>
+<span class="sd">        linear_system_method: Options: 1. mg (multigrid), 2. bicgstab or any other iterative solver mentioned in</span>
+<span class="sd">                              ElmerSolver manual section 4.3.1</span>
+<span class="sd">        convergence_tolerance: Convergence tolerance of the iterative solver.</span>
+<span class="sd">        max_iterations: Maximum number of iterations for the iterative solver.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">tool</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;epr_3d&quot;</span>
+
+    <span class="n">p_element_order</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">linear_system_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;bicgstab&quot;</span>
+    <span class="n">convergence_tolerance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0e-9</span>
+    <span class="n">max_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span></div>
+
+
+
 <div class="viewcode-block" id="get_elmer_solution">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.get_elmer_solution">[docs]</a>
 <span class="k">def</span> <span class="nf">get_elmer_solution</span><span class="p">(</span><span class="n">tool</span><span class="o">=</span><span class="s2">&quot;capacitance&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">solution_params</span><span class="p">):</span>
@@ -1100,7 +1125,7 @@
 <span class="sd">        tool: Determines the subclass of ElmerSolution.</span>
 <span class="sd">        solution_params: Arguments passed for  ElmerSolution subclass.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ElmerVectorHelmholtzSolution</span><span class="p">,</span> <span class="n">ElmerCapacitanceSolution</span><span class="p">,</span> <span class="n">ElmerCrossSectionSolution</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ElmerVectorHelmholtzSolution</span><span class="p">,</span> <span class="n">ElmerCapacitanceSolution</span><span class="p">,</span> <span class="n">ElmerCrossSectionSolution</span><span class="p">,</span> <span class="n">ElmerEPR3DSolution</span><span class="p">]:</span>
         <span class="k">if</span> <span class="n">tool</span> <span class="o">==</span> <span class="n">c</span><span class="o">.</span><span class="n">tool</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">c</span><span class="p">(</span><span class="o">**</span><span class="n">solution_params</span><span class="p">)</span>
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No ElmerSolution found for tool=</span><span class="si">{</span><span class="n">tool</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
