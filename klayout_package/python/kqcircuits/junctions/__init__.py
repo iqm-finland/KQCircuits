@@ -28,7 +28,7 @@ QCD1, QCD2 and QCD3.
 """
 
 junction_type_choices = [
-    "NoSquid",
+    "No Squid",
     "Manhattan",
     "Manhattan Single Junction",
     #'QCD1',
