@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <klayout-macro>
-  <description>Tutorial</description>
-  <version>1.0</version>
-  <category>pymacros</category>
-  <prolog/>
-  <epilog/>
-  <doc/>
-  <autorun>false</autorun>
-  <autorun-early>false</autorun-early>
-  <shortcut/>
-  <show-in-menu>true</show-in-menu>
-  <menu-path>kqcircuits_menu.end</menu-path>
-  <interpreter>python</interpreter>
-  <dsl-interpreter-name/>
-  <text>
-# This code is part of KQCircuits
+ <description>Online documentation</description>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>true</show-in-menu>
+ <menu-path>kqcircuits_menu.end</menu-path>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text># This code is part of KQCircuits
 # Copyright (C) 2021 IQM Finland Oy
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -32,18 +31,10 @@
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
-import pya
+"""Open the KQCircuits online documentation in the default web browser.
+"""
 
-def open_tutorial():
-    view = pya.Application.instance().main_window().create_view()
-    layout = view.load_layout("path/to/tutorial.oas", 0)
-    view.load_layer_props("path/to/tutorial.lyp")
-    top_cell = layout.top_cell()
-    if top_cell:
-        view.select_cell(top_cell.cell_index(), 0)
-        view.add_missing_layers()
-        view.zoom_fit()
-
-open_tutorial()
-  </text>
+import webbrowser
+webbrowser.open('https://iqm-finland.github.io/KQCircuits/index.html')
+</text>
 </klayout-macro>
