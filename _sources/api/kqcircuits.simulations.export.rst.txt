@@ -17,7 +17,6 @@ kqcircuits.simulations.export
    kqcircuits.simulations.export.export_singularity
    kqcircuits.simulations.export.remote_export_and_run
    kqcircuits.simulations.export.simulation_export
-   kqcircuits.simulations.export.simulation_validate
    kqcircuits.simulations.export.solution
    kqcircuits.simulations.export.util
 

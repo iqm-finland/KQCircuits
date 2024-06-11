@@ -550,7 +550,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.simulations.export.export_singularity.html">kqcircuits.simulations.export.export_singularity</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.simulations.export.remote_export_and_run.html">kqcircuits.simulations.export.remote_export_and_run</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.simulations.export.simulation_export.html">kqcircuits.simulations.export.simulation_export</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.simulations.export.simulation_validate.html">kqcircuits.simulations.export.simulation_validate</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.simulations.export.solution.html">kqcircuits.simulations.export.solution</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.simulations.export.util.html">kqcircuits.simulations.export.util</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.simulations.export.html#module-kqcircuits.simulations.export">Module contents</a></li>
@@ -929,7 +928,6 @@
 
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.util</span> <span class="kn">import</span> <span class="n">export_layers</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_json_encoder</span> <span class="kn">import</span> <span class="n">GeometryJsonEncoder</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.simulation_validate</span> <span class="kn">import</span> <span class="n">ValidateSim</span>
 
 
 <div class="viewcode-block" id="get_combined_parameters">
@@ -1092,24 +1090,6 @@
             <span class="n">solutions</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">solutions</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">solutions</span><span class="p">],</span>
         <span class="p">)</span>
     <span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="validate_simulation">
-<a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.simulation_export.html#kqcircuits.simulations.export.simulation_export.validate_simulation">[docs]</a>
-<span class="k">def</span> <span class="nf">validate_simulation</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Analyses a Simulation object or list and raises an error if specific inconsistencies are found.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        simulations: A Simulation object.</span>
-<span class="sd">        solutions: A Solution object.</span>
-<span class="sd">    Raises:</span>
-<span class="sd">        Errors when validation criteria are not met.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">validate_sim</span> <span class="o">=</span> <span class="n">ValidateSim</span><span class="p">()</span>
-    <span class="n">validate_sim</span><span class="o">.</span><span class="n">has_no_ports_when_required</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">)</span>
-    <span class="n">validate_sim</span><span class="o">.</span><span class="n">has_edgeport_when_forbidden</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">)</span>
-    <span class="n">validate_sim</span><span class="o">.</span><span class="n">flux_integration_layer_exists_if_needed</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">)</span></div>
 
 </pre></div>
 
