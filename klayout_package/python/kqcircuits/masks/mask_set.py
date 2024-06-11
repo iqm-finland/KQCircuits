@@ -233,7 +233,7 @@ class MaskSet:
         logging.basicConfig(level=logging.DEBUG, force=True)  # this level is NOT actually used
         route_log(filename=chip_path / f"{variant_name}.log", stdout=_extra_params["enable_debug"])
 
-        mock_chips = _extra_params["mock_chips"]
+        mock_chip = _extra_params["mock_chips"] or chip_params.pop("mock_chip", False)
         skip_extras = _extra_params["skip_extras"]
 
         view = KLayoutView()
@@ -248,7 +248,7 @@ class MaskSet:
                 "display_name": variant_name,
                 "name_copy": None,
             }
-            if mock_chips:
+            if mock_chip:
                 mock_params = chip_class().pcell_params_by_name(Chip, **params)
                 if chip_params:
                     # Pass through parameters only if they exist in Chip
