@@ -25,7 +25,7 @@
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kqcircuits.simulations.export.solution" href="kqcircuits.simulations.export.solution.html" />
+    <link rel="next" title="kqcircuits.simulations.export.simulation_validate" href="kqcircuits.simulations.export.simulation_validate.html" />
     <link rel="prev" title="kqcircuits.simulations.export.remote_export_and_run" href="kqcircuits.simulations.export.remote_export_and_run.html" /> 
 </head>
 
@@ -553,6 +553,7 @@
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.export_singularity.html">kqcircuits.simulations.export.export_singularity</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.remote_export_and_run.html">kqcircuits.simulations.export.remote_export_and_run</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">kqcircuits.simulations.export.simulation_export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.simulation_validate.html">kqcircuits.simulations.export.simulation_validate</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.solution.html">kqcircuits.simulations.export.solution</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.util.html">kqcircuits.simulations.export.util</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.html#module-kqcircuits.simulations.export">Module contents</a></li>
@@ -996,6 +997,23 @@ In case of common keys, ‘solution.’ prefix is added to Solution parameter ke
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_export.validate_simulation">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.simulation_export.</span></span><span class="sig-name descname"><span class="pre">validate_simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solution</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_export.html#validate_simulation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_export.validate_simulation" title="Link to this definition"></a></dt>
+<dd><p>Analyses a Simulation object or list and raises an error if specific inconsistencies are found.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>simulations</strong> – A Simulation object.</p></li>
+<li><p><strong>solutions</strong> – A Solution object.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Errors when validation criteria are not met.</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
 <img alt="../_images/kqcircuits.simulations.export.simulation_export.png" src="../_images/kqcircuits.simulations.export.simulation_export.png" />
 </section>
 
@@ -1004,7 +1022,7 @@ In case of common keys, ‘solution.’ prefix is added to Solution parameter ke
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="kqcircuits.simulations.export.remote_export_and_run.html" class="btn btn-neutral float-left" title="kqcircuits.simulations.export.remote_export_and_run" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="kqcircuits.simulations.export.solution.html" class="btn btn-neutral float-right" title="kqcircuits.simulations.export.solution" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kqcircuits.simulations.export.simulation_validate.html" class="btn btn-neutral float-right" title="kqcircuits.simulations.export.simulation_validate" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

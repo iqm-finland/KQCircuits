@@ -550,6 +550,7 @@
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.export.export_singularity.html">kqcircuits.simulations.export.export_singularity</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.export.remote_export_and_run.html">kqcircuits.simulations.export.remote_export_and_run</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.export.simulation_export.html">kqcircuits.simulations.export.simulation_export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.export.simulation_validate.html">kqcircuits.simulations.export.simulation_validate</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.export.solution.html">kqcircuits.simulations.export.solution</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.export.util.html">kqcircuits.simulations.export.util</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.export.html#module-kqcircuits.simulations.export">Module contents</a></li>
@@ -1641,6 +1642,8 @@
 </li>
       <li><a href="api/kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf.html#kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf.FlipChipConnectorRf">FlipChipConnectorRf (class in kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf)</a>
 </li>
+      <li><a href="api/kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.ValidateSim.flux_integration_layer_exists_if_needed">flux_integration_layer_exists_if_needed() (kqcircuits.simulations.export.simulation_validate.ValidateSim method)</a>
+</li>
       <li><a href="api/kqcircuits.elements.fluxlines.fluxline.html#kqcircuits.elements.fluxlines.fluxline.Fluxline">Fluxline (class in kqcircuits.elements.fluxlines.fluxline)</a>
 </li>
       <li><a href="api/kqcircuits.elements.fluxlines.fluxline_standard.html#kqcircuits.elements.fluxlines.fluxline_standard.FluxlineStandard">FluxlineStandard (class in kqcircuits.elements.fluxlines.fluxline_standard)</a>
@@ -1777,6 +1780,8 @@
 </li>
       <li><a href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.get_port_data">get_port_data() (kqcircuits.simulations.simulation.Simulation method)</a>
 </li>
+      <li><a href="api/kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.get_port_names">get_port_names() (in module kqcircuits.simulations.export.simulation_validate)</a>
+</li>
       <li><a href="api/kqcircuits.simulations.export.simulation_export.html#kqcircuits.simulations.export.simulation_export.get_post_process_command_lines">get_post_process_command_lines() (in module kqcircuits.simulations.export.simulation_export)</a>
 </li>
       <li><a href="api/kqcircuits.elements.element.html#kqcircuits.elements.element.get_refpoints">get_refpoints() (in module kqcircuits.elements.element)</a>
@@ -1867,8 +1872,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.elements.hanger_resonator.html#kqcircuits.elements.hanger_resonator.HangerResonator">HangerResonator (class in kqcircuits.elements.hanger_resonator)</a>
 </li>
+      <li><a href="api/kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.ValidateSim.has_edgeport_when_forbidden">has_edgeport_when_forbidden() (kqcircuits.simulations.export.simulation_validate.ValidateSim method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.ValidateSim.has_no_ports_when_required">has_no_ports_when_required() (kqcircuits.simulations.export.simulation_validate.ValidateSim method)</a>
+</li>
       <li><a href="api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.has_tracking_position">has_tracking_position() (kqcircuits.util.edit_node_plugin.EditNodePlugin method)</a>
 </li>
   </ul></td>
@@ -2530,8 +2539,6 @@
         <li><a href="api/kqcircuits.layer_config.example_layer_config.html#module-kqcircuits.layer_config.example_layer_config">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     kqcircuits.masks
 
@@ -2539,6 +2546,8 @@
         <li><a href="api/kqcircuits.masks.html#module-kqcircuits.masks">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     kqcircuits.masks.mask_export
 
@@ -2733,6 +2742,13 @@
 
       <ul>
         <li><a href="api/kqcircuits.simulations.export.simulation_export.html#module-kqcircuits.simulations.export.simulation_export">module</a>
+</li>
+      </ul></li>
+      <li>
+    kqcircuits.simulations.export.simulation_validate
+
+      <ul>
+        <li><a href="api/kqcircuits.simulations.export.simulation_validate.html#module-kqcircuits.simulations.export.simulation_validate">module</a>
 </li>
       </ul></li>
       <li>
@@ -3543,6 +3559,8 @@
 </li>
         <li><a href="api/kqcircuits.simulations.export.simulation_export.html#module-kqcircuits.simulations.export.simulation_export">kqcircuits.simulations.export.simulation_export</a>
 </li>
+        <li><a href="api/kqcircuits.simulations.export.simulation_validate.html#module-kqcircuits.simulations.export.simulation_validate">kqcircuits.simulations.export.simulation_validate</a>
+</li>
         <li><a href="api/kqcircuits.simulations.export.solution.html#module-kqcircuits.simulations.export.solution">kqcircuits.simulations.export.solution</a>
 </li>
         <li><a href="api/kqcircuits.simulations.export.sonnet.html#module-kqcircuits.simulations.export.sonnet">kqcircuits.simulations.export.sonnet</a>
@@ -4244,18 +4262,24 @@
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/kqcircuits.simulations.export.simulation_export.html#kqcircuits.simulations.export.simulation_export.validate_simulation">validate_simulation() (in module kqcircuits.simulations.export.simulation_export)</a>
+</li>
+      <li><a href="api/kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.ValidateSim">ValidateSim (class in kqcircuits.simulations.export.simulation_validate)</a>
+</li>
+      <li><a href="api/kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.ValidateSimError">ValidateSimError</a>
+</li>
       <li><a href="api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.Refpoints.values">values() (kqcircuits.util.refpoints.Refpoints method)</a>
 </li>
       <li><a href="api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.vector_length_and_direction">vector_length_and_direction() (in module kqcircuits.util.geometry_helper)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.version">version (kqcircuits.masks.mask_layout.MaskLayout attribute)</a>
 
       <ul>
         <li><a href="api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.version">(kqcircuits.masks.mask_set.MaskSet attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.via">via() (in module kqcircuits.simulations.export.sonnet.parser)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.visualise_region">visualise_region() (kqcircuits.simulations.simulation.Simulation method)</a>
