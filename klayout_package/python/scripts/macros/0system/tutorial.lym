@@ -39,8 +39,8 @@ def open_tutorial():
     view = KLayoutView()
     layout_view = view.layout_view
     base_path = os.path.dirname(os.path.abspath(__file__))
-    layout_view.load_layout(os.path.join(base_path, "../../../resources/tutorial.oas"), 0)
-    layout_view.load_layer_props(os.path.join(base_path, "../../../resources/tutorial.lyp"))
+    layout_view.load_layout(os.path.join(base_path, "../../resources/tutorial.oas"), 0)
+    layout_view.load_layer_props(os.path.join(base_path, "../../resources/tutorial.lyp"))
     top_cell = view.top_cell
     if top_cell:
         layout_view.select_cell(top_cell.cell_index(), 0)
