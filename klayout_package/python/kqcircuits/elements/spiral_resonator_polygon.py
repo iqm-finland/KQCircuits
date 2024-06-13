@@ -15,8 +15,6 @@
 # (meetiqm.com/iqm-open-source-trademark-policy). IQM welcomes contributions to the code.
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
-
-
 from math import pi, tan, degrees, atan2, sqrt
 
 from kqcircuits.elements.airbridges.airbridge import Airbridge
@@ -66,6 +64,7 @@ class SpiralResonatorPolygon(Element):
         pdt.TypeShape, "Polygon path", pya.DPath([pya.DPoint(0, 800), pya.DPoint(1000, 0), pya.DPoint(0, -800)], 10)
     )
     auto_spacing = Param(pdt.TypeBoolean, "Use automatic spacing", True)
+    include_connector_length = Param(pdt.TypeBoolean, "Include connector length", False)
     manual_spacing = Param(pdt.TypeList, "Manual spacing pattern", [300], unit="[μm]")
     bridge_spacing = Param(pdt.TypeDouble, "Airbridge spacing", 0, unit="μm")
     n_bridges_pattern = Param(pdt.TypeList, "Pattern for number of airbridges on edges", [0])
@@ -78,6 +77,13 @@ class SpiralResonatorPolygon(Element):
     )
 
     def build(self):
+        if self.connector_dist >= 0 and not self.include_connector_length:
+            conn_cell = self.add_element(FlipChipConnectorRf)
+            conn_ref = self.get_refpoints(conn_cell)
+            port0 = self.face_ids[0] + "_port"
+            port1 = self.face_ids[1] + "_port"
+            conn_len, _ = vector_length_and_direction(conn_ref[port1] - conn_ref[port0])
+            self.length += conn_len
         if isinstance(self.input_path, list):
             self.input_path = pya.DPath(self.input_path, 1)
         if isinstance(self.poly_path, list):
