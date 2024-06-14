@@ -23,7 +23,12 @@ jobs:
         with:
           python-version: '3.10.x'
       - name: Init KQCircuits
-        run: ci/init_kqc.sh
+        # Was previously run: ci/init_kqc.sh
+        run: |
+          python -m pip install -r ci/requirements/tomli-requirements.txt
+          python -m pip install -r klayout_package/python/requirements/linux/pip-requirements.txt
+          pip-sync klayout_package/python/requirements/linux/requirements.txt klayout_package/python/requirements/linux/test-requirements.txt
+          pip install --no-deps -e "klayout_package/python/"
       - name: Select KLayout version
         run: pip install --force-reinstall -r "ci/requirements/${{ matrix.klayout_version }}-requirements.txt"
         if: ${{ matrix.klayout_version != 'latest' }}
@@ -105,7 +110,12 @@ jobs:
         with:
           python-version: '3.10.x'
       - name: Init KQCircuits
-        run: ci/init_kqc.sh
+        # Was previously run: ci/init_kqc.sh
+        run: |
+          python -m pip install -r ci/requirements/tomli-requirements.txt
+          python -m pip install -r klayout_package/python/requirements/linux/pip-requirements.txt
+          pip-sync klayout_package/python/requirements/linux/requirements.txt klayout_package/python/requirements/linux/test-requirements.txt
+          pip install --no-deps -e "klayout_package/python/"
       - name: Run static code analysis
         run: tox -e static_analysis
 
@@ -131,7 +141,12 @@ jobs:
       - name: Install graphviz
         run: sudo apt-get update && sudo apt-get install -y graphviz
       - name: Init KQCircuits
-        run: ci/init_kqc.sh
+        # Was previously run: ci/init_kqc.sh
+        run: |
+          python -m pip install -r ci/requirements/tomli-requirements.txt
+          python -m pip install -r klayout_package/python/requirements/linux/pip-requirements.txt
+          pip-sync klayout_package/python/requirements/linux/requirements.txt klayout_package/python/requirements/linux/test-requirements.txt klayout_package/python/requirements/linux/doc-requirements.txt
+          pip install --no-deps -e "klayout_package/python/"
       - name: Make docs
         run: |
           cd docs
@@ -180,7 +195,12 @@ jobs:
         with:
           python-version: '3.10.x'
       - name: Init KQCircuits
-        run: ci/init_kqc.sh
+        # Was previously run: ci/init_kqc.sh
+        run: |
+          python -m pip install -r ci/requirements/tomli-requirements.txt
+          python -m pip install -r klayout_package/python/requirements/linux/pip-requirements.txt
+          pip-sync klayout_package/python/requirements/linux/requirements.txt klayout_package/python/requirements/linux/test-requirements.txt
+          pip install --no-deps -e "klayout_package/python/"
       - name: Run check_layer_props.py
         run:  python util/check_layer_props.py
 
