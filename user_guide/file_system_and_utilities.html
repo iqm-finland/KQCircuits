@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>General Structure and Miscellaneous Utilities &mdash; KQCircuits 4.7.28 documentation</title>
+  <title>General Structure and Miscellaneous Utilities &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
@@ -18,7 +18,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=4a344d04"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -183,8 +183,9 @@
 <li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#update">Update</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#secondary-install">Secondary install</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#manual-installation">Manual installation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../developer/setup.html#linux-or-macos">Linux or MacOS</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../developer/setup.html#windows">Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/setup.html#symlinks-in-linux-or-macos">Symlinks in Linux or MacOS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/setup.html#symlinks-in-windows">Symlinks in Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/setup.html#installing-dependencies">Installing dependencies</a></li>
 </ul>
 </li>
 </ul>
@@ -672,7 +673,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.util.dependencies.html#kqcircuits.util.dependencies.install_kqc_dependencies"><code class="docutils literal notranslate"><span class="pre">install_kqc_dependencies()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.util.dependencies.html#kqcircuits.util.dependencies.install_kqc_gui_dependencies"><code class="docutils literal notranslate"><span class="pre">install_kqc_gui_dependencies()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a><ul>
@@ -920,6 +921,10 @@
 │       │   ├── chips
 │       │   ├── elements        Basic Elements
 │       │   └── ...
+│       └── requirements        Listed dependencies of KQC
+│           ├── linux
+│           ├── mac
+│           └── win
 │       └── scripts
 │           ├── macros
 │           ├── masks
@@ -937,10 +942,11 @@
 <p>In the KQCircuits root folder the most important folder for most users is the
 <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package">klayout_package</a> folder, which is also all that is included in the Salt
 package. Other folders are mainly for automatic tests and documentation.
-KQCircuits code is divided into the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits">kqcircuits</a> and
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts">scripts</a> folders in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python">klayout_package/python</a>.
-These two folders are also (after installation process) linked as symbolic links <code class="docutils literal notranslate"><span class="pre">kqcircuits</span></code> and
-<code class="docutils literal notranslate"><span class="pre">kqcircuits_scripts</span></code> in the <code class="docutils literal notranslate"><span class="pre">~/.klayout</span></code> or <code class="docutils literal notranslate"><span class="pre">~/KLayout</span></code> folder.</p>
+KQCircuits code is divided into the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits">kqcircuits</a>,
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts">scripts</a> and <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/requirements">requirements</a>
+folders in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python">klayout_package/python</a>.
+These three folders are also (after installation process) linked as symbolic links <code class="docutils literal notranslate"><span class="pre">kqcircuits</span></code>,
+<code class="docutils literal notranslate"><span class="pre">kqcircuits_scripts</span></code> and <code class="docutils literal notranslate"><span class="pre">kqcircuits_requirements</span></code> in the <code class="docutils literal notranslate"><span class="pre">~/.klayout</span></code> or <code class="docutils literal notranslate"><span class="pre">~/KLayout</span></code> folder.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">kqcircuits</span></code> folder contains all the KQCircuits PCell classes and many
 other modules used by them or by scripts. Folders directly under
 <code class="docutils literal notranslate"><span class="pre">kqcircuits</span></code> containing PCell classes correspond to different PCell
@@ -950,6 +956,8 @@ scripts for generating simulation files or mask files. The files there are in
 general not meant to be imported in other Python files. The outputs of
 simulation or mask scripts can be found in the <code class="docutils literal notranslate"><span class="pre">tmp</span></code> folder below the main
 KQCircuits folder.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">requirements</span></code> folder lists dependent libraires, their versions and their hashes
+needed for KQCircuits code.</p>
 </section>
 <section id="miscellaneous-utilities">
 <h2>Miscellaneous Utilities<a class="headerlink" href="#miscellaneous-utilities" title="Link to this heading"></a></h2>
@@ -962,6 +970,8 @@ KQCircuits’ default_layers variable.</p></li>
 the file containing the element. This script can be used to integrate with external editors.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">gdiff</span></code> Compares a pair of .oas or .gds files or directories containing such files and
 informs you about differences.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">get_klayout_python_info</span></code> is a script designed to be run within KLayout in batch mode,
+and is used to get KLayout information needed by <code class="docutils literal notranslate"><span class="pre">setup_within_klayout</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">netlist_as_graph</span></code> Draw a graph based on a chip’s generated netlist file.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">oas2dxf</span></code> Convert .oas to .dxf or the other way around. DXF files are more human readable
 and may be edited with scripts.</p></li>

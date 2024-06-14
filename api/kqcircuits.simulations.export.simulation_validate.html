@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.export.simulation_validate &mdash; KQCircuits 4.7.28 documentation</title>
+  <title>kqcircuits.simulations.export.simulation_validate &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
@@ -18,7 +18,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=4a344d04"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -183,8 +183,9 @@
 <li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#update">Update</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#secondary-install">Secondary install</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#manual-installation">Manual installation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../developer/setup.html#linux-or-macos">Linux or MacOS</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../developer/setup.html#windows">Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/setup.html#symlinks-in-linux-or-macos">Symlinks in Linux or MacOS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/setup.html#symlinks-in-windows">Symlinks in Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/setup.html#installing-dependencies">Installing dependencies</a></li>
 </ul>
 </li>
 </ul>
@@ -672,7 +673,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.dependencies.html#kqcircuits.util.dependencies.install_kqc_dependencies"><code class="docutils literal notranslate"><span class="pre">install_kqc_dependencies()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.dependencies.html#kqcircuits.util.dependencies.install_kqc_gui_dependencies"><code class="docutils literal notranslate"><span class="pre">install_kqc_gui_dependencies()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a><ul>
@@ -904,17 +905,42 @@
              
   <section id="module-kqcircuits.simulations.export.simulation_validate">
 <span id="kqcircuits-simulations-export-simulation-validate"></span><h1>kqcircuits.simulations.export.simulation_validate<a class="headerlink" href="#module-kqcircuits.simulations.export.simulation_validate" title="Link to this heading"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_validate.ValidateSim">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.simulation_validate.</span></span><span class="sig-name descname"><span class="pre">ValidateSim</span></span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_validate.html#ValidateSim"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_validate.ValidateSim" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Validation class that contains consistency checks.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_validate.ValidateSim.has_no_ports_when_required">
-<span class="sig-name descname"><span class="pre">has_no_ports_when_required</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solution</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_validate.html#ValidateSim.has_no_ports_when_required"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_validate.ValidateSim.has_no_ports_when_required" title="Link to this definition"></a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_validate.validate_simulation">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.simulation_validate.</span></span><span class="sig-name descname"><span class="pre">validate_simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solution</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_validate.html#validate_simulation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_validate.validate_simulation" title="Link to this definition"></a></dt>
+<dd><p>Analyses Simulation and Solution objects and raises an error if inconsistencies in configuration are found.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>simulation</strong> – A Simulation object.</p></li>
+<li><p><strong>solution</strong> – A Solution object.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Errors when validation criteria are not met.</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_validate.simulation_and_solution_types_match">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.simulation_validate.</span></span><span class="sig-name descname"><span class="pre">simulation_and_solution_types_match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solution</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_validate.html#simulation_and_solution_types_match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_validate.simulation_and_solution_types_match" title="Link to this definition"></a></dt>
+<dd><p>Validation check: ensures that a simulation and solution types match.
+:param simulation: A Simulation object.
+:param solution: A Solution object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Errors when validation criteria are not met.</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_validate.has_no_ports_when_required">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.simulation_validate.</span></span><span class="sig-name descname"><span class="pre">has_no_ports_when_required</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solution</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_validate.html#has_no_ports_when_required"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_validate.has_no_ports_when_required" title="Link to this definition"></a></dt>
 <dd><p>Validation check: ensures that a simulation object has ports when the solution type requires it.
-:param simulations: A Simulation object.
-:param solutions: A Solution object.</p>
+:param simulation: A Simulation object.
+:param solution: A Solution object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>Errors when validation criteria are not met.</strong> – </p>
@@ -922,12 +948,12 @@
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_validate.ValidateSim.has_edgeport_when_forbidden">
-<span class="sig-name descname"><span class="pre">has_edgeport_when_forbidden</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solution</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_validate.html#ValidateSim.has_edgeport_when_forbidden"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_validate.ValidateSim.has_edgeport_when_forbidden" title="Link to this definition"></a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_validate.has_edgeport_when_forbidden">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.simulation_validate.</span></span><span class="sig-name descname"><span class="pre">has_edgeport_when_forbidden</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solution</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_validate.html#has_edgeport_when_forbidden"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_validate.has_edgeport_when_forbidden" title="Link to this definition"></a></dt>
 <dd><p>Validation check: ensure that if at least one “EdgePort” is present, some solution types can’t be chosen.
-:param simulations: A Simulation object.
-:param solutions: A Solution object.</p>
+:param simulation: A Simulation object.
+:param solution: A Solution object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>Errors when validation criteria are not met.</strong> – </p>
@@ -935,18 +961,17 @@
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_validate.ValidateSim.flux_integration_layer_exists_if_needed">
-<span class="sig-name descname"><span class="pre">flux_integration_layer_exists_if_needed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solution</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_validate.html#ValidateSim.flux_integration_layer_exists_if_needed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_validate.ValidateSim.flux_integration_layer_exists_if_needed" title="Link to this definition"></a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_validate.flux_integration_layer_exists_if_needed">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.simulation_validate.</span></span><span class="sig-name descname"><span class="pre">flux_integration_layer_exists_if_needed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solution</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_validate.html#flux_integration_layer_exists_if_needed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_validate.flux_integration_layer_exists_if_needed" title="Link to this definition"></a></dt>
 <dd><p>Validation check related to the presence of layers and magnetic flux integration.
-:param simulation: A Simulation object.</p>
+:param simulation: A Simulation object.
+:param solution: A Solution object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>Errors when validation criteria are not met.</strong> – </p>
 </dd>
 </dl>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="py function">

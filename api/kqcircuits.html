@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>API documentation &mdash; KQCircuits 4.7.28 documentation</title>
+  <title>API documentation &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
@@ -18,7 +18,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=4a344d04"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -183,8 +183,9 @@
 <li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#update">Update</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#secondary-install">Secondary install</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#manual-installation">Manual installation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../developer/setup.html#linux-or-macos">Linux or MacOS</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../developer/setup.html#windows">Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/setup.html#symlinks-in-linux-or-macos">Symlinks in Linux or MacOS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/setup.html#symlinks-in-windows">Symlinks in Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/setup.html#installing-dependencies">Installing dependencies</a></li>
 </ul>
 </li>
 </ul>
@@ -672,7 +673,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.dependencies.html#kqcircuits.util.dependencies.install_kqc_dependencies"><code class="docutils literal notranslate"><span class="pre">install_kqc_dependencies()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.dependencies.html#kqcircuits.util.dependencies.install_kqc_gui_dependencies"><code class="docutils literal notranslate"><span class="pre">install_kqc_gui_dependencies()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a><ul>
@@ -1916,16 +1917,14 @@
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.simulation_export.html#kqcircuits.simulations.export.simulation_export.sweep_solution"><code class="docutils literal notranslate"><span class="pre">sweep_solution()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.simulation_export.html#kqcircuits.simulations.export.simulation_export.cross_sweep_solution"><code class="docutils literal notranslate"><span class="pre">cross_sweep_solution()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.simulation_export.html#kqcircuits.simulations.export.simulation_export.cross_combine"><code class="docutils literal notranslate"><span class="pre">cross_combine()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.simulation_export.html#kqcircuits.simulations.export.simulation_export.validate_simulation"><code class="docutils literal notranslate"><span class="pre">validate_simulation()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.export.simulation_validate.html">kqcircuits.simulations.export.simulation_validate</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.ValidateSim"><code class="docutils literal notranslate"><span class="pre">ValidateSim</span></code></a><ul>
-<li class="toctree-l5"><a class="reference internal" href="kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.ValidateSim.has_no_ports_when_required"><code class="docutils literal notranslate"><span class="pre">ValidateSim.has_no_ports_when_required()</span></code></a></li>
-<li class="toctree-l5"><a class="reference internal" href="kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.ValidateSim.has_edgeport_when_forbidden"><code class="docutils literal notranslate"><span class="pre">ValidateSim.has_edgeport_when_forbidden()</span></code></a></li>
-<li class="toctree-l5"><a class="reference internal" href="kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.ValidateSim.flux_integration_layer_exists_if_needed"><code class="docutils literal notranslate"><span class="pre">ValidateSim.flux_integration_layer_exists_if_needed()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.validate_simulation"><code class="docutils literal notranslate"><span class="pre">validate_simulation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.simulation_and_solution_types_match"><code class="docutils literal notranslate"><span class="pre">simulation_and_solution_types_match()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.has_no_ports_when_required"><code class="docutils literal notranslate"><span class="pre">has_no_ports_when_required()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.has_edgeport_when_forbidden"><code class="docutils literal notranslate"><span class="pre">has_edgeport_when_forbidden()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.flux_integration_layer_exists_if_needed"><code class="docutils literal notranslate"><span class="pre">flux_integration_layer_exists_if_needed()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.get_port_names"><code class="docutils literal notranslate"><span class="pre">get_port_names()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.ValidateSimError"><code class="docutils literal notranslate"><span class="pre">ValidateSimError</span></code></a></li>
 </ul>
@@ -2183,7 +2182,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.dependencies.html#kqcircuits.util.dependencies.install_kqc_dependencies"><code class="docutils literal notranslate"><span class="pre">install_kqc_dependencies()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.dependencies.html#kqcircuits.util.dependencies.install_kqc_gui_dependencies"><code class="docutils literal notranslate"><span class="pre">install_kqc_gui_dependencies()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a><ul>

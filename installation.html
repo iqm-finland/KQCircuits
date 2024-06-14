@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installation &mdash; KQCircuits 4.7.28 documentation</title>
+  <title>Installation &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
@@ -18,7 +18,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=4a344d04"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -183,8 +183,9 @@
 <li class="toctree-l3"><a class="reference internal" href="developer/setup.html#update">Update</a></li>
 <li class="toctree-l3"><a class="reference internal" href="developer/setup.html#secondary-install">Secondary install</a></li>
 <li class="toctree-l3"><a class="reference internal" href="developer/setup.html#manual-installation">Manual installation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="developer/setup.html#linux-or-macos">Linux or MacOS</a></li>
-<li class="toctree-l4"><a class="reference internal" href="developer/setup.html#windows">Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="developer/setup.html#symlinks-in-linux-or-macos">Symlinks in Linux or MacOS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="developer/setup.html#symlinks-in-windows">Symlinks in Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="developer/setup.html#installing-dependencies">Installing dependencies</a></li>
 </ul>
 </li>
 </ul>
@@ -672,7 +673,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.util.dependencies.html#kqcircuits.util.dependencies.install_kqc_dependencies"><code class="docutils literal notranslate"><span class="pre">install_kqc_dependencies()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.util.dependencies.html#kqcircuits.util.dependencies.install_kqc_gui_dependencies"><code class="docutils literal notranslate"><span class="pre">install_kqc_gui_dependencies()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a><ul>
@@ -924,8 +925,19 @@ python code by importing the <code class="docutils literal notranslate"><span cl
 <span id="id1"></span><h2>KLayout<a class="headerlink" href="#klayout" title="Link to this heading"></a></h2>
 <p>Download and install KLayout from <a class="reference external" href="https://www.klayout.de/build.html">https://www.klayout.de/build.html</a>. Builds
 should exist there for most common operating systems, choose the correct one
-for your OS. Otherwise you need to build KLayout yourself. We will assume in
-these instructions, that KLayout has been installed in the default location.</p>
+for your OS. Otherwise you need to build KLayout yourself. We recommend installing
+KLayout without changing the installation directory location from default,
+as many KQCircuits features assume that KLayout specific files can be found there.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For mac users:</p>
+<p>KLayout can also be installed using the <a class="reference external" href="https://formulae.brew.sh/cask/klayout">HomeBrew package manager</a>,
+using terminal command <code class="docutils literal notranslate"><span class="pre">brew</span> <span class="pre">install</span> <span class="pre">--cask</span> <span class="pre">klayout</span></code>.</p>
+<p>There might be issues on first time launch of KLayout with window:
+<code class="docutils literal notranslate"><span class="pre">&quot;klayout&quot;</span> <span class="pre">cannot</span> <span class="pre">be</span> <span class="pre">opened</span> <span class="pre">because</span> <span class="pre">the</span> <span class="pre">developer</span> <span class="pre">cannot</span> <span class="pre">be</span> <span class="pre">verified</span></code>.
+To fix this, find KLayout app using Finder, control+click KLayout,
+click Open, then in the warning window there should be option to Open.</p>
+</div>
 <p>KLayout is an actively maintained project with regular feature updates, bugfixes and
 stability improvements. We recommend using the latest version. KQCircuits is automatically
 tested using KLayout versions:</p>
@@ -953,6 +965,14 @@ environment directory <code class="docutils literal notranslate"><span class="pr
 <p>For some specific KLayout builds there can be problems with KQCircuits
 installation that require some extra steps:</p>
 <ul class="simple">
+<li><p>Standard KLayout installation package for MacOS (<code class="docutils literal notranslate"><span class="pre">ST-klayout-*</span></code>)
+is compiled to use the system Python dynamic library, which for
+Sonoma version still has Python version 3.9. <code class="docutils literal notranslate"><span class="pre">networkx</span></code> dependency is only supported
+on Python version 3.10 and higher. We recommend using heavyweight KLayout
+package (<code class="docutils literal notranslate"><span class="pre">HW-klayout-*</span></code>) that uses compatible Python, but if that is not an option, you can comment
+out the <code class="docutils literal notranslate"><span class="pre">networkx</span></code> entry in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/requirements/mac/gui-requirements.txt">gui-requirements.txt</a>
+to proceed with installation.
+Currently this only prevents using the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//util/netlist_as_graph.py">netlist_as_graph.py</a> script.</p></li>
 <li><p>For some macOS BigSur KLayout builds (at least for KLayout v0.27.x), KQC
 might not work due to a problem with the KLayout included <code class="docutils literal notranslate"><span class="pre">setuptools</span></code>
 package. The KQC libraries will not be visible and one might see the error
@@ -968,16 +988,24 @@ install a specific package version to KLayout.</p></li>
 <p>Sometimes there are issues with specific package versions in the KLayout
 Python environment. To install a different version of some package, use:</p>
 <blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&lt;PACKAGE&gt;==&lt;VERSION&gt;</span> <span class="pre">--target=&lt;KLAYOUT-PACKAGE-DIR&gt;</span></code></p>
+<div><p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&lt;PACKAGE&gt;==&lt;VERSION&gt;</span> <span class="pre">--target=&lt;KLAYOUT-PACKAGE-DIR&gt;</span> <span class="pre">--python-version</span> <span class="pre">&lt;KLAYOUT-PYTHON-VERSION&gt;</span> <span class="pre">--platform</span> <span class="pre">&lt;KLAYOUT-PLATFORM&gt;</span> <span class="pre">--only-binary=:all:</span> <span class="pre">--upgrade</span></code></p>
 </div></blockquote>
 <p>The KLAYOUT-PACKAGE-DIR should be the path to the site-packages directory
 used by KLayout. If you don’t know where that is, you can find it by opening
-the KLayout macro editor and writing <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">pip</span></code> and then <code class="docutils literal notranslate"><span class="pre">pip.__path__</span></code>
+the KLayout macro editor and writing <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">setuptools</span></code> and then <code class="docutils literal notranslate"><span class="pre">setuptools.__path__</span></code>
 in the console.</p>
+<p>KLAYOUT-PYTHON-VERSION may expect a different version than the Python version you use in the terminal,
+so it’s best to query that from KLayout macro editor: <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">sys</span></code>, <code class="docutils literal notranslate"><span class="pre">sys.version_info</span></code>.</p>
+<p>On other operating systems than MacOS the <code class="docutils literal notranslate"><span class="pre">--platform</span></code> argument can be omitted.
+However Mac distributions of KLayout are compiled on <code class="docutils literal notranslate"><span class="pre">x86_64</span></code> CPU architecture,
+while many modern macbooks have <code class="docutils literal notranslate"><span class="pre">M2</span></code> or other CPU architecture. Hence some dependencies
+like <code class="docutils literal notranslate"><span class="pre">numpy</span></code> and <code class="docutils literal notranslate"><span class="pre">scipy</span></code> need to be compiled for platform <code class="docutils literal notranslate"><span class="pre">macosx_10_9_x86_64</span></code>,
+even when <code class="docutils literal notranslate"><span class="pre">pip</span></code> will by default fetch distributions compiled for <code class="docutils literal notranslate"><span class="pre">macosx_10_9_arm64</span></code>.</p>
 <p>Notice that this only affects the GUI installation of KQCircuits.
 The standalone, GUI-less KQCircuits installation will use whatever Python environment
 where it was explicitly installed in, which is most likely separate from the Python
-environment used by KLayout.</p>
+environment used by KLayout. It is even recommended to install standalone KQCircuits
+into a virtual environment.</p>
 </section>
 </section>
 </section>

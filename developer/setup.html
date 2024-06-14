@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Developer GUI Setup &mdash; KQCircuits 4.7.28 documentation</title>
+  <title>Developer GUI Setup &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
@@ -18,7 +18,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=4a344d04"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -183,8 +183,9 @@
 <li class="toctree-l3"><a class="reference internal" href="#update">Update</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#secondary-install">Secondary install</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#manual-installation">Manual installation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#linux-or-macos">Linux or MacOS</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#windows">Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#symlinks-in-linux-or-macos">Symlinks in Linux or MacOS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#symlinks-in-windows">Symlinks in Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#installing-dependencies">Installing dependencies</a></li>
 </ul>
 </li>
 </ul>
@@ -672,7 +673,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.util.dependencies.html#kqcircuits.util.dependencies.install_kqc_dependencies"><code class="docutils literal notranslate"><span class="pre">install_kqc_dependencies()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.util.dependencies.html#kqcircuits.util.dependencies.install_kqc_gui_dependencies"><code class="docutils literal notranslate"><span class="pre">install_kqc_gui_dependencies()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a><ul>
@@ -921,7 +922,7 @@ If your Python installation does not already contain the <code class="docutils l
 manager, you have to also install that.</p>
 <p>Successfully tested versions:</p>
 <ul class="simple">
-<li><p>Ubuntu 20.04 and 22.04 LTS with Python 3.10.14</p></li>
+<li><p>Ubuntu 22.04 LTS with Python 3.10.14</p></li>
 <li><p>Windows: Python 3.11.2</p></li>
 </ul>
 </section>
@@ -968,16 +969,12 @@ installation automatically. If you wish to unlink, then write in your terminal:<
 <h2>Update<a class="headerlink" href="#update" title="Link to this heading"></a></h2>
 <p>Updating an existing KQCircuits GUI setup is easy. After updating KQCircuits code itself with <code class="docutils literal notranslate"><span class="pre">git</span>
 <span class="pre">pull</span></code> just run <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//setup_within_klayout.py">setup_within_klayout.py</a> again. This will take care of upgrading (or downgrading)
-KQCircuits’ Python dependencies and installing new ones, as needed. Running KLayout will similarly
-update KQCircuits’ dependencies in its own Python environment.</p>
-<p>If the above didn’t work (usually in case of downgrading dependencies), there is an alternative way.
-If you see warnings displaying
-<code class="docutils literal notranslate"><span class="pre">WARNING:</span> <span class="pre">Target</span> <span class="pre">directory</span> <span class="pre">xyz</span> <span class="pre">already</span> <span class="pre">exists.</span> <span class="pre">Specify</span> <span class="pre">--upgrade</span> <span class="pre">to</span> <span class="pre">force</span> <span class="pre">replacement.</span></code>,
-this usually indicates that KQCircuits’ Python dependencies were not properly upgraded (or downgraded).
-In that case run the following:</p>
-<blockquote>
-<div><p>python3 setup_within_klayout.py –force-package-reinstall</p>
-</div></blockquote>
+KQCircuits’ Python dependencies and installing new ones, as needed. Alternatively, KQCircuits dependencies
+can be installed by launching KLayout and accepting the window that asks to update dependencies.
+This usually requires a KLayout restart afterwards.</p>
+<p>The list of dependencies of KQCircuits as KLayout GUI plugin are maintained in <code class="docutils literal notranslate"><span class="pre">gui-requirements.txt</span></code>
+files present in the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_packages/python/requirements">klayout_packages/python/requirements</a> folder. These files may evolve
+as KQCircuits code evolves.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If a new version of KQCircuits has stopped using a certain Python dependency that will <strong>not</strong>
@@ -1005,52 +1002,41 @@ your secondary environment may get mixed up with the primary one.</p>
 <section id="manual-installation">
 <span id="id1"></span><h2>Manual installation<a class="headerlink" href="#manual-installation" title="Link to this heading"></a></h2>
 <p>To use KQCircuits in KLayout Editor, symlinks must be created from KLayout’s
-python folder to your KQCircuits folder. Some Python packages must also be
+python folder to your KQCircuits folder. Some Python packages (dependencies) must also be
 installed for KQCircuits to work. The details of these steps for different
 operating systems are explained in the following subsections. The script
 <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//setup_within_klayout.py">setup_within_klayout.py</a> used in the previous section attempts to
 automatically do the same steps as explained below.</p>
-<section id="linux-or-macos">
-<h3>Linux or MacOS<a class="headerlink" href="#linux-or-macos" title="Link to this heading"></a></h3>
+<section id="symlinks-in-linux-or-macos">
+<h3>Symlinks in Linux or MacOS<a class="headerlink" href="#symlinks-in-linux-or-macos" title="Link to this heading"></a></h3>
 <p>Create a symlink from KLayout to the kqcircuits package and scripts:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">Path_to_KQCircuits</span><span class="o">/</span><span class="n">klayout_package</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">kqcircuits</span> <span class="o">~/.</span><span class="n">klayout</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">kqcircuits</span>
 <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">Path_to_KQCircuits</span><span class="o">/</span><span class="n">klayout_package</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">scripts</span> <span class="o">~/.</span><span class="n">klayout</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">kqcircuits_scripts</span>
+<span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">Path_to_KQCircuits</span><span class="o">/</span><span class="n">klayout_package</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">requirements</span> <span class="o">~/.</span><span class="n">klayout</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">kqcircuits_requirements</span>
 </pre></div>
 </div>
-<p>To install the required packages, open a terminal in your KQCircuits folder
-(which contains <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//requirements_within_klayout_unix.txt">requirements_within_klayout_unix.txt</a>), and write:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements_within_klayout_unix</span><span class="o">.</span><span class="n">txt</span>
-</pre></div>
-</div>
-<p>The previous command installs the packages to your system’s default Python
-environment, because that is where KLayout looks for the packages on Linux.
-If you want to install the packages in a separate environment instead, you
-have to create a symlink to there.</p>
 </section>
-<section id="windows">
-<h3>Windows<a class="headerlink" href="#windows" title="Link to this heading"></a></h3>
+<section id="symlinks-in-windows">
+<h3>Symlinks in Windows<a class="headerlink" href="#symlinks-in-windows" title="Link to this heading"></a></h3>
 <p>Create a symlink from KLayout to kqcircuits by opening a command prompt with
 administrator privileges, and do:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">%</span><span class="n">HOMEPATH</span><span class="o">%</span>\<span class="n">KLayout</span>\<span class="n">python</span>
 <span class="n">mklink</span> <span class="o">/</span><span class="n">D</span> <span class="n">kqcircuits</span> <span class="s2">&quot;Path_to_KQCircuits\klayout_package\python\kqcircuits&quot;</span>
 <span class="n">mklink</span> <span class="o">/</span><span class="n">D</span> <span class="n">kqcircuits_scripts</span> <span class="s2">&quot;Path_to_KQCircuits\klayout_package\python\scripts&quot;</span>
+<span class="n">mklink</span> <span class="o">/</span><span class="n">D</span> <span class="n">kqcircuits_requirements</span> <span class="s2">&quot;Path_to_KQCircuits\klayout_package\python</span><span class="se">\r</span><span class="s2">equirements&quot;</span>
 </pre></div>
 </div>
 <p>(In PowerShell replace the first line by <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">~\KLayout\python</span></code>)</p>
-<p>Install the required packages by opening command prompt in your KQCircuits
-folder (which contains <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//requirements_within_klayout_windows.txt">requirements_within_klayout_windows.txt</a>), and writing:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements_within_klayout_windows</span><span class="o">.</span><span class="n">txt</span> <span class="o">--</span><span class="n">target</span><span class="o">=%</span><span class="n">HOMEPATH</span><span class="o">%</span>\<span class="n">AppData</span>\<span class="n">Roaming</span>\<span class="n">KLayout</span>\<span class="n">lib</span>\<span class="n">python3</span><span class="mf">.10</span>\<span class="n">site</span><span class="o">-</span><span class="n">packages</span>
-</pre></div>
-</div>
-<p>(replace <code class="docutils literal notranslate"><span class="pre">python3.10</span></code> in this path by the python version used by your KLayout
-version)</p>
-<p>The previous command installs the packages to KLayout’s embedded Python
-environment, which is where KLayout looks for packages on Windows. If you
-want to install the packages in another environment instead, you have to
-create a symlink to there.</p>
-<p>Some packages, like numpy, must be compiled on the same compiler as the
-embedded Python in KLayout. Since KLayout 0.26.2, a correct version of numpy
-is already included with KLayout, so this shouldn’t be a problem.</p>
+</section>
+<section id="installing-dependencies">
+<h3>Installing dependencies<a class="headerlink" href="#installing-dependencies" title="Link to this heading"></a></h3>
+<p>Usually launching KLayout after setting up symlinks will install dependencies for you,
+just click Yes on the prompt and maybe restart KLayout again for changes to take effect.
+If this won’t help, please refer to <a class="reference internal" href="../installation.html#manual-installation-of-klayout-packages"><span class="std std-ref">Installing different Python package versions to KLayout manually</span></a>.
+Instead of installing each package individually, try installing them in bulk,
+by replacing the <code class="docutils literal notranslate"><span class="pre">&lt;PACKAGE&gt;==&lt;VERSION&gt;</span></code> part of the <code class="docutils literal notranslate"><span class="pre">pip</span></code> command with
+<code class="docutils literal notranslate"><span class="pre">-r</span> <span class="pre">klayout_package/python/requirements/&lt;OS&gt;/gui-requirements.txt</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;OS&gt;</span></code>
+being either <code class="docutils literal notranslate"><span class="pre">win</span></code>, <code class="docutils literal notranslate"><span class="pre">mac</span></code> or <code class="docutils literal notranslate"><span class="pre">linux</span></code>.</p>
 </section>
 </section>
 </section>

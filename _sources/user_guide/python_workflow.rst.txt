@@ -18,10 +18,11 @@ File system hierarchy
 In the KQCircuits root folder the most important folder for most users is the
 :git_url:`klayout_package` folder, which is also all that is included in the Salt
 package. Other folders are mainly for automatic tests and documentation.
-KQCircuits code is divided into the :git_url:`kqcircuits <klayout_package/python/kqcircuits>` and
-:git_url:`scripts <klayout_package/python/scripts>` folders in :git_url:`klayout_package/python`.
-These two folders are also (after installation process) linked as symbolic links ``kqcircuits`` and
-``kqcircuits_scripts`` in the ``~/.klayout`` or ``~/KLayout`` folder.
+KQCircuits code is divided into the :git_url:`kqcircuits <klayout_package/python/kqcircuits>`,
+:git_url:`scripts <klayout_package/python/scripts>` and :git_url:`requirements <klayout_package/python/requirements>`
+folders in :git_url:`klayout_package/python`.
+These three folders are also (after installation process) linked as symbolic links ``kqcircuits``,
+``kqcircuits_scripts`` and ``kqcircuits_requirements`` in the ``~/.klayout`` or ``~/KLayout`` folder.
 
 The ``kqcircuits`` folder contains all the KQCircuits elements and many
 other modules used by them or by scripts. Folders directly under
@@ -33,6 +34,9 @@ scripts for generating simulation files or mask files. Usually, these files are
 not meant to be imported in other Python files. The outputs of
 simulation or mask scripts can be found in the ``tmp`` folder below the main
 KQCircuits folder.
+
+The ``requirements`` folder lists dependent libraires, their versions and their hashes
+needed for KQCircuits code.
 
 Structure of Element code
 -------------------------

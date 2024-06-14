@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.export.simulation_export &mdash; KQCircuits 4.7.28 documentation</title>
+  <title>kqcircuits.simulations.export.simulation_export &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=4a344d04"></script>
+        <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/js/theme.js"></script>
@@ -180,8 +180,9 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../developer/setup.html#update">Update</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../developer/setup.html#secondary-install">Secondary install</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../developer/setup.html#manual-installation">Manual installation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../../developer/setup.html#linux-or-macos">Linux or MacOS</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../developer/setup.html#windows">Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer/setup.html#symlinks-in-linux-or-macos">Symlinks in Linux or MacOS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer/setup.html#symlinks-in-windows">Symlinks in Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer/setup.html#installing-dependencies">Installing dependencies</a></li>
 </ul>
 </li>
 </ul>
@@ -669,7 +670,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.util.dependencies.html#kqcircuits.util.dependencies.install_kqc_dependencies"><code class="docutils literal notranslate"><span class="pre">install_kqc_dependencies()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.util.dependencies.html#kqcircuits.util.dependencies.install_kqc_gui_dependencies"><code class="docutils literal notranslate"><span class="pre">install_kqc_gui_dependencies()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a><ul>
@@ -929,7 +930,6 @@
 
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.util</span> <span class="kn">import</span> <span class="n">export_layers</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_json_encoder</span> <span class="kn">import</span> <span class="n">GeometryJsonEncoder</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.simulation_validate</span> <span class="kn">import</span> <span class="n">ValidateSim</span>
 
 
 <div class="viewcode-block" id="get_combined_parameters">
@@ -1092,24 +1092,6 @@
             <span class="n">solutions</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">solutions</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">solutions</span><span class="p">],</span>
         <span class="p">)</span>
     <span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="validate_simulation">
-<a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.simulation_export.html#kqcircuits.simulations.export.simulation_export.validate_simulation">[docs]</a>
-<span class="k">def</span> <span class="nf">validate_simulation</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Analyses a Simulation object or list and raises an error if specific inconsistencies are found.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        simulations: A Simulation object.</span>
-<span class="sd">        solutions: A Solution object.</span>
-<span class="sd">    Raises:</span>
-<span class="sd">        Errors when validation criteria are not met.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">validate_sim</span> <span class="o">=</span> <span class="n">ValidateSim</span><span class="p">()</span>
-    <span class="n">validate_sim</span><span class="o">.</span><span class="n">has_no_ports_when_required</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">)</span>
-    <span class="n">validate_sim</span><span class="o">.</span><span class="n">has_edgeport_when_forbidden</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">)</span>
-    <span class="n">validate_sim</span><span class="o">.</span><span class="n">flux_integration_layer_exists_if_needed</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">)</span></div>
 
 </pre></div>
 
