@@ -975,19 +975,23 @@ def sif_epr_3d(json_data: dict[str, Any], folder_path: Path, vtu_name: str | Pat
         Elmer solver input file for 3D EPR simulation
     """
 
-    header = sif_common_header(json_data, folder_path, angular_frequency=0, dim=3, constraint_modes_analysis=False)
+    # p_element_order==1 solver does not support capacitance bodies on sif Body Force sections
+    c_matrix_output = json_data["p_element_order"] > 1
+    header = sif_common_header(
+        json_data, folder_path, angular_frequency=0, dim=3, constraint_modes_analysis=c_matrix_output
+    )
     constants = sif_block("Constants", [f"Permittivity Of Vacuum = {epsilon_0}"])
 
     solvers = get_electrostatics_solver(
         json_data,
         ordinate=1,
-        capacitance_file="none",
-        c_matrix_output=False,
+        capacitance_file=folder_path / "capacitance.dat",
+        c_matrix_output=c_matrix_output,
     )
     solvers += get_result_output_solver(
         ordinate=2,
         output_file_name=vtu_name,
-        exec_solver="Always" if json_data.get("vtu_output", True) else "Never",
+        exec_solver="Always" if json_data["vtu_output"] else "Never",
     )
     equations = get_equation(
         ordinate=1,
@@ -1066,9 +1070,10 @@ def sif_epr_3d(json_data: dict[str, Any], folder_path: Path, vtu_name: str | Pat
     )
     n_bodies += 1
 
+    excitation_str = "Capacitance Body = integer" if c_matrix_output else "Potential = Real"
     body_forces = ""
-    body_forces += sif_block("Body Force 1", ["Potential = Real 1.0"])
-    body_forces += sif_block("Body Force 2", ["Potential = Real 0.0"])
+    body_forces += sif_block("Body Force 1", [f"{excitation_str} 1"])
+    body_forces += sif_block("Body Force 2", [f"{excitation_str} 0"])
 
     boundary_conditions = ""
     # tls bcs
@@ -1764,9 +1769,28 @@ def write_project_results_json(json_data: dict[str, Any], path: Path, msh_filepa
     json_filename = main_sim_folder / (sif_folder.name + "_project_results.json")
     simname = json_data["name"]
 
-    if tool == "capacitance":
-        c_matrix_filename = sif_folder.joinpath("capacitance.dat")
+    def _rename_energy_key(e_name: str) -> str:
+        """Rename energy dictionary keys from Elmer results to correspond to the Ansys result format"""
+        # Change 2-component energies to same naming as used in Ansys
+        if e_name.endswith("_norm_component"):
+            e_name = "Ez" + e_name.removesuffix("_norm_component").removeprefix("E")
+        elif e_name.endswith("_tan_component"):
+            e_name = "Exy" + e_name.removesuffix("_tan_component").removeprefix("E")
 
+        # Elmer forces all keys to be lowercase so let's capitalise the interface abbreviations
+        # to correspond to Ansys naming
+        for k in ("MA", "MS", "SA"):
+            elmer_int_key = "_layer" + k.lower()
+            if elmer_int_key in e_name:
+                e_name = e_name.replace(elmer_int_key, "_layer" + k)
+                break
+
+        return e_name
+
+    if tool in ("capacitance", "epr_3d"):
+        results = {}
+
+        c_matrix_filename = sif_folder.joinpath("capacitance.dat")
         if c_matrix_filename.exists():
 
             with open(c_matrix_filename, "r") as file:
@@ -1778,45 +1802,19 @@ def write_project_results_json(json_data: dict[str, Any], path: Path, msh_filepa
                 for net_j in range(len(c_matrix))
                 for net_i in range(len(c_matrix))
             }
-            results = {
-                "CMatrix": c_matrix,
-                "Cdata": c_data,
-                "Frequency": [0],
-            }
-            if json_data["integrate_energies"]:
-                results.update(get_energy_integrals(sif_folder))
-
-            with open(json_filename, "w") as outfile:
-                json.dump(
-                    results,
-                    outfile,
-                    indent=4,
-                )
-    elif tool == "epr_3d":
-
-        def _rename_energy_key(e_name: str) -> str:
-            """Rename energy dictionary keys from Elmer results to correspond to the Ansys result format"""
-            # Change 2-component energies to same naming as used in Ansys
-            if e_name.endswith("_norm_component"):
-                e_name = "Ez" + e_name.removesuffix("_norm_component").removeprefix("E")
-            elif e_name.endswith("_tan_component"):
-                e_name = "Exy" + e_name.removesuffix("_tan_component").removeprefix("E")
-
-            # Elmer forces all keys to be lowercase so let's capitalise the interface abbreviations
-            # to correspond to Ansys naming
-            for k in ("MA", "MS", "SA"):
-                elmer_int_key = "_layer" + k.lower()
-                if elmer_int_key in e_name:
-                    e_name = e_name.replace(elmer_int_key, "_layer" + k)
-                    break
-
-            return e_name
-
-        energies = {_rename_energy_key(k): v for k, v in get_energy_integrals(sif_folder).items()}
+            results.update(
+                {
+                    "CMatrix": c_matrix,
+                    "Cdata": c_data,
+                    "Frequency": [0],
+                }
+            )
+        if tool == "epr_3d" or json_data["integrate_energies"]:
+            results.update({_rename_energy_key(k): v for k, v in get_energy_integrals(sif_folder).items()})
 
         with open(json_filename, "w") as outfile:
             json.dump(
-                energies,
+                results,
                 outfile,
                 indent=4,
             )

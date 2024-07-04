@@ -13,7 +13,7 @@ SUBROUTINE SaveBoundaryEnergyComponents(Model,Solver,dt,Transient)
   REAL(KIND=dp) :: dt
   LOGICAL :: Transient
   !------------------------------------------------------------------------------
-  TYPE(Variable_t), POINTER :: evar
+  TYPE(Variable_t), POINTER :: potvar
   TYPE(Element_t), POINTER :: Element
   INTEGER ::i, Active, iMode, NoModes
   CHARACTER(LEN=MAX_NAME_LEN) :: bc_name !, debug_str
@@ -34,14 +34,10 @@ SUBROUTINE SaveBoundaryEnergyComponents(Model,Solver,dt,Transient)
   NoModes = Model % NumberOfBCs
   ALLOCATE(IntNorm(NoModes), IntTan(NoModes))
 
-  CALL Info(Caller,'Assuming electric field living on nodes')
 
-  evar => VariableGet( Mesh % Variables, 'Electric field e', ThisOnly = .TRUE.)
-  IF(.NOT. ASSOCIATED( evar ) ) THEN
-    evar => VariableGet( Mesh % Variables, 'Electric field', ThisOnly = .TRUE.)
-  END IF
-  IF(.NOT. ASSOCIATED(evar) ) THEN
-    CALL Fatal(Caller,'Could not find nodal electric field!')
+  potvar => VariableGet( Mesh % Variables, 'Potential', ThisOnly = .TRUE.)
+  IF(.NOT. ASSOCIATED(potvar) ) THEN
+    CALL Fatal(Caller,'Could not find potential!')
   END IF
 
   IntNorm = 0.0_dp
@@ -75,6 +71,7 @@ SUBROUTINE SaveBoundaryEnergyComponents(Model,Solver,dt,Transient)
     END DO
   END IF
 
+  ! No permittivity used here. (added in preprocessing)
   IntNorm = 0.5 * IntNorm
   IntTan = 0.5  * IntTan
 
@@ -99,142 +96,143 @@ CONTAINS
     !------------------------------------------------------------------------------
     TYPE(Element_t), POINTER :: Element
     !------------------------------------------------------------------------------
-    REAL(KIND=dp) :: e_ip(3), e_ip_norm, e_ip_tan(3)
-    REAL(KIND=dp), ALLOCATABLE :: Basis(:), e_local(:,:)
-    REAL(KIND=dp), ALLOCATABLE :: e_local_parent(:,:), e_local_parentL(:,:), e_local_parentR(:,:)
-    REAL(KIND=dp) :: weight, DetJ, Normal(3)
+    REAL(KIND=dp) :: e_ip_norm, e_ip_tan(3), e_ip(3), e_ip_r(3), e_ip_l(3)
+    REAL(KIND=dp), ALLOCATABLE :: Basis(:)
+    REAL(KIND=dp) :: weight, DetJ, Normal(3), uvw(3) ! Grad(3)
     LOGICAL :: Stat, Found, E_R_zero, E_L_zero
     TYPE(GaussIntegrationPoints_t) :: IP
-    INTEGER :: t, i, m, ndofs, n, parent_node_ind, boundary_node_ind
+    INTEGER :: t, m,  n, No
     TYPE(Nodes_t), SAVE :: Nodes
     LOGICAL :: AllocationsDone = .FALSE.
     TYPE(Nodes_t) :: ParentNodesR, ParentNodesL
-    TYPE(Element_t), POINTER :: ParentElementR, ParentElementL
+    TYPE(Element_t), POINTER :: ParentElementR, ParentElementL, Parent
     TYPE(ValueList_t), POINTER :: ParentMaterialR, ParentMaterialL
     REAL(KIND=dp) :: epsr_R, epsr_L
-    SAVE AllocationsDone,  Basis, e_local, e_local_parent, e_local_parentR, e_local_parentL
+    SAVE AllocationsDone,  Basis
     REAL(KIND=dp), PARAMETER :: zero_threshold = 1e-25 ! TODO find a good threshold
 
-    ndofs = evar % dofs
     IF(.NOT. AllocationsDone ) THEN
       m = Mesh % MaxElementDOFs
-      ALLOCATE( Basis(m), e_local(ndofs,m), e_local_parent(ndofs,m), &
-        e_local_parentR(ndofs,m), e_local_parentL(ndofs,m))
+      ALLOCATE( Basis(m) )
       AllocationsDone = .TRUE.
     END IF
-
-    e_local = 0.0_dp
-    e_local_parentR = 0.0_dp
-    e_local_parentL = 0.0_dp
 
     ParentElementR => Element % BoundaryInfo % Right
     ParentElementL => Element % BoundaryInfo % Left
 
-    IF ( .NOT. (ASSOCIATED(ParentElementR) .AND. ASSOCIATED(ParentElementL))) THEN
-      CALL FATAL(Caller,'No parent elements found')
+    IF (.NOT. (ASSOCIATED(ParentElementR) .OR. ASSOCIATED(ParentElementL))) THEN
+      CALL FATAL(Caller, 'Neither parent Element was found')
     END IF
 
     CALL GetElementNodes( Nodes, Element )
     n = Element % TYPE % NumberOfNodes
 
-    CALL GetElementNodes( ParentNodesR, ParentElementR )
-    CALL GetElementNodes( ParentNodesL, ParentElementL )
+    Normal = NormalVector(Element, Nodes, Check=.TRUE.)
+    IP = GaussPoints(Element)
 
-    ParentMaterialR => GetMaterial(ParentElementR)
-    ParentMaterialL => GetMaterial(ParentElementL)
-
-    Found = .FALSE.
-    epsr_R = GetConstReal(ParentMaterialR,'Relative Permittivity', Found)
-    IF (.NOT. FOUND) THEN
-      CALL FATAL(Caller, 'Did not find R parent permittivity')
-    END IF
-
-    Found = .FALSE.
-    epsr_L = GetConstReal(ParentMaterialL,'Relative Permittivity', Found)
-    IF (.NOT. FOUND) THEN
-      CALL FATAL(Caller, 'Did not find L parent permittivity')
-    END IF
-
-    e_local_parent = 0.0_dp
-    Found = .FALSE.
-    CALL GetVectorLocalSolution( e_local_parent, uelement = ParentElementR, uvariable = evar, Found=Found)
-    IF (.NOT. FOUND) THEN
-      CALL FATAL(Caller, 'Did not find ParentR e-field')
-    END IF
-
-    ! Extract e-field from parent element common nodes on the boundary
-    outer_loop_R: DO boundary_node_ind=1,n
-      Found = .FALSE.
-      inner_loop_R: DO parent_node_ind=1, ParentElementR % TYPE % NumberOfNodes
-        IF ( ParentElementR % NodeIndexes(parent_node_ind) == Element % NodeIndexes(boundary_node_ind) ) THEN
-          e_local_parentR(:, boundary_node_ind) = e_local_parent(:, parent_node_ind)
-          Found = .TRUE.
-          EXIT inner_loop_R
-        END IF
-      END DO inner_loop_R
-      IF (.NOT. Found) THEN
-        CALL FATAL(Caller, 'Did not find a matching node on the parent element (R)')
+    ! Choose the Parent element based on first integration point
+    t = 1
+    stat = ElementInfo( Element, Nodes, IP % U(t), IP % V(t), &
+    IP % W(t), detJ, Basis)
+    uvw(1)=IP % U(t)
+    uvw(2)=IP % V(t)
+    uvw(3)=IP % W(t)
+    E_R_zero = .True.
+    E_L_zero = .True.
+    IF ( ASSOCIATED(ParentElementR) ) THEN
+      No = 0
+      CALL EvaluateVariableAtGivenPoint(No, e_ip_r, Mesh, potvar, Element=Element, LocalCoord=uvw, &
+        DoGrad=.TRUE., LocalBasis=Basis, Parent=ParentElementR)
+      IF ( No /= 3 ) THEN
+        CALL FATAL(Caller, 'Did not find Efield R (No /= 3)')
+      ELSE
+        E_R_zero = SUM(ABS(e_ip_r)) < zero_threshold
       END IF
-    END DO outer_loop_R
-
-    e_local_parent = 0.0_dp
-    Found = .FALSE.
-    CALL GetVectorLocalSolution( e_local_parent, uelement = ParentElementL, uvariable = evar, Found=Found)
-    IF (.NOT. FOUND) THEN
-      CALL FATAL(Caller, 'Did not find ParentL e-field')
     END IF
 
-    outer_loop_L: DO boundary_node_ind=1,n
-      Found = .FALSE.
-      inner_loop_L: DO parent_node_ind=1, ParentElementL % TYPE % NumberOfNodes
-        IF ( ParentElementL % NodeIndexes(parent_node_ind) == Element % NodeIndexes(boundary_node_ind) ) THEN
-          e_local_parentL(:, boundary_node_ind) = e_local_parent(:, parent_node_ind)
-          Found = .TRUE.
-          EXIT inner_loop_L
-        END IF
-      END DO inner_loop_L
-      IF (.NOT. Found) THEN
-        CALL FATAL(Caller, 'Did not find a matching node on the parent element (L)')
+    IF ( ASSOCIATED(ParentElementL) ) THEN
+      No = 0
+      CALL EvaluateVariableAtGivenPoint(No, e_ip_l, Mesh, potvar, Element=Element, LocalCoord=uvw, &
+        DoGrad=.TRUE., LocalBasis=Basis, Parent=ParentElementL)
+      IF ( No /= 3 ) THEN
+        CALL FATAL(Caller, 'Did not find Efield L (No /= 3)')
+      ELSE
+        E_L_zero = SUM(ABS(e_ip_l)) < zero_threshold
       END IF
-    END DO outer_loop_L
-
-    E_R_zero = SUM(ABS(e_local_parentR(:, 1:n))) < zero_threshold
-    E_L_zero = SUM(ABS(e_local_parentL(:, 1:n))) < zero_threshold
+    END IF
 
     IF ( E_R_zero ) THEN
       IF ( E_L_zero ) THEN
-        e_local(:, 1:n) = 0.0_dp
+        ! shouldnt matter which one
+        Parent => ParentElementR
       ELSE
         ! choose E_L
-        e_local(:, 1:n) = e_local_parentL(:, 1:n)
+        ! WRITE(6,*) 'Choose L based on E'
+        Parent => ParentElementL
       END IF
     ELSE
       IF ( E_L_zero ) THEN
         ! choose E_R
-        e_local(:, 1:n) = e_local_parentR(:, 1:n)
+        ! WRITE(6,*) 'Choose R based on E'
+        Parent => ParentElementR
       ELSE
-        ! choose the one with lower permittivity
-        IF (epsr_R < epsr_L) THEN
-          e_local(:, 1:n) = e_local_parentR(:, 1:n)
+
+        ! Both sides have nonzero field
+        ! => Choose based on the permittivities of the bodies
+        CALL GetElementNodes( ParentNodesR, ParentElementR )
+        CALL GetElementNodes( ParentNodesL, ParentElementL )
+    
+        ParentMaterialR => GetMaterial(ParentElementR)
+        ParentMaterialL => GetMaterial(ParentElementL)
+    
+        Found = .FALSE.
+        epsr_R = GetConstReal(ParentMaterialR,'Relative Permittivity', Found)
+        IF (.NOT. FOUND) THEN
+          CALL FATAL(Caller, 'Did not find R parent permittivity')
         END IF
-        e_local(:, 1:n) = e_local_parentL(:, 1:n)
+    
+        Found = .FALSE.
+        epsr_L = GetConstReal(ParentMaterialL,'Relative Permittivity', Found)
+        IF (.NOT. FOUND) THEN
+          CALL FATAL(Caller, 'Did not find L parent permittivity')
+        END IF
+        ! WRITE(6,*) 'PERMITTIVITIES: ', epsr_R, ' ', epsr_L
+        IF ( abs(epsr_R - epsr_L) < zero_threshold) THEN
+          ! If for some reason the sides have same permittivity choose the one with higher field
+          IF (SUM(ABS(e_ip_r)) > SUM(ABS(e_ip_l))) THEN
+            ! WRITE(6,*) 'Choose R based on field strength'
+            Parent => ParentElementR
+          ELSE
+            ! WRITE(6,*) 'Choose L based on field strength'
+            Parent => ParentElementL
+          END IF
+        ELSE
+          ! choose the side with HIGHER permittivity
+          IF (epsr_R > epsr_L) THEN
+            Parent => ParentElementR
+            ! WRITE(6,*) 'Choose R based on permittivity'
+          ELSE 
+            ! WRITE(6,*) 'Choose L based on permittivity'
+            Parent => ParentElementL
+          END IF
+        END IF
       END IF
     END IF
 
-    ! Sign of normal vector does not matter as we are only interested in the absolute flux through each element
-    Normal = NormalVector(Element, Nodes, Check=.TRUE.)
 
     ! Numerical integration:
     !-----------------------
-    IP = GaussPoints(Element)
     DO t=1,IP % n
       stat = ElementInfo( Element, Nodes, IP % U(t), IP % V(t), &
         IP % W(t), detJ, Basis)
       weight = IP % s(t) * detJ
 
-      DO i=1,3
-        e_ip(i) = SUM( Basis(1:n) * e_local(i,1:n) )
-      END DO
+      uvw(1)=IP % U(t)
+      uvw(2)=IP % V(t)
+      uvw(3)=IP % W(t)
+      No = 0
+      CALL EvaluateVariableAtGivenPoint(No, e_ip, Mesh, potvar, Element=Element, LocalCoord=uvw, &
+                                         DoGrad=.TRUE., LocalBasis=Basis, Parent=Parent)
 
       e_ip_norm = SUM(e_ip*Normal)
       e_ip_tan = e_ip - e_ip_norm * Normal
