@@ -17,7 +17,7 @@
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
 from enum import Enum, auto
-
+from kqcircuits.util.label_polygons import get_text_polygon
 from kqcircuits.pya_resolver import pya
 
 
@@ -31,7 +31,16 @@ class LabelOrigin(Enum):
 
 
 def produce_label(
-    cell, label, location, origin, origin_offset, margin, layers, layer_protection, size=350, mirror=False
+    cell,
+    label,
+    location,
+    origin,
+    origin_offset,
+    margin,
+    layers,
+    layer_protection,
+    size=350,
+    mirror=False,
 ):
     """Produces a Text PCell accounting for desired relative position of the text respect to the given location
     and the spacing.
@@ -46,13 +55,13 @@ def produce_label(
         layers: list of layers where the label text is added
         layer_protection: layer where a box around the label text is added
         size: Character height in um, default 350
+        mirror: mirror label
 
     Effect:
         Shapes added to the corresponding layers
     """
 
     layout = cell.layout()
-
     if not label:
         label = "A13"  # longest label on 6 inch wafer
         protection_only = True
@@ -62,34 +71,22 @@ def produce_label(
     else:
         protection_only = False
 
-    # text cell
-    subcells = []
-    for layer in layers:
-        subcells.append(
-            layout.create_cell(
-                "TEXT",
-                "Basic",
-                {
-                    "layer": layer,
-                    "text": label,
-                    "mag": size / 350 * 500,
-                },
-            )
-        )
+    polygon = get_text_polygon(label, size / 350 * 500)
+    polygon_bbox = polygon.bbox().to_dtype(layout.dbu)
 
     # relative placement with margin
     relative_placement = {
         LabelOrigin.BOTTOMLEFT: pya.Vector(
-            subcells[0].dbbox().p1.x - margin - origin_offset, subcells[0].dbbox().p1.y - margin - origin_offset
+            polygon_bbox.p1.x - margin - origin_offset, polygon_bbox.p1.y - margin - origin_offset
         ),
         LabelOrigin.TOPLEFT: pya.Vector(
-            subcells[0].dbbox().p1.x - margin - origin_offset, subcells[0].dbbox().p2.y + margin + origin_offset
+            polygon_bbox.p1.x - margin - origin_offset, polygon_bbox.p2.y + margin + origin_offset
         ),
         LabelOrigin.TOPRIGHT: pya.Vector(
-            subcells[0].dbbox().p2.x + margin + origin_offset, subcells[0].dbbox().p2.y + margin + origin_offset
+            polygon_bbox.p2.x + margin + origin_offset, polygon_bbox.p2.y + margin + origin_offset
         ),
         LabelOrigin.BOTTOMRIGHT: pya.Vector(
-            subcells[0].dbbox().p2.x + margin + origin_offset, subcells[0].dbbox().p1.y - margin - origin_offset
+            polygon_bbox.p2.x + margin + origin_offset, polygon_bbox.p1.y - margin - origin_offset
         ),
     }[origin] * (-1)
 
@@ -99,12 +96,12 @@ def produce_label(
         trans = pya.DTrans(location + relative_placement)
 
     if not protection_only:
-        for subcell in subcells:
-            cell.insert(pya.DCellInstArray(subcell.cell_index(), trans))
+        for layer in layers:
+            cell.shapes(layout.layer(layer)).insert(polygon, trans)
 
     # protection layer with margin
     protection = pya.DBox(
-        pya.DPoint(subcells[0].dbbox().p1.x - margin, subcells[0].dbbox().p1.y - margin),
-        pya.DPoint(subcells[0].dbbox().p2.x + margin, subcells[0].dbbox().p2.y + margin),
+        pya.DPoint(polygon_bbox.p1.x - margin, polygon_bbox.p1.y - margin),
+        pya.DPoint(polygon_bbox.p2.x + margin, polygon_bbox.p2.y + margin),
     )
     cell.shapes(layout.layer(layer_protection)).insert(trans.trans(protection))

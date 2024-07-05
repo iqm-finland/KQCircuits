@@ -21,6 +21,7 @@ from collections.abc import Sequence
 from typing import Tuple
 from tqdm import tqdm
 
+from kqcircuits.util.label_polygons import get_text_polygon
 from kqcircuits.pya_resolver import pya
 from kqcircuits.defaults import (
     default_layers,
@@ -623,32 +624,21 @@ class MaskLayout:
         return ""
 
     def _add_chip_graphical_representation_layer(self, chip_name, position, pos_index_name, chip_width, cell):
-        chip_name_text = self.layout.create_cell(
-            "TEXT",
-            "Basic",
-            {
-                "layer": default_layers["mask_graphical_rep"],
-                "text": chip_name,
-                "mag": 15000 * self.mask_text_scale / len(chip_name),
-            },
-        )
-        pos_index_name_text = self.layout.create_cell(
-            "TEXT",
-            "Basic",
-            {
-                "layer": default_layers["mask_graphical_rep"],
-                "text": pos_index_name,
-                "mag": 4000 * self.mask_text_scale,
-            },
-        )
+        layout = cell.layout()
+        chip_name_text = get_text_polygon(chip_name, 15000 * self.mask_text_scale / len(chip_name))
+        chip_name_width = chip_name_text.bbox().to_dtype(layout.dbu).width()
+        pos_index_name_text = get_text_polygon(pos_index_name, 4000 * self.mask_text_scale)
+        pos_index_name_width = pos_index_name_text.bbox().to_dtype(cell.layout().dbu).width()
         chip_name_trans = pya.DTrans(
-            position + pya.DVector((chip_width - chip_name_text.dbbox().width()) / 2, self.mask_text_scale * 750)
+            position + pya.DVector((chip_width - chip_name_width) / 2, self.mask_text_scale * 750)
         )
-        cell.insert(pya.DCellInstArray(chip_name_text.cell_index(), chip_name_trans))
+        cell.shapes(cell.layout().layer(default_layers["mask_graphical_rep"])).insert(chip_name_text, chip_name_trans)
         pos_index_trans = pya.DTrans(
-            position + pya.DVector((chip_width - pos_index_name_text.dbbox().width()) / 2, self.mask_text_scale * 6000)
+            position + pya.DVector((chip_width - pos_index_name_width) / 2, self.mask_text_scale * 6000)
         )
-        cell.insert(pya.DCellInstArray(pos_index_name_text.cell_index(), pos_index_trans))
+        cell.shapes(cell.layout().layer(default_layers["mask_graphical_rep"])).insert(
+            pos_index_name_text, pos_index_trans
+        )
 
     def _insert_mask_name_label(self, cell, layer, postfix=""):
         cell_mask_name, trans = self._create_mask_name_label(layer, postfix)

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description>Lay out all characters</description>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <priority>0</priority>
+ <shortcut/>
+ <show-in-menu>false</show-in-menu>
+ <group-name/>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text># This code is part of KQCircuits
+# Copyright (C) 2024 IQM Finland Oy
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
+# License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program. If not, see
+# https://www.gnu.org/licenses/gpl-3.0.html.
+#
+# The software distribution should follow IQM trademark policy for open-source software
+# (meetiqm.com/iqm-open-source-trademark-policy). IQM welcomes contributions to the code.
+# Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
+# and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
+
+from kqcircuits.pya_resolver import pya
+from kqcircuits.defaults import default_layers
+from kqcircuits.klayout_view import KLayoutView
+
+keyboard_chars = [chr(ord("A") + i) for i in range(0, 32)] + [chr(ord("0") + i) for i in range(0, 10)]
+
+polygons = {}
+view = KLayoutView()
+layout = view.layout
+for i, label in enumerate(keyboard_chars):
+
+    char_cell = layout.create_cell(
+        "TEXT",
+        "Basic",
+        {
+            "layer": default_layers["1t1_base_metal_gap"],
+            "text": label,
+            "mag": 500,
+        },
+    )
+    layout.top_cells()[0].insert(pya.DCellInstArray(char_cell.cell_index(), pya.DTrans(0, False, i*500, 0)))
+
+print("Label character shapes generated. Please save the generated layout as kqcircuits/util/font_polygons.oas")
+print("Uncheck 'Store PCell and library context information' in 'Save Layout options' window")
+</text>
+</klayout-macro>
