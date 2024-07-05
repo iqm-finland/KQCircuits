@@ -28,7 +28,6 @@ Args:
 import json
 import os
 import sys
-import csv
 from pathlib import Path
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "util"))
@@ -86,33 +85,17 @@ if len(sys.argv) > 1:
 
 # Find data files
 path = os.path.curdir
-result_files = [f for f in os.listdir(path) if f.endswith("_project_energy.csv") or f.endswith("_project_results.json")]
+result_files = [f for f in os.listdir(path) if f.endswith("_project_results.json")]
 if result_files:
     # Find parameters that are swept
-    definition_files = [
-        (
-            f.replace("_project_results.json", ".json")
-            if f.endswith("_project_results.json")
-            else f.replace("_project_energy.csv", ".json")
-        )
-        for f in result_files
-    ]
+    definition_files = [f.replace("_project_results.json", ".json") for f in result_files]
     parameters, parameter_values = find_varied_parameters(definition_files)
 
     # Load result data
     epr_dict = {}
     for key, result_file in zip(parameter_values.keys(), result_files):
-        if result_file.endswith("_project_results.json"):
-            # read results from Elmer output
-            with open(result_file, "r") as f:
-                result = json.load(f)
-        else:
-            # read results from Ansys output
-            with open(result_file, "r") as f:
-                reader = csv.reader(f, delimiter=",")
-                result_keys = next(reader)
-                result_values = next(reader)
-                result = {k[:-3]: float(v) for k, v in zip(result_keys, result_values)}
+        with open(result_file, "r") as f:
+            result = json.load(f)
 
         energy = {k[2:]: v for k, v in result.items() if k.startswith("E_")}
 

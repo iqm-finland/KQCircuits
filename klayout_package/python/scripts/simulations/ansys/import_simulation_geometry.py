@@ -27,12 +27,26 @@ import ScriptEnv
 
 # TODO: Figure out how to set the python path for the Ansys internal IronPython
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "util"))
-# fmt: off
-from geometry import create_box, create_rectangle, create_polygon, thicken_sheet, set_material, add_layer, subtract, \
-    move_vertically, delete, objects_from_sheet_edges, add_material, set_color  # pylint: disable=wrong-import-position
-from field_calculation import add_squared_electric_field_expression,  add_energy_integral_expression, \
-    add_magnetic_flux_integral_expression  # pylint: disable=wrong-import-position
-# fmt: on
+from geometry import (  # pylint: disable=wrong-import-position
+    create_box,
+    create_rectangle,
+    create_polygon,
+    thicken_sheet,
+    set_material,
+    add_layer,
+    subtract,
+    move_vertically,
+    delete,
+    objects_from_sheet_edges,
+    add_material,
+    set_color,
+    scale,
+)
+from field_calculation import (  # pylint: disable=wrong-import-position
+    add_squared_electric_field_expression,
+    add_energy_integral_expression,
+    add_magnetic_flux_integral_expression,
+)
 
 # Set up environment
 ScriptEnv.Initialize("Ansoft.ElectronicsDesktop")
@@ -127,6 +141,7 @@ oEditor.ImportGDSII(
         ["NAME:Structs", ["NAME:GDSIIStruct", "ImportStruct:=", True, "CreateNewCell:=", True, "StructName:=", "SIM1"]],
     ]
 )
+scale(oEditor, oEditor.GetObjectsInGroup("Sheets"), data["gds_scaling"])
 
 # Create 3D geometry
 objects = {}

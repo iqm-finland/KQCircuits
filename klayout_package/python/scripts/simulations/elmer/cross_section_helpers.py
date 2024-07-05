@@ -62,34 +62,15 @@ def produce_cross_section_mesh(json_data, msh_file):
     layout = pya.Layout()
     layout.read(json_data["gds_file"])
     cell = layout.top_cell()
-
-    # Limiting boundary box (use variable 'box' if it is given. Otherwise, use bounding bo of the geometry.)
-    if "box" in json_data:
-        bbox = pya.DBox(
-            json_data["box"]["p1"]["x"],
-            json_data["box"]["p1"]["y"],
-            json_data["box"]["p2"]["x"],
-            json_data["box"]["p2"]["y"],
-        ).to_itype(layout.dbu)
-    else:
-        bbox = cell.bbox()
-
-    # Create vacuum layer if it doesn't exist
+    bbox = cell.bbox()
     layers = json_data["layers"]
-    if "vacuum" not in layers:
-        vacuum = pya.Region(bbox)
-        for n in layers.values():
-            vacuum -= pya.Region(cell.shapes(layout.layer(*n)))
-        # find free slot for vacuum layer
-        layers["vacuum"] = next([n, 0] for n in range(1000) if [n, 0] not in layers.values())
-        cell.shapes(layout.layer(*layers["vacuum"])).insert(vacuum)
 
     # Create mesh using geometries in gds file
     gmsh.model.add("cross_section")
 
     dim_tags = {}
     for name, num in layers.items():
-        reg = pya.Region(cell.shapes(layout.layer(*num))) & bbox
+        reg = pya.Region(cell.shapes(layout.layer(num, 0)))
         layer_dim_tags = []
         for simple_poly in reg.each():
             poly = separated_hull_and_holes(simple_poly)

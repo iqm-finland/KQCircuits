@@ -63,10 +63,6 @@ def export_elmer_json(
     if simulation is None or not isinstance(simulation, (Simulation, CrossSectionSimulation)):
         raise ValueError("Cannot export without simulation")
 
-    # collect data for .json file
-    if is_cross_section:
-        layers = simulation.layer_dict
-
     # write .gds file
     gds_file = simulation.name + ".gds"
     gds_file_path = str(path.joinpath(gds_file))
@@ -76,7 +72,7 @@ def export_elmer_json(
             simulation.layout,
             [simulation.cell],
             output_format="GDS2",
-            layers=layers.values() if is_cross_section else simulation.get_layers(),
+            layers=simulation.get_layers(),
         )
 
     sim_data = simulation.get_simulation_data()
@@ -103,7 +99,6 @@ def export_elmer_json(
         "workflow": workflow,
         **sim_data,
         **sol_data,
-        **({"layers": {k: (v.layer, v.datatype) for k, v in layers.items()}} if is_cross_section else {}),
         "sif_names": sif_names,
         "gds_file": gds_file,
         "parameters": get_combined_parameters(simulation, solution),

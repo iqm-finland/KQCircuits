@@ -52,10 +52,13 @@ with open(jsonfile, "r") as fp:
 simulation_flags = data["simulation_flags"]
 
 # Create project and geometry
-oDesktop.RunScriptWithArguments(os.path.join(scriptpath, "import_simulation_geometry.py"), jsonfile)
+if data["ansys_tool"] == "cross-section":
+    oDesktop.RunScriptWithArguments(os.path.join(scriptpath, "import_cross_section_geometry.py"), jsonfile)
+else:
+    oDesktop.RunScriptWithArguments(os.path.join(scriptpath, "import_simulation_geometry.py"), jsonfile)
 
 # Set up capacitive PI model
-if data.get("ansys_tool", "hfss") == "q3d" or data.get("capacitance_export", False):
+if data.get("ansys_tool", "hfss") in ["q3d", "cross-section"] or data.get("capacitance_export", False):
     oDesktop.RunScript(os.path.join(scriptpath, "create_capacitive_pi_model.py"))
 
 # Create reports

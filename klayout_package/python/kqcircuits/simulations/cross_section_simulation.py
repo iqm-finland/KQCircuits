@@ -35,8 +35,8 @@ class CrossSectionSimulation:
     method 'build' which defines the simulation geometry and material properties.
 
     Layer names in cross-section geometry don't need to obey KQC default layers. The layers use following name coding:
-    - Layer name 'vacuum' is reserved for vacuum material. The vacuum layer can be left empty; then the simulation
-    export fills the empty space inside the 'box' with vacuum.
+    - Layer name 'vacuum' is reserved for vacuum material. The vacuum layer can be left empty; then the empty space
+    inside the 'box' is automatically filled with vacuum.
     - All layers that include word 'signal' are considered as signal metals. Different signal layers are considered as
     separate signals so that the result matrices has row and column for each signal layer. The order of signals is the
     same as where they are introduced by calling 'get_sim_layer' function.
@@ -59,6 +59,7 @@ class CrossSectionSimulation:
         None,
         docstring="Class from which the simulation was generated using the XSection tool. Used to get the schema.",
     )
+    ignore_process_layers = Param(pdt.TypeBoolean, "Ignores automatic function call of process_layers", False)
 
     def __init__(self, layout, **kwargs):
         """Initialize a CrossSectionSimulation.
@@ -95,6 +96,8 @@ class CrossSectionSimulation:
         self.permittivity_dict = dict()
         self.units = kwargs.get("units", "um")
         self.build()
+        if not self.ignore_process_layers:
+            self.process_layers()
 
     # Inherit specific methods from Element
     get_schema = classmethod(Element.get_schema.__func__)
@@ -106,6 +109,21 @@ class CrossSectionSimulation:
         This method is to be overridden, and the overriding method should create the geometry to be simulated.
         """
         return
+
+    def process_layers(self):
+        """Limit layers by self.box and create vacuum layer if it doesn't exist."""
+        bbox = pya.Region(self.box.to_itype(self.layout.dbu))
+        for layer in self.layer_dict.values():
+            shapes = self.cell.shapes(self.layout.layer(layer))
+            region = pya.Region(shapes) & bbox
+            shapes.clear()
+            shapes.insert(region)
+
+        if "vacuum" not in self.layer_dict:
+            vacuum = bbox.dup()
+            for v in self.layer_dict.values():
+                vacuum -= pya.Region(self.cell.shapes(self.layout.layer(v)))
+            self.cell.shapes(self.get_sim_layer("vacuum")).insert(vacuum)
 
     def register_cell_layers_as_sim_layers(self):
         """Takes all layers that contain any geometry and registers them as simulation layers
@@ -154,6 +172,9 @@ class CrossSectionSimulation:
         metal_layers = [n for n in self.layer_dict if "signal" in n or "ground" in n]
         return {layer: v for face, v in zip(face_list, data_list) for layer in metal_layers if layer.startswith(face)}
 
+    def get_layers(self):
+        return self.layer_dict.values()
+
     def get_simulation_data(self):
         """Return the simulation data in dictionary form.
 
@@ -163,7 +184,7 @@ class CrossSectionSimulation:
         simulation_data = {
             "simulation_name": self.name,
             "units": self.units,
-            "box": self.box,
+            "layers": {k: v.layer for k, v in self.layer_dict.items()},
             "london_penetration_depth": self.get_dict_by_layers("london_penetration_depth"),
             **{"{}_permittivity".format(k): v for k, v in self.permittivity_dict.items()},
         }

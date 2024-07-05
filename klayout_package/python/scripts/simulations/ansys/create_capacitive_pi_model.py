@@ -94,5 +94,26 @@ elif design_type == "Q3D Extractor":
                 ["Context:=", "Original"],
             )
 
+elif design_type == "2D Extractor":
+    setup = get_enabled_setup(oDesign, tab="General")
+    conductors = oBoundarySetup.GetExcitations()[::2]
+    conductor_types = oBoundarySetup.GetExcitations()[1::2]
+    signals = sorted([c for c, c_type in zip(conductors, conductor_types) if c_type == "SignalLine"])
+
+    for i, s_i in enumerate(signals):
+        for j, s_j in enumerate(signals):
+            if i == j:
+                expression = " + ".join(["C({},{})".format(s_i, s_k) for s_k in signals])
+            else:
+                expression = "-C({},{})".format(s_i, s_j)
+
+            oOutputVariable.CreateOutputVariable(
+                "C_{}_{}".format(s_i, s_j),
+                expression,
+                setup + " : LastAdaptive",
+                "Matrix",
+                ["Context:=", "Original"],
+            )
+
 # Notify the end of script
 oDesktop.AddMessage("", "", 0, "The capacitive PI model created (%s)" % time.asctime(time.localtime()))

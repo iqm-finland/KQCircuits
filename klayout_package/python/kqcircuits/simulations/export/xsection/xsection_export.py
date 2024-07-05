@@ -593,7 +593,7 @@ def _construct_cross_section_simulation(
         cell_bbox.p2 = pya.DPoint(cell_bbox.p2.x, max(vertical_cull))
     xsection_parameters["box"] = cell_bbox
     xsection_parameters["cell"] = xsection_cell
-    xsection_simulation = CrossSectionSimulation(layout, **xsection_parameters)
+    xsection_simulation = CrossSectionSimulation(layout, **xsection_parameters, ignore_process_layers=True)
     # Keep all parameters given in simulations for JSON
     for k, v in xsection_parameters.items():
         setattr(xsection_simulation, k, v)
@@ -646,4 +646,5 @@ def _construct_cross_section_simulation(
         xsection_simulation.set_permittivity("ms_layer", ms_permittivity)
     if sa_thickness > 0.0:
         xsection_simulation.set_permittivity("sa_layer", sa_permittivity)
+    xsection_simulation.process_layers()
     return xsection_simulation

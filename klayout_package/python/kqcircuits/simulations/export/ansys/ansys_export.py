@@ -35,10 +35,11 @@ from kqcircuits.util.export_helper import write_commit_reference_file
 from kqcircuits.simulations.export.util import export_layers
 from kqcircuits.defaults import ANSYS_EXECUTABLE, ANSYS_SCRIPT_PATHS
 from kqcircuits.simulations.simulation import Simulation
+from kqcircuits.simulations.cross_section_simulation import CrossSectionSimulation
 from kqcircuits.simulations.post_process import PostProcess
 
 
-def export_ansys_json(simulation: Simulation, solution: AnsysSolution, path: Path):
+def export_ansys_json(simulation: Union[Simulation, CrossSectionSimulation], solution: AnsysSolution, path: Path):
     """
     Export Ansys simulation into json and gds files.
 
@@ -50,16 +51,19 @@ def export_ansys_json(simulation: Simulation, solution: AnsysSolution, path: Pat
     Returns:
          Path to exported json file.
     """
-    if simulation is None or not isinstance(simulation, Simulation):
+    if simulation is None or not isinstance(simulation, (Simulation, CrossSectionSimulation)):
         raise ValueError("Cannot export without simulation")
 
     # write .gds file
     gds_file = simulation.name + ".gds"
     gds_file_path = str(path.joinpath(gds_file))
+    gds_scaling = min(1e3 * simulation.layout.dbu, 1.0)
     if not Path(gds_file_path).exists():
+        simulation.layout.dbu /= gds_scaling
         export_layers(
             gds_file_path, simulation.layout, [simulation.cell], output_format="GDS2", layers=simulation.get_layers()
         )
+        simulation.layout.dbu *= gds_scaling
     full_name = simulation.name + solution.name
     # collect data for .json file
     json_data = {
@@ -67,6 +71,7 @@ def export_ansys_json(simulation: Simulation, solution: AnsysSolution, path: Pat
         **solution.get_solution_data(),
         **simulation.get_simulation_data(),
         "gds_file": gds_file,
+        "gds_scaling": gds_scaling,  # Ansys gds import can't handle dbu changes, so gds scaling is added manually
         "parameters": get_combined_parameters(simulation, solution),
     }
 

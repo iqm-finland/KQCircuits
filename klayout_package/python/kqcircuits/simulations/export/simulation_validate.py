@@ -22,6 +22,7 @@ from kqcircuits.simulations.export.ansys.ansys_solution import (
     AnsysCurrentSolution,
     AnsysVoltageSolution,
     AnsysHfssSolution,
+    AnsysCrossSectionSolution,
 )
 from kqcircuits.simulations.export.elmer.elmer_solution import (
     ElmerVectorHelmholtzSolution,
@@ -53,7 +54,9 @@ def simulation_and_solution_types_match(simulation, solution):
     Raises:
         Errors when validation criteria are not met.
     """
-    if isinstance(simulation, CrossSectionSimulation) != isinstance(solution, ElmerCrossSectionSolution):
+    if isinstance(simulation, CrossSectionSimulation) != isinstance(
+        solution, (ElmerCrossSectionSolution, AnsysCrossSectionSolution)
+    ):
         raise ValidateSimError(
             f"Simulation '{simulation.name}' is incompatible with {type(solution)}",
             validation_type=simulation_and_solution_types_match.__name__,

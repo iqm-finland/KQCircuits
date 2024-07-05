@@ -25,10 +25,12 @@ import time
 import ScriptEnv
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "util"))
-# fmt: off
-from util import get_enabled_setup, get_enabled_sweep, create_x_vs_y_plot, get_quantities \
-                 # pylint: disable=wrong-import-position,no-name-in-module
-# fmt: on
+from util import (  # pylint: disable=wrong-import-position,no-name-in-module
+    get_enabled_setup,
+    get_enabled_sweep,
+    create_x_vs_y_plot,
+    get_quantities,
+)
 
 # Set up environment
 ScriptEnv.Initialize("Ansoft.ElectronicsDesktop")
@@ -148,9 +150,7 @@ elif design_type == "Q3D Extractor":
     signal_nets = [net for net, net_type in zip(nets, net_types) if net_type == "SignalNet"]
 
     # Create capacitance vs frequency and capacitance convergence reports
-    unique_elements_c = [
-        "C_%s_%s" % (net_i, signal_nets[j]) for i, net_i in enumerate(signal_nets) for j in range(i, len(signal_nets))
-    ]  # The unique elements (half matrix), used for plotting
+    unique_elements_c = ["C_%s_%s" % (net_i, net_j) for i, net_i in enumerate(signal_nets) for net_j in signal_nets[i:]]
     unique_output_c = [e for e in unique_elements_c if e in oOutputVariable.GetOutputVariables()]
     if unique_output_c:
         create_x_vs_y_plot(
@@ -174,6 +174,63 @@ elif design_type == "Q3D Extractor":
             "Pass",
             "C",
             unique_output_c,
+        )
+
+elif design_type == "2D Extractor":
+    setup = get_enabled_setup(oDesign, tab="General")
+    each_pass = setup + " : AdaptivePass"
+    context = ["Context:=", "Original"]
+
+    conductors = oBoundarySetup.GetExcitations()[::2]
+    conductor_types = oBoundarySetup.GetExcitations()[1::2]
+    signals = sorted([c for c, c_type in zip(conductors, conductor_types) if c_type == "SignalLine"])
+
+    # Create capacitance report
+    unique_elements_c = ["C_%s_%s" % (s_i, s_j) for i, s_i in enumerate(signals) for s_j in signals[i:]]
+    unique_output_c = [e for e in unique_elements_c if e in oOutputVariable.GetOutputVariables()]
+    create_x_vs_y_plot(
+        oReportSetup,
+        "Capacitance Convergence",
+        "Matrix",
+        each_pass,
+        context,
+        ["Pass:=", ["All"], "Freq:=", ["All"]],
+        "Pass",
+        "Capacitance per unit length",
+        unique_output_c,
+    )
+
+    # Create inductance report
+    unique_elements_l = ["L(%s,%s)" % (s_i, s_j) for i, s_i in enumerate(signals) for s_j in signals[i:]]
+    output_l = get_quantities(oReportSetup, "Matrix", each_pass, context, "L Matrix")
+    unique_output_l = [e for e in unique_elements_l if e in output_l]
+    create_x_vs_y_plot(
+        oReportSetup,
+        "Inductance Convergence",
+        "Matrix",
+        each_pass,
+        context,
+        ["Pass:=", ["All"], "Freq:=", ["All"]],
+        "Pass",
+        "Inductance per unit length",
+        unique_output_l,
+    )
+
+    # Create integral reports
+    solution = setup + " : LastAdaptive"
+    integrals = get_quantities(oReportSetup, "CG Fields", solution, context, "Calculator Expressions")
+    energies = [e for e in integrals if e.startswith("E_")]
+    if energies:
+        create_x_vs_y_plot(
+            oReportSetup,
+            "Energy Integrals",
+            "CG Fields",
+            solution,
+            context,
+            ["Phase:=", ["0deg"]],
+            "Phase",
+            "E [J]",
+            energies,
         )
 
 # Notify the end of script

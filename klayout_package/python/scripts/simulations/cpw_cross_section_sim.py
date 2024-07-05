@@ -28,8 +28,10 @@ import numpy as np
 
 from kqcircuits.elements.element import Element
 from kqcircuits.simulations.cross_section_simulation import CrossSectionSimulation
+from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
 from kqcircuits.simulations.export.simulation_export import export_simulation_oas, cross_sweep_simulation
+from kqcircuits.simulations.post_process import PostProcess
 
 from kqcircuits.util.export_helper import (
     create_or_empty_tmp_directory,
@@ -108,11 +110,11 @@ class CpwCrossSectionSim(CrossSectionSimulation):
             for s in signals:
                 metals += s
             metals += ground
-            ma_layer = (metals.sized(self.ma_layer_thickness / self.layout.dbu) - substrate - metals) & box_region
-            ms_layer = metals.sized(self.ms_layer_thickness / self.layout.dbu) & substrate
+            ma_layer = (metals.sized(self.ma_layer_thickness / self.layout.dbu + 0.5) - substrate - metals) & box_region
+            ms_layer = metals.sized(self.ms_layer_thickness / self.layout.dbu + 0.5) & substrate
             substrate -= ms_layer
             sa_layer = (
-                (substrate.sized(self.sa_layer_thickness / self.layout.dbu) & box_region)
+                (substrate.sized(self.sa_layer_thickness / self.layout.dbu + 0.5) & box_region)
                 - substrate
                 - metals
                 - ms_layer
@@ -161,6 +163,7 @@ sim_parameters = {
     "name": "cpw_cross_section",
     "box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(100, 100)),
     "is_axisymmetric": is_axisymmetric,
+    "ms_layer_thickness": 0.003,  # too thin layer would give error in Ansys, so this is increased
 }
 
 mesh_size = {
@@ -222,16 +225,31 @@ if is_axisymmetric:
 
 
 # Export simulation files
-export_elmer(
-    simulations,
-    dir_path,
-    tool="cross-section",
-    mesh_size=mesh_size,
-    workflow=workflow,
-    p_element_order=args.p_element_order,
-    linear_system_method="mg",
-    is_axisymmetric=is_axisymmetric,
-)
+use_elmer = False
+if use_elmer:
+    export_elmer(
+        simulations,
+        dir_path,
+        tool="cross-section",
+        mesh_size=mesh_size,
+        workflow=workflow,
+        p_element_order=args.p_element_order,
+        linear_system_method="mg",
+        is_axisymmetric=is_axisymmetric,
+        integrate_energies=True,
+        post_process=PostProcess("produce_epr_table.py", groups=["ma", "ms", "sa", "substrate", "vacuum"]),
+    )
+else:
+    export_ansys(
+        simulations,
+        dir_path,
+        ansys_tool="cross-section",
+        percent_error=0.001,
+        maximum_passes=20,
+        exit_after_run=True,
+        integrate_energies=True,
+        post_process=PostProcess("produce_epr_table.py", groups=["ma", "ms", "sa", "substrate", "vacuum"]),
+    )
 
 # Write and open oas file
 open_with_klayout_or_default_application(export_simulation_oas(simulations, dir_path))

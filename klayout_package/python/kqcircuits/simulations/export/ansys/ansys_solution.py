@@ -245,6 +245,36 @@ class AnsysVoltageSolution(AnsysSolution):
         }
 
 
+@dataclass
+class AnsysCrossSectionSolution(AnsysSolution):
+    """
+    Class for Ansys cross-section solution parameters. Produces capacitance and inductance per unit length.
+
+    Args:
+        frequency: Nominal solution frequency (has no effect on results at the moment).
+        percent_error: Stopping criterion in cross-section simulation.
+        integrate_energies: Calculate energy integrals over each layer and save them into a file
+    """
+
+    ansys_tool: ClassVar[str] = "cross-section"
+    frequency: float = 5
+    percent_error: float = 0.01
+    integrate_energies: bool = False
+
+    def get_solution_data(self):
+        """Return the solution data in dictionary form."""
+        data = super().get_solution_data()
+        return {
+            **data,
+            "analysis_setup": {
+                **data["analysis_setup"],
+                "frequency": self.frequency,
+                "percent_error": self.percent_error,
+            },
+            "integrate_energies": self.integrate_energies,
+        }
+
+
 def get_ansys_solution(ansys_tool="hfss", **solution_params):
     """Returns an instance of AnsysSolution subclass.
 
@@ -252,7 +282,14 @@ def get_ansys_solution(ansys_tool="hfss", **solution_params):
         ansys_tool: Determines the subclass of AnsysSolution.
         solution_params: Arguments passed for AnsysSolution subclass.
     """
-    for c in [AnsysHfssSolution, AnsysQ3dSolution, AnsysEigenmodeSolution, AnsysCurrentSolution, AnsysVoltageSolution]:
+    for c in [
+        AnsysHfssSolution,
+        AnsysQ3dSolution,
+        AnsysEigenmodeSolution,
+        AnsysCurrentSolution,
+        AnsysVoltageSolution,
+        AnsysCrossSectionSolution,
+    ]:
         if ansys_tool == c.ansys_tool:
             return c(**solution_params)
     raise ValueError(f"No AnsysSolution found for ansys_tool={ansys_tool}.")

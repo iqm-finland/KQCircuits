@@ -296,3 +296,20 @@ def set_color(oEditor, objects, red, green, blue, transparency):
                 ],
             ]
         )
+
+
+def scale(oEditor, objects, factor):
+    """Scales given objects by 'factor' in all directions."""
+    if objects and factor != 1.0:
+        oEditor.Scale(
+            ["NAME:Selections", "Selections:=", ",".join(objects), "NewPartsModelFlag:=", "Model"],
+            [
+                "NAME:ScaleParameters",
+                "ScaleX:=",
+                str(factor),
+                "ScaleY:=",
+                str(factor),
+                "ScaleZ:=",
+                str(factor),
+            ],
+        )
