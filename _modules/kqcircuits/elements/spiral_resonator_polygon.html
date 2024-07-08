@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.elements.spiral_resonator_polygon &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.elements.spiral_resonator_polygon &mdash; KQCircuits 4.8.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../_static/documentation_options.js?v=98cca9dd"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -411,6 +411,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.meander.html#kqcircuits.elements.meander.Meander"><code class="docutils literal notranslate"><span class="pre">Meander</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.quarter_wave_cpw_resonator.html">kqcircuits.elements.quarter_wave_cpw_resonator</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.quarter_wave_cpw_resonator.html#kqcircuits.elements.quarter_wave_cpw_resonator.QuarterWaveCpwResonator"><code class="docutils literal notranslate"><span class="pre">QuarterWaveCpwResonator</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.smooth_capacitor.html">kqcircuits.elements.smooth_capacitor</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.smooth_capacitor.html#kqcircuits.elements.smooth_capacitor.SmoothCapacitor"><code class="docutils literal notranslate"><span class="pre">SmoothCapacitor</span></code></a></li>
 </ul>
@@ -586,6 +590,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.simulation.html">kqcircuits.simulations.simulation</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.get_simulation_layer_by_name"><code class="docutils literal notranslate"><span class="pre">get_simulation_layer_by_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.to_1d_list"><code class="docutils literal notranslate"><span class="pre">to_1d_list()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation"><code class="docutils literal notranslate"><span class="pre">Simulation</span></code></a></li>
 </ul>
 </li>
@@ -920,8 +925,6 @@
 <span class="c1"># (meetiqm.com/iqm-open-source-trademark-policy). IQM welcomes contributions to the code.</span>
 <span class="c1"># Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)</span>
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
-
-
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span><span class="p">,</span> <span class="n">tan</span><span class="p">,</span> <span class="n">degrees</span><span class="p">,</span> <span class="n">atan2</span><span class="p">,</span> <span class="n">sqrt</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.airbridges.airbridge</span> <span class="kn">import</span> <span class="n">Airbridge</span>
@@ -973,6 +976,7 @@
         <span class="n">pdt</span><span class="o">.</span><span class="n">TypeShape</span><span class="p">,</span> <span class="s2">&quot;Polygon path&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">800</span><span class="p">),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">800</span><span class="p">)],</span> <span class="mi">10</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="n">auto_spacing</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Use automatic spacing&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">include_connector_length</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Include connector length&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
     <span class="n">manual_spacing</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Manual spacing pattern&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">300</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
     <span class="n">bridge_spacing</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Airbridge spacing&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
     <span class="n">n_bridges_pattern</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Pattern for number of airbridges on edges&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -987,6 +991,13 @@
 <div class="viewcode-block" id="SpiralResonatorPolygon.build">
 <a class="viewcode-back" href="../../../api/kqcircuits.elements.spiral_resonator_polygon.html#kqcircuits.elements.spiral_resonator_polygon.SpiralResonatorPolygon.build">[docs]</a>
     <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector_dist</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">include_connector_length</span><span class="p">:</span>
+            <span class="n">conn_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">FlipChipConnectorRf</span><span class="p">)</span>
+            <span class="n">conn_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_refpoints</span><span class="p">(</span><span class="n">conn_cell</span><span class="p">)</span>
+            <span class="n">port0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;_port&quot;</span>
+            <span class="n">port1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;_port&quot;</span>
+            <span class="n">conn_len</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">vector_length_and_direction</span><span class="p">(</span><span class="n">conn_ref</span><span class="p">[</span><span class="n">port1</span><span class="p">]</span> <span class="o">-</span> <span class="n">conn_ref</span><span class="p">[</span><span class="n">port0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">+=</span> <span class="n">conn_len</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_path</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input_path</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_path</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">poly_path</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>

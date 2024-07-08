@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.cross_section_simulation &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.simulations.cross_section_simulation &mdash; KQCircuits 4.8.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
@@ -18,7 +18,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/documentation_options.js?v=98cca9dd"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -414,6 +414,10 @@
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.meander.html#kqcircuits.elements.meander.Meander"><code class="docutils literal notranslate"><span class="pre">Meander</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.quarter_wave_cpw_resonator.html">kqcircuits.elements.quarter_wave_cpw_resonator</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.quarter_wave_cpw_resonator.html#kqcircuits.elements.quarter_wave_cpw_resonator.QuarterWaveCpwResonator"><code class="docutils literal notranslate"><span class="pre">QuarterWaveCpwResonator</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.smooth_capacitor.html">kqcircuits.elements.smooth_capacitor</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.smooth_capacitor.html#kqcircuits.elements.smooth_capacitor.SmoothCapacitor"><code class="docutils literal notranslate"><span class="pre">SmoothCapacitor</span></code></a></li>
 </ul>
@@ -589,6 +593,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.simulation.html">kqcircuits.simulations.simulation</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.get_simulation_layer_by_name"><code class="docutils literal notranslate"><span class="pre">get_simulation_layer_by_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.to_1d_list"><code class="docutils literal notranslate"><span class="pre">to_1d_list()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation"><code class="docutils literal notranslate"><span class="pre">Simulation</span></code></a></li>
 </ul>
 </li>
@@ -912,8 +917,8 @@
 <p>This class is intended to be subclassed by a specific simulation implementation;  The subclass should implement the
 method ‘build’ which defines the simulation geometry and material properties.</p>
 <p>Layer names in cross-section geometry don’t need to obey KQC default layers. The layers use following name coding:
-- Layer name ‘vacuum’ is reserved for vacuum material. The vacuum layer can be left empty; then the simulation
-export fills the empty space inside the ‘box’ with vacuum.
+- Layer name ‘vacuum’ is reserved for vacuum material. The vacuum layer can be left empty; then the empty space
+inside the ‘box’ is automatically filled with vacuum.
 - All layers that include word ‘signal’ are considered as signal metals. Different signal layers are considered as
 separate signals so that the result matrices has row and column for each signal layer. The order of signals is the
 same as where they are introduced by calling ‘get_sim_layer’ function.
@@ -957,6 +962,12 @@ the simulation geometry.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.process_layers">
+<span class="sig-name descname"><span class="pre">process_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/cross_section_simulation.html#CrossSectionSimulation.process_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.process_layers" title="Link to this definition"></a></dt>
+<dd><p>Limit layers by self.box and create vacuum layer if it doesn’t exist.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.register_cell_layers_as_sim_layers">
 <span class="sig-name descname"><span class="pre">register_cell_layers_as_sim_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/cross_section_simulation.html#CrossSectionSimulation.register_cell_layers_as_sim_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.register_cell_layers_as_sim_layers" title="Link to this definition"></a></dt>
 <dd><p>Takes all layers that contain any geometry and registers them as simulation layers</p>
@@ -982,6 +993,18 @@ the simulation geometry.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_dict_by_layers">
+<span class="sig-name descname"><span class="pre">get_dict_by_layers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/cross_section_simulation.html#CrossSectionSimulation.get_dict_by_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_dict_by_layers" title="Link to this definition"></a></dt>
+<dd><p>Helper function to cast a parameter given as a list of same length as the face stack into
+a dict of the format simulation_layer -&gt; value</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_layers">
+<span class="sig-name descname"><span class="pre">get_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/cross_section_simulation.html#CrossSectionSimulation.get_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_layers" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_simulation_data">
 <span class="sig-name descname"><span class="pre">get_simulation_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/cross_section_simulation.html#CrossSectionSimulation.get_simulation_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_simulation_data" title="Link to this definition"></a></dt>
 <dd><p>Return the simulation data in dictionary form.</p>
@@ -996,8 +1019,9 @@ the simulation geometry.</p>
 
 <strong>PCell parameters:</strong><div class="line"><br /></div>
 <ul class="simple">
-<li><p><strong>london_penetration_depth</strong><em> (Double)</em><span> - London penetration depth is implemented for one signal simulation only</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">m</span></code></p></li>
+<li><p><strong>london_penetration_depth</strong><em> (List)</em><span> - London penetration depth is implemented for one signal simulation only</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">m</span></code></p></li>
 <li><p><strong>xsection_source_class</strong><em> (None)</em><span> - Class from which the simulation was generated using the XSection tool. Used to get the schema.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>ignore_process_layers</strong><em> (Boolean)</em><span> - Ignores automatic function call of process_layers</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>box</strong><em> (Shape)</em><span> - Boundary box</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">(0,0;10000,10000)</span></code></p></li>
 <li><p><strong>name</strong><em> (String)</em><span> - Name of the simulation</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Simulation</span></code></p></li>
 <li><p><strong>extra_json_data</strong><em> (None)</em><span> - This field may be used to store ‘virtual’ parameters useful for your simulations</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>

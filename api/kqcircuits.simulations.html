@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.simulations &mdash; KQCircuits 4.8.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
@@ -18,7 +18,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/documentation_options.js?v=98cca9dd"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -414,6 +414,10 @@
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.meander.html#kqcircuits.elements.meander.Meander"><code class="docutils literal notranslate"><span class="pre">Meander</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.quarter_wave_cpw_resonator.html">kqcircuits.elements.quarter_wave_cpw_resonator</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.quarter_wave_cpw_resonator.html#kqcircuits.elements.quarter_wave_cpw_resonator.QuarterWaveCpwResonator"><code class="docutils literal notranslate"><span class="pre">QuarterWaveCpwResonator</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.smooth_capacitor.html">kqcircuits.elements.smooth_capacitor</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.smooth_capacitor.html#kqcircuits.elements.smooth_capacitor.SmoothCapacitor"><code class="docutils literal notranslate"><span class="pre">SmoothCapacitor</span></code></a></li>
 </ul>
@@ -589,6 +593,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.simulation.html">kqcircuits.simulations.simulation</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.get_simulation_layer_by_name"><code class="docutils literal notranslate"><span class="pre">get_simulation_layer_by_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.to_1d_list"><code class="docutils literal notranslate"><span class="pre">to_1d_list()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation"><code class="docutils literal notranslate"><span class="pre">Simulation</span></code></a></li>
 </ul>
 </li>
@@ -977,6 +982,14 @@
 <li class="toctree-l5"><a class="reference internal" href="kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysVoltageSolution.get_solution_data"><code class="docutils literal notranslate"><span class="pre">AnsysVoltageSolution.get_solution_data()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysCrossSectionSolution"><code class="docutils literal notranslate"><span class="pre">AnsysCrossSectionSolution</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysCrossSectionSolution.ansys_tool"><code class="docutils literal notranslate"><span class="pre">AnsysCrossSectionSolution.ansys_tool</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysCrossSectionSolution.frequency"><code class="docutils literal notranslate"><span class="pre">AnsysCrossSectionSolution.frequency</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysCrossSectionSolution.percent_error"><code class="docutils literal notranslate"><span class="pre">AnsysCrossSectionSolution.percent_error</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysCrossSectionSolution.integrate_energies"><code class="docutils literal notranslate"><span class="pre">AnsysCrossSectionSolution.integrate_energies</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysCrossSectionSolution.get_solution_data"><code class="docutils literal notranslate"><span class="pre">AnsysCrossSectionSolution.get_solution_data()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.get_ansys_solution"><code class="docutils literal notranslate"><span class="pre">get_ansys_solution()</span></code></a></li>
 </ul>
 </li>
@@ -1163,10 +1176,13 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.LIBRARY_NAME"><code class="docutils literal notranslate"><span class="pre">CrossSectionSimulation.LIBRARY_NAME</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_schema"><code class="docutils literal notranslate"><span class="pre">CrossSectionSimulation.get_schema()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.build"><code class="docutils literal notranslate"><span class="pre">CrossSectionSimulation.build()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.process_layers"><code class="docutils literal notranslate"><span class="pre">CrossSectionSimulation.process_layers()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.register_cell_layers_as_sim_layers"><code class="docutils literal notranslate"><span class="pre">CrossSectionSimulation.register_cell_layers_as_sim_layers()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_sim_layer"><code class="docutils literal notranslate"><span class="pre">CrossSectionSimulation.get_sim_layer()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.set_permittivity"><code class="docutils literal notranslate"><span class="pre">CrossSectionSimulation.set_permittivity()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_parameters"><code class="docutils literal notranslate"><span class="pre">CrossSectionSimulation.get_parameters()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_dict_by_layers"><code class="docutils literal notranslate"><span class="pre">CrossSectionSimulation.get_dict_by_layers()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_layers"><code class="docutils literal notranslate"><span class="pre">CrossSectionSimulation.get_layers()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_simulation_data"><code class="docutils literal notranslate"><span class="pre">CrossSectionSimulation.get_simulation_data()</span></code></a></li>
 </ul>
 </li>
@@ -1209,6 +1225,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="kqcircuits.simulations.simulation.html">kqcircuits.simulations.simulation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.get_simulation_layer_by_name"><code class="docutils literal notranslate"><span class="pre">get_simulation_layer_by_name()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.to_1d_list"><code class="docutils literal notranslate"><span class="pre">to_1d_list()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation"><code class="docutils literal notranslate"><span class="pre">Simulation</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.LIBRARY_NAME"><code class="docutils literal notranslate"><span class="pre">Simulation.LIBRARY_NAME</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.ports"><code class="docutils literal notranslate"><span class="pre">Simulation.ports</span></code></a></li>

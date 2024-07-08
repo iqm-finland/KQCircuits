@@ -25,6 +25,7 @@ kqcircuits.elements
    kqcircuits.elements.launcher
    kqcircuits.elements.launcher_dc
    kqcircuits.elements.meander
+   kqcircuits.elements.quarter_wave_cpw_resonator
    kqcircuits.elements.smooth_capacitor
    kqcircuits.elements.spiral_resonator_polygon
    kqcircuits.elements.waveguide_composite

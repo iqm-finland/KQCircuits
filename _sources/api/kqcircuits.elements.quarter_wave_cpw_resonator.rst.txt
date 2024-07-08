@@ -1,0 +1,12 @@
+:github_url: hide
+
+kqcircuits.elements.quarter\_wave\_cpw\_resonator
+=================================================
+
+.. automodule:: kqcircuits.elements.quarter_wave_cpw_resonator
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.elements.quarter_wave_cpw_resonator
+.. image:: ../pcell_images/kqcircuits.elements.quarter_wave_cpw_resonator.png

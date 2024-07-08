@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.export.elmer.elmer_export &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.simulations.export.elmer.elmer_export &mdash; KQCircuits 4.8.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../../../_static/documentation_options.js?v=98cca9dd"></script>
         <script src="../../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/js/theme.js"></script>
@@ -411,6 +411,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.elements.meander.html#kqcircuits.elements.meander.Meander"><code class="docutils literal notranslate"><span class="pre">Meander</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.elements.quarter_wave_cpw_resonator.html">kqcircuits.elements.quarter_wave_cpw_resonator</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.elements.quarter_wave_cpw_resonator.html#kqcircuits.elements.quarter_wave_cpw_resonator.QuarterWaveCpwResonator"><code class="docutils literal notranslate"><span class="pre">QuarterWaveCpwResonator</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.elements.smooth_capacitor.html">kqcircuits.elements.smooth_capacitor</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.elements.smooth_capacitor.html#kqcircuits.elements.smooth_capacitor.SmoothCapacitor"><code class="docutils literal notranslate"><span class="pre">SmoothCapacitor</span></code></a></li>
 </ul>
@@ -586,6 +590,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.simulation.html">kqcircuits.simulations.simulation</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.get_simulation_layer_by_name"><code class="docutils literal notranslate"><span class="pre">get_simulation_layer_by_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.to_1d_list"><code class="docutils literal notranslate"><span class="pre">to_1d_list()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation"><code class="docutils literal notranslate"><span class="pre">Simulation</span></code></a></li>
 </ul>
 </li>
@@ -970,10 +975,6 @@
     <span class="k">if</span> <span class="n">simulation</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="p">(</span><span class="n">Simulation</span><span class="p">,</span> <span class="n">CrossSectionSimulation</span><span class="p">)):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot export without simulation&quot;</span><span class="p">)</span>
 
-    <span class="c1"># collect data for .json file</span>
-    <span class="k">if</span> <span class="n">is_cross_section</span><span class="p">:</span>
-        <span class="n">layers</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">layer_dict</span>
-
     <span class="c1"># write .gds file</span>
     <span class="n">gds_file</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.gds&quot;</span>
     <span class="n">gds_file_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">gds_file</span><span class="p">))</span>
@@ -983,7 +984,7 @@
             <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span>
             <span class="p">[</span><span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="p">],</span>
             <span class="n">output_format</span><span class="o">=</span><span class="s2">&quot;GDS2&quot;</span><span class="p">,</span>
-            <span class="n">layers</span><span class="o">=</span><span class="n">layers</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">is_cross_section</span> <span class="k">else</span> <span class="n">simulation</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+            <span class="n">layers</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
         <span class="p">)</span>
 
     <span class="n">sim_data</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">get_simulation_data</span><span class="p">()</span>
@@ -993,7 +994,7 @@
     <span class="k">if</span> <span class="n">is_cross_section</span><span class="p">:</span>
         <span class="n">sif_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">full_name</span><span class="si">}</span><span class="s2">_C&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">sol_data</span><span class="p">[</span><span class="s2">&quot;run_inductance_sim&quot;</span><span class="p">]:</span>
-            <span class="k">if</span> <span class="n">sim_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;london_penetration_depth&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">((</span><span class="n">london</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">london</span> <span class="ow">in</span> <span class="n">sim_data</span><span class="p">[</span><span class="s2">&quot;london_penetration_depth&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">())):</span>
                 <span class="n">sif_names</span> <span class="o">+=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">full_name</span><span class="si">}</span><span class="s2">_L&quot;</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">sif_names</span> <span class="o">+=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">full_name</span><span class="si">}</span><span class="s2">_C0&quot;</span><span class="p">]</span>
@@ -1010,7 +1011,6 @@
         <span class="s2">&quot;workflow&quot;</span><span class="p">:</span> <span class="n">workflow</span><span class="p">,</span>
         <span class="o">**</span><span class="n">sim_data</span><span class="p">,</span>
         <span class="o">**</span><span class="n">sol_data</span><span class="p">,</span>
-        <span class="o">**</span><span class="p">({</span><span class="s2">&quot;layers&quot;</span><span class="p">:</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">layer</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">datatype</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">layers</span><span class="o">.</span><span class="n">items</span><span class="p">()}}</span> <span class="k">if</span> <span class="n">is_cross_section</span> <span class="k">else</span> <span class="p">{}),</span>
         <span class="s2">&quot;sif_names&quot;</span><span class="p">:</span> <span class="n">sif_names</span><span class="p">,</span>
         <span class="s2">&quot;gds_file&quot;</span><span class="p">:</span> <span class="n">gds_file</span><span class="p">,</span>
         <span class="s2">&quot;parameters&quot;</span><span class="p">:</span> <span class="n">get_combined_parameters</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">),</span>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; KQCircuits  documentation</title>
+  <title>Index &mdash; KQCircuits 4.8.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/documentation_options.js?v=98cca9dd"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -411,6 +411,10 @@
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.elements.meander.html#kqcircuits.elements.meander.Meander"><code class="docutils literal notranslate"><span class="pre">Meander</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.elements.quarter_wave_cpw_resonator.html">kqcircuits.elements.quarter_wave_cpw_resonator</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.elements.quarter_wave_cpw_resonator.html#kqcircuits.elements.quarter_wave_cpw_resonator.QuarterWaveCpwResonator"><code class="docutils literal notranslate"><span class="pre">QuarterWaveCpwResonator</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.elements.smooth_capacitor.html">kqcircuits.elements.smooth_capacitor</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.elements.smooth_capacitor.html#kqcircuits.elements.smooth_capacitor.SmoothCapacitor"><code class="docutils literal notranslate"><span class="pre">SmoothCapacitor</span></code></a></li>
 </ul>
@@ -586,6 +590,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.simulations.simulation.html">kqcircuits.simulations.simulation</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.get_simulation_layer_by_name"><code class="docutils literal notranslate"><span class="pre">get_simulation_layer_by_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.to_1d_list"><code class="docutils literal notranslate"><span class="pre">to_1d_list()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation"><code class="docutils literal notranslate"><span class="pre">Simulation</span></code></a></li>
 </ul>
 </li>
@@ -987,10 +992,10 @@
 </li>
       <li><a href="api/kqcircuits.elements.airbridges.airbridge_multi_face.html#kqcircuits.elements.airbridges.airbridge_multi_face.AirbridgeMultiFace">AirbridgeMultiFace (class in kqcircuits.elements.airbridges.airbridge_multi_face)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.elements.airbridges.airbridge_rectangular.html#kqcircuits.elements.airbridges.airbridge_rectangular.AirbridgeRectangular">AirbridgeRectangular (class in kqcircuits.elements.airbridges.airbridge_rectangular)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.simulations.airbridges_sim.html#kqcircuits.simulations.airbridges_sim.AirbridgesSim">AirbridgesSim (class in kqcircuits.simulations.airbridges_sim)</a>
 </li>
       <li><a href="api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node.align">align (kqcircuits.elements.waveguide_composite.Node attribute)</a>
@@ -1003,9 +1008,11 @@
 </li>
       <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.ansys_project_template">ansys_project_template (kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution attribute)</a>
 </li>
-      <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysCurrentSolution.ansys_tool">ansys_tool (kqcircuits.simulations.export.ansys.ansys_solution.AnsysCurrentSolution attribute)</a>
+      <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysCrossSectionSolution.ansys_tool">ansys_tool (kqcircuits.simulations.export.ansys.ansys_solution.AnsysCrossSectionSolution attribute)</a>
 
       <ul>
+        <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysCurrentSolution.ansys_tool">(kqcircuits.simulations.export.ansys.ansys_solution.AnsysCurrentSolution attribute)</a>
+</li>
         <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysEigenmodeSolution.ansys_tool">(kqcircuits.simulations.export.ansys.ansys_solution.AnsysEigenmodeSolution attribute)</a>
 </li>
         <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysHfssSolution.ansys_tool">(kqcircuits.simulations.export.ansys.ansys_solution.AnsysHfssSolution attribute)</a>
@@ -1017,6 +1024,8 @@
         <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysVoltageSolution.ansys_tool">(kqcircuits.simulations.export.ansys.ansys_solution.AnsysVoltageSolution attribute)</a>
 </li>
       </ul></li>
+      <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysCrossSectionSolution">AnsysCrossSectionSolution (class in kqcircuits.simulations.export.ansys.ansys_solution)</a>
+</li>
       <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysCurrentSolution">AnsysCurrentSolution (class in kqcircuits.simulations.export.ansys.ansys_solution)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysEigenmodeSolution">AnsysEigenmodeSolution (class in kqcircuits.simulations.export.ansys.ansys_solution)</a>
@@ -1147,6 +1156,8 @@
         <li><a href="api/kqcircuits.elements.markers.mask_marker_fc.html#kqcircuits.elements.markers.mask_marker_fc.MaskMarkerFc.build">(kqcircuits.elements.markers.mask_marker_fc.MaskMarkerFc method)</a>
 </li>
         <li><a href="api/kqcircuits.elements.meander.html#kqcircuits.elements.meander.Meander.build">(kqcircuits.elements.meander.Meander method)</a>
+</li>
+        <li><a href="api/kqcircuits.elements.quarter_wave_cpw_resonator.html#kqcircuits.elements.quarter_wave_cpw_resonator.QuarterWaveCpwResonator.build">(kqcircuits.elements.quarter_wave_cpw_resonator.QuarterWaveCpwResonator method)</a>
 </li>
         <li><a href="api/kqcircuits.elements.smooth_capacitor.html#kqcircuits.elements.smooth_capacitor.SmoothCapacitor.build">(kqcircuits.elements.smooth_capacitor.SmoothCapacitor method)</a>
 </li>
@@ -1631,10 +1642,10 @@
 </li>
       <li><a href="api/kqcircuits.elements.finger_capacitor_square.html#kqcircuits.elements.finger_capacitor_square.FingerCapacitorSquare.finger_area_width">finger_area_width() (kqcircuits.elements.finger_capacitor_square.FingerCapacitorSquare method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.elements.finger_capacitor_square.html#kqcircuits.elements.finger_capacitor_square.FingerCapacitorSquare">FingerCapacitorSquare (class in kqcircuits.elements.finger_capacitor_square)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.elements.finger_capacitor_taper.html#kqcircuits.elements.finger_capacitor_taper.FingerCapacitorTaper">FingerCapacitorTaper (class in kqcircuits.elements.finger_capacitor_taper)</a>
 </li>
       <li><a href="api/kqcircuits.elements.flip_chip_connectors.flip_chip_connector.html#kqcircuits.elements.flip_chip_connectors.flip_chip_connector.FlipChipConnector">FlipChipConnector (class in kqcircuits.elements.flip_chip_connectors.flip_chip_connector)</a>
@@ -1655,9 +1666,11 @@
 </li>
       <li><a href="api/kqcircuits.simulations.export.xsection.xsection_export.html#kqcircuits.simulations.export.xsection.xsection_export.free_layer_slots">free_layer_slots() (in module kqcircuits.simulations.export.xsection.xsection_export)</a>
 </li>
-      <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysCurrentSolution.frequency">frequency (kqcircuits.simulations.export.ansys.ansys_solution.AnsysCurrentSolution attribute)</a>
+      <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysCrossSectionSolution.frequency">frequency (kqcircuits.simulations.export.ansys.ansys_solution.AnsysCrossSectionSolution attribute)</a>
 
       <ul>
+        <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysCurrentSolution.frequency">(kqcircuits.simulations.export.ansys.ansys_solution.AnsysCurrentSolution attribute)</a>
+</li>
         <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysHfssSolution.frequency">(kqcircuits.simulations.export.ansys.ansys_solution.AnsysHfssSolution attribute)</a>
 </li>
         <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysQ3dSolution.frequency">(kqcircuits.simulations.export.ansys.ansys_solution.AnsysQ3dSolution attribute)</a>
@@ -1715,6 +1728,8 @@
 </li>
       <li><a href="api/kqcircuits.elements.waveguide_coplanar.html#kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.get_corner_data">get_corner_data() (kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar static method)</a>
 </li>
+      <li><a href="api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_dict_by_layers">get_dict_by_layers() (kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation method)</a>
+</li>
       <li><a href="api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.get_direction">get_direction() (in module kqcircuits.util.geometry_helper)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.get_elmer_solution">get_elmer_solution() (in module kqcircuits.simulations.export.elmer.elmer_solution)</a>
@@ -1741,8 +1756,12 @@
         <li><a href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.get_layer">(kqcircuits.simulations.simulation.Simulation method)</a>
 </li>
       </ul></li>
-      <li><a href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.get_layers">get_layers() (kqcircuits.simulations.simulation.Simulation method)</a>
+      <li><a href="api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_layers">get_layers() (kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation method)</a>
+
+      <ul>
+        <li><a href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.get_layers">(kqcircuits.simulations.simulation.Simulation method)</a>
 </li>
+      </ul></li>
       <li><a href="api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.get_library_paths">get_library_paths() (in module kqcircuits.util.library_helper)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.partition_region.html#kqcircuits.simulations.partition_region.get_list_of_two">get_list_of_two() (in module kqcircuits.simulations.partition_region)</a>
@@ -1820,6 +1839,8 @@
 </li>
         <li><a href="api/kqcircuits.elements.hanger_resonator.html#kqcircuits.elements.hanger_resonator.HangerResonator.get_sim_ports">(kqcircuits.elements.hanger_resonator.HangerResonator class method)</a>
 </li>
+        <li><a href="api/kqcircuits.elements.quarter_wave_cpw_resonator.html#kqcircuits.elements.quarter_wave_cpw_resonator.QuarterWaveCpwResonator.get_sim_ports">(kqcircuits.elements.quarter_wave_cpw_resonator.QuarterWaveCpwResonator class method)</a>
+</li>
         <li><a href="api/kqcircuits.elements.smooth_capacitor.html#kqcircuits.elements.smooth_capacitor.SmoothCapacitor.get_sim_ports">(kqcircuits.elements.smooth_capacitor.SmoothCapacitor class method)</a>
 </li>
         <li><a href="api/kqcircuits.qubits.circular_transmon_single_island.html#kqcircuits.qubits.circular_transmon_single_island.CircularTransmonSingleIsland.get_sim_ports">(kqcircuits.qubits.circular_transmon_single_island.CircularTransmonSingleIsland class method)</a>
@@ -1843,9 +1864,11 @@
 </li>
       <li><a href="api/kqcircuits.simulations.single_element_simulation.html#kqcircuits.simulations.single_element_simulation.get_single_element_sim_class">get_single_element_sim_class() (in module kqcircuits.simulations.single_element_simulation)</a>
 </li>
-      <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysCurrentSolution.get_solution_data">get_solution_data() (kqcircuits.simulations.export.ansys.ansys_solution.AnsysCurrentSolution method)</a>
+      <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysCrossSectionSolution.get_solution_data">get_solution_data() (kqcircuits.simulations.export.ansys.ansys_solution.AnsysCrossSectionSolution method)</a>
 
       <ul>
+        <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysCurrentSolution.get_solution_data">(kqcircuits.simulations.export.ansys.ansys_solution.AnsysCurrentSolution method)</a>
+</li>
         <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysEigenmodeSolution.get_solution_data">(kqcircuits.simulations.export.ansys.ansys_solution.AnsysEigenmodeSolution method)</a>
 </li>
         <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysHfssSolution.get_solution_data">(kqcircuits.simulations.export.ansys.ansys_solution.AnsysHfssSolution method)</a>
@@ -1913,9 +1936,11 @@
 </li>
       <li><a href="api/kqcircuits.util.dependencies.html#kqcircuits.util.dependencies.install_kqc_gui_dependencies">install_kqc_gui_dependencies() (in module kqcircuits.util.dependencies)</a>
 </li>
-      <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysCurrentSolution.integrate_energies">integrate_energies (kqcircuits.simulations.export.ansys.ansys_solution.AnsysCurrentSolution attribute)</a>
+      <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysCrossSectionSolution.integrate_energies">integrate_energies (kqcircuits.simulations.export.ansys.ansys_solution.AnsysCrossSectionSolution attribute)</a>
 
       <ul>
+        <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysCurrentSolution.integrate_energies">(kqcircuits.simulations.export.ansys.ansys_solution.AnsysCurrentSolution attribute)</a>
+</li>
         <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysEigenmodeSolution.integrate_energies">(kqcircuits.simulations.export.ansys.ansys_solution.AnsysEigenmodeSolution attribute)</a>
 </li>
         <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysHfssSolution.integrate_energies">(kqcircuits.simulations.export.ansys.ansys_solution.AnsysHfssSolution attribute)</a>
@@ -2373,6 +2398,13 @@
 </li>
       </ul></li>
       <li>
+    kqcircuits.elements.quarter_wave_cpw_resonator
+
+      <ul>
+        <li><a href="api/kqcircuits.elements.quarter_wave_cpw_resonator.html#module-kqcircuits.elements.quarter_wave_cpw_resonator">module</a>
+</li>
+      </ul></li>
+      <li>
     kqcircuits.elements.smooth_capacitor
 
       <ul>
@@ -2540,6 +2572,8 @@
         <li><a href="api/kqcircuits.layer_config.example_layer_config.html#module-kqcircuits.layer_config.example_layer_config">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     kqcircuits.masks
 
@@ -2547,8 +2581,6 @@
         <li><a href="api/kqcircuits.masks.html#module-kqcircuits.masks">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     kqcircuits.masks.mask_export
 
@@ -3454,6 +3486,8 @@
 </li>
         <li><a href="api/kqcircuits.elements.meander.html#module-kqcircuits.elements.meander">kqcircuits.elements.meander</a>
 </li>
+        <li><a href="api/kqcircuits.elements.quarter_wave_cpw_resonator.html#module-kqcircuits.elements.quarter_wave_cpw_resonator">kqcircuits.elements.quarter_wave_cpw_resonator</a>
+</li>
         <li><a href="api/kqcircuits.elements.smooth_capacitor.html#module-kqcircuits.elements.smooth_capacitor">kqcircuits.elements.smooth_capacitor</a>
 </li>
         <li><a href="api/kqcircuits.elements.spiral_resonator_polygon.html#module-kqcircuits.elements.spiral_resonator_polygon">kqcircuits.elements.spiral_resonator_polygon</a>
@@ -3761,9 +3795,11 @@
       </ul></li>
       <li><a href="api/kqcircuits.util.parameters.html#kqcircuits.util.parameters.pdt">pdt (class in kqcircuits.util.parameters)</a>
 </li>
-      <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysQ3dSolution.percent_error">percent_error (kqcircuits.simulations.export.ansys.ansys_solution.AnsysQ3dSolution attribute)</a>
+      <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysCrossSectionSolution.percent_error">percent_error (kqcircuits.simulations.export.ansys.ansys_solution.AnsysCrossSectionSolution attribute)</a>
 
       <ul>
+        <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysQ3dSolution.percent_error">(kqcircuits.simulations.export.ansys.ansys_solution.AnsysQ3dSolution attribute)</a>
+</li>
         <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.percent_error">(kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution attribute)</a>
 </li>
       </ul></li>
@@ -3802,6 +3838,8 @@
 </li>
       </ul></li>
       <li><a href="api/kqcircuits.simulations.post_process.html#kqcircuits.simulations.post_process.PostProcess">PostProcess (class in kqcircuits.simulations.post_process)</a>
+</li>
+      <li><a href="api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.process_layers">process_layers() (kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation method)</a>
 </li>
       <li><a href="api/kqcircuits.junctions.manhattan.html#kqcircuits.junctions.manhattan.Manhattan.produce_contact_pads">produce_contact_pads() (kqcircuits.junctions.manhattan.Manhattan method)</a>
 </li>
@@ -3851,10 +3889,10 @@
         <li><a href="api/kqcircuits.qubits.qubit.html#kqcircuits.qubits.qubit.Qubit.produce_fluxline">(kqcircuits.qubits.qubit.Qubit method)</a>
 </li>
       </ul></li>
-      <li><a href="api/kqcircuits.test_structures.test_structure.html#kqcircuits.test_structures.test_structure.TestStructure.produce_four_point_pads">produce_four_point_pads() (kqcircuits.test_structures.test_structure.TestStructure method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/kqcircuits.test_structures.test_structure.html#kqcircuits.test_structures.test_structure.TestStructure.produce_four_point_pads">produce_four_point_pads() (kqcircuits.test_structures.test_structure.TestStructure method)</a>
+</li>
       <li><a href="api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.produce_frame">produce_frame() (kqcircuits.chips.chip.Chip method)</a>
 </li>
       <li><a href="api/kqcircuits.elements.markers.marker.html#kqcircuits.elements.markers.marker.Marker.produce_geometry">produce_geometry() (kqcircuits.elements.markers.marker.Marker method)</a>
@@ -3987,9 +4025,11 @@
 </li>
       <li><a href="api/kqcircuits.chips.quality_factor.html#kqcircuits.chips.quality_factor.QualityFactor">QualityFactor (class in kqcircuits.chips.quality_factor)</a>
 </li>
+      <li><a href="api/kqcircuits.chips.quality_factor_twoface.html#kqcircuits.chips.quality_factor_twoface.QualityFactorTwoface">QualityFactorTwoface (class in kqcircuits.chips.quality_factor_twoface)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/kqcircuits.chips.quality_factor_twoface.html#kqcircuits.chips.quality_factor_twoface.QualityFactorTwoface">QualityFactorTwoface (class in kqcircuits.chips.quality_factor_twoface)</a>
+      <li><a href="api/kqcircuits.elements.quarter_wave_cpw_resonator.html#kqcircuits.elements.quarter_wave_cpw_resonator.QuarterWaveCpwResonator">QuarterWaveCpwResonator (class in kqcircuits.elements.quarter_wave_cpw_resonator)</a>
 </li>
       <li><a href="api/kqcircuits.qubits.qubit.html#kqcircuits.qubits.qubit.Qubit">Qubit (class in kqcircuits.qubits.qubit)</a>
 </li>
@@ -4167,6 +4207,8 @@
 </li>
       <li><a href="api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.text_margin">text_margin (kqcircuits.masks.mask_layout.MaskLayout attribute)</a>
 </li>
+      <li><a href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.to_1d_list">to_1d_list() (in module kqcircuits.simulations.simulation)</a>
+</li>
       <li><a href="api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.to_library_name">to_library_name() (in module kqcircuits.util.library_helper)</a>
 </li>
       <li><a href="api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.to_module_name">to_module_name() (in module kqcircuits.util.library_helper)</a>
@@ -4197,10 +4239,10 @@
 </li>
       <li><a href="api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.tracking_position">tracking_position() (kqcircuits.util.edit_node_plugin.EditNodePlugin method)</a>
 </li>
-      <li><a href="api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.Refpoints.trans">trans (kqcircuits.util.refpoints.Refpoints attribute)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.Refpoints.trans">trans (kqcircuits.util.refpoints.Refpoints attribute)</a>
+</li>
       <li><a href="api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.transformation_from_shape_impl">transformation_from_shape_impl() (kqcircuits.chips.chip.Chip method)</a>
 
       <ul>
