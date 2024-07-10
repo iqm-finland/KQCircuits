@@ -31,7 +31,14 @@ from kqcircuits.junctions.sim import Sim
 @add_parameters_from(
     Squid, "junction_width", "loop_area", "junction_type", "junction_parameters", "_junction_parameters"
 )
-@add_parameters_from(Sim, "junction_total_length")
+@add_parameters_from(
+    Sim,
+    "junction_total_length",
+    "junction_upper_pad_width",
+    "junction_upper_pad_length",
+    "junction_lower_pad_width",
+    "junction_lower_pad_length",
+)
 class Qubit(Element):
     """Base class for qubit objects without actual produce function.
 

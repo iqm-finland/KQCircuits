@@ -71,7 +71,14 @@ def to_1d_list(data):
 
 
 @add_parameters_from(Element)
-@add_parameters_from(Sim, "junction_total_length")
+@add_parameters_from(
+    Sim,
+    "junction_total_length",
+    "junction_upper_pad_width",
+    "junction_upper_pad_length",
+    "junction_lower_pad_width",
+    "junction_lower_pad_length",
+)
 class Simulation:
     """Base class for simulation geometries.
 

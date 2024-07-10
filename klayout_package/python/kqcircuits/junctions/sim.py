@@ -30,6 +30,10 @@ class Sim(Junction):
     """
 
     junction_total_length = Param(pdt.TypeDouble, "Simulation junction total length", 33, unit="µm")
+    junction_upper_pad_width = Param(pdt.TypeDouble, "Simulation junction upper metal pad width", 8, unit="µm")
+    junction_upper_pad_length = Param(pdt.TypeDouble, "Simulation junction upper metal pad length", 13, unit="µm")
+    junction_lower_pad_width = Param(pdt.TypeDouble, "Simulation junction lower metal pad width", 8, unit="µm")
+    junction_lower_pad_length = Param(pdt.TypeDouble, "Simulation junction lower metal pad length", 12, unit="µm")
 
     def build(self):
 
@@ -37,22 +41,29 @@ class Sim(Junction):
         self._produce_ground_metal_shapes(trans)
         # refpoints
         self.refpoints["origin_squid"] = pya.DPoint(0, 0)
-        self.refpoints["port_squid_a"] = pya.DPoint(0, self.junction_total_length - 13)
-        self.refpoints["port_squid_b"] = pya.DPoint(0, 12)
+        self.refpoints["port_squid_a"] = pya.DPoint(0, self.junction_total_length - self.junction_upper_pad_length)
+        self.refpoints["port_squid_b"] = pya.DPoint(0, self.junction_lower_pad_length)
         self.refpoints["port_common"] = pya.DPoint(0, self.junction_total_length)
 
     def _produce_ground_metal_shapes(self, trans):
-        """Produces hardcoded shapes in metal gap and metal addition layers."""
+        """Produces shapes in base metal addition layer."""
         # metal additions bottom
-        bottom_pts = [pya.DPoint(-4, 0), pya.DPoint(-4, 12), pya.DPoint(4, 12), pya.DPoint(4, 0)]
+        bottom_half_w = self.junction_lower_pad_width / 2
+        bottom_pts = [
+            pya.DPoint(-bottom_half_w, 0),
+            pya.DPoint(-bottom_half_w, self.junction_lower_pad_length),
+            pya.DPoint(bottom_half_w, self.junction_lower_pad_length),
+            pya.DPoint(bottom_half_w, 0),
+        ]
         shape = polygon_with_vsym(bottom_pts)
         self.cell.shapes(self.get_layer("base_metal_addition")).insert(trans * shape)
         # metal additions top
+        top_half_w = self.junction_upper_pad_width / 2
         top_pts = [
-            pya.DPoint(-4, self.junction_total_length - 13),
-            pya.DPoint(-4, self.junction_total_length),
-            pya.DPoint(4, self.junction_total_length),
-            pya.DPoint(4, self.junction_total_length - 13),
+            pya.DPoint(-top_half_w, self.junction_total_length - self.junction_upper_pad_length),
+            pya.DPoint(-top_half_w, self.junction_total_length),
+            pya.DPoint(top_half_w, self.junction_total_length),
+            pya.DPoint(top_half_w, self.junction_total_length - self.junction_upper_pad_length),
         ]
         shape = polygon_with_vsym(top_pts)
         self.cell.shapes(self.get_layer("base_metal_addition")).insert(trans * shape)
