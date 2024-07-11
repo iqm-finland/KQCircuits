@@ -368,6 +368,7 @@ def _dump_xsection_parameters(xsection_dir, simulation):
         for param_name, param_value in simulation.get_parameters().items()
         if not isinstance(param_value, pya.DBox)
     }  # Hack: ignore non-serializable params
+    simulation_params["chip_distance"] = to_1d_list(simulation_params["chip_distance"])
     # Also dump all used layers in the simulation cell
     simulation_params["sim_layers"] = {l.name: f"{l.layer}/{l.datatype}" for l in simulation.layout.layer_infos()}
     xsection_parameters_file = xsection_dir / f"parameters_{simulation.cell.name}.json"

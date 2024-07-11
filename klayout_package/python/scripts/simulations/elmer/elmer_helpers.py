@@ -1159,31 +1159,43 @@ def sif_capacitance(
 
     # Boundary conditions
     boundary_conditions = ""
-    grounds = get_grounds(json_data, dim=dim, mesh_names=mesh_names)
+    grounds = sorted(get_grounds(json_data, dim=dim, mesh_names=mesh_names))
+    signals = sorted(get_signals(json_data, dim=dim, mesh_names=mesh_names))
+
+    if len(signals) == 0:
+        logging.warning("No signals found in capacitance simulation!")
+        signals = [grounds[0]]
+        grounds = grounds[1:]
+        logging.warning(f'Treating "{signals}" as signal and "{grounds}" as grounds')
+
+    if len(grounds) == 0 and not json_data["boundary_conditions"]:
+        logging.warning("Simulation has no grounds or outer boundary conditions. Result will be trivially zero.")
+
     ground_boundaries = [f"{g}_boundary" for g in grounds] if dim == 2 else grounds
+    signals_boundaries = [f"{s}_boundary" for s in signals] if dim == 2 else signals
+
+    # If a connected piece of signal is partitioned into multiple layers
+    # we need to set the same capacitance body for each layer
+    cbody_map: dict[str, int] = {}
+    for s in signals_boundaries:
+        s_wo_mer = s.replace("_mer", "")
+        if s_wo_mer in cbody_map.keys():
+            cbody_map[s] = cbody_map[s_wo_mer]
+        else:
+            cbody_map[s] = max(cbody_map.values(), default=0) + 1
+
     n_boundaries = 0
     if len(ground_boundaries) > 0:
         boundary_conditions += sif_boundary_condition(
             ordinate=1, target_boundaries=ground_boundaries, conditions=["Potential = 0.0"]
         )
-        n_boundaries = 1
-
-    signals = get_signals(json_data, dim=dim, mesh_names=mesh_names)
-    signals_boundaries = [f"{s}_boundary" for s in signals] if dim == 2 else signals
-
-    cbody_map: dict[str, int] = {}
-    for i, s in enumerate(signals_boundaries, 1):
-        s_wo_mer = s.replace("_mer", "")
-        if s_wo_mer in cbody_map.keys():
-            cbody_map[s] = cbody_map[s_wo_mer]
-        else:
-            cbody_map[s] = len(cbody_map.keys()) + 1
+        n_boundaries += 1
 
     for i, s in enumerate(signals_boundaries, 1):
         boundary_conditions += sif_boundary_condition(
             ordinate=i + n_boundaries, target_boundaries=[s], conditions=[f"Capacitance Body = {cbody_map[s]}"]
         )
-    n_boundaries += len(cbody_map)
+        n_boundaries += 1
 
     outer_bc_names = []
     bc_dict = json_data.get("boundary_conditions", None)
@@ -1254,13 +1266,17 @@ def sif_inductance(
 
     # Divide layers into different materials
     mesh_names = read_mesh_names(folder_path)
-    signals = get_signals(json_data, dim=2, mesh_names=mesh_names)
-    grounds = get_grounds(json_data, dim=2, mesh_names=mesh_names)
+    signals = sorted(get_signals(json_data, dim=2, mesh_names=mesh_names))
+    grounds = sorted(get_grounds(json_data, dim=2, mesh_names=mesh_names))
     body_list = get_body_list(json_data, dim=2, mesh_names=mesh_names)
     others = list((set(body_list) - set(signals) - set(grounds)).union(["vacuum"]))
 
     if len(signals) == 0:
-        raise ValueError("No signals found in system. Cannot do inductance simulation")
+        logging.warning("No signals found in inductance simulation!")
+        signals = [grounds[0]]
+        grounds = grounds[1:]
+        logging.warning(f'Treating "{signals}" as signal and "{grounds}" as grounds')
+
     if len(signals) > 1:
         logging.warning(f"Multiple signals ({len(signals)}) found in inductance simulation!")
         logging.warning(f'Treating "{signals[0]}" as signal and "{signals[1:]}" as grounds')
