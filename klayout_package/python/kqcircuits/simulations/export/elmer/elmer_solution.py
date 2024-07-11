@@ -113,7 +113,7 @@ class ElmerVectorHelmholtzSolution(ElmerSolution):
         """Cast frequency to list. Automatically called after init"""
         if isinstance(self.frequency, (float, int)):
             # hack to modify the attributes of frozen dataclass
-            object.__setattr__(self, "frequency", [self.frequency])
+            object.__setattr__(self, "frequency", [float(self.frequency)])
         elif not isinstance(self.frequency, list):
             object.__setattr__(self, "frequency", list(self.frequency))
 

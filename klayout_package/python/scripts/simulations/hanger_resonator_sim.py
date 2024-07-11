@@ -104,13 +104,15 @@ if use_elmer:
 
     if wave_equation:
         if interpolating_sweep:
+            interp_freq = np.linspace(5, 15, 1001)
             export_parameters_elmer = {
                 "path": path,
                 "tool": "wave_equation",
-                "frequency": np.linspace(5, 15, 1001),
+                "frequency": [min(interp_freq), max(interp_freq)],
                 "sweep_type": "interpolating",
                 "max_delta_s": 1e-6,
                 "frequency_batch": 3,
+                "post_process": PostProcess("interpolate_s_parameters.py", frequencies=interp_freq.tolist()),
             }
         else:
             export_parameters_elmer = {

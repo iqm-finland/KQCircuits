@@ -297,7 +297,7 @@ def get_vector_helmholtz(
     json_data: dict[str, Any],
     ordinate: str | int,
     angular_frequency: str | int,
-    result_file: str,
+    result_file: str | Path,
 ) -> str:
     """
     Returns a vector Helmholtz equation solver in sif file format.
@@ -1394,6 +1394,14 @@ def get_port_from_boundary_physical_names(ports, name):
     return None
 
 
+def _get_smatrix_filename(name: str, f: float | int) -> str:
+    return f'SMatrix_{name}_f{str(float(f)).replace(".", "_")}.dat'
+
+
+def _get_f_from_smatrix_filename(filename: str | Path, name: str) -> float:
+    return float(str(filename).removeprefix(f"SMatrix_{name}_f").removesuffix(".dat").replace("_", "."))
+
+
 def sif_wave_equation(
     json_data: dict[str, Any],
     folder_path: Path,
@@ -1490,7 +1498,7 @@ def sif_wave_equation(
     matc_blocks = sif_matc_block(matc_list)
 
     # Solvers & Equations
-    result_file = f'SMatrix_{json_data["name"]}_f{str(frequency).replace(".", "_")}.dat'
+    result_file = folder_path / _get_smatrix_filename(json_data["name"], frequency)
     solvers = ""
     solver_ordinate = 1
     if not use_av:
@@ -1700,12 +1708,12 @@ def read_result_smatrix(s_matrix_filename: str | Path, path: Path | None = None,
         s_matrix_mag = np.hypot(s_matrix_re, s_matrix_im)
         s_matrix_angle = np.degrees(np.arctan2(s_matrix_im, s_matrix_re))
 
-    smatrix_full = np.zeros_like(s_matrix_re).tolist()
+    smatrix_full = np.zeros(s_matrix_re.shape + (2,))
     for i1, i2 in np.ndindex(s_matrix_re.shape):
         if polar_form:
-            smatrix_full[i1][i2] = (s_matrix_mag[i1, i2], s_matrix_angle[i1, i2])
+            smatrix_full[i1, i2, :] = np.array((s_matrix_mag[i1, i2], s_matrix_angle[i1, i2]))
         else:
-            smatrix_full[i1][i2] = (s_matrix_re[i1, i2], s_matrix_im[i1, i2])
+            smatrix_full[i1, i2, :] = np.array((s_matrix_re[i1, i2], s_matrix_im[i1, i2]))
 
     return smatrix_full
 
@@ -1750,11 +1758,120 @@ def get_energy_integrals(path: Path | str) -> dict:
         return {"total_energy": None}
 
 
+def write_snp_file(
+    filename: str | Path,
+    frequencies: list[float] | np.ndarray,
+    smatrix_arr: np.ndarray,
+    polar_form: bool = True,
+    renormalization: float = 50,
+    port_data: list[str] | None = None,
+) -> None:
+    """
+    Write Smatrix results in snp (toucstone) format
+
+    Args:
+        filename: filename
+        frequencies: frequencies corresponding to smatrix_list
+        smatrix_arr: Array of Smatrices at all frequencies. Has the form S[freq, row, col, component]
+        polar_form: save Smatrix in polar or cartesian form.
+                    Does no transformations so smatrix_arr needs to be given in the indicated format
+        renormalization: renormalization impendance. Has currently no effect
+        port_data: port data to be saved in the snp file as comments (start with ! Port)
+    """
+    if len(frequencies) != len(smatrix_arr):
+        raise RuntimeError("Different number of frequencies and smatrix results in write_snp_file")
+    with open(filename, "w") as touchstone_file:
+        touchstone_file.write("! Touchstone file exported from KQCircuits Elmer Simulation\n")
+        touchstone_file.write(f"! Generated: {time.strftime('%a, %d %b %Y %H:%M:%S', time.localtime())}\n")
+        touchstone_file.write(
+            "! Warning: Currently renormalization not implemented in Elmer "
+            "(R on the next line might not correspond to the real port impedance)\n"
+        )
+        touchstone_file.write(f"# GHz S {'MA' if polar_form else 'IR'} R {renormalization} \n")
+        if port_data:
+            for p in port_data:
+                if not p.startswith("! Port"):
+                    logging.warning('port data in "write_snp_file" does not start with "! Port"')
+                touchstone_file.write(p + "\n")
+        else:
+            touchstone_file.write("! Port: No port data given\n")
+
+        for freq, smatrix_full in zip(frequencies, smatrix_arr):
+            for row_ind, row in enumerate(smatrix_full):
+                if row_ind == 0:
+                    touchstone_file.write("{:30s} ".format(str(freq)))
+                else:
+                    touchstone_file.write("{:30s} ".format(" "))
+                for elem in row:
+                    touchstone_file.write("{:25s} {:35s}".format(str(elem[0]), str(elem[1])))
+                touchstone_file.write("\n")
+
+
+def read_snp_file(filename: str | Path) -> tuple[np.ndarray, np.ndarray, bool, float, list[str]]:
+    """
+    Read an snp (touchstone file) in the same format as saved by "write_snp_file"
+
+    Args:
+        filename: snp filename to read
+
+    Returns:
+        tuple containg all inputs of "write_snp_file" except filename
+    """
+    port_data = []
+    renormalization = -1.0
+    polar_form = True
+    data = []
+    with open(filename, "r") as touchstone_file:
+        for line in touchstone_file:
+            line = line.strip()
+            if line.startswith("! Port"):
+                port_data.append(line)
+            elif line.startswith("!"):
+                continue
+            elif line.startswith("#"):
+                partline = line.partition(" S ")[2]
+                polar_str, _, re = partline.partition(" R ")
+                if polar_str.strip() not in ("MA", "IR"):
+                    logging.warning(f"No polar_form str found in {filename}")
+                polar_form = polar_str.strip() == "MA"
+                if not re.strip():
+                    logging.warning(f"No renormalization found in {filename}")
+                else:
+                    renormalization = float(re.strip())
+            elif line:  # not empty
+                d = [float(s) for s in line.split()]
+                if d:
+                    data.append(d)
+
+    max_elems = max((len(d) for d in data))
+    min_elems = min((len(d) for d in data))
+    if max_elems != min_elems + 1 or min_elems % 2 != 0:
+        raise RuntimeError(
+            f"Incorrect snp format: found rows with number of elements between {min_elems} and {max_elems}"
+        )
+
+    n_ports = int(min_elems / 2)
+    n_matrices = int(len(data) / n_ports)
+
+    frequencies = np.zeros([n_matrices])
+    for i in range(n_matrices):
+        frequencies[i] = data[n_ports * i][0]
+        data[n_ports * i] = data[n_ports * i][1:]
+
+    smatrix_arr = np.zeros([n_matrices, n_ports, n_ports, 2])
+
+    for i, row, col, comp in np.ndindex(smatrix_arr.shape):
+        smatrix_arr[i, row, col, comp] = data[n_ports * i + row][2 * col + comp]
+
+    return frequencies, smatrix_arr, polar_form, renormalization, port_data
+
+
 def write_project_results_json(json_data: dict[str, Any], path: Path, msh_filepath, polar_form: bool = True) -> None:
     """
     Writes the solution data in '_project_results.json' format for one Elmer simulation.
 
     If tool is capacitance, writes capacitance matrix
+    If tool is epr_3d or capacitance with integrate energies=True, writes energies
     If tool is wave_equation, writes S-matrix both in '_project_results.json' and touchstone format
 
     Args:
@@ -1821,7 +1938,9 @@ def write_project_results_json(json_data: dict[str, Any], path: Path, msh_filepa
 
     elif tool == "wave_equation":
 
-        frequencies = json_data["frequency"]
+        frequencies = sorted([_get_f_from_smatrix_filename(sfile.name, simname) for sfile in sif_folder.glob("*.dat")])
+        if json_data["sweep_type"] != "interpolating" and len(json_data["frequency"]) != len(frequencies):
+            logging.warning("Different number of frequencies in json and result Smatrix files")
 
         ports = json_data["ports"]
         renormalizations = [p["renormalization"] for p in ports]
@@ -1830,68 +1949,67 @@ def write_project_results_json(json_data: dict[str, Any], path: Path, msh_filepa
             logging.warning("Port renormalizations are not equal")
             logging.warning(f"Renormalizations: {renormalizations}")
 
-        data_folder = main_sim_folder.joinpath("elmer_data")
-        data_folder.mkdir(parents=True, exist_ok=True)
+        renormalization = renormalizations[0]
 
+        smatrix_arr = np.zeros([len(frequencies), len(ports), len(ports), 2])
         results_list = []
-        for f in frequencies:
-            s_matrix_filename = main_sim_folder.joinpath(f'SMatrix_{simname}_f{str(f).replace(".", "_")}.dat')
+        for f_ind, f in enumerate(frequencies):
             smatrix_full = read_result_smatrix(
-                s_matrix_filename, path=path.joinpath(msh_filepath.stem), polar_form=polar_form
+                sif_folder / _get_smatrix_filename(simname, f),
+                path=path.joinpath(msh_filepath.stem),
+                polar_form=polar_form,
             )
             results_list.append(
                 {
                     "frequency": f,
-                    "renormalization": renormalizations[0],
+                    "renormalization": renormalization,
                     "format": "polar" if polar_form else "cartesian",
-                    "smatrix": smatrix_full,
+                    "smatrix": smatrix_full.tolist(),
                 }
             )
+            smatrix_arr[f_ind] = smatrix_full
 
         with open(json_filename, "w") as outfile:
             json.dump(results_list, outfile, indent=4)
 
-        for f in main_sim_folder.rglob("*.dat*"):
-            shutil.move(f, data_folder / f.name)
+        # move Smatrix dat files to a separate folder
+        data_folder = main_sim_folder.joinpath("elmer_data")
+        data_folder.mkdir(parents=True, exist_ok=True)
+        for dfile in main_sim_folder.rglob("*.dat*"):
+            shutil.move(dfile, data_folder / dfile.name)
+
         # write touchstone
-        touchstone_filename = f"{sif_folder}.s{len(ports)}p"
-        with open(touchstone_filename, "w") as touchstone_file:
-            touchstone_file.write("! Touchstone file exported from KQCircuits Elmer Simulation\n")
-            touchstone_file.write(f"! Generated: {time.strftime('%a, %d %b %Y %H:%M:%S', time.localtime())}\n")
-            touchstone_file.write(
-                "! Warning: Currently renormalization not implemented in Elmer "
-                "(R on the next line might not correspond to the real port impedance)\n"
-            )
-            touchstone_file.write(f"# GHz S {'MA' if polar_form else 'IR'} R {renormalizations[0]} \n")
-            for p in ports:
-                touchstone_file.write(
-                    f"! Port {p['number']}: {p['type']} R {p['resistance']} "
-                    f"X {p['reactance']} L {p['inductance']} C {p['capacitance']}\n"
-                )
-            for res in results_list:
-                smatrix_full = res["smatrix"]
-                for row_ind, row in enumerate(smatrix_full):
-                    if row_ind == 0:
-                        touchstone_file.write("{:30s} ".format(str(res["frequency"])))
-                    else:
-                        touchstone_file.write("{:30s} ".format(" "))
-                    for elem in row:
-                        touchstone_file.write("{:25s} {:35s}".format(str(elem[0]), str(elem[1])))
-                    touchstone_file.write("\n")
+        port_data = [
+            f"! Port {p['number']}: {p['type']} R {p['resistance']} "
+            f"X {p['reactance']} L {p['inductance']} C {p['capacitance']}"
+            for p in ports
+        ]
 
-        filter_resonant_vtus(results_list, sif_folder, simname)
+        write_snp_file(
+            f"{sif_folder}.s{len(ports)}p",
+            frequencies,
+            smatrix_arr,
+            polar_form=polar_form,
+            renormalization=renormalization,
+            port_data=port_data,
+        )
+        filter_resonant_vtus(frequencies, smatrix_arr, sif_folder, simname, polar_form=polar_form)
 
 
-def filter_resonant_vtus(results: list[dict], sif_folder: Path, simname: str) -> None:
+def filter_resonant_vtus(
+    frequencies: list[float] | np.ndarray, smatrix_arr: np.ndarray, sif_folder: Path, simname: str, polar_form=True
+) -> None:
     """
     Roughly find vtus corresponding to resonances and move them to a separate
     folder `simname/resonant_vtus`. Also includes the ends of sweep interval. Rest of
     the vtus are moved to a folder `simname/filtered_vtus`
 
     Args:
-        results: results in a list of dicts as saved to the json
+        frequencies: frequencies of simulated smatrices
+        smatrix_arr: simulated smatrices
         sif_folder: Folder containing sif and vtu files
         simname: simulation name
+        polar_form: whether smatrix_arr is given in polar or cartesian format
     """
     available_vtus = list(sif_folder.glob("*.pvtu"))
     vtu_partitioned = len(available_vtus) != 0
@@ -1901,12 +2019,12 @@ def filter_resonant_vtus(results: list[dict], sif_folder: Path, simname: str) ->
     if len(available_vtus) == 0:
         return
 
-    s_f = np.array([r["frequency"] for r in results])
-    nports = len(results[0]["smatrix"])
+    s_f = np.array(frequencies)
+    nports = smatrix_arr.shape[1]
     peak_inds = []
     # find peaks in diagonal entries
     for i in range(nports):
-        s_mag = np.array([r["smatrix"][i][i][0] for r in results])
+        s_mag = smatrix_arr[:, i, i, 0] if polar_form else np.hypot(smatrix_arr[:, i, i, 0], smatrix_arr[:, i, i, 1])
         peaksp, _ = find_peaks(s_mag)
         peaksm, _ = find_peaks(-s_mag)
         peak_inds += list(peaksp) + list(peaksm)
