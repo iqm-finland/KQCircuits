@@ -943,7 +943,14 @@
 <span class="nd">@add_parameters_from</span><span class="p">(</span>
     <span class="n">Squid</span><span class="p">,</span> <span class="s2">&quot;junction_width&quot;</span><span class="p">,</span> <span class="s2">&quot;loop_area&quot;</span><span class="p">,</span> <span class="s2">&quot;junction_type&quot;</span><span class="p">,</span> <span class="s2">&quot;junction_parameters&quot;</span><span class="p">,</span> <span class="s2">&quot;_junction_parameters&quot;</span>
 <span class="p">)</span>
-<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Sim</span><span class="p">,</span> <span class="s2">&quot;junction_total_length&quot;</span><span class="p">)</span>
+<span class="nd">@add_parameters_from</span><span class="p">(</span>
+    <span class="n">Sim</span><span class="p">,</span>
+    <span class="s2">&quot;junction_total_length&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;junction_upper_pad_width&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;junction_upper_pad_length&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;junction_lower_pad_width&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;junction_lower_pad_length&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="k">class</span> <span class="nc">Qubit</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for qubit objects without actual produce function.</span>
 
