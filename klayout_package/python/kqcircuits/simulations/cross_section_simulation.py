@@ -53,6 +53,7 @@ class CrossSectionSimulation:
         unit="m",
         docstring="London penetration depth is implemented for one signal simulation only",
     )
+    # TODO: deprecate. With internal cross section method, we can simply copy the parameters over
     xsection_source_class = Param(
         pdt.TypeNone,
         "Simulation class XSection tool was used on",

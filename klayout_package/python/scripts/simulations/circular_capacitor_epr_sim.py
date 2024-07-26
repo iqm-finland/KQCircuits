@@ -31,7 +31,7 @@ from kqcircuits.util.export_helper import (
     open_with_klayout_or_default_application,
 )
 from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
-from kqcircuits.simulations.export.xsection.epr_correction_export import get_epr_correction_simulations
+from kqcircuits.simulations.export.cross_section.epr_correction_export import get_epr_correction_simulations
 from kqcircuits.simulations.export.elmer.elmer_solution import ElmerEPR3DSolution
 from kqcircuits.simulations.epr.circular_capacitor import partition_regions, correction_cuts
 
@@ -168,9 +168,7 @@ if use_sbatch:
 
 export_elmer(simulations, path=dir_path, workflow=workflow, post_process=pp)
 
-correction_simulations, post_process = get_epr_correction_simulations(
-    simulations, dir_path, correction_cuts, metal_height=0.2
-)
+correction_simulations, post_process = get_epr_correction_simulations(simulations, correction_cuts, metal_height=0.2)
 
 if use_sbatch:
     # Even though the cross-sections are already fast we can speed them up by redistributing the

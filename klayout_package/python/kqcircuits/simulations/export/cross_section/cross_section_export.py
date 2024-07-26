@@ -1,5 +1,5 @@
 # This code is part of KQCircuits
-# Copyright (C) 2022 IQM Finland Oy
+# Copyright (C) 2025 IQM Finland Oy
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 # License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
@@ -18,83 +18,19 @@
 
 
 import ast
-import json
-import os
+import re
 import logging
-import subprocess
 from itertools import product
-from pathlib import Path
-from typing import Callable
-from kqcircuits.defaults import STARTUPINFO, XSECTION_PROCESS_PATH
-from kqcircuits.pya_resolver import pya, klayout_executable_command
-from kqcircuits.util.load_save_layout import load_layout, save_layout
+from math import ceil
+from typing import Callable, Sequence
+from kqcircuits.defaults import default_cross_section_profile
+from kqcircuits.pya_resolver import pya
+from kqcircuits.simulations.export.cross_section.cross_section_profile import CrossSectionProfile
 from kqcircuits.simulations.cross_section_simulation import CrossSectionSimulation
 from kqcircuits.simulations.simulation import Simulation, to_1d_list
-from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
 
 
-def xsection_call(
-    input_oas: Path,
-    output_oas: Path,
-    cut1: pya.DPoint,
-    cut2: pya.DPoint,
-    process_path: Path = XSECTION_PROCESS_PATH,
-    parameters_path: Path = None,
-) -> None:
-    """Calls on KLayout to run the XSection plugin
-
-    Args:
-        input_oas: Input OAS file (top-down geometry)
-        output_oas: Output OAS file (Cross-section of input geometry)
-        cut1: DPoint of first endpoint of the cross-section cut
-        cut2: DPoint of second endpoint of the cross-section cut
-        process_path: XSection process file that defines cross-section etching depths etc
-        parameters_path: If process_path points to kqc_process.xs,
-            parameters_path should point to the XSection parameters json file
-            containing sweeped parameters and layer information.
-    """
-    if os.name == "nt":
-        klayout_dir_name = "KLayout"
-    elif os.name == "posix":
-        klayout_dir_name = ".klayout"
-    else:
-        raise SystemError("Error: unsupported operating system")
-    xsection_plugin_path = os.path.join(os.path.expanduser("~"), klayout_dir_name, "salt/xsection/macros/xsection.lym")
-    cut_string = f"{cut1.x},{cut1.y};{cut2.x},{cut2.y}"
-
-    if not klayout_executable_command():
-        raise Exception("Can't find klayout executable command!")
-    if not Path(xsection_plugin_path).is_file():
-        raise Exception("The 'xsection' plugin is missing in KLayout! Go to 'Tools->Manage Packages' to install it.")
-
-    # Hack: Weird prefix keeps getting added when path is converted to string which breaks the ruby plugin
-    xs_run = str(process_path).replace("\\\\?\\", "")
-    xs_params = str(parameters_path).replace("\\\\?\\", "")
-    # When debugging, remove '-z' argument to see ruby error messages
-    subprocess.run(
-        [
-            klayout_executable_command(),
-            input_oas.absolute(),
-            "-z",
-            "-nc",
-            "-rx",
-            "-r",
-            xsection_plugin_path,
-            "-rd",
-            f"xs_run={xs_run}",
-            "-rd",
-            f"xs_params={xs_params}",
-            "-rd",
-            f"xs_cut={cut_string}",
-            "-rd",
-            f"xs_out={output_oas.absolute()}",
-        ],
-        check=True,
-        startupinfo=STARTUPINFO,
-    )
-
-
-def _oxidise_layers(simulation, ma_thickness, ms_thickness, sa_thickness):
+def _oxidise_layers(simulation: Simulation, ma_thickness: float, ms_thickness: float, sa_thickness: float) -> None:
     """Take the cross section geometry and add oxide layers between substrate, metal and vacuum.
     Will etch away substrate and metals to insert oxide geometry.
     """
@@ -103,7 +39,7 @@ def _oxidise_layers(simulation, ma_thickness, ms_thickness, sa_thickness):
         for layer in simulation.layout.layer_infos()
         if layer.name.startswith("substrate_") or layer.name == "substrate"
     ]
-    substrate = _combine_region_from_layers(simulation, substrate_layers)
+    substrate = _combine_region_from_layers(simulation.cell, substrate_layers)
     used_faces = []
     for face_group in simulation.get_parameters()["face_stack"]:
         if isinstance(face_group, list):
@@ -117,7 +53,7 @@ def _oxidise_layers(simulation, ma_thickness, ms_thickness, sa_thickness):
     ]
     for f in used_faces:
         metal_layers += [layer for layer in simulation.layout.layer_infos() if layer.name.startswith(f"{f}_signal_")]
-    metals = _combine_region_from_layers(simulation, metal_layers)
+    metals = _combine_region_from_layers(simulation.cell, metal_layers)
     metal_edges = metals.edges()
     substrate_edges = substrate.edges()
 
@@ -163,18 +99,17 @@ def _oxidise_layers(simulation, ma_thickness, ms_thickness, sa_thickness):
         simulation.cell.shapes(simulation.get_sim_layer("sa_layer")).insert(sa_layer)
 
 
-def _check_metal_heights(simulation):
+def _check_metal_heights(simulation: Simulation) -> None:
     for i, h in enumerate(to_1d_list(simulation.metal_height), 1):
         if h == 0:
             logging.warning(f"Encountered zero metal height in CrossSectionSimulation (face {i}).")
 
 
-def create_xsections_from_simulations(
+def create_cross_sections_from_simulations(
     simulations: list[Simulation],
-    output_path: Path,
     cuts: tuple[pya.DPoint, pya.DPoint] | list[tuple[pya.DPoint, pya.DPoint]],
-    process_path: Path = XSECTION_PROCESS_PATH,
-    post_processing_function: Callable[[CrossSectionSimulation], None] = None,
+    profile: CrossSectionProfile | Callable[[Simulation], CrossSectionProfile] = default_cross_section_profile,
+    post_processing_function: None | Callable[[CrossSectionSimulation], None] = None,
     oxidise_layers_function: Callable[[CrossSectionSimulation, float, float, float], None] = _oxidise_layers,
     ma_permittivity: float = 0,
     ms_permittivity: float = 0,
@@ -193,16 +128,16 @@ def create_xsections_from_simulations(
 
     Args:
         simulations: List of Simulation objects, usually produced by a sweep
-        output_path: Path for the exported simulation files
         cuts: 1. A tuple (p1, p2), where p1 and p2 are endpoints of a cross-section cut or
               2. a list of such tuples such that each Simulation object gets an individual cut
-        process_path: XSection process file that defines cross-section etching depths etc
+        profile: CrossSectionProfile object that defines vertical level values for each layer.
+            If not set, will use ``default_cross_section_profile``
         post_processing_function: Additional function to post-process the cross-section geometry.
             Defaults to None, in which case no post-processing is performed.
             The function takes a CrossSectionSimulation object as argument
         oxidise_layers_function: Set this argument if you have a custom way of introducing
             oxidization layers to the cross-section metal deposits and substrate.
-            See expected function signature from pyhints
+            See expected function signature from typehints
         ma_permittivity: Permittivity of metal–vacuum (air) interface
         ms_permittivity: Permittivity of metal–substrate interface
         sa_permittivity: Permittivity of substrate–vacuum (air) interface
@@ -218,9 +153,8 @@ def create_xsections_from_simulations(
             0 =   no magnification with 1e-3 dbu
             1 =  10x magnification with 1e-4 dbu
             2 = 100x magnification with 1e-5 dbu etc
-            Consider setting non-zero value when using oxide layers with < 1e-3 layer thickness or
-            taking cross-sections of thin objects
-        layout: predefined layout for the cross-section simulation (optional)
+            Consider setting non-zero value when using oxide layers with < 1e-3 layer thickness
+        layout: predefined layout for the cross-section simulation. If not set, will create new layout.
 
     Returns:
         List of CrossSectionSimulation objects for each Simulation object in simulations
@@ -229,38 +163,22 @@ def create_xsections_from_simulations(
         cuts = [cuts] * len(simulations)
     cuts = [tuple(c if isinstance(c, pya.DPoint) else c.to_p() for c in cut) for cut in cuts]
     if len(simulations) != len(cuts):
-        raise Exception("Number of cuts did not match the number of simulations")
+        raise ValueError("Number of cuts did not match the number of simulations")
     if any(len(simulation.get_parameters()["face_stack"]) not in (1, 2) for simulation in simulations):
-        raise Exception("Only single face and flip chip cross section simulations currently supported")
-
-    xsection_dir = output_path.joinpath("xsection_tmp")
-    xsection_dir.mkdir(parents=True, exist_ok=True)
-
-    if layout is None:
+        raise ValueError("Only single face and flip chip cross section simulations currently supported")
+    if not layout:
         layout = pya.Layout()
-    xsection_cells = []
-    for simulation, cut in zip(simulations, cuts):
-        _check_metal_heights(simulation)
-        xsection_parameters = _dump_xsection_parameters(xsection_dir, simulation)
-        simulation_file = xsection_dir / f"original_{simulation.cell.name}.oas"
-        xsection_file = xsection_dir / f"xsection_{simulation.cell.name}.oas"
-        save_layout(simulation_file, simulation.layout, [simulation.cell], no_empty_cells=True)
-        xsection_call(simulation_file, xsection_file, cut[0], cut[1], process_path, xsection_parameters)
 
-        load_layout(xsection_file, layout)
-        for i in layout.layer_indexes():
-            if all(layout.begin_shapes(cell, i).at_end() for cell in layout.top_cells()):
-                layout.delete_layer(i)  # delete empty layers caused by bug in klayout 0.29.0
-        xsection_cells.append(layout.top_cells()[-1])
-        xsection_cells[-1].name = simulation.cell.name
+    # Increase database unit accuracy in layout if bigger magnification_order set
+    if magnification_order > 0:
+        layout.dbu = 10 ** (-3 - magnification_order)
 
-    _clean_tmp_xsection_directory(xsection_dir, simulations)
-    # Collect cross-section simulation sweeps
+    # Collect cross section simulation sweeps
     return [
         _construct_cross_section_simulation(
             layout,
-            xsection_cell,
-            simulations[idx],
+            cut,
+            simulation,
             post_processing_function,
             oxidise_layers_function,
             ma_permittivity,
@@ -272,13 +190,13 @@ def create_xsections_from_simulations(
             vertical_cull,
             mer_box,
             london_penetration_depth,
-            magnification_order,
+            profile,
         )
-        for idx, xsection_cell in enumerate(xsection_cells)
+        for simulation, cut in zip(simulations, cuts)
     ]
 
 
-def separate_signal_layer_shapes(simulation: Simulation, sort_key: Callable[[pya.Shape], float] = None):
+def separate_signal_layer_shapes(simulation: Simulation, sort_key: Callable[[pya.Shape], float] = None) -> None:
     """Separate shapes in signal layer to their own dedicated signal layers for each face
 
     Args:
@@ -312,7 +230,7 @@ def separate_signal_layer_shapes(simulation: Simulation, sort_key: Callable[[pya
         simulation.cell.clear(signal_layer_idx)
 
 
-def find_layer_by_name(layer_name, layout):
+def find_layer_by_name(layer_name: str, layout: pya.Layout) -> pya.LayerInfo:
     """Returns layerinfo if there already is a layer by layer_name in layout. None if no such layer exists"""
     for l in layout.layer_infos():
         if l.datatype == 0 and layer_name == l.name:
@@ -320,7 +238,7 @@ def find_layer_by_name(layer_name, layout):
     return None
 
 
-def free_layer_slots(layout):
+def free_layer_slots(layout: pya.Layout):
     """A generator of available layer slots"""
     layer_index = 0
     reserved_layer_ids = [l.layer for l in layout.layer_infos() if l.datatype == 0]
@@ -331,85 +249,57 @@ def free_layer_slots(layout):
         yield layer_index
 
 
-def visualise_xsection_cut_on_original_layout(
+def visualise_cross_section_cut_on_original_layout(
     simulations: list[Simulation],
     cuts: tuple[pya.DPoint, pya.DPoint] | list[tuple[pya.DPoint, pya.DPoint]],
     cut_label: str = "cut",
     width_ratio: float = 0.0,
-):
-    """Visualise requested xsection cuts on the original simulation layout.
+) -> None:
+    """Visualise requested cross section cuts on the original simulation layout.
 
-    Will add a rectangle between two points of the cut, and two text points into layer "xsection_cut"::
+    Will add a rectangle between two points of the cut, and two text points into layer "cross_section_cut"::
 
         * f"{cut_label}_1" representing the left side of the cross section simulation
         * f"{cut_label}_2" representing the right side of the cross section simulation
 
-    In case the export takes xsections for one simulation multiple times, this function
+    In case the export takes cross sections for one simulation multiple times, this function
     can be called on same simulation sweep multiple times so that multiple cuts can be visualised
     in the same layout. In such case it is recommended to differentiate the cuts using `cut_label`.
 
     Args:
-        simulations: list of simulations from which xsections are taken. After this call these simulations
+        simulations: list of simulations from which cross sections are taken. After this call these simulations
             will be modified to include the visualised cuts.
         cuts: 1. A tuple (p1, p2), where p1 and p2 are endpoints of a cross-section cut or
               2. a list of such tuples such that each Simulation object gets an individual cut
         cut_label: prefix of the two text points shown for the cut
-        width_ratio: rectangles visualising cuts will have a width of length of the cut multiplied by width_ratio
+        width_ratio: rectangles visualising cuts will have a width of length of the cut multiplied by width_ratio.
+            By default will set 0 width line, which is visualised in KLayout.
     """
     if isinstance(cuts, tuple):
         cuts = [cuts] * len(simulations)
     cuts = [tuple(c if isinstance(c, pya.DPoint) else c.to_p() for c in cut) for cut in cuts]
     if len(simulations) != len(cuts):
-        raise Exception("Number of cuts did not match the number of simulations")
+        raise ValueError("Number of cuts did not match the number of simulations")
     for simulation, cut in zip(simulations, cuts):
         cut_length = (cut[1] - cut[0]).length()
         marker_path = pya.DPath(cut, cut_length * width_ratio).to_itype(simulation.layout.dbu)
         # Prevent .OAS saving errors by rounding integer value of path width to even value
         marker_path.width -= marker_path.width % 2
         marker = pya.Region(marker_path)
-        simulation.visualise_region(marker, cut_label, "xsection_cut", cut)
+        simulation.visualise_region(marker, cut_label, "cross_section_cut", cut)
 
 
-def _dump_xsection_parameters(xsection_dir, simulation):
-    """If we're sweeping xsection specific parameters,
-    dump them in external file for xsection process file to pick up
-    """
-    simulation_params = {
-        param_name: param_value
-        for param_name, param_value in simulation.get_parameters().items()
-        if not isinstance(param_value, pya.DBox)
-    }  # Hack: ignore non-serializable params
-    simulation_params["chip_distance"] = to_1d_list(simulation_params["chip_distance"])
-    # Also dump all used layers in the simulation cell
-    simulation_params["sim_layers"] = {l.name: f"{l.layer}/{l.datatype}" for l in simulation.layout.layer_infos()}
-    xsection_parameters_file = xsection_dir / f"parameters_{simulation.cell.name}.json"
-    with open(xsection_parameters_file, "w", encoding="utf-8") as sweep_file:
-        json.dump(simulation_params, sweep_file, cls=GeometryJsonEncoder)
-    return xsection_parameters_file
-
-
-def _clean_tmp_xsection_directory(xsection_dir, simulations):
-    for simulation in simulations:
-        if os.path.exists(xsection_dir / f"original_{simulation.cell.name}.oas"):
-            os.remove(xsection_dir / f"original_{simulation.cell.name}.oas")
-        if os.path.exists(xsection_dir / f"xsection_{simulation.cell.name}.oas"):
-            os.remove(xsection_dir / f"xsection_{simulation.cell.name}.oas")
-        if os.path.exists(xsection_dir / f"parameters_{simulation.cell.name}.json"):
-            os.remove(xsection_dir / f"parameters_{simulation.cell.name}.json")
-    if os.path.exists(xsection_dir):
-        os.rmdir(xsection_dir)
-
-
-def _combine_region_from_layers(simulation, layers):
+def _combine_region_from_layers(cell: pya.Cell, layers: Sequence[pya.LayerInfo]) -> pya.Region:
     """Produce a region combined from regions in layers list"""
     region = pya.Region()
+    layout = cell.layout()
     for layer in layers:
-        region += pya.Region(simulation.cell.shapes(simulation.layout.layer(layer)))
+        region += pya.Region(cell.shapes(layout.layer(layer)))
     return region
 
 
-def _edge_on_the_box_border(edge, box):
-    """True if edge is exactly at the rim of the box. edge must be of class pya.DEdge"""
+def _edge_on_the_box_border(edge: pya.DEdge, box: pya.DBox) -> bool:
+    """True if edge is exactly at the rim of the box"""
     return (
         (edge.x1 == box.p1.x and edge.x2 == box.p1.x)
         or (edge.x1 == box.p2.x and edge.x2 == box.p2.x)
@@ -418,7 +308,7 @@ def _edge_on_the_box_border(edge, box):
     )
 
 
-def _cut_edge(target_edge, source_edge, extra_edges):
+def _cut_edge(target_edge: pya.Edge, source_edge: pya.Edge, extra_edges: Sequence[pya.Edge]) -> pya.Edge:
     """Cut an end of the target_edge with source_edge.
 
     If source_edge leaves behind two ends of the target_edge,
@@ -437,7 +327,9 @@ def _cut_edge(target_edge, source_edge, extra_edges):
     return result_edge
 
 
-def _remove_shared_points(target_edge, acting_edges, is_adjacent):
+def _remove_shared_points(
+    target_edge: pya.Edge, acting_edges: Sequence[pya.Edge], is_adjacent: bool
+) -> Sequence[pya.Edge]:
     """Remove all points shared by target_edge and edges in acting_edges
 
     Returns a set of continuous edges that are not contained by acting_edges.
@@ -462,7 +354,7 @@ def _remove_shared_points(target_edge, acting_edges, is_adjacent):
     return edge_bits
 
 
-def _normal_of_edge(simulation, p1, p2, scale):
+def _normal_of_edge(simulation: Simulation, p1: pya.Point, p2: pya.Point, scale: float) -> pya.Point:
     """Returns a normal of edge p1->p2.
 
     If (p1, p2) are in same polygon in given order,
@@ -478,7 +370,7 @@ def _normal_of_edge(simulation, p1, p2, scale):
     return (dnormal * (scale / dnormal.abs())).to_itype(simulation.layout.dbu)
 
 
-def _thicken_edges(simulation, edges, thickness, grow):
+def _thicken_edges(simulation: Simulation, edges: Sequence[pya.Edge], thickness: float, grow: bool) -> pya.Region:
     """Take edges and add thickness to produce a region.
 
     Set grow to True to grow the region outward, False to grow inward
@@ -560,39 +452,45 @@ def _thicken_edges(simulation, edges, thickness, grow):
     return result_region
 
 
-def _iterate_layers_and_modify_region(xsection_cell, process_region):
-    """Iterates over all (non-empty) layers in xsection_cell
+def _iterate_layers_and_modify_region(
+    cell: pya.Cell, process_region: Callable[[pya.Region, pya.LayerInfo], pya.Region]
+) -> None:
+    """Iterates over all (non-empty) layers in cell
     and replaces the region in that layer with process_region(region, layer)
     """
-    for layer in xsection_cell.layout().layer_infos():
-        region = pya.Region(xsection_cell.shapes(xsection_cell.layout().layer(layer)))
+    for layer in cell.layout().layer_infos():
+        region = pya.Region(cell.shapes(cell.layout().layer(layer)))
         if region.is_empty():
             continue
-        xsection_cell.shapes(xsection_cell.layout().layer(layer)).clear()
-        xsection_cell.shapes(xsection_cell.layout().layer(layer)).insert(process_region(region, layer))
+        cell.shapes(cell.layout().layer(layer)).clear()
+        cell.shapes(cell.layout().layer(layer)).insert(process_region(region, layer))
 
 
 def _construct_cross_section_simulation(
-    layout,
-    xsection_cell,
-    simulation,
-    post_processing_function,
-    oxidise_layers_function,
-    ma_permittivity,
-    ms_permittivity,
-    sa_permittivity,
-    ma_thickness,
-    ms_thickness,
-    sa_thickness,
-    vertical_cull,
-    mer_box,
-    london_penetration_depth,
-    magnification_order,
-):
+    layout: pya.Layout,
+    cut: tuple[pya.DPoint, pya.DPoint],
+    simulation: Simulation,
+    post_processing_function: None | Callable[[CrossSectionSimulation], None],
+    oxidise_layers_function: Callable[[CrossSectionSimulation, float, float, float], None],
+    ma_permittivity: float,
+    ms_permittivity: float,
+    sa_permittivity: float,
+    ma_thickness: float,
+    ms_thickness: float,
+    sa_thickness: float,
+    vertical_cull: None | tuple[float, float],
+    mer_box: None | pya.DBox | list[pya.DBox],
+    london_penetration_depth: float | list,
+    profile: CrossSectionProfile,
+) -> CrossSectionSimulation:
     """Produce CrossSectionSimulation object"""
-    if magnification_order > 0:
-        layout.dbu = 10 ** (-3 - magnification_order)
-        xsection_cell.transform(pya.DCplxTrans(10**magnification_order))
+    _check_metal_heights(simulation)
+    if callable(profile):
+        cross_section_profile = profile(simulation)
+    else:
+        cross_section_profile = profile
+    intersections_by_layer = take_cross_section(simulation.cell, cut, cross_section_profile)
+    xsection_cell = produce_intersection_shapes(simulation, layout, intersections_by_layer, cross_section_profile)
     xsection_parameters = simulation.get_parameters()
     xsection_parameters["london_penetration_depth"] = london_penetration_depth
     cell_bbox = xsection_cell.dbbox()
@@ -666,3 +564,122 @@ def _construct_cross_section_simulation(
         xsection_simulation.set_permittivity("sa_layer", sa_permittivity)
     xsection_simulation.process_layers()
     return xsection_simulation
+
+
+def take_cross_section(
+    cell: pya.Cell, cut: tuple[pya.DPoint, pya.DPoint], profile: CrossSectionProfile
+) -> dict[pya.LayerInfo, list[tuple[float, float]]]:
+    """Collect intersections between ``cut`` and polygons in ``cell`` for each layer taken into account in ``profile``.
+
+    Returns: Dictionary mapping each pya.LayerInfo into segments where ``cut`` overlaps with layer polygon. Segments are
+    given as sorted list of tuples (start, end) indicating distances from ``cut[0]`` to the segment points.
+    """
+    segments_by_layer = {}
+    layout = cell.layout()
+    cut_edge = pya.DEdge(cut[0], cut[1]).to_itype(layout.dbu)
+    cut_vector = cut_edge.d()
+
+    # Place constants related to non-orthogonal edges warning
+    appr_edge_slope_tolerance = 0.2  # warning is given if edge slope compared to orthogonal exceeds approximately this
+    database_unit_tolerance = 2  # the database unit tolerance
+
+    # Compute variables related to non-orthogonal edges warning
+    cut_region_width = ceil(0.5 * database_unit_tolerance / appr_edge_slope_tolerance) * 2
+    max_cut_vector_sprod = cut_region_width * appr_edge_slope_tolerance * cut_vector.abs()
+
+    # Simple path region for cut with small width. Use KLayout's boolean operators to detect the intersections.
+    cut_region = pya.Region(pya.Path([cut_edge.p1, cut_edge.p2], cut_region_width))
+
+    # Scale intersection dot products within confines of the cut
+    crossing_edges = [e for s in cut_region.each() for e in s.each_edge() if cut_edge.crossed_by(e)]
+    prods = [cut_vector.sprod(cut_edge.crossing_point(e)) for e in crossing_edges]
+    cut_min = min(prods)
+    cut_scale = (cut[1] - cut[0]).length() / (max(prods) - cut_min)
+
+    for layer_info in profile.get_layers(layout):
+        layer_region = pya.Region(cell.begin_shapes_rec(layout.layer(layer_info)))
+        intersection = (cut_region & layer_region).merged()
+        segments = []
+        for polygon in intersection.each():
+            crossing_edges = [e for e in polygon.each_edge() if cut_edge.crossed_by(e)]
+
+            # Warn if cross-section is taken with non-orthogonal edges
+            skew_edges = [e for e in crossing_edges if abs(cut_vector.sprod(e.d())) > max_cut_vector_sprod]
+            for skew_edge in skew_edges:
+                logging.warning(
+                    f"Cross section is taken with non-orthogonal edge in cell '{cell.name}' at layer "
+                    f"'{layer_info.name}' at location ({cut_edge.crossing_point(skew_edge).to_dtype(layout.dbu)})."
+                )
+
+            # Calculate intersection as value between 0 and cut length
+            dists = [(cut_vector.sprod(cut_edge.crossing_point(e)) - cut_min) * cut_scale for e in crossing_edges]
+            segments.append((min(dists), max(dists)))
+        segments_by_layer[layer_info] = sorted(segments)
+    return segments_by_layer
+
+
+def produce_intersection_shapes(
+    simulation: Simulation,
+    layout: pya.Layout,
+    segments_by_layer: dict[pya.LayerInfo, list[tuple[float, float]]],
+    profile: CrossSectionProfile,
+) -> pya.Cell:
+    """Based on collected intersections of a cut, produces cross-section shapes.
+    Shapes are placed to same layers, but to separate cell existing at separate layout.
+
+    Args:
+        simulation: Original Simulation object from which cross-section is taken from.
+        layout: Layout where cross-section cell will be placed.
+        segments_by_layer: layer segment data returned by ``take_cross_section``
+        profile: CrossSectionProfile object that defines vertical level values for each layer.
+
+    Returns:
+        Cell placed to ``layout`` that contains cross-section shapes
+    """
+    # Produce regions in python dict first before placing them to KLayout layout
+    raw_regions = {}
+    for layer_info, segments in segments_by_layer.items():
+        level = profile.get_level(layer_info.name, simulation)
+        output_region = pya.Region()
+        for start, end in segments:
+            # TODO: remove add_this_to_xor_with_master
+            output_region += pya.Region(
+                pya.DBox(
+                    start,
+                    min(level) + profile.add_this_to_xor_with_master,
+                    end,
+                    max(level) + profile.add_this_to_xor_with_master,
+                ).to_itype(layout.dbu)
+            )
+        raw_regions[layer_info] = output_region
+
+    # Process layers by profile priority, where in case of shape overlap preserve higher priority layer
+    regions_to_place = {}
+    for layer_info in segments_by_layer.keys():
+        dominant_layer_regex = profile.get_dominant_layer_regex(layer_info.name, simulation)
+        subtractable_region = pya.Region()
+        if dominant_layer_regex:
+            for l, unsubtracted_region in raw_regions.items():
+                if re.fullmatch(dominant_layer_regex, l.name):
+                    subtractable_region += unsubtracted_region
+        regions_to_place[layer_info] = raw_regions[layer_info] - subtractable_region
+
+    # See which layers should be set as invisible according to profile
+    for layer_info in segments_by_layer.keys():
+        if layer_info in profile.get_invisible_layers(simulation):
+            regions_to_place[layer_info].clear()
+
+    # Process layers that should be changed to another layer according to profile
+    for layer_info in segments_by_layer.keys():
+        if profile.change_layer(layer_info, simulation) == layer_info:
+            continue
+        if not profile.change_layer(layer_info, simulation) in regions_to_place:
+            regions_to_place[profile.change_layer(layer_info, simulation)] = pya.Region()
+        regions_to_place[profile.change_layer(layer_info, simulation)] += regions_to_place[layer_info]
+        regions_to_place[layer_info].clear()
+
+    # Write cell and return it
+    cell = layout.create_cell(simulation.cell.name)
+    for layer_info in segments_by_layer.keys():
+        cell.shapes(layout.layer(layer_info)).insert(regions_to_place[layer_info])
+    return cell

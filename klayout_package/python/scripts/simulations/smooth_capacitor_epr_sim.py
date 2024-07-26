@@ -21,7 +21,7 @@ import sys
 from pathlib import Path
 
 from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
-from kqcircuits.simulations.export.xsection.epr_correction_export import get_epr_correction_simulations
+from kqcircuits.simulations.export.cross_section.epr_correction_export import get_epr_correction_simulations
 
 from kqcircuits.elements.smooth_capacitor import SmoothCapacitor
 from kqcircuits.simulations.epr.smooth_capacitor import partition_regions, correction_cuts
@@ -111,7 +111,7 @@ export_elmer(
 # produce EPR correction simulations
 if use_xsection:
     correction_simulations, post_process = get_epr_correction_simulations(
-        simulations, dir_path, correction_cuts, metal_height=0.2
+        simulations, correction_cuts, metal_height=0.2
     )
     export_elmer(
         correction_simulations,

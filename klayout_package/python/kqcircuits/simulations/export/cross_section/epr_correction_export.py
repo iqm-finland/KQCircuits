@@ -1,5 +1,5 @@
 # This code is part of KQCircuits
-# Copyright (C) 2024 IQM Finland Oy
+# Copyright (C) 2025 IQM Finland Oy
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 # License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
@@ -15,9 +15,13 @@
 # (meetiqm.com/iqm-open-source-trademark-policy). IQM welcomes contributions to the code.
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
+import logging
+
 from pathlib import Path
 
 from typing import Callable, Sequence
+
+from kqcircuits.defaults import default_cross_section_profile
 
 from kqcircuits.simulations.simulation import Simulation
 
@@ -29,11 +33,15 @@ from kqcircuits.simulations.export.elmer.elmer_solution import ElmerCrossSection
 
 from kqcircuits.defaults import XSECTION_PROCESS_PATH
 
-from kqcircuits.simulations.export.xsection.xsection_export import (
+from kqcircuits.simulations.export.cross_section.cross_section_profile import CrossSectionProfile
+
+from kqcircuits.simulations.export.cross_section.cross_section_export import (
     separate_signal_layer_shapes,
-    create_xsections_from_simulations,
-    visualise_xsection_cut_on_original_layout,
+    create_cross_sections_from_simulations,
+    visualise_cross_section_cut_on_original_layout,
 )
+
+from kqcircuits.simulations.export.cross_section.xsection_export import create_xsections_from_simulations
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.post_process import PostProcess
@@ -60,8 +68,11 @@ def get_epr_correction_elmer_solution(**override_args):
 
 def get_epr_correction_simulations(
     simulations: list[Simulation],
-    path: Path,
     correction_cuts: dict[str, dict] | Callable[[Simulation], dict[str, dict]],
+    cross_section_profile: (
+        CrossSectionProfile | Callable[[Simulation], CrossSectionProfile]
+    ) = default_cross_section_profile,
+    xsection_path: None | Path = None,
     ma_eps_r: float = 8,
     ms_eps_r: float = 11.4,
     sa_eps_r: float = 4,
@@ -77,7 +88,6 @@ def get_epr_correction_simulations(
 
     Args:
         simulations: list of simulation objects
-        path: path to simulation folder
         correction_cuts: dictionary or function that returns a dictionary of correction cuts for given simulation.
         Key is the name of cut and values are dicts containing:
         - p1: pya.DPoint indicating the first end of the cut segment
@@ -94,6 +104,9 @@ def get_epr_correction_simulations(
             If `solution` is not set, all items under `correction_cuts[Key]`
             are given to `get_epr_correction_elmer_solution` except
             items with keys `["p1", "p2", "metal_edges", "partition_regions", "simulations"]`.
+        cross_section_profile: CrossSectionProfile object that defines vertical level values for each layer.
+            Uses ``default_cross_section_profile`` by default.
+        xsection_path: path to simulation folder. Only set this if you want to use older external XSection tool.
         ma_eps_r: relative permittivity of MA layer
         ms_eps_r: relative permittivity of MS layer
         sa_eps_r: relative permittivity of SA layer
@@ -112,6 +125,7 @@ def get_epr_correction_simulations(
     deembed_lens = {}
     correction_simulations = []
     correction_layout = pya.Layout()
+
     source_sims = {sim[0] if isinstance(sim, Sequence) else sim for sim in simulations}
     for source_sim in source_sims:
         if metal_height is not None:
@@ -140,6 +154,9 @@ def get_epr_correction_simulations(
 
             mer_box = []
             for me in cut["metal_edges"]:
+                # TODO: replace x, z, x_reversed, z_reversed with face, intersection_n
+                # TODO: we can deduce x from intersection data, just need to know which intersection from the left
+                # TODO: we can deduce z from face name. z_reversed implicit from face name (t or b)
                 x = me.get("x", 0)
                 z = me.get("z", 0)
                 dx = int(me.get("x_reversed", False))
@@ -158,10 +175,16 @@ def get_epr_correction_simulations(
                 )
 
             cords_list = [(cut["p1"], cut["p2"])]
-            correction_simulations += cross_combine(
-                create_xsections_from_simulations(
+            if xsection_path:
+                logging.warning(
+                    "get_epr_correction_simulations called with xsection_path argument, "
+                    "prompting to use external XSection tool to generate cross sections. "
+                    "This is a deprecated method, it is recommended to remove this argument "
+                    "so that a native cross section generating utility is prompted."
+                )
+                cross_sections = create_xsections_from_simulations(
                     [source_sim],
-                    path,
+                    xsection_path,
                     cords_list,
                     layout=correction_layout,
                     ma_permittivity=ma_eps_r,
@@ -173,11 +196,26 @@ def get_epr_correction_simulations(
                     magnification_order=1,
                     process_path=XSECTION_PROCESS_PATH,
                     mer_box=mer_box,
-                ),
-                cut_solution,
-            )
+                )
+            else:
+                cross_sections = create_cross_sections_from_simulations(
+                    [source_sim],
+                    cords_list,
+                    cross_section_profile,
+                    layout=correction_layout,
+                    ma_permittivity=ma_eps_r,
+                    ms_permittivity=ms_eps_r,
+                    sa_permittivity=sa_eps_r,
+                    ma_thickness=ma_thickness,
+                    ms_thickness=ms_thickness,
+                    sa_thickness=sa_thickness,
+                    magnification_order=1,
+                    mer_box=mer_box,
+                )
+
+            correction_simulations += cross_combine(cross_sections, cut_solution)
             correction_simulations[-1][0].name = correction_simulations[-1][0].cell.name = source_sim.name + "_" + key
-            visualise_xsection_cut_on_original_layout([source_sim], cords_list, cut_label=key, width_ratio=0.03)
+            visualise_cross_section_cut_on_original_layout([source_sim], cords_list, cut_label=key, width_ratio=0.03)
 
         deembed_cs_cur = [getattr(port, "deembed_cross_section", None) for port in source_sim.ports]
         deembed_lens_cur = [getattr(port, "deembed_len", None) for port in source_sim.ports]
