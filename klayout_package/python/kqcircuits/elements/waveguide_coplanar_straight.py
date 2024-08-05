@@ -32,43 +32,47 @@ class WaveguideCoplanarStraight(Element):
     add_metal = Param(pdt.TypeBoolean, "Add trace in base metal addition too", False)
     ground_grid_in_trace = Param(pdt.TypeBoolean, "Add ground grid also to the waveguide", False)
 
-    def build(self):
+    @staticmethod
+    def build_geometry(element, trans, l):
         # Refpoint in the first end
         # Left gap
         pts = [
-            pya.DPoint(0, self.a / 2 + 0),
-            pya.DPoint(self.l, self.a / 2 + 0),
-            pya.DPoint(self.l, self.a / 2 + self.b),
-            pya.DPoint(0, self.a / 2 + self.b),
+            pya.DPoint(0, element.a / 2 + 0),
+            pya.DPoint(l, element.a / 2 + 0),
+            pya.DPoint(l, element.a / 2 + element.b),
+            pya.DPoint(0, element.a / 2 + element.b),
         ]
         shape_1 = pya.DPolygon(pts)
-        self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(shape_1)
+        element.cell.shapes(element.get_layer("base_metal_gap_wo_grid")).insert(trans * shape_1)
 
         # Right gap
         pts = [
-            pya.DPoint(0, -self.a / 2 + 0),
-            pya.DPoint(self.l, -self.a / 2 + 0),
-            pya.DPoint(self.l, -self.a / 2 - self.b),
-            pya.DPoint(0, -self.a / 2 - self.b),
+            pya.DPoint(0, -element.a / 2 + 0),
+            pya.DPoint(l, -element.a / 2 + 0),
+            pya.DPoint(l, -element.a / 2 - element.b),
+            pya.DPoint(0, -element.a / 2 - element.b),
         ]
         shape_2 = pya.DPolygon(pts)
-        self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(shape_2)
+        element.cell.shapes(element.get_layer("base_metal_gap_wo_grid")).insert(trans * shape_2)
 
         # Protection layer
-        if self.ground_grid_in_trace:
-            self.add_protection(shape_1.sized(1))
-            self.add_protection(shape_2.sized(1))
+        if element.ground_grid_in_trace:
+            element.add_protection(trans * shape_1.sized(1))
+            element.add_protection(trans * shape_2.sized(1))
         else:
-            w = self.a / 2 + self.b + self.margin
-            pts = [pya.DPoint(0, -w), pya.DPoint(self.l, -w), pya.DPoint(self.l, w), pya.DPoint(0, w)]
-            self.add_protection(pya.DPolygon(pts))
+            w = element.a / 2 + element.b + element.margin
+            pts = [pya.DPoint(0, -w), pya.DPoint(l, -w), pya.DPoint(l, w), pya.DPoint(0, w)]
+            element.add_protection(trans * pya.DPolygon(pts))
 
         # Waveguide length
         pts = [
             pya.DPoint(0, 0),
-            pya.DPoint(self.l, 0),
+            pya.DPoint(l, 0),
         ]
-        shape = pya.DPath(pts, self.a)
-        self.cell.shapes(self.get_layer("waveguide_path")).insert(shape)
-        if self.add_metal:
-            self.cell.shapes(self.get_layer("base_metal_addition")).insert(shape)
+        shape = pya.DPath(pts, element.a)
+        element.cell.shapes(element.get_layer("waveguide_path")).insert(trans * shape)
+        if element.add_metal:
+            element.cell.shapes(element.get_layer("base_metal_addition")).insert(trans * shape)
+
+    def build(self):
+        WaveguideCoplanarStraight.build_geometry(self, pya.DTrans(), self.l)

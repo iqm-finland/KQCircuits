@@ -20,6 +20,8 @@
 import math
 from kqcircuits.pya_resolver import pya
 
+from kqcircuits.elements.waveguide_coplanar_curved import WaveguideCoplanarCurved
+from kqcircuits.elements.waveguide_coplanar_straight import WaveguideCoplanarStraight
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.defaults import default_layers, default_faces
 
@@ -38,7 +40,12 @@ def test_too_few_points(capfd):
 
 def test_straight_doesnt_fit_between_corners(capfd):
     layout = pya.Layout()
-    points = [pya.DPoint(0, 0), pya.DPoint(200, 0), pya.DPoint(200, 190), pya.DPoint(400, 190)]
+    points = [
+        pya.DPoint(0, 0),
+        pya.DPoint(200, 0),
+        pya.DPoint(200, 190),
+        pya.DPoint(400, 190),
+    ]
     WaveguideCoplanar.create(layout, path=pya.DPath(points, 1))
     _, err = capfd.readouterr()
     assert err != ""
@@ -62,7 +69,9 @@ def test_continuity_90degree_turn():
     guideline = pya.DPath(points, 5)
     waveguide_cell = WaveguideCoplanar.create(layout, path=guideline)
     assert WaveguideCoplanar.is_continuous(
-        waveguide_cell, layout.layer(default_layers["1t1_waveguide_path"]), continuity_tolerance
+        waveguide_cell,
+        layout.layer(default_layers["1t1_waveguide_path"]),
+        continuity_tolerance,
     )
 
 
@@ -70,7 +79,9 @@ def test_continuity_many_turns():
     layout = pya.Layout()
     waveguide_cell = _create_waveguide_many_turns(layout, 20, 40, 5)
     assert WaveguideCoplanar.is_continuous(
-        waveguide_cell, layout.layer(default_layers["1t1_waveguide_path"]), continuity_tolerance
+        waveguide_cell,
+        layout.layer(default_layers["1t1_waveguide_path"]),
+        continuity_tolerance,
     )
 
 
@@ -81,7 +92,9 @@ def test_continuity_many_turns_with_zero_length_segments():
     layout = pya.Layout()
     waveguide_cell = _create_waveguide_many_turns(layout, 30, 30, 5)
     assert WaveguideCoplanar.is_continuous(
-        waveguide_cell, layout.layer(default_layers["1t1_waveguide_path"]), continuity_tolerance
+        waveguide_cell,
+        layout.layer(default_layers["1t1_waveguide_path"]),
+        continuity_tolerance,
     )
 
 
@@ -100,7 +113,8 @@ def _create_waveguide_many_turns(layout, n, scale1, scale2):
         points[x] = pya.DPoint(x * scale1, scale2 * n * math.sin(x / (n / 3) * math.pi))
         points[x + n] = pya.DPoint(n * scale1 - scale2 * n * math.sin(x / (n / 3) * math.pi), -x * scale1)
         points[x + 2 * n] = pya.DPoint(
-            n * scale1 - x * scale1, -scale2 * n * math.sin(x / (n / 3) * math.pi) - n * scale1
+            n * scale1 - x * scale1,
+            -scale2 * n * math.sin(x / (n / 3) * math.pi) - n * scale1,
         )
         points[x + 3 * n] = pya.DPoint(scale2 * n * math.sin(x / (n / 3) * math.pi), x * scale1 - n * scale1)
 
@@ -154,10 +168,34 @@ def test_perfect_continuity_straight_segment_with_terminations():
 
     # Selected paths that have two or more gaps
     paths = [
-        pya.DPath([pya.DPoint(1.72361230024, 3.79488885597), pya.DPoint(16.4134694657, 90.2562139227)], 0),
-        pya.DPath([pya.DPoint(9.15544123457, 9.4465905822), pya.DPoint(92.4307007268, 16.2896687391)], 0),
-        pya.DPath([pya.DPoint(8.29389541953, 0.850110987246), pya.DPoint(86.3376785858, 33.7693474405)], 0),
-        pya.DPath([pya.DPoint(6.82375493747, 3.58929890974), pya.DPoint(30.0097566092, 36.153727762)], 0),
+        pya.DPath(
+            [
+                pya.DPoint(1.72361230024, 3.79488885597),
+                pya.DPoint(16.4134694657, 90.2562139227),
+            ],
+            0,
+        ),
+        pya.DPath(
+            [
+                pya.DPoint(9.15544123457, 9.4465905822),
+                pya.DPoint(92.4307007268, 16.2896687391),
+            ],
+            0,
+        ),
+        pya.DPath(
+            [
+                pya.DPoint(8.29389541953, 0.850110987246),
+                pya.DPoint(86.3376785858, 33.7693474405),
+            ],
+            0,
+        ),
+        pya.DPath(
+            [
+                pya.DPoint(6.82375493747, 3.58929890974),
+                pya.DPoint(30.0097566092, 36.153727762),
+            ],
+            0,
+        ),
     ]
 
     for path in paths:
@@ -173,7 +211,7 @@ def test_perfect_continuity_straight_segment_with_terminations():
         assert_perfect_waveguide_continuity(waveguide_cell, layout, expected_shapes=1)
 
 
-def test_number_of_child_instances_with_missing_curves_1():
+def test_number_of_child_instances_with_missing_curves_1(mocker):
     layout = pya.Layout()
 
     points = [
@@ -182,12 +220,15 @@ def test_number_of_child_instances_with_missing_curves_1():
         pya.DPoint(200, 200),  # same direction as last point, so no curve at previous point
     ]
 
-    waveguide_cell = WaveguideCoplanar.create(layout, path=pya.DPath(points, 1))
+    spy_curved = mocker.spy(WaveguideCoplanarCurved, "build_geometry")
+    spy_straight = mocker.spy(WaveguideCoplanarStraight, "build_geometry")
+    WaveguideCoplanar.create(layout, path=pya.DPath(points, 1))
 
-    assert waveguide_cell.child_instances() == 2
+    assert spy_curved.call_count == 0, "Didn't expect curved wg segments generated"
+    assert spy_straight.call_count == 2, "Expected exactly two straight wg segments"
 
 
-def test_number_of_child_instances_with_missing_curves_2():
+def test_number_of_child_instances_with_missing_curves_2(mocker):
     layout = pya.Layout()
 
     points = [
@@ -199,9 +240,12 @@ def test_number_of_child_instances_with_missing_curves_2():
         pya.DPoint(800, 500),  # same direction as last point, so no curve at previous point
     ]
 
-    waveguide_cell = WaveguideCoplanar.create(layout, path=pya.DPath(points, 1))
+    spy_curved = mocker.spy(WaveguideCoplanarCurved, "build_geometry")
+    spy_straight = mocker.spy(WaveguideCoplanarStraight, "build_geometry")
+    WaveguideCoplanar.create(layout, path=pya.DPath(points, 1))
 
-    assert waveguide_cell.child_instances() == 7
+    assert spy_curved.call_count == 2, "Expected exactly two curved segments"
+    assert spy_straight.call_count == 5, "Expected exactly five straight wg segments"
 
 
 def test_length_with_missing_curves_1():

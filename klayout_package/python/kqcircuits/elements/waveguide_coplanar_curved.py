@@ -63,8 +63,8 @@ class WaveguideCoplanarCurved(Element):
         # Update length
         self.length = self.r * abs(self.alpha)
 
-    def build(self):
-
+    @staticmethod
+    def build_geometry(element, trans, alpha):
         (
             left_inner_arc,
             left_outer_arc,
@@ -73,31 +73,34 @@ class WaveguideCoplanarCurved(Element):
             left_protection_arc,
             right_protection_arc,
             annotation_arc,
-        ) = WaveguideCoplanarCurved.create_curve_arcs(self, self.alpha)
+        ) = WaveguideCoplanarCurved.create_curve_arcs(element, alpha)
 
         # Left gap
         pts = left_inner_arc + left_outer_arc
         shape_1 = pya.DPolygon(pts)
-        self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(shape_1)
+        element.cell.shapes(element.get_layer("base_metal_gap_wo_grid")).insert(trans * shape_1)
         # Right gap
         pts = right_inner_arc + right_outer_arc
         shape_2 = pya.DPolygon(pts)
-        self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(shape_2)
+        element.cell.shapes(element.get_layer("base_metal_gap_wo_grid")).insert(trans * shape_2)
 
         pts = annotation_arc
-        shape = pya.DPath(pts, self.a)
-        self.cell.shapes(self.get_layer("waveguide_path")).insert(shape)
-        if self.add_metal:
-            self.cell.shapes(self.get_layer("base_metal_addition")).insert(shape)
+        shape = pya.DPath(pts, element.a)
+        element.cell.shapes(element.get_layer("waveguide_path")).insert(trans * shape)
+        if element.add_metal:
+            element.cell.shapes(element.get_layer("base_metal_addition")).insert(trans * shape)
 
         # Protection layer
-        if self.ground_grid_in_trace:
-            self.add_protection(shape_1.sized(1))
-            self.add_protection(shape_2.sized(1))
+        if element.ground_grid_in_trace:
+            element.add_protection(trans * shape_1.sized(1))
+            element.add_protection(trans * shape_2.sized(1))
         else:
             # Protection layer
             pts = left_protection_arc + right_protection_arc
-            self.add_protection(pya.DPolygon(pts))
+            element.add_protection(trans * pya.DPolygon(pts))
+
+    def build(self):
+        WaveguideCoplanarCurved.build_geometry(self, pya.DTrans(), self.alpha)
 
     @staticmethod
     def create_curve_arcs(elem, angle):

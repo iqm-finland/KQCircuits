@@ -6,3 +6,4 @@ tox
 pylint~=2.9.3
 matplotlib
 black
+pytest-mock
