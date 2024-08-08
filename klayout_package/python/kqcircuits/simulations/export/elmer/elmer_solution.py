@@ -125,8 +125,11 @@ class ElmerCapacitanceSolution(ElmerSolution):
 
     Args:
         p_element_order: polynomial order of p-elements
-        linear_system_method: Options: 1. mg (multigrid), 2. bicgstab or any other iterative solver mentioned in
-                              ElmerSolver manual section 4.3.1
+        linear_system_method: Options: 1. Iterative methods "mg" (multigrid), "bicgstab" or any other iterative
+                solver mentioned in ElmerSolver manual section 4.3.1. 2. Direct methods "umfpack", "mumps", "pardiso" or
+                "superlu". Note that the use of other methods than "umfpack" requires Elmer to be explicitly compiled
+                with the corresponding solver software. If a direct method is used the parameters
+                "convergence_tolerance", "max_iterations" and "linear_system_preconditioning" are redundant
         integrate_energies: Calculate energy integrals over each object. Used in EPR simulations
         convergence_tolerance: Convergence tolerance of the iterative solver.
         max_iterations: Maximum number of iterations for the iterative solver.
@@ -151,8 +154,11 @@ class ElmerCrossSectionSolution(ElmerSolution):
 
     Args:
         p_element_order: polynomial order of p-elements
-        linear_system_method: Options: 1. mg (multigrid), 2. bicgstab or any other iterative solver mentioned in
-                              ElmerSolver manual section 4.3.1
+        linear_system_method: Options: 1. Iterative methods "mg" (multigrid), "bicgstab" or any other iterative
+                solver mentioned in ElmerSolver manual section 4.3.1. 2. Direct methods "umfpack", "mumps", "pardiso" or
+                "superlu". Note that the use of other methods than "umfpack" requires Elmer to be explicitly compiled
+                with the corresponding solver software. If a direct method is used the parameters
+                "convergence_tolerance", "max_iterations" and "linear_system_preconditioning" are redundant
         integrate_energies: Calculate energy integrals over each object. Used in EPR simulations
         boundary_conditions: Parameters to determine boundary conditions for potential on the edges
                              of simulation box. Supported keys are `xmin` , `xmax` ,`ymin` and `ymax`
@@ -182,12 +188,16 @@ class ElmerCrossSectionSolution(ElmerSolution):
 class ElmerEPR3DSolution(ElmerSolution):
     """
     Class for Elmer 3D EPR simulations. Similar to electrostatics simulations done with ElmerCapacitanceSolution,
-    but supports separating energies by PartitionRegions and produces no capacitance matrix
+    but supports separating energies by PartitionRegions. Produces no capacitance matrix if p_element_order==1.
+    Always reports energies for each layer.
 
     Args:
         p_element_order: polynomial order of p-elements
-        linear_system_method: Options: 1. mg (multigrid), 2. bicgstab or any other iterative solver mentioned in
-                              ElmerSolver manual section 4.3.1
+        linear_system_method: Options: 1. Iterative methods "mg" (multigrid), "bicgstab" or any other iterative
+                solver mentioned in ElmerSolver manual section 4.3.1. 2. Direct methods "umfpack", "mumps", "pardiso" or
+                "superlu". Note that the use of other methods than "umfpack" requires Elmer to be explicitly compiled
+                with the corresponding solver software. If a direct method is used the parameters
+                "convergence_tolerance", "max_iterations" and "linear_system_preconditioning" are redundant
         convergence_tolerance: Convergence tolerance of the iterative solver.
         max_iterations: Maximum number of iterations for the iterative solver.
         linear_system_preconditioning: Choice of preconditioner before using an iterative linear system solver

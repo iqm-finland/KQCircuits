@@ -195,39 +195,54 @@ def sif_linsys(json_data: dict) -> list[str]:
     """
     linsys = [
         f"$pn={json_data['p_element_order']}",
-        "Linear System Solver = Iterative",
-        f"Linear System Max Iterations = Integer {json_data['max_iterations']}",
-        f"Linear System Convergence Tolerance = {json_data['convergence_tolerance']}",
-        "Linear System Abort Not Converged = False",
     ]
+    linsys_method = json_data["linear_system_method"].lower()
+    preconditioner = json_data["linear_system_preconditioning"]
 
-    percent_error = json_data["percent_error"]
-    if json_data["linear_system_method"] == "mg":
+    if linsys_method in ["umfpack", "mumps", "pardiso", "superlu"]:
+        # direct methods
         linsys += [
-            "Linear System Iterative Method = GCR ",
-            "Linear System Residual Output = 10",
-            "Linear System Preconditioning = multigrid !ILU2",
-            "Linear System Refactorize = False",
-            "MG Method = p",
-            "MG Levels = $pn",
-            "MG Smoother = CG",  # SGS could be used in serial, but has poor parallel convergence
-            "MG Pre Smoothing iterations = 2",
-            "MG Post Smoothing Iterations = 2",
-            "MG Lowest Linear Solver = iterative",
-            "mglowest: Linear System Scaling = False",
-            "mglowest: Linear System Iterative Method = CG !BiCGStabl",
-            f"mglowest: Linear System Preconditioning = {json_data['linear_system_preconditioning']}",
-            "mglowest: Linear System Max Iterations = 1000",
-            "mglowest: Linear System Convergence Tolerance = 1.0e-4",
-            f"Steady State Convergence Tolerance = {1e-9 if percent_error is None else percent_error*1e-1}",
+            'Linear System Solver = String "Direct"',
+            f'Linear system direct method = "{linsys_method}"',
         ]
+
     else:
+        # iterative methods
         linsys += [
-            f"Linear System Iterative Method = {json_data['linear_system_method']}",
-            f"Linear System Preconditioning = {json_data['linear_system_preconditioning']}",
-            "Linear System ILUT Tolerance = 1.0e-03",
-            f"Steady State Convergence Tolerance = {1e-9 if percent_error is None else percent_error*1e-1}",
+            "Linear System Solver = Iterative",
+            f"Linear System Max Iterations = Integer {json_data['max_iterations']}",
+            f"Linear System Convergence Tolerance = {json_data['convergence_tolerance']}",
+            "Linear System Abort Not Converged = False",
         ]
+
+        if linsys_method == "mg":
+            linsys += [
+                "Linear System Iterative Method = GCR ",
+                "Linear System Residual Output = 10",
+                "Linear System Preconditioning = multigrid !ILU2",
+                "Linear System Refactorize = False",
+                "MG Method = p",
+                "MG Levels = $pn",
+                "MG Smoother = CG",  # SGS could be used in serial, but has poor parallel convergence
+                "MG Pre Smoothing iterations = 2",
+                "MG Post Smoothing Iterations = 2",
+                "MG Lowest Linear Solver = iterative",
+                "mglowest: Linear System Scaling = False",
+                "mglowest: Linear System Iterative Method = CG !BiCGStabl",
+                f"mglowest: Linear System Preconditioning = {preconditioner}",
+                "mglowest: Linear System Max Iterations = 1000",
+                "mglowest: Linear System Convergence Tolerance = 1.0e-4",
+            ]
+        else:
+            linsys += [
+                f"Linear System Iterative Method = {linsys_method}",
+                f"Linear System Preconditioning = {preconditioner}",
+                "Linear System ILUT Tolerance = 1.0e-03",
+            ]
+
+    # Adaptive meshing
+    percent_error = json_data["percent_error"]
+    linsys += [f"Steady State Convergence Tolerance = {1e-9 if percent_error is None else percent_error*1e-1}"]
 
     return linsys
 

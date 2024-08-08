@@ -169,4 +169,6 @@ if result_files:
                 {f"p_{group}": sum(v for k, v in epr_dict[key].items() if group in k) for group in groups}
             )
 
+        epr_dict[key]["E_total"] = total_energy
+
     tabulate_into_csv(f"{os.path.basename(os.path.abspath(path))}_epr.csv", epr_dict, parameters, parameter_values)
