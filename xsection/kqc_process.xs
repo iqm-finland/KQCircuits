@@ -114,7 +114,7 @@ b_face = face_stack[0]
 # Input layers from layout
 layer_b_ground = layer(sim_layers["#{b_face}_ground"])
 layer_b_signal = layer(sim_layers["#{b_face}_signal"])
-layer_b_gap = (layer_b_ground.or(layer_b_signal)).inverted
+layer_b_gap = layer(sim_layers["#{b_face}_gap"])
 layer_b_SIS_junction = layer(sim_layers["#{b_face}_SIS_junction"])
 layer_b_SIS_shadow = layer(sim_layers["#{b_face}_SIS_shadow"])
 layer_b_airbridge_pads = layer(sim_layers["#{b_face}_airbridge_pads"])
@@ -131,10 +131,9 @@ sim_layers.each do |layer_name, layer_id|
     signal_materials["#{layer_name}(#{layer_id})"] = mask(layer(layer_id)).grow(metal_height[0])
   end
 end
-etched_materials = [ material_b_ground, material_b_signal, material_b_substrate ] + signal_materials.values
 
 # etch substrate (gap layer already positive geometry for simulation layers)
-mask(layer_b_gap).etch(vertical_over_etching, :into => etched_materials)
+mask(layer_b_gap).etch(vertical_over_etching, :into => [ material_b_substrate ])
 
 # SIS
 material_b_SIS_shadow = mask(layer_b_SIS_shadow).grow(0.1, 0.1, :mode => :round)
@@ -182,7 +181,7 @@ if is_flip_chip
   # Input layers from layout
   layer_t_ground = layer(sim_layers["#{t_face}_ground"])
   layer_t_signal = layer(sim_layers["#{t_face}_signal"])
-  layer_t_gap = (layer_t_ground.or(layer_t_signal)).inverted
+  layer_t_gap = layer(sim_layers["#{t_face}_gap"])
   layer_t_SIS_junction = layer(sim_layers["#{t_face}_SIS_junction"])
   layer_t_SIS_shadow = layer(sim_layers["#{t_face}_SIS_shadow"])
   layer_t_airbridge_pads = layer(sim_layers["#{t_face}_airbridge_pads"])
@@ -199,10 +198,9 @@ if is_flip_chip
       signal_materials["#{layer_name}(#{layer_id})"] = mask(layer(layer_id)).grow(metal_height[1])
     end
   end
-  etched_materials = [ material_t_ground, material_t_signal, material_t_substrate ] + signal_materials.values
 
   # etch substrate (gap layer already positive geometry for simulation layers)
-  mask(layer_t_gap).etch(vertical_over_etching, :into => etched_materials)
+  mask(layer_t_gap).etch(vertical_over_etching, :into => [ material_t_substrate ])
 
   # deposit underbump metallization
   material_t_underbump_metallization = mask(layer_t_underbump_metallization).grow(ubm_height, -0.1, :mode => :round)
