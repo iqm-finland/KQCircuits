@@ -1186,16 +1186,16 @@ def sif_capacitance(
 
     n_boundaries = 0
     if len(ground_boundaries) > 0:
-        boundary_conditions += sif_boundary_condition(
-            ordinate=1, target_boundaries=ground_boundaries, conditions=["Potential = 0.0"]
-        )
         n_boundaries += 1
+        boundary_conditions += sif_boundary_condition(
+            ordinate=n_boundaries, target_boundaries=ground_boundaries, conditions=["Potential = 0.0"]
+        )
 
-    for i, s in enumerate(signals_boundaries, 1):
-        boundary_conditions += sif_boundary_condition(
-            ordinate=i + n_boundaries, target_boundaries=[s], conditions=[f"Capacitance Body = {cbody_map[s]}"]
-        )
+    for s in signals_boundaries:
         n_boundaries += 1
+        boundary_conditions += sif_boundary_condition(
+            ordinate=n_boundaries, target_boundaries=[s], conditions=[f"Capacitance Body = {cbody_map[s]}"]
+        )
 
     outer_bc_names = []
     bc_dict = json_data.get("boundary_conditions", None)
@@ -1206,10 +1206,10 @@ def sif_capacitance(
             if b is not None:
                 if "potential" in b:
                     conditions = [f"Potential = {b['potential']}"]
-                    boundary_conditions += sif_boundary_condition(
-                        ordinate=1 + n_boundaries, target_boundaries=[bc_name], conditions=conditions
-                    )
                     n_boundaries += 1
+                    boundary_conditions += sif_boundary_condition(
+                        ordinate=n_boundaries, target_boundaries=[bc_name], conditions=conditions
+                    )
                     outer_bc_names.append(bc_name)
 
     # Add place-holder boundaries (if additional physical groups are given)
