@@ -20,6 +20,9 @@ import logging
 import sys
 from pathlib import Path
 
+from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
+from kqcircuits.simulations.export.xsection.epr_correction_export import get_epr_correction_simulations
+
 from kqcircuits.qubits.swissmon import Swissmon
 from kqcircuits.simulations.export.ansys.ansys_solution import AnsysEigenmodeSolution, AnsysVoltageSolution
 from kqcircuits.simulations.post_process import PostProcess
@@ -33,6 +36,8 @@ from kqcircuits.util.export_helper import (
     get_active_or_new_layout,
     open_with_klayout_or_default_application,
 )
+
+use_xsection = True
 
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
@@ -83,15 +88,25 @@ export_ansys(
     simulations,
     path=dir_path,
     exit_after_run=True,
-    post_process=PostProcess(
-        "produce_epr_table.py",
-        sheet_approximations={
-            "MA": {"thickness": 1e-8, "eps_r": 8, "background_eps_r": 1.0},
-            "SA": {"thickness": 1e-8, "eps_r": 4, "background_eps_r": 11.45},
-            "MS": {"thickness": 1e-8, "eps_r": 11.4, "background_eps_r": 11.45},
-        },
+    post_process=(
+        PostProcess("epr.sh", command="sh", folder="") if use_xsection else PostProcess("produce_epr_table.py")
     ),
 )
 
+# produce EPR correction simulations
+if use_xsection:
+    correction_cuts = {"mer": {"p1": pya.DPoint(450, 492), "p2": pya.DPoint(450, 552), "metal_edges": [{"x": 20}]}}
+    correction_simulations, post_process = get_epr_correction_simulations(
+        simulations, dir_path, correction_cuts, metal_height=0.2
+    )
+    export_elmer(
+        correction_simulations,
+        dir_path,
+        file_prefix="epr",
+        post_process=post_process,
+    )
+
 # Write and open oas file
 open_with_klayout_or_default_application(export_simulation_oas(simulations, dir_path))
+if use_xsection:
+    open_with_klayout_or_default_application(export_simulation_oas(correction_simulations, dir_path, "epr"))

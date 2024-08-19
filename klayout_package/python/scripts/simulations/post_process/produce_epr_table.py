@@ -23,56 +23,15 @@ Args:
     - sheet_approximations: dictionary to transform sheet integral to thin layer integral. Includes parameters for
         thickness, eps_r, and background_eps_r
     - groups: List of layer keys. If given, the layers including a key are grouped together and other layers are ignored
-    - mer_correction_paths: If given, the script tries to look for Elmer cross-section results for EPR correction
+    - region_corrections: Dictionary with partition region names as keys and EPR correction keys as values.
+        If given, the script tries to look for cross-section results for EPR correction and groups EPRs by partition
+        region names.
 """
 import json
 import os
 import sys
-from pathlib import Path
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "util"))
-
-
-def get_mer_coefficients(key, reg, mer_correction_path, groups):
-    """
-    returns the MER coefficients for certain path and saves the loaded coefficients in a separate json file.
-
-    Args.
-      key(String): filename key for result file where the coefficients are stored
-      reg(String): region name
-      mer_correction_path(String): path to the folder where the coefficients are located
-      groups(List[String]): group names (usually ma, sa, ms, vacuum, substrate)
-
-    Returns.
-      mer_coefficients(dict()): dict containing
-
-    """
-    mer_coefficients = dict()
-    full_mer_path = Path(mer_correction_path).joinpath(key + "_project_results.json")
-    if not os.path.isfile(full_mer_path):
-        full_mer_path = "//wsl.localhost/Ubuntu" + str(full_mer_path)
-        if not os.path.isfile(full_mer_path):
-            full_mer_path = os.path.join(
-                os.path.abspath(__file__ + "/../../../"), "/".join(full_mer_path.split(os.sep)[-2:])
-            )
-
-    with open(full_mer_path, "r") as f:
-        correction_results = json.load(f)
-
-    mer_keys_E = [k for k, v in correction_results.items() if "mer" in k and k.startswith("E_")]
-    mer_total_2d = sum([v for k, v in correction_results.items() if k in mer_keys_E])
-    for group in groups:
-        mer_coefficients[group] = (
-            sum([v for k, v in correction_results.items() if k in mer_keys_E and group.lower() in k.lower()])
-            / mer_total_2d
-        )
-
-    with open(f"mer_coefficients_{reg}_{key}.json", "w") as f:
-        json.dump(mer_coefficients, f)
-
-    return mer_coefficients
-
-
 from post_process_helpers import (  # pylint: disable=wrong-import-position, no-name-in-module
     find_varied_parameters,
     tabulate_into_csv,
@@ -83,9 +42,54 @@ if len(sys.argv) > 1:
     with open(sys.argv[1], "r") as fp:
         pp_data = json.load(fp)
 
+groups = pp_data.get("groups", [])
+region_corrections = pp_data.get("region_corrections", dict())
+
+
+def get_mer_coefficients(simulation, region):
+    """
+    returns the MER coefficients for certain path and saves the loaded coefficients in a separate json file.
+
+    Args:
+        simulation(String): Simulation key
+        region(String): Name of the partition region
+
+    Returns:
+        Dictionary containing EPRs in metal-edge-region for each group
+
+    """
+    correction_key = region_corrections.get(region)
+    if correction_key is None:
+        return None
+
+    corr_key = "_" + correction_key
+    corr_file = {f for f in correction_files if corr_key in f and simulation.startswith(f[: f.find(corr_key)])}
+    if not corr_file:
+        print(f"Expected correction file not found with keys {simulation} and {correction_key}.")
+        return None
+    if len(corr_file) > 1:
+        print(f"Multiple matching correction files found with keys {simulation} and {correction_key}.")
+        return None
+
+    with open(corr_file.pop(), "r") as f:
+        res = json.load(f)
+    mer_keys = [k for k, v in res.items() if "mer" in k and k.startswith("E_")]
+    mer_total = sum([res[k] for k in mer_keys])
+    coefficient = {group: sum(res[k] for k in mer_keys if group.lower() in k.lower()) / mer_total for group in groups}
+
+    with open(f"coefficients_{simulation}_{region}.json", "w") as f:
+        json.dump(coefficient, f)
+
+    return coefficient
+
+
 # Find data files
 path = os.path.curdir
-result_files = [f for f in os.listdir(path) if f.endswith("_project_results.json")]
+all_files = [f for f in os.listdir(path) if f.endswith("_project_results.json")]
+correction_keys = {k for k in region_corrections.values() if k is not None}
+correction_files = [f for f in all_files if any(k in f for k in correction_keys)]
+result_files = list(set(all_files) - set(correction_files))
+
 if result_files:
     # Find parameters that are swept
     definition_files = [f.replace("_project_results.json", ".json") for f in result_files]
@@ -121,85 +125,48 @@ if result_files:
         if total_energy == 0.0:
             continue
 
-        energy_items = energy.items()
-        if "groups" not in pp_data:
+        if not groups:
             # calculate EPR corresponding to each energy integral
-            epr_dict[key] = {"p_" + k: v / total_energy for k, v in energy_items}
-        elif "mer_correction_paths" not in pp_data:
+            epr_dict[key] = {f"p_{k}": v / total_energy for k, v in energy.items()}
+        elif not region_corrections:
             # use EPR groups to combine layers
             epr_dict[key] = {
-                "p_" + group: sum([v / total_energy for k, v in energy_items if group in k])
-                for group in pp_data["groups"]
+                f"p_{group}": sum(v for k, v in energy.items() if group in k) / total_energy for group in groups
             }
         else:
-            # distinguish EPRs to mer and nonmer groups and calculate corrected EPRs
+            # calculate corrected EPRs and distinguish by partition regions
+            epr_dict[key] = dict()
+            for reg, corr in region_corrections.items():
+                reg_energy = {k: v for k, v in energy.items() if reg in k}
 
-            mer_correction_dict = dict()
-            energy_items_dict = dict()
-            energy_items_dict["mer"] = dict()
-            energy_items_dict["nonmer"] = dict()
-            region_keys = []  # Collect all those that are defined as regions except 'default' region
-            for reg, mer_correction_path in pp_data["mer_correction_paths"]:
-                mer_correction_dict[reg] = get_mer_coefficients(key, reg, mer_correction_path, pp_data["groups"])
-                if not reg == "default":
-                    energy_items_dict["mer"][reg] = [(k, v) for k, v in energy_items if "mer" in k and reg in k]
-                    energy_items_dict["nonmer"][reg] = [(k, v) for k, v in energy_items if not "mer" in k and reg in k]
-                    region_keys += [k for k, v in energy_items if reg in k]
-
-            # Now take all those region keys and remove them from all the keys.
-            # These keys are those that are not in any region and are defined as 'default'
-            # and where default MER correction is used. We need to do this currently because
-            # we cannot easily add 'default' label to all the leftover layers.
-            region_keys = set(region_keys)
-            all_keys = set(energy.keys())
-            default_keys = all_keys - region_keys
-
-            energy_items_dict["mer"]["default"] = [(k, energy[k]) for k in default_keys if "mer" in k]
-            energy_items_dict["nonmer"]["default"] = [(k, energy[k]) for k in default_keys if not "mer" in k]
-
-            epr_dict[key] = {}
-            for reg, mer_coefficients in mer_correction_dict.items():
-                mer_total = sum([v for k, v in energy_items_dict["mer"][reg]])
-                for group in pp_data["groups"]:
-                    epr_mer = {k: v / total_energy for k, v in energy_items_dict["mer"][reg] if group in k}
-                    epr_nonmer = {k: v / total_energy for k, v in energy_items_dict["nonmer"][reg] if group in k}
-                    epr_dict[key][f"p_{group}_{reg}_nonmer"] = sum([v for k, v in epr_nonmer.items()])
-                    epr_dict[key][f"p_{group}_{reg}_mer"] = sum([v for k, v in epr_mer.items()])
-                    epr_dict[key][f"p_{group}_{reg}_mer_fixed"] = mer_total * mer_coefficients[group] / total_energy
-                    epr_dict[key][f"p_{group}_{reg}"] = sum(epr_mer.values()) + sum(epr_nonmer.values())
-                    epr_dict[key][f"p_{group}_{reg}_fixed"] = (
-                        epr_dict[key][f"p_{group}_{reg}_mer_fixed"] + epr_dict[key][f"p_{group}_{reg}_nonmer"]
+                coefficients = get_mer_coefficients(key, reg)
+                if coefficients is None:
+                    epr_dict[key].update(
+                        {
+                            f"p_{group}_{reg}": sum(v for k, v in reg_energy.items() if group in k) / total_energy
+                            for group in groups
+                        }
+                    )
+                else:
+                    epr_dict[key].update(
+                        {
+                            f"p_{group}_{reg}": coefficients[group] * sum(reg_energy.values()) / total_energy
+                            for group in groups
+                        }
                     )
 
-            epr_dict[key]["total_participation"] = 0.0
-            epr_dict[key]["total_participation_fixed"] = 0.0
-            for i, group in enumerate(pp_data["groups"]):
-                epr_dict[key][f"p_{group}_nonmer"] = sum(
-                    [v for k, v in epr_dict[key].items() if group in k and "nonmer" in k]
-                )
-                epr_dict[key][f"p_{group}_mer"] = sum(
-                    [
-                        v
-                        for k, v in epr_dict[key].items()
-                        if group in k and "mer" in k and "fixed" not in k and "nonmer" not in k
-                    ]
-                )
-                epr_dict[key][f"p_{group}_mer_fixed"] = sum(
-                    [v for k, v in epr_dict[key].items() if group in k and "mer_fixed" in k]
-                )
+            # distinguish regions not included in region_corrections with 'default' key
+            def_energy = {k: v for k, v in energy.items() if all(reg not in k for reg in region_corrections.keys())}
+            epr_dict[key].update(
+                {
+                    f"p_{group}_default": sum(v for k, v in def_energy.items() if group in k) / total_energy
+                    for group in groups
+                }
+            )
 
-                epr_dict[key][f"p_{group}"] = sum(
-                    [v for k, v in epr_dict[key].items() if group in k and "mer" not in k and "fixed" not in k]
-                )
-
-                epr_dict[key][f"p_{group}_fixed"] = sum(
-                    [v for k, v in epr_dict[key].items() if group in k and "fixed" in k and "mer" not in k]
-                )
-
-                epr_dict[key]["total_participation"] += epr_dict[key][f"p_{group}"]
-                epr_dict[key]["total_participation_fixed"] += epr_dict[key][f"p_{group}_fixed"]
-
-            print("total_participation", epr_dict[key]["total_participation"])
-            print("total_participation_fixed", epr_dict[key]["total_participation_fixed"])
+            # total EPR by groups
+            epr_dict[key].update(
+                {f"p_{group}": sum(v for k, v in epr_dict[key].items() if group in k) for group in groups}
+            )
 
     tabulate_into_csv(f"{os.path.basename(os.path.abspath(path))}_epr.csv", epr_dict, parameters, parameter_values)

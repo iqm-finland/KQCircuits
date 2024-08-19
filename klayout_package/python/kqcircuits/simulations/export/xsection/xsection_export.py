@@ -172,9 +172,10 @@ def create_xsections_from_simulations(
     ms_thickness: float = 0,
     sa_thickness: float = 0,
     vertical_cull: tuple[float, float] | None = None,
-    mer_box: pya.DBox | None = None,
+    mer_box: pya.DBox | list[pya.DBox] | None = None,
     london_penetration_depth: float | list = 0,
     magnification_order: int = 0,
+    layout: pya.Layout | None = None,
 ) -> list[Simulation]:
     """Create cross-sections of all simulation geometries in the list.
     Will set 'box' and 'cell' parameters according to the produced cross-section geometry data.
@@ -199,7 +200,7 @@ def create_xsections_from_simulations(
         sa_thickness: Thickness of substrate–vacuum (air) interface
         vertical_cull: Tuple of two y-coordinates, will cull all geometry not in-between the y-coordinates.
             None by default, which means all geometry is retained.
-        mer_box: If set as some pya.DBox, will create a specified box as metal edge region,
+        mer_box: If set as pya.DBox, will create a specified box as metal edge region,
             meaning that the geometry inside the region are separated into different layers with '_mer' suffix
         london_penetration_depth: London penetration depth of the superconducting material
         magnification_order: Increase magnification of simulation geometry to accomodate more precise spacial units.
@@ -208,6 +209,7 @@ def create_xsections_from_simulations(
             2 = 100x magnification with 1e-5 dbu etc
             Consider setting non-zero value when using oxide layers with < 1e-3 layer thickness or
             taking cross-sections of thin objects
+        layout: predefined layout for the cross-section simulation (optional)
 
     Returns:
         List of CrossSectionSimulation objects for each Simulation object in simulations
@@ -223,7 +225,9 @@ def create_xsections_from_simulations(
     xsection_dir = output_path.joinpath("xsection_tmp")
     xsection_dir.mkdir(parents=True, exist_ok=True)
 
-    layout = pya.Layout()
+    if layout is None:
+        layout = pya.Layout()
+    xsection_cells = []
     load_opts = _load_layout_options_for_xsection_output()
     for simulation, cut in zip(simulations, cuts):
         _check_metal_heights(simulation)
@@ -237,11 +241,11 @@ def create_xsections_from_simulations(
         for i in layout.layer_indexes():
             if all(layout.begin_shapes(cell, i).at_end() for cell in layout.top_cells()):
                 layout.delete_layer(i)  # delete empty layers caused by bug in klayout 0.29.0
-        xsection_cell = layout.top_cells()[-1]
-        xsection_cell.name = simulation.cell.name
+        xsection_cells.append(layout.top_cells()[-1])
+        xsection_cells[-1].name = simulation.cell.name
 
     _clean_tmp_xsection_directory(xsection_dir, simulations)
-    # Collect cross section simulation sweeps
+    # Collect cross-section simulation sweeps
     return [
         _construct_cross_section_simulation(
             layout,
@@ -260,7 +264,7 @@ def create_xsections_from_simulations(
             london_penetration_depth,
             magnification_order,
         )
-        for idx, xsection_cell in enumerate(layout.top_cells())
+        for idx, xsection_cell in enumerate(xsection_cells)
     ]
 
 
@@ -628,14 +632,20 @@ def _construct_cross_section_simulation(
 
     if mer_box is not None:
         regions_to_update = {}
+        if isinstance(mer_box, list):
+            box_region = pya.Region()
+            for mb in mer_box:
+                box_region += pya.Region(mb.to_itype(xsection_cell.layout().dbu))
+        else:
+            box_region = pya.Region(mer_box.to_itype(xsection_cell.layout().dbu))
 
         def _separate_region_in_mer_box(region, layer):
-            region_in_box = region & mer_box.to_itype(xsection_cell.layout().dbu)
+            region_in_box = region & box_region
             regions_to_update[f"{layer.name}_mer"] = region_in_box
-            return region - mer_box.to_itype(xsection_cell.layout().dbu)
+            return region - box_region
 
         _iterate_layers_and_modify_region(xsection_cell, _separate_region_in_mer_box)
-        vacuum_in_box = pya.Region(mer_box.to_itype(xsection_cell.layout().dbu))
+        vacuum_in_box = box_region
         for layer, region in regions_to_update.items():
             vacuum_in_box -= region
             xsection_cell.shapes(xsection_simulation.get_sim_layer(layer)).insert(region)
