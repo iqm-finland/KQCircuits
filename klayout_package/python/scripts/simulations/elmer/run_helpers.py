@@ -228,14 +228,16 @@ def elmer_check_warnings(log_file: Path | str, cwd: Path | str | None = None):
         lines = [line.rstrip() for line in f]
 
     # Only log each warning once
-    for ind, l in enumerate(lines):
+    for ind, l in enumerate(lines, 1):
         l_lower = l.lower()
-        if "warning" in l_lower:
-            logging.warning(f"{l.replace('WARNING::', '')}. See {log_file}:{ind+1}")
+        if "error" in l_lower:
+            logging.error(f"{l}. See {log_file}:{ind}")
+        elif "warning" in l_lower:
+            logging.warning(f"{l.replace('WARNING::', '')}. See {log_file}:{ind}")
         elif "did not converge" in l_lower:
-            logging.warning(f" Linear system iteration did not converge. See {log_file}:{ind+1}")
+            logging.warning(f" Linear system iteration did not converge. See {log_file}:{ind}")
         elif "solution trivially zero" in l_lower:
-            logging.warning(f" Solution trivially zero. See {log_file}:{ind+1}")
+            logging.warning(f" Solution trivially zero. See {log_file}:{ind}")
 
 
 def _run_elmer_solver(

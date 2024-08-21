@@ -83,6 +83,93 @@ def get_mer_coefficients(simulation, region):
     return coefficient
 
 
+def _get_face_id_to_substrate_mapping(sim_name: str) -> dict[str, str]:
+    """
+    Returns a dictionary that maps a given face id to the correspond substrate layer
+
+    Mapping is based on the value of `face_stack` from the simulation json and available substrate layers
+    """
+    with open(f"{sim_name}.json", "r") as f:
+        sim_data = json.load(f)
+    face_stack = sim_data["parameters"]["face_stack"]
+
+    def _to_list(x):
+        return x if isinstance(x, list) else [x]
+
+    # make into a 2D list
+    face_stack = [_to_list(flist) for flist in face_stack]
+
+    if len(face_stack) == 1:
+        mapping = {f: "substrate_1" for f in face_stack[0]}
+    else:
+        if any(h == 0 for h in _to_list(sim_data["parameters"]["substrate_height"])):
+            print("WARNING: Using substrate height 0.0 not supported with EPR sheet approximations")
+            return None
+
+        lower_box_height = sim_data["parameters"]["lower_box_height"]
+        mapping = {}
+
+        # This should give a mapping to substrate indices
+        # if lower_box_height==0 [1,2,2,3,3... ]
+        # else                   [1,1,2,2,3,...]
+        for ind, flist in enumerate(face_stack, 3 if lower_box_height == 0 else 2):
+            mapping.update({f: f"substrate_{ind//2}" for f in flist})
+
+    # As a sanity check compare the available substrate layers and the indices used in mapping and
+    # Assume that the substrate numbering does not go over 9
+    substrate_layers = [l[:11] for l in sim_data["layers"].keys() if l.startswith("substrate_")]
+    if set(substrate_layers) != set(mapping.values()):
+        print("Substrate layers based on face_stack do not match the ones found in layers dict.")
+        print(f"Layers: {set(substrate_layers)}. Face_stack: {set(mapping.values())}")
+        print("Bulk EPR correction will be saved as negative values in separate layers")
+        return None
+
+    return mapping
+
+
+def _get_partition_region_names(sim_name: str) -> list[str]:
+    """Read partition region names from simulation json file"""
+    with open(f"{sim_name}.json", "r") as f:
+        sim_data = json.load(f)
+    return [p["name"] for p in sim_data["parameters"]["partition_regions"]]
+
+
+def _get_bg_key(
+    if_layer: str, correction_key: str, bg_eps_r: float, layer_mapping: dict[str, str], regions: list[str]
+) -> str:
+    """
+    Get background layer name for correcting its energy in sheet approximation applied to "if_layer"
+
+    Args:
+        if_layer: Interface layer name
+        correction_key: Corresponding key of the sheet approximation dictionary, should be substring of "if_layer"
+        bg_eps_r: Relative permittivity of the background layer
+        layer_mapping: Mapping from face_ids to substrate layers, obtained with "_get_face_id_to_substrate_mapping"
+        regions: Partition region names
+
+    Returns:
+        Background layer name
+    """
+    face_id = if_layer.partition("_")[0]
+
+    if bg_eps_r != 1.0 and layer_mapping is None:
+        return "bulk_corr" + if_layer
+
+    basename = "vacuum" if bg_eps_r == 1.0 else layer_mapping[face_id]
+
+    region = if_layer.partition(correction_key)[2]
+
+    if len(region) > 0 and region not in regions:
+        matches = [r for r in regions if region.endswith(r)]
+        if len(matches) != 1:
+            print(f"Too many or no matching regions found: {matches}")
+            return "bulk_corr" + if_layer
+
+        region = matches[0]
+
+    return basename + region
+
+
 # Find data files
 path = os.path.curdir
 all_files = [f for f in os.listdir(path) if f.endswith("_project_results.json")]
@@ -103,26 +190,48 @@ if result_files:
 
         energy = {k[2:]: v for k, v in result.items() if k.startswith("E_")}
 
+        def _add_energy(e_dict, key, ene):
+            e_dict[key] = e_dict.get(key, 0.0) + ene
+
         # add sheet energies if 'sheet_approximations' are available
         if "sheet_approximations" in pp_data:
             xy_energy = {k[4:]: v for k, v in result.items() if k.startswith("Exy_")}
             z_energy = {k[3:]: v for k, v in result.items() if k.startswith("Ez_")}
+
+            bg_substrate_mapping = _get_face_id_to_substrate_mapping(key)
+            region_names = _get_partition_region_names(key)
+
             for k, d in pp_data["sheet_approximations"].items():
                 if "thickness" not in d:
+                    print(f'"thickness" missing from sheet_approximations["{k}"]')
                     continue
-                eps_r = d.get("eps_r", 1.0)
+                eps_r = d["eps_r"]
                 xy_scale = d["thickness"] * eps_r
+                background_eps_r = d["background_eps_r"]
+                bg_scale = d["thickness"] * background_eps_r
+
                 for xy_k, xy_v in xy_energy.items():
                     if k in xy_k:
-                        energy[xy_k] = energy.get(xy_k, 0.0) + xy_scale * xy_v
-                background_eps_r = d.get("background_eps_r", 1.0)
+                        _add_energy(energy, xy_k, xy_scale * xy_v)
+                        bg_key = _get_bg_key(xy_k, k, background_eps_r, bg_substrate_mapping, region_names)
+                        _add_energy(energy, bg_key, -bg_scale * xy_v)
+
                 z_scale = d["thickness"] * background_eps_r * background_eps_r / eps_r
                 for z_k, z_v in z_energy.items():
                     if k in z_k:
-                        energy[z_k] = energy.get(z_k, 0.0) + z_scale * z_v
+                        _add_energy(energy, z_k, z_scale * z_v)
+                        bg_key = _get_bg_key(z_k, k, background_eps_r, bg_substrate_mapping, region_names)
+                        _add_energy(energy, bg_key, -bg_scale * z_v)
+
+        elif any(k.startswith("Exy_") or k.startswith("Ez_") for k in result.keys()):
+            print(
+                'Results contain boundary energies, but no "sheet_approximation" is defined. ',
+                "Boundary energies will be ignored in EPR",
+            )
 
         total_energy = sum(energy.values())
         if total_energy == 0.0:
+            print(f'Total energy 0 for simulation "{key}". No EPRs will be written.')
             continue
 
         if not groups:
