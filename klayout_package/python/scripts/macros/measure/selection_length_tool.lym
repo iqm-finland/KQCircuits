@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description>Measure waveguide lengths</description>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <priority>0</priority>
+ <shortcut>S</shortcut>
+ <show-in-menu>true</show-in-menu>
+ <group-name>misc</group-name>
+ <menu-path>kqcircuits_menu.#7</menu-path>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text>
+# This code is part of KQCircuits
+# Copyright (C) 2024 IQM Finland Oy
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
+# License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program. If not, see
+# https://www.gnu.org/licenses/gpl-3.0.html.
+#
+# The software distribution should follow IQM trademark policy for open-source software
+# (meetiqm.com/iqm-open-source-trademark-policy). IQM welcomes contributions to the code.
+# Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
+# and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
+
+
+import pya
+from kqcircuits.util.geometry_helper import get_object_path_length
+
+
+# Close the old dialog if the tool is already visible
+try:
+    if selection_length_tool_dialog.visible:
+        selection_length_tool_dialog.close()
+except:
+    pass
+
+
+def configure_select_state(layout_view):
+    """Configures KLayout selection modes to be useful for checking waveguide lengths.
+    
+    This includes:
+    
+    * Select only Path objects
+    * Enable "PCell content is selectable" mode, so waveguides inside PCells can be selected
+    * Set all "waveguide path" layers to visible in the current layout view
+    
+    All current setting values are recorded before changing them, and returned in as a dictionary.
+    The dictionary can be passed to restore_select_state to restore the settings.
+    """
+    mw = pya.MainWindow.instance()
+    menu = mw.menu()
+    
+    # Record settings for Edit -&gt; Select -&gt; selection type menus
+    items = menu.items("edit_menu.select_menu")
+    select_menu_state = {item: menu.action(item).is_checked() for item in items if "pi_enable_" in item}
+    
+    # Enable only "Path" selection type
+    menu.action('edit_menu.select_menu.disable_all').trigger()
+    for item in items:
+        if menu.action(item).title == 'Paths':
+            menu.action(item).trigger()
+    
+    # Enable Select inside PCells
+    select_inside_pcells_state = mw.get_config('sel-inside-pcells-mode')
+    mw.set_config("sel-inside-pcells-mode", "true")
+    
+    # Show all "waveguide path" layers, looked up by name in the layout view
+    layer_visibility = {}
+    for layer in layout_view.each_layer():
+        if layer.source_name.endswith('waveguide path'):
+            layer_visibility[layer.source_name] = layer.visible
+            layer.visible=True
+          
+    return {
+        "select_menu": select_menu_state,
+        "select_inside_pcells": select_inside_pcells_state,
+        "layer_visibility": layer_visibility,
+    }
+
+
+def restore_select_state(layout_view, state):
+    """Restore the selection mode state in KLayout to a previous state
+    
+    Args:
+      state: dictionary of state data as returned by ``get_select_state``
+    """
+    mw = pya.MainWindow.instance()
+    menu = mw.menu()
+    
+    # Restore Edit -&gt; Select -&gt; selection types menus
+    for item, item_state in state["select_menu"].items():
+        if menu.action(item).is_checked() != item_state:
+            menu.action(item).trigger()
+    
+    # Restore Select inside PCells mode
+    mw.set_config("sel-inside-pcells-mode", state["select_inside_pcells"])
+    
+    # Restore layer visibility.
+    for layer in layout_view.each_layer():
+        if layer.source_name in state["layer_visibility"]:
+            layer.visible = state["layer_visibility"][layer.source_name]
+
+
+def create_dialog(close_callback):
+    """Create a dialog displaying the measurement results.
+    
+    The function ``update_fields`` is returned, which holds a reference to the text fields
+    and can be called to update the values displayed in the dialog.
+    
+    Args:
+        close_callback: this function will be called when the dialog is closed
+        
+    Returns: tuple (dialog, update_fields)
+    """
+    class MyDialog(pya.QDialog):
+        def closeEvent(self, *args):
+            close_callback()
+            super().closeEvent(*args)
+    
+    dialog = MyDialog(pya.Application.instance().main_window())
+    dialog.windowTitle = "Measure length"
+    dialog.setModal(False)
+    dialog.move(200, 150)  # Move it roughly to the top-left corner of the layout view
+    form = pya.QFormLayout(dialog)
+    def add_row(label, widget):
+        form.addRow(label, widget)
+        return widget
+              
+    form.addRow(pya.QLabel("Selectected waveguide length paths:", dialog))
+    text_inst_count = add_row("Count: ", pya.QLabel(str(0), dialog))
+    text_selection_length = add_row("Length: ", pya.QLabel(f"{0:.3f} um", dialog))
+    text_selection_length.font.setPixelSize(200)
+    dialog.show()
+    
+    def update_fields(count, length):
+        text_inst_count.text = str(count)
+        text_selection_length.text = f"{length:.3f} um"
+    
+    return dialog, update_fields
+
+
+def get_selected_path_length(layout_view):
+    """Returns the number of selected Path objects in a LayoutView, and their total length"""
+    total_length = 0
+    count = 0
+    for obj in layout_view.object_selection:
+        length = get_object_path_length(obj)
+        total_length+= length
+        count += 1
+    return count, total_length
+
+
+# The tool operates on the currently visible LayoutView
+layout_view = pya.LayoutView.current()
+
+# Set up state
+select_state = configure_select_state(layout_view)
+
+# Create dialog
+selection_length_tool_dialog, update_fields_handler = create_dialog(close_callback = lambda: restore_select_state(layout_view, select_state))
+
+# Create a handler that updates the length measurement every time a selection is chagned
+def selection_changed_handler():
+    count, length = get_selected_path_length(layout_view)
+    update_fields_handler(count, length)
+layout_view.on_selection_changed = selection_changed_handler
+
+# Close the dialog when changing tab or closing the view in KLayout
+layout_view.on_hide = selection_length_tool_dialog.close
+</text>
+</klayout-macro>
