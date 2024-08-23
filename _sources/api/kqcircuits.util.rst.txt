@@ -20,6 +20,7 @@ kqcircuits.util
    kqcircuits.util.gui_helper
    kqcircuits.util.import_helper
    kqcircuits.util.label
+   kqcircuits.util.label_polygons
    kqcircuits.util.layout_to_code
    kqcircuits.util.library_helper
    kqcircuits.util.log_router

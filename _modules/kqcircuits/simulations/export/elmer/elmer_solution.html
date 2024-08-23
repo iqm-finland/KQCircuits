@@ -743,6 +743,11 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.util.label.html#kqcircuits.util.label.produce_label"><code class="docutils literal notranslate"><span class="pre">produce_label()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.util.label_polygons.html">kqcircuits.util.label_polygons</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.util.label_polygons.html#kqcircuits.util.label_polygons.get_text_polygon"><code class="docutils literal notranslate"><span class="pre">get_text_polygon()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.util.label_polygons.html#kqcircuits.util.label_polygons.load_font_polygons"><code class="docutils literal notranslate"><span class="pre">load_font_polygons()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.util.layout_to_code.html">kqcircuits.util.layout_to_code</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.convert_cells_to_code"><code class="docutils literal notranslate"><span class="pre">convert_cells_to_code()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.get_node_params"><code class="docutils literal notranslate"><span class="pre">get_node_params()</span></code></a></li>
@@ -1031,7 +1036,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Cast frequency to list. Automatically called after init&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frequency</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">)):</span>
             <span class="c1"># hack to modify the attributes of frozen dataclass</span>
-            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;frequency&quot;</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">frequency</span><span class="p">])</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;frequency&quot;</span><span class="p">,</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frequency</span><span class="p">)])</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frequency</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;frequency&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frequency</span><span class="p">))</span></div>
 
@@ -1046,8 +1051,11 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        p_element_order: polynomial order of p-elements</span>
-<span class="sd">        linear_system_method: Options: 1. mg (multigrid), 2. bicgstab or any other iterative solver mentioned in</span>
-<span class="sd">                              ElmerSolver manual section 4.3.1</span>
+<span class="sd">        linear_system_method: Options: 1. Iterative methods &quot;mg&quot; (multigrid), &quot;bicgstab&quot; or any other iterative</span>
+<span class="sd">                solver mentioned in ElmerSolver manual section 4.3.1. 2. Direct methods &quot;umfpack&quot;, &quot;mumps&quot;, &quot;pardiso&quot; or</span>
+<span class="sd">                &quot;superlu&quot;. Note that the use of other methods than &quot;umfpack&quot; requires Elmer to be explicitly compiled</span>
+<span class="sd">                with the corresponding solver software. If a direct method is used the parameters</span>
+<span class="sd">                &quot;convergence_tolerance&quot;, &quot;max_iterations&quot; and &quot;linear_system_preconditioning&quot; are redundant</span>
 <span class="sd">        integrate_energies: Calculate energy integrals over each object. Used in EPR simulations</span>
 <span class="sd">        convergence_tolerance: Convergence tolerance of the iterative solver.</span>
 <span class="sd">        max_iterations: Maximum number of iterations for the iterative solver.</span>
@@ -1075,8 +1083,11 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        p_element_order: polynomial order of p-elements</span>
-<span class="sd">        linear_system_method: Options: 1. mg (multigrid), 2. bicgstab or any other iterative solver mentioned in</span>
-<span class="sd">                              ElmerSolver manual section 4.3.1</span>
+<span class="sd">        linear_system_method: Options: 1. Iterative methods &quot;mg&quot; (multigrid), &quot;bicgstab&quot; or any other iterative</span>
+<span class="sd">                solver mentioned in ElmerSolver manual section 4.3.1. 2. Direct methods &quot;umfpack&quot;, &quot;mumps&quot;, &quot;pardiso&quot; or</span>
+<span class="sd">                &quot;superlu&quot;. Note that the use of other methods than &quot;umfpack&quot; requires Elmer to be explicitly compiled</span>
+<span class="sd">                with the corresponding solver software. If a direct method is used the parameters</span>
+<span class="sd">                &quot;convergence_tolerance&quot;, &quot;max_iterations&quot; and &quot;linear_system_preconditioning&quot; are redundant</span>
 <span class="sd">        integrate_energies: Calculate energy integrals over each object. Used in EPR simulations</span>
 <span class="sd">        boundary_conditions: Parameters to determine boundary conditions for potential on the edges</span>
 <span class="sd">                             of simulation box. Supported keys are `xmin` , `xmax` ,`ymin` and `ymax`</span>
@@ -1109,12 +1120,16 @@
 <span class="k">class</span> <span class="nc">ElmerEPR3DSolution</span><span class="p">(</span><span class="n">ElmerSolution</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class for Elmer 3D EPR simulations. Similar to electrostatics simulations done with ElmerCapacitanceSolution,</span>
-<span class="sd">    but supports separating energies by PartitionRegions and produces no capacitance matrix</span>
+<span class="sd">    but supports separating energies by PartitionRegions. Produces no capacitance matrix if p_element_order==1.</span>
+<span class="sd">    Always reports energies for each layer.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        p_element_order: polynomial order of p-elements</span>
-<span class="sd">        linear_system_method: Options: 1. mg (multigrid), 2. bicgstab or any other iterative solver mentioned in</span>
-<span class="sd">                              ElmerSolver manual section 4.3.1</span>
+<span class="sd">        linear_system_method: Options: 1. Iterative methods &quot;mg&quot; (multigrid), &quot;bicgstab&quot; or any other iterative</span>
+<span class="sd">                solver mentioned in ElmerSolver manual section 4.3.1. 2. Direct methods &quot;umfpack&quot;, &quot;mumps&quot;, &quot;pardiso&quot; or</span>
+<span class="sd">                &quot;superlu&quot;. Note that the use of other methods than &quot;umfpack&quot; requires Elmer to be explicitly compiled</span>
+<span class="sd">                with the corresponding solver software. If a direct method is used the parameters</span>
+<span class="sd">                &quot;convergence_tolerance&quot;, &quot;max_iterations&quot; and &quot;linear_system_preconditioning&quot; are redundant</span>
 <span class="sd">        convergence_tolerance: Convergence tolerance of the iterative solver.</span>
 <span class="sd">        max_iterations: Maximum number of iterations for the iterative solver.</span>
 <span class="sd">        linear_system_preconditioning: Choice of preconditioner before using an iterative linear system solver</span>

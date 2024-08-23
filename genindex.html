@@ -743,6 +743,11 @@
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.util.label.html#kqcircuits.util.label.produce_label"><code class="docutils literal notranslate"><span class="pre">produce_label()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.label_polygons.html">kqcircuits.util.label_polygons</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.util.label_polygons.html#kqcircuits.util.label_polygons.get_text_polygon"><code class="docutils literal notranslate"><span class="pre">get_text_polygon()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.util.label_polygons.html#kqcircuits.util.label_polygons.load_font_polygons"><code class="docutils literal notranslate"><span class="pre">load_font_polygons()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.layout_to_code.html">kqcircuits.util.layout_to_code</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.convert_cells_to_code"><code class="docutils literal notranslate"><span class="pre">convert_cells_to_code()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.get_node_params"><code class="docutils literal notranslate"><span class="pre">get_node_params()</span></code></a></li>
@@ -1224,6 +1229,14 @@
         <li><a href="api/kqcircuits.test_structures.stripes_test_increasing_width.html#kqcircuits.test_structures.stripes_test_increasing_width.StripesTestIncreasingWidth.build">(kqcircuits.test_structures.stripes_test_increasing_width.StripesTestIncreasingWidth method)</a>
 </li>
         <li><a href="api/kqcircuits.test_structures.tsv_test_pattern.html#kqcircuits.test_structures.tsv_test_pattern.TsvTestPattern.build">(kqcircuits.test_structures.tsv_test_pattern.TsvTestPattern method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/kqcircuits.elements.waveguide_coplanar_curved.html#kqcircuits.elements.waveguide_coplanar_curved.WaveguideCoplanarCurved.build_geometry">build_geometry() (kqcircuits.elements.waveguide_coplanar_curved.WaveguideCoplanarCurved static method)</a>
+
+      <ul>
+        <li><a href="api/kqcircuits.elements.waveguide_coplanar_straight.html#kqcircuits.elements.waveguide_coplanar_straight.WaveguideCoplanarStraight.build_geometry">(kqcircuits.elements.waveguide_coplanar_straight.WaveguideCoplanarStraight static method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -1736,6 +1749,10 @@
 </li>
       <li><a href="api/kqcircuits.simulations.export.util.html#kqcircuits.simulations.export.util.get_enclosing_polygon">get_enclosing_polygon() (in module kqcircuits.simulations.export.util)</a>
 </li>
+      <li><a href="api/kqcircuits.simulations.export.xsection.epr_correction_export.html#kqcircuits.simulations.export.xsection.epr_correction_export.get_epr_correction_elmer_solution">get_epr_correction_elmer_solution() (in module kqcircuits.simulations.export.xsection.epr_correction_export)</a>
+</li>
+      <li><a href="api/kqcircuits.simulations.export.xsection.epr_correction_export.html#kqcircuits.simulations.export.xsection.epr_correction_export.get_epr_correction_simulations">get_epr_correction_simulations() (in module kqcircuits.simulations.export.xsection.epr_correction_export)</a>
+</li>
       <li><a href="api/kqcircuits.simulations.port.html#kqcircuits.simulations.port.InternalPort.get_etch_polygon">get_etch_polygon() (kqcircuits.simulations.port.InternalPort method)</a>
 </li>
       <li><a href="api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.get_filter_regions">get_filter_regions() (kqcircuits.chips.chip.Chip method)</a>
@@ -1882,6 +1899,8 @@
         <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.get_solution_data">(kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution method)</a>
 </li>
       </ul></li>
+      <li><a href="api/kqcircuits.util.label_polygons.html#kqcircuits.util.label_polygons.get_text_polygon">get_text_polygon() (in module kqcircuits.util.label_polygons)</a>
+</li>
       <li><a href="api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.get_tuned_junction_json">get_tuned_junction_json() (in module kqcircuits.util.replace_junctions)</a>
 </li>
       <li><a href="api/kqcircuits.util.gui_helper.html#kqcircuits.util.gui_helper.get_valid_node_elements">get_valid_node_elements() (in module kqcircuits.util.gui_helper)</a>
@@ -2572,8 +2591,6 @@
         <li><a href="api/kqcircuits.layer_config.example_layer_config.html#module-kqcircuits.layer_config.example_layer_config">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     kqcircuits.masks
 
@@ -2581,6 +2598,8 @@
         <li><a href="api/kqcircuits.masks.html#module-kqcircuits.masks">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     kqcircuits.masks.mask_export
 
@@ -2824,6 +2843,13 @@
 
       <ul>
         <li><a href="api/kqcircuits.simulations.export.xsection.html#module-kqcircuits.simulations.export.xsection">module</a>
+</li>
+      </ul></li>
+      <li>
+    kqcircuits.simulations.export.xsection.epr_correction_export
+
+      <ul>
+        <li><a href="api/kqcircuits.simulations.export.xsection.epr_correction_export.html#module-kqcircuits.simulations.export.xsection.epr_correction_export">module</a>
 </li>
       </ul></li>
       <li>
@@ -3072,6 +3098,13 @@
 </li>
       </ul></li>
       <li>
+    kqcircuits.util.label_polygons
+
+      <ul>
+        <li><a href="api/kqcircuits.util.label_polygons.html#module-kqcircuits.util.label_polygons">module</a>
+</li>
+      </ul></li>
+      <li>
     kqcircuits.util.layout_to_code
 
       <ul>
@@ -3251,6 +3284,8 @@
       <li><a href="api/kqcircuits.chips.lithography_test.html#kqcircuits.chips.lithography_test.LithographyTest">LithographyTest (class in kqcircuits.chips.lithography_test)</a>
 </li>
       <li><a href="api/kqcircuits.chips.lithography_test_twoface.html#kqcircuits.chips.lithography_test_twoface.LithographyTestTwoface">LithographyTestTwoface (class in kqcircuits.chips.lithography_test_twoface)</a>
+</li>
+      <li><a href="api/kqcircuits.util.label_polygons.html#kqcircuits.util.label_polygons.load_font_polygons">load_font_polygons() (in module kqcircuits.util.label_polygons)</a>
 </li>
       <li><a href="api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.load_libraries">load_libraries() (in module kqcircuits.util.library_helper)</a>
 </li>
@@ -3616,6 +3651,8 @@
 </li>
         <li><a href="api/kqcircuits.simulations.export.xsection.html#module-kqcircuits.simulations.export.xsection">kqcircuits.simulations.export.xsection</a>
 </li>
+        <li><a href="api/kqcircuits.simulations.export.xsection.epr_correction_export.html#module-kqcircuits.simulations.export.xsection.epr_correction_export">kqcircuits.simulations.export.xsection.epr_correction_export</a>
+</li>
         <li><a href="api/kqcircuits.simulations.export.xsection.xsection_export.html#module-kqcircuits.simulations.export.xsection.xsection_export">kqcircuits.simulations.export.xsection.xsection_export</a>
 </li>
         <li><a href="api/kqcircuits.simulations.partition_region.html#module-kqcircuits.simulations.partition_region">kqcircuits.simulations.partition_region</a>
@@ -3685,6 +3722,8 @@
         <li><a href="api/kqcircuits.util.import_helper.html#module-kqcircuits.util.import_helper">kqcircuits.util.import_helper</a>
 </li>
         <li><a href="api/kqcircuits.util.label.html#module-kqcircuits.util.label">kqcircuits.util.label</a>
+</li>
+        <li><a href="api/kqcircuits.util.label_polygons.html#module-kqcircuits.util.label_polygons">kqcircuits.util.label_polygons</a>
 </li>
         <li><a href="api/kqcircuits.util.layout_to_code.html#module-kqcircuits.util.layout_to_code">kqcircuits.util.layout_to_code</a>
 </li>

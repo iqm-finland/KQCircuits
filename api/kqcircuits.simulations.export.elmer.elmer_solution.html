@@ -747,6 +747,11 @@
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.label.html#kqcircuits.util.label.produce_label"><code class="docutils literal notranslate"><span class="pre">produce_label()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.label_polygons.html">kqcircuits.util.label_polygons</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.label_polygons.html#kqcircuits.util.label_polygons.get_text_polygon"><code class="docutils literal notranslate"><span class="pre">get_text_polygon()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.label_polygons.html#kqcircuits.util.label_polygons.load_font_polygons"><code class="docutils literal notranslate"><span class="pre">load_font_polygons()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.layout_to_code.html">kqcircuits.util.layout_to_code</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.convert_cells_to_code"><code class="docutils literal notranslate"><span class="pre">convert_cells_to_code()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.get_node_params"><code class="docutils literal notranslate"><span class="pre">get_node_params()</span></code></a></li>
@@ -1104,8 +1109,11 @@ Applies only when <cite>use_av=True</cite> and only to the main solver (not to c
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>p_element_order</strong> – polynomial order of p-elements</p></li>
-<li><p><strong>linear_system_method</strong> – Options: 1. mg (multigrid), 2. bicgstab or any other iterative solver mentioned in
-ElmerSolver manual section 4.3.1</p></li>
+<li><p><strong>linear_system_method</strong> – Options: 1. Iterative methods “mg” (multigrid), “bicgstab” or any other iterative
+solver mentioned in ElmerSolver manual section 4.3.1. 2. Direct methods “umfpack”, “mumps”, “pardiso” or
+“superlu”. Note that the use of other methods than “umfpack” requires Elmer to be explicitly compiled
+with the corresponding solver software. If a direct method is used the parameters
+“convergence_tolerance”, “max_iterations” and “linear_system_preconditioning” are redundant</p></li>
 <li><p><strong>integrate_energies</strong> – Calculate energy integrals over each object. Used in EPR simulations</p></li>
 <li><p><strong>convergence_tolerance</strong> – Convergence tolerance of the iterative solver.</p></li>
 <li><p><strong>max_iterations</strong> – Maximum number of iterations for the iterative solver.</p></li>
@@ -1160,8 +1168,11 @@ By default both 2D Capacitance and 2D Inductance simulation will be run when usi
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>p_element_order</strong> – polynomial order of p-elements</p></li>
-<li><p><strong>linear_system_method</strong> – Options: 1. mg (multigrid), 2. bicgstab or any other iterative solver mentioned in
-ElmerSolver manual section 4.3.1</p></li>
+<li><p><strong>linear_system_method</strong> – Options: 1. Iterative methods “mg” (multigrid), “bicgstab” or any other iterative
+solver mentioned in ElmerSolver manual section 4.3.1. 2. Direct methods “umfpack”, “mumps”, “pardiso” or
+“superlu”. Note that the use of other methods than “umfpack” requires Elmer to be explicitly compiled
+with the corresponding solver software. If a direct method is used the parameters
+“convergence_tolerance”, “max_iterations” and “linear_system_preconditioning” are redundant</p></li>
 <li><p><strong>integrate_energies</strong> – Calculate energy integrals over each object. Used in EPR simulations</p></li>
 <li><p><strong>boundary_conditions</strong> – Parameters to determine boundary conditions for potential on the edges
 of simulation box. Supported keys are <cite>xmin</cite> , <cite>xmax</cite> ,`ymin` and <cite>ymax</cite>
@@ -1228,13 +1239,17 @@ No impendance can then be calculated but useful for making EPR simulations faste
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.elmer.elmer_solution.</span></span><span class="sig-name descname"><span class="pre">ElmerEPR3DSolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percent_error:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_error_scale:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_outlier_fraction:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum_passes:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minimum_passes:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_axisymmetric:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_levels:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_size:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vtu_output:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_element_order:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linear_system_method:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'mg'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convergence_tolerance:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">1e-09</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iterations:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linear_system_preconditioning:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'ILU0'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/elmer/elmer_solution.html#ElmerEPR3DSolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerEPR3DSolution" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution" title="kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElmerSolution</span></code></a></p>
 <p>Class for Elmer 3D EPR simulations. Similar to electrostatics simulations done with ElmerCapacitanceSolution,
-but supports separating energies by PartitionRegions and produces no capacitance matrix</p>
+but supports separating energies by PartitionRegions. Produces no capacitance matrix if p_element_order==1.
+Always reports energies for each layer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>p_element_order</strong> – polynomial order of p-elements</p></li>
-<li><p><strong>linear_system_method</strong> – Options: 1. mg (multigrid), 2. bicgstab or any other iterative solver mentioned in
-ElmerSolver manual section 4.3.1</p></li>
+<li><p><strong>linear_system_method</strong> – Options: 1. Iterative methods “mg” (multigrid), “bicgstab” or any other iterative
+solver mentioned in ElmerSolver manual section 4.3.1. 2. Direct methods “umfpack”, “mumps”, “pardiso” or
+“superlu”. Note that the use of other methods than “umfpack” requires Elmer to be explicitly compiled
+with the corresponding solver software. If a direct method is used the parameters
+“convergence_tolerance”, “max_iterations” and “linear_system_preconditioning” are redundant</p></li>
 <li><p><strong>convergence_tolerance</strong> – Convergence tolerance of the iterative solver.</p></li>
 <li><p><strong>max_iterations</strong> – Maximum number of iterations for the iterative solver.</p></li>
 <li><p><strong>linear_system_preconditioning</strong> – Choice of preconditioner before using an iterative linear system solver</p></li>
