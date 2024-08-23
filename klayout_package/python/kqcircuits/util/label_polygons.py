@@ -16,6 +16,7 @@
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
+import logging
 from functools import lru_cache
 from pathlib import Path
 from kqcircuits.pya_resolver import pya
@@ -35,8 +36,10 @@ OAS_TEXT_MAGNIFICATION = 500.0
 OAS_DBU = 0.001
 
 
-def get_text_polygon(label: str, size: float = OAS_TEXT_MAGNIFICATION) -> pya.Region:
+def get_text_polygon(label: str, size: int = OAS_TEXT_MAGNIFICATION) -> pya.Region:
     """Returns the given label string as a region.
+
+    If size argument is given as non-integer, will round it to nearest micron.
 
     Utilizes speed ups compared to generating text geometry with KLayout's TEXT PCells.
     Only supports characters layed out in the ``font_polygons.oas`` file.
@@ -45,15 +48,21 @@ def get_text_polygon(label: str, size: float = OAS_TEXT_MAGNIFICATION) -> pya.Re
     font_polygons = load_font_polygons()
     unsported_characters = set(x.upper() for x in label) - set(font_polygons.keys())
     if unsported_characters:
-        raise ValueError(f"Unsupported characters for get_text_polygon: {unsported_characters}")
+        logging.warning(
+            f"Unsupported characters for get_text_polygon: {unsported_characters}."
+            f" These characters will be skipped in label '{label}'"
+        )
 
-    norm_size = size / OAS_TEXT_MAGNIFICATION
-    spacing = norm_size * OAS_TEXT_SPACING / OAS_DBU
+    spacing = size * OAS_TEXT_SPACING / (OAS_DBU * OAS_TEXT_MAGNIFICATION)
     label_region = pya.Region()
     if label is not None:
         for i, letter in enumerate(str(label)):
+            if letter.upper() not in font_polygons:
+                continue
             label_region += (
-                font_polygons[letter.upper()].scaled_and_snapped(0, norm_size, 1, 0, norm_size, 1).moved(i * spacing, 0)
+                font_polygons[letter.upper()]
+                .scaled_and_snapped(0, round(size), OAS_TEXT_MAGNIFICATION, 0, round(size), OAS_TEXT_MAGNIFICATION)
+                .moved(i * spacing, 0)
             )
     return label_region
 
