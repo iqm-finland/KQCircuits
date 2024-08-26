@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.masks.mask_export &mdash; KQCircuits 4.8.2 documentation</title>
+  <title>kqcircuits.masks.mask_export &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=98cca9dd"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -809,6 +809,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.replace_junctions.html">kqcircuits.util.replace_junctions</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.JunctionEntry"><code class="docutils literal notranslate"><span class="pre">JunctionEntry</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.extract_junctions"><code class="docutils literal notranslate"><span class="pre">extract_junctions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.check_static_cell_has_junctions"><code class="docutils literal notranslate"><span class="pre">check_static_cell_has_junctions()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.place_junctions"><code class="docutils literal notranslate"><span class="pre">place_junctions()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.get_tuned_junction_json"><code class="docutils literal notranslate"><span class="pre">get_tuned_junction_json()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.copy_one_layer_of_cell"><code class="docutils literal notranslate"><span class="pre">copy_one_layer_of_cell()</span></code></a></li>
@@ -955,7 +956,11 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_json_encoder</span> <span class="kn">import</span> <span class="n">GeometryJsonEncoder</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.netlist_extraction</span> <span class="kn">import</span> <span class="n">export_cell_netlist</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.export_helper</span> <span class="kn">import</span> <span class="n">export_drc_report</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.replace_junctions</span> <span class="kn">import</span> <span class="n">extract_junctions</span><span class="p">,</span> <span class="n">get_tuned_junction_json</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.replace_junctions</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">extract_junctions</span><span class="p">,</span>
+    <span class="n">get_tuned_junction_json</span><span class="p">,</span>
+    <span class="n">check_static_cell_has_junctions</span><span class="p">,</span>
+<span class="p">)</span>
 
 
 <div class="viewcode-block" id="export_mask_set">
@@ -996,8 +1001,14 @@
     <span class="n">dummy_cell</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">create_cell</span><span class="p">(</span><span class="n">chip_name</span><span class="p">)</span>
     <span class="n">dummy_cell</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span><span class="n">chip_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">()))</span>
     <span class="n">_export_cell</span><span class="p">(</span><span class="n">chip_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">chip_name</span><span class="si">}</span><span class="s2">_with_pcells.oas&quot;</span><span class="p">,</span> <span class="n">dummy_cell</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">skip_extras</span> <span class="ow">and</span> <span class="n">is_pcell</span><span class="p">:</span>  <span class="c1"># Don&#39;t export junction parameters list if chip_cell is not pcell</span>
-        <span class="n">export_junction_parameters</span><span class="p">(</span><span class="n">dummy_cell</span><span class="p">,</span> <span class="n">chip_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">chip_name</span><span class="si">}</span><span class="s2">_junction_parameters.json&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">skip_extras</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">is_pcell</span><span class="p">:</span>
+            <span class="c1"># Export junctions if chip is PCell</span>
+            <span class="n">export_junction_parameters</span><span class="p">(</span><span class="n">dummy_cell</span><span class="p">,</span> <span class="n">chip_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">chip_name</span><span class="si">}</span><span class="s2">_junction_parameters.json&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">check_static_cell_has_junctions</span><span class="p">(</span><span class="n">dummy_cell</span><span class="p">):</span>
+            <span class="c1"># Write empty file if static chip but it has junctions</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">chip_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">chip_name</span><span class="si">}</span><span class="s2">_junction_parameters.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({},</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
     <span class="n">dummy_cell</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
     <span class="n">static_cell</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">convert_cell_to_static</span><span class="p">(</span><span class="n">chip_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">()))</span>
 
