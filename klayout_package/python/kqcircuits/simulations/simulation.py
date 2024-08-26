@@ -19,7 +19,6 @@
 
 import abc
 import ast
-from typing import List
 
 import logging
 
@@ -134,7 +133,7 @@ class Simulation:
     LIBRARY_NAME = None  # This is needed by some methods inherited from Element.
 
     # Metadata associated with simulation
-    ports: List[Port]
+    ports: list[Port]
 
     # Parameters
     box = Param(pdt.TypeShape, "Boundary box", pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000)))
@@ -561,7 +560,9 @@ class Simulation:
         polygons without holes.
         """
         z = self.face_z_levels()
-        parts = [PartitionRegion(**(ast.literal_eval(r) if isinstance(r, str) else r)) for r in self.partition_regions]
+        parts = self.get_partition_regions()
+        # Overwrite partition_regions in case they were generated from custom function
+        self.partition_regions = [p.to_dict() for p in parts]
         for part in parts:
             part.limit_box(z[0], z[-1], self.box, self.layout.dbu)
         face_stack = self.face_stack_list_of_lists()
@@ -1205,6 +1206,14 @@ class Simulation:
     def get_layers(self):
         """Returns simulation layer numbers in list. Only return layers that are in use."""
         return [pya.LayerInfo(d["layer"], 0) for d in self.layers.values() if "layer" in d]
+
+    def get_partition_regions(self):
+        """Returns partition regions for the simulation instance.
+
+        If member function not overriden, will simply return whatever was passed as ``partition_regions``, if any.
+        Can be overriden, for example, to use partition regions defined in kqcircuits.simulations.epr.
+        """
+        return [PartitionRegion(**(ast.literal_eval(r) if isinstance(r, str) else r)) for r in self.partition_regions]
 
     @staticmethod
     def delete_instances(cell, name, index=(0,)):

@@ -114,9 +114,11 @@ class Swissmon(Qubit):
 
         # draw
         if l > 0:
-            self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(
-                shoe_region2.transformed((rotation * transf).to_itrans(self.layout.dbu))
-            )
+            shoe_region3 = shoe_region2.transformed((rotation * transf).to_itrans(self.layout.dbu))
+            self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(shoe_region3)
+            self.refpoints[f"epr_cplr{cpl_nr}_min"] = shoe_region3.bbox().to_dtype(self.layout.dbu).p1
+            self.refpoints[f"epr_cplr{cpl_nr}_max"] = shoe_region3.bbox().to_dtype(self.layout.dbu).p2
+
         self.cell.shapes(self.get_layer("waveguide_path")).insert(
             port_region.transformed((rotation * transf).to_itrans(self.layout.dbu))
         )
@@ -181,6 +183,8 @@ class Swissmon(Qubit):
             pya.DPoint(wn + sn, l[1] + sn),
         ]
 
+        for idx, p in enumerate(cross_gap_points):
+            self.refpoints[f"epr_cross_{idx:02d}"] = p
         cross = pya.DPolygon(cross_gap_points)
         cross.insert_hole(cross_island_points)
         cross_rounded = cross.round_corners(self.island_r, self.island_r, self.n)

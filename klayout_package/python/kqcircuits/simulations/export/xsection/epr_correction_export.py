@@ -15,7 +15,11 @@
 # (meetiqm.com/iqm-open-source-trademark-policy). IQM welcomes contributions to the code.
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
-from typing import Sequence
+from pathlib import Path
+
+from typing import Callable, Sequence
+
+from kqcircuits.simulations.simulation import Simulation
 
 from kqcircuits.simulations.partition_region import get_list_of_two
 
@@ -54,26 +58,27 @@ def get_epr_correction_elmer_solution(**override_args):
 
 
 def get_epr_correction_simulations(
-    simulations,
-    path,
-    correction_cuts,
-    ma_eps_r=8,
-    ms_eps_r=11.4,
-    sa_eps_r=4,
-    ma_thickness=4.8e-3,  # in µm
-    ms_thickness=0.3e-3,  # in µm
-    sa_thickness=2.4e-3,  # in µm
-    ma_bg_eps_r=1,
-    ms_bg_eps_r=11.45,
-    sa_bg_eps_r=11.45,
-    metal_height=None,
-):
+    simulations: list[Simulation],
+    path: Path,
+    correction_cuts: dict[str, dict] | Callable[[Simulation], dict[str, dict]],
+    ma_eps_r: float = 8,
+    ms_eps_r: float = 11.4,
+    sa_eps_r: float = 4,
+    ma_thickness: float = 4.8e-3,  # in µm
+    ms_thickness: float = 0.3e-3,  # in µm
+    sa_thickness: float = 2.4e-3,  # in µm
+    ma_bg_eps_r: float = 1,
+    ms_bg_eps_r: float = 11.45,
+    sa_bg_eps_r: float = 11.45,
+    metal_height: float | None = None,
+) -> tuple[list[tuple[Simulation, ElmerCrossSectionSolution]], list[PostProcess]]:
     """Helper function to produce EPR correction simulations.
 
     Args:
-        simulations (list): list of simulation objects
-        path (Path): path to simulation folder
-        correction_cuts (dict): dictionary of correction cuts. Key is the name of cut and values are dicts containing:
+        simulations: list of simulation objects
+        path: path to simulation folder
+        correction_cuts: dictionary or function that returns a dictionary of correction cuts for given simulation.
+        Key is the name of cut and values are dicts containing:
         - p1: pya.DPoint indicating the first end of the cut segment
         - p2: pya.DPoint indicating the second end of the cut segment
         - metal_edges: list of dictionaries indicating metal-edge-region locations and orientations in 2D simulation.
@@ -85,16 +90,16 @@ def get_epr_correction_simulations(
         - partition_regions: (optional) list of partition region names. The correction cut key is used if not assigned.
         - simulations: (optional) list of simulation names. Is applied on all simulations if not assigned.
         - solution: (optional) solution object for the sim. get_epr_correction_elmer_solution is used if not assigned.
-        ma_eps_r (float): relative permittivity of MA layer
-        ms_eps_r (float): relative permittivity of MS layer
-        sa_eps_r (float): relative permittivity of SA layer
-        ma_thickness (float): thickness of MA layer
-        ms_thickness (float): thickness of MS layer
-        sa_thickness (float): thickness of SA layer
-        ma_bg_eps_r (float): rel permittivity at the location of MA layer in 3D simulation (sheet approximation in use)
-        ms_bg_eps_r (float): rel permittivity at the location of MS layer in 3D simulation (sheet approximation in use)
-        sa_bg_eps_r (float): rel permittivity at the location of SA layer in 3D simulation (sheet approximation in use)
-        metal_height (float): height of metal layers in correction simulations. Use None to get heights from 3D stack
+        ma_eps_r: relative permittivity of MA layer
+        ms_eps_r: relative permittivity of MS layer
+        sa_eps_r: relative permittivity of SA layer
+        ma_thickness: thickness of MA layer
+        ms_thickness: thickness of MS layer
+        sa_thickness: thickness of SA layer
+        ma_bg_eps_r: rel permittivity at the location of MA layer in 3D simulation (sheet approximation in use)
+        ms_bg_eps_r: rel permittivity at the location of MS layer in 3D simulation (sheet approximation in use)
+        sa_bg_eps_r: rel permittivity at the location of SA layer in 3D simulation (sheet approximation in use)
+        metal_height: height of metal layers in correction simulations. Use None to get heights from 3D stack
 
     Returns:
         tuple containing list of correction simulations and list of post_process objects
@@ -106,8 +111,9 @@ def get_epr_correction_simulations(
         if metal_height is not None:
             source_sim.metal_height = metal_height
         separate_signal_layer_shapes(source_sim)
+        cuts = correction_cuts(source_sim) if callable(correction_cuts) else correction_cuts
 
-        for key, cut in correction_cuts.items():
+        for key, cut in cuts.items():
             if "simulations" in cut and source_sim.name not in cut["simulations"]:
                 continue
 
@@ -115,15 +121,15 @@ def get_epr_correction_simulations(
             if not part_names:
                 raise ValueError("Correction cut has no partition region attached")
 
-            parts = [p for p in source_sim.partition_regions if p["name"] in part_names]
+            parts = [p for p in source_sim.get_partition_regions() if p.name in part_names]
             if not parts:
                 continue
 
-            v_dims = get_list_of_two(parts[0]["vertical_dimensions"])
-            h_dims = get_list_of_two(parts[0]["metal_edge_dimensions"])
-            if None in v_dims or any(v_dims != get_list_of_two(p["vertical_dimensions"]) for p in parts):
+            v_dims = get_list_of_two(parts[0].vertical_dimensions)
+            h_dims = get_list_of_two(parts[0].metal_edge_dimensions)
+            if None in v_dims or any(v_dims != get_list_of_two(p.vertical_dimensions) for p in parts):
                 raise ValueError(f"Partition region vertical_dimensions are invalid for correction_cut {key}.")
-            if None in h_dims or any(h_dims != get_list_of_two(p["metal_edge_dimensions"]) for p in parts):
+            if None in h_dims or any(h_dims != get_list_of_two(p.metal_edge_dimensions) for p in parts):
                 raise ValueError(f"Partition region metal_edge_dimensions are invalid for correction_cut {key}.")
 
             mer_box = []
@@ -168,7 +174,7 @@ def get_epr_correction_simulations(
             groups=["MA", "MS", "SA", "substrate", "vacuum"],
             region_corrections={
                 **{p["name"]: None for s in source_sims for p in s.partition_regions},
-                **{p: k for k, v in correction_cuts.items() for p in v.get("partition_regions", [k])},
+                **{p: k for k, v in cuts.items() for p in v.get("partition_regions", [k])},
             },
         ),
     ]

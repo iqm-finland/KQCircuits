@@ -124,3 +124,15 @@ class PartitionRegion:
             self.region &= metal_region.sized(ed[0] / dbu)
         if ed[1] is not None:
             self.region &= etch_region.sized(ed[1] / dbu)
+
+    def to_dict(self):
+        """Returns a dict object that is serializable to JSON"""
+        return {
+            "name": self.name,
+            "region": self.region,
+            "z": self.z,
+            "face": self.face,
+            "vertical_dimensions": self.vertical_dimensions,
+            "metal_edge_dimensions": self.metal_edge_dimensions,
+            "visualise": self.visualise,
+        }

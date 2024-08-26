@@ -24,6 +24,7 @@ from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
 from kqcircuits.simulations.export.xsection.epr_correction_export import get_epr_correction_simulations
 
 from kqcircuits.qubits.swissmon import Swissmon
+from kqcircuits.simulations.epr.swissmon import partition_regions, correction_cuts
 from kqcircuits.simulations.export.ansys.ansys_solution import AnsysEigenmodeSolution, AnsysVoltageSolution
 from kqcircuits.simulations.post_process import PostProcess
 from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
@@ -43,19 +44,10 @@ use_xsection = True
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
 # Simulation parameters
-sim_class = get_single_element_sim_class(Swissmon)  # pylint: disable=invalid-name
+sim_class = get_single_element_sim_class(Swissmon, partition_region_function=partition_regions)
 sim_parameters = {
     "name": "swissmon_epr",
     "box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(1000, 1000)),
-    "partition_regions": [
-        {
-            "name": "mer",
-            "face": "1t1",
-            "vertical_dimensions": 3.0,
-            "metal_edge_dimensions": 4.0,
-            "region": [pya.DBox(465, 325, 535, 675), pya.DBox(325, 465, 675, 535)],
-        }
-    ],
     "tls_sheet_approximation": True,
     "tls_layer_thickness": 0.01,
     "n": 24,
@@ -95,7 +87,6 @@ export_ansys(
 
 # produce EPR correction simulations
 if use_xsection:
-    correction_cuts = {"mer": {"p1": pya.DPoint(450, 492), "p2": pya.DPoint(450, 552), "metal_edges": [{"x": 20}]}}
     correction_simulations, post_process = get_epr_correction_simulations(
         simulations, dir_path, correction_cuts, metal_height=0.2
     )

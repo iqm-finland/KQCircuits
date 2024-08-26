@@ -16,10 +16,11 @@
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
-from typing import Callable, List, Optional, Type
+from typing import Callable
 from kqcircuits.elements.element import Element
 from kqcircuits.simulations.simulation import Simulation
 from kqcircuits.pya_resolver import pya
+from kqcircuits.simulations.partition_region import PartitionRegion
 from kqcircuits.simulations.port import InternalPort, EdgePort
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.util.refpoints import RefpointToInternalPort, RefpointToEdgePort, WaveguideToSimPort, JunctionSimPort
@@ -35,6 +36,7 @@ def _get_build_function(element_class, ignore_ports, transformation_from_center)
         if transformation_from_center is not None:
             element_trans *= transformation_from_center(simulation_cell)
         _, refp = self.insert_cell(simulation_cell, element_trans, rec_levels=None)
+        self.refpoints = refp
 
         # Add ports
         port_i = 0
@@ -111,9 +113,10 @@ def _get_build_function(element_class, ignore_ports, transformation_from_center)
 
 def get_single_element_sim_class(
     element_class: Element,
-    ignore_ports: Optional[List[str]] = None,
-    transformation_from_center: Optional[Callable[[pya.Cell], pya.DTrans]] = None,
-) -> Type[Simulation]:
+    ignore_ports: list[str] | None = None,
+    transformation_from_center: Callable[[pya.Cell], pya.DTrans] | None = None,
+    partition_region_function: Callable[[Simulation], list[PartitionRegion]] | None = None,
+) -> type[Simulation]:
     """Formulates a simulation class containing a single cell of a given Element class
 
     Args:
@@ -125,20 +128,25 @@ def get_single_element_sim_class(
             The returned transformation is applied to the element cell
             after placing it in the middle of simulation's box.
             The function should not cause any side-effects, i.e. change the cell parameters
+        partition_region_function: optional. Function that the simulation instance will use to define
+            partition regions, which may look up instances parameters and refpoints to derive the regions.
     """
+    overriden_class_attributes = {
+        "separate_island_internal_ports": Param(
+            pdt.TypeBoolean,
+            "Add InternalPorts on both islands (if applicable). Use for capacitive simulations",
+            False,
+        ),
+        "junction_inductance": Param(pdt.TypeList, "Junction inductance (if junction exists)", 11.497e-9, unit="H"),
+        "junction_capacitance": Param(pdt.TypeList, "Junction capacitance (if junction exists)", 0.1e-15, unit="F"),
+        "build": _get_build_function(element_class, ignore_ports, transformation_from_center),
+    }
+    if partition_region_function:
+        overriden_class_attributes["get_partition_regions"] = partition_region_function
     element_sim_class = type(
         f"SingleElementSimulationClassFor{element_class.__name__}",
         (Simulation,),
-        {
-            "separate_island_internal_ports": Param(
-                pdt.TypeBoolean,
-                "Add InternalPorts on both islands (if applicable). Use for capacitive simulations",
-                False,
-            ),
-            "junction_inductance": Param(pdt.TypeList, "Junction inductance (if junction exists)", 11.497e-9, unit="H"),
-            "junction_capacitance": Param(pdt.TypeList, "Junction capacitance (if junction exists)", 0.1e-15, unit="F"),
-            "build": _get_build_function(element_class, ignore_ports, transformation_from_center),
-        },
+        overriden_class_attributes,
     )
     add_parameters_from(element_class)(element_sim_class)
     return element_sim_class
