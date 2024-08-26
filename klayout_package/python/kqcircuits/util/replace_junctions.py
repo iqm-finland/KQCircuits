@@ -269,6 +269,32 @@ def extract_junctions(top_cell: pya.Cell, tuned_junction_parameters: Dict) -> Li
     return found_junctions
 
 
+def check_static_cell_has_junctions(top_cell: pya.Cell) -> bool:
+    """Perform quick check on a static chip cell if it contains a junction.
+
+    Args: top_cell - top cell of the chip
+
+    Returns: True if chip contains at least one junction.
+    """
+    layout = top_cell.layout()
+
+    def recursive_junction_search(inst):
+        cell = layout.cell(inst.cell_index)
+        cell_class_from_name = cell.name.split("$")[0].replace("*", " ")
+        is_junction = cell_class_from_name in junction_type_choices
+        if is_junction:
+            return True
+        for i in cell.each_inst():
+            if recursive_junction_search(i):
+                return True
+        return False
+
+    for i in top_cell.each_inst():
+        if recursive_junction_search(i):
+            return True
+    return False
+
+
 def place_junctions(top_cell: pya.Cell, junctions: List[JunctionEntry]) -> None:
     """Places `junctions` to `top_cell` in the same location and orientation as in
     the cell they were extracted from, but with possibly tuned parameters.

@@ -40,7 +40,11 @@ from kqcircuits.util.geometry_helper import circle_polygon
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
 from kqcircuits.util.netlist_extraction import export_cell_netlist
 from kqcircuits.util.export_helper import export_drc_report
-from kqcircuits.util.replace_junctions import extract_junctions, get_tuned_junction_json
+from kqcircuits.util.replace_junctions import (
+    extract_junctions,
+    get_tuned_junction_json,
+    check_static_cell_has_junctions,
+)
 
 
 def export_mask_set(mask_set, skip_extras=False):
@@ -73,8 +77,14 @@ def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc, alt_netlists
     dummy_cell = layout.create_cell(chip_name)
     dummy_cell.insert(pya.DCellInstArray(chip_cell.cell_index(), pya.DTrans()))
     _export_cell(chip_dir / f"{chip_name}_with_pcells.oas", dummy_cell, "all")
-    if not skip_extras and is_pcell:  # Don't export junction parameters list if chip_cell is not pcell
-        export_junction_parameters(dummy_cell, chip_dir / f"{chip_name}_junction_parameters.json")
+    if not skip_extras:
+        if is_pcell:
+            # Export junctions if chip is PCell
+            export_junction_parameters(dummy_cell, chip_dir / f"{chip_name}_junction_parameters.json")
+        elif check_static_cell_has_junctions(dummy_cell):
+            # Write empty file if static chip but it has junctions
+            with open(chip_dir / f"{chip_name}_junction_parameters.json", "w") as file:
+                file.write(json.dumps({}, indent=2))
     dummy_cell.delete()
     static_cell = layout.cell(layout.convert_cell_to_static(chip_cell.cell_index()))
 
