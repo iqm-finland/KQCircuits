@@ -46,7 +46,7 @@ def get_text_polygon(label: str, size: int = OAS_TEXT_MAGNIFICATION) -> pya.Regi
     """
 
     font_polygons = load_font_polygons()
-    unsported_characters = set(x.upper() for x in label) - set(font_polygons.keys())
+    unsported_characters = set(x.upper() for x in label) - set(font_polygons.keys()) - set(" ")
     if unsported_characters:
         logging.warning(
             f"Unsupported characters for get_text_polygon: {unsported_characters}."
