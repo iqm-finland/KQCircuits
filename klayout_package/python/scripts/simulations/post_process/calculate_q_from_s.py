@@ -30,7 +30,7 @@ def read_snp_network(snp_file):
     snp_network = skrf.Network(snp_file)
 
     # skrf.Network fails to read multiple Z0 terms from s2p file, so we do it separately.
-    with open(snp_file) as file:
+    with open(snp_file, encoding="utf-8") as file:
         lines = file.readlines()
         for line in lines:
             if line.startswith("# GHz S MA R "):
@@ -62,5 +62,5 @@ for result_file in result_files:
             output_data[f"Q_port{i + 1}"] = q
 
     output_file = result_file[:-2].replace("_project_SMatrix.s", "_q.json")
-    with open(output_file, "w") as f:
+    with open(output_file, "w", encoding="utf-8") as f:
         json.dump(output_data, f, indent=4)

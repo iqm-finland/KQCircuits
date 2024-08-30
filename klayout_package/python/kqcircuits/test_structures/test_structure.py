@@ -99,19 +99,15 @@ class TestStructure(Element):
             pads_region.insert((trans * trans_right * pad_connection_box).to_itype(self.layout.dbu))
 
         if refpoint_distance is None:
-            self.refpoints["{}_sw".format(refpoint_prefix)] = pos_sw
-            self.refpoints["{}_nw".format(refpoint_prefix)] = pos_nw
-            self.refpoints["{}_ne".format(refpoint_prefix)] = pos_ne
-            self.refpoints["{}_se".format(refpoint_prefix)] = pos_se
+            self.refpoints[f"{refpoint_prefix}_sw"] = pos_sw
+            self.refpoints[f"{refpoint_prefix}_nw"] = pos_nw
+            self.refpoints[f"{refpoint_prefix}_ne"] = pos_ne
+            self.refpoints[f"{refpoint_prefix}_se"] = pos_se
         else:
-            self.refpoints["{}_sw".format(refpoint_prefix)] = pos_sw + pya.DVector(
-                -pad_width / 2 + refpoint_distance, 0
-            )
-            self.refpoints["{}_nw".format(refpoint_prefix)] = pos_nw + pya.DVector(
-                -pad_width / 2 + refpoint_distance, 0
-            )
-            self.refpoints["{}_ne".format(refpoint_prefix)] = pos_ne + pya.DVector(pad_width / 2 - refpoint_distance, 0)
-            self.refpoints["{}_se".format(refpoint_prefix)] = pos_se + pya.DVector(pad_width / 2 - refpoint_distance, 0)
+            self.refpoints[f"{refpoint_prefix}_sw"] = pos_sw + pya.DVector(-pad_width / 2 + refpoint_distance, 0)
+            self.refpoints[f"{refpoint_prefix}_nw"] = pos_nw + pya.DVector(-pad_width / 2 + refpoint_distance, 0)
+            self.refpoints[f"{refpoint_prefix}_ne"] = pos_ne + pya.DVector(pad_width / 2 - refpoint_distance, 0)
+            self.refpoints[f"{refpoint_prefix}_se"] = pos_se + pya.DVector(pad_width / 2 - refpoint_distance, 0)
 
     def produce_etched_region(self, metal_region, pos, width, height):
         """Produces structures in metal gap layer.

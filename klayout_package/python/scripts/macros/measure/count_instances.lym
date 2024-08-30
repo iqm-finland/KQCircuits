@@ -63,6 +63,6 @@ def count_instances_in_cell(cell_idx):
 
 n_elements = count_instances_in_cell(top_cell.cell_index())
 
-print("Number of instances with cell name \"{}\": {}".format(cell_name, n_elements))
+print(f"Number of instances with cell name \"{cell_name}\": {n_elements}")
 </text>
 </klayout-macro>

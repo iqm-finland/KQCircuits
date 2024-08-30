@@ -55,7 +55,7 @@ class StripesTestIncreasingWidth(TestStructure):
             "Basic",
             {
                 "layer": self.face()["base_metal_gap_wo_grid"],
-                "text": "{}".format(spacing_str),
+                "text": f"{spacing_str}",
                 "mag": 40,
             },
         )

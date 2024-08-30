@@ -78,7 +78,7 @@ def get_post_process_command_lines(post_process, path, json_filenames):
 def export_simulation_json(json_data, json_file_path):
     """Export simulation definitions json. Raise an error if file exists"""
     if not Path(json_file_path).exists():
-        with open(json_file_path, "w") as fp:
+        with open(json_file_path, "w", encoding="utf-8") as fp:
             json.dump(json_data, fp, cls=GeometryJsonEncoder, indent=4)
     else:
         raise ValueError(
@@ -111,7 +111,7 @@ def sweep_simulation(layout, sim_class, sim_parameters, sweeps):
             parameters = {
                 **sim_parameters,
                 param: value,
-                "name": "{}_{}_{}".format(sim_parameters.get("name", ""), param, str(value)),
+                "name": f"{sim_parameters.get('name', '')}_{param}_{str(value)}",
             }
             simulations.append(sim_class(**parameters) if layout is None else sim_class(layout, **parameters))
     return simulations

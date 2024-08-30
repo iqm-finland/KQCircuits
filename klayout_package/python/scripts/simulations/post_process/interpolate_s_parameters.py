@@ -43,13 +43,13 @@ def _snp_extension(f):
 
 
 def _get_port_num(def_file):
-    with open(def_file, "r") as f:
+    with open(def_file, "r", encoding="utf-8") as f:
         data = json.load(f)
     return len(data["ports"])
 
 
 if len(sys.argv) > 1:
-    with open(sys.argv[1], "r") as fp:
+    with open(sys.argv[1], "r", encoding="utf-8") as fp:
         pp_data = json.load(fp)
 else:
     raise RuntimeError("Not enough arguments given to interpolate_s_parameters: Need filename of post_process json")

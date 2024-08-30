@@ -376,7 +376,7 @@ def _dump_xsection_parameters(xsection_dir, simulation):
     # Also dump all used layers in the simulation cell
     simulation_params["sim_layers"] = {l.name: f"{l.layer}/{l.datatype}" for l in simulation.layout.layer_infos()}
     xsection_parameters_file = xsection_dir / f"parameters_{simulation.cell.name}.json"
-    with open(xsection_parameters_file, "w") as sweep_file:
+    with open(xsection_parameters_file, "w", encoding="utf-8") as sweep_file:
         json.dump(simulation_params, sweep_file, cls=GeometryJsonEncoder)
     return xsection_parameters_file
 

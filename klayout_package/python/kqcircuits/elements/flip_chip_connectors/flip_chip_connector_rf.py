@@ -102,7 +102,7 @@ class FlipChipConnectorRf(Element):
                 self.cell.shapes(self.get_layer("base_metal_gap_wo_grid", face)).insert(region.transformed(itrans))
                 self.add_protection(avoid_region.transformed(itrans), face)
                 self.add_port(
-                    "{}_port".format(self.face_ids[face]),
+                    f"{self.face_ids[face]}_port",
                     dtrans * pya.DPoint(-bumps_length / 2, 0) + trace_dtrans * dtrans * pya.DVector(-w / 2, 0),
                     trace_dtrans * dtrans * pya.DVector(-1, 0),
                     face,

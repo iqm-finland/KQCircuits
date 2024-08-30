@@ -371,7 +371,7 @@ def interpolating_frequency_sweep(
     """
     if not has_polyrat:
         logging.warning(
-            "Rational fit using scipy.curve_fit is extremely unreliable." " Consider installing polyrat library"
+            "Rational fit using scipy.curve_fit is extremely unreliable. Consider installing polyrat library"
         )
 
     if json_data["workflow"]["_parallelization_level"] == "elmer":

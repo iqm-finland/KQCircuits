@@ -105,6 +105,4 @@ class JunctionTest2(Chip):
                 loop_area=loop_area,
                 only_arms=True,
             )
-            self.insert_cell(
-                cell, pya.DTrans(0, False, array_coordinates[0], array_coordinates[1]), name + "_{}".format(j + 1)
-            )
+            self.insert_cell(cell, pya.DTrans(0, False, array_coordinates[0], array_coordinates[1]), name + f"_{j + 1}")

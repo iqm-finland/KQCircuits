@@ -37,8 +37,9 @@ class Meander(Element):
 
     Defined by two points, total length and number of meanders.
 
-    The start and end points can be moved in GUI using the "Move"-tool. Alternatively, if a list of ``[x, y]``
-    coordinates is given for ``start`` and ``end``, the GUI markers will not be shown. The latter is useful for
+    The ``start_point`` and ``end_point`` can be moved in GUI using the "Move"-tool.
+    Alternatively, if a list of ``[x, y]`` coordinates is given for ``start_point`` and ``end_point``,
+    the GUI markers will not be shown. The latter is useful for
     code-generated cells that cannot be edited in the GUI.
 
     By default, the number of meanders is automatically chosen to minimize the area taken by bounding box of
@@ -48,8 +49,8 @@ class Meander(Element):
        .. MARKERS_FOR_PNG 0,0
     """
 
-    start = Param(pdt.TypeShape, "Start", pya.DPoint(-600, 0))
-    end = Param(pdt.TypeShape, "End", pya.DPoint(600, 0))
+    start_point = Param(pdt.TypeShape, "Start", pya.DPoint(-600, 0))
+    end_point = Param(pdt.TypeShape, "End", pya.DPoint(600, 0))
     length = Param(pdt.TypeDouble, "Length", 3000, unit="μm")
     meanders = Param(pdt.TypeInt, "Number of meanders (non-positive means automatic)", -1)
     n_bridges = Param(pdt.TypeInt, "Number of bridges", 0)
@@ -59,18 +60,18 @@ class Meander(Element):
 
     def parameters_from_shape_impl(self):
         points = [pya.DPoint(point * self.layout.dbu) for point in self.shape.each_point()]
-        self.start = points[0]
-        self.end = points[-1]
+        self.start_point = points[0]
+        self.end_point = points[-1]
 
     def build(self):
-        if isinstance(self.start, list):
-            start = pya.DPoint(self.start[0], self.start[1])
+        if isinstance(self.start_point, list):
+            start = pya.DPoint(self.start_point[0], self.start_point[1])
         else:
-            start = self.start
-        if isinstance(self.end, list):
-            end = pya.DPoint(self.end[0], self.end[1])
+            start = self.start_point
+        if isinstance(self.end_point, list):
+            end = pya.DPoint(self.end_point[0], self.end_point[1])
         else:
-            end = self.end
+            end = self.end_point
 
         angle = 180 / pi * atan2(end.y - start.y, end.x - start.x)
         transf = pya.DCplxTrans(1, angle, False, pya.DVector(start))

@@ -381,7 +381,7 @@ class WaveguideComposite(Element):
         inst, ref = chip.insert_cell(wg)
         return inst, ref, wg.length()
 
-    def snap_point(self, point: pya.DPoint) -> pya.DPoint:  # pylint: disable=no-self-use
+    def snap_point(self, point: pya.DPoint) -> pya.DPoint:
         """
         Interface to define snap behavior for GUI editing in derived classes.
 
@@ -818,8 +818,8 @@ class WaveguideComposite(Element):
                 params = {**node1.params, "a": self.a, "b": self.b}
                 cell_inst, _ = self.insert_cell(
                     Meander,
-                    start=[meander_start.x, meander_start.y],
-                    end=[meander_end.x, meander_end.y],
+                    start_point=[meander_start.x, meander_start.y],
+                    end_point=[meander_end.x, meander_end.y],
                     length=meander_len,
                     **params,
                 )
@@ -943,9 +943,7 @@ def produce_fixed_length_bend(element, target_len, point_a, point_a_corner, poin
         inst, _ = element.insert_cell(cell)
     except ValueError as e:
         raise ValueError(
-            "Cannot create a waveguide bend with length {} between points {} and {}".format(
-                target_len, point_a, point_b
-            )
+            f"Cannot create a waveguide bend with length {target_len} between points {point_a} and {point_b}"
         ) from e
 
     return inst

@@ -3,7 +3,7 @@ pytest
 pytest-cov~=2.11.1
 pytest-xdist
 tox
-pylint~=2.9.3
+pylint==2.14.0
 matplotlib
 black
 pytest-mock

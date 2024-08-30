@@ -125,7 +125,7 @@ class Chip(Element):
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
-        return "{}".format(self.name_chip)
+        return str(self.name_chip)
 
     def can_create_from_shape_impl(self):
         return self.shape.is_box()
@@ -648,7 +648,7 @@ class Chip(Element):
                 self.add_port(name, launcher_refpoints["port"], face_id=face_id)
         return launchers
 
-    def make_grid_locations(self, box, delta_x=100, delta_y=100, x0=0, y0=0):  # pylint: disable=no-self-use
+    def make_grid_locations(self, box, delta_x=100, delta_y=100, x0=0, y0=0):
         """
         Define the locations for a grid. This method returns the full grid.
 

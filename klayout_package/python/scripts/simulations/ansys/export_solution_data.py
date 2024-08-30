@@ -35,9 +35,10 @@ from util import (  # pylint: disable=wrong-import-position,no-name-in-module
 )
 
 
+# pylint: disable=consider-using-f-string
 def save_capacitance_matrix(file_name, c_matrix, detail=""):
     """Save capacitance matrix in readable format."""
-    with open(file_name, "w") as out_file:
+    with open(file_name, "w") as out_file:  # pylint: disable=unspecified-encoding
         out_file.write(
             "Capacitance matrix"
             + detail
@@ -257,8 +258,9 @@ elif design_type == "2D Extractor":
 
 # Save results in json format
 if json_content:
-    with open(json_filename, "w") as outfile:
+    with open(json_filename, "w") as outfile:  # pylint: disable=unspecified-encoding
         json.dump(json_content, outfile, cls=ComplexEncoder, indent=4)
 
 # Notify the end of script
 oDesktop.AddMessage("", "", 0, "Done exporting solution data (%s)" % time.asctime(time.localtime()))
+# pylint: enable=consider-using-f-string

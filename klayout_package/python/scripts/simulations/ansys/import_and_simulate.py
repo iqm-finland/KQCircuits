@@ -34,7 +34,7 @@ def write_simulation_machine_versions_file(oDesktop):
     versions["python"] = sys.version_info
     versions["Ansys ElectronicsDesktop"] = oDesktop.GetVersion()
 
-    with open("SIMULATION_MACHINE_VERSIONS.json", "w") as file:
+    with open("SIMULATION_MACHINE_VERSIONS.json", "w") as file:  # pylint: disable=unspecified-encoding
         json.dump(versions, file)
 
 
@@ -47,7 +47,7 @@ path = os.path.abspath(os.path.dirname(jsonfile))
 basename = os.path.splitext(os.path.basename(jsonfile))[0]
 
 # Read simulation_flags settings from .json
-with open(jsonfile, "r") as fp:
+with open(jsonfile, "r") as fp:  # pylint: disable=unspecified-encoding
     data = json.load(fp)
 simulation_flags = data["simulation_flags"]
 

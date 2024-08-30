@@ -43,6 +43,7 @@ oOutputVariable = oDesign.GetModule("OutputVariable")
 oReportSetup = oDesign.GetModule("ReportSetup")
 
 # Create model separately for HFSS and Q3D
+# pylint: disable=consider-using-f-string
 oDesktop.AddMessage("", "", 0, "Creating reports (%s)" % time.asctime(time.localtime()))
 
 design_type = oDesign.GetDesignType()
@@ -235,3 +236,4 @@ elif design_type == "2D Extractor":
 
 # Notify the end of script
 oDesktop.AddMessage("", "", 0, "Reports created (%s)" % time.asctime(time.localtime()))
+# pylint: enable=consider-using-f-string

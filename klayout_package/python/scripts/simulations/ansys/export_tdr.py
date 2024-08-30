@@ -63,6 +63,7 @@ def create_z_vs_time_plot(report_setup, report_type, solution_name, context_arra
     report_setup.ExportToFile("Time Domain Reflectometry", csv_filename)
 
 
+# pylint: disable=consider-using-f-string
 # Set up environment
 ScriptEnv.Initialize("Ansoft.ElectronicsDesktop")
 oDesktop.AddMessage("", "", 0, "Plotting TDR for all ports (%s)" % time.asctime(time.localtime()))
@@ -145,3 +146,4 @@ if design_type == "HFSS":
 
 # Notify the end of script
 oDesktop.AddMessage("", "", 0, "TDR created (%s)" % time.asctime(time.localtime()))
+# pylint: enable=consider-using-f-string

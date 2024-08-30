@@ -43,7 +43,7 @@ from kqcircuits.junctions.sim import Sim
 from kqcircuits.util.library_helper import load_libraries
 
 
-simulation_layer_dict = dict()
+simulation_layer_dict = {}
 
 load_libraries()  # allows parameter overrides from defaults.py
 
@@ -222,7 +222,7 @@ class Simulation:
 
     waveguide_length = Param(
         pdt.TypeDouble,
-        "Length of waveguide stubs or distance between couplers and waveguide " "turning point",
+        "Length of waveguide stubs or distance between couplers and waveguide turning point",
         100,
         unit="µm",
     )
@@ -309,7 +309,7 @@ class Simulation:
         else:
             self.cell = layout.create_cell(self.name)
 
-        self.layers = dict()
+        self.layers = {}
         self.build()
         self.create_simulation_layers()
 
@@ -391,7 +391,7 @@ class Simulation:
         # Build z-levels such that level z=0 is at very bottom. Z-transformation is applied later.
         vacuum_at_bottom = self.lower_box_height > 0
         z = self.lower_box_height if vacuum_at_bottom else float(self.ith_value(self.substrate_height, 0))
-        z_dict = dict()
+        z_dict = {}
         z_list = [0.0]
         z_trans = 0.0
         stack = self.face_stack_list_of_lists()
@@ -428,7 +428,7 @@ class Simulation:
 
     def region_from_layer(self, face_id, layer_name):
         """Returns a `Region` containing all geometry from a specified layer"""
-        face_layers = default_faces[face_id] if face_id in default_faces else dict()
+        face_layers = default_faces[face_id] if face_id in default_faces else {}
         if layer_name in face_layers:
             return pya.Region(self.cell.begin_shapes_rec(self.layout.layer(face_layers[layer_name])))
         return pya.Region()
@@ -460,14 +460,14 @@ class Simulation:
             stack: list of layers in form of tuples containing (region, layer name, thickness, material)
             z0: the base z-level for the layer stack-up
         """
-        levels = dict()  # existing z-levels based on layers underneath (z-level as key and region as value)
+        levels = {}  # existing z-levels based on layers underneath (z-level as key and region as value)
         for region, layer_name, thickness, material in stack:
             if region.is_empty():
                 continue
 
             # Split the layer into z-levels
-            region_levels = dict()  # the layer region divided into z-levels
-            non_region_levels = dict()  # the z-levels outside the layer region
+            region_levels = {}  # the layer region divided into z-levels
+            non_region_levels = {}  # the z-levels outside the layer region
             sum_reg = pya.Region()
             for z, reg in levels.items():
                 intersection = reg & region
@@ -897,7 +897,7 @@ class Simulation:
                 layers.append(layer)
 
         # produce self.layers from layers
-        self.layers = dict()
+        self.layers = {}
         for layer in layers:
             sim_layer = get_simulation_layer_by_name(layer["name"])
             self.cell.shapes(self.layout.layer(sim_layer)).insert(layer["region"])
@@ -906,9 +906,9 @@ class Simulation:
             self.layers[layer["name"]] = {
                 "z": round(layer["bottom"], 12),
                 "thickness": round(layer["top"] - layer["bottom"], 12),
-                **({"layer": sim_layer.layer} if limit_region else dict()),
+                **({"layer": sim_layer.layer} if limit_region else {}),
                 **{k: v for k, v in layer.items() if k in ["material", "edge_material"] and v is not None},
-                **({"subtract": subtract} if subtract else dict()),
+                **({"subtract": subtract} if subtract else {}),
             }
 
     def ground_grid_region(self, face_id):
@@ -1166,7 +1166,7 @@ class Simulation:
                             )
                             logging.debug(e)
                 else:
-                    raise ValueError("Port {} has unsupported port class {}".format(port.number, type(port).__name__))
+                    raise ValueError(f"Port {port.number} has unsupported port class {type(port).__name__}")
 
                 # Change signal and ground location from DVector to list and add z-component as third term
                 for location in ["signal_location", "ground_location"]:
@@ -1191,7 +1191,7 @@ class Simulation:
         mater_dict = ast.literal_eval(self.material_dict) if isinstance(self.material_dict, str) else self.material_dict
         for name in materials:
             if name not in mater_dict and name not in ["pec", "vacuum", None]:
-                raise ValueError("Material '{}' used but not defined in Simulation.material_dict".format(name))
+                raise ValueError("Material '{name}' used but not defined in Simulation.material_dict")
 
         return {
             "simulation_name": self.name,

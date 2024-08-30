@@ -55,7 +55,7 @@ def install_kqc_gui_dependencies():
     try:
         test_file_path = os.path.join(target_dir, ".test.file")
         # Following throws PermissionError if target_dir needs sudo
-        test_file = open(test_file_path, "x")  # pylint: disable=R1732
+        test_file = open(test_file_path, "x", encoding="utf-8")  # pylint: disable=R1732
         test_file.close()
         if os.path.exists(test_file_path):
             os.remove(test_file_path)
@@ -76,7 +76,7 @@ def install_kqc_gui_dependencies():
                 + "If you used a developer GUI setup, try running 'python3 setup_within_klayout.py'"
             )
     requirements_file = f"{requirements_dir}/{detected_os}/gui-requirements.txt"
-    with open(requirements_file) as f:
+    with open(requirements_file, encoding="utf-8") as f:
         for line in f:
             line = line.split("#")[0]
             tokens = line.split("==")

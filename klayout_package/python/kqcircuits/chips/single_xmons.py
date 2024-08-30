@@ -206,8 +206,8 @@ class SingleXmons(Chip):
         num_meanders = _get_num_meanders(meander_length, turn_radius, w)
         self.insert_cell(
             Meander,
-            start=meander_start,
-            end=meander_start + pya.DPoint(0, 2 * factor * turn_radius * (num_meanders + 1)),
+            start_point=meander_start,
+            end_point=meander_start + pya.DPoint(0, 2 * factor * turn_radius * (num_meanders + 1)),
             length=meander_length,
             meanders=num_meanders,
             r=turn_radius,
@@ -278,8 +278,8 @@ class SingleXmons(Chip):
         num_meanders = _get_num_meanders(meander_length, turn_radius, w)
         self.insert_cell(
             Meander,
-            start=meander_start,
-            end=meander_start + pya.DPoint(0, 2 * factor * turn_radius * (num_meanders + 1)),
+            start_point=meander_start,
+            end_point=meander_start + pya.DPoint(0, 2 * factor * turn_radius * (num_meanders + 1)),
             length=meander_length,
             meanders=num_meanders,
             r=turn_radius,

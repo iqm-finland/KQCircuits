@@ -67,7 +67,7 @@ class AirbridgeDcTest(Chip):
                     break
 
                 label_trans = pya.DCplxTrans(0.8, 0, False, -self.test_width / 2, 0)
-                self.insert_cell(cell, trans, "test_{}".format(test_id), label_trans)
+                self.insert_cell(cell, trans, f"test_{test_id}", label_trans)
 
                 n_ab += self.n_step
                 test_id += 1

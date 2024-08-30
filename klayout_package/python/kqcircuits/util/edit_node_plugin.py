@@ -153,7 +153,7 @@ class EditNodePlugin(pya.Plugin):
         # Store current mouse position for use in tracking_position
         self.last_mouse_position = p
 
-    def has_tracking_position(self):  # pylint: disable=no-self-use
+    def has_tracking_position(self):
         # We provide a custom tracking position only if a node is selected
         return self.selection is not None
 
@@ -184,5 +184,5 @@ class EditNodePluginFactory(pya.PluginFactory):
             if toolbar_action:
                 toolbar_action.tool_tip = "Edit individual Node properties of WaveguideComposite elements"
 
-    def create_plugin(self, manager, _, view):  # pylint: disable=no-self-use
+    def create_plugin(self, manager, _, view):
         return EditNodePlugin(manager, view)

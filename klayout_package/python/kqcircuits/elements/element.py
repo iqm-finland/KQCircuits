@@ -307,7 +307,7 @@ class Element(pya.PCellDeclarationHelper):
         if inst_name is not None:
             # copies probing refpoints to chip level with unique names using subcell id property
             for ref_name, pos in refpoints_abs.items():
-                new_name = "{}_{}".format(inst_name, ref_name)
+                new_name = f"{inst_name}_{ref_name}"
                 self.refpoints[new_name] = pos
         return cell_inst, refpoints_abs
 
@@ -344,7 +344,7 @@ class Element(pya.PCellDeclarationHelper):
                         cls = type(library_layout.pcell_declaration(subtype))
             keys = list(set(cls.get_schema().keys()) & set(keys))
 
-        p = {k: self.__getattribute__(k) for k in keys if k != "refpoints"}
+        p = {k: self.__getattribute__(k) for k in keys if k != "refpoints"}  # pylint: disable=unnecessary-dunder-call
         return {**p, **parameters}
 
     def add_port(self, name, pos, direction=None, face_id=0):

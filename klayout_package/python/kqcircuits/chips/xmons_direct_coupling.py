@@ -50,7 +50,7 @@ class XMonsDirectCoupling(Chip):
         _, pl_cross_ref = self.insert_cell(
             WaveguideCoplanarSplitter,
             pya.DTrans(pos_start.x, end_y),
-            inst_name=("PL{}".format(name) if name else None),
+            inst_name=(f"PL{name}" if name else None),
             label_trans=pya.DTrans.R90,
             **t_cross_parameters(a=self.a, b=self.b, a2=self.a, b2=self.b, length_extra_side=20, length_extra=0),
         )

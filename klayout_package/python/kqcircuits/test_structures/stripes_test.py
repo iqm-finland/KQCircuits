@@ -52,7 +52,7 @@ class StripesTest(TestStructure):
             "Basic",
             {
                 "layer": self.face()["base_metal_gap_wo_grid"],
-                "text": "{}".format(width_str),
+                "text": f"{width_str}",
                 "mag": 40,
             },
         )

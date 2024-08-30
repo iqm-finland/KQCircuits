@@ -157,13 +157,13 @@ def run_kqc(args, args_for_script):
             subprocess.call([sys.executable, script_file, "-d"])
             return True
         else:  # Windows needs this for multiprocessing
-            with open(script_file) as mask_file:
+            with open(script_file, encoding="utf-8") as mask_file:
                 exec(mask_file.read())  # pylint: disable=exec-used
             return True
     elif args.command == "singularity":
         if args.build:
             chdir(Path(ROOT_PATH / "singularity"))
-            with open("install_software.sh", "r") as f:
+            with open("install_software.sh", "r", encoding="utf-8") as f:
                 for line in f:
                     if "export MPI_VERSION=" in line:
                         mpi_v = line.partition("export MPI_VERSION=")[2].strip()

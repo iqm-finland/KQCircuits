@@ -113,8 +113,8 @@ class JunctionTestPads(TestStructure):
                     self.produce_pad(x + pad_step / 2, y, pads_region, self.pad_width, self.pad_width)
                     self._next_width = self._next_junction_width(junction_idx)
                     self._produce_junctions(x, y, pads_region, arm_width, junction_idx)
-                    self.refpoints["probe_{}_l".format(junction_idx)] = pya.DPoint(x - pad_step * y_flip / 2, y)
-                    self.refpoints["probe_{}_r".format(junction_idx)] = pya.DPoint(x + pad_step * y_flip / 2, y)
+                    self.refpoints[f"probe_{junction_idx}_l"] = pya.DPoint(x - pad_step * y_flip / 2, y)
+                    self.refpoints[f"probe_{junction_idx}_r"] = pya.DPoint(x + pad_step * y_flip / 2, y)
                     junction_idx += 1
         else:
             for y in numpy.arange(
@@ -130,8 +130,8 @@ class JunctionTestPads(TestStructure):
                     self.produce_pad(x, y + pad_step / 2, pads_region, self.pad_width, self.pad_width)
                     self._next_width = self._next_junction_width(junction_idx)
                     self._produce_junctions(x, y, pads_region, arm_width, junction_idx)
-                    self.refpoints["probe_{}_l".format(junction_idx)] = pya.DPoint(x, y - pad_step / 2)
-                    self.refpoints["probe_{}_r".format(junction_idx)] = pya.DPoint(x, y + pad_step / 2)
+                    self.refpoints[f"probe_{junction_idx}_l"] = pya.DPoint(x, y - pad_step / 2)
+                    self.refpoints[f"probe_{junction_idx}_r"] = pya.DPoint(x, y + pad_step / 2)
                     junction_idx += 1
 
         self.produce_etched_region(
@@ -165,7 +165,7 @@ class JunctionTestPads(TestStructure):
                         self.pad_spacing,
                         False,
                         pya.DTrans(0, False, x, y),
-                        "probe_{}".format(junction_idx),
+                        f"probe_{junction_idx}",
                     )
                 else:
                     self.produce_four_point_pads(
@@ -176,7 +176,7 @@ class JunctionTestPads(TestStructure):
                         self.pad_spacing,
                         True,
                         pya.DTrans(0 if self.junctions_horizontal else 1, False, x, y),
-                        "probe_{}".format(junction_idx),
+                        f"probe_{junction_idx}",
                     )
                     self._next_width = self._next_junction_width(junction_idx)
                     self._produce_junctions(x, y, pads_region, 5, junction_idx)

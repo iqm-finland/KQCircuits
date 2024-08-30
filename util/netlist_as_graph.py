@@ -25,7 +25,7 @@ if len(sys.argv) < 2:
     print("Usage: netlist_as_graph.py <path to netlist file> (<optional, use true locations, 0 or 1>)")
     sys.exit(-1)
 
-with open(str(sys.argv[1]), "r") as fp:
+with open(str(sys.argv[1]), "r", encoding="utf-8") as fp:
     network = json.load(fp)
 
 graph = network_as_graph(network)

@@ -271,11 +271,11 @@ def merge_points_and_match_on_edges(cell, layout, layers, tolerance=2):
         return [pya.SimplePolygon(pts, True)] if valid else []
 
     # Gather points from layers to `all_points` dictionary. This ignores duplicate points.
-    all_points = dict()
+    all_points = {}
     for layer in layers:
         shapes = cell.shapes(layout.layer(layer))
         for shape in shapes.each():
-            all_points.update({point: list() for point in shape.simple_polygon.each_point()})
+            all_points.update({point: [] for point in shape.simple_polygon.each_point()})
     if not all_points:
         return  # nothing is done if no points exist
 
@@ -299,7 +299,7 @@ def merge_points_and_match_on_edges(cell, layout, layers, tolerance=2):
             merge_sets = [current_set] + other_sets
 
     # Create dictionary of moved points: includes the point to be moved as key and the new position as value
-    moved = dict()
+    moved = {}
     if merge_sets:
         for merge_set in merge_sets:
             average = pya.Point()

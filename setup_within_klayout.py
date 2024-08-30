@@ -70,7 +70,8 @@ if __name__ == "__main__":
         test_file = IOBase()
         try:
             test_file_path = os.path.join(target_dir, ".test.file")
-            test_file = open(test_file_path, "x")  # This throws PermissionError if target_dir needs sudo
+            # Following will throw PermissionError if target_dir needs sudo
+            test_file = open(test_file_path, "x", encoding="utf-8")
             test_file.close()
             if os.path.exists(test_file_path):
                 os.remove(test_file_path)

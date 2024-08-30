@@ -109,7 +109,7 @@ def export_ansys_bat(
     run_cmd = "RunScriptAndExit" if exit_after_run else "RunScript"
 
     bat_filename = str(path.joinpath(file_prefix + ".bat"))
-    with open(bat_filename, "w") as file:
+    with open(bat_filename, "w", encoding="utf-8") as file:
         file.write(
             "@echo off\n"
             r'powershell -Command "Get-Process | Where-Object {$_.MainWindowTitle -like \"Run Simulations*\"} '
@@ -122,6 +122,7 @@ def export_ansys_bat(
 
         # Commands for each simulation
         for i, json_filename in enumerate(json_filenames):
+            # pylint: disable=consider-using-f-string
             printing = "echo Simulation {}/{} - {}\n".format(
                 i + 1, len(json_filenames), str(Path(json_filename).relative_to(path))
             )
@@ -133,6 +134,7 @@ def export_ansys_bat(
                 str(execution_script),
             )
             file.write(command)
+            # pylint: enable=consider-using-f-string
 
         file.write(get_post_process_command_lines(post_process, path, json_filenames))
 

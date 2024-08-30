@@ -45,6 +45,6 @@ path =TMP_PATH
 filename = "kqc_export"
 
 view.export_all_layers_bitmap(path, top_cell, filename)
-print("Exported image to {}".format(path/filename))
+print(f"Exported image to {path/filename}")
 </text>
 </klayout-macro>

@@ -60,7 +60,7 @@ def _get_sbatch_time(export_tmp_paths) -> int:
     """
 
     def _get_single_sbatch_time(simulation_script):
-        with open(simulation_script, "r") as f:
+        with open(simulation_script, "r", encoding="utf-8") as f:
             for line in f:
                 res = line.strip().partition("#SBATCH --time=")[2]
                 if len(res) == 8:
@@ -146,7 +146,7 @@ def _remote_run(
         RES=$(sbatch -J "{run_uuid}" ./simulation_meshes.sh) && sbatch -d afterok:${{RES##* }} -J "{run_uuid}" ./simulation.sh
     done;
     """
-    with open(remote_simulation_script, "w") as file:
+    with open(remote_simulation_script, "w", encoding="utf-8") as file:
         file.write(remote_simulation)
 
     os.chmod(remote_simulation_script, os.stat(remote_simulation_script).st_mode | stat.S_IEXEC)
@@ -204,7 +204,7 @@ def _remote_run(
     rm -- "$0"
     """
 
-    with open(wait_and_copy_back_script, "w") as file:
+    with open(wait_and_copy_back_script, "w", encoding="utf-8") as file:
         file.write(wait_and_copy_back)
     os.chmod(wait_and_copy_back_script, os.stat(wait_and_copy_back_script).st_mode | stat.S_IEXEC)
 

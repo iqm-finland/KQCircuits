@@ -98,7 +98,7 @@ for cell in static_cells:
 airbridge_coordinates = sorted(airbridge_coordinates, key=lambda coord: (coord[0].x, coord[0].y))
 
 file_path = TMP_PATH/file_name
-with open(file_path, "w") as f:
+with open(file_path, "w", encoding="utf-8") as f:
     for coord in airbridge_coordinates:
         f.write(
             f"{point_to_str(coord[0])}; {point_to_str(coord[1])}; {point_to_str(coord[2])}; {point_to_str(coord[3])}; {point_to_str(coord[4])}\n")

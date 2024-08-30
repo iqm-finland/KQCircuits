@@ -92,8 +92,8 @@ class CrossSectionSimulation:
 
         self.cell = kwargs["cell"] if "cell" in kwargs else layout.create_cell(self.name)
 
-        self.layer_dict = dict()
-        self.permittivity_dict = dict()
+        self.layer_dict = {}
+        self.permittivity_dict = {}
         self.units = kwargs.get("units", "um")
         self.build()
         if not self.ignore_process_layers:
@@ -130,8 +130,8 @@ class CrossSectionSimulation:
 
         This method resets the internal simulation layer dictionary.
         """
-        self.layer_dict = dict()
-        self.permittivity_dict = dict()
+        self.layer_dict = {}
+        self.permittivity_dict = {}
         for l in self.layout.layer_infos():
             if len(list(self.cell.each_shape(self.layout.layer(l)))) > 0:
                 self.layer_dict[l.name] = l
@@ -186,6 +186,6 @@ class CrossSectionSimulation:
             "units": self.units,
             "layers": {k: v.layer for k, v in self.layer_dict.items()},
             "london_penetration_depth": self.get_dict_by_layers("london_penetration_depth"),
-            **{"{}_permittivity".format(k): v for k, v in self.permittivity_dict.items()},
+            **{f"{k}_permittivity": v for k, v in self.permittivity_dict.items()},
         }
         return simulation_data

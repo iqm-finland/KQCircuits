@@ -36,7 +36,7 @@ import qutip.fileio
 project_path = Path.cwd()
 project_name = str(Path(sys.argv[1]).stem if Path(sys.argv[1]).suffixes else Path(sys.argv[1])) + "_project"
 
-with open(sys.argv[2], "r") as fp:
+with open(sys.argv[2], "r", encoding="utf-8") as fp:
     pp_data = json.load(fp)
 
 try:

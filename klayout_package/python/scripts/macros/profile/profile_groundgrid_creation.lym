@@ -81,7 +81,7 @@ if False:
     )
 
   end = time.time()
-  print("Elapsed time: {} s".format(end - start))
+  print(f"Elapsed time: {end - start} s")
 
 if False:
   start = time.time()
@@ -91,7 +91,7 @@ if False:
     n=8,
     debuglayer=layout.layer(default_layers["1t1_SIS_shadow"]))
   end = time.time()
-  print("Elapsed time: {} s".format(end - start))
+  print(f"Elapsed time: {end - start} s")
 
 grid_mag_factor = 1
 
@@ -106,7 +106,7 @@ if True:
   cell.shapes(layout.layer(default_layers["1t1_ground_grid"])).insert(region_ground_grid)
 
   end = time.time()
-  print("Elapsed time: {} s".format(end - start))
+  print(f"Elapsed time: {end - start} s")
 
 #protection = pya.Region(cell.begin_shapes_rec(layout.layer(default_layers["1t1_ground_grid_avoidance"]))).merged()</text>
 </klayout-macro>

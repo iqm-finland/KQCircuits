@@ -171,7 +171,7 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
             print(f'WARNING: No layers corresponding to mesh_size keys "{split_names}" found')
 
     # Set meshing options
-    workflow = json_data.get("workflow", dict())
+    workflow = json_data.get("workflow", {})
     n_threads_dict = workflow["sbatch_parameters"] if "sbatch_parameters" in workflow else workflow
     gmsh_n_threads = int(n_threads_dict.get("gmsh_n_threads", 1))
     set_meshing_options(mesh_field_ids, mesh_global_max_size, gmsh_n_threads)

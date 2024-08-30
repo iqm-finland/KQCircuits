@@ -104,7 +104,7 @@ def load_libraries(flush=False, path=""):
 
         library = pya.Library.library_by_name(library_name)  # returns only registered libraries
         if (library is None) or flush:
-            if library_name in _kqc_libraries.keys():
+            if library_name in _kqc_libraries:
                 logging.debug('Using created library "%s".', library_name)
                 library, _ = _kqc_libraries[library_name]
             else:
@@ -160,7 +160,7 @@ def delete_library(name=None):
     if library._destroyed():
         logging.info(f"Successfully deleted library '{name}'.")
     else:
-        raise SystemError("Failed to delete library '[]'.".format(name))
+        raise SystemError(f"Failed to delete library '{name}'.")
 
 
 def element_by_class_name(class_name: str, library_path: str = "elements", library_name: str = "Element Library"):
@@ -266,7 +266,7 @@ def _load_manual_designs(library_name):
     library, rel_path = _kqc_libraries[library_name]
 
     for src in SRC_PATHS:
-        for path in src.rglob("{}/**/*.oas".format(rel_path)):
+        for path in src.rglob(f"{rel_path}/**/*.oas"):
             library.layout().read(str(path.absolute()))
 
 
@@ -359,11 +359,11 @@ def _get_pcell_class(name=None, module=None):
 def _is_valid_class_name(value=None):
     """Check if string value is valid PEP-8 compliant Python class name."""
     if value is None or not isinstance(value, str) or len(value) == 0:
-        raise ValueError("Cannot convert nil or non-string class name '{}' to library name.".format(value))
+        raise ValueError(f"Cannot convert nil or non-string class name '{value}' to library name.")
     if re.fullmatch(r"[a-zA-Z_][a-zA-Z0-9_]*", value) is None:
-        raise ValueError("Cannot convert invalid Python class name '{}' to library name.".format(value))
+        raise ValueError(f"Cannot convert invalid Python class name '{value}' to library name.")
     if re.fullmatch(r"([A-Z][a-z0-9]*)+", value) is None:
-        raise ValueError("PEP8 compliant class name '{}' must be PascalCase without underscores.".format(value))
+        raise ValueError(f"PEP8 compliant class name '{value}' must be PascalCase without underscores.")
 
 
 def _join_module_words(words=None):

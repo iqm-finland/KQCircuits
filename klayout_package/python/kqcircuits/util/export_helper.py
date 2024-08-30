@@ -411,12 +411,12 @@ def write_commit_reference_file(path: Path, write_versions_file=True):
     If git repository is not found in given path, no file is written.
     """
     try:
-        with open(path.joinpath("COMMIT_REFERENCE"), "w") as file:
+        with open(path.joinpath("COMMIT_REFERENCE"), "w", encoding="utf-8") as file:
             for item in VERSION_PATHS.items():
                 output = subprocess.check_output(
                     ["git", "rev-parse", "HEAD"], stderr=subprocess.DEVNULL, cwd=item[1], startupinfo=STARTUPINFO
                 )
-                file.write("{} revision number: {}".format(item[0], output.decode("ascii")))
+                file.write(f"{item[0]} revision number: {output.decode('ascii')}")
 
     except subprocess.CalledProcessError:
         return
@@ -434,7 +434,7 @@ def write_export_machine_versions_file(path: Path):
     versions["python"] = sys.version_info
     versions["klayout"] = get_klayout_version()
 
-    with open(path.joinpath("EXPORT_MACHINE_VERSIONS.json"), "w") as file:
+    with open(path.joinpath("EXPORT_MACHINE_VERSIONS.json"), "w", encoding="utf-8") as file:
         json.dump(versions, file)
 
 

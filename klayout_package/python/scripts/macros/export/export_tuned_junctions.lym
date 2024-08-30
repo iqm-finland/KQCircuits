@@ -62,7 +62,7 @@ top_cell = KLayoutView(current=True).active_cell
 EXTERNAL_TUNE_FILE = ""
 
 if EXTERNAL_TUNE_FILE:
-  with open(EXTERNAL_TUNE_FILE) as f:
+  with open(EXTERNAL_TUNE_FILE, encoding="utf-8") as f:
     tuned_junction_parameters = json.load(f)
 else:
   # Or tuned parameters can be typed up here by hand

@@ -36,7 +36,7 @@ import pandas as pd
 def read_mesh_names(path: Path) -> list[str]:
     """Returns all names from mesh.names file"""
     list_of_names = []
-    with open(path.joinpath("mesh.names")) as file:
+    with open(path.joinpath("mesh.names"), encoding="utf-8") as file:
         for line in file:
             if line.startswith("$ "):
                 eq_sign = line.find(" =")
@@ -48,7 +48,7 @@ def read_mesh_names(path: Path) -> list[str]:
 def read_mesh_bodies(path: Path) -> list[str]:
     """Returns names of bodies from mesh.names file"""
     list_of_names = []
-    with open(path.joinpath("mesh.names")) as file:
+    with open(path.joinpath("mesh.names"), encoding="utf-8") as file:
         for line in file:
             if "! ----- names for boundaries -----" in line:
                 break
@@ -61,7 +61,7 @@ def read_mesh_bodies(path: Path) -> list[str]:
 
 def read_mesh_boundaries(path: Path) -> list[str]:
     """Returns names of boundaries from mesh.names file"""
-    with open(path.joinpath("mesh.names")) as file:
+    with open(path.joinpath("mesh.names"), encoding="utf-8") as file:
         lines = [line.strip() for line in file]
 
     i = 0
@@ -109,10 +109,10 @@ def sif_common_header(
 
     """
     res = "Check Keywords Warn\n"
-    res += "INCLUDE {}/{}\n".format(folder_path, "mesh.names")
+    res += f"INCLUDE {folder_path}/mesh.names\n"
     if def_file:
-        res += "INCLUDE {}/{}\n".format(folder_path, def_file)
-    res += sif_block("Header", ['Mesh DB "." "{}"'.format(folder_path), 'Results Directory "{}"'.format(folder_path)])
+        res += f"INCLUDE {folder_path}/{def_file}\n"
+    res += sif_block("Header", [f'Mesh DB "." "{folder_path}"', f'Results Directory "{folder_path}"'])
 
     if json_data.get("maximum_passes", 1) > 1:
         reset_adaptive_remesh_str = ["Reset Adaptive Mesh = Logical True"]
@@ -139,8 +139,8 @@ def sif_common_header(
             'Simulation Type = "Steady State"',
             f'Steady State Max Iterations = {json_data.get("maximum_passes", 1)}',
             f'Steady State Min Iterations = {json_data.get("minimum_passes", 1)}',
-            ("" if angular_frequency is None else "Angular Frequency = {}".format(angular_frequency)),
-            "Coordinate Scaling = {}".format(coordinate_scaling(json_data)),
+            ("" if angular_frequency is None else f"Angular Frequency = {angular_frequency}"),
+            f"Coordinate Scaling = {coordinate_scaling(json_data)}",
             f'Mesh Levels = {json_data.get("mesh_levels", 1)}',
             "Discontinuous Boundary Full Angle = Logical True" if discontinuous_boundary else "",
         ],
@@ -847,7 +847,7 @@ def produce_sif_files(json_data: dict[str, Any], path: Path) -> list[Path]:
             return []
 
         sif_filepath = path.joinpath(f"{sif}.sif")
-        with open(sif_filepath, "w") as f:
+        with open(sif_filepath, "w", encoding="utf-8") as f:
             f.write(content)
         sif_filepaths.append(sif_filepath)
 
@@ -909,9 +909,7 @@ def get_permittivities(json_data: dict[str, Any], with_zero: bool, dim: int, mes
             1.0 if with_zero else json_data.get(f"{s}_permittivity", _search_permittivity(json_data, s)) for s in bodies
         ]
     elif dim == 3:
-        return [
-            1.0 if with_zero else json_data["material_dict"].get(n, dict()).get("permittivity", 1.0) for n in bodies
-        ]
+        return [1.0 if with_zero else json_data["material_dict"].get(n, {}).get("permittivity", 1.0) for n in bodies]
     return []
 
 
@@ -1194,7 +1192,7 @@ def sif_capacitance(
     cbody_map: dict[str, int] = {}
     for s in signals_boundaries:
         s_wo_mer = s.replace("_mer", "")
-        if s_wo_mer in cbody_map.keys():
+        if s_wo_mer in cbody_map:
             cbody_map[s] = cbody_map[s_wo_mer]
         else:
             cbody_map[s] = max(cbody_map.values(), default=0) + 1
@@ -1329,7 +1327,7 @@ def sif_inductance(
         if lambda_l > 0:
             opt_params = [
                 "Electric Conductivity = 0",
-                "$ lambda_l = {}".format(lambda_l),
+                f"$ lambda_l = {lambda_l}",
                 "$ mu_0 = 4e-7*pi",
                 "London Lambda = Real $ mu_0 * lambda_l^2",
             ]
@@ -1381,7 +1379,7 @@ def sif_circuit_definitions(json_data: dict[str, Any]) -> str:
 
     res += f"\n$ C.1.variables = {n_equations}\n"
     for n in ["A", "B", "Mre", "Mim"]:
-        res += "$ C.1.{} = zeros({n_equations},{n_equations})\n".format(n, n_equations=n_equations)
+        res += f"$ C.1.{n} = zeros({n_equations},{n_equations})\n"
 
     # Define variables
     res += "\n"
@@ -1727,11 +1725,11 @@ def read_result_smatrix(s_matrix_filename: str | Path, path: Path | None = None,
     if not Path(s_matrix_filename).exists() and path is not None:
         s_matrix_filename = path.joinpath(s_matrix_filename)
 
-    with open(s_matrix_filename, "r") as file:
+    with open(s_matrix_filename, "r", encoding="utf-8") as file:
         reader = csv.reader(file, delimiter=" ", skipinitialspace=True, quoting=csv.QUOTE_NONNUMERIC)
         s_matrix_re = np.array([[x for x in row if isinstance(x, float)] for row in reader])
 
-    with open(str(s_matrix_filename) + "_im", "r") as file:
+    with open(str(s_matrix_filename) + "_im", "r", encoding="utf-8") as file:
         reader = csv.reader(file, delimiter=" ", skipinitialspace=True, quoting=csv.QUOTE_NONNUMERIC)
         s_matrix_im = np.array([[x for x in row if isinstance(x, float)] for row in reader])
 
@@ -1764,7 +1762,7 @@ def get_energy_integrals(path: Path | str) -> dict:
         energies = pd.read_csv(energy_data, sep=r"\s+", header=None).values.flatten()
 
         energy_layers = []
-        with open(energy_layer_data) as fp:
+        with open(energy_layer_data, encoding="utf-8") as fp:
             reached_data = False
             for line in fp:
                 if not reached_data and "Variables in columns of matrix:" in line:
@@ -1811,7 +1809,7 @@ def write_snp_file(
     """
     if len(frequencies) != len(smatrix_arr):
         raise RuntimeError("Different number of frequencies and smatrix results in write_snp_file")
-    with open(filename, "w") as touchstone_file:
+    with open(filename, "w", encoding="utf-8") as touchstone_file:
         touchstone_file.write("! Touchstone file exported from KQCircuits Elmer Simulation\n")
         touchstone_file.write(f"! Generated: {time.strftime('%a, %d %b %Y %H:%M:%S', time.localtime())}\n")
         touchstone_file.write(
@@ -1830,11 +1828,11 @@ def write_snp_file(
         for freq, smatrix_full in zip(frequencies, smatrix_arr):
             for row_ind, row in enumerate(smatrix_full):
                 if row_ind == 0:
-                    touchstone_file.write("{:30s} ".format(str(freq)))
+                    touchstone_file.write(f"{freq:30s} ")
                 else:
-                    touchstone_file.write("{:30s} ".format(" "))
+                    touchstone_file.write(f"{' ':30s} ")
                 for elem in row:
-                    touchstone_file.write("{:25s} {:35s}".format(str(elem[0]), str(elem[1])))
+                    touchstone_file.write(f"{str(elem[0]):25s} {str(elem[1]):35s}")
                 touchstone_file.write("\n")
 
 
@@ -1852,7 +1850,7 @@ def read_snp_file(filename: str | Path) -> tuple[np.ndarray, np.ndarray, bool, f
     renormalization = -1.0
     polar_form = True
     data = []
-    with open(filename, "r") as touchstone_file:
+    with open(filename, "r", encoding="utf-8") as touchstone_file:
         for line in touchstone_file:
             line = line.strip()
             if line.startswith("! Port"):
@@ -1941,12 +1939,12 @@ def write_project_results_json(json_data: dict[str, Any], path: Path, msh_filepa
         c_matrix_filename = sif_folder.joinpath("capacitance.dat")
         if c_matrix_filename.exists():
 
-            with open(c_matrix_filename, "r") as file:
+            with open(c_matrix_filename, "r", encoding="utf-8") as file:
                 my_reader = csv.reader(file, delimiter=" ", skipinitialspace=True, quoting=csv.QUOTE_NONNUMERIC)
                 c_matrix = list(my_reader)
 
             c_data = {
-                "C_Net{}_Net{}".format(net_i + 1, net_j + 1): [c_matrix[net_j][net_i]]
+                f"C_Net{net_i + 1}_Net{net_j + 1}": [c_matrix[net_j][net_i]]
                 for net_j in range(len(c_matrix))
                 for net_i in range(len(c_matrix))
             }
@@ -1960,7 +1958,7 @@ def write_project_results_json(json_data: dict[str, Any], path: Path, msh_filepa
         if tool == "epr_3d" or json_data["integrate_energies"]:
             results.update({_rename_energy_key(k): v for k, v in get_energy_integrals(sif_folder).items()})
 
-        with open(json_filename, "w") as outfile:
+        with open(json_filename, "w", encoding="utf-8") as outfile:
             json.dump(
                 results,
                 outfile,
@@ -2000,7 +1998,7 @@ def write_project_results_json(json_data: dict[str, Any], path: Path, msh_filepa
             )
             smatrix_arr[f_ind] = smatrix_full
 
-        with open(json_filename, "w") as outfile:
+        with open(json_filename, "w", encoding="utf-8") as outfile:
             json.dump(results_list, outfile, indent=4)
 
         # move Smatrix dat files to a separate folder

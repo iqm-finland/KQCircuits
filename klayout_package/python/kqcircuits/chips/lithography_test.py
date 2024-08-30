@@ -86,7 +86,7 @@ class LithographyTest(Chip):
                     stripe_spacing=spacing * width,
                     face_ids=[face_id],
                 )
-                stripe_row_width = sum([spacing * width + (i + 1) * width for i in range(n_stripes)])
+                stripe_row_width = sum(spacing * width + (i + 1) * width for i in range(n_stripes))
             # calculate the number of cross alignment marker
             if (stripe_row_width - 45) % 100 < 50:
                 num_crosses = (stripe_row_width - 45) // 100 + 1

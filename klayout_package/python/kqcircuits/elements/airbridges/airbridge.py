@@ -72,5 +72,5 @@ class Airbridge(Element):
         shape = pya.DPolygon(pts)
         self.cell.shapes(self.get_layer("airbridge_flyover")).insert(shape)
 
-    def transformation_from_shape_impl(self):  # pylint: disable=no-self-use
+    def transformation_from_shape_impl(self):
         return pya.Trans()

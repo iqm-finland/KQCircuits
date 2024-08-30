@@ -50,6 +50,6 @@ logging.basicConfig(
 
 route_log(lowest_visible_level=lowest_visible_level)
 
-print("Enabled logging output in macro IDE console. Lowest visible level: {}".format(lowest_visible_level))
+print(f"Enabled logging output in macro IDE console. Lowest visible level: {lowest_visible_level}")
 </text>
 </klayout-macro>

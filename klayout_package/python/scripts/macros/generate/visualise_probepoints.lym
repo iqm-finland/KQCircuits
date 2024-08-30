@@ -53,7 +53,7 @@ FACE = '1t1'      # Specify substrate face to probe
 
 cell = KLayoutView(current=True).active_cell
 
-with open(FILENAME) as f:
+with open(FILENAME, encoding="utf-8") as f:
     probepoint_json = json.load(f)
 
 bbox_for_face = cell.dbbox_per_layer(

@@ -65,7 +65,7 @@ class WaveguideCoplanar(Element):
         points = [pya.DPoint(point * self.layout.dbu) for point in self.shape.each_point()]
         self.path = pya.DPath(points, 1)
 
-    def transformation_from_shape_impl(self):  # pylint: disable=no-self-use
+    def transformation_from_shape_impl(self):
         return pya.Trans()
 
     def produce_waveguide(self):
@@ -264,7 +264,7 @@ class WaveguideCoplanar(Element):
                     if i != j and (
                         point.distance(endpoints[j][1]) < tolerance or point.distance(endpoints[j][0]) < tolerance
                     ):
-                        # print("{} | {} | {}".format(point, endpoints[j][1], endpoints[j][0]))
+                        # print(f"{point} | {endpoints[j][1]} | {endpoints[j][0]}")
                         found_connected_point = True
                         break
 

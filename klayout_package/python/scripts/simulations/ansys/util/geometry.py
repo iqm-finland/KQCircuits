@@ -148,7 +148,7 @@ def thicken_sheet(oEditor, objects, thickness, units):
                 "SweepVectorY:=",
                 "0um",
                 "SweepVectorZ:=",
-                "{} {}".format(thickness, units),
+                f"{thickness} {units}",
             ],
         )
 
@@ -173,7 +173,7 @@ def set_material(oEditor, objects, material=None, solve_inside=None):
                     [
                         "NAME:Geometry3DAttributeTab",
                         ["NAME:PropServers"] + objects,
-                        ["NAME:ChangedProps", ["NAME:Material", "Value:=", '"{}"'.format(material)]],
+                        ["NAME:ChangedProps", ["NAME:Material", "Value:=", f'"{material}"']],
                     ],
                 ]
             )
@@ -206,11 +206,11 @@ def move_vertically(oEditor, objects, z_shift, units):
             [
                 "NAME:TranslateParameters",
                 "TranslateVectorX:=",
-                "0 {}".format(units),
+                f"0 {units}",
                 "TranslateVectorY:=",
-                "0 {}".format(units),
+                f"0 {units}",
                 "TranslateVectorZ:=",
-                "{} {}".format(z_shift, units),
+                f"{z_shift} {units}",
             ],
         )
 
@@ -275,7 +275,7 @@ def add_material(oDefinitionManager, name, **parameters):
         ["NAME:PhysicsTypes", "set:=", ["Electromagnetic"]],
     ]
     for key, value in parameters.items():
-        param_list += ["{}:=".format(key), str(value)]
+        param_list += [f"{key}:=", str(value)]
     oDefinitionManager.AddMaterial(param_list)
 
 

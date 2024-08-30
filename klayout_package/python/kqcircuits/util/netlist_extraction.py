@@ -243,10 +243,10 @@ def _export_netlist(circuit, filename, internal_layout, original_layout, cell_ma
                     bboxes.append(bbox)
             if len(bboxes) > 0:
                 combined_bbox = pya.DBox(
-                    min([bbox.p1.x for bbox in bboxes]),
-                    min([bbox.p1.y for bbox in bboxes]),
-                    max([bbox.p2.x for bbox in bboxes]),
-                    max([bbox.p2.y for bbox in bboxes]),
+                    min(bbox.p1.x for bbox in bboxes),
+                    min(bbox.p1.y for bbox in bboxes),
+                    max(bbox.p2.x for bbox in bboxes),
+                    max(bbox.p2.y for bbox in bboxes),
                 )
                 # subcircuit_location is the center of geometry of all *_base_metal_gap_wo_grid layers in the cell
                 # we also transform the point by instance's predecessors' transformation
@@ -293,7 +293,7 @@ def _export_netlist(circuit, filename, internal_layout, original_layout, cell_ma
                 face_id = chip_params["face_ids"][int(face)]
                 chip_for_export[f"{face_id}_face_dimensions"] = face_box
 
-    with open(str(filename), "w") as fp:
+    with open(str(filename), "w", encoding="utf-8") as fp:
         json.dump(
             {
                 "nets": nets_for_export,

@@ -47,7 +47,7 @@ def test_generate_quick_demo(tmp_path):
 def _run_mask(path, tmp_path):
     _locals = locals()
     file = os.path.join(defaults.SCRIPTS_PATH, path)
-    with open(file, "r") as fp:
+    with open(file, "r", encoding="utf-8") as fp:
         code = fp.read()
 
     code = code.replace("MaskSet(name=", "MaskSet(export_path=tmp_path, name=")

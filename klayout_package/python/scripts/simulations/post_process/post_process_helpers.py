@@ -36,7 +36,7 @@ def find_varied_parameters(json_files):
     nominal_parameters = {}
     parameter_dict = {}
     for key, json_file in zip(keys, json_files):
-        with open(json_file, "r") as f:
+        with open(json_file, "r", encoding="utf-8") as f:
             definition = json.load(f)
         parameter_dict[key] = definition["parameters"]
         nominal_parameters.update(parameter_dict[key])
@@ -61,7 +61,7 @@ def tabulate_into_csv(file_name, data_dict, parameters, parameter_values):
         parameters: list of parameter names changed between simulations
         parameter_values: dictionary with list of parameter values as value
     """
-    with open(file_name, "w") as csvfile:
+    with open(file_name, "w", encoding="utf-8") as csvfile:
         writer = csv.writer(csvfile, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
         layer_names = sorted({n for v in data_dict.values() for n in v})

@@ -97,23 +97,23 @@ class Demo(Chip):
         self.insert_cell(
             WaveguideComposite,
             nodes=[
-                Node(self.refpoints["QB{}_port_cplr{}".format(qubit_a_nr, port_nr)]),
+                Node(self.refpoints[f"QB{qubit_a_nr}_port_cplr{port_nr}"]),
                 Node(
                     point_shift_along_vector(
-                        self.refpoints["QB{}_port_cplr{}".format(qubit_a_nr, port_nr)],
-                        self.refpoints["QB{}_base".format(qubit_a_nr)],
+                        self.refpoints[f"QB{qubit_a_nr}_port_cplr{port_nr}"],
+                        self.refpoints[f"QB{qubit_a_nr}_base"],
                         -400,
                     )
                 ),
                 Node(
                     point_shift_along_vector(
-                        self.refpoints["QB{}_port_cplr{}".format(qubit_b_nr, port_nr)],
-                        self.refpoints["QB{}_base".format(qubit_b_nr)],
+                        self.refpoints[f"QB{qubit_b_nr}_port_cplr{port_nr}"],
+                        self.refpoints[f"QB{qubit_b_nr}_base"],
                         -400,
                     ),
                     n_bridges=3,
                 ),
-                Node(self.refpoints["QB{}_port_cplr{}".format(qubit_b_nr, port_nr)]),
+                Node(self.refpoints[f"QB{qubit_b_nr}_port_cplr{port_nr}"]),
             ],
             a=4,
             b=9,
@@ -129,9 +129,9 @@ class Demo(Chip):
             WaveguideCoplanar,
             path=pya.DPath(
                 [
-                    self.refpoints["DL-QB{}_base".format(qubit_nr)],
-                    self.refpoints["DL-QB{}_port_corner".format(qubit_nr)],
-                    self.refpoints["QB{}_port_drive".format(qubit_nr)],
+                    self.refpoints[f"DL-QB{qubit_nr}_base"],
+                    self.refpoints[f"DL-QB{qubit_nr}_port_corner"],
+                    self.refpoints[f"QB{qubit_nr}_port_drive"],
                 ],
                 0,
             ),
@@ -142,10 +142,10 @@ class Demo(Chip):
         self.insert_cell(
             WaveguideComposite,
             nodes=[
-                Node(self.refpoints["FL-QB{}_base".format(qubit_nr)]),
-                Node(self.refpoints["FL-QB{}_port_corner".format(qubit_nr)]),
-                Node(self.refpoints["QB{}_port_flux_corner".format(qubit_nr)], n_bridges=4),
-                Node(self.refpoints["QB{}_port_flux".format(qubit_nr)]),
+                Node(self.refpoints[f"FL-QB{qubit_nr}_base"]),
+                Node(self.refpoints[f"FL-QB{qubit_nr}_port_corner"]),
+                Node(self.refpoints[f"QB{qubit_nr}_port_flux_corner"], n_bridges=4),
+                Node(self.refpoints[f"QB{qubit_nr}_port_flux"]),
             ],
         )
 
@@ -159,9 +159,9 @@ class Demo(Chip):
 
         # non-meandering part of the resonator
 
-        point_1 = self.refpoints["QB{}_port_cplr1".format(qubit_nr)]
+        point_1 = self.refpoints[f"QB{qubit_nr}_port_cplr1"]
         point_2 = point_shift_along_vector(
-            self.refpoints["QB{}_port_cplr1".format(qubit_nr)], self.refpoints["QB{}_base".format(qubit_nr)], -600
+            self.refpoints[f"QB{qubit_nr}_port_cplr1"], self.refpoints[f"QB{qubit_nr}_base"], -600
         )
         point_3 = point_2 + pya.DPoint(-300 if mirrored else 300, 0)
 
@@ -182,8 +182,8 @@ class Demo(Chip):
 
         self.insert_cell(
             Meander,
-            start=meander_start,
-            end=meander_end,
+            start_point=meander_start,
+            end_point=meander_end,
             length=float(self.readout_res_lengths[qubit_nr - 1]) - length_nonmeander,
         )
 
@@ -207,7 +207,7 @@ class Demo(Chip):
         self.insert_cell(
             WaveguideCoplanarSplitter,
             pya.DTrans(tcross_rot, False, 0, 0),
-            inst_name="PL{}".format(qubit_nr),
+            inst_name=f"PL{qubit_nr}",
             label_trans=pya.DCplxTrans(0.2),
             align_to=cap_ref_abs["port_b"],
             align="port_bottom",
@@ -227,19 +227,19 @@ class Demo(Chip):
             cap_rot = 3
             cap_pos_shift = pya.DPoint(0, 2000)
 
-        cap_trans = pya.DTrans(cap_rot, False, self.refpoints["PL{}_port_left".format(qubit_a_nr)] + cap_pos_shift)
+        cap_trans = pya.DTrans(cap_rot, False, self.refpoints[f"PL{qubit_a_nr}_port_left"] + cap_pos_shift)
         _, cap_ref_abs = self.insert_cell(FingerCapacitorTaper, cap_trans, finger_number=cap_finger_nr, taper_length=20)
 
         # segment 1
         self.insert_cell(
             WaveguideComposite,
             nodes=[
-                Node(self.refpoints["{}-IN_base".format(probeline_name)]),
-                Node(self.refpoints["{}-IN_port_corner".format(probeline_name)]),
+                Node(self.refpoints[f"{probeline_name}-IN_base"]),
+                Node(self.refpoints[f"{probeline_name}-IN_port_corner"]),
                 Node(
                     (
-                        self.refpoints["PL{}_port_left".format(qubit_a_nr)].x,
-                        self.refpoints["{}-IN_port_corner".format(probeline_name)].y,
+                        self.refpoints[f"PL{qubit_a_nr}_port_left"].x,
+                        self.refpoints[f"{probeline_name}-IN_port_corner"].y,
                     )
                 ),
                 Node(cap_ref_abs["port_a"]),
@@ -253,12 +253,12 @@ class Demo(Chip):
                 Node(cap_ref_abs["port_b"]),
                 Node(
                     (
-                        self.refpoints["PL{}_port_left".format(qubit_a_nr)].x,
-                        self.refpoints["QB{}_base".format(qubit_a_nr)].y,
+                        self.refpoints[f"PL{qubit_a_nr}_port_left"].x,
+                        self.refpoints[f"QB{qubit_a_nr}_base"].y,
                     ),
                     AirbridgeConnection if self.include_couplers else None,
                 ),
-                Node(self.refpoints["PL{}_port_left".format(qubit_a_nr)]),
+                Node(self.refpoints[f"PL{qubit_a_nr}_port_left"]),
             ],
         )
 
@@ -266,45 +266,45 @@ class Demo(Chip):
         self.insert_cell(
             WaveguideComposite,
             nodes=[
-                Node(self.refpoints["PL{}_port_right".format(qubit_a_nr)]),
+                Node(self.refpoints[f"PL{qubit_a_nr}_port_right"]),
                 Node(
                     point_shift_along_vector(
-                        self.refpoints["PL{}_port_right".format(qubit_a_nr)],
-                        self.refpoints["PL{}_port_right_corner".format(qubit_a_nr)],
+                        self.refpoints[f"PL{qubit_a_nr}_port_right"],
+                        self.refpoints[f"PL{qubit_a_nr}_port_right_corner"],
                         600,
                     )
                 ),
                 Node(
                     point_shift_along_vector(
-                        self.refpoints["PL{}_port_left".format(qubit_b_nr)],
-                        self.refpoints["PL{}_port_left_corner".format(qubit_b_nr)],
+                        self.refpoints[f"PL{qubit_b_nr}_port_left"],
+                        self.refpoints[f"PL{qubit_b_nr}_port_left_corner"],
                         600,
                     ),
                     n_bridges=1,
                 ),
-                Node(self.refpoints["PL{}_port_left".format(qubit_b_nr)]),
+                Node(self.refpoints[f"PL{qubit_b_nr}_port_left"]),
             ],
         )
 
         self.insert_cell(
             WaveguideComposite,
             nodes=[
-                Node(self.refpoints["{}-OUT_base".format(probeline_name)]),
-                Node(self.refpoints["{}-OUT_port_corner".format(probeline_name)]),
+                Node(self.refpoints[f"{probeline_name}-OUT_base"]),
+                Node(self.refpoints[f"{probeline_name}-OUT_port_corner"]),
                 Node(
                     (
-                        self.refpoints["PL{}_port_right".format(qubit_b_nr)].x,
-                        self.refpoints["{}-OUT_port_corner".format(probeline_name)].y,
+                        self.refpoints[f"PL{qubit_b_nr}_port_right"].x,
+                        self.refpoints[f"{probeline_name}-OUT_port_corner"].y,
                     )
                 ),
                 Node(
                     (
-                        self.refpoints["PL{}_port_right".format(qubit_b_nr)].x,
-                        self.refpoints["QB{}_base".format(qubit_b_nr)].y,
+                        self.refpoints[f"PL{qubit_b_nr}_port_right"].x,
+                        self.refpoints[f"QB{qubit_b_nr}_base"].y,
                     ),
                     AirbridgeConnection if self.include_couplers else None,
                 ),
-                Node(self.refpoints["PL{}_port_right".format(qubit_b_nr)]),
+                Node(self.refpoints[f"PL{qubit_b_nr}_port_right"]),
             ],
         )
 

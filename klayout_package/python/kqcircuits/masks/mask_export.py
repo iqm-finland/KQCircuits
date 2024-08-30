@@ -83,7 +83,7 @@ def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc, alt_netlists
             export_junction_parameters(dummy_cell, chip_dir / f"{chip_name}_junction_parameters.json")
         elif check_static_cell_has_junctions(dummy_cell):
             # Write empty file if static chip but it has junctions
-            with open(chip_dir / f"{chip_name}_junction_parameters.json", "w") as file:
+            with open(chip_dir / f"{chip_name}_junction_parameters.json", "w", encoding="utf-8") as file:
                 file.write(json.dumps({}, indent=2))
     dummy_cell.delete()
     static_cell = layout.cell(layout.convert_cell_to_static(chip_cell.cell_index()))
@@ -114,7 +114,7 @@ def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc, alt_netlists
             "Layer areas and densities": layer_areas_and_densities,
         }
 
-        with open(chip_dir / (chip_name + ".json"), "w") as f:
+        with open(chip_dir / (chip_name + ".json"), "w", encoding="utf-8") as f:
             json.dump(chip_json, f, cls=GeometryJsonEncoder, sort_keys=True, indent=4)
 
         # export .gds files for EBL or laser writer
@@ -184,7 +184,7 @@ def export_masks_of_face(export_dir, mask_layout, mask_set):
     mask_json = {
         "layer_areas_and_densities": layer_areas_and_densities,
     }
-    with open(export_dir_for_face / (subdir_name_for_face + ".json"), "w") as f:
+    with open(export_dir_for_face / (subdir_name_for_face + ".json"), "w", encoding="utf-8") as f:
         json.dump(mask_json, f, cls=GeometryJsonEncoder, sort_keys=True, indent=4)
 
 
@@ -242,22 +242,22 @@ def export_docs(mask_set, filename="Mask_Documentation.md"):
     file_location = str(mask_set._mask_set_dir / filename)
 
     with open(file_location, "w+", encoding="utf-8") as f:
-        f.write("# Mask Set Name: {}\n".format(mask_set.name))
-        f.write("Version: {}\n".format(mask_set.version))
+        f.write(f"# Mask Set Name: {mask_set.name}\n")
+        f.write(f"Version: {mask_set.version}\n")
 
         for mask_layout in mask_set.mask_layouts:
 
-            f.write("## Mask Layout {}:\n".format(mask_layout.face_id + mask_layout.extra_id))
+            f.write(f"## Mask Layout {mask_layout.face_id + mask_layout.extra_id}:\n")
             mask_layout_str = get_mask_layout_full_name(mask_set, mask_layout)
             f.write(f"![alt text]({mask_layout_str}/{mask_layout_str}-mask_graphical_rep.png)\n")
 
-            f.write("### Number of Chips in Mask Layout {}\n".format(mask_layout.face_id + mask_layout.extra_id))
+            f.write(f"### Number of Chips in Mask Layout {mask_layout.face_id + mask_layout.extra_id}\n")
 
             f.write("| **Chip Name** | **Amount** |\n")
             f.write("| :--- | :--- |\n")
             for chip, amount in mask_layout.chip_counts.items():
                 if amount > 0:
-                    f.write("| **{}** | **{}** |\n".format(chip, amount))
+                    f.write(f"| **{chip}** | **{amount}** |\n")
             f.write("\n")
 
         f.write("___\n")
@@ -268,10 +268,10 @@ def export_docs(mask_set, filename="Mask_Documentation.md"):
 
             path = os.path.join("Chips", name, name)
 
-            with open(mask_set._mask_set_dir / (path + ".json"), "r") as f2:
+            with open(mask_set._mask_set_dir / (path + ".json"), "r", encoding="utf-8") as f2:
                 chip_json = json.load(f2)
 
-            f.write("### {} Chip\n".format(name))
+            f.write(f"### {name} Chip\n")
 
             f.write(f"[{path}.oas]({path}.oas)\n\n")
             f.write(f"![{name} Chip Image]({path}.png)\n")
@@ -292,9 +292,7 @@ def export_docs(mask_set, filename="Mask_Documentation.md"):
                 params_schema = cls.get_schema()
                 for param_name, param_declaration in params_schema.items():
                     f.write(
-                        "| **{}** | {} |\n".format(
-                            param_declaration.description.replace("|", "&#124;"), str(params[param_name])
-                        )
+                        f"| **{param_declaration.description.replace('|', '&#124;')}** | {str(params[param_name])} |\n"
                     )
             f.write("\n")
 
@@ -307,7 +305,7 @@ def export_docs(mask_set, filename="Mask_Documentation.md"):
             if len(launcher_assignments) > 0:
                 f.write("| **Launcher assignments** |")
                 for key, value in launcher_assignments.items():
-                    f.write("{} = {}, ".format(key, value))
+                    f.write(f"{key} = {value}, ")
                 f.write("|\n")
 
             # flip-chip bump count
@@ -334,13 +332,13 @@ def export_docs(mask_set, filename="Mask_Documentation.md"):
             f.write("### Mask Files:\n")
             for file_name in os.listdir(mask_layout_path):
                 if file_name.endswith(".oas"):
-                    f.write(" + [{}]({})\n".format(file_name, os.path.join(mask_layout_str, file_name)))
+                    f.write(f" + [{file_name}]({os.path.join(mask_layout_str, file_name)})\n")
             f.write("\n")
 
             f.write("### Mask Images:\n")
             for file_name in os.listdir(mask_layout_path):
                 if file_name.endswith(".png"):
-                    f.write("+ [{}]({})\n".format(file_name, os.path.join(mask_layout_str, file_name)))
+                    f.write(f"+ [{file_name}]({os.path.join(mask_layout_str, file_name)})\n")
 
         f.close()
 
@@ -420,6 +418,6 @@ def export_junction_parameters(cell, path):
     junctions = extract_junctions(cell, {})
     if len(junctions) > 0:
         params_json = json.dumps(get_tuned_junction_json(junctions), indent=2)
-        with open(path, "w") as file:
+        with open(path, "w", encoding="utf-8") as file:
             file.write(params_json)
         logging.info(f"Exported tunable junction parameters to {path}")

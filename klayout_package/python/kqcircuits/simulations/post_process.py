@@ -62,7 +62,7 @@ class PostProcess:
         if self.data:
             file = str(Path(self.script).stem if self.data_file_prefix is None else self.data_file_prefix) + ".json"
             str_args += ' "' + file + '"'
-            with open(path.joinpath(file), "w") as f:
+            with open(path.joinpath(file), "w", encoding="utf-8") as f:
                 json.dump(self.data, f, indent=4)
 
         # Return the command line(s)

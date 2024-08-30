@@ -29,6 +29,7 @@ import ScriptEnv
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "util"))
 from geometry import set_material, add_layer, add_material, set_color, scale  # pylint: disable=wrong-import-position
 
+# pylint: disable=consider-using-f-string
 # Set up environment
 ScriptEnv.Initialize("Ansoft.ElectronicsDesktop")
 oDesktop.AddMessage("", "", 0, "Starting import script (%s)" % time.asctime(time.localtime()))
@@ -37,7 +38,7 @@ oDesktop.AddMessage("", "", 0, "Starting import script (%s)" % time.asctime(time
 jsonfile = ScriptArgument
 path = os.path.dirname(jsonfile)
 
-with open(jsonfile, "r") as fjsonfile:
+with open(jsonfile, "r") as fjsonfile:  # pylint: disable=unspecified-encoding
     data = json.load(fjsonfile)
 
 simulation_flags = data["simulation_flags"]
@@ -45,7 +46,7 @@ gds_file = data["gds_file"]
 units = data.get("units", "um")
 
 ansys_project_template = data.get("ansys_project_template", "")
-mesh_size = data.get("mesh_size", dict())
+mesh_size = data.get("mesh_size", dict())  # pylint: disable=use-dict-literal
 
 # Create project
 oDesktop.RestoreWindow()
@@ -73,7 +74,7 @@ def color_by_material(is_pec=False, permittivity=1.0):
 oEditor.SetModelUnits(["NAME:Units Parameter", "Units:=", units, "Rescale:=", False])
 
 # Import GDSII geometry
-layers = data.get("layers", dict())
+layers = data.get("layers", dict())  # pylint: disable=use-dict-literal
 
 order_map = []
 layer_map = ["NAME:LayerMap"]
@@ -163,7 +164,7 @@ if data.get("integrate_energies", False):
 
 # Manual mesh refinement
 for mesh_layer, mesh_length in mesh_size.items():
-    mesh_objects = objects.get(mesh_layer, list())
+    mesh_objects = objects.get(mesh_layer, list())  # pylint: disable=use-list-literal
     if mesh_objects:
         oMeshSetup = oDesign.GetModule("MeshSetup")
         oMeshSetup.AssignLengthOp(
@@ -255,3 +256,4 @@ oEditor.FitAll()
 
 # Notify the end of script
 oDesktop.AddMessage("", "", 0, "Import completed (%s)" % time.asctime(time.localtime()))
+# pylint: enable=consider-using-f-string

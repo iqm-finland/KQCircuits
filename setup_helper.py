@@ -112,7 +112,7 @@ def get_klayout_python_info():
         continue
     klayout_py_version, klayout_py_platforms, klayout_site_packages = None, [], None
     for _ in range(10):
-        with open(".klayout-python.info") as f:
+        with open(".klayout-python.info", encoding="utf-8") as f:
             for line in f:
                 if line.startswith("KLayout python platform: "):
                     klayout_py_platforms.append(line.split("KLayout python platform: ")[1].strip())

@@ -84,7 +84,7 @@ class XMonsDirectCouplingFullChipSim(Simulation):
 
         # meander
         meander = self.add_element(
-            Meander, start=pos_coupler_end, end=pos_start, length=length - len_coupler, meanders=8, r=50
+            Meander, start_point=pos_coupler_end, end_point=pos_start, length=length - len_coupler, meanders=8, r=50
         )
         self.cell.insert(pya.DCellInstArray(meander.cell_index(), pya.DTrans()))
 

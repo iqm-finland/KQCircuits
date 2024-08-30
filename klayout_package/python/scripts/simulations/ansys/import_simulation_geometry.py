@@ -48,6 +48,7 @@ from field_calculation import (  # pylint: disable=wrong-import-position
     add_magnetic_flux_integral_expression,
 )
 
+# pylint: disable=consider-using-f-string
 # Set up environment
 ScriptEnv.Initialize("Ansoft.ElectronicsDesktop")
 oDesktop.AddMessage("", "", 0, "Starting import script (%s)" % time.asctime(time.localtime()))
@@ -56,7 +57,7 @@ oDesktop.AddMessage("", "", 0, "Starting import script (%s)" % time.asctime(time
 jsonfile = ScriptArgument
 path = os.path.dirname(jsonfile)
 
-with open(jsonfile, "r") as fjsonfile:
+with open(jsonfile, "r") as fjsonfile:  # pylint: disable=unspecified-encoding
     data = json.load(fjsonfile)
 
 ansys_tool = data.get("ansys_tool", "hfss")
@@ -64,12 +65,12 @@ ansys_tool = data.get("ansys_tool", "hfss")
 simulation_flags = data["simulation_flags"]
 gds_file = data["gds_file"]
 units = data.get("units", "um")
-material_dict = data.get("material_dict", dict())
+material_dict = data.get("material_dict", dict())  # pylint: disable=use-dict-literal
 box = data["box"]
 
 ansys_project_template = data.get("ansys_project_template", "")
 vertical_over_etching = data.get("vertical_over_etching", 0)
-mesh_size = data.get("mesh_size", dict())
+mesh_size = data.get("mesh_size", dict())  # pylint: disable=use-dict-literal
 
 # Create project
 oDesktop.RestoreWindow()
@@ -101,7 +102,7 @@ oReportSetup = oDesign.GetModule("ReportSetup")
 def color_by_material(material, is_sheet=False):
     if material == "pec":
         return 240, 120, 240, 0.5
-    n = 0.3 * (material_dict.get(material, dict()).get("permittivity", 1.0) - 1.0)
+    n = 0.3 * (material_dict.get(material, dict()).get("permittivity", 1.0) - 1.0)  # pylint: disable=use-dict-literal
     alpha = 0.93 ** (2 * n if is_sheet else n)
     return tuple(int(100 + 80 * c) for c in [cos(n - pi / 3), cos(n + pi), cos(n + pi / 3)]) + (alpha,)
 
@@ -114,7 +115,7 @@ for name, params in material_dict.items():
     add_material(oDefinitionManager, name, **params)
 
 # Import GDSII geometry
-layers = data.get("layers", dict())
+layers = data.get("layers", dict())  # pylint: disable=use-dict-literal
 # ignore gap objects if they are not used
 layers = {n: d for n, d in layers.items() if "_gap" not in n or n in mesh_size}
 
@@ -547,14 +548,14 @@ if data.get("integrate_magnetic_flux", False) and ansys_tool in hfss_tools:
 
 # Manual mesh refinement
 for mesh_layer, mesh_length in mesh_size.items():
-    mesh_objects = objects.get(mesh_layer, list())
+    mesh_objects = objects.get(mesh_layer, [])  # pylint: disable=use-dict-literal
     if mesh_objects:
         oMeshSetup = oDesign.GetModule("MeshSetup")
         oMeshSetup.AssignLengthOp(
             [
                 "NAME:mesh_size_{}".format(mesh_layer),
                 "RefineInside:=",
-                layers.get(mesh_layer, dict()).get("thickness", 0.0) != 0.0,
+                layers.get(mesh_layer, dict()).get("thickness", 0.0) != 0.0,  # pylint: disable=use-dict-literal
                 "Enabled:=",
                 True,
                 "Objects:=",
@@ -837,3 +838,4 @@ oEditor.FitAll()
 
 # Notify the end of script
 oDesktop.AddMessage("", "", 0, "Import completed (%s)" % time.asctime(time.localtime()))
+# pylint: enable=consider-using-f-string

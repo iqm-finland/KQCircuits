@@ -231,7 +231,7 @@ class MaskLayout:
                                     shapes.append(shapes_iter.shape())
                                     shapes_iter.next()
                                 except ValueError:
-                                    print("error occurs at %s at %s" % (name, face_id))
+                                    print(f"error occurs at {name} at {face_id}")
 
                             for shapes_to_remove in shapes:
                                 shapes_to_remove.delete()
@@ -472,7 +472,7 @@ class MaskLayout:
             raise ValueError(f"Row coordinate {row} out of bounds")
         if column < 0 or column > 99:
             raise ValueError(f"Column coordinate {column} out of bounds")
-        return chr(ord("A") + row) + ("{:02d}".format(column))
+        return chr(ord("A") + row) + (f"{column:02d}")
 
     @staticmethod
     def position_label_to_two_coordinates(position_label: str) -> Tuple[int, int]:
@@ -556,7 +556,7 @@ class MaskLayout:
         if chip_width is None:
             chip_width = self.chip_width
         chip_region = pya.Region()
-        if name in self.chips_map_legend.keys():
+        if name in self.chips_map_legend:
             chip_cell = self.chips_map_legend[name]
             bounding_box = self.chip_bounding_boxes[name]
             bbox_offset = chip_width - bounding_box.width()

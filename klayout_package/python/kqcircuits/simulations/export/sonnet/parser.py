@@ -22,10 +22,10 @@ from string import Template
 
 
 def apply_template(filename_template, filename_output, rules):
-    with open(filename_template) as filein:
+    with open(filename_template, encoding="utf-8") as filein:
         src = Template(filein.read())
     results = src.substitute(rules)
-    with open(filename_output, "w") as fileout:
+    with open(filename_output, "w", encoding="utf-8") as fileout:
         fileout.write(results)
     # dirname_sondata = os.path.join(os.path.dirname(filename_output), "sondata")
     # if not os.path.exists(dirname_sondata):
@@ -93,7 +93,7 @@ def refplane(
 ):
     if port_ipoly != "":
         plane_type = "LINK"
-        poly = "POLY {} 1\n0\n".format(port_ipoly[0])
+        poly = f"POLY {port_ipoly[0]} 1\n0\n"
         length = ""
     else:
         plane_type = "FIX"
@@ -154,7 +154,7 @@ def control(control_type):
 
 
 def polygons(polygons, v, dbu, ilevel, fill_type):
-    sonnet_str = "NUM {}\n".format(len(polygons))
+    sonnet_str = f"NUM {len(polygons)}\n"
     for i, hole_poly in enumerate(polygons):
         poly = hole_poly.resolved_holes()
 
@@ -167,11 +167,10 @@ def polygons(polygons, v, dbu, ilevel, fill_type):
             # not allowed
 
         for _, point in enumerate(poly.each_point_hull()):
-            sonnet_str += "{} {}\n".format(
-                point.x * dbu + v.x, -(point.y * dbu + v.y)
-            )  # sonnet Y-coordinate goes in the other direction
+            # sonnet Y-coordinate goes in the other direction
+            sonnet_str += f"{point.x * dbu + v.x} {-(point.y * dbu + v.y)}\n"
         point = next(poly.each_point_hull())  # first point again to close the polygon
-        sonnet_str += "{} {}\nEND\n".format(point.x * dbu + v.x, -(point.y * dbu + v.y))
+        sonnet_str += f"{point.x * dbu + v.x} {-(point.y * dbu + v.y)}\nEND\n"
 
     return sonnet_str
 

@@ -55,7 +55,7 @@ try:
     json_str = json.dumps(get_tuned_junction_json(junctions), indent=2)
 
     if FILE_LOCATION:
-      with open(FILE_LOCATION, 'w') as file:
+      with open(FILE_LOCATION, 'w', encoding="utf-8") as file:
         file.write(json_str)
         print(f"Wrote junction parameters to {FILE_LOCATION}")
     else:

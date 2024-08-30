@@ -131,7 +131,7 @@ def export_sonnet_son(
                         port.ground_location,
                         chr(group_ascii),
                     )
-                    calgroup += 'CUPGRP "{}"\nID 28\nGNDREF F\nTWTYPE FEED\nEND\n'.format(chr(group_ascii))
+                    calgroup += f'CUPGRP "{chr(group_ascii)}"\nID 28\nGNDREF F\nTWTYPE FEED\nEND\n'
                     group_ascii += 1
                 elif isinstance(port, EdgePort):
                     # TODO: re-implement calibration

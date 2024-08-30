@@ -130,7 +130,7 @@ class Swissmon(Qubit):
 
         # add ref point
         port_ref = pya.DPoint(0, b)
-        self.add_port("cplr{}".format(cpl_nr), (rotation * transf).trans(port_ref), rotation * pya.DVector(0, 1))
+        self.add_port(f"cplr{cpl_nr}", (rotation * transf).trans(port_ref), rotation * pya.DVector(0, 1))
 
     def _produce_cross_and_squid(self):
         """Produces the cross and squid for the Swissmon."""

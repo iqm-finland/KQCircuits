@@ -64,7 +64,7 @@ path = Path(json_filename).parent
 name = Path(Path(json_filename).stem)
 
 # Open json file
-with open(json_filename) as f:
+with open(json_filename, encoding="utf-8") as f:
     json_data = json.load(f)
 workflow = json_data["workflow"]
 
@@ -153,7 +153,7 @@ if tool == "cross-section":
         if json_data.get("integrate_energies", False):  # Compute quality factors with energy participation ratio method
             res = {**res, **get_energy_integrals(path.joinpath(name))}
 
-        with open(path.joinpath(f"{name}_project_results.json"), "w") as f:
+        with open(path.joinpath(f"{name}_project_results.json"), "w", encoding="utf-8") as f:
             json.dump(res, f, indent=4, sort_keys=True)
 
 else:

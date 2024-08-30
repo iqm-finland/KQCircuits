@@ -48,5 +48,5 @@ top_cell = KLayoutView(current=True).active_cell
 simulation = Simulation.from_cell(top_cell, margin=100, name=name)
 
 son = export_sonnet_son(simulation, path)
-print("Exported simulation to {}".format(path))</text>
+print(f"Exported simulation to {path}")</text>
 </klayout-macro>

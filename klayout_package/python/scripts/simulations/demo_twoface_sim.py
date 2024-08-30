@@ -63,16 +63,14 @@ class DemoTwofaceSim(Simulation):
                 ("DL-QB4", [port_shift, 0]),
             ]
         ):
-            self.ports.append(EdgePort(i + 1, refpoints["{}_port".format(port)] + pya.DVector(*shift)))
+            self.ports.append(EdgePort(i + 1, refpoints[f"{port}_port"] + pya.DVector(*shift)))
 
         # Add squid internal ports
         for i, port in enumerate(["QB1", "QB2", "QB3", "QB4"]):
             self.ports.append(
                 InternalPort(
                     5 + i,
-                    *self.etched_line(
-                        refpoints["{}_squid_port_squid_a".format(port)], refpoints["{}_squid_port_squid_b".format(port)]
-                    ),
+                    *self.etched_line(refpoints[f"{port}_squid_port_squid_a"], refpoints[f"{port}_squid_port_squid_b"]),
                 )
             )
 

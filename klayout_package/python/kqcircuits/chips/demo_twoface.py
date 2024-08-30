@@ -92,8 +92,8 @@ class DemoTwoface(Chip):
         self.insert_cell(
             WaveguideComposite,
             nodes=[
-                Node(self.refpoints["QB{}_port_cplr2".format(qubit_a_nr)]),
-                Node(self.refpoints["QB{}_port_cplr2".format(qubit_b_nr)]),
+                Node(self.refpoints[f"QB{qubit_a_nr}_port_cplr2"]),
+                Node(self.refpoints[f"QB{qubit_b_nr}_port_cplr2"]),
             ],
             a=4,
             b=9,
@@ -105,12 +105,12 @@ class DemoTwoface(Chip):
             self.produce_fluxline(qubit_nr)
 
     def produce_driveline(self, qubit_nr):
-        port_drive = self.refpoints["QB{}_port_drive".format(qubit_nr)]
-        port_corner = self.refpoints["DL-QB{}_port_corner".format(qubit_nr)]
+        port_drive = self.refpoints[f"QB{qubit_nr}_port_drive"]
+        port_corner = self.refpoints[f"DL-QB{qubit_nr}_port_corner"]
         self.insert_cell(
             WaveguideComposite,
             nodes=[
-                Node(self.refpoints["DL-QB{}_base".format(qubit_nr)]),
+                Node(self.refpoints[f"DL-QB{qubit_nr}_base"]),
                 Node(port_corner),
                 Node(port_drive),
             ],
@@ -118,16 +118,16 @@ class DemoTwoface(Chip):
         )
 
     def produce_fluxline(self, qubit_nr):
-        port_corner = self.refpoints["FL-QB{}_port_corner".format(qubit_nr)]
-        port_flux = self.refpoints["QB{}_port_flux".format(qubit_nr)]
+        port_corner = self.refpoints[f"FL-QB{qubit_nr}_port_corner"]
+        port_flux = self.refpoints[f"QB{qubit_nr}_port_flux"]
         shift = 1500 if qubit_nr in [3, 4] else -1500
         self.insert_cell(
             WaveguideComposite,
             nodes=[
-                Node(self.refpoints["FL-QB{}_base".format(qubit_nr)]),
+                Node(self.refpoints[f"FL-QB{qubit_nr}_base"]),
                 Node(port_corner + pya.DPoint(0, shift)),
                 Node((port_flux.x, port_corner.y + shift)),
-                Node(self.refpoints["QB{}_port_flux".format(qubit_nr)]),
+                Node(self.refpoints[f"QB{qubit_nr}_port_flux"]),
             ],
         )
 
@@ -141,9 +141,9 @@ class DemoTwoface(Chip):
 
         # non-meandering part of the resonator
 
-        point_1 = self.refpoints["QB{}_port_cplr1".format(qubit_nr)]
+        point_1 = self.refpoints[f"QB{qubit_nr}_port_cplr1"]
         point_2 = point_shift_along_vector(
-            self.refpoints["QB{}_port_cplr1".format(qubit_nr)], self.refpoints["QB{}_base".format(qubit_nr)], -700
+            self.refpoints[f"QB{qubit_nr}_port_cplr1"], self.refpoints[f"QB{qubit_nr}_base"], -700
         )
         point_3 = point_2 + pya.DPoint(-400 if mirrored else 400, 0)
         point_4 = point_3 + pya.DPoint(-100 if mirrored else 100, 0)
@@ -166,8 +166,8 @@ class DemoTwoface(Chip):
 
         self.insert_cell(
             Meander,
-            start=meander_start,
-            end=meander_end,
+            start_point=meander_start,
+            end_point=meander_end,
             length=float(self.readout_res_lengths[qubit_nr - 1]) - length_nonmeander,
             meanders=5,
             face_ids=[self.face_ids[1]],
@@ -194,7 +194,7 @@ class DemoTwoface(Chip):
         )
         tcross_ref_rel = self.get_refpoints(tcross_cell, pya.DTrans(tcross_rot, False, 0, 0))
         tcross_trans = pya.DTrans(tcross_rot, False, cap_ref_abs["port_b"] - tcross_ref_rel["port_bottom"])
-        self.insert_cell(tcross_cell, tcross_trans, inst_name="PL{}".format(qubit_nr), label_trans=pya.DCplxTrans(0.2))
+        self.insert_cell(tcross_cell, tcross_trans, inst_name=f"PL{qubit_nr}", label_trans=pya.DCplxTrans(0.2))
 
     def produce_probelines(self):
         self.produce_probeline("PL-1", 1, 3, True, 4)
@@ -205,19 +205,19 @@ class DemoTwoface(Chip):
         cap_cell = self.add_element(
             FingerCapacitorTaper, finger_number=cap_finger_nr, taper_length=20, face_ids=[self.face_ids[1]]
         )
-        cap_trans = pya.DTrans(3, False, self.refpoints["PL{}_port_left".format(qubit_a_nr)] + pya.DPoint(0, 700))
+        cap_trans = pya.DTrans(3, False, self.refpoints[f"PL{qubit_a_nr}_port_left"] + pya.DPoint(0, 700))
         _, cap_ref_abs = self.insert_cell(cap_cell, cap_trans)
 
         # segment 1
         self.insert_cell(
             WaveguideComposite,
             nodes=[
-                Node(self.refpoints["{}-IN_base".format(probeline_name)]),
-                Node(self.refpoints["{}-IN_port_corner".format(probeline_name)] + pya.DPoint(0, -1000)),
+                Node(self.refpoints[f"{probeline_name}-IN_base"]),
+                Node(self.refpoints[f"{probeline_name}-IN_port_corner"] + pya.DPoint(0, -1000)),
                 Node(
                     (
-                        self.refpoints["PL{}_port_left".format(qubit_a_nr)].x,
-                        self.refpoints["{}-IN_port_corner".format(probeline_name)].y - 1000,
+                        self.refpoints[f"PL{qubit_a_nr}_port_left"].x,
+                        self.refpoints[f"{probeline_name}-IN_port_corner"].y - 1000,
                     )
                 ),
                 Node(cap_ref_abs["port_a"] + pya.DPoint(0, 700), face_id=self.face_ids[1]),
@@ -233,7 +233,7 @@ class DemoTwoface(Chip):
             WaveguideComposite,
             nodes=[
                 Node(cap_ref_abs["port_b"]),
-                Node(self.refpoints["PL{}_port_{}".format(qubit_a_nr, port_1_side)]),
+                Node(self.refpoints[f"PL{qubit_a_nr}_port_{port_1_side}"]),
             ],
             face_ids=[self.face_ids[1]],
         )
@@ -242,8 +242,8 @@ class DemoTwoface(Chip):
         self.insert_cell(
             WaveguideComposite,
             nodes=[
-                Node(self.refpoints["PL{}_port_{}".format(qubit_a_nr, port_2_side)]),
-                Node(self.refpoints["PL{}_port_{}".format(qubit_b_nr, port_1_side)]),
+                Node(self.refpoints[f"PL{qubit_a_nr}_port_{port_2_side}"]),
+                Node(self.refpoints[f"PL{qubit_b_nr}_port_{port_1_side}"]),
             ],
             face_ids=[self.face_ids[1]],
         )
@@ -252,18 +252,18 @@ class DemoTwoface(Chip):
         self.insert_cell(
             WaveguideComposite,
             nodes=[
-                Node(self.refpoints["{}-OUT_base".format(probeline_name)]),
-                Node(self.refpoints["{}-OUT_port_corner".format(probeline_name)] + pya.DPoint(0, 1000)),
+                Node(self.refpoints[f"{probeline_name}-OUT_base"]),
+                Node(self.refpoints[f"{probeline_name}-OUT_port_corner"] + pya.DPoint(0, 1000)),
                 Node(
                     (
-                        self.refpoints["PL{}_port_right".format(qubit_b_nr)].x,
-                        self.refpoints["{}-OUT_port_corner".format(probeline_name)].y + 1000,
+                        self.refpoints[f"PL{qubit_b_nr}_port_right"].x,
+                        self.refpoints[f"{probeline_name}-OUT_port_corner"].y + 1000,
                     )
                 ),
                 Node(
-                    self.refpoints["PL{}_port_right".format(qubit_b_nr)] + pya.DPoint(0, -1400),
+                    self.refpoints[f"PL{qubit_b_nr}_port_right"] + pya.DPoint(0, -1400),
                     face_id=self.face_ids[1],
                 ),
-                Node(self.refpoints["PL{}_port_{}".format(qubit_b_nr, port_2_side)]),
+                Node(self.refpoints[f"PL{qubit_b_nr}_port_{port_2_side}"]),
             ],
         )

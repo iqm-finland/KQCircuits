@@ -37,13 +37,13 @@ from post_process_helpers import (  # pylint: disable=wrong-import-position, no-
     tabulate_into_csv,
 )
 
-pp_data = dict()
+pp_data = {}
 if len(sys.argv) > 1:
-    with open(sys.argv[1], "r") as fp:
+    with open(sys.argv[1], "r", encoding="utf-8") as fp:
         pp_data = json.load(fp)
 
 groups = pp_data.get("groups", [])
-region_corrections = pp_data.get("region_corrections", dict())
+region_corrections = pp_data.get("region_corrections", {})
 
 
 def get_mer_coefficients(simulation, region):
@@ -71,13 +71,13 @@ def get_mer_coefficients(simulation, region):
         print(f"Multiple matching correction files found with keys {simulation} and {correction_key}.")
         return None
 
-    with open(corr_file.pop(), "r") as f:
+    with open(corr_file.pop(), "r", encoding="utf-8") as f:
         res = json.load(f)
     mer_keys = [k for k, v in res.items() if "mer" in k and k.startswith("E_")]
-    mer_total = sum([res[k] for k in mer_keys])
+    mer_total = sum(res[k] for k in mer_keys)
     coefficient = {group: sum(res[k] for k in mer_keys if group.lower() in k.lower()) / mer_total for group in groups}
 
-    with open(f"coefficients_{simulation}_{region}.json", "w") as f:
+    with open(f"coefficients_{simulation}_{region}.json", "w", encoding="utf-8") as f:
         json.dump(coefficient, f)
 
     return coefficient
@@ -89,7 +89,7 @@ def _get_face_id_to_substrate_mapping(sim_name: str) -> dict[str, str]:
 
     Mapping is based on the value of `face_stack` from the simulation json and available substrate layers
     """
-    with open(f"{sim_name}.json", "r") as f:
+    with open(f"{sim_name}.json", "r", encoding="utf-8") as f:
         sim_data = json.load(f)
     face_stack = sim_data["parameters"]["face_stack"]
 
@@ -129,7 +129,7 @@ def _get_face_id_to_substrate_mapping(sim_name: str) -> dict[str, str]:
 
 def _get_partition_region_names(sim_name: str) -> list[str]:
     """Read partition region names from simulation json file"""
-    with open(f"{sim_name}.json", "r") as f:
+    with open(f"{sim_name}.json", "r", encoding="utf-8") as f:
         sim_data = json.load(f)
     return [p["name"] for p in sim_data["parameters"]["partition_regions"]]
 
@@ -185,7 +185,7 @@ if result_files:
     # Load result data
     epr_dict = {}
     for key, result_file in zip(parameter_values.keys(), result_files):
-        with open(result_file, "r") as f:
+        with open(result_file, "r", encoding="utf-8") as f:
             result = json.load(f)
 
         energy = {k[2:]: v for k, v in result.items() if k.startswith("E_")}
@@ -244,7 +244,7 @@ if result_files:
             }
         else:
             # calculate corrected EPRs and distinguish by partition regions
-            epr_dict[key] = dict()
+            epr_dict[key] = {}
             for reg, corr in region_corrections.items():
                 reg_energy = {k: v for k, v in energy.items() if reg in k}
 

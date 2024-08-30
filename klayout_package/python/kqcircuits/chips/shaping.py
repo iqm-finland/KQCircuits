@@ -130,8 +130,8 @@ class Shaping(Chip):
         meander2_end = cross1_refpoints_abs["port_bottom"] + pya.DVector(630, 0)
         self.insert_cell(
             Meander,
-            start=cross1_refpoints_abs["port_bottom"],
-            end=meander2_end,
+            start_point=cross1_refpoints_abs["port_bottom"],
+            end_point=meander2_end,
             length=segment_length_target_rr[1] - waveguide_length,
             meanders=2,
         )
@@ -188,8 +188,8 @@ class Shaping(Chip):
 
         self.insert_cell(
             Meander,
-            start=port_abs_cross3["port_left"],
-            end=meander3_end,
+            start_point=port_abs_cross3["port_left"],
+            end_point=meander3_end,
             length=segment_length_target_pr[0] - waveguide_length,
             meanders=3,
         )
@@ -298,8 +298,8 @@ class Shaping(Chip):
         meander2_end = cross1_refpoints_abs["port_bottom"] + pya.DVector(630, 0)
         self.insert_cell(
             Meander,
-            start=cross1_refpoints_abs["port_bottom"],
-            end=meander2_end,
+            start_point=cross1_refpoints_abs["port_bottom"],
+            end_point=meander2_end,
             length=segment_length_target_rr[1] - waveguide_length,
             meanders=2,
         )
@@ -354,8 +354,8 @@ class Shaping(Chip):
 
         self.insert_cell(
             Meander,
-            start=port_abs_cross3["port_right"],
-            end=meander3_end,
+            start_point=port_abs_cross3["port_right"],
+            end_point=meander3_end,
             length=segment_length_target_pr[0] - waveguide_length,
             meanders=3,
         )

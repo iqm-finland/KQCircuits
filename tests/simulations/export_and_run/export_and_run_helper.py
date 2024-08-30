@@ -80,14 +80,14 @@ def assert_project_results_equal(
     generate_ref_results(bool): if true, generates the reference results json based on the simulation to be tested
     """
 
-    with open(project_results_path) as f:
+    with open(project_results_path, encoding="utf-8") as f:
         results = json.load(f)
 
     if generate_ref_results:
-        with open(ref_project_results_path, "w") as f:
+        with open(ref_project_results_path, "w", encoding="utf-8") as f:
             json.dump(results, f)
 
-    with open(ref_project_results_path) as f:
+    with open(ref_project_results_path, encoding="utf-8") as f:
         ref_results = json.load(f)
 
     return assert_dicts(ref_results, results, rtol, atol, ignore_keys=ignore_keys)

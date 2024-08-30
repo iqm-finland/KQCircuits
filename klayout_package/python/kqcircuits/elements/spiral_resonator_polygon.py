@@ -107,7 +107,7 @@ class SpiralResonatorPolygon(Element):
             diams = []
             for i in range(n):
                 _, v = vector_length_and_direction(p[(i + 1) % n] - p[i])
-                diams.append(max([abs(v.vprod(p[j % n] - p[i])) for j in range(i + 2, i + n)]))
+                diams.append(max(abs(v.vprod(p[j % n] - p[i])) for j in range(i + 2, i + n)))
             return min(diams)
 
         # find optimal spacing using bisection method
@@ -115,7 +115,7 @@ class SpiralResonatorPolygon(Element):
         optimal_points = self._produce_path_points([min_spacing])
         if optimal_points is None:
             self.raise_error_on_cell(
-                "Cannot create a resonator with the given parameters. Try decreasing the turn " "radius.",
+                "Cannot create a resonator with the given parameters. Try decreasing the turn radius.",
                 (self.input_path.bbox() + self.poly_path.bbox()).center(),
             )
 

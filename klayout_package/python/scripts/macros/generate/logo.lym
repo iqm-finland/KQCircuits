@@ -83,7 +83,7 @@ gds_path = os.path.join(SRC_PATHS[0], Path("logo.gds"))
 view.layout.write(gds_path)
 view.focus()
 
-print("GDS written to {}".format(gds_path))
+print(f"GDS written to {gds_path}")
 
 """
 

@@ -44,12 +44,12 @@ def write_simulation_machine_versions_file(path: Path, name: str) -> None:
     versions["python"] = sys.version_info
 
     gmsh_versions_list = []
-    with open(path.joinpath("log_files").joinpath(name + ".Gmsh.log")) as f:
+    with open(path.joinpath("log_files").joinpath(name + ".Gmsh.log"), encoding="utf-8") as f:
         gmsh_log = f.readlines()
         gmsh_versions_list = [line.replace("\n", "") for line in gmsh_log if "ersion" in line]
 
     elmer_versions_list = []
-    with open(next(path.joinpath("log_files").glob("*Elmer.log"))) as f:
+    with open(next(path.joinpath("log_files").glob("*Elmer.log")), encoding="utf-8") as f:
         elmer_log = f.readlines()
         elmer_versions_list = [line.replace("\n", "") for line in elmer_log if "ersion" in line]
 
@@ -72,7 +72,7 @@ def write_simulation_machine_versions_file(path: Path, name: str) -> None:
         except subprocess.CalledProcessError:
             versions["paraview"] = "unknown_version"
 
-    with open("SIMULATION_MACHINE_VERSIONS.json", "w") as file:
+    with open("SIMULATION_MACHINE_VERSIONS.json", "w", encoding="utf-8") as file:
         json.dump(versions, file)
 
 
@@ -97,7 +97,7 @@ def run_elmer_grid(msh_path: Path | str, n_processes: int, exec_path_override: P
             )
     else:
         logging.warning(
-            "ElmerGrid was not found! Make sure you have ElmerFEM installed: " "https://github.com/ElmerCSC/elmerfem"
+            "ElmerGrid was not found! Make sure you have ElmerFEM installed: https://github.com/ElmerCSC/elmerfem"
         )
         sys.exit()
 
@@ -142,7 +142,7 @@ def worker(command: str, outfile: Path | str, cwd: Path | str, env: dict) -> int
     is_windows = os.name == "nt"
     try:
         if outfile is not None:
-            with open(outfile, "w") as f:
+            with open(outfile, "w", encoding="utf-8") as f:
                 return subprocess.check_call(
                     ["bash", command] if is_windows else command, stdout=f, stderr=f, text=True, env=env, cwd=cwd
                 )
@@ -224,7 +224,7 @@ def elmer_check_warnings(log_file: Path | str, cwd: Path | str | None = None):
 
     log_file = Path(log_file).resolve()
 
-    with open(log_file, "r") as f:
+    with open(log_file, "r", encoding="utf-8") as f:
         lines = [line.rstrip() for line in f]
 
     # Only log each warning once
@@ -281,7 +281,7 @@ def _run_elmer_solver(
         run_cmds = [[elmersolver_executable, sif] for sif in sif_paths]
     else:
         logging.warning(
-            "ElmerSolver was not found! Make sure you have ElmerFEM installed: " "https://github.com/ElmerCSC/elmerfem"
+            "ElmerSolver was not found! Make sure you have ElmerFEM installed: https://github.com/ElmerCSC/elmerfem"
         )
         sys.exit()
     output_files = [f"log_files/{sif}.Elmer.log" for sif in sif_names]
@@ -290,7 +290,7 @@ def _run_elmer_solver(
         pool_run_cmds(n_parallel_simulations, run_cmds, output_files=output_files, cwd=exec_path_override, env=my_env)
     else:
         for cmd, out in zip(run_cmds, output_files):
-            with open(out, "w") as f:
+            with open(out, "w", encoding="utf-8") as f:
                 subprocess.check_call(cmd, cwd=exec_path_override, env=my_env, stdout=f)
 
     for outfile in output_files:
@@ -330,10 +330,10 @@ def run_paraview(result_path: Path | str, n_processes: int, exec_path_override: 
     paraview_executable = shutil.which("paraview")
     if paraview_executable is not None:
         if n_processes > 1:
-            pvtu_files = glob.glob("{}*.pvtu".format(result_path))
+            pvtu_files = glob.glob(f"{result_path}*.pvtu")
             subprocess.check_call([paraview_executable] + pvtu_files, cwd=exec_path_override)
         else:
-            vtu_files = glob.glob("{}*.vtu".format(result_path))
+            vtu_files = glob.glob(f"{result_path}*.vtu")
             subprocess.check_call([paraview_executable] + vtu_files, cwd=exec_path_override)
     else:
         logging.warning("Paraview was not found! Make sure you have it installed: https://www.paraview.org/")

@@ -91,7 +91,7 @@ jobs:
     if: success() || failure()
     steps:
       - name: Download test results
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           path: artifacts
       - name: Publish test results
@@ -243,7 +243,7 @@ jobs:
         with:
           python-version: '3.10.x'
       - name: Download docs artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: docs
           path: public

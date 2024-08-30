@@ -321,8 +321,8 @@ class MunchQubits(Chip):
             # Add the missing part in the center in the correct length
             meander, _ = self.insert_cell(
                 Meander,
-                start=self.refpoints[qubits_couplers_corners[i]] + pya.DPoint(0, -300),
-                end=self.refpoints[f"resonator_bottom_{i + 1}_port_b"],
+                start_point=self.refpoints[qubits_couplers_corners[i]] + pya.DPoint(0, -300),
+                end_point=self.refpoints[f"resonator_bottom_{i + 1}_port_b"],
                 length=float(self.readout_res_lengths[i]) - length_nonmeander_top - length_nonmeander_bottom,
                 n_bridges=18,
             )

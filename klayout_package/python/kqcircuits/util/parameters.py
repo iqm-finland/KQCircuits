@@ -17,6 +17,7 @@
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
 
+from functools import lru_cache
 from kqcircuits.pya_resolver import pya
 
 
@@ -87,6 +88,32 @@ def add_parameter(cls, name, **change):
     return _decorate
 
 
+@lru_cache(maxsize=None)
+def _get_restricted_parameter_names():
+    """All members of PCellDeclarationHelper should be considered restricted,
+    with exception of "name" as that is used by simulations.
+    """
+    return [param_name.lower() for param_name in dir(pya.PCellDeclarationHelper) if param_name != "name"]
+
+
+def _prevent_restricted_parameter_names(param_owner, param_name):
+    """Declaring a parameter which shares a name with some member variable
+    or member function of pya.PCellDeclarationHelper (superclass of KQC's Element)
+    causes an exception or even a crash with confusing message.
+    Detect restricted parameter name here and give a more helpful error message.
+    TODO: This doesn't prevent irrecoverable crash
+
+    Args:
+        param_owner: Element object that is checked
+        param_name: name of the parameter that is checked
+    """
+    if param_name.lower() in _get_restricted_parameter_names():
+        raise ValueError(
+            f"{type(param_owner).__name__} contains a parameter with a restricted"
+            f" name '{param_name.lower()}', please rename it to something else!\n"
+        )
+
+
 class pdt:  # pylint: disable=invalid-name
     """A namespace for pya.PCellParameterDeclaration types."""
 
@@ -145,6 +172,7 @@ class Param:
         self._index[owner_name][name] = self
 
     def __get__(self, obj, objtype):
+        _prevent_restricted_parameter_names(obj, self.name)
         if obj is None or not hasattr(obj, "_param_values") or obj._param_values is None:
             return self.default
         if hasattr(obj, "_param_value_map"):  # Element
@@ -153,6 +181,7 @@ class Param:
             return obj._param_values[self.name]
 
     def __set__(self, obj, value):
+        _prevent_restricted_parameter_names(obj, self.name)
         if not hasattr(obj, "_param_values") or obj._param_values is None:
             obj._param_values = {}
         if hasattr(obj, "_param_value_map"):

@@ -20,6 +20,7 @@
 import json
 
 
+# pylint: disable=consider-using-f-string
 def get_enabled_setup(oDesign, tab="HfssTab"):
     """Returns enabled analysis setup. Returns None if not enabled."""
     setup_names = oDesign.GetModule("AnalysisSetup").GetSetups()
@@ -113,6 +114,9 @@ def create_x_vs_y_plot(
             ],
         ]
     )
+
+
+# pylint: enable=consider-using-f-string
 
 
 # Helper class to encode complex data in json output

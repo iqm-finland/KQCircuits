@@ -60,7 +60,7 @@ if __name__ == "__main__":
         if not exclude:
             file_paths_2.append(path)
 
-    with open(f"ci/copyright_template", "r") as template_file:
+    with open("ci/copyright_template", "r", encoding="utf-8") as template_file:
         copyright_template = Template(template_file.read())
 
     files_without_copyright = file_paths_2

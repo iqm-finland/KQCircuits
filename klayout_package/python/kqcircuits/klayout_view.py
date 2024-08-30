@@ -349,7 +349,7 @@ class KLayoutView:
             layer_str = "-" + layers_set[0].name
         else:
             layer_str = ""
-        cell_png_name = path / "{}{}.png".format(filename, layer_str)
+        cell_png_name = path / f"{filename}{layer_str}.png"
 
         def export_callback():
             self.layout_view.save_image(str(cell_png_name), pngsize[0], pngsize[1])

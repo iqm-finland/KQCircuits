@@ -49,7 +49,7 @@ def _load_elmer_runtimes(path: Path, name: str, elmer_n_processes: int) -> dict:
     for end in endings:
         log_file = logs_folder.joinpath(name + end + ".Elmer.log")
         if log_file.is_file():
-            with open(log_file, "r") as f:
+            with open(log_file, "r", encoding="utf-8") as f:
                 for line in reversed(f.readlines()):
                     if "SOLVER TOTAL TIME(CPU,REAL):" in line:
                         sp_line = line.rstrip().split()
@@ -68,7 +68,7 @@ def _load_elmer_elements(path: Path, name: str) -> dict:
     """Parse path/mesh.header for the number of mesh elements used in Elmer"""
     log_file = Path(path).joinpath(name).joinpath("mesh.header")
     if log_file.is_file():
-        with open(log_file, "r") as f:
+        with open(log_file, "r", encoding="utf-8") as f:
             for line in f:
                 return {"elmer_elements": line.rstrip().split()[1]}
     else:
@@ -81,7 +81,7 @@ def _load_gmsh_data(path: Path, name: str) -> dict:
     log_file = Path(path).joinpath("log_files").joinpath(name + ".Gmsh.log")
 
     if log_file.is_file():
-        with open(log_file, "r") as f:
+        with open(log_file, "r", encoding="utf-8") as f:
             lines = f.readlines()
         # Sum times used for meshing lines (1D), surfaces (2D) and volumes (3D) which
         # are reported separately by Gmsh
@@ -101,7 +101,7 @@ def _load_gmsh_data(path: Path, name: str) -> dict:
 
 def _load_workflow_data(definition_file: Path) -> dict:
     """Load relevant parts of workflow dict"""
-    with open(definition_file, "r") as f:
+    with open(definition_file, "r", encoding="utf-8") as f:
         json_data = json.load(f)
     return {key: json_data["workflow"][key] for key in ("elmer_n_processes", "elmer_n_threads", "gmsh_n_threads")}
 

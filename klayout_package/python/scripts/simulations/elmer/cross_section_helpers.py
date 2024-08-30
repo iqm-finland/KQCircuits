@@ -134,7 +134,7 @@ def produce_cross_section_mesh(json_data: dict[str, Any], msh_file: Path | str) 
             print(f'WARNING: No layers corresponding to mesh_size keys "{split_names}" found')
 
     # Set meshing options
-    workflow = json_data.get("workflow", dict())
+    workflow = json_data.get("workflow", {})
     n_threads_dict = workflow["sbatch_parameters"] if "sbatch_parameters" in workflow else workflow
     gmsh_n_threads = int(n_threads_dict.get("gmsh_n_threads", 1))
     set_meshing_options(mesh_field_ids, mesh_global_max_size, gmsh_n_threads)
@@ -228,7 +228,7 @@ def produce_cross_section_sif_files(json_data: dict[str, Any], folder_path: Path
 
     def save(file_name: str, content: str) -> str:
         """Saves file with content given in string format. Returns name of the saved file."""
-        with open(Path(folder_path).joinpath(file_name), "w") as f:
+        with open(Path(folder_path).joinpath(file_name), "w", encoding="utf-8") as f:
             f.write(content)
         return file_name
 
@@ -288,7 +288,7 @@ def get_cross_section_capacitance_and_inductance(
                 l_matrix_file = Path(folder_path).joinpath(f"{l_matrix_file_name}.0")
             data = pd.read_csv(l_matrix_file, sep=r"\s+", header=None)
             l_matrix_file = Path(folder_path).joinpath(l_matrix_file_name)
-            with open(f"{l_matrix_file}.names") as names:
+            with open(f"{l_matrix_file}.names", encoding="utf-8") as names:
                 data.columns = [
                     line.split("res: ")[1].replace("\n", "") for line in names.readlines() if "res:" in line
                 ]

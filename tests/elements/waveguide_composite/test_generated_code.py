@@ -29,7 +29,7 @@ def test_generated_code_of_waveguide_composite():
         pytest.xfail("Stand-alone mask not supported on klayout < 0.28")
 
     macro = os.path.join(SCRIPTS_PATH, "macros/generate/test_waveguide_composite.lym")
-    with open(macro, "r") as fp:
+    with open(macro, "r", encoding="utf-8") as fp:
         xml = fp.read()
     start_ind = xml.find("<text>") + len("<text>")
     end_ind = xml.rfind("#END-TEST-HERE")
