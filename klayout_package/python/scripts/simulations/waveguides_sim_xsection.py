@@ -95,19 +95,7 @@ workflow = {
     "gmsh_n_threads": -1,
 }
 
-mesh_size = {
-    "vacuum": 100,
-    "substrate_1": 100,
-    # '1t1_signal_1': 1,
-    # '1t1_signal_2': 1,
-    # '1t1_signal_3': 1,
-    "1t1_ground": 4,
-    "ma_layer": 1,
-    "ms_layer": 1,
-    "sa_layer": 1,
-    "substrate_2": 100,
-    "2b1_ground": 4,
-}
+mesh_size = {"global_max": 100, "ma_layer": 1, "ms_layer": 1, "sa_layer": 1, "ma_layer&ms_layer": [0.5e-3, 0.5e-3, 0.2]}
 
 # Get layout
 logging.basicConfig(level=logging.WARN, stream=sys.stdout)

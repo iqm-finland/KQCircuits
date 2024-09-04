@@ -96,7 +96,7 @@ def xsection_call(
 
 def _oxidise_layers(simulation, ma_thickness, ms_thickness, sa_thickness):
     """Take the cross section geometry and add oxide layers between substrate, metal and vacuum.
-    Will add geometry around metals and etch away substrate to insert oxide geometry.
+    Will etch away substrate and metals to insert oxide geometry.
     """
     substrate_layers = [
         layer
@@ -132,9 +132,11 @@ def _oxidise_layers(simulation, ma_thickness, ms_thickness, sa_thickness):
             sa_edges.extend(_remove_shared_points(substrate_edge, metal_edges, True))
             ms_edges.extend(_remove_shared_points(substrate_edge, sa_edges, False))
 
-    ma_layer = _thicken_edges(simulation, ma_edges, ma_thickness, True)
+    ma_layer = _thicken_edges(simulation, ma_edges, ma_thickness, False)
     ms_layer = _thicken_edges(simulation, ms_edges, ms_thickness, False)
-    sa_layer = _thicken_edges(simulation, sa_edges, sa_thickness, True)
+    sa_layer = _thicken_edges(simulation, sa_edges, sa_thickness, False)
+    ma_layer -= ms_layer  # MS layer takes precedence over both MA and SA layers
+    sa_layer -= ms_layer
     sa_layer -= ma_layer  # MA layer takes precedence over SA layer
 
     # Etch and replace substrate layer regions
@@ -142,7 +144,16 @@ def _oxidise_layers(simulation, ma_thickness, ms_thickness, sa_thickness):
         for substrate_layer in substrate_layers:
             substrate_region = pya.Region(simulation.cell.shapes(simulation.layout.layer(substrate_layer)))
             simulation.cell.shapes(simulation.layout.layer(substrate_layer)).clear()
-            simulation.cell.shapes(simulation.layout.layer(substrate_layer)).insert(substrate_region - ms_layer)
+            simulation.cell.shapes(simulation.layout.layer(substrate_layer)).insert(
+                substrate_region - ms_layer - sa_layer
+            )
+
+    # Etch and replace metal layer regions
+    if ma_thickness > 0.0:
+        for metal_layer in metal_layers:
+            metal_region = pya.Region(simulation.cell.shapes(simulation.layout.layer(metal_layer)))
+            simulation.cell.shapes(simulation.layout.layer(metal_layer)).clear()
+            simulation.cell.shapes(simulation.layout.layer(metal_layer)).insert(metal_region - ma_layer)
 
     if ma_thickness > 0.0:
         simulation.cell.shapes(simulation.get_sim_layer("ma_layer")).insert(ma_layer)
