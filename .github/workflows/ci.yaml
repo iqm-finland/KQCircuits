@@ -36,7 +36,7 @@ jobs:
         run: tox -e matrix
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: Test results (KLayout=${{ matrix.klayout_version }})
           path: test_report.xml
@@ -79,7 +79,7 @@ jobs:
         run: tox -e matrix
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: Test results (${{ matrix.os }} KLayout=${{ matrix.klayout_version }})
           path: test_report.xml
@@ -152,7 +152,7 @@ jobs:
           cd docs
           make html SPHINXOPTS="-W --keep-going"
       - name: Docs to artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: docs
