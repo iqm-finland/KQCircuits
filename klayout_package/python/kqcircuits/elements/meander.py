@@ -54,6 +54,7 @@ class Meander(Element):
     length = Param(pdt.TypeDouble, "Length", 3000, unit="μm")
     meanders = Param(pdt.TypeInt, "Number of meanders (non-positive means automatic)", -1)
     n_bridges = Param(pdt.TypeInt, "Number of bridges", 0)
+    meander_direction = Param(pdt.TypeInt, "Direction of first bend, +1 or -1", 1)
 
     def can_create_from_shape_impl(self):
         return self.shape.is_path()
@@ -74,7 +75,7 @@ class Meander(Element):
             end = self.end_point
 
         angle = 180 / pi * atan2(end.y - start.y, end.x - start.x)
-        transf = pya.DCplxTrans(1, angle, False, pya.DVector(start))
+        transf = pya.DCplxTrans(1, angle, self.meander_direction < 0, pya.DVector(start))
         l_direct = start.distance(end)
         if l_direct < 4 * self.r:
             self.raise_error_on_cell(

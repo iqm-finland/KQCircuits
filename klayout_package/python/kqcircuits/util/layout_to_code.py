@@ -348,6 +348,7 @@ def get_node_params(node: Node):
             or (k == "angle" and v is not None)
             or (k == "length_before" and v is not None)
             or (k == "length_increment" and v is not None)
+            or (k == "meander_direction" and v is not None)
         ):
             node_params += f", {k}={repr(v)}"
         elif k == "params":

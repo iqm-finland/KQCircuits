@@ -77,6 +77,7 @@ class Node:
     angle: float
     length_before: float
     length_increment: float
+    meander_direction: int
 
     def __init__(
         self,
@@ -87,6 +88,7 @@ class Node:
         angle=None,
         length_before=None,
         length_increment=None,
+        meander_direction=1,
         **params,
     ):
         if isinstance(position, tuple):
@@ -99,6 +101,7 @@ class Node:
         self.angle = angle
         self.length_before = length_before
         self.length_increment = length_increment
+        self.meander_direction = meander_direction
         self.params = params
 
     def __str__(self):
@@ -123,6 +126,8 @@ class Node:
             magic_params["length_before"] = self.length_before
         if self.length_increment is not None:
             magic_params["length_increment"] = self.length_increment
+        if self.meander_direction != 1:
+            magic_params["meander_direction"] = self.meander_direction
 
         all_params = {**self.params, **magic_params}
         if all_params:
@@ -815,14 +820,17 @@ class WaveguideComposite(Element):
                     else:
                         meander_len -= start_len + (self._nodes[n1 - 1].position - turn_start).length()
 
-                params = {**node1.params, "a": self.a, "b": self.b}
-                cell_inst, _ = self.insert_cell(
-                    Meander,
-                    start_point=[meander_start.x, meander_start.y],
-                    end_point=[meander_end.x, meander_end.y],
-                    length=meander_len,
-                    **params,
-                )
+                params = {
+                    **node1.params,
+                    "a": self.a,
+                    "b": self.b,
+                    "length": meander_len,
+                    "start_point": [meander_start.x, meander_start.y],
+                    "end_point": [meander_end.x, meander_end.y],
+                    "meander_direction": node1.meander_direction,
+                }
+
+                cell_inst, _ = self.insert_cell(Meander, **params)
                 cell_inst.set_property("waveguide_composite_node_index", end_index)
                 wg_points = point0 + points[p0:p1] + ([] if start_len < 1e-4 else [meander_start])
                 self._insert_wg_cell(wg_points, n0, n1)

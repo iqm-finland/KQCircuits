@@ -103,7 +103,8 @@ view.insert_cell(WaveguideComposite, nodes=nodes)
 nodes = [
     Node(pya.DPoint(0, -1000)),
     Node(pya.DPoint(0, -1400), n_bridges=-1),                       # Add homogeneous airbrige distribution in the segment
-    Node(pya.DPoint(700, -1400), length_before=2000),               # Specify waveguide length between this and previous node
+    Node(pya.DPoint(350, -1400), length_before=1000),               # Specify waveguide length between this and previous node
+    Node(pya.DPoint(700, -1400), length_before=1000, meander_direction=-1),  # Mirror meander direction
     Node(pya.DPoint(800, -1400), FingerCapacitorSquare),
     Node(pya.DPoint(1300, -900), length_before=1500, n_bridges=5),  # Airbridges can also be added when length_before is used
     Node(pya.DPoint(1300, -800), add_metal=1),                      # WaveguideCoplanar element may continue in "empty space"
