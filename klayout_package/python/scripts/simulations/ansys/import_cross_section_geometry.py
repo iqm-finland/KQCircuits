@@ -46,7 +46,7 @@ gds_file = data["gds_file"]
 units = data.get("units", "um")
 
 ansys_project_template = data.get("ansys_project_template", "")
-mesh_size = data.get("mesh_size", dict())  # pylint: disable=use-dict-literal
+mesh_size = data.get("mesh_size", {})
 
 # Create project
 oDesktop.RestoreWindow()
@@ -74,7 +74,7 @@ def color_by_material(is_pec=False, permittivity=1.0):
 oEditor.SetModelUnits(["NAME:Units Parameter", "Units:=", units, "Rescale:=", False])
 
 # Import GDSII geometry
-layers = data.get("layers", dict())  # pylint: disable=use-dict-literal
+layers = data.get("layers", {})
 
 order_map = []
 layer_map = ["NAME:LayerMap"]
@@ -164,7 +164,7 @@ if data.get("integrate_energies", False):
 
 # Manual mesh refinement
 for mesh_layer, mesh_length in mesh_size.items():
-    mesh_objects = objects.get(mesh_layer, list())  # pylint: disable=use-list-literal
+    mesh_objects = objects.get(mesh_layer, [])
     if mesh_objects:
         oMeshSetup = oDesign.GetModule("MeshSetup")
         oMeshSetup.AssignLengthOp(
@@ -256,4 +256,4 @@ oEditor.FitAll()
 
 # Notify the end of script
 oDesktop.AddMessage("", "", 0, "Import completed (%s)" % time.asctime(time.localtime()))
-# pylint: enable=consider-using-f-string
+# pylint: disable=consider-using-f-string

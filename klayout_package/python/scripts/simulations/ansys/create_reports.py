@@ -32,6 +32,7 @@ from util import (  # pylint: disable=wrong-import-position,no-name-in-module
     get_quantities,
 )
 
+# pylint: disable=consider-using-f-string
 # Set up environment
 ScriptEnv.Initialize("Ansoft.ElectronicsDesktop")
 
@@ -43,7 +44,6 @@ oOutputVariable = oDesign.GetModule("OutputVariable")
 oReportSetup = oDesign.GetModule("ReportSetup")
 
 # Create model separately for HFSS and Q3D
-# pylint: disable=consider-using-f-string
 oDesktop.AddMessage("", "", 0, "Creating reports (%s)" % time.asctime(time.localtime()))
 
 design_type = oDesign.GetDesignType()

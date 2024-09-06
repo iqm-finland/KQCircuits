@@ -28,6 +28,7 @@ import ScriptEnv
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "util"))
 from util import get_enabled_setup, get_enabled_sweep  # pylint: disable=wrong-import-position,no-name-in-module
 
+# pylint: disable=consider-using-f-string
 # Set up environment
 ScriptEnv.Initialize("Ansoft.ElectronicsDesktop")
 
@@ -38,9 +39,7 @@ oBoundarySetup = oDesign.GetModule("BoundarySetup")
 oOutputVariable = oDesign.GetModule("OutputVariable")
 
 
-# pylint: disable=consider-using-f-string
 oDesktop.AddMessage("", "", 0, "Creating capacitive PI model for all ports (%s)" % time.asctime(time.localtime()))
-# pylint: enable=consider-using-f-string
 
 design_type = oDesign.GetDesignType()
 if design_type == "HFSS":
@@ -55,7 +54,6 @@ if design_type == "HFSS":
         for i, port_i in enumerate(ports):
             for j, port_j in enumerate(ports):
                 # PI model admittance element
-                # pylint: disable=consider-using-f-string
                 if i == j:
                     # admittance yii between port i and ground
                     expression = " + ".join(["Yt(%s,%s)" % (port_i, port_k) for port_k in ports])
@@ -75,7 +73,6 @@ if design_type == "HFSS":
                     "Terminal Solution Data",
                     [],
                 )
-                # pylint: enable=consider-using-f-string
 
 elif design_type == "Q3D Extractor":
     setup = get_enabled_setup(oDesign, tab="General")
@@ -85,15 +82,13 @@ elif design_type == "Q3D Extractor":
 
     for i, net_i in enumerate(signal_nets):
         for j, net_j in enumerate(signal_nets):
-            # pylint: disable=consider-using-f-string
             if i == j:
                 expression = " + ".join(["C({},{})".format(net_i, net_k) for net_k in signal_nets])
             else:
                 expression = "-C({},{})".format(net_i, net_j)
-            # pylint: enable=consider-using-f-string
 
             oOutputVariable.CreateOutputVariable(
-                "C_{}_{}".format(net_i, net_j),  # pylint: disable=consider-using-f-string
+                "C_{}_{}".format(net_i, net_j),
                 expression,
                 setup + " : LastAdaptive",
                 "Matrix",
@@ -108,22 +103,19 @@ elif design_type == "2D Extractor":
 
     for i, s_i in enumerate(signals):
         for j, s_j in enumerate(signals):
-            # pylint: disable=consider-using-f-string
             if i == j:
                 expression = " + ".join(["C({},{})".format(s_i, s_k) for s_k in signals])
             else:
                 expression = "-C({},{})".format(s_i, s_j)
 
             oOutputVariable.CreateOutputVariable(
-                "C_{}_{}".format(s_i, s_j),  # pylint: disable=consider-using-f-string
+                "C_{}_{}".format(s_i, s_j),
                 expression,
                 setup + " : LastAdaptive",
                 "Matrix",
                 ["Context:=", "Original"],
             )
-            # pylint: enable=consider-using-f-string
 
 # Notify the end of script
-# pylint: disable=consider-using-f-string
 oDesktop.AddMessage("", "", 0, "The capacitive PI model created (%s)" % time.asctime(time.localtime()))
 # pylint: enable=consider-using-f-string

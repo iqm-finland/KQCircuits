@@ -17,6 +17,7 @@
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
 
+# pylint: disable=consider-using-f-string
 def format_position(x, units):
     if isinstance(x, list):
         return [format_position(p, units) for p in x]
@@ -148,7 +149,7 @@ def thicken_sheet(oEditor, objects, thickness, units):
                 "SweepVectorY:=",
                 "0um",
                 "SweepVectorZ:=",
-                f"{thickness} {units}",
+                "{} {}".format(thickness, units),
             ],
         )
 
@@ -173,7 +174,7 @@ def set_material(oEditor, objects, material=None, solve_inside=None):
                     [
                         "NAME:Geometry3DAttributeTab",
                         ["NAME:PropServers"] + objects,
-                        ["NAME:ChangedProps", ["NAME:Material", "Value:=", f'"{material}"']],
+                        ["NAME:ChangedProps", ["NAME:Material", "Value:=", '"{}"'.format(material)]],
                     ],
                 ]
             )
@@ -206,11 +207,11 @@ def move_vertically(oEditor, objects, z_shift, units):
             [
                 "NAME:TranslateParameters",
                 "TranslateVectorX:=",
-                f"0 {units}",
+                "0 {}".format(units),
                 "TranslateVectorY:=",
-                f"0 {units}",
+                "0 {}".format(units),
                 "TranslateVectorZ:=",
-                f"{z_shift} {units}",
+                "{} {}".format(z_shift, units),
             ],
         )
 
@@ -275,7 +276,7 @@ def add_material(oDefinitionManager, name, **parameters):
         ["NAME:PhysicsTypes", "set:=", ["Electromagnetic"]],
     ]
     for key, value in parameters.items():
-        param_list += [f"{key}:=", str(value)]
+        param_list += ["{}:=".format(key), str(value)]
     oDefinitionManager.AddMaterial(param_list)
 
 
@@ -313,3 +314,6 @@ def scale(oEditor, objects, factor):
                 str(factor),
             ],
         )
+
+
+# pylint: enable=consider-using-f-string

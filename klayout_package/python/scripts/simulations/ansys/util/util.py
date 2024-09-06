@@ -116,9 +116,6 @@ def create_x_vs_y_plot(
     )
 
 
-# pylint: enable=consider-using-f-string
-
-
 # Helper class to encode complex data in json output
 class ComplexEncoder(json.JSONEncoder):
     def default(self, o):
@@ -126,3 +123,6 @@ class ComplexEncoder(json.JSONEncoder):
             return [o.real, o.imag]
         # Let the base class default method raise the TypeError
         return json.JSONEncoder.default(self, o)
+
+
+# pylint: enable=consider-using-f-string

@@ -29,6 +29,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "util"))
 from util import get_enabled_setup, get_enabled_sweep  # pylint: disable=wrong-import-position,no-name-in-module
 
 
+# pylint: disable=consider-using-f-string
 def create_z_vs_time_plot(report_setup, report_type, solution_name, context_array, y_label, y_components):
     report_setup.CreateReport(
         "Time Domain Reflectometry",
@@ -63,7 +64,6 @@ def create_z_vs_time_plot(report_setup, report_type, solution_name, context_arra
     report_setup.ExportToFile("Time Domain Reflectometry", csv_filename)
 
 
-# pylint: disable=consider-using-f-string
 # Set up environment
 ScriptEnv.Initialize("Ansoft.ElectronicsDesktop")
 oDesktop.AddMessage("", "", 0, "Plotting TDR for all ports (%s)" % time.asctime(time.localtime()))

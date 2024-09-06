@@ -21,6 +21,7 @@
 import time
 import ScriptEnv
 
+# pylint: disable=consider-using-f-string
 ## SET UP ENVIRONMENT
 ScriptEnv.Initialize("Ansoft.ElectronicsDesktop")
 
@@ -33,6 +34,5 @@ outputvars = oOutputVariable.GetOutputVariables()
 for x in outputvars:
     oOutputVariable.DeleteOutputVariable(x)
 
-# pylint: disable=consider-using-f-string
 oDesktop.AddMessage("", "", 0, "Deleted %d output variables (%s)" % (len(outputvars), time.asctime(time.localtime())))
 # pylint: enable=consider-using-f-string
