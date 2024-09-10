@@ -300,6 +300,7 @@ class SpiralResonatorPolygon(Element):
             self.insert_cell(WaveguideCoplanar, path=points, term2=term2)
 
         self.add_port("a", points[0], points[0] - points[1])
+        self.add_port("b", points[-1], points[-1] - points[-2])
 
     def _fix_waveguide_end(self, points, current_length):
         """Modifies the last points and places a WaveguideCoplanarCurved element at the end if needed.
