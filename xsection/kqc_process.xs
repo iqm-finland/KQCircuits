@@ -36,7 +36,7 @@ chip_distance = []
 # read such parameter values from an external file under $xs_params.
 # This file also contains simulation layer information.
 
-if File.exists? $xs_params
+if File.exist? $xs_params
   require 'json'
   sweep_file_content = nil
   File.open($xs_params) do |file|
