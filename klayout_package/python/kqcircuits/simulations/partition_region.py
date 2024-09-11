@@ -43,7 +43,8 @@ class PartitionRegion:
         Args:
             name: Suffix of the partition layers. Must not end with a number.
             region: Area to which the partition region is limited. Can be given as pya.DBox, pya.DPolygon, or list of
-                pya.DPolygons. Use None to cover full domain.
+                those. Accepts also pya.Region if called from custom Simulation.get_partition_regions function.
+                Use None to cover full domain.
             z: Lower and upper bound for the partition region as scalar or list. Use None to cover full height.
             face: The face name to which the partition region is applied. If this is used, the vertical_dimensions
                 and metal_edge_dimensions are applied.
@@ -90,6 +91,8 @@ class PartitionRegion:
         box_region = pya.Region(box.to_itype(dbu))
         if self.region is None:
             self.region = box_region
+        elif isinstance(self.region, pya.Region):
+            self.region = self.region & box_region
         elif isinstance(self.region, list):
             merged_region = pya.Region()
             for r in self.region:

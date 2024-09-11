@@ -561,8 +561,6 @@ class Simulation:
         """
         z = self.face_z_levels()
         parts = self.get_partition_regions()
-        # Overwrite partition_regions in case they were generated from custom function
-        self.partition_regions = [p.to_dict() for p in parts]
         for part in parts:
             part.limit_box(z[0], z[-1], self.box, self.layout.dbu)
         face_stack = self.face_stack_list_of_lists()
