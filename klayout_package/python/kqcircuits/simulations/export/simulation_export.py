@@ -101,6 +101,18 @@ def export_simulation_oas(simulations, path: Path, file_prefix="simulation"):
     return oas_filename
 
 
+def _join_flat_str(value):
+    """Returns string in which value is flattened and joined using underscore separator."""
+    if isinstance(value, str):
+        return value  # return string as it is
+    if isinstance(value, dict):
+        return _join_flat_str(value.items())  # join keys and values of dictionary
+    try:
+        return "_".join([_join_flat_str(v) for v in value])  # join terms of any iterable
+    except TypeError:
+        return str(value)  # convert any non-iterable to string
+
+
 def sweep_simulation(layout, sim_class, sim_parameters, sweeps):
     """Create simulation sweep by varying one parameter at time. Return list of simulations."""
     simulations = []
@@ -111,7 +123,7 @@ def sweep_simulation(layout, sim_class, sim_parameters, sweeps):
             parameters = {
                 **sim_parameters,
                 param: value,
-                "name": f"{sim_parameters.get('name', '')}_{param}_{str(value)}",
+                "name": _join_flat_str((sim_parameters.get("name", ""), param, value)),
             }
             simulations.append(sim_class(**parameters) if layout is None else sim_class(layout, **parameters))
     return simulations
@@ -127,7 +139,7 @@ def cross_sweep_simulation(layout, sim_class, sim_parameters, sweeps):
         parameters = {**sim_parameters}
         for i, key in enumerate(keys):
             parameters[key] = values[i]
-        parameters["name"] = sim_parameters.get("name", "") + "_" + "_".join([str(value) for value in values])
+        parameters["name"] = _join_flat_str((sim_parameters.get("name", ""), values))
         simulations.append(sim_class(**parameters) if layout is None else sim_class(layout, **parameters))
     return simulations
 
