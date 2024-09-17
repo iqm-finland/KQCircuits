@@ -173,19 +173,16 @@ class QuarterWaveCpwResonator(Element):
 
         self.copy_port("a", cells_pl1)
         self.copy_port("b", cells_pl2)
-
-        self.copy_port("a", cells_pl1, "sim_a")
-        self.copy_port("b", cells_pl2, "sim_b")
         self.copy_port("b", cells_resonator, "resonator_b")
 
     @classmethod
     def get_sim_ports(cls, simulation):
         return [
             WaveguideToSimPort(
-                "port_sim_a", use_internal_ports=simulation.use_internal_ports, a=simulation.a, b=simulation.b
+                "port_a", use_internal_ports=simulation.use_internal_ports, a=simulation.a, b=simulation.b
             ),
             WaveguideToSimPort(
-                "port_sim_b", use_internal_ports=simulation.use_internal_ports, a=simulation.a, b=simulation.b
+                "port_b", use_internal_ports=simulation.use_internal_ports, a=simulation.a, b=simulation.b
             ),
             WaveguideToSimPort("port_resonator_b", a=simulation.res_a, b=simulation.res_b),
         ]

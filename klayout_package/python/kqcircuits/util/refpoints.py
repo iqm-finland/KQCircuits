@@ -28,6 +28,9 @@ class Refpoints:
     first time. Extracting the dictionary can be relatively time-demanding process, so this way we can speed up the
     element creation process in KQC.
 
+    Note: If the parent cell and child cell have reference points of equal names, the reference point of the child cell
+    is excluded from the dictionary.
+
     Attributes:
         layer: layer specification for source of reference points
         cell: cell containing the reference points
@@ -52,9 +55,10 @@ class Refpoints:
             while not shapes_iter.at_end():
                 shape = shapes_iter.shape()
                 if shape.type() in (pya.Shape.TText, pya.Shape.TTextRef):
-                    self.refpoints[shape.text_string] = self.trans * (
-                        shapes_iter.dtrans() * pya.DPoint(shape.text_dpos)
-                    )
+                    if shape.text_string not in self.refpoints:
+                        self.refpoints[shape.text_string] = self.trans * (
+                            shapes_iter.dtrans() * pya.DPoint(shape.text_dpos)
+                        )
                 shapes_iter.next()
         return self.refpoints
 

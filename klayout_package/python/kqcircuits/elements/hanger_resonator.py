@@ -103,15 +103,12 @@ class HangerResonator(Element):
         self.copy_port("b", cells_pl)
         self.copy_port("a", cells_resonator, "resonator_a")
         self.copy_port("b", cells_resonator, "resonator_b")
-        # these are needed for simulations
-        self.copy_port("a", cells_pl, "sim_a")
-        self.copy_port("b", cells_pl, "sim_b")
 
     @classmethod
     def get_sim_ports(cls, simulation):
         return [
-            WaveguideToSimPort("port_sim_a", use_internal_ports=False, a=simulation.a, b=simulation.b),
-            WaveguideToSimPort("port_sim_b", use_internal_ports=False, a=simulation.a, b=simulation.b),
+            WaveguideToSimPort("port_a", use_internal_ports=False, a=simulation.a, b=simulation.b),
+            WaveguideToSimPort("port_b", use_internal_ports=False, a=simulation.a, b=simulation.b),
             WaveguideToSimPort("port_resonator_a", a=simulation.res_a, b=simulation.res_b),
             WaveguideToSimPort("port_resonator_b", a=simulation.res_a, b=simulation.res_b),
         ]
