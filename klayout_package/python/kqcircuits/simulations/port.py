@@ -81,6 +81,7 @@ class InternalPort(Port):
         junction: bool = False,
         signal_layer: str = "signal",
         etch_width: float = None,
+        floating: bool = False,
     ):
         """
         Args:
@@ -97,6 +98,7 @@ class InternalPort(Port):
                 May be used to set ports across the ground layer with ``ground``.
             etch_width: Width of a trace between signal_location and ground_location, on which the metal is etched away.
                 Useful when adding a lumped port on a waveguide.
+            floating: activate floating port -> does not force "ground side" to ground.
         """
         super().__init__(number, resistance, reactance, inductance, capacitance, face, junction)
         self.signal_location = signal_location
@@ -105,6 +107,7 @@ class InternalPort(Port):
             self.ground_location = ground_location
         if etch_width is not None:
             self.etch_width = etch_width
+        self.floating = floating
 
     def get_etch_polygon(self):
         """Returns polygon under which the metal should be etched away"""

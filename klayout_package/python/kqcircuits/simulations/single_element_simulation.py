@@ -105,6 +105,7 @@ def _get_build_function(element_class, ignore_ports, transformation_from_center)
                             inductance=self.junction_inductance,
                             capacitance=self.junction_capacitance,
                             junction=True,
+                            floating=port.floating,
                         )
                     )
 

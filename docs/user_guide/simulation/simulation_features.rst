@@ -53,8 +53,8 @@ In the mutual capacitance matrix, a non-diagonal term ``C_i_j`` is the capacitan
 and a diagonal term ``C_i_i`` is the capacitance between signal ``i`` and the ground.
 
 The signal islands are determined by the ports of the simulation object and they are ordered by the port order number.
-The port variable ``signal_location`` determines the location of the signal island.
-The variable ``ground_location`` can be used to force any floating metal island as the ground.
+The port variable ``signal_location`` determines the location of the signal island. The variable ``ground_location``
+can be used to force any floating metal island as the ground.
 
 From Ansys tool package, the Q3D solver is recommended for capacitance simulations.
 This is activated with export parameter ``ansys_tool='q3d'``.
@@ -94,7 +94,9 @@ The solution method in eigenmode simulation is based on solving an
 Thus, the eigenmode simulations do not accept manually set source terms, and ports are not needed to define excitation.
 Instead internal ports of a simulation object can be employed to generate lumped RLC boundary conditions into the model.
 This is done by setting the port parameter ``junction=True`` and by giving the desired values in ``capacitance`` and
-``inductance`` parameters.
+``inductance`` parameters. An internal port can be made floating by giving the parameter `floating=True`
+(default `False`). This avoids the "ground side island" of the port becoming part of ground layer. This is recommended
+in junctions between floating island qubit simulations.
 
 Ansys HFSS Eigenmode solution type is employed in the eigenmode simulations.
 The eigenmode simulations are activated by using ``export_ansys`` with export parameter ``ansys_tool='eigenmode'``.

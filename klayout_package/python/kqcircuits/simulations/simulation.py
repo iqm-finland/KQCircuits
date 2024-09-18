@@ -611,7 +611,8 @@ class Simulation:
                                     ground_region -= ground_region.interacting(pya.Edge(signal_loc, signal_loc))
 
                                     ground_loc = (port.ground_location - v_mps).to_itype(self.layout.dbu)
-                                    ground_region += signal_region.interacting(pya.Edge(ground_loc, ground_loc))
+                                    if not port.floating:
+                                        ground_region += signal_region.interacting(pya.Edge(ground_loc, ground_loc))
                                 else:
                                     signal_loc = port.signal_location.to_itype(self.layout.dbu)
                                     ground_region -= ground_region.interacting(pya.Edge(signal_loc, signal_loc))
@@ -1132,10 +1133,15 @@ class Simulation:
                                 port.signal_location,
                                 simulation.layout.dbu,
                             )
+                            if port.floating:
+                                ground_search = face_id + "_" + port.signal_layer
+                            else:
+                                ground_search = face_id + "_ground"
+
                             _, _, ground_edge = find_edge_from_point_in_cell(
                                 simulation.cell,
                                 # simulation.get_layer('simulation_ground', port.face),
-                                self.layout.layer(get_simulation_layer_by_name(face_id + "_ground")),
+                                self.layout.layer(get_simulation_layer_by_name(ground_search)),
                                 port.ground_location,
                                 simulation.layout.dbu,
                             )

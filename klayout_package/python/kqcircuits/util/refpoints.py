@@ -219,8 +219,10 @@ class JunctionSimPort(RefpointToSimPort):
         other_refpoint: Refpoint name string of the other end of the junction
                         Defaults to "port_squid_b" as most commonly used junction port name
         face: index of the face where the `refpoint` is located
+        floating: Set True to assign metal at 'other_refpoint' as signal
     """
 
-    def __init__(self, refpoint="port_squid_a", other_refpoint="port_squid_b", face=0):
+    def __init__(self, refpoint="port_squid_a", other_refpoint="port_squid_b", face=0, floating=False):
         super().__init__(refpoint, face)
         self.other_refpoint = other_refpoint
+        self.floating = floating
