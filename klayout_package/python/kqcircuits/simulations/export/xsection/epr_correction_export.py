@@ -89,7 +89,10 @@ def get_epr_correction_simulations(
             - z_reversed: whether vacuum is below substrate, default=False
         - partition_regions: (optional) list of partition region names. The correction cut key is used if not assigned.
         - simulations: (optional) list of simulation names. Is applied on all simulations if not assigned.
-        - solution: (optional) solution object for the sim. get_epr_correction_elmer_solution is used if not assigned.
+        - solution: (optional) solution object for the sim. `get_epr_correction_elmer_solution` is used if not assigned.
+            If `solution` is not set, all items under `correction_cuts[Key]`
+            are given to `get_epr_correction_elmer_solution` except
+            items with keys `["p1", "p2", "metal_edges", "partition_regions", "simulations"]`.
         ma_eps_r: relative permittivity of MA layer
         ms_eps_r: relative permittivity of MS layer
         sa_eps_r: relative permittivity of SA layer
@@ -140,6 +143,17 @@ def get_epr_correction_simulations(
                 dz = int(me.get("z_reversed", False))
                 mer_box.append(pya.DBox(x - h_dims[1 - dx], z - v_dims[dz], x + h_dims[dx], z + v_dims[1 - dz]))
 
+            if "solution" in cut:
+                cut_solution = cut["solution"]
+            else:
+                cut_solution = get_epr_correction_elmer_solution(
+                    **{
+                        k: v
+                        for k, v in cut.items()
+                        if k not in ["p1", "p2", "metal_edges", "partition_regions", "simulations"]
+                    }
+                )
+
             cords_list = [(cut["p1"], cut["p2"])]
             correction_simulations += cross_combine(
                 create_xsections_from_simulations(
@@ -157,7 +171,7 @@ def get_epr_correction_simulations(
                     process_path=XSECTION_PROCESS_PATH,
                     mer_box=mer_box,
                 ),
-                cut["solution"] if "solution" in cut else get_epr_correction_elmer_solution(),
+                cut_solution,
             )
             correction_simulations[-1][0].name = correction_simulations[-1][0].cell.name = source_sim.name + "_" + key
             visualise_xsection_cut_on_original_layout([source_sim], cords_list, cut_label=key, width_ratio=0.03)
