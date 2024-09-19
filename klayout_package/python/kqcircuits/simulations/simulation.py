@@ -772,9 +772,6 @@ class Simulation:
 
         self.produce_layers(parts)
 
-        # Eliminate gaps and overlaps caused by transformation to simple_polygon
-        merge_points_and_match_on_edges(self.cell, self.layout, [get_simulation_layer_by_name(n) for n in self.layers])
-
         # Visualise parititon regions
         for part in parts:
             if part.visualise:
@@ -819,7 +816,7 @@ class Simulation:
             obj["subtract"] = obj.get("subtract", set()) | {lay}
 
         def subtract_hard(obj, tool):
-            """Subtracts tool from obj by modifying dimensions of obj. Returns True is successful.
+            """Subtracts tool from obj by modifying dimensions of obj. Returns True if successful.
             Assumes that tool and obj overlap."""
             subtract_diff = tool.get("subtract", set()) - obj.get("subtract", set())
             if any(layers[s].get("material", None) is None and not are_separate(obj, layers[s]) for s in subtract_diff):
@@ -884,6 +881,7 @@ class Simulation:
             for part in parts
             if part.face is None
         ]
+        merge_points_and_match_on_edges([part["region"] for part in part_list])
 
         for layer in sorted(layer_list, key=lambda x: (can_modify(x), x["top"] - x["bottom"], x["region"].area())):
             if can_modify(layer):
@@ -914,6 +912,8 @@ class Simulation:
             # add non-partitioned parts of the layer
             if exists(layer):
                 layers.append(layer)
+
+        merge_points_and_match_on_edges([layer["region"] for layer in layers])
 
         # Indicate background layer for each sheet
         for layer in layers:

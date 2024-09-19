@@ -218,16 +218,14 @@ def region_with_merged_polygons(region, tolerance, expansion=0.0):
     return new_region
 
 
-def merge_points_and_match_on_edges(cell, layout, layers, tolerance=2):
-    """Merges adjacent points of layers.
+def merge_points_and_match_on_edges(regions, tolerance=2):
+    """Merges adjacent points of regions.
     Also goes through each polygon edge and splits the edge whenever it passes close to existing point.
 
     This function can eliminate gaps and overlaps caused by transformation to simple_polygon.
 
     Arguments:
-        cell: A cell object.
-        layout: A layout object
-        layers: List of layers to be considered and modified
+        regions: List of regions to be considered and modified
         tolerance: Tolerance in pixels
     """
 
@@ -270,12 +268,11 @@ def merge_points_and_match_on_edges(cell, layout, layers, tolerance=2):
                     return poly
         return [pya.SimplePolygon(pts, True)] if valid else []
 
-    # Gather points from layers to `all_points` dictionary. This ignores duplicate points.
+    # Gather points from regions to `all_points` dictionary. This ignores duplicate points.
     all_points = {}
-    for layer in layers:
-        shapes = cell.shapes(layout.layer(layer))
-        for shape in shapes.each():
-            all_points.update({point: [] for point in shape.simple_polygon.each_point()})
+    for region in regions:
+        for polygon in region.each():
+            all_points.update({point: [] for point in polygon.to_simple_polygon().each_point()})
     if not all_points:
         return  # nothing is done if no points exist
 
@@ -312,11 +309,10 @@ def merge_points_and_match_on_edges(cell, layout, layers, tolerance=2):
 
     # Travel through polygon edges and split edge whenever it passes close to a point
     # Possibly move some points into new location
-    for layer in layers:
-        shapes = cell.shapes(layout.layer(layer))
+    for region in regions:
         polygons = []
-        for shape in shapes.each():
-            points = list(shape.simple_polygon.each_point())
+        for polygon in region.each():
+            points = list(polygon.to_simple_polygon().each_point())
             new_points = []
             for i, p1 in enumerate(points):
                 p0 = points[i - 1]
@@ -343,10 +339,10 @@ def merge_points_and_match_on_edges(cell, layout, layers, tolerance=2):
             if len(new_points_no_duplicates) >= 3:
                 polygons += fixed_polygon(new_points_no_duplicates)
 
-        # Replace shapes with list of polygons
-        shapes.clear()
-        for new_polygon in polygons:
-            shapes.insert(new_polygon)
+        # Replace region with list of polygons
+        region.clear()
+        for polygon in polygons:
+            region.insert(polygon)
 
 
 def is_clockwise(polygon_points):
