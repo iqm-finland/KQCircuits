@@ -126,9 +126,10 @@ if design_type == "HFSS":
     solution = setup + " : LastAdaptive"
     integrals = get_quantities(oReportSetup, "Fields", solution, [], "Calculator Expressions")
     energies = [e for e in integrals if e.startswith("E_") or e.startswith("Ez_") or e.startswith("Exy_")]
+    input_family = ["Phase:=", ["0deg"]] + ([] if oDesign.GetSolutionType() == "Eigenmode" else ["Freq:=", ["All"]])
     if energies:
         create_x_vs_y_plot(
-            oReportSetup, "Energy Integrals", "Fields", solution, [], ["Phase:=", ["0deg"]], "Phase", "E [J]", energies
+            oReportSetup, "Energy Integrals", "Fields", solution, [], input_family, "Phase", "E [J]", energies
         )
     fluxes = [e for e in integrals if e.startswith("flux_")]
     if fluxes:
@@ -138,7 +139,7 @@ if design_type == "HFSS":
             "Fields",
             solution,
             [],
-            ["Phase:=", ["0deg"]],
+            input_family,
             "Phase",
             "Magnetic flux quanta",
             fluxes,
