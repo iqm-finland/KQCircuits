@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description>Exports geometry while remapping the layers</description>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <priority>0</priority>
+ <shortcut/>
+ <show-in-menu>false</show-in-menu>
+ <group-name/>
+ <menu-path/>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text># This code is part of KQCircuits
+# Copyright (C) 2024 IQM Finland Oy
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
+# License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program. If not, see
+# https://www.gnu.org/licenses/gpl-3.0.html.
+#
+# The software distribution should follow IQM trademark policy for open-source software
+# (meetiqm.com/iqm-open-source-trademark-policy). IQM welcomes contributions to the code.
+# Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
+# and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
+
+
+"""Takes the layout currently open in KLayout,
+remaps the layers according to configurable LAYER_MAPPING dict,
+then opens a new layout with layer remapped to canonical layers.
+From there, user can use KLayout's save function to save the canonical
+representation of the static geometry file.
+
+Specify LAYER_MAPPING from the OAS/GDS file you have opened in your open layout
+to the layer_config you have configured in defaults.default_layers.
+LAYER_MAPPING keys should be LayerInfo objects specifying
+a layer number, datatype number and layer name of the layers encoded in the open layout,
+which you can view on "Layers" panel in format "&lt;layer name&gt; &lt;layer number&gt;/&lt;datatype number&gt;".
+LAYER_MAPPING values should be names as strings of canonical layers
+as configured in defaults.default_layers.
+"""
+
+import pya
+from kqcircuits.defaults import default_layers
+from kqcircuits.klayout_view import KLayoutView
+
+# Example LAYER_MAPPING that was used to re-export QCD1.oas junction file.
+# Please rewrite this mapping to suit the geometry you wish to export.
+LAYER_MAPPING = {
+    pya.LayerInfo(11, 1, "b_base_metal_gap_wo_grid"):     "1t1_base_metal_gap_wo_grid",
+    pya.LayerInfo(12, 0, "b_base_metal_added"):           "1t1_base_metal_addition",
+    pya.LayerInfo(14, 0, "b_base_ground_grid_avoidance"): "1t1_ground_grid_avoidance",
+    pya.LayerInfo(17, 2, "b_SIS_junction"):               "1t1_SIS_junction",
+    pya.LayerInfo(18, 2, "b_SIS_shadow"):                 "1t1_SIS_shadow",
+    pya.LayerInfo(225, 0, "refpoints"):                   "refpoints",
+}
+
+input_view = KLayoutView(current=True)
+output_view = KLayoutView()
+for layer_in, layer_out in LAYER_MAPPING.items():
+    output_view.top_cell.shapes(
+        output_view.layout.layer(default_layers[layer_out])
+    ).insert(
+        input_view.top_cell.begin_shapes_rec(
+            input_view.layout.layer(layer_in)
+        )
+    )
+output_view.top_cell.name = input_view.top_cell.name
+output_view.focus(output_view.top_cell)
+print("Layers remapped and geometry exported successfully.")
+print("Please review that layers were exported correctly, then use KLayout's save function.")
+print("Remember to uncheck 'Store PCell and library context information'")
+</text>
+</klayout-macro>
