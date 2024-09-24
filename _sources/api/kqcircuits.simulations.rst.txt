@@ -5,6 +5,7 @@ kqcircuits.simulations
 
 .. toctree::
 
+   kqcircuits.simulations.epr
    kqcircuits.simulations.export
 
 

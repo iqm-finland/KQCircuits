@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.elements.meander &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.elements.meander &mdash; KQCircuits 4.8.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
@@ -18,7 +18,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/documentation_options.js?v=f73dbd09"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -549,6 +549,12 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.html">kqcircuits.simulations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.epr.html">kqcircuits.simulations.epr</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.example.html">kqcircuits.simulations.epr.example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.swissmon.html">kqcircuits.simulations.epr.swissmon</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.utils.html">kqcircuits.simulations.epr.utils</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.export.html">kqcircuits.simulations.export</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.ansys.html">kqcircuits.simulations.export.ansys</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.elmer.html">kqcircuits.simulations.export.elmer</a></li>
@@ -921,8 +927,9 @@
 <dd><p>Bases: <a class="reference internal" href="kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a></p>
 <p>The PCell declaration for a meandering waveguide.</p>
 <p>Defined by two points, total length and number of meanders.</p>
-<p>The start and end points can be moved in GUI using the “Move”-tool. Alternatively, if a list of <code class="docutils literal notranslate"><span class="pre">[x,</span> <span class="pre">y]</span></code>
-coordinates is given for <code class="docutils literal notranslate"><span class="pre">start</span></code> and <code class="docutils literal notranslate"><span class="pre">end</span></code>, the GUI markers will not be shown. The latter is useful for
+<p>The <code class="docutils literal notranslate"><span class="pre">start_point</span></code> and <code class="docutils literal notranslate"><span class="pre">end_point</span></code> can be moved in GUI using the “Move”-tool.
+Alternatively, if a list of <code class="docutils literal notranslate"><span class="pre">[x,</span> <span class="pre">y]</span></code> coordinates is given for <code class="docutils literal notranslate"><span class="pre">start_point</span></code> and <code class="docutils literal notranslate"><span class="pre">end_point</span></code>,
+the GUI markers will not be shown. The latter is useful for
 code-generated cells that cannot be edited in the GUI.</p>
 <p>By default, the number of meanders is automatically chosen to minimize the area taken by bounding box of
 the meander. Uses the same bending radius as the underlying waveguide. Equidistant airbridges can be placed in the
@@ -951,11 +958,12 @@ meander using <code class="docutils literal notranslate"><span class="pre">n_bri
 
 <strong>PCell parameters:</strong><div class="line"><br /></div>
 <ul class="simple">
-<li><p><strong>start</strong><em> (Shape)</em><span> - Start</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">-600,0</span></code></p></li>
-<li><p><strong>end</strong><em> (Shape)</em><span> - End</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">600,0</span></code></p></li>
+<li><p><strong>start_point</strong><em> (Shape)</em><span> - Start</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">-600,0</span></code></p></li>
+<li><p><strong>end_point</strong><em> (Shape)</em><span> - End</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">600,0</span></code></p></li>
 <li><p><strong>length</strong><em> (Double)</em><span> - Length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">3000</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>meanders</strong><em> (Int)</em><span> - Number of meanders (non-positive means automatic)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">-1</span></code></p></li>
 <li><p><strong>n_bridges</strong><em> (Int)</em><span> - Number of bridges</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code></p></li>
+<li><p><strong>meander_direction</strong><em> (Int)</em><span> - Direction of first bend, +1 or -1</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">1</span></code></p></li>
 <li><p><strong>ground_grid_in_trace</strong><em> (Boolean)</em><span> - Add ground grid also to the waveguide</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.elements.meander.png" src="../_images/kqcircuits.elements.meander.png" />

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Simulation features &mdash; KQCircuits  documentation</title>
+  <title>Simulation features &mdash; KQCircuits 4.8.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
@@ -18,7 +18,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../_static/documentation_options.js?v=f73dbd09"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -550,6 +550,12 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/kqcircuits.simulations.html">kqcircuits.simulations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.simulations.epr.html">kqcircuits.simulations.epr</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/kqcircuits.simulations.epr.example.html">kqcircuits.simulations.epr.example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/kqcircuits.simulations.epr.swissmon.html">kqcircuits.simulations.epr.swissmon</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/kqcircuits.simulations.epr.utils.html">kqcircuits.simulations.epr.utils</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.simulations.export.html">kqcircuits.simulations.export</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../api/kqcircuits.simulations.export.ansys.html">kqcircuits.simulations.export.ansys</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/kqcircuits.simulations.export.elmer.html">kqcircuits.simulations.export.elmer</a></li>
@@ -968,8 +974,8 @@ The output of a capacitance simulation is a mutual capacitance matrix between is
 In the mutual capacitance matrix, a non-diagonal term <code class="docutils literal notranslate"><span class="pre">C_i_j</span></code> is the capacitance between two signals <code class="docutils literal notranslate"><span class="pre">i</span></code> and <code class="docutils literal notranslate"><span class="pre">j</span></code>,
 and a diagonal term <code class="docutils literal notranslate"><span class="pre">C_i_i</span></code> is the capacitance between signal <code class="docutils literal notranslate"><span class="pre">i</span></code> and the ground.</p>
 <p>The signal islands are determined by the ports of the simulation object and they are ordered by the port order number.
-The port variable <code class="docutils literal notranslate"><span class="pre">signal_location</span></code> determines the location of the signal island.
-The variable <code class="docutils literal notranslate"><span class="pre">ground_location</span></code> can be used to force any floating metal island as the ground.</p>
+The port variable <code class="docutils literal notranslate"><span class="pre">signal_location</span></code> determines the location of the signal island. The variable <code class="docutils literal notranslate"><span class="pre">ground_location</span></code>
+can be used to force any floating metal island as the ground.</p>
 <p>From Ansys tool package, the Q3D solver is recommended for capacitance simulations.
 This is activated with export parameter <code class="docutils literal notranslate"><span class="pre">ansys_tool='q3d'</span></code>.
 The other relevant parameters and their default values are:</p>
@@ -1005,7 +1011,9 @@ The eigenfrequencies are given in the Ansys eigenmode data file format with file
 Thus, the eigenmode simulations do not accept manually set source terms, and ports are not needed to define excitation.
 Instead internal ports of a simulation object can be employed to generate lumped RLC boundary conditions into the model.
 This is done by setting the port parameter <code class="docutils literal notranslate"><span class="pre">junction=True</span></code> and by giving the desired values in <code class="docutils literal notranslate"><span class="pre">capacitance</span></code> and
-<code class="docutils literal notranslate"><span class="pre">inductance</span></code> parameters.</p>
+<code class="docutils literal notranslate"><span class="pre">inductance</span></code> parameters. An internal port can be made floating by giving the parameter <cite>floating=True</cite>
+(default <cite>False</cite>). This avoids the “ground side island” of the port becoming part of ground layer. This is recommended
+in junctions between floating island qubit simulations.</p>
 <p>Ansys HFSS Eigenmode solution type is employed in the eigenmode simulations.
 The eigenmode simulations are activated by using <code class="docutils literal notranslate"><span class="pre">export_ansys</span></code> with export parameter <code class="docutils literal notranslate"><span class="pre">ansys_tool='eigenmode'</span></code>.
 The other relevant parameters and their default values are:</p>

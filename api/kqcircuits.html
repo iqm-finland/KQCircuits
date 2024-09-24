@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>API documentation &mdash; KQCircuits  documentation</title>
+  <title>API documentation &mdash; KQCircuits 4.8.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
@@ -18,7 +18,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/documentation_options.js?v=f73dbd09"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -549,6 +549,12 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.html">kqcircuits.simulations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.epr.html">kqcircuits.simulations.epr</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.example.html">kqcircuits.simulations.epr.example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.swissmon.html">kqcircuits.simulations.epr.swissmon</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.utils.html">kqcircuits.simulations.epr.utils</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.export.html">kqcircuits.simulations.export</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.ansys.html">kqcircuits.simulations.export.ansys</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.elmer.html">kqcircuits.simulations.export.elmer</a></li>
@@ -1444,6 +1450,7 @@
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node.angle"><code class="docutils literal notranslate"><span class="pre">Node.angle</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node.length_before"><code class="docutils literal notranslate"><span class="pre">Node.length_before</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node.length_increment"><code class="docutils literal notranslate"><span class="pre">Node.length_increment</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node.meander_direction"><code class="docutils literal notranslate"><span class="pre">Node.meander_direction</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node.deserialize"><code class="docutils literal notranslate"><span class="pre">Node.deserialize()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node.nodes_from_string"><code class="docutils literal notranslate"><span class="pre">Node.nodes_from_string()</span></code></a></li>
 </ul>
@@ -1726,6 +1733,25 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="kqcircuits.simulations.html">kqcircuits.simulations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.epr.html">kqcircuits.simulations.epr</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.epr.example.html">kqcircuits.simulations.epr.example</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.example.html#kqcircuits.simulations.epr.example.partition_regions"><code class="docutils literal notranslate"><span class="pre">partition_regions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.example.html#kqcircuits.simulations.epr.example.correction_cuts"><code class="docutils literal notranslate"><span class="pre">correction_cuts()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.example.html#kqcircuits.simulations.epr.example.extract_from"><code class="docutils literal notranslate"><span class="pre">extract_from()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.epr.swissmon.html">kqcircuits.simulations.epr.swissmon</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.swissmon.html#kqcircuits.simulations.epr.swissmon.partition_regions"><code class="docutils literal notranslate"><span class="pre">partition_regions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.swissmon.html#kqcircuits.simulations.epr.swissmon.correction_cuts"><code class="docutils literal notranslate"><span class="pre">correction_cuts()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.swissmon.html#kqcircuits.simulations.epr.swissmon.extract_swissmon_from"><code class="docutils literal notranslate"><span class="pre">extract_swissmon_from()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.epr.utils.html">kqcircuits.simulations.epr.utils</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.utils.html#kqcircuits.simulations.epr.utils.extract_child_simulation"><code class="docutils literal notranslate"><span class="pre">extract_child_simulation()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.export.html">kqcircuits.simulations.export</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.export.ansys.html">kqcircuits.simulations.export.ansys</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.ansys.ansys_export.html">kqcircuits.simulations.export.ansys.ansys_export</a><ul>
@@ -2075,6 +2101,7 @@
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.get_port_data"><code class="docutils literal notranslate"><span class="pre">Simulation.get_port_data()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.get_simulation_data"><code class="docutils literal notranslate"><span class="pre">Simulation.get_simulation_data()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.get_layers"><code class="docutils literal notranslate"><span class="pre">Simulation.get_layers()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.get_partition_regions"><code class="docutils literal notranslate"><span class="pre">Simulation.get_partition_regions()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.delete_instances"><code class="docutils literal notranslate"><span class="pre">Simulation.delete_instances()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.visualise_region"><code class="docutils literal notranslate"><span class="pre">Simulation.visualise_region()</span></code></a></li>
 </ul>
@@ -2422,6 +2449,7 @@
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.JunctionSimPort.refpoint"><code class="docutils literal notranslate"><span class="pre">JunctionSimPort.refpoint</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.JunctionSimPort.other_refpoint"><code class="docutils literal notranslate"><span class="pre">JunctionSimPort.other_refpoint</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.JunctionSimPort.face"><code class="docutils literal notranslate"><span class="pre">JunctionSimPort.face</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.JunctionSimPort.floating"><code class="docutils literal notranslate"><span class="pre">JunctionSimPort.floating</span></code></a></li>
 </ul>
 </li>
 </ul>

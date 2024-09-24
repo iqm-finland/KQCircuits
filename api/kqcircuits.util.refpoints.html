@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.util.refpoints &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.util.refpoints &mdash; KQCircuits 4.8.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
@@ -18,7 +18,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/documentation_options.js?v=f73dbd09"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -549,6 +549,12 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.html">kqcircuits.simulations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.epr.html">kqcircuits.simulations.epr</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.example.html">kqcircuits.simulations.epr.example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.swissmon.html">kqcircuits.simulations.epr.swissmon</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.utils.html">kqcircuits.simulations.epr.utils</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.export.html">kqcircuits.simulations.export</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.ansys.html">kqcircuits.simulations.export.ansys</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.elmer.html">kqcircuits.simulations.export.elmer</a></li>
@@ -925,6 +931,8 @@ is the key and reference point position (pya.DPoint) is the value.</p>
 <p>Refpoints is implemented such that the dictionary is extracted from given layer and cell only when it’s used for the
 first time. Extracting the dictionary can be relatively time-demanding process, so this way we can speed up the
 element creation process in KQC.</p>
+<p>Note: If the parent cell and child cell have reference points of equal names, the reference point of the child cell
+is excluded from the dictionary.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="kqcircuits.util.refpoints.Refpoints.layer">
 <span class="sig-name descname"><span class="pre">layer</span></span><a class="headerlink" href="#kqcircuits.util.refpoints.Refpoints.layer" title="Link to this definition"></a></dt>
@@ -1098,7 +1106,7 @@ Defaults to the value of the <cite>r</cite> parameter</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="kqcircuits.util.refpoints.JunctionSimPort">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.util.refpoints.</span></span><span class="sig-name descname"><span class="pre">JunctionSimPort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">refpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'port_squid_a'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other_refpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'port_squid_b'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/refpoints.html#JunctionSimPort"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.refpoints.JunctionSimPort" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.util.refpoints.</span></span><span class="sig-name descname"><span class="pre">JunctionSimPort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">refpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'port_squid_a'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other_refpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'port_squid_b'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">floating</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/refpoints.html#JunctionSimPort"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.refpoints.JunctionSimPort" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kqcircuits.util.refpoints.RefpointToSimPort" title="kqcircuits.util.refpoints.RefpointToSimPort"><code class="xref py py-class docutils literal notranslate"><span class="pre">RefpointToSimPort</span></code></a></p>
 <p>Creates internal ports for a junction in the Simulation object.</p>
 <p>Depending on the value of the <cite>separate_island_internal_ports</cite> parameter, will either create
@@ -1120,6 +1128,12 @@ Defaults to “port_squid_b” as most commonly used junction port name</p>
 <dt class="sig sig-object py" id="kqcircuits.util.refpoints.JunctionSimPort.face">
 <span class="sig-name descname"><span class="pre">face</span></span><a class="headerlink" href="#kqcircuits.util.refpoints.JunctionSimPort.face" title="Link to this definition"></a></dt>
 <dd><p>index of the face where the <cite>refpoint</cite> is located</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.util.refpoints.JunctionSimPort.floating">
+<span class="sig-name descname"><span class="pre">floating</span></span><a class="headerlink" href="#kqcircuits.util.refpoints.JunctionSimPort.floating" title="Link to this definition"></a></dt>
+<dd><p>Set True to assign metal at ‘other_refpoint’ as signal</p>
 </dd></dl>
 
 </dd></dl>

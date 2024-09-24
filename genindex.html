@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; KQCircuits  documentation</title>
+  <title>Index &mdash; KQCircuits 4.8.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/documentation_options.js?v=f73dbd09"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -546,6 +546,12 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="api/kqcircuits.simulations.html">kqcircuits.simulations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.simulations.epr.html">kqcircuits.simulations.epr</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.epr.example.html">kqcircuits.simulations.epr.example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.epr.swissmon.html">kqcircuits.simulations.epr.swissmon</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.epr.utils.html">kqcircuits.simulations.epr.utils</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.simulations.export.html">kqcircuits.simulations.export</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.export.ansys.html">kqcircuits.simulations.export.ansys</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.export.elmer.html">kqcircuits.simulations.export.elmer</a></li>
@@ -1356,6 +1362,12 @@
 </li>
       <li><a href="api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.copy_port">copy_port() (kqcircuits.elements.element.Element method)</a>
 </li>
+      <li><a href="api/kqcircuits.simulations.epr.example.html#kqcircuits.simulations.epr.example.correction_cuts">correction_cuts() (in module kqcircuits.simulations.epr.example)</a>
+
+      <ul>
+        <li><a href="api/kqcircuits.simulations.epr.swissmon.html#kqcircuits.simulations.epr.swissmon.correction_cuts">(in module kqcircuits.simulations.epr.swissmon)</a>
+</li>
+      </ul></li>
       <li><a href="api/kqcircuits.util.count_instances.html#kqcircuits.util.count_instances.count_instances_in_cell">count_instances_in_cell() (in module kqcircuits.util.count_instances)</a>
 </li>
       <li><a href="api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.covered_region_excluded_layers">covered_region_excluded_layers (kqcircuits.masks.mask_layout.MaskLayout attribute)</a>
@@ -1556,10 +1568,10 @@
 </li>
       <li><a href="api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_designs">export_designs() (in module kqcircuits.masks.mask_export)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_docs">export_docs() (in module kqcircuits.masks.mask_export)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.export_drc">export_drc (kqcircuits.masks.mask_set.MaskSet attribute)</a>
 </li>
       <li><a href="api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.export_drc_report">export_drc_report() (in module kqcircuits.util.export_helper)</a>
@@ -1602,13 +1614,19 @@
 </li>
       <li><a href="api/kqcircuits.layer_cluster.html#kqcircuits.layer_cluster.LayerCluster.extra_layers">extra_layers (kqcircuits.layer_cluster.LayerCluster attribute)</a>
 </li>
+      <li><a href="api/kqcircuits.simulations.epr.utils.html#kqcircuits.simulations.epr.utils.extract_child_simulation">extract_child_simulation() (in module kqcircuits.simulations.epr.utils)</a>
+</li>
       <li><a href="api/kqcircuits.util.netlist_extraction.html#kqcircuits.util.netlist_extraction.extract_circuits">extract_circuits() (in module kqcircuits.util.netlist_extraction)</a>
+</li>
+      <li><a href="api/kqcircuits.simulations.epr.example.html#kqcircuits.simulations.epr.example.extract_from">extract_from() (in module kqcircuits.simulations.epr.example)</a>
 </li>
       <li><a href="api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.extract_junctions">extract_junctions() (in module kqcircuits.util.replace_junctions)</a>
 </li>
       <li><a href="api/kqcircuits.util.netlist_extraction.html#kqcircuits.util.netlist_extraction.extract_nets">extract_nets() (in module kqcircuits.util.netlist_extraction)</a>
 </li>
       <li><a href="api/kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.extract_pcell_data_from_views">extract_pcell_data_from_views() (in module kqcircuits.util.layout_to_code)</a>
+</li>
+      <li><a href="api/kqcircuits.simulations.epr.swissmon.html#kqcircuits.simulations.epr.swissmon.extract_swissmon_from">extract_swissmon_from() (in module kqcircuits.simulations.epr.swissmon)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1669,6 +1687,8 @@
       <li><a href="api/kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc.html#kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc.FlipChipConnectorDc">FlipChipConnectorDc (class in kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc)</a>
 </li>
       <li><a href="api/kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf.html#kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf.FlipChipConnectorRf">FlipChipConnectorRf (class in kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf)</a>
+</li>
+      <li><a href="api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.JunctionSimPort.floating">floating (kqcircuits.util.refpoints.JunctionSimPort attribute)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.flux_integration_layer_exists_if_needed">flux_integration_layer_exists_if_needed() (in module kqcircuits.simulations.export.simulation_validate)</a>
 </li>
@@ -1816,6 +1836,8 @@
         <li><a href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.get_parameters">(kqcircuits.simulations.simulation.Simulation method)</a>
 </li>
       </ul></li>
+      <li><a href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.get_partition_regions">get_partition_regions() (kqcircuits.simulations.simulation.Simulation method)</a>
+</li>
       <li><a href="api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.get_pixels">get_pixels() (kqcircuits.klayout_view.KLayoutView method)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.get_port_data">get_port_data() (kqcircuits.simulations.simulation.Simulation method)</a>
@@ -2601,8 +2623,6 @@
         <li><a href="api/kqcircuits.masks.html#module-kqcircuits.masks">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     kqcircuits.masks.mask_export
 
@@ -2617,6 +2637,8 @@
         <li><a href="api/kqcircuits.masks.mask_layout.html#module-kqcircuits.masks.mask_layout">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     kqcircuits.masks.mask_set
 
@@ -2720,6 +2742,27 @@
 
       <ul>
         <li><a href="api/kqcircuits.simulations.empty_simulation.html#module-kqcircuits.simulations.empty_simulation">module</a>
+</li>
+      </ul></li>
+      <li>
+    kqcircuits.simulations.epr.example
+
+      <ul>
+        <li><a href="api/kqcircuits.simulations.epr.example.html#module-kqcircuits.simulations.epr.example">module</a>
+</li>
+      </ul></li>
+      <li>
+    kqcircuits.simulations.epr.swissmon
+
+      <ul>
+        <li><a href="api/kqcircuits.simulations.epr.swissmon.html#module-kqcircuits.simulations.epr.swissmon">module</a>
+</li>
+      </ul></li>
+      <li>
+    kqcircuits.simulations.epr.utils
+
+      <ul>
+        <li><a href="api/kqcircuits.simulations.epr.utils.html#module-kqcircuits.simulations.epr.utils">module</a>
 </li>
       </ul></li>
       <li>
@@ -3384,6 +3427,8 @@
       </ul></li>
       <li><a href="api/kqcircuits.elements.meander.html#kqcircuits.elements.meander.Meander">Meander (class in kqcircuits.elements.meander)</a>
 </li>
+      <li><a href="api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node.meander_direction">meander_direction (kqcircuits.elements.waveguide_composite.Node attribute)</a>
+</li>
       <li><a href="api/kqcircuits.util.merge.html#kqcircuits.util.merge.merge_layers">merge_layers() (in module kqcircuits.util.merge)</a>
 </li>
       <li><a href="api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.merge_layout_layers">merge_layout_layers() (kqcircuits.chips.chip.Chip method)</a>
@@ -3618,6 +3663,12 @@
 </li>
         <li><a href="api/kqcircuits.simulations.empty_simulation.html#module-kqcircuits.simulations.empty_simulation">kqcircuits.simulations.empty_simulation</a>
 </li>
+        <li><a href="api/kqcircuits.simulations.epr.example.html#module-kqcircuits.simulations.epr.example">kqcircuits.simulations.epr.example</a>
+</li>
+        <li><a href="api/kqcircuits.simulations.epr.swissmon.html#module-kqcircuits.simulations.epr.swissmon">kqcircuits.simulations.epr.swissmon</a>
+</li>
+        <li><a href="api/kqcircuits.simulations.epr.utils.html#module-kqcircuits.simulations.epr.utils">kqcircuits.simulations.epr.utils</a>
+</li>
         <li><a href="api/kqcircuits.simulations.export.html#module-kqcircuits.simulations.export">kqcircuits.simulations.export</a>
 </li>
         <li><a href="api/kqcircuits.simulations.export.ansys.html#module-kqcircuits.simulations.export.ansys">kqcircuits.simulations.export.ansys</a>
@@ -3833,6 +3884,12 @@
         <li><a href="api/kqcircuits.elements.meander.html#kqcircuits.elements.meander.Meander.parameters_from_shape_impl">(kqcircuits.elements.meander.Meander method)</a>
 </li>
         <li><a href="api/kqcircuits.elements.waveguide_coplanar.html#kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.parameters_from_shape_impl">(kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/kqcircuits.simulations.epr.example.html#kqcircuits.simulations.epr.example.partition_regions">partition_regions() (in module kqcircuits.simulations.epr.example)</a>
+
+      <ul>
+        <li><a href="api/kqcircuits.simulations.epr.swissmon.html#kqcircuits.simulations.epr.swissmon.partition_regions">(in module kqcircuits.simulations.epr.swissmon)</a>
 </li>
       </ul></li>
       <li><a href="api/kqcircuits.simulations.partition_region.html#kqcircuits.simulations.partition_region.PartitionRegion">PartitionRegion (class in kqcircuits.simulations.partition_region)</a>
