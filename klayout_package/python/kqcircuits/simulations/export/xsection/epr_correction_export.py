@@ -187,7 +187,7 @@ def get_epr_correction_simulations(
             },
             groups=["MA", "MS", "SA", "substrate", "vacuum"],
             region_corrections={
-                **{p["name"]: None for s in source_sims for p in s.partition_regions},
+                **{p.name: None for s in source_sims for p in s.get_partition_regions()},
                 **{p: k for k, v in cuts.items() for p in v.get("partition_regions", [k])},
             },
         ),

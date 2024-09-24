@@ -243,7 +243,7 @@ class Simulation:
         pdt.TypeList,
         "Materials of TLS interface layers (MA, MS, and SA, respectively)",
         ["vacuum", "silicon", "silicon"],
-        docstring="Use only keywords introduced in material_dict.",
+        docstring="Use only keywords introduced in material_dict. Valid only if tls_sheet_approximation=False.",
     )
     tls_sheet_approximation = Param(pdt.TypeBoolean, "Approximate TLS interface layers as sheets", False)
     detach_tls_sheets_from_body = Param(
@@ -711,13 +711,17 @@ class Simulation:
                 layer_z = [z[face_id][1], z[face_id][0], z[face_id][0] - sign * self.vertical_over_etching][layer_num]
                 thickness = float(self.ith_value(self.tls_layer_thickness, layer_num))
                 layer_top_z = layer_z + [sign, -sign, -sign][layer_num] * thickness
-                material = self.ith_value(self.tls_layer_material, layer_num)
                 if self.tls_sheet_approximation:
+                    if layer_id == "MA":
+                        material = "vacuum"
+                    else:
+                        material = self.ith_value(self.substrate_material, (i + int(self.lower_box_height <= 0)) // 2)
                     if self.detach_tls_sheets_from_body:
                         z_params = {"z0": layer_top_z, "z1": layer_top_z}
                     else:
                         z_params = {"z0": layer_z, "z1": layer_z}
                 elif thickness != 0.0:
+                    material = self.ith_value(self.tls_layer_material, layer_num)
                     z_params = {"z0": layer_z, "z1": layer_top_z}
 
                     # Insert wall layer
@@ -846,6 +850,21 @@ class Simulation:
                 soft_subtract = {s for s in obj["subtract"] if not subtract_hard(obj, layers[s])}
             return not obj["region"].is_empty()
 
+        def covering_regions(obj, tool):
+            """Returns tuple of regions where tool covers obj from above and below, respectively."""
+            if obj["top"] < tool["bottom"] or tool["top"] < obj["bottom"]:
+                return pya.Region(), pya.Region()
+            region = obj["region"] & tool["region"]
+            if region.is_empty():
+                return pya.Region(), pya.Region()
+            above = region.dup() if obj["top"] < tool["top"] else pya.Region()
+            below = region.dup() if tool["bottom"] < obj["bottom"] else pya.Region()
+            for s in tool.get("subtract", set()):
+                s_above, s_below = covering_regions(obj, layers[s])
+                above -= s_above
+                below -= s_below
+            return above, below
+
         layer_list = [
             {
                 "name": name,
@@ -896,6 +915,17 @@ class Simulation:
             if exists(layer):
                 layers.append(layer)
 
+        # Indicate background layer for each sheet
+        for layer in layers:
+            if can_modify(layer) and layer["bottom"] == layer["top"]:
+                max_overlap = 0
+                for solid in layers:
+                    if solid.get("material", None) == layer["material"] and solid["bottom"] < solid["top"]:
+                        overlap = max(r.area() for r in covering_regions(layer, solid))
+                        if overlap > max_overlap:
+                            layer["background"] = solid["name"]
+                            max_overlap = overlap
+
         # produce self.layers from layers
         self.layers = {}
         for layer in layers:
@@ -907,7 +937,9 @@ class Simulation:
                 "z": round(layer["bottom"], 12),
                 "thickness": round(layer["top"] - layer["bottom"], 12),
                 **({"layer": sim_layer.layer} if limit_region else {}),
-                **{k: v for k, v in layer.items() if k in ["material", "edge_material"] and v is not None},
+                **{
+                    k: v for k, v in layer.items() if k in ["material", "edge_material", "background"] and v is not None
+                },
                 **({"subtract": subtract} if subtract else {}),
             }
 
