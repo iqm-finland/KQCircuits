@@ -38,7 +38,7 @@
 
 Assumes that a single chip exists in the top cell.
 Will export a new .oas file in TMP path containing junctions of original cell,
-with possibly tuned junction parameters, and a "base_metal_gap" layer for reference.
+with possibly tuned junction parameters, and a metal gap layer for reference.
 This new layout will also be opened in current KLayout session in new layout.
 Macro can be used on cells with or without PCell data.
 In the latter case the `tuned_junction_parameters` must include a value for every
@@ -60,6 +60,12 @@ top_cell = KLayoutView(current=True).active_cell
 # If there are too many parameters to tune (for example tuning junctions for file without PCells),
 # these can be written in a separate .json file and read from the macro
 EXTERNAL_TUNE_FILE = ""
+# A metal gap layer is copied over so that junctions can be located with respect to markers
+# and other structures.
+# base_metal_gap is the exact lithography produced
+# base_metal_gap_wo_grid is less cluttered (no ground grid), but is missing base_metal_addition
+REFERENCE_LAYER = "base_metal_gap_wo_grid"
+# REFERENCE_LAYER = "base_metal_gap"
 
 if EXTERNAL_TUNE_FILE:
   with open(EXTERNAL_TUNE_FILE, encoding="utf-8") as f:
@@ -73,7 +79,7 @@ else:
 junctions = extract_junctions(top_cell, tuned_junction_parameters)
 clean_cell_name = top_cell.basic_name().replace(" ", "").replace("*", "").split("$")[0]
 exported_file = str(TMP_PATH / f'tuned_junctions_{clean_cell_name}.oas')
-copy_one_layer_of_cell(exported_file, top_cell, junctions, "base_metal_gap")
+copy_one_layer_of_cell(exported_file, top_cell, junctions, REFERENCE_LAYER)
 
 print(f"Extracted and tuned {len(junctions)} junctions")
 new_view = KLayoutView()
