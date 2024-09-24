@@ -115,8 +115,25 @@ class CircularCapacitor(Element):
 
     def _get_outer_island(self, r_outer, outer_island_width, swept_angle):
         angle_rad = math.radians(swept_angle)
+        islands_gap = self.r_outer - self.r_inner - self.outer_island_width
+        eff_gap = max(islands_gap, self.b)
+        border_angle_1 = 2 * (math.pi - math.asin((self.a / 2 + eff_gap) / (r_outer - outer_island_width)))
+        border_angle_2 = 2 * (math.pi - math.asin((self.a / 2 + eff_gap) / (r_outer)))
+
+        if angle_rad < border_angle_1:
+            # default behaviour
+            inner_angle = angle_rad
+        elif angle_rad < border_angle_2:
+            # Change the angle of coupler island wrt inner trace to make it stay at least eff_gap away from the trace
+            inner_angle = border_angle_1
+        else:
+            # At this point the coupler is parallel to the trace and approaches uniformly
+            inner_angle = math.pi + 2 * math.acos(
+                math.cos(angle_rad / 2 - math.pi / 2) * r_outer / (r_outer - outer_island_width)
+            )
+
         points_outside = arc_points(r_outer, -angle_rad / 2, angle_rad / 2, self.n)
-        points_inside = arc_points(r_outer - outer_island_width, angle_rad / 2, -angle_rad / 2, self.n)
+        points_inside = arc_points(r_outer - outer_island_width, inner_angle / 2, -inner_angle / 2, self.n)
         points = points_outside + points_inside
         outer_island = pya.DPolygon(points)
 
