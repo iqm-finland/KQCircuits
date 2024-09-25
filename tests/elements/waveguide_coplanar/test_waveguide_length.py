@@ -16,10 +16,11 @@
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
+import pytest
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
-from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
+from kqcircuits.elements.waveguide_coplanar_curved import WaveguideCoplanarCurved
 
 
 def test_presence_of_length():
@@ -28,3 +29,10 @@ def test_presence_of_length():
     waveguide_cell = WaveguideCoplanar.create(layout, path=pya.DPath([pya.DPoint(0, 0), pya.DPoint(0, 99)], 0))
     assert hasattr(waveguide_cell, "length")
     assert waveguide_cell.length() == 99
+
+
+@pytest.mark.parametrize("n, alpha", [(16, 3), (32, 1), (64, 2), (128, 0.5)])
+def test_length_of_curve(n, alpha):
+    layout = pya.Layout()
+    waveguide_cell = WaveguideCoplanarCurved.create(layout, n=n, alpha=alpha, r=100)
+    assert abs(waveguide_cell.length() - 100 * alpha) <= 0.001

@@ -17,7 +17,7 @@
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
 
-from math import pi, sin, cos
+from math import pi, sin, cos, ceil
 
 from kqcircuits.elements.element import Element
 from kqcircuits.pya_resolver import pya
@@ -26,7 +26,7 @@ from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.elements.waveguide_coplanar_straight import WaveguideCoplanarStraight
 
 
-def arc(r, start, stop, n):
+def arc(r, start, stop, n, mode=1):
     """Returns list of points of an arc
 
     Args:
@@ -34,16 +34,29 @@ def arc(r, start, stop, n):
         start: begin angle in radians
         stop: end angle in radians
         n: number of corners in full circle
+        mode: discretization method, 0=shortcut, 1=match length, other=detour
 
     .. MARKERS_FOR_PNG 0,91 0,100
     """
-    n_steps = max(round(abs(stop - start) * n / (2 * pi)), 1)
-    step = (stop - start) / n_steps
-    r_corner = r / cos(step / 2)
+    match mode:
+        case 0:  # shortcut method, where points are on the arc
+            end_ratio = 1.0
+            r_scale = lambda _: 1.0
+        case 1:  # matching length method, where combined length of segments equals the analytical length of the arc
+            end_ratio = 0.7339449  # based on trigonometric calculations and a few degree Taylor series approximation
+            r_scale = lambda x: 1 + x**2 / 24 + x**4 * 7 / 5760  # approximation for x/2 / sin(x/2) that accepts x=0
+        case _:  # detour method, where segments are tangents on the arc
+            end_ratio = 0.5
+            r_scale = lambda x: 1.0 / cos(x / 2)
+
+    c_steps = 2 * end_ratio - 1  # nominal constant steps at start and end
+    n_steps = max(round(abs(stop - start) * n / (2 * pi) - c_steps), ceil(1 - c_steps))
+    step = (stop - start) / (n_steps + c_steps)
+    r_corner = r * r_scale(step)
 
     pts = [pya.DPoint(r * cos(start), r * sin(start))]
     for i in range(n_steps):
-        alpha = start + step * (i + 0.5)
+        alpha = start + step * (i + end_ratio)
         pts.append(pya.DPoint(r_corner * cos(alpha), r_corner * sin(alpha)))
     pts.append(pya.DPoint(r * cos(stop), r * sin(stop)))
     return pts
@@ -88,6 +101,7 @@ class WaveguideCoplanarCurved(Element):
         shape = round_dpath_width(pya.DPath(pts, element.a), element.layout.dbu)
         element.cell.shapes(element.get_layer("waveguide_path")).insert(trans * shape)
         if element.add_metal:
+            shape = pya.DPolygon(left_inner_arc + list(reversed(right_inner_arc)))
             element.cell.shapes(element.get_layer("base_metal_addition")).insert(trans * shape)
 
         # Protection layer
