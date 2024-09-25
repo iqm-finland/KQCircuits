@@ -94,7 +94,7 @@ class CircularCapacitor(Element):
                 ]
             ).to_itype(self.layout.dbu)
         )
-        capacitor_neg.round_corners(5 / self.layout.dbu, 5 / self.layout.dbu, self.n)
+        capacitor_neg.round_corners(5 / self.layout.dbu, 5 / self.layout.dbu, self.n // 2)
         self._add_waveguides(capacitor_neg, x_end, y_left, y_right)
 
         # define the capacitor in the ground
@@ -134,6 +134,8 @@ class CircularCapacitor(Element):
 
         points_outside = arc_points(r_outer, -angle_rad / 2, angle_rad / 2, self.n)
         points_inside = arc_points(r_outer - outer_island_width, inner_angle / 2, -inner_angle / 2, self.n)
+        self.refpoints["epr_cplr_out"] = points_outside[-1]
+        self.refpoints["epr_cplr_in"] = points_inside[0]
         points = points_outside + points_inside
         outer_island = pya.DPolygon(points)
 
