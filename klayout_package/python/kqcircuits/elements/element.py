@@ -166,7 +166,7 @@ class Element(pya.PCellDeclarationHelper):
 
         # create KLayout's PCellParameterDeclaration objects
         self._param_value_map = {}
-        for name, p in cls.get_schema().items():
+        for name, p in sorted(cls.get_schema().items()):
             self._param_value_map[name] = len(self._param_decls)
             # Override default value based on default_parameter_values if needed.
             for cl in mro:
