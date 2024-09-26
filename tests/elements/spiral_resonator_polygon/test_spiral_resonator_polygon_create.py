@@ -25,7 +25,7 @@ from kqcircuits.defaults import default_layers
 
 
 relative_length_tolerance = 1e-3
-continuity_tolerance = 0.0015
+continuity_tolerance = 0.0025
 
 
 def test_length_straight_last_segment():

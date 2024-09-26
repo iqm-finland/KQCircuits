@@ -22,6 +22,7 @@ from kqcircuits.elements.element import Element
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_taper import WaveguideCoplanarTaper
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.geometry_helper import round_dpath_width
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 
 
@@ -80,5 +81,5 @@ class AirbridgeConnection(Element):
             self.copy_port("b", ab_inst)
 
         # Add path
-        path_airbridge = pya.DPath([wg_l_pos, wg_r_pos], self.bridge_width)
+        path_airbridge = round_dpath_width(pya.DPath([wg_l_pos, wg_r_pos], self.bridge_width), self.layout.dbu)
         self.cell.shapes(self.get_layer("waveguide_length")).insert(path_airbridge)

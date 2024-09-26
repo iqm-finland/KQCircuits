@@ -19,7 +19,7 @@ from math import cos, sin, pi, radians
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
-from kqcircuits.util.geometry_helper import arc_points
+from kqcircuits.util.geometry_helper import arc_points, round_dpath_width
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.airbridges.airbridge import Airbridge
 
@@ -100,7 +100,9 @@ class WaveguideCoplanarSplitter(Element):
 
             # Waveguide length annotation
             self.cell.shapes(self.get_layer("waveguide_path")).insert(
-                pya.DPath([self.refpoints[f"port_{port_name}"], self.refpoints["base"]], a)
+                round_dpath_width(
+                    pya.DPath([self.refpoints[f"port_{port_name}"], self.refpoints["base"]], a), self.layout.dbu
+                )
             )
 
             # Airbridges

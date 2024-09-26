@@ -507,3 +507,29 @@ def bezier_points(control_points: List[pya.DPoint], sample_points: int = 100) ->
             endpoint=(window_start == len(control_points) - 4),
         )
     return result_points
+
+
+def round_dpath_width(dpath: pya.DPath, dbu: float, precision: int = 2) -> pya.DPath:
+    """Takes pya.DPath and rounds its width so that it can be saved in OAS format.
+
+    All geometry objects are formatted such that their numeric values are represented
+    as integers (database units). However, most D-prefixed geometry objects used in KQCircuits are defined
+    using microns for convenience, with conversion between itypes and dtypes configured in layout.dbu.
+
+    The OAS standard does not allow a Path object to be stored such that its width value in database units
+    is odd, i.e. not divisible by two. This function rounds the DPath's width so that it can be saved in OAS.
+
+    At this time this is mostly relevant when adding DPaths to the "waveguide_path" layer, setting their
+    width to waveguide's "a" value. This function acts as safe guard so that "a" value
+    of arbitrary precision can be used.
+
+    Args:
+        dpath: Unrounded DPath object
+        dbu: layout.dbu for layout where the dpath is intended to be placed
+        precision: rounds (integer) Path's width to this precision. 2 by default.
+
+    Returns: Rounded DPath object
+    """
+    ipath = dpath.to_itype(dbu)
+    ipath.width -= ipath.width % precision
+    return ipath.to_dtype(dbu)

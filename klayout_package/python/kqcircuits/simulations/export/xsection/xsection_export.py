@@ -364,7 +364,10 @@ def visualise_xsection_cut_on_original_layout(
         raise Exception("Number of cuts did not match the number of simulations")
     for simulation, cut in zip(simulations, cuts):
         cut_length = (cut[1] - cut[0]).length()
-        marker = pya.Region(pya.DPath(cut, cut_length * width_ratio).to_itype(simulation.layout.dbu))
+        marker_path = pya.DPath(cut, cut_length * width_ratio).to_itype(simulation.layout.dbu)
+        # Prevent .OAS saving errors by rounding integer value of path width to even value
+        marker_path.width -= marker_path.width % 2
+        marker = pya.Region(marker_path)
         simulation.visualise_region(marker, cut_label, "xsection_cut", cut)
 
 

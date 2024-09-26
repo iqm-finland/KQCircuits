@@ -19,6 +19,7 @@
 
 from kqcircuits.elements.element import Element
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.geometry_helper import round_dpath_width
 from kqcircuits.util.parameters import Param, pdt
 
 
@@ -69,7 +70,7 @@ class WaveguideCoplanarStraight(Element):
             pya.DPoint(0, 0),
             pya.DPoint(l, 0),
         ]
-        shape = pya.DPath(pts, element.a)
+        shape = round_dpath_width(pya.DPath(pts, element.a), element.layout.dbu)
         element.cell.shapes(element.get_layer("waveguide_path")).insert(trans * shape)
         if element.add_metal:
             element.cell.shapes(element.get_layer("base_metal_addition")).insert(trans * shape)

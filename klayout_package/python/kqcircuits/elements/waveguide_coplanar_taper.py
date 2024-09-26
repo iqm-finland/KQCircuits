@@ -21,6 +21,7 @@ import math
 
 from kqcircuits.elements.element import Element
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.geometry_helper import round_dpath_width
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.elements.waveguide_coplanar_straight import WaveguideCoplanarStraight
@@ -80,7 +81,7 @@ class WaveguideCoplanarTaper(Element):
             pya.DPoint(0, 0),
             pya.DPoint(self.taper_length, 0),
         ]
-        shape = pya.DPath(pts, min(self.a, self.a2))
+        shape = round_dpath_width(pya.DPath(pts, min(self.a, self.a2)), self.layout.dbu)
         self.cell.shapes(self.get_layer("waveguide_path")).insert(shape)
         if self.add_metal:
             self.cell.shapes(self.get_layer("base_metal_addition")).insert(shape)
