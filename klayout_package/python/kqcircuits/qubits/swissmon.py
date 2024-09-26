@@ -22,7 +22,7 @@ import math
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.qubits.qubit import Qubit
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util.refpoints import JunctionSimPort
+from kqcircuits.util.refpoints import JunctionSimPort, WaveguideToSimPort
 
 
 class Swissmon(Qubit):
@@ -210,4 +210,6 @@ class Swissmon(Qubit):
 
     @classmethod
     def get_sim_ports(cls, simulation):  # pylint: disable=unused-argument
-        return [JunctionSimPort()]
+        return [JunctionSimPort()] + [
+            WaveguideToSimPort(f"port_cplr{i}", side=s) for i, s in enumerate(["left", "top", "right"])
+        ]

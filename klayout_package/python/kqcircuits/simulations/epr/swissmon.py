@@ -16,6 +16,7 @@
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
+import logging
 from typing import Callable
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.epr.utils import extract_child_simulation
@@ -35,45 +36,49 @@ def partition_regions(simulation: Simulation, prefix: str = "") -> list[Partitio
 
     result = [
         PartitionRegion(
-            name=f"{prefix}cross",
-            face=simulation.face_ids[0],
-            metal_edge_dimensions=None,
-            region=cross_poly,
-            vertical_dimensions=3.0,
-            visualise=True,
-        ),
-        PartitionRegion(
-            name=f"{prefix}mercross",
+            name=f"{prefix}crossmer",
             face=simulation.face_ids[0],
             metal_edge_dimensions=metal_edge_dimension,
             region=cross_poly,
             vertical_dimensions=3.0,
             visualise=True,
         ),
+        PartitionRegion(
+            name=f"{prefix}crossbulk",
+            face=simulation.face_ids[0],
+            metal_edge_dimensions=None,
+            region=cross_poly,
+            vertical_dimensions=3.0,
+            visualise=True,
+        ),
     ]
+
+    # These are added to include the waveguides attached to couplers in the coupler region
+    def _get_coupler_wg_offset(i, s):
+        coupler_wg_offsets = [{"min": pya.DPoint(-150, 0)}, {"max": pya.DPoint(0, 150)}, {"max": pya.DPoint(150, 0)}]
+        return coupler_wg_offsets[i].get(s, pya.DPoint(0, 0))
+
     for idx in range(3):
         # Need to check if coupler is present
         if simulation.cpl_length[idx] > 0:
+            cplr_region = pya.DBox(
+                simulation.refpoints[f"epr_cplr{idx}_min"] - metal_edge_margin + _get_coupler_wg_offset(idx, "min"),
+                simulation.refpoints[f"epr_cplr{idx}_max"] + metal_edge_margin + _get_coupler_wg_offset(idx, "max"),
+            )
             result += [
                 PartitionRegion(
-                    name=f"{prefix}{idx}cplr",
+                    name=f"{prefix}{idx}cplrmer",
                     face=simulation.face_ids[0],
-                    metal_edge_dimensions=None,
-                    region=pya.DBox(
-                        simulation.refpoints[f"epr_cplr{idx}_min"] - metal_edge_margin,
-                        simulation.refpoints[f"epr_cplr{idx}_max"] + metal_edge_margin,
-                    ),
+                    metal_edge_dimensions=metal_edge_dimension,
+                    region=cplr_region,
                     vertical_dimensions=3.0,
                     visualise=True,
                 ),
                 PartitionRegion(
-                    name=f"{prefix}mer{idx}cplr",
+                    name=f"{prefix}{idx}cplrbulk",
                     face=simulation.face_ids[0],
-                    metal_edge_dimensions=metal_edge_dimension,
-                    region=pya.DBox(
-                        simulation.refpoints[f"epr_cplr{idx}_min"] - metal_edge_margin,
-                        simulation.refpoints[f"epr_cplr{idx}_max"] + metal_edge_margin,
-                    ),
+                    metal_edge_dimensions=None,
+                    region=cplr_region,
                     vertical_dimensions=3.0,
                     visualise=True,
                 ),
@@ -86,35 +91,45 @@ def correction_cuts(simulation: Simulation, prefix: str = "") -> dict[str, dict]
     coupler_corner = (
         simulation.refpoints["epr_cplr0_max"] if simulation.cpl_length[0] > 0 else simulation.refpoints["epr_cross_08"]
     )
-    cross_xsection_center = pya.DPoint((cross_corner.x + coupler_corner.x) / 2, cross_corner.y)
+
+    half_gap = simulation.gap_width[1] / 2
+    if len(set(simulation.gap_width)) > 1:
+        logging.warning("Partition regions for Swissmon with varying gaps are not implemented")
+        logging.warning(
+            "Using correction with %s gap for all arms with gap widths %s", str(2 * half_gap), str(simulation.gap_width)
+        )
+
+    cross_xsection_center = pya.DPoint((cross_corner.x + coupler_corner.x) / 2, cross_corner.y - half_gap)
     half_cut_length = 30.0
     result = {
-        f"{prefix}mercross": {
+        f"{prefix}crossmer": {
             "p1": cross_xsection_center + pya.DPoint(0, -half_cut_length),
             "p2": cross_xsection_center + pya.DPoint(0, half_cut_length),
-            "metal_edges": [{"x": half_cut_length}],
+            "metal_edges": [{"x": half_cut_length - half_gap}, {"x": half_cut_length + half_gap, "x_reversed": True}],
         }
     }
+
+    half_gap = simulation.b / 2
     if simulation.cpl_length[0] > 0:
         xsection_point = simulation.cpl_gap[0] / 2 + simulation.cpl_width[0] / 2
-        result[f"{prefix}mer0cplr"] = {
-            "p1": simulation.refpoints["port_cplr0"] + pya.DPoint(-half_cut_length, xsection_point),
-            "p2": simulation.refpoints["port_cplr0"] + pya.DPoint(half_cut_length, xsection_point),
-            "metal_edges": [{"x": half_cut_length}],
+        result[f"{prefix}0cplrmer"] = {
+            "p1": simulation.refpoints["port_cplr0"] + pya.DPoint(-half_cut_length + half_gap, xsection_point),
+            "p2": simulation.refpoints["port_cplr0"] + pya.DPoint(half_cut_length + half_gap, xsection_point),
+            "metal_edges": [{"x": half_cut_length - half_gap}, {"x": half_cut_length + half_gap, "x_reversed": True}],
         }
     if simulation.cpl_length[1] > 0:
         xsection_point = simulation.cpl_gap[1] / 2 + simulation.cpl_width[1] / 2
-        result[f"{prefix}mer1cplr"] = {
-            "p1": simulation.refpoints["port_cplr1"] + pya.DPoint(xsection_point, half_cut_length),
-            "p2": simulation.refpoints["port_cplr1"] + pya.DPoint(xsection_point, -half_cut_length),
-            "metal_edges": [{"x": half_cut_length}],
+        result[f"{prefix}1cplrmer"] = {
+            "p1": simulation.refpoints["port_cplr1"] + pya.DPoint(xsection_point, half_cut_length - half_gap),
+            "p2": simulation.refpoints["port_cplr1"] + pya.DPoint(xsection_point, -half_cut_length - half_gap),
+            "metal_edges": [{"x": half_cut_length - half_gap}, {"x": half_cut_length + half_gap, "x_reversed": True}],
         }
     if simulation.cpl_length[2] > 0:
         xsection_point = simulation.cpl_gap[2] / 2 + simulation.cpl_width[2] / 2
-        result[f"{prefix}mer2cplr"] = {
-            "p1": simulation.refpoints["port_cplr2"] + pya.DPoint(-half_cut_length, xsection_point),
-            "p2": simulation.refpoints["port_cplr2"] + pya.DPoint(half_cut_length, xsection_point),
-            "metal_edges": [{"x": half_cut_length}],
+        result[f"{prefix}2cplrmer"] = {
+            "p1": simulation.refpoints["port_cplr2"] + pya.DPoint(-half_cut_length - half_gap, xsection_point),
+            "p2": simulation.refpoints["port_cplr2"] + pya.DPoint(half_cut_length - half_gap, xsection_point),
+            "metal_edges": [{"x": half_cut_length - half_gap}, {"x": half_cut_length + half_gap, "x_reversed": True}],
         }
     return result
 
@@ -127,6 +142,8 @@ def extract_swissmon_from(
         refpoint_prefix,
         parameter_remap_function,
         [
+            "b",
+            "gap_width",
             "face_ids",  # Accesses list's index 0
             "island_r",
             "cpl_gap",  # Accesses list's indices 0, 1, 2
