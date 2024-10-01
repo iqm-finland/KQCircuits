@@ -971,6 +971,19 @@ def sif_placeholder_boundaries(groups: list[str], n_boundaries: int) -> str:
     return boundary_conditions
 
 
+def _get_cbody_map(signals_boundaries):
+    # If a connected piece of signal is partitioned into multiple layers
+    # we need to set the same capacitance body for each layer
+    cbody_map: dict[str, int] = {}
+    for s in signals_boundaries:
+        s_wo_mer = s.replace("_mer", "")
+        if s_wo_mer in cbody_map:
+            cbody_map[s] = cbody_map[s_wo_mer]
+        else:
+            cbody_map[s] = max(cbody_map.values(), default=0) + 1
+    return cbody_map
+
+
 def sif_epr_3d(json_data: dict[str, Any], folder_path: Path, vtu_name: str | Path) -> str:
     """
     Returns 3D EPR simulation sif
@@ -1046,6 +1059,7 @@ def sif_epr_3d(json_data: dict[str, Any], folder_path: Path, vtu_name: str | Pat
 
     bodies = ""
     materials = ""
+    body_forces = ""
     n_bodies = 0
     for i, (body, perm) in enumerate(zip(mesh_bodies, permittivity_list), 1):
         bodies += sif_body(
@@ -1060,8 +1074,28 @@ def sif_epr_3d(json_data: dict[str, Any], folder_path: Path, vtu_name: str | Pat
 
     if len(signals) == 0:
         raise RuntimeError("No signals in the system!")
-    if len(signals) > 1:
-        logging.warning("Multiple signals in the system. All of them will be set to 1V at once")
+
+    cbody_map = _get_cbody_map(signals)
+    if not json_data["sequential_signal_excitation"]:
+        # set all capacitance bodies to 1
+        cbody_map = dict.fromkeys(cbody_map, 1)
+
+    n_excitations = max(cbody_map.values())
+    excitation_str = "Capacitance Body = integer" if c_matrix_output else "Potential = Real"
+
+    # signals
+    for s in signals:
+        bodies += sif_body(
+            ordinate=n_bodies + 1,
+            target_bodies=[s],
+            equation=1,
+            material=pec_material_index,
+            keywords=[f"Body Force = {cbody_map[s]}"],
+        )
+        n_bodies += 1
+
+    for s in range(1, n_excitations + 1):
+        body_forces += sif_block(f"Body Force {s}", [f"{excitation_str} {s}"])
 
     # grounds
     bodies += sif_body(
@@ -1069,24 +1103,11 @@ def sif_epr_3d(json_data: dict[str, Any], folder_path: Path, vtu_name: str | Pat
         target_bodies=grounds,
         equation=1,
         material=pec_material_index,
-        keywords=["Body Force = 2"],
+        keywords=[f"Body Force = {n_excitations + 1}"],
     )
     n_bodies += 1
 
-    # signals
-    bodies += sif_body(
-        ordinate=n_bodies + 1,
-        target_bodies=signals,
-        equation=1,
-        material=pec_material_index,
-        keywords=["Body Force = 1"],
-    )
-    n_bodies += 1
-
-    excitation_str = "Capacitance Body = integer" if c_matrix_output else "Potential = Real"
-    body_forces = ""
-    body_forces += sif_block("Body Force 1", [f"{excitation_str} 1"])
-    body_forces += sif_block("Body Force 2", [f"{excitation_str} 0"])
+    body_forces += sif_block(f"Body Force {n_excitations + 1}", [f"{excitation_str} 0"])
 
     boundary_conditions = ""
     # tls bcs
@@ -1187,15 +1208,7 @@ def sif_capacitance(
     ground_boundaries = [f"{g}_boundary" for g in grounds] if dim == 2 else grounds
     signals_boundaries = [f"{s}_boundary" for s in signals] if dim == 2 else signals
 
-    # If a connected piece of signal is partitioned into multiple layers
-    # we need to set the same capacitance body for each layer
-    cbody_map: dict[str, int] = {}
-    for s in signals_boundaries:
-        s_wo_mer = s.replace("_mer", "")
-        if s_wo_mer in cbody_map:
-            cbody_map[s] = cbody_map[s_wo_mer]
-        else:
-            cbody_map[s] = max(cbody_map.values(), default=0) + 1
+    cbody_map = _get_cbody_map(signals_boundaries)
 
     n_boundaries = 0
     if len(ground_boundaries) > 0:

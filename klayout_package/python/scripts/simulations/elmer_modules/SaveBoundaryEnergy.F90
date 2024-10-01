@@ -21,19 +21,21 @@ SUBROUTINE SaveBoundaryEnergyComponents(Model,Solver,dt,Transient)
   TYPE(Mesh_t), POINTER :: Mesh
   REAL(KIND=dp), ALLOCATABLE :: IntNorm(:), IntTan(:)
   TYPE(ValueList_t), POINTER :: BC
+  LOGICAL :: Visited = .FALSE.
   CHARACTER(*), PARAMETER :: Caller = 'SaveBoundaryEnergyComponents'
 
-  SAVE IntNorm, IntTan, NoModes
+  SAVE IntNorm, IntTan
   !-------------------------------------------------------------------------------------------
 
   CALL Info(Caller,'----------------------------------------------------------',Level=6 )
   CALL Info(Caller,'Computing Boundary energy integrals for normal and tangential components of Electric field',Level=4 )
 
   Mesh => GetMesh()
-
   NoModes = Model % NumberOfBCs
-  ALLOCATE(IntNorm(NoModes), IntTan(NoModes))
 
+  IF(.NOT. Visited ) THEN
+    ALLOCATE(IntNorm(NoModes), IntTan(NoModes))
+  END IF
 
   potvar => VariableGet( Mesh % Variables, 'Potential', ThisOnly = .TRUE.)
   IF(.NOT. ASSOCIATED(potvar) ) THEN
@@ -89,6 +91,9 @@ SUBROUTINE SaveBoundaryEnergyComponents(Model,Solver,dt,Transient)
       CALL ListAddConstReal(GetSimulation(), TRIM(bc_name) // "_tan_component", IntTan(i))
     END IF
   END DO
+
+  Visited = .TRUE.
+  CALL Info(Caller,'All done for now!',Level=20)  
 
 CONTAINS
   !-----------------------------------------------------------------------------

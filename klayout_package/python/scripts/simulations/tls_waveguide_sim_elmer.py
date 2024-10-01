@@ -53,6 +53,21 @@ class TlsWaveguideSim(Simulation):
         self.ports.append(EdgePort(2, pya.DPoint(self.box.right, self.box.center().y), face=0))
 
 
+class TlsWaveguideSim2(Simulation):
+    """A very short segment of 2 parallel waveguides."""
+
+    def build(self):
+        wg_ys = [(self.box.bottom + self.box.center().y) / 2, (self.box.top + self.box.center().y) / 2]
+
+        for ind, wg_y in enumerate(wg_ys):
+            self.insert_cell(
+                WaveguideCoplanar,
+                path=pya.DPath([pya.DPoint(self.box.left, wg_y), pya.DPoint(self.box.right, wg_y)], 0),
+            )
+            self.ports.append(EdgePort(2 * ind + 1, pya.DPoint(self.box.left, wg_y), face=0))
+            self.ports.append(EdgePort(2 * ind + 2, pya.DPoint(self.box.right, wg_y), face=0))
+
+
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
@@ -70,7 +85,7 @@ dielectric_surfaces = {
 }
 
 # Simulation parameters
-sim_class = TlsWaveguideSim  # pylint: disable=invalid-name
+sim_class = TlsWaveguideSim2  # pylint: disable=invalid-name
 sim_parameters = {
     "name": "tls_waveguide_sim",
     "face_stack": ["1t1"],  # single chip
@@ -81,14 +96,6 @@ sim_parameters = {
     "partition_regions": [
         {"name": "mer", "metal_edge_dimensions": 1.0, "vertical_dimensions": 1.0, "face": "1t1", "visualise": True}
     ],
-    "tls_layer_thickness": [dielectric_surfaces[layer]["thickness"] * 1e6 for layer in ("MA", "MS", "SA")],
-    "tls_layer_material": ["oxideMA", "oxideMS", "oxideSA"],
-    "material_dict": {
-        **ast.literal_eval(Simulation.material_dict),
-        "oxideMA": {"permittivity": dielectric_surfaces["MA"]["eps_r"]},
-        "oxideMS": {"permittivity": dielectric_surfaces["MS"]["eps_r"]},
-        "oxideSA": {"permittivity": dielectric_surfaces["SA"]["eps_r"]},
-    },
     "tls_sheet_approximation": sheet_interfaces,
     "detach_tls_sheets_from_body": not sheet_interfaces,
 }
@@ -97,6 +104,7 @@ sol_parameters = {
     "tool": "epr_3d",
     "mesh_size": {"1t1_layerMAmer": 0.5, "1t1_layerMSmer": 0.5, "1t1_layerSAmer": 0.5},
     "linear_system_method": "mg",
+    "sequential_signal_excitation": True,  # choose whether to excite both signals at once or sequentially
 }
 
 if sheet_interfaces:
@@ -105,6 +113,20 @@ if sheet_interfaces:
         sheet_approximations=dielectric_surfaces,
     )
 else:
+    # change TLS layer material and set their thicknesses
+    sim_parameters.update(
+        {
+            "tls_layer_thickness": [dielectric_surfaces[layer]["thickness"] * 1e6 for layer in ("MA", "MS", "SA")],
+            "tls_layer_material": ["oxideMA", "oxideMS", "oxideSA"],
+            "material_dict": {
+                **ast.literal_eval(Simulation.material_dict),
+                "oxideMA": {"permittivity": dielectric_surfaces["MA"]["eps_r"]},
+                "oxideMS": {"permittivity": dielectric_surfaces["MS"]["eps_r"]},
+                "oxideSA": {"permittivity": dielectric_surfaces["SA"]["eps_r"]},
+            },
+        }
+    )
+
     # Refine MA wall if using 3D interfaces
     sol_parameters["mesh_size"]["1t1_layerMAwallmer"] = 0.3
 

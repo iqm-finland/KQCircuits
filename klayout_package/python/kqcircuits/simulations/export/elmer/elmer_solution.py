@@ -201,6 +201,9 @@ class ElmerEPR3DSolution(ElmerSolution):
         convergence_tolerance: Convergence tolerance of the iterative solver.
         max_iterations: Maximum number of iterations for the iterative solver.
         linear_system_preconditioning: Choice of preconditioner before using an iterative linear system solver
+        sequential_signal_excitation: If True, each separate signal is excited sequentially while grounding the others.
+                                      If False, runs a single simulation with all signals set to 1V.
+
     """
 
     tool: ClassVar[str] = "epr_3d"
@@ -210,6 +213,7 @@ class ElmerEPR3DSolution(ElmerSolution):
     convergence_tolerance: float = 1.0e-9
     max_iterations: int = 1000
     linear_system_preconditioning: str = "ILU0"
+    sequential_signal_excitation: bool = True
 
 
 def get_elmer_solution(tool="capacitance", **solution_params):
