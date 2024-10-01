@@ -577,6 +577,14 @@ class MaskLayout:
             m_kwargs["wafer_rad"] = m_kwargs.get("wafer_rad", self.wafer_rad)
             m_kwargs["edge_clearance"] = m_kwargs.get("edge_clearance", self.edge_clearance)
             cell_marker = marker.create(self.layout, **m_kwargs)
+
+            # Name of the mask marker might in some cases conflict with the names
+            # of the chip markers, after PCells in mask are converted to static
+            # using convert_child_instances_to_static. This makes the exported mask layout OAS file
+            # to not be able to open using KLayout. If we make the name distinct, this no
+            # longer becomes an issue.
+            cell_marker.name = f"Mask {cell_marker.name}"
+
             marker_transes = marker.get_marker_locations(cell_marker, **m_kwargs)
             for trans in marker_transes:
                 inst = maskextra_cell.insert(pya.DCellInstArray(cell_marker.cell_index(), trans))
