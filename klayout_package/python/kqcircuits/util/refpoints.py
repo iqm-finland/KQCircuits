@@ -108,7 +108,7 @@ class RefpointToInternalPort(RefpointToSimPort):
     def __init__(
         self,
         refpoint,
-        ground_refpoint,
+        ground_refpoint=None,
         resistance=50,
         reactance=0,
         inductance=0,

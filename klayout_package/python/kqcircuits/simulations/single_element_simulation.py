@@ -18,6 +18,7 @@
 
 from typing import Callable
 from kqcircuits.elements.element import Element
+from kqcircuits.junctions import junction_type_choices
 from kqcircuits.simulations.simulation import Simulation
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.partition_region import PartitionRegion
@@ -26,10 +27,16 @@ from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.util.refpoints import RefpointToInternalPort, RefpointToEdgePort, WaveguideToSimPort, JunctionSimPort
 
 
-def _get_build_function(element_class, ignore_ports, transformation_from_center):
+def _get_build_function(element_class, ignore_ports, transformation_from_center, sim_junction_type):
     def _build_for_element_class(self):
+        if sim_junction_type not in junction_type_choices:
+            raise ValueError(
+                f"Unknown sim_junction_type {sim_junction_type}. "
+                f"Junction type should be listed in junction_type_choices"
+            )
+
         simulation_cell = self.add_element(
-            element_class, **{**self.get_parameters(), "junction_type": "Sim", "fluxline_type": "none"}
+            element_class, **{**self.get_parameters(), "junction_type": sim_junction_type, "fluxline_type": "none"}
         )
 
         element_trans = pya.DTrans(0, False, self.box.center())
@@ -49,7 +56,7 @@ def _get_build_function(element_class, ignore_ports, transformation_from_center)
                     InternalPort(
                         (port_i := port_i + 1),
                         refp[port.refpoint],
-                        refp[port.ground_refpoint],
+                        None if not port.ground_refpoint else refp[port.ground_refpoint],
                         port.resistance,
                         port.reactance,
                         port.inductance,
@@ -117,6 +124,7 @@ def get_single_element_sim_class(
     ignore_ports: list[str] | None = None,
     transformation_from_center: Callable[[pya.Cell], pya.DTrans] | None = None,
     partition_region_function: Callable[[Simulation], list[PartitionRegion]] | None = None,
+    sim_junction_type: str = "Sim",
 ) -> type[Simulation]:
     """Formulates a simulation class containing a single cell of a given Element class
 
@@ -140,7 +148,7 @@ def get_single_element_sim_class(
         ),
         "junction_inductance": Param(pdt.TypeList, "Junction inductance (if junction exists)", 11.497e-9, unit="H"),
         "junction_capacitance": Param(pdt.TypeList, "Junction capacitance (if junction exists)", 0.1e-15, unit="F"),
-        "build": _get_build_function(element_class, ignore_ports, transformation_from_center),
+        "build": _get_build_function(element_class, ignore_ports, transformation_from_center, sim_junction_type),
     }
     if partition_region_function:
         overriden_class_attributes["get_partition_regions"] = partition_region_function
