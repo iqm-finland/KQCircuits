@@ -64,6 +64,8 @@ def get_mer_coefficients(simulation, region):
 
     corr_key = "_" + correction_key
     corr_file = {f for f in correction_files if corr_key in f and simulation.startswith(f[: f.find(corr_key)])}
+    if len(corr_file) > 1:
+        corr_file = {f for f in corr_file if simulation == f[: f.find(corr_key)]}
     if not corr_file:
         print(f"Expected correction file not found with keys {simulation} and {correction_key}.")
         return None

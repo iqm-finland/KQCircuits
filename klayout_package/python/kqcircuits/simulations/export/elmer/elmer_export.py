@@ -540,7 +540,7 @@ def export_elmer_script(
                     main_file.write('echo "--------------------------------------------"\n')
                     main_file.write(f'"./{Path(script_filename).relative_to(path)}"\n')
 
-            main_file.write(get_post_process_command_lines(post_process, path, json_filenames))
+            main_file.write("\n" + get_post_process_command_lines(post_process, path, json_filenames))
 
     # change permission
     os.chmod(main_script_filename, os.stat(main_script_filename).st_mode | stat.S_IEXEC)

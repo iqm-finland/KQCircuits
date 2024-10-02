@@ -223,7 +223,9 @@ def sif_linsys(json_data: dict) -> list[str]:
                 "Linear System Refactorize = False",
                 "MG Method = p",
                 "MG Levels = $pn",
-                "MG Smoother = CG",  # SGS could be used in serial, but has poor parallel convergence
+                # SGS has some problems with parallel performance. As an alternative, more reliable
+                # CG could be used, but on average it seems to lead to even worse convergence
+                "MG Smoother = SGS",
                 "MG Pre Smoothing iterations = 2",
                 "MG Post Smoothing Iterations = 2",
                 "MG Lowest Linear Solver = iterative",
@@ -1196,14 +1198,14 @@ def sif_capacitance(
     grounds = sorted(get_grounds(json_data, dim=dim, mesh_names=mesh_names))
     signals = sorted(get_signals(json_data, dim=dim, mesh_names=mesh_names))
 
-    if len(signals) == 0:
-        logging.warning("No signals found in capacitance simulation!")
-        signals = [grounds[0]]
-        grounds = grounds[1:]
-        logging.warning(f'Treating "{signals}" as signal and "{grounds}" as grounds')
+    potentials = ({1} if signals else set()) | ({0} if grounds else set())
+    potentials = potentials | set((float(v["potential"]) for v in json_data["boundary_conditions"].values()))
 
-    if len(grounds) == 0 and not json_data["boundary_conditions"]:
-        logging.warning("Simulation has no grounds or outer boundary conditions. Result will be trivially zero.")
+    if len(signals) < 2 and len(potentials) < 2:
+        logging.warning("Simulation has no potential differences. Result will be trivially zero.")
+        logging.warning(f"Signals: {signals}")
+        logging.warning(f"Grounds: {grounds}")
+        logging.warning(f"Boundary conditions: {json_data['boundary_conditions']}")
 
     ground_boundaries = [f"{g}_boundary" for g in grounds] if dim == 2 else grounds
     signals_boundaries = [f"{s}_boundary" for s in signals] if dim == 2 else signals
@@ -1299,9 +1301,6 @@ def sif_inductance(
 
     if len(signals) == 0:
         logging.warning("No signals found in inductance simulation!")
-        signals = [grounds[0]]
-        grounds = grounds[1:]
-        logging.warning(f'Treating "{signals}" as signal and "{grounds}" as grounds')
 
     if len(signals) > 1:
         logging.warning(f"Multiple signals ({len(signals)}) found in inductance simulation!")

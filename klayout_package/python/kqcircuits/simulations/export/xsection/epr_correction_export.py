@@ -52,6 +52,7 @@ def get_epr_correction_elmer_solution(**override_args):
                 "ms_layer_mer&ma_layer_mer": [0.0005, 0.0005, 0.2],
             },
             "integrate_energies": True,
+            "run_inductance_sim": False,
             **override_args,
         }
     )
