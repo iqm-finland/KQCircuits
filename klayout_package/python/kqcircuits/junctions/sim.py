@@ -34,6 +34,7 @@ class Sim(Junction):
     junction_upper_pad_length = Param(pdt.TypeDouble, "Simulation junction upper metal pad length", 13, unit="µm")
     junction_lower_pad_width = Param(pdt.TypeDouble, "Simulation junction lower metal pad width", 8, unit="µm")
     junction_lower_pad_length = Param(pdt.TypeDouble, "Simulation junction lower metal pad length", 12, unit="µm")
+    include_background_gap = Param(pdt.TypeBoolean, "Add base metal gap below the junction", True)
 
     def build(self):
 
@@ -72,3 +73,6 @@ class Sim(Junction):
         h = self.cell.dbbox().height()
         protection = pya.DBox(-w / 2 - self.margin, -self.margin, w / 2 + self.margin, h + self.margin)
         self.add_protection(trans * protection)
+        if self.include_background_gap:
+            ground_gap = pya.DBox(-w / 2 - self.margin, 0, w / 2 + self.margin, h)
+            self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(trans * ground_gap)
