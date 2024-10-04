@@ -19,33 +19,36 @@
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.partition_region import PartitionRegion
 from kqcircuits.simulations.simulation import Simulation
+from kqcircuits.elements.smooth_capacitor import SmoothCapacitor
 
 
 # Partition region and correction cuts definitions for Swissmon qubit
-vertical_dimension = 3.0
-metal_edge_dimension = 4.0
+vertical_dimension = 1.0
+metal_edge_dimension = 2.0
 
 
 def partition_regions(simulation: Simulation, prefix: str = "") -> list[PartitionRegion]:
 
-    base_rf = simulation.refpoints["base"]
     port_a_rf = simulation.refpoints["port_a"]
     port_b_rf = simulation.refpoints["port_b"]
 
-    scale = simulation.finger_width + simulation.finger_gap
-    s_len = scale * (2 * simulation.finger_control - 3)  # length of straight segment
-    width = scale * simulation.finger_control - simulation.finger_width / 2 - simulation.finger_gap / 2
-
-    box_dp = pya.DPoint(s_len / 2.0 + simulation.finger_width + simulation.finger_gap, width)
-
     a2 = simulation.a if simulation.a2 < 0 else simulation.a2
     b2 = simulation.b if simulation.b2 < 0 else simulation.b2
-    rr = b2 + a2 / 2
-    rr = (rr + (simulation.finger_gap + 1.5 * simulation.finger_width)) / 2
+    rr = simulation.finger_width / 2 + simulation.ground_gap
     rr /= simulation.layout.dbu
 
-    box = pya.DBox(base_rf - box_dp, base_rf + box_dp)
-    box_rounded = pya.Region(box.to_itype(simulation.layout.dbu)).rounded_corners(rr, rr, simulation.n)
+    # Use modified SmoothCapacitor geometry to obtain partition regions on fingers
+    trans = pya.DTrans(0, False, simulation.box.center()).to_itype(simulation.layout.dbu)
+    tmp_layout = pya.Layout()
+    tmp_cell = SmoothCapacitor.create(
+        tmp_layout,
+        margin=-simulation.ground_gap - simulation.finger_width / 2,
+        fixed_length=0,
+        finger_control=simulation.finger_control,
+    )
+    box_rounded = pya.Region(tmp_cell.begin_shapes_rec(simulation.get_layer("ground_grid_avoidance"))).transformed(
+        trans
+    )
 
     port_a_len = 11 + simulation.waveguide_length + metal_edge_dimension  # 11 is the hardcoded port dimension
     port_a_width = simulation.a + 2 * simulation.b + 2 * metal_edge_dimension
