@@ -313,6 +313,33 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
 
     # Generate and save mesh
     gmsh.model.mesh.generate(3)
+    # Optimize the mesh if the dict exists
+
+    optimize_params = mesh_size.get("optimize", None)
+
+    if optimize_params is not None:
+        opt_method = optimize_params.get("method", "Netgen")
+        opt_force = optimize_params.get("force", False)
+        opt_niter = optimize_params.get("niter", 1)
+        opt_dimTags = optimize_params.get("dimTags", [])
+        optimizers = [
+            "Netgen",
+            "HighOrder",
+            "HighOrderElastic",
+            "HighOrderFastCurving",
+            "Laplace2D",
+            "Relocate2D",
+            "Relocate3D",
+            "QuadQuasiStructured",
+            "UntangleMeshGeometry",
+        ]
+
+        if opt_method in optimizers:
+            gmsh.model.mesh.optimize(opt_method, opt_force, opt_niter, opt_dimTags)
+        else:
+            print(f"WARNING: Wrong optimizer method: {opt_method} chosen at mesh_size dict.")
+            print(f"WARNING: Curretly available methods: {optimizers}")
+
     gmsh.write(str(msh_file))
 
     # Open mesh viewer
