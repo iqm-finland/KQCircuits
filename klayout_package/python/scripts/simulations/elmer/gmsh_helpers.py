@@ -78,6 +78,8 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
         if "layer" in data:
             layer_num = data["layer"]
             reg = pya.Region(cell.shapes(layout.layer(layer_num, 0))) & bbox
+            if reg.is_empty():
+                print(f"WARNING: encountered empty layer in Gmsh: {name}")
         else:
             reg = pya.Region(bbox)
 
@@ -201,6 +203,8 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
                 (d, t, material) for d, t in new_tags.get("&" + name, []) if d == 2
             ]
 
+    # Remove empty layers from the tags
+    filtered_tags_with_material = {k: v for k, v in filtered_tags_with_material.items() if v}
     # Group dim tags by material
     material_dim_tags: dict[str, list[DimTag]] = {m: [] for m in materials}
     for _, tags in filtered_tags_with_material.items():

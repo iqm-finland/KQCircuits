@@ -929,10 +929,16 @@ class Simulation:
         # produce self.layers from layers
         self.layers = {}
         for layer in layers:
+            if layer["region"].is_empty():
+                continue  # ignore layers with empty region
             sim_layer = get_simulation_layer_by_name(layer["name"])
             self.cell.shapes(self.layout.layer(sim_layer)).insert(layer["region"])
             limit_region = pya.Region(self.box.to_itype(self.layout.dbu)).inside(layer["region"]).is_empty()
-            subtract = [layers[n]["name"] for n in sorted(layer.get("subtract", set()), reverse=True)]
+            subtract = [
+                layers[n]["name"]
+                for n in sorted(layer.get("subtract", set()), reverse=True)
+                if layers[n]["name"] in self.layers
+            ]
             self.layers[layer["name"]] = {
                 "z": round(layer["bottom"], 12),
                 "thickness": round(layer["top"] - layer["bottom"], 12),
