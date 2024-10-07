@@ -150,7 +150,6 @@ def test_perfect_continuity_of_carefully_chosen_corner():
     waveguide_cell = WaveguideCoplanar.create(
         layout,
         path=pya.DPath([pya.DPoint(135, 240), pya.DPoint(1000, 1000), pya.DPoint(2000, 1500)], 0),
-        # corner_safety_overlap=0
     )
 
     assert_perfect_waveguide_continuity(waveguide_cell, layout, expected_shapes=2)

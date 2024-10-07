@@ -42,7 +42,7 @@ class WaveguideCoplanar(Element):
 
     Warning:
         Arbitrary angle bents can have very small gaps between bends and straight segments due to
-        precision of arithmetic. Small positive value of corner_safety_overlap can avoid these gaps.
+        precision of arithmetic.
 
     .. MARKERS_FOR_PNG 20,-10 50,0
     """
@@ -50,13 +50,6 @@ class WaveguideCoplanar(Element):
     path = Param(pdt.TypeShape, "TLine", pya.DPath([pya.DPoint(0, 0), pya.DPoint(100, 0)], 0))
     term1 = Param(pdt.TypeDouble, "Termination length start", 0, unit="μm")
     term2 = Param(pdt.TypeDouble, "Termination length end", 0, unit="μm")
-    corner_safety_overlap = Param(
-        pdt.TypeDouble,
-        "Extend straight sections near corners",
-        0.001,
-        unit="μm",
-        docstring="Extend straight sections near corners by this amount (μm) to ensure all sections overlap",
-    )
 
     def can_create_from_shape_impl(self):
         return self.shape.is_path()
@@ -79,8 +72,8 @@ class WaveguideCoplanar(Element):
                 "Need at least 2 points for a waveguide.", points[0] if len(points) == 1 else pya.DPoint()
             )
 
-        # distance between points[0] and beginning of the straight
-        last_cut_dist = 0.0 if self.term1 == 0 else -self.corner_safety_overlap
+        eps_length = 0.5 * self.layout.dbu
+        last_cut_dist = 0.0
 
         # For each segment except the last
         for i in range(0, len(points) - 2):
@@ -88,21 +81,21 @@ class WaveguideCoplanar(Element):
             v1, _, alpha1, alpha2, corner_pos = self.get_corner_data(points[i], points[i + 1], points[i + 2], self.r)
             alpha = (alpha2 - alpha1 + math.pi) % (2 * math.pi) - math.pi  # turn angle (between -pi and pi) in radians
             # distance between points[i + 1] and beginning of the straight
-            cut_dist = self.r * math.tan(abs(alpha) / 2) - self.corner_safety_overlap
+            cut_dist = self.r * math.tan(abs(alpha) / 2)
             straight_length = v1.length() - last_cut_dist - cut_dist
-            if straight_length < 0:
+            if straight_length < -eps_length:
                 self.raise_error_on_cell(
                     "Straight segment cannot fit. Try decreasing the turn radius.", points[i] + v1 / 2
                 )
 
             # Straight segment before corner
-            if straight_length > self.corner_safety_overlap:
+            if straight_length > eps_length:
                 start_point = points[i] + last_cut_dist / v1.length() * v1
                 transf = pya.DCplxTrans(1, math.degrees(alpha1), False, start_point)
                 WaveguideCoplanarStraight.build_geometry(self, transf, straight_length)
 
             # Curved segment at the corner
-            if 2 * cut_dist >= self.corner_safety_overlap:
+            if 2 * cut_dist > eps_length:
                 transf = pya.DCplxTrans(1, math.degrees(alpha1) + (90 if alpha < 0 else -90), False, corner_pos)
                 WaveguideCoplanarCurved.build_geometry(self, transf, alpha)
 
@@ -111,15 +104,14 @@ class WaveguideCoplanar(Element):
 
         # Check if straight can fit between the last two points
         v1 = points[-1] - points[-2]
-        cut_dist = 0.0 if self.term2 == 0 else -self.corner_safety_overlap
-        straight_length = v1.length() - last_cut_dist - cut_dist
-        if straight_length < 0:
+        straight_length = v1.length() - last_cut_dist
+        if straight_length < -eps_length:
             self.raise_error_on_cell(
                 "Straight segment cannot fit. Try decreasing the turn radius.", points[-2] + v1 / 2
             )
 
         # Straight segment at the end
-        if straight_length > self.corner_safety_overlap:
+        if straight_length > eps_length:
             start_point = points[-2] + last_cut_dist / v1.length() * v1
             transf = pya.DCplxTrans(1, math.degrees(math.atan2(v1.y, v1.x)), False, start_point)
             WaveguideCoplanarStraight.build_geometry(self, transf, straight_length)
