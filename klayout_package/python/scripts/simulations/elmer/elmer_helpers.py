@@ -1199,13 +1199,15 @@ def sif_capacitance(
     signals = sorted(get_signals(json_data, dim=dim, mesh_names=mesh_names))
 
     potentials = ({1} if signals else set()) | ({0} if grounds else set())
-    potentials = potentials | set((float(v["potential"]) for v in json_data["boundary_conditions"].values()))
+    potentials = potentials | set(
+        (float(v["potential"]) for v in json_data.get("boundary_conditions", {}).values() if "potential" in v)
+    )
 
     if len(signals) < 2 and len(potentials) < 2:
         logging.warning("Simulation has no potential differences. Result will be trivially zero.")
         logging.warning(f"Signals: {signals}")
         logging.warning(f"Grounds: {grounds}")
-        logging.warning(f"Boundary conditions: {json_data['boundary_conditions']}")
+        logging.warning(f"Boundary conditions: {json_data.get('boundary_conditions',  {})}")
 
     ground_boundaries = [f"{g}_boundary" for g in grounds] if dim == 2 else grounds
     signals_boundaries = [f"{s}_boundary" for s in signals] if dim == 2 else signals
