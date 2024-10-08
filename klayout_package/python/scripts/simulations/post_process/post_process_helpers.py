@@ -69,5 +69,7 @@ def tabulate_into_csv(file_name, data_dict, parameters, parameter_values):
 
         for key, values in parameter_values.items():
             parameter_values_str = [str(parameter_value) for parameter_value in values]
+            if key not in data_dict:
+                continue
             layer_values = [str(data_dict[key].get(n, 0.0)) for n in layer_names]
             writer.writerow([key] + parameter_values_str + layer_values)

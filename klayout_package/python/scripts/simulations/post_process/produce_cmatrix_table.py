@@ -42,6 +42,11 @@ if result_files:
     for key, result_file in zip(parameter_values.keys(), result_files):
         with open(result_file, "r", encoding="utf-8") as f:
             result = json.load(f)
-        cmatrix[key] = {f"C{i+1}{j+1}": c for i, l in enumerate(result["CMatrix"]) for j, c in enumerate(l)}
+        cdata = result.get("CMatrix") or result.get("Cs")
+        if cdata is None:
+            print(f"Neither 'CMatrix' nor 'Cs' found in the result file {result_file}")
+            continue
+
+        cmatrix[key] = {f"C{i+1}{j+1}": c for i, l in enumerate(cdata) for j, c in enumerate(l)}
 
     tabulate_into_csv(f"{os.path.basename(os.path.abspath(path))}_results.csv", cmatrix, parameters, parameter_values)

@@ -149,6 +149,7 @@ post_process = [
     PostProcess("produce_q_factor_table.py", **loss_tangents),
     PostProcess("produce_epr_table.py", groups=["ma", "ms", "sa", "substrate", "vacuum"]),
     PostProcess("elmer_profiler.py"),
+    PostProcess("produce_cmatrix_table.py"),
 ]
 
 if do_solution_sweep:
