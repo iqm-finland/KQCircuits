@@ -312,6 +312,8 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
                     gmsh.model.addPhysicalGroup(2, [dt[1] for dt in new_tags[port_name]], name=port_name)
 
     # Generate and save mesh
+    gmsh.model.mesh.generate(1)
+    gmsh.model.mesh.generate(2)
     gmsh.model.mesh.generate(3)
     # Optimize the mesh if the dict exists
 
