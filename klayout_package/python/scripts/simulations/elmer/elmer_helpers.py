@@ -1773,7 +1773,7 @@ def get_energy_integrals(path: Path | str) -> dict:
     """
     try:
         energy_data, energy_layer_data = Path(path) / "energy.dat", Path(path) / "energy.dat.names"
-        energies = pd.read_csv(energy_data, sep=r"\s+", header=None).values.flatten()
+        energies = pd.read_csv(energy_data, sep=r"\s+", header=None).transpose().values.squeeze().tolist()
 
         energy_layers = []
         with open(energy_layer_data, encoding="utf-8") as fp:
