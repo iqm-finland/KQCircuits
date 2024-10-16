@@ -80,7 +80,6 @@ class Chip(Element):
 
     # TSV grid parameters
     with_gnd_tsvs = Param(pdt.TypeBoolean, "Make a grid of through-silicon vias (TSVs)", False)
-    with_face1_gnd_tsvs = Param(pdt.TypeBoolean, "Make a grid of TSVs on top chip", False)
     tsv_grid_spacing = Param(pdt.TypeDouble, "TSV grid spacing (center to center)", 300, unit="μm")
     edge_from_tsv = Param(pdt.TypeDouble, "TSV grid clearance to chip edge (center to edge)", 550, unit="μm")
     tsv_edge_to_tsv_edge_separation = Param(
@@ -315,10 +314,7 @@ class Chip(Element):
             self.produce_frame(frame_parameters, frame_trans)
 
         if self.with_gnd_tsvs:
-            self._produce_ground_tsvs(faces=[0, 2])
-        if self.with_face1_gnd_tsvs:
-            tsv_box = self.get_box(1).enlarged(pya.DVector(-self.edge_from_tsv, -self.edge_from_tsv))
-            self._produce_ground_tsvs(faces=[3, 1], tsv_box=tsv_box)
+            self._produce_ground_tsvs(tsv_box=self.box.enlarged(-self.edge_from_tsv), faces=[0, 2])
 
     def get_box(self, face=0):
         """
@@ -685,10 +681,18 @@ class Chip(Element):
         """
         return self.make_grid_locations(tsv_box, delta_x=self.tsv_grid_spacing, delta_y=self.tsv_grid_spacing)
 
-    def _produce_ground_tsvs(self, faces=[0, 2], tsv_box=None):  # pylint: disable=dangerous-default-value
+    def _produce_ground_tsvs(
+        self,
+        tsv_box=None,
+        faces=[0, 2],
+    ):  # pylint: disable=dangerous-default-value
         """Produces a grid of TSVs between given faces.
 
         The TSVs avoid ground grid avoidance on both faces, and keep a distance to existing elements.
+        Args:
+            tsv_box: DBox specifying the region that should be filled with TSVs
+            faces: indices of faces in self.face_ids that should have the TSVs
+        Returns: list of DPoint coordinates where a ground TSVs will be placed
         """
         logging.info(f"Starting TSV grid generation on face(s) {[self.face_ids[face] for face in faces]}")
 
@@ -708,9 +712,10 @@ class Chip(Element):
             + [("base_metal_gap_wo_grid", face, self.tsv_edge_to_nearest_element) for face in faces]
             + [("through_silicon_via", face, self.tsv_edge_to_tsv_edge_separation) for face in faces]
         )
-        locations = self.get_ground_tsv_locations(
-            tsv_box if tsv_box is not None else self.box.enlarged(-self.edge_from_tsv)
-        )
+
+        if tsv_box is None:
+            tsv_box = self.box.enlarged(-self.edge_from_tsv)
+        locations = self.get_ground_tsv_locations(tsv_box)
 
         # Produce TSV grid
         if isinstance(locations, dict):
