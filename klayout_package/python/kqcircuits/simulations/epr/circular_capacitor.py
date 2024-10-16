@@ -116,7 +116,7 @@ def partition_regions(simulation: Simulation, prefix: str = "") -> list[Partitio
     )
 
     # if coupler angle is closer than 45 deg from the x axis, make the region cover the central trace.
-    # Otherwise the central trace will be in wg1 region
+    # Otherwise the central trace will be in port_a region
     gap_type = (
         simulation.swept_angle / 2 > 135 and abs(((coupler_p_in + coupler_p_out) / 2).x - center.x) > simulation.r_inner
     )
@@ -192,11 +192,11 @@ def partition_regions(simulation: Simulation, prefix: str = "") -> list[Partitio
             center + pya.DPoint(x_guide + metal_edge_margin, y2),
         )
         result += [
-            _init_part_reg("1wg", wg1_region),
-            _init_part_reg("2wg", wg2_region),
+            _init_part_reg("port_a", wg1_region),
+            _init_part_reg("port_b", wg2_region),
             # Making the wg bulk regions very large to contain all wg energy
-            _init_part_reg("1wg", wg1_region, mer=False, override_y_dim=100),
-            _init_part_reg("2wg", wg2_region, mer=False, override_y_dim=100),
+            _init_part_reg("port_a", wg1_region, mer=False, override_y_dim=100),
+            _init_part_reg("port_b", wg2_region, mer=False, override_y_dim=100),
         ]
 
     result += [
@@ -280,7 +280,7 @@ def correction_cuts(simulation: Simulation, prefix: str = "") -> dict[str, dict]
         # wg1
         cut_center = center + pya.DPoint(-wg_cut_x, 0)
         half_cut_length = simulation.a / 2 + simulation.b + 20
-        result[f"{prefix}1wgmer"] = {
+        result[f"{prefix}port_amer"] = {
             "p1": cut_center + pya.DPoint(0, -half_cut_length),
             "p2": cut_center + pya.DPoint(0, half_cut_length),
             "metal_edges": [
@@ -294,7 +294,7 @@ def correction_cuts(simulation: Simulation, prefix: str = "") -> dict[str, dict]
         # wg2
         cut_center = center + pya.DPoint(wg_cut_x, 0)
         half_cut_length = a2 / 2 + b2 + 20
-        result[f"{prefix}2wgmer"] = {
+        result[f"{prefix}port_bmer"] = {
             "p1": cut_center + pya.DPoint(0, -half_cut_length),
             "p2": cut_center + pya.DPoint(0, half_cut_length),
             "metal_edges": [

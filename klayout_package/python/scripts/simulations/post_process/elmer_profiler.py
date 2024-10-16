@@ -103,7 +103,9 @@ def _load_workflow_data(definition_file: Path) -> dict:
     """Load relevant parts of workflow dict"""
     with open(definition_file, "r", encoding="utf-8") as f:
         json_data = json.load(f)
-    return {key: json_data["workflow"][key] for key in ("elmer_n_processes", "elmer_n_threads", "gmsh_n_threads")}
+    workflow = json_data.get("workflow", {})
+    workflow = workflow["sbatch_parameters"] if "sbatch_parameters" in workflow else workflow
+    return {key: workflow[key] for key in ("elmer_n_processes", "elmer_n_threads", "gmsh_n_threads")}
 
 
 # Find data files

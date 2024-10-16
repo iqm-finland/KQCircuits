@@ -69,16 +69,16 @@ def _get_sbatch_time(export_tmp_paths) -> int:
                         return 3600 * int(times[0]) + 60 * int(times[1]) + int(times[2])
         return 0
 
-    sbatch_time = 0
+    sbatch_time = 600  # 10 minutes additional margin
     for d in export_tmp_paths:
         t_meshes = _get_single_sbatch_time(Path(d) / "simulation_meshes.sh")
         t = _get_single_sbatch_time(Path(d) / "simulation.sh")
         if t == 0 or t_meshes == 0:
             logging.warning("Could not extract the sbatch time limit from simulation.sh or simulation_meshes.sh")
-            logging.warning("Wait script timeout of 60 minutes will be used")
-            return 3600
+            return 0
         else:
             sbatch_time += t
+            sbatch_time += t_meshes
 
     return sbatch_time
 
@@ -159,6 +159,8 @@ def _remote_run(
     skip_patterns = r"\( " + skip_patterns + r" \)"
 
     poll_interval_str = f"{poll_interval}s" if poll_interval <= 60 else f"{round(float(poll_interval)/60, 1)} min"
+    timeout_t = _get_sbatch_time(export_tmp_paths)
+    timeout_condition = f"&& $counter -le {timeout_t} " if timeout_t else ""
     # Write script to run in the background and copy results back once simulation is finished
     wait_and_copy_back_script = str(TMP_PATH / f"fetch_remote_simulation_data_{run_uuid}.sh")
     wait_and_copy_back = f"""#!/bin/bash
@@ -177,7 +179,7 @@ def _remote_run(
     n_pd=$(echo "$jobs_states" | grep PD | wc -w)
     n_run=$(echo "$jobs_states" | grep R | wc -w)
 
-    while [[ "$n_all" -gt 0  && $counter -le {_get_sbatch_time(export_tmp_paths)} ]]
+    while [[ "$n_all" -gt 0  {timeout_condition}]]
     do
         echo -n "[ALL: $n_all, PD: $n_pd, R: $n_run] " && date +"%d-%m-%y %T"
 
@@ -240,7 +242,7 @@ def _remote_run(
             )
 
     except Exception as exc:
-        raise RuntimeError("Starting remote run failed. Please manually fetch and delete data from remote") from exc
+        raise RuntimeError("Remote run failed. Please manually fetch and delete data from remote") from exc
 
 
 def _allowed_simulations():
@@ -289,6 +291,7 @@ def remote_export_and_run(
     poll_interval: int = None,
     export_path_basename: str = None,
     quiet: bool = False,
+    export_only=False,
     args=None,
 ):
     """
@@ -302,6 +305,7 @@ def remote_export_and_run(
         export_path_basename   (str): Alternative export folder name for the simulation
                                       If None, the simulation script name will be used
         quiet                 (bool): if True all the GUI dialogs are shown, otherwise not.
+        export_only           (bool): Only exports the simulation files without running them
         args                  (list): a list of strings:
                                         - If starts with a letter and ends with ".py"  -> export script
                                         - If starts with "-" or "--"                   -> script option
@@ -346,8 +350,9 @@ def remote_export_and_run(
             export_script=export_script, export_path=export_path, quiet=quiet, args=args_for_script
         )
 
-    # Run on remote
-    _remote_run(ssh_login, script_export_paths, kqc_remote_tmp_path, detach_simulation, poll_interval)
+    if not export_only:
+        # Run on remote
+        _remote_run(ssh_login, script_export_paths, kqc_remote_tmp_path, detach_simulation, poll_interval)
 
 
 def remote_run_only(

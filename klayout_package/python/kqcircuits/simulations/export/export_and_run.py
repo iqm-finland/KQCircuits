@@ -66,6 +66,7 @@ def run_export_script(export_script: Path, export_path: Path, quiet: bool = Fals
         logging.error("--simulation-export-path is not allowed!")
         sys.exit()
 
+    print("Exporting simulation...\nThis can take a while for large parameter sweeps")
     export_cmd = (
         [sys.executable, export_script]
         + (["--simulation-export-path", str(export_path)] if export_path else [])

@@ -36,8 +36,13 @@ from kqcircuits.simulations.export.elmer.elmer_solution import ElmerEPR3DSolutio
 from kqcircuits.simulations.epr.circular_capacitor import partition_regions, correction_cuts
 
 sim_class = get_single_element_sim_class(
-    CircularCapacitor, partition_region_function=partition_regions
+    CircularCapacitor,
+    partition_region_function=partition_regions,
+    deembed_cross_sections={"port_a": "port_amer", "port_b": "port_bmer"},
 )  # pylint: disable=invalid-name
+
+# Export for running on HPC cluster with SLURM
+use_sbatch = False
 
 flip_chip = False
 etch_opposite_face = False
@@ -111,21 +116,20 @@ simulations += cross_sweep_simulation(
     sim_class,
     sim_parameters,
     {
-        "swept_angle": [
-            30,
-            120,
-            180,
-            270,
-            300,
-            320,
-            330,
-            340,
-            350,
-        ],
+        "swept_angle": [30, 180, 300, 340, 350],
     },
 )
 
-pp = [PostProcess("elmer_profiler.py"), PostProcess("epr.sh", command="sh", folder="")]
+pp = [PostProcess("elmer_profiler.py")]
+
+if use_sbatch:
+    # Simulation scripts are divided into 2 parts when run on remote and they need to be launched using source
+    pp += [
+        PostProcess("epr_meshes.sh", command="source", folder=""),
+        PostProcess("epr.sh", command="source", folder=""),
+    ]
+else:
+    pp += [PostProcess("epr.sh", command="sh", folder="")]
 
 simulations = cross_combine(simulations, solution)
 
@@ -139,16 +143,55 @@ workflow = {
     "elmer_n_processes": -1,  # Number of dependent processes (tasks) in elmer
     "elmer_n_threads": 1,  # Number of omp threads per process in elmer
 }
+
+if use_sbatch:
+    # see explanations of sbatch parameters in waveguides_sim_compare.py
+
+    # The cross-sections are ran from the same allocation as the main simulation
+    # so a bit extra time should be allocated to them
+    workflow["sbatch_parameters"] = {
+        "--account": "project_0",
+        "--partition": "large",
+        "n_workers": 5,
+        # `max_threads_per_node` is reduced from 40 to 20 to only allocate half of the CPUs per node.
+        #  Otherwise there would be either idle memory in the Gmsh phase or idle cores in the Elmer
+        # phase as our requested doesnt match the available hardware
+        "max_threads_per_node": 20,
+        "elmer_n_processes": 4,
+        "elmer_n_threads": 1,
+        "elmer_mem": "32G",
+        "elmer_time": "00:45:00",
+        "gmsh_n_threads": 4,
+        "gmsh_mem": "4G",
+        "gmsh_time": "00:35:00",
+    }
+
 export_elmer(simulations, path=dir_path, workflow=workflow, post_process=pp)
 
 correction_simulations, post_process = get_epr_correction_simulations(
     simulations, dir_path, correction_cuts, metal_height=0.2
 )
 
+if use_sbatch:
+    # Even though the cross-sections are already fast we can speed them up by redistributing the
+    # resources allocated for the main simulation. Though this is risky and needs to be manually adjusted
+    # based on the above original sbatch_parameters
+    workflow["sbatch_parameters"].update(
+        {
+            "gmsh_n_threads": 1,  # This is needed! other settings below are optional
+            # original number of cores = 5*4=20.
+            # original memory = 5*32GB = 160GB =>per new worker 160GB / 20 = 8GB (max)
+            "n_workers": 20,
+            "elmer_n_processes": 1,
+            "elmer_mem": "8G",
+        }
+    )
+
 export_elmer(
     correction_simulations,
     dir_path,
     file_prefix="epr",
+    workflow=workflow,
     post_process=post_process + [PostProcess("produce_cmatrix_table.py")],
 )
 open_with_klayout_or_default_application(export_simulation_oas(correction_simulations, dir_path, "epr"))

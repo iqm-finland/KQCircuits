@@ -122,6 +122,7 @@ def run_kqc(args, args_for_script):
                 args.poll_interval,
                 args.export_path_basename,
                 args.quiet,
+                args.export_only,
                 args_for_script,
             )
             return True
