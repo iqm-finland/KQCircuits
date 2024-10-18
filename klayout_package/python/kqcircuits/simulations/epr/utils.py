@@ -17,15 +17,30 @@
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
 from typing import Callable
+from kqcircuits.elements.element import Element
 from kqcircuits.simulations.simulation import Simulation
 
 
+EPRTarget = Simulation | Element
+
+
+def in_gui(element: EPRTarget) -> bool:
+    """``partition_regions`` and ``correction_cuts`` can be called for elements
+    when KLayout is in GUI mode, in which case element is not of type Simulation.
+    This check can be used if ``partition_regions`` and ``correction_cuts``
+    implementations use ``Simulation`` specific attributes and methods like
+    ``box`` or ``face_stack``. If True is returned, some alternative
+    attributes need to be used.
+    """
+    return not isinstance(element, Simulation)
+
+
 def extract_child_simulation(
-    simulation: Simulation,
+    simulation: EPRTarget,
     refpoint_prefix: str | None = None,
-    parameter_remap_function: Callable[[Simulation, str], any] | None = None,
+    parameter_remap_function: Callable[[EPRTarget, str], any] | None = None,
     needed_parameters: list[str] | None = None,
-):
+) -> Simulation:
     """Given a simulation object that builds multiple elements within it,
     extracts a "child simulation" which is a stub object that only contains
     minimal set of refpoints and parameters from which element specific

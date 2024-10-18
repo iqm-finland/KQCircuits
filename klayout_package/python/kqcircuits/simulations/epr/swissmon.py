@@ -19,15 +19,14 @@
 import logging
 from typing import Callable
 from kqcircuits.pya_resolver import pya
-from kqcircuits.simulations.epr.utils import extract_child_simulation
+from kqcircuits.simulations.epr.utils import extract_child_simulation, EPRTarget
 from kqcircuits.simulations.partition_region import PartitionRegion
-from kqcircuits.simulations.simulation import Simulation
 
 
 # Partition region and correction cuts definitions for Swissmon qubit
 
 
-def partition_regions(simulation: Simulation, prefix: str = "") -> list[PartitionRegion]:
+def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[PartitionRegion]:
     metal_edge_dimension = 4.0
     metal_edge_margin = pya.DPoint(metal_edge_dimension, metal_edge_dimension)
     cross_poly = pya.DPolygon([simulation.refpoints[f"epr_cross_{idx:02d}"] for idx in range(12)]).sized(
@@ -60,7 +59,7 @@ def partition_regions(simulation: Simulation, prefix: str = "") -> list[Partitio
 
     for idx in range(3):
         # Need to check if coupler is present
-        if simulation.cpl_length[idx] > 0:
+        if float(simulation.cpl_length[idx]) > 0:
             cplr_region = pya.DBox(
                 simulation.refpoints[f"epr_cplr{idx}_min"] - metal_edge_margin + _get_coupler_wg_offset(idx, "min"),
                 simulation.refpoints[f"epr_cplr{idx}_max"] + metal_edge_margin + _get_coupler_wg_offset(idx, "max"),
@@ -86,13 +85,15 @@ def partition_regions(simulation: Simulation, prefix: str = "") -> list[Partitio
     return result
 
 
-def correction_cuts(simulation: Simulation, prefix: str = "") -> dict[str, dict]:
+def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
     cross_corner = simulation.refpoints["epr_cross_09"]
     coupler_corner = (
-        simulation.refpoints["epr_cplr0_max"] if simulation.cpl_length[0] > 0 else simulation.refpoints["epr_cross_08"]
+        simulation.refpoints["epr_cplr0_max"]
+        if float(simulation.cpl_length[0]) > 0
+        else simulation.refpoints["epr_cross_08"]
     )
 
-    half_gap = simulation.gap_width[1] / 2
+    half_gap = float(simulation.gap_width[1]) / 2
     if len(set(simulation.gap_width)) > 1:
         logging.warning("Partition regions for Swissmon with varying gaps are not implemented")
         logging.warning(
@@ -110,22 +111,22 @@ def correction_cuts(simulation: Simulation, prefix: str = "") -> dict[str, dict]
     }
 
     half_gap = simulation.b / 2
-    if simulation.cpl_length[0] > 0:
-        xsection_point = simulation.cpl_gap[0] / 2 + simulation.cpl_width[0] / 2
+    if float(simulation.cpl_length[0]) > 0:
+        xsection_point = float(simulation.cpl_gap[0]) / 2 + float(simulation.cpl_width[0]) / 2
         result[f"{prefix}0cplrmer"] = {
             "p1": simulation.refpoints["port_cplr0"] + pya.DPoint(-half_cut_length + half_gap, xsection_point),
             "p2": simulation.refpoints["port_cplr0"] + pya.DPoint(half_cut_length + half_gap, xsection_point),
             "metal_edges": [{"x": half_cut_length - half_gap}, {"x": half_cut_length + half_gap, "x_reversed": True}],
         }
-    if simulation.cpl_length[1] > 0:
-        xsection_point = simulation.cpl_gap[1] / 2 + simulation.cpl_width[1] / 2
+    if float(simulation.cpl_length[1]) > 0:
+        xsection_point = float(simulation.cpl_gap[1]) / 2 + float(simulation.cpl_width[1]) / 2
         result[f"{prefix}1cplrmer"] = {
             "p1": simulation.refpoints["port_cplr1"] + pya.DPoint(xsection_point, half_cut_length - half_gap),
             "p2": simulation.refpoints["port_cplr1"] + pya.DPoint(xsection_point, -half_cut_length - half_gap),
             "metal_edges": [{"x": half_cut_length - half_gap}, {"x": half_cut_length + half_gap, "x_reversed": True}],
         }
-    if simulation.cpl_length[2] > 0:
-        xsection_point = simulation.cpl_gap[2] / 2 + simulation.cpl_width[2] / 2
+    if float(simulation.cpl_length[2]) > 0:
+        xsection_point = float(simulation.cpl_gap[2]) / 2 + float(simulation.cpl_width[2]) / 2
         result[f"{prefix}2cplrmer"] = {
             "p1": simulation.refpoints["port_cplr2"] + pya.DPoint(-half_cut_length - half_gap, xsection_point),
             "p2": simulation.refpoints["port_cplr2"] + pya.DPoint(half_cut_length - half_gap, xsection_point),
@@ -135,7 +136,7 @@ def correction_cuts(simulation: Simulation, prefix: str = "") -> dict[str, dict]
 
 
 def extract_swissmon_from(
-    simulation: Simulation, refpoint_prefix: str, parameter_remap_function: Callable[[Simulation, str], any]
+    simulation: EPRTarget, refpoint_prefix: str, parameter_remap_function: Callable[[EPRTarget, str], any]
 ):
     return extract_child_simulation(
         simulation,

@@ -381,7 +381,8 @@ def extract_pcell_data_from_views():
                 params = inst.pcell_parameters_by_name()
                 def_params = pc.__class__.get_schema()
                 for k, v in def_params.items():
-                    if params[k] == v.default:
+                    # Attempts to retain _epr_ parameter values caused crashes, so reset them for now.
+                    if k in params and (k.startswith("_epr_") or params[k] == v.default):
                         del params[k]
                 pcells.append((pc.__class__, inst.dtrans, params))
         views.append(pcells)

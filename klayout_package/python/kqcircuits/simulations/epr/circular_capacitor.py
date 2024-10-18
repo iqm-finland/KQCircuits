@@ -19,7 +19,7 @@
 import math
 from typing import Callable
 from kqcircuits.pya_resolver import pya
-from kqcircuits.simulations.epr.utils import extract_child_simulation
+from kqcircuits.simulations.epr.utils import extract_child_simulation, in_gui, EPRTarget
 from kqcircuits.simulations.partition_region import PartitionRegion
 from kqcircuits.simulations.simulation import Simulation
 from kqcircuits.util.geometry_helper import arc_points
@@ -29,11 +29,15 @@ from kqcircuits.util.geometry_helper import arc_points
 
 def _has_waveguides(simulation):
     """Determines if waveguide regions and cuts are added used"""
+    if in_gui(simulation):
+        return False
     return simulation.fixed_length > 0 or simulation.waveguide_length > 0 or not simulation.use_internal_ports
 
 
 def _is_flip_chip(simulation):
     """Determines if the geometry consists of multiple substrate layers"""
+    if in_gui(simulation):
+        return True
     return len(simulation.face_stack) > int(simulation.lower_box_height > 0) + 1
 
 
@@ -56,7 +60,7 @@ def _get_ab2(simulation):
     return a2, b2
 
 
-def partition_regions(simulation: Simulation, prefix: str = "") -> list[PartitionRegion]:
+def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[PartitionRegion]:
 
     mer_x_dim = 3.0
     mer_y_dim = 2.0
@@ -67,9 +71,13 @@ def partition_regions(simulation: Simulation, prefix: str = "") -> list[Partitio
     center = simulation.refpoints["base"]
 
     def _init_part_reg(name, region, mer=True, face=0, override_y_dim=mer_y_dim):
+        if in_gui(simulation):
+            face_id = simulation.face_ids[face]
+        else:
+            face_id = simulation.face_stack[face]
         return PartitionRegion(
             name=f"{prefix}{name}" + ("mer" if mer else "bulk"),
-            face=simulation.face_stack[face],
+            face=face_id,
             metal_edge_dimensions=mer_x_dim if mer else None,
             region=region,
             vertical_dimensions=override_y_dim,
@@ -216,7 +224,7 @@ def partition_regions(simulation: Simulation, prefix: str = "") -> list[Partitio
     return result
 
 
-def correction_cuts(simulation: Simulation, prefix: str = "") -> dict[str, dict]:
+def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
 
     # def _init_cut(center, width, edges):
     result = {}
@@ -225,10 +233,13 @@ def correction_cuts(simulation: Simulation, prefix: str = "") -> dict[str, dict]
     # Make cuts this much shorter than allowed by perfect rounding to account for discretization
     cut_length_margin = 0.5
 
+    s_to_s_gap = 0
+    z_me = 0
     r_tot = simulation.r_outer + simulation.ground_gap
     is_flip_chip = _is_flip_chip(simulation)
-    s_to_s_gap = simulation.chip_distance + 2 * simulation.metal_height
-    z_me = -simulation.substrate_height[1] - s_to_s_gap if is_flip_chip else 0
+    if not in_gui(simulation):
+        s_to_s_gap = simulation.chip_distance + 2 * simulation.metal_height
+        z_me = -simulation.substrate_height[1] - s_to_s_gap if is_flip_chip else 0
 
     a2, b2 = _get_ab2(simulation)
 
@@ -452,8 +463,8 @@ def correction_cuts(simulation: Simulation, prefix: str = "") -> dict[str, dict]
 
 
 def extract_circular_capacitor_from(
-    simulation: Simulation, refpoint_prefix: str, parameter_remap_function: Callable[[Simulation, str], any]
-):
+    simulation: EPRTarget, refpoint_prefix: str, parameter_remap_function: Callable[[EPRTarget, str], any]
+) -> Simulation:
     # fmt: off
     return extract_child_simulation(
         simulation,

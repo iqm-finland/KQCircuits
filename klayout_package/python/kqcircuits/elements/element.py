@@ -17,12 +17,16 @@
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
 
+import importlib
+import importlib.util
 import json
 from inspect import isclass
 
 from kqcircuits.defaults import default_layers, default_faces, default_parameter_values
 from kqcircuits.pya_resolver import pya, is_standalone_session
+from kqcircuits.simulations.epr.gui_config import epr_gui_visualised_partition_regions
 from kqcircuits.util.geometry_helper import get_cell_path_length
+from kqcircuits.util.geometry_json_encoder import GeometryJsonDecoder, GeometryJsonEncoder
 from kqcircuits.util.library_helper import load_libraries, to_library_name, to_module_name, element_by_class_name
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.util.refpoints import Refpoints, WaveguideToSimPort
@@ -110,6 +114,17 @@ def resolve_face(face_id, face_ids):
     return face_id if isinstance(face_id, str) else face_ids[face_id]
 
 
+def parameter_order_key(key):
+    """Sort criteria for PCell parameters.
+
+    Push ``_epr_`` parameters to the bottom of the list, otherwise sort alphabetically.
+    """
+    param_name, _ = key
+    if param_name.startswith("_epr_"):
+        return (1,)
+    return 0, param_name
+
+
 class Element(pya.PCellDeclarationHelper):
     """Element PCell declaration.
 
@@ -140,6 +155,10 @@ class Element(pya.PCellDeclarationHelper):
     etch_opposite_face = Param(pdt.TypeBoolean, "Etch avoidance shaped gap on the opposite face too", False)
     etch_opposite_face_margin = Param(pdt.TypeDouble, "Margin of the opposite face etch shape", 5, unit="μm")
 
+    _epr_show = Param(pdt.TypeBoolean, "Show geometry related to EPR simulation, if available", False)
+    _epr_cross_section_cut_layer = Param(pdt.TypeLayer, "Layer where EPR cross section cuts are placed", None)
+    _epr_cross_section_cut_width = Param(pdt.TypeDouble, "Width of the EPR cross section cuts when visualised", 0.0)
+
     def __init__(self):
         """"""
         super().__init__()
@@ -166,8 +185,8 @@ class Element(pya.PCellDeclarationHelper):
 
         # create KLayout's PCellParameterDeclaration objects
         self._param_value_map = {}
-        for name, p in sorted(cls.get_schema().items()):
-            self._param_value_map[name] = len(self._param_decls)
+        for name, p in sorted(cls.get_schema().items(), key=parameter_order_key):
+            self._param_value_map[name] = len(self._param_decls)  # pylint: disable=access-member-before-definition
             # Override default value based on default_parameter_values if needed.
             for cl in mro:
                 cls_name = cl.__qualname__
@@ -179,6 +198,28 @@ class Element(pya.PCellDeclarationHelper):
                     p = _redef_param(p, default_parameter_values[cls_name][name])
                     break
             self._add_parameter(name, p.data_type, p.description, default=p.default, **p.kwargs)
+
+        # Allocate PCell parameters for partition regions to draw in GUI.
+        # Partition region names are fetched from ``kqcircuits.simulations.epr.gui_config``
+        # First need to clear old parameters in case KQC library was reloaded
+        epr_part_reg_prefix = "_epr_part_reg_"
+        self._param_value_map = {
+            k: v for k, v in self._param_value_map.items() if not k.startswith(epr_part_reg_prefix)
+        }
+        self._param_decls = [x for x in self._param_decls if not x.name.startswith(epr_part_reg_prefix)]
+        for attr in dir(type(self)):
+            if attr.startswith(epr_part_reg_prefix):
+                delattr(type(self), attr)
+        # Now add the new parameters
+        if to_library_name(cls.__name__) in epr_gui_visualised_partition_regions:
+            for pr in epr_gui_visualised_partition_regions[to_library_name(cls.__name__)]:
+                pr_name = f"{epr_part_reg_prefix}{pr}_layer"
+                self._param_value_map[pr_name] = len(self._param_decls)
+                pr_desc = f"Layer where EPR partition region '{pr}' is placed"
+                param = Param(pdt.TypeLayer, pr_desc, None)
+                param.__set_name__(cls, pr_name)
+                setattr(type(self), pr_name, param)
+                self._add_parameter(pr_name, pdt.TypeLayer, pr_desc, default=None)
 
     @staticmethod
     def create_cell_from_shape(layout, name):
@@ -224,7 +265,7 @@ class Element(pya.PCellDeclarationHelper):
         module = to_module_name(cl.__name__)
         pname = f"{module}_parameters"
         if pname in parameters:
-            jp = dict(json.loads(parameters[pname]).items())
+            jp = dict(json.loads(parameters[pname], cls=GeometryJsonDecoder).items())
             del parameters[pname], parameters[f"_{pname}"]
             parameters = {**jp, **parameters}
 
@@ -434,8 +475,14 @@ class Element(pya.PCellDeclarationHelper):
             text = pya.DText(name, refpoint.x, refpoint.y)
             self.cell.shapes(self.get_layer("refpoints")).insert(text)
 
-    def _etch_opposite_face(self):
-        """Add opposite face etching, if enabled."""
+    def etch_opposite_face_impl(self):
+        """Implements the shape of the opposite face,
+        which is etched out if ``etch_opposite_face`` is enabled.
+
+        By default takes the contour of the shape.
+        If overriden by a class implementing the ``Element`` class,
+        a custom shape or custom behaviour can be implemented.
+        """
         if self.etch_opposite_face:
             etch_shape = pya.Region(self.cell.begin_shapes_rec(self.get_layer("ground_grid_avoidance"))).merged()
             etch_shape.size((self.etch_opposite_face_margin - self.margin) / self.layout.dbu)
@@ -453,7 +500,9 @@ class Element(pya.PCellDeclarationHelper):
 
     def post_build(self):
         """Child classes may re-define this method for post-build operations."""
-        self._etch_opposite_face()
+        self.etch_opposite_face_impl()
+        self._show_epr_cross_section_cuts()
+        self._show_epr_partition_regions()
 
     def display_text_impl(self):
         if self.display_name:
@@ -527,18 +576,8 @@ class Element(pya.PCellDeclarationHelper):
             * `docstring` is a more verbose parameter description, used in documentation generation.
             * `choices` argument is a list of `(description, value)` tuples. For convenience it also accepts
               self-describing, plain string elements, these will be converted to the expected tuple format.
-
-        For TypeLayer parameters this also defines a `name_layer` read accessor for the layer index and modifies
-        `self._layer_param_index` accordingly.
         """
         # pylint: disable=unused-argument
-
-        # special handling of layer parameters
-        if value_type == pya.PCellParameterDeclaration.TypeLayer:
-            setattr(
-                type(self), name + "_layer", pya._PCellDeclarationHelperLayerDescriptor(len(self._layer_param_index))
-            )
-            self._layer_param_index.append(len(self._param_decls))
 
         # create the PCellParameterDeclaration and add to self._param_decls
         param_decl = pya.PCellParameterDeclaration(name, value_type, description, default, unit)
@@ -617,7 +656,7 @@ class Element(pya.PCellDeclarationHelper):
         pname = f"{module}_parameters"
         json_str = getattr(self, pname)
         saved = getattr(self, f"_{pname}")
-        params = json.loads(json_str) if json_str else {}
+        params = json.loads(json_str, cls=GeometryJsonDecoder) if json_str else {}
         subtype = getattr(self, f"{module}_type")
         pd = {}
 
@@ -632,16 +671,19 @@ class Element(pya.PCellDeclarationHelper):
             for k, v in schema.items():
                 if not k.endswith("_parameters"):
                     pd[k] = getattr(self, k) if hasattr(self, k) else pformat(v)
-            json_str = json.dumps(pd)
+            json_str = json.dumps(pd, cls=GeometryJsonEncoder)
             setattr(self, pname, json_str)
             Param.get_all(abc)[pname].default = json_str
         elif saved == json_str:  # some parameters changed, update the JSON string
             for k, v in params.items():
                 pd[k] = getattr(self, k) if hasattr(self, k) else v
-            json_str = json.dumps(pd)
+            json_str = json.dumps(pd, cls=GeometryJsonEncoder)
             setattr(self, pname, json_str)
         else:  # the JSON string changed, use it to update other parameters
             for k, v in params.items():
+                if k.startswith("_epr_"):
+                    # Don't sync epr visualisation parameters
+                    continue
                 if hasattr(self, k):
                     setattr(self, k, v)
         setattr(self, f"_{pname}", json_str)
@@ -701,3 +743,59 @@ class Element(pya.PCellDeclarationHelper):
             WaveguideToSimPort(f"{simulation.face_ids[0]}_port", side="left"),
             WaveguideToSimPort(f"{simulation.face_ids[1]}_port", side=side, face=1, a=a2, b=b2),
         ]
+
+    def _show_epr_cross_section_cuts(self):
+        if not self._epr_show or self._epr_cross_section_cut_layer is None:
+            return
+        if self._epr_cross_section_cut_layer.layer < 0:
+            return
+        library_name = self.__module__.split(".", maxsplit=1)[0]
+        element_name = self.__module__.rsplit(".", maxsplit=1)[-1]
+        epr_module_path = f"{library_name}.simulations.epr.{element_name}"
+        if not importlib.util.find_spec(epr_module_path):
+            return
+        epr_layer = self.layout.layer(self._epr_cross_section_cut_layer)
+        epr_module = importlib.import_module(epr_module_path)
+        importlib.reload(epr_module)
+        assert hasattr(epr_module, "correction_cuts"), f"No 'correction_cuts' function defined in {epr_module_path}"
+        cuts = epr_module.correction_cuts(self)
+        for cut_name, cut in cuts.items():
+            cut_path = pya.DPath([cut["p1"], cut["p2"]], self._epr_cross_section_cut_width).to_itype(self.layout.dbu)
+            # Prevent .OAS saving errors by rounding integer value of path width to even value
+            cut_path.width -= cut_path.width % 2
+            cut_region = pya.Region(cut_path)
+            self.cell.shapes(epr_layer).insert(cut_region)
+            self.cell.shapes(epr_layer).insert(pya.DText(f"{cut_name}_1", cut["p1"].x, cut["p1"].y))
+            self.cell.shapes(epr_layer).insert(pya.DText(f"{cut_name}_2", cut["p2"].x, cut["p2"].y))
+
+    def _show_epr_partition_regions(self):
+        if not self._epr_show:
+            return
+        library_name = self.__module__.split(".", maxsplit=1)[0]
+        element_name = self.__module__.rsplit(".", maxsplit=1)[-1]
+        epr_module_path = f"{library_name}.simulations.epr.{element_name}"
+        if not importlib.util.find_spec(epr_module_path):
+            return
+        epr_module = importlib.import_module(epr_module_path)
+        importlib.reload(epr_module)
+        assert hasattr(epr_module, "partition_regions"), f"No 'partition_regions' function defined in {epr_module_path}"
+        for pr in epr_module.partition_regions(self):
+            if not hasattr(self, f"_epr_part_reg_{pr.name}_layer"):
+                continue
+            epr_layer_info = getattr(self, f"_epr_part_reg_{pr.name}_layer")
+            if not epr_layer_info:
+                continue
+            if epr_layer_info.layer < 0:
+                continue
+            epr_layer = self.layout.layer(self._param_values[self._param_value_map[f"_epr_part_reg_{pr.name}_layer"]])
+            region = pya.Region()
+            if isinstance(pr.region, list):
+                for r in pr.region:
+                    region += pya.Region(r.to_itype(self.layout.dbu))
+            elif isinstance(pr.region, pya.Region):
+                region = pr.region
+            else:
+                region = pya.Region(pr.region.to_itype(self.layout.dbu))
+            self.cell.shapes(epr_layer).insert(region)
+            center_point = region.bbox().to_dtype(self.layout.dbu).center()
+            self.cell.shapes(epr_layer).insert(pya.DText(pr.name, center_point.x, center_point.y))
