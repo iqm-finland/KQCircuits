@@ -548,6 +548,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.simulations.html">kqcircuits.simulations</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.epr.html">kqcircuits.simulations.epr</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.epr.example.html">kqcircuits.simulations.epr.example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.epr.smooth_capacitor.html">kqcircuits.simulations.epr.smooth_capacitor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.epr.swissmon.html">kqcircuits.simulations.epr.swissmon</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.epr.utils.html">kqcircuits.simulations.epr.utils</a></li>
 </ul>
@@ -940,7 +941,7 @@
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
 
 
-<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">cos</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">cos</span><span class="p">,</span> <span class="n">ceil</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
@@ -951,7 +952,7 @@
 
 <div class="viewcode-block" id="arc">
 <a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_curved.html#kqcircuits.elements.waveguide_coplanar_curved.arc">[docs]</a>
-<span class="k">def</span> <span class="nf">arc</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">arc</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns list of points of an arc</span>
 
 <span class="sd">    Args:</span>
@@ -959,16 +960,29 @@
 <span class="sd">        start: begin angle in radians</span>
 <span class="sd">        stop: end angle in radians</span>
 <span class="sd">        n: number of corners in full circle</span>
+<span class="sd">        mode: discretization method, 0=shortcut, 1=match length, other=detour</span>
 
 <span class="sd">    .. MARKERS_FOR_PNG 0,91 0,100</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">n_steps</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">stop</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">*</span> <span class="n">n</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">pi</span><span class="p">)),</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">step</span> <span class="o">=</span> <span class="p">(</span><span class="n">stop</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">/</span> <span class="n">n_steps</span>
-    <span class="n">r_corner</span> <span class="o">=</span> <span class="n">r</span> <span class="o">/</span> <span class="n">cos</span><span class="p">(</span><span class="n">step</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">match</span> <span class="n">mode</span><span class="p">:</span>
+        <span class="k">case</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># shortcut method, where points are on the arc</span>
+            <span class="n">end_ratio</span> <span class="o">=</span> <span class="mf">1.0</span>
+            <span class="n">r_scale</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="mf">1.0</span>
+        <span class="k">case</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># matching length method, where combined length of segments equals the analytical length of the arc</span>
+            <span class="n">end_ratio</span> <span class="o">=</span> <span class="mf">0.7339449</span>  <span class="c1"># based on trigonometric calculations and a few degree Taylor series approximation</span>
+            <span class="n">r_scale</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="mi">24</span> <span class="o">+</span> <span class="n">x</span><span class="o">**</span><span class="mi">4</span> <span class="o">*</span> <span class="mi">7</span> <span class="o">/</span> <span class="mi">5760</span>  <span class="c1"># approximation for x/2 / sin(x/2) that accepts x=0</span>
+        <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>  <span class="c1"># detour method, where segments are tangents on the arc</span>
+            <span class="n">end_ratio</span> <span class="o">=</span> <span class="mf">0.5</span>
+            <span class="n">r_scale</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">cos</span><span class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">c_steps</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">end_ratio</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># nominal constant steps at start and end</span>
+    <span class="n">n_steps</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">stop</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">*</span> <span class="n">n</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">pi</span><span class="p">)</span> <span class="o">-</span> <span class="n">c_steps</span><span class="p">),</span> <span class="n">ceil</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">c_steps</span><span class="p">))</span>
+    <span class="n">step</span> <span class="o">=</span> <span class="p">(</span><span class="n">stop</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_steps</span> <span class="o">+</span> <span class="n">c_steps</span><span class="p">)</span>
+    <span class="n">r_corner</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">r_scale</span><span class="p">(</span><span class="n">step</span><span class="p">)</span>
 
     <span class="n">pts</span> <span class="o">=</span> <span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">start</span><span class="p">),</span> <span class="n">r</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">start</span><span class="p">))]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_steps</span><span class="p">):</span>
-        <span class="n">alpha</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">step</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">step</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">end_ratio</span><span class="p">)</span>
         <span class="n">pts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">r_corner</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">alpha</span><span class="p">),</span> <span class="n">r_corner</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">alpha</span><span class="p">)))</span>
     <span class="n">pts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">stop</span><span class="p">),</span> <span class="n">r</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">stop</span><span class="p">)))</span>
     <span class="k">return</span> <span class="n">pts</span></div>
@@ -1021,6 +1035,7 @@
         <span class="n">shape</span> <span class="o">=</span> <span class="n">round_dpath_width</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">element</span><span class="o">.</span><span class="n">a</span><span class="p">),</span> <span class="n">element</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
         <span class="n">element</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;waveguide_path&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">trans</span> <span class="o">*</span> <span class="n">shape</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">add_metal</span><span class="p">:</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span><span class="n">left_inner_arc</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">right_inner_arc</span><span class="p">)))</span>
             <span class="n">element</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;base_metal_addition&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">trans</span> <span class="o">*</span> <span class="n">shape</span><span class="p">)</span>
 
         <span class="c1"># Protection layer</span>

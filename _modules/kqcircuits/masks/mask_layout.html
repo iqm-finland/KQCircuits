@@ -548,6 +548,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.simulations.html">kqcircuits.simulations</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.epr.html">kqcircuits.simulations.epr</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.epr.example.html">kqcircuits.simulations.epr.example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.epr.smooth_capacitor.html">kqcircuits.simulations.epr.smooth_capacitor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.epr.swissmon.html">kqcircuits.simulations.epr.swissmon</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.epr.utils.html">kqcircuits.simulations.epr.utils</a></li>
 </ul>
@@ -1526,6 +1527,14 @@
             <span class="n">m_kwargs</span><span class="p">[</span><span class="s2">&quot;wafer_rad&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wafer_rad&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wafer_rad</span><span class="p">)</span>
             <span class="n">m_kwargs</span><span class="p">[</span><span class="s2">&quot;edge_clearance&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;edge_clearance&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge_clearance</span><span class="p">)</span>
             <span class="n">cell_marker</span> <span class="o">=</span> <span class="n">marker</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="o">**</span><span class="n">m_kwargs</span><span class="p">)</span>
+
+            <span class="c1"># Name of the mask marker might in some cases conflict with the names</span>
+            <span class="c1"># of the chip markers, after PCells in mask are converted to static</span>
+            <span class="c1"># using convert_child_instances_to_static. This makes the exported mask layout OAS file</span>
+            <span class="c1"># to not be able to open using KLayout. If we make the name distinct, this no</span>
+            <span class="c1"># longer becomes an issue.</span>
+            <span class="n">cell_marker</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Mask </span><span class="si">{</span><span class="n">cell_marker</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+
             <span class="n">marker_transes</span> <span class="o">=</span> <span class="n">marker</span><span class="o">.</span><span class="n">get_marker_locations</span><span class="p">(</span><span class="n">cell_marker</span><span class="p">,</span> <span class="o">**</span><span class="n">m_kwargs</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">trans</span> <span class="ow">in</span> <span class="n">marker_transes</span><span class="p">:</span>
                 <span class="n">inst</span> <span class="o">=</span> <span class="n">maskextra_cell</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span><span class="n">cell_marker</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span> <span class="n">trans</span><span class="p">))</span>

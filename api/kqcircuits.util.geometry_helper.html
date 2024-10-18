@@ -551,6 +551,7 @@
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.html">kqcircuits.simulations</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.epr.html">kqcircuits.simulations.epr</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.example.html">kqcircuits.simulations.epr.example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.smooth_capacitor.html">kqcircuits.simulations.epr.smooth_capacitor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.swissmon.html">kqcircuits.simulations.epr.swissmon</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.utils.html">kqcircuits.simulations.epr.utils</a></li>
 </ul>
@@ -1034,16 +1035,14 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.util.geometry_helper.merge_points_and_match_on_edges">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.geometry_helper.</span></span><span class="sig-name descname"><span class="pre">merge_points_and_match_on_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#merge_points_and_match_on_edges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.merge_points_and_match_on_edges" title="Link to this definition"></a></dt>
-<dd><p>Merges adjacent points of layers.
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.geometry_helper.</span></span><span class="sig-name descname"><span class="pre">merge_points_and_match_on_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">regions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#merge_points_and_match_on_edges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.merge_points_and_match_on_edges" title="Link to this definition"></a></dt>
+<dd><p>Merges adjacent points of regions.
 Also goes through each polygon edge and splits the edge whenever it passes close to existing point.</p>
 <p>This function can eliminate gaps and overlaps caused by transformation to simple_polygon.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>cell</strong> – A cell object.</p></li>
-<li><p><strong>layout</strong> – A layout object</p></li>
-<li><p><strong>layers</strong> – List of layers to be considered and modified</p></li>
+<li><p><strong>regions</strong> – List of regions to be considered and modified</p></li>
 <li><p><strong>tolerance</strong> – Tolerance in pixels</p></li>
 </ul>
 </dd>

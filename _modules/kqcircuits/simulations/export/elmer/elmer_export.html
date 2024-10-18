@@ -548,6 +548,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.html">kqcircuits.simulations</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.epr.html">kqcircuits.simulations.epr</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.epr.example.html">kqcircuits.simulations.epr.example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.epr.smooth_capacitor.html">kqcircuits.simulations.epr.smooth_capacitor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.epr.swissmon.html">kqcircuits.simulations.epr.swissmon</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.epr.utils.html">kqcircuits.simulations.epr.utils</a></li>
 </ul>
@@ -1468,7 +1469,7 @@
                     <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;echo &quot;--------------------------------------------&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
                     <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&quot;./</span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">script_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
-            <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">get_post_process_command_lines</span><span class="p">(</span><span class="n">post_process</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">json_filenames</span><span class="p">))</span>
+            <span class="n">main_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">get_post_process_command_lines</span><span class="p">(</span><span class="n">post_process</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">json_filenames</span><span class="p">))</span>
 
     <span class="c1"># change permission</span>
     <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">main_script_filename</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">main_script_filename</span><span class="p">)</span><span class="o">.</span><span class="n">st_mode</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IEXEC</span><span class="p">)</span>

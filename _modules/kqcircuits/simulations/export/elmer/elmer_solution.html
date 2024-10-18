@@ -548,6 +548,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.html">kqcircuits.simulations</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.epr.html">kqcircuits.simulations.epr</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.epr.example.html">kqcircuits.simulations.epr.example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.epr.smooth_capacitor.html">kqcircuits.simulations.epr.smooth_capacitor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.epr.swissmon.html">kqcircuits.simulations.epr.swissmon</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.epr.utils.html">kqcircuits.simulations.epr.utils</a></li>
 </ul>
@@ -968,7 +969,10 @@
 <span class="sd">            is reserved for setting global maximal element length. For example, if the dictionary is given as</span>
 <span class="sd">            {&#39;substrate&#39;: 10, &#39;substrate&amp;vacuum&#39;: [2, 5], &#39;global_max&#39;: 100}, then the maximal mesh element length is 10</span>
 <span class="sd">            inside the substrate and 2 on region which is less than 5 units away from the substrate-vacuum interface.</span>
-<span class="sd">            Outside these regions, the mesh element size can increase up to 100.</span>
+<span class="sd">            Outside these regions, the mesh element size can increase up to 100. mesh_size can contain a sub dict</span>
+<span class="sd">            called optimize that contains keys: &#39;method&#39;, &#39;force&#39;, &#39;niter&#39; and &#39;dimTags&#39;, see Gmsh manual for details,</span>
+<span class="sd">            api used is gmsh.model.mesh.optimize. By default there is no optimization, but if &quot;optimize&quot; key exists,</span>
+<span class="sd">            then &quot;Netgen&quot; is used by default as method.</span>
 <span class="sd">        vtu_output: Output vtu files to view fields in Paraview.</span>
 <span class="sd">                    Turning this off will make the simulations slightly faster</span>
 
@@ -1141,6 +1145,9 @@
 <span class="sd">        convergence_tolerance: Convergence tolerance of the iterative solver.</span>
 <span class="sd">        max_iterations: Maximum number of iterations for the iterative solver.</span>
 <span class="sd">        linear_system_preconditioning: Choice of preconditioner before using an iterative linear system solver</span>
+<span class="sd">        sequential_signal_excitation: If True, each separate signal is excited sequentially while grounding the others.</span>
+<span class="sd">                                      If False, runs a single simulation with all signals set to 1V.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">tool</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;epr_3d&quot;</span>
@@ -1149,7 +1156,8 @@
     <span class="n">linear_system_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;mg&quot;</span>
     <span class="n">convergence_tolerance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0e-9</span>
     <span class="n">max_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span>
-    <span class="n">linear_system_preconditioning</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ILU0&quot;</span></div>
+    <span class="n">linear_system_preconditioning</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ILU0&quot;</span>
+    <span class="n">sequential_signal_excitation</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span></div>
 
 
 

@@ -7,5 +7,6 @@ kqcircuits.simulations.epr
 .. toctree::
 
    kqcircuits.simulations.epr.example
+   kqcircuits.simulations.epr.smooth_capacitor
    kqcircuits.simulations.epr.swissmon
    kqcircuits.simulations.epr.utils

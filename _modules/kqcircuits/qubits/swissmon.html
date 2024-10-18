@@ -548,6 +548,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.simulations.html">kqcircuits.simulations</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.epr.html">kqcircuits.simulations.epr</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.epr.example.html">kqcircuits.simulations.epr.example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.epr.smooth_capacitor.html">kqcircuits.simulations.epr.smooth_capacitor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.epr.swissmon.html">kqcircuits.simulations.epr.swissmon</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.epr.utils.html">kqcircuits.simulations.epr.utils</a></li>
 </ul>
@@ -945,7 +946,7 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.qubits.qubit</span> <span class="kn">import</span> <span class="n">Qubit</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.refpoints</span> <span class="kn">import</span> <span class="n">JunctionSimPort</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.refpoints</span> <span class="kn">import</span> <span class="n">JunctionSimPort</span><span class="p">,</span> <span class="n">WaveguideToSimPort</span>
 
 
 <div class="viewcode-block" id="Swissmon">
@@ -1140,7 +1141,9 @@
 <a class="viewcode-back" href="../../../api/kqcircuits.qubits.swissmon.html#kqcircuits.qubits.swissmon.Swissmon.get_sim_ports">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_sim_ports</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">simulation</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">JunctionSimPort</span><span class="p">()]</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="n">JunctionSimPort</span><span class="p">()]</span> <span class="o">+</span> <span class="p">[</span>
+            <span class="n">WaveguideToSimPort</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;port_cplr</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="s2">&quot;top&quot;</span><span class="p">,</span> <span class="s2">&quot;right&quot;</span><span class="p">])</span>
+        <span class="p">]</span></div>
 </div>
 
 </pre></div>

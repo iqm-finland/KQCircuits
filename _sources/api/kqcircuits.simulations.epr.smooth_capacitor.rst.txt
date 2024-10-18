@@ -1,0 +1,12 @@
+:github_url: hide
+
+kqcircuits.simulations.epr.smooth\_capacitor
+============================================
+
+.. automodule:: kqcircuits.simulations.epr.smooth_capacitor
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.simulations.epr.smooth_capacitor
+.. image:: ../pcell_images/kqcircuits.simulations.epr.smooth_capacitor.png
