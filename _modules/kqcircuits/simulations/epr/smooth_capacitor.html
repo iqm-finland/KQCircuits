@@ -547,6 +547,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../api/kqcircuits.simulations.html">kqcircuits.simulations</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.simulations.epr.html">kqcircuits.simulations.epr</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.simulations.epr.circular_capacitor.html">kqcircuits.simulations.epr.circular_capacitor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.simulations.epr.example.html">kqcircuits.simulations.epr.example</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.simulations.epr.smooth_capacitor.html">kqcircuits.simulations.epr.smooth_capacitor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.simulations.epr.swissmon.html">kqcircuits.simulations.epr.swissmon</a></li>
@@ -943,35 +944,38 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.partition_region</span> <span class="kn">import</span> <span class="n">PartitionRegion</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.smooth_capacitor</span> <span class="kn">import</span> <span class="n">SmoothCapacitor</span>
 
 
 <span class="c1"># Partition region and correction cuts definitions for Swissmon qubit</span>
-<span class="n">vertical_dimension</span> <span class="o">=</span> <span class="mf">3.0</span>
-<span class="n">metal_edge_dimension</span> <span class="o">=</span> <span class="mf">4.0</span>
+<span class="n">vertical_dimension</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">metal_edge_dimension</span> <span class="o">=</span> <span class="mf">2.0</span>
 
 
 <div class="viewcode-block" id="partition_regions">
 <a class="viewcode-back" href="../../../../api/kqcircuits.simulations.epr.smooth_capacitor.html#kqcircuits.simulations.epr.smooth_capacitor.partition_regions">[docs]</a>
 <span class="k">def</span> <span class="nf">partition_regions</span><span class="p">(</span><span class="n">simulation</span><span class="p">:</span> <span class="n">Simulation</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">PartitionRegion</span><span class="p">]:</span>
 
-    <span class="n">base_rf</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]</span>
     <span class="n">port_a_rf</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;port_a&quot;</span><span class="p">]</span>
     <span class="n">port_b_rf</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;port_b&quot;</span><span class="p">]</span>
 
-    <span class="n">scale</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">finger_width</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">finger_gap</span>
-    <span class="n">s_len</span> <span class="o">=</span> <span class="n">scale</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">simulation</span><span class="o">.</span><span class="n">finger_control</span> <span class="o">-</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># length of straight segment</span>
-    <span class="n">width</span> <span class="o">=</span> <span class="n">scale</span> <span class="o">*</span> <span class="n">simulation</span><span class="o">.</span><span class="n">finger_control</span> <span class="o">-</span> <span class="n">simulation</span><span class="o">.</span><span class="n">finger_width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">simulation</span><span class="o">.</span><span class="n">finger_gap</span> <span class="o">/</span> <span class="mi">2</span>
-
-    <span class="n">box_dp</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">s_len</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">finger_width</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">finger_gap</span><span class="p">,</span> <span class="n">width</span><span class="p">)</span>
-
     <span class="n">a2</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">a</span> <span class="k">if</span> <span class="n">simulation</span><span class="o">.</span><span class="n">a2</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">simulation</span><span class="o">.</span><span class="n">a2</span>
     <span class="n">b2</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">b</span> <span class="k">if</span> <span class="n">simulation</span><span class="o">.</span><span class="n">b2</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">simulation</span><span class="o">.</span><span class="n">b2</span>
-    <span class="n">rr</span> <span class="o">=</span> <span class="n">b2</span> <span class="o">+</span> <span class="n">a2</span> <span class="o">/</span> <span class="mi">2</span>
-    <span class="n">rr</span> <span class="o">=</span> <span class="p">(</span><span class="n">rr</span> <span class="o">+</span> <span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">finger_gap</span> <span class="o">+</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">simulation</span><span class="o">.</span><span class="n">finger_width</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">rr</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">finger_width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">ground_gap</span>
     <span class="n">rr</span> <span class="o">/=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span>
 
-    <span class="n">box</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">base_rf</span> <span class="o">-</span> <span class="n">box_dp</span><span class="p">,</span> <span class="n">base_rf</span> <span class="o">+</span> <span class="n">box_dp</span><span class="p">)</span>
-    <span class="n">box_rounded</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span><span class="o">.</span><span class="n">rounded_corners</span><span class="p">(</span><span class="n">rr</span><span class="p">,</span> <span class="n">rr</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+    <span class="c1"># Use modified SmoothCapacitor geometry to obtain partition regions on fingers</span>
+    <span class="n">trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">center</span><span class="p">())</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
+    <span class="n">tmp_layout</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Layout</span><span class="p">()</span>
+    <span class="n">tmp_cell</span> <span class="o">=</span> <span class="n">SmoothCapacitor</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+        <span class="n">tmp_layout</span><span class="p">,</span>
+        <span class="n">margin</span><span class="o">=-</span><span class="n">simulation</span><span class="o">.</span><span class="n">ground_gap</span> <span class="o">-</span> <span class="n">simulation</span><span class="o">.</span><span class="n">finger_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">fixed_length</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">finger_control</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">finger_control</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">box_rounded</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">tmp_cell</span><span class="o">.</span><span class="n">begin_shapes_rec</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">)))</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span>
+        <span class="n">trans</span>
+    <span class="p">)</span>
 
     <span class="n">port_a_len</span> <span class="o">=</span> <span class="mi">11</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">waveguide_length</span> <span class="o">+</span> <span class="n">metal_edge_dimension</span>  <span class="c1"># 11 is the hardcoded port dimension</span>
     <span class="n">port_a_width</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">a</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">simulation</span><span class="o">.</span><span class="n">b</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">metal_edge_dimension</span>

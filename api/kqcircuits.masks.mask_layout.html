@@ -550,6 +550,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.html">kqcircuits.simulations</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.epr.html">kqcircuits.simulations.epr</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.circular_capacitor.html">kqcircuits.simulations.epr.circular_capacitor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.example.html">kqcircuits.simulations.epr.example</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.smooth_capacitor.html">kqcircuits.simulations.epr.smooth_capacitor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.swissmon.html">kqcircuits.simulations.epr.swissmon</a></li>
@@ -974,7 +975,11 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="kqcircuits.masks.mask_layout.MaskLayout.chips_map">
 <span class="sig-name descname"><span class="pre">chips_map</span></span><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.chips_map" title="Link to this definition"></a></dt>
-<dd><p>List of lists (2D-array) of strings, each string is a chip name (or — for no chip)</p>
+<dd><p>List of lists (2D-array) of strings, each string is a chip name (or — for no chip)
+or a dictionary with keys as pya.DPoints representing chip coordinate and as value a dictionary containing
+the keys chip_name, local_chip_trans and position_label.
+example: {pya.DPoint(-500,1000):{‘chip_name’: ‘ABC’,
+‘local_chip_trans’: pya.DTrans(pya.DVector(1800, -1800)) * pya.DTrans().M90 , ‘position_label’:’H08’}}</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -1173,7 +1178,8 @@ for each chip that was actually added to the mask.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.masks.mask_layout.MaskLayout.add_chips_map">
 <span class="sig-name descname"><span class="pre">add_chips_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chips_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align_to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chip_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chip_trans</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/masks/mask_layout.html#MaskLayout.add_chips_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.add_chips_map" title="Link to this definition"></a></dt>
-<dd><p>Add additional chip maps to the main chip map.</p>
+<dd><p>Add additional chip maps to the main chip map.
+Only used when the main chip map is not a dictionary.</p>
 <p>The specified extra chip map, a.k.a. sub-grid, will be attached to the main grid. It may use
 different chip size than the main grid. For convenience left and rigtht sub-grids will be
 rotated 90 degrees clockwise.</p>
@@ -1206,28 +1212,49 @@ area covered by the mask.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.masks.mask_layout.MaskLayout.overwrite_chips_by_position_label">
-<span class="sig-name descname"><span class="pre">overwrite_chips_by_position_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chips_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/masks/mask_layout.html#MaskLayout.overwrite_chips_by_position_label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.overwrite_chips_by_position_label" title="Link to this definition"></a></dt>
-<dd><p>Overwrites chips with ones configured to be placed at specific label positions.</p>
-<p>Chips specified in the chips_placed_by_position_label dictionary replace existing chips with the same position
-label</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>chips_dict</strong> – {(x, y): (chip_name, _, bbox, dtrans, position_label, mask_layout)}</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.masks.mask_layout.MaskLayout.insert_chips">
 <span class="sig-name descname"><span class="pre">insert_chips</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/masks/mask_layout.html#MaskLayout.insert_chips"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.insert_chips" title="Link to this definition"></a></dt>
 <dd><p>Insert chips after resolving their position labels</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.masks.mask_layout.MaskLayout.generate_position_label">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">generate_position_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chip_placement_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/masks/mask_layout.html#MaskLayout.generate_position_label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.generate_position_label" title="Link to this definition"></a></dt>
+<dd><p>Generate a position label based on the coordinate of each chip.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chip_placement_list</strong> – list of lists [[chip_size, chip_coordinate, chip_name, position_label]]</p></li>
+<li><p><strong>unit_x</strong> – minimum chip x dimension</p></li>
+<li><p><strong>unit_y</strong> – minimum chip y dimension</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Returns: Dictionary with the global coordinates of each chip of the sub array. It has the form</dt><dd><p>{(coord_x, coord_y): {‘chip_name’: name, ‘position_label’: xxx}}</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.masks.mask_layout.MaskLayout.generate_and_insert_chip_copy_labels">
+<span class="sig-name descname"><span class="pre">generate_and_insert_chip_copy_labels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels_cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_name_for_chip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/masks/mask_layout.html#MaskLayout.generate_and_insert_chip_copy_labels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.generate_and_insert_chip_copy_labels" title="Link to this definition"></a></dt>
+<dd><p>Inserts chip copy labels to all chips in this mask layout and its submasks</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>labels_cell</strong> – Cell to which the labels are inserted</p></li>
+<li><p><strong>layers</strong> – list of layer names (without face_ids) where the labels are produced</p></li>
+<li><p><strong>mask_name_for_chip</strong> – mask name to place on each chip, or None (default) to not add mask names to the chip.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.masks.mask_layout.MaskLayout.insert_chip_copy_labels">
 <span class="sig-name descname"><span class="pre">insert_chip_copy_labels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels_cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_name_for_chip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/masks/mask_layout.html#MaskLayout.insert_chip_copy_labels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.insert_chip_copy_labels" title="Link to this definition"></a></dt>
-<dd><p>Inserts chip copy labels to all chips in this mask layout and its submasks</p>
+<dd><p>Inserts position labels and mask name into chip frames, and then updates self.chip_copies dictionary</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
