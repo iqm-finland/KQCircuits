@@ -136,6 +136,7 @@ class EdgePort(Port):
         face: int = 0,
         junction: bool = False,
         size=None,
+        deembed_cross_section: str = None,
     ):
         """
         Args:
@@ -150,8 +151,10 @@ class EdgePort(Port):
             junction: Whether this port models a SQUID/Junction. Used in EPR calculations.
             size: Width and height of the port to override Simulation.port_size. Optionally, the size can be set as a
                 list specifying the extensions from the center of the port to left, right, down and up, respectively.
+            deembed_cross_section: name of the port described by a cross-section
         """
         super().__init__(number, resistance, reactance, inductance, capacitance, face, junction)
         self.signal_location = signal_location
         self.deembed_len = deembed_len
         self.size = size
+        self.deembed_cross_section = deembed_cross_section

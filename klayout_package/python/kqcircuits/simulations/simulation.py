@@ -976,6 +976,7 @@ class Simulation:
         airbridge=False,
         face=0,
         etch_opposite_face=False,
+        deembed_cross_section=None,
         **port_kwargs,
     ):
         """Create a waveguide connection from some `location` to a port, and add the corresponding port to
@@ -1058,7 +1059,7 @@ class Simulation:
                 ground_point = signal_point - internal_port_length * out_direction
                 port = InternalPort(port_nr, signal_point, ground_point, face=face, etch_width=a + b, **port_kwargs)
             else:
-                port = EdgePort(port_nr, port_edge_point, face=face)
+                port = EdgePort(port_nr, port_edge_point, face=face, deembed_cross_section=deembed_cross_section)
 
         else:  # internal port at the end of straight waveguide segment
             signal_point = location + waveguide_length * direction

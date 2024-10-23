@@ -43,10 +43,14 @@ use_xsection = True
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
 # Simulation parameters
-sim_class = get_single_element_sim_class(SmoothCapacitor, partition_region_function=partition_regions)
+sim_class = get_single_element_sim_class(
+    SmoothCapacitor,
+    partition_region_function=partition_regions,
+    deembed_cross_sections={"port_a": "port_amer", "port_b": "port_bmer"},
+)
 sim_parameters = {
     "name": "smooth_capacitor",
-    "box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(1000, 1000)),
+    "box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(400, 400)),
     "tls_sheet_approximation": True,
     "tls_layer_thickness": 0.01,
     "detach_tls_sheets_from_body": False,  # elmer knows how to use the non-detached surfaces
@@ -62,6 +66,7 @@ sim_parameters = {
     "b": 6,
     "a2": 12,
     "b2": 8,
+    "use_internal_ports": False,
 }
 
 # Get layout

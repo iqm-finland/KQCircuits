@@ -1082,6 +1082,9 @@ def sif_epr_3d(json_data: dict[str, Any], folder_path: Path, vtu_name: str | Pat
         # set all capacitance bodies to 1
         cbody_map = dict.fromkeys(cbody_map, 1)
 
+    with open(f'{json_data["name"]}_cbody_map.json', "w", encoding="utf-8") as f:
+        json.dump(cbody_map, f)
+
     n_excitations = max(cbody_map.values())
     excitation_str = "Capacitance Body = integer" if c_matrix_output else "Potential = Real"
 
@@ -1213,6 +1216,9 @@ def sif_capacitance(
     signals_boundaries = [f"{s}_boundary" for s in signals] if dim == 2 else signals
 
     cbody_map = _get_cbody_map(signals_boundaries)
+
+    with open(f'{json_data["name"]}_cbody_map.json', "w", encoding="utf-8") as f:
+        json.dump(cbody_map, f)
 
     n_boundaries = 0
     if len(ground_boundaries) > 0:

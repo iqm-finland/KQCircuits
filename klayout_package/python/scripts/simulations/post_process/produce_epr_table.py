@@ -44,6 +44,9 @@ if len(sys.argv) > 1:
 
 groups = pp_data.get("groups", [])
 region_corrections = pp_data.get("region_corrections", {})
+deembed_lens = pp_data.get("deembed_lens")
+deembed_cross_sections = pp_data.get("deembed_cross_sections")
+deembed = deembed_cross_sections is not None and deembed_lens is not None
 
 
 def _get_ith(d, i):
@@ -101,6 +104,43 @@ def get_mer_coefficients(simulation, region):
     return coefficient
 
 
+def get_deembed_p_dict(simulation, region, deembed_len, total_energy):
+    correction_key = region_corrections.get(region)
+    if correction_key is None:
+        return None
+
+    corr_key = "_" + correction_key
+    corr_file = {f for f in correction_files if corr_key in f and simulation.startswith(f[: f.find(corr_key)])}
+    if len(corr_file) > 1:
+        corr_file = {f for f in corr_file if simulation == f[: f.find(corr_key)]}
+    if not corr_file:
+        print(f"Expected correction file not found with keys {simulation} and {correction_key}.")
+        return None
+    if len(corr_file) > 1:
+        print(f"Multiple matching correction files found with keys {simulation} and {correction_key}.")
+        return None
+
+    with open(corr_file.pop(), "r", encoding="utf-8") as f:
+        res = json.load(f)
+    energy_keys = [k for k, v in res.items() if k.startswith("E_")]
+    e_scale = deembed_len * 1e-6  # um scale
+
+    # TODO: find the correct deembed solution in `get_deembed_p_dict` in case of
+    # multiple signals are excited. The information for that is already provided at
+    # `find_deembed_signals`
+    deembed_dict = {
+        f"p_{group}": e_scale
+        * sum(_get_ith(res[k], 0) for k in energy_keys if group.lower() in k.lower())
+        / total_energy
+        for group in groups
+    }
+
+    with open(f"p_deembed_{simulation}_{region}.json", "w", encoding="utf-8") as f:
+        json.dump(deembed_dict, f)
+
+    return deembed_dict
+
+
 def get_results_list(results):
     """Transforms a single dictionary with list values to a list of dictionaries with scalar values"""
     energy_results = {
@@ -134,7 +174,7 @@ if result_files:
 
     # Load result data
     epr_dict = {}
-    for original_key, result_file in zip(list(parameter_values.keys()), result_files):
+    for i, (original_key, result_file) in enumerate(zip(list(parameter_values.keys()), result_files)):
         with open(result_file, "r", encoding="utf-8") as f:
             result_json = json.load(f)
 
@@ -234,6 +274,51 @@ if result_files:
                 epr_dict[key].update(
                     {f"p_{group}": sum(v for k, v in epr_dict[key].items() if group in k) for group in groups}
                 )
+            if deembed:
+
+                def find_deembed_signals(simulation, deembed_cs, result_id):
+                    with open(f"{simulation}_cbody_map.json", "r", encoding="utf-8") as f:
+                        cbody_map = json.load(f)
+
+                    with open(f"{simulation}_{deembed_cs}_cbody_map.json", "r", encoding="utf-8") as f:
+                        cbody_map_cs = json.load(f)
+
+                    excited_signals = []
+                    for k, v in cbody_map.items():
+                        if result_id == v:
+                            excited_signals.append(k)
+
+                    excited_signals_cs = []
+                    for k, v in cbody_map_cs.items():
+                        for excited_signal in excited_signals:
+                            if excited_signal in k:
+                                excited_signals_cs.append({excited_signal: k})
+
+                    return excited_signals_cs
+
+                if original_key not in deembed_lens:
+                    print("`deembed_lens` not found in correction.json, something might not work correctly!")
+                if original_key not in deembed_cross_sections:
+                    print("`deembed_cross_sections` not found in correction.json, something might not work correctly!")
+                deembed_len_list = deembed_lens[original_key]
+                deembed_cross_section_list = deembed_cross_sections[original_key]
+                for deembed_len, deembed_cs in zip(deembed_len_list, deembed_cross_section_list):
+                    excited_signals_cs = find_deembed_signals(original_key, deembed_cs, result_id)
+                    deembed_dict = get_deembed_p_dict(original_key, deembed_cs, deembed_len, total_energy)
+                    # for now, if the model does not have signals matching to the solution, then
+                    # let's just scale the deembed participation to zero because in reality that
+                    # port is not excited, but in the case of only one signal, the case where
+                    # port signal is zero, is not computed.
+                    # TODO: find the correct deembed solution in `get_deembed_p_dict` in case of
+                    # multiple signals are excited
+                    port_excited = 0 if len(excited_signals_cs) == 0 else 1
+                    for k, v in deembed_dict.items():
+                        epr_dict[key][f"deembed_{k}_{deembed_cs}"] = v * port_excited
+
+                for group in groups:
+                    epr_dict[key][f"deembed_p_{group}"] = sum(
+                        v for k, v in epr_dict[key].items() if k.startswith(f"deembed_p_{group}")
+                    )
 
             epr_dict[key]["E_total"] = total_energy
 

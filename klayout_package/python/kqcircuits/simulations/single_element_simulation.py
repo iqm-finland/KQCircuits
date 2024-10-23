@@ -27,7 +27,9 @@ from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.util.refpoints import RefpointToInternalPort, RefpointToEdgePort, WaveguideToSimPort, JunctionSimPort
 
 
-def _get_build_function(element_class, ignore_ports, transformation_from_center, sim_junction_type):
+def _get_build_function(
+    element_class, ignore_ports, transformation_from_center, sim_junction_type, deembed_cross_sections
+):
     def _build_for_element_class(self):
         if sim_junction_type not in junction_type_choices:
             raise ValueError(
@@ -45,39 +47,47 @@ def _get_build_function(element_class, ignore_ports, transformation_from_center,
         _, refp = self.insert_cell(simulation_cell, element_trans, rec_levels=None)
         self.refpoints = refp
 
+        if deembed_cross_sections is not None:
+            deembed_cs_names = deembed_cross_sections.keys()
+
         # Add ports
         port_i = 0
         for port in element_class.get_sim_ports(self):
             if ignore_ports is not None and port.refpoint in ignore_ports:
                 continue
 
+            if deembed_cross_sections is not None and port.refpoint in deembed_cs_names:
+                port.deembed_cross_section = deembed_cross_sections[port.refpoint]
+
             if isinstance(port, RefpointToInternalPort):
                 self.ports.append(
                     InternalPort(
-                        (port_i := port_i + 1),
-                        refp[port.refpoint],
-                        None if not port.ground_refpoint else refp[port.ground_refpoint],
-                        port.resistance,
-                        port.reactance,
-                        port.inductance,
-                        port.capacitance,
-                        port.face,
-                        port.junction,
-                        port.signal_layer,
+                        number=(port_i := port_i + 1),
+                        signal_location=refp[port.refpoint],
+                        ground_location=None if not port.ground_refpoint else refp[port.ground_refpoint],
+                        resistance=port.resistance,
+                        reactance=port.reactance,
+                        inductance=port.inductance,
+                        capacitance=port.capacitance,
+                        face=port.face,
+                        junction=port.junction,
+                        signal_layer=port.signal_layer,
                     )
                 )
             elif isinstance(port, RefpointToEdgePort):
                 self.ports.append(
                     EdgePort(
-                        (port_i := port_i + 1),
-                        refp[port.refpoint],
-                        port.resistance,
-                        port.reactance,
-                        port.inductance,
-                        port.capacitance,
-                        port.deembed_len,
-                        port.face,
-                        port.junction,
+                        number=(port_i := port_i + 1),
+                        signal_location=refp[port.refpoint],
+                        resistance=port.resistance,
+                        reactance=port.reactance,
+                        inductance=port.inductance,
+                        capacitance=port.capacitance,
+                        deembed_len=port.deembed_len,
+                        face=port.face,
+                        junction=port.junction,
+                        size=port.size,
+                        deembed_cross_section=port.deembed_cross_section,
                     )
                 )
             elif isinstance(port, WaveguideToSimPort):
@@ -97,6 +107,7 @@ def _get_build_function(element_class, ignore_ports, transformation_from_center,
                     waveguide_length=port.waveguide_length,
                     face=port.face,
                     airbridge=port.airbridge,
+                    deembed_cross_section=port.deembed_cross_section,
                 )
 
             elif isinstance(port, JunctionSimPort):
@@ -125,6 +136,7 @@ def get_single_element_sim_class(
     transformation_from_center: Callable[[pya.Cell], pya.DTrans] | None = None,
     partition_region_function: Callable[[Simulation], list[PartitionRegion]] | None = None,
     sim_junction_type: str = "Sim",
+    deembed_cross_sections: dict[str] = None,
 ) -> type[Simulation]:
     """Formulates a simulation class containing a single cell of a given Element class
 
@@ -139,6 +151,10 @@ def get_single_element_sim_class(
             The function should not cause any side-effects, i.e. change the cell parameters
         partition_region_function: optional. Function that the simulation instance will use to define
             partition regions, which may look up instances parameters and refpoints to derive the regions.
+        deembed_cross_sections: optional dictionary for cross-section simulation that can be used for deembeding.
+            The naming convention in the dictionary is `deembed_cross_sections[port_refpoint]=cross_section_name`,
+            where `cross_section_name` is the name given to the correction cuts. For example, see
+            `simulation.epr.smooth_capacitor.py`, deembed_cross_sections['port_a']='port_amer'.
     """
     overriden_class_attributes = {
         "separate_island_internal_ports": Param(
@@ -148,7 +164,9 @@ def get_single_element_sim_class(
         ),
         "junction_inductance": Param(pdt.TypeList, "Junction inductance (if junction exists)", 11.497e-9, unit="H"),
         "junction_capacitance": Param(pdt.TypeList, "Junction capacitance (if junction exists)", 0.1e-15, unit="F"),
-        "build": _get_build_function(element_class, ignore_ports, transformation_from_center, sim_junction_type),
+        "build": _get_build_function(
+            element_class, ignore_ports, transformation_from_center, sim_junction_type, deembed_cross_sections
+        ),
     }
     if partition_region_function:
         overriden_class_attributes["get_partition_regions"] = partition_region_function

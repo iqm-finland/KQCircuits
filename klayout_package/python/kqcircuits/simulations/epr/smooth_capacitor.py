@@ -54,15 +54,27 @@ def partition_regions(simulation: Simulation, prefix: str = "") -> list[Partitio
     port_a_width = simulation.a + 2 * simulation.b + 2 * metal_edge_dimension
     port_a_middle = port_a_rf - pya.DPoint(port_a_len / 2.0, 0)
     port_a_dp = pya.DPoint(port_a_len / 2.0, port_a_width / 2)
-    port_a_region = pya.DBox(port_a_middle - port_a_dp, port_a_middle + port_a_dp)
 
     port_b_len = 11 + simulation.waveguide_length + metal_edge_dimension  # 11 is the hardcoded port dimension
     port_b_width = a2 + 2 * b2 + 2 * metal_edge_dimension
     port_b_middle = port_b_rf + pya.DPoint(port_b_len / 2.0, 0)
     port_b_dp = pya.DPoint(port_b_len / 2.0, port_b_width / 2)
-    port_b_region = pya.DBox(port_b_middle - port_b_dp, port_b_middle + port_b_dp)
 
-    result = [
+    if simulation.use_internal_ports:
+        port_a_region = pya.DBox(port_a_middle - port_a_dp, port_a_middle + port_a_dp)
+        port_b_region = pya.DBox(port_b_middle - port_b_dp, port_b_middle + port_b_dp)
+    else:
+        port_a_dpx_edge = pya.DPoint(-simulation.box.width() / 2.0, 0.0)
+        port_a_dpy = pya.DPoint(0.0, port_a_width / 2)
+        port_a_middley = pya.DPoint(0, port_a_middle.y)
+        port_a_region = pya.DBox(port_a_dpx_edge + port_a_middley - port_a_dpy, port_a_middle + port_a_dp)
+
+        port_b_dpx_edge = pya.DPoint(simulation.box.width(), 0.0)
+        port_b_dpy = pya.DPoint(0.0, port_b_width / 2)
+        port_b_middley = pya.DPoint(0, port_b_middle.y)
+        port_b_region = pya.DBox(port_b_middle - port_b_dp, port_b_dpx_edge + port_b_middley + port_b_dpy)
+
+    port_regions = [
         PartitionRegion(
             name=f"{prefix}port_bmer",
             face=simulation.face_ids[0],
@@ -95,6 +107,9 @@ def partition_regions(simulation: Simulation, prefix: str = "") -> list[Partitio
             vertical_dimensions=vertical_dimension,
             visualise=True,
         ),
+    ]
+
+    result = port_regions + [
         PartitionRegion(
             name=f"{prefix}fingersmer",
             face=simulation.face_ids[0],

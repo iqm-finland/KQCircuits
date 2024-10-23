@@ -142,15 +142,28 @@ class RefpointToEdgePort(RefpointToSimPort):
         face=0,
         deembed_len=None,
         junction=False,
+        size=None,
+        deembed_cross_section=None,
     ):
         super().__init__(refpoint, face)
-        self.resistance, self.reactance, self.inductance, self.capacitance, self.deembed_len, self.junction = (
+        (
+            self.resistance,
+            self.reactance,
+            self.inductance,
+            self.capacitance,
+            self.deembed_len,
+            self.junction,
+            self.size,
+            self.deembed_cross_section,
+        ) = (
             resistance,
             reactance,
             inductance,
             capacitance,
             deembed_len,
             junction,
+            size,
+            deembed_cross_section,
         )
 
 
@@ -176,6 +189,7 @@ class WaveguideToSimPort(RefpointToSimPort):
         b: Conductor gap width. Defaults to the value of the `b` parameter
         over_etching: Expansion of gaps. Defaults to the value of the `over_etching` parameter
         airbridge: if True, an airbridge will be inserted at location of the `refpoint`. Default False
+        deembed_cross_section: cross section to be used in deembedding
     """
 
     def __init__(
@@ -192,6 +206,7 @@ class WaveguideToSimPort(RefpointToSimPort):
         b=None,
         over_etching=None,
         airbridge=False,
+        deembed_cross_section=None,
     ):
         super().__init__(refpoint, face)
         (
@@ -205,7 +220,20 @@ class WaveguideToSimPort(RefpointToSimPort):
             self.b,
             self.over_etching,
             self.airbridge,
-        ) = (towards, side, use_internal_ports, waveguide_length, term1, turn_radius, a, b, over_etching, airbridge)
+            self.deembed_cross_section,
+        ) = (
+            towards,
+            side,
+            use_internal_ports,
+            waveguide_length,
+            term1,
+            turn_radius,
+            a,
+            b,
+            over_etching,
+            airbridge,
+            deembed_cross_section,
+        )
 
 
 class JunctionSimPort(RefpointToSimPort):
