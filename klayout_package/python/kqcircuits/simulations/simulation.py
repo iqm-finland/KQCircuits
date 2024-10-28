@@ -816,8 +816,9 @@ class Simulation:
             obj["subtract"] = obj.get("subtract", set()) | {lay}
 
         def subtract_hard(obj, tool):
-            """Subtracts tool from obj by modifying dimensions of obj. Returns True if successful.
-            Assumes that tool and obj overlap."""
+            """Subtracts tool from obj by modifying dimensions of obj. Returns True if successful."""
+            if are_separate(obj, tool):
+                return True
             subtract_diff = tool.get("subtract", set()) - obj.get("subtract", set())
             if any(layers[s].get("material", None) is None and not are_separate(obj, layers[s]) for s in subtract_diff):
                 return False  # can't apply hard subtract if tool has non-material subtractions that obj doesn't have
@@ -840,11 +841,15 @@ class Simulation:
 
         def exists(obj):
             """Hardens subtractions and returns True if geometry exists."""
-            obj["subtract"] = {s for s in obj.get("subtract", set()) if not are_separate(obj, layers[s])}
-            soft_subtract = {s for s in obj["subtract"] if not subtract_hard(obj, layers[s])}
-            while len(soft_subtract) < len(obj["subtract"]):
-                obj["subtract"] = {s for s in soft_subtract if not are_separate(obj, layers[s])}
-                soft_subtract = {s for s in obj["subtract"] if not subtract_hard(obj, layers[s])}
+            if "subtract" in obj:
+                while True:
+                    for s in obj["subtract"]:
+                        if subtract_hard(obj, layers[s]):
+                            obj["subtract"].remove(s)
+                            break
+                    else:
+                        break
+
             return not obj["region"].is_empty()
 
         def covering_regions(obj, tool):
