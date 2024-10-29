@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.export.xsection.epr_correction_export &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.simulations.export.xsection.epr_correction_export &mdash; KQCircuits 4.8.8 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../../../_static/documentation_options.js?v=28df94a1"></script>
         <script src="../../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/js/theme.js"></script>
@@ -1038,6 +1038,8 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        tuple containing list of correction simulations and list of post_process objects</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">deembed_cross_sections</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">deembed_lens</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">correction_simulations</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">correction_layout</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Layout</span><span class="p">()</span>
     <span class="n">source_sims</span> <span class="o">=</span> <span class="p">{</span><span class="n">sim</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">)</span> <span class="k">else</span> <span class="n">sim</span> <span class="k">for</span> <span class="n">sim</span> <span class="ow">in</span> <span class="n">simulations</span><span class="p">}</span>
@@ -1107,10 +1109,21 @@
             <span class="n">correction_simulations</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">correction_simulations</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">source_sim</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">key</span>
             <span class="n">visualise_xsection_cut_on_original_layout</span><span class="p">([</span><span class="n">source_sim</span><span class="p">],</span> <span class="n">cords_list</span><span class="p">,</span> <span class="n">cut_label</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">width_ratio</span><span class="o">=</span><span class="mf">0.03</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="s2">&quot;deembed_cross_section&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="s2">&quot;deembed_len&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">source_sim</span><span class="o">.</span><span class="n">ports</span><span class="p">):</span>
+            <span class="n">deembed_cross_sections</span><span class="p">[</span><span class="n">source_sim</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">deembed_lens</span><span class="p">[</span><span class="n">source_sim</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">source_sim</span><span class="o">.</span><span class="n">ports</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="s2">&quot;deembed_cross_section&quot;</span><span class="p">):</span>
+                    <span class="n">deembed_cross_sections</span><span class="p">[</span><span class="n">source_sim</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">port</span><span class="o">.</span><span class="n">deembed_cross_section</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="s2">&quot;deembed_len&quot;</span><span class="p">):</span>
+                    <span class="n">deembed_lens</span><span class="p">[</span><span class="n">source_sim</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">port</span><span class="o">.</span><span class="n">deembed_len</span><span class="p">)</span>
+
     <span class="n">post_process</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">PostProcess</span><span class="p">(</span>
             <span class="s2">&quot;produce_epr_table.py&quot;</span><span class="p">,</span>
             <span class="n">data_file_prefix</span><span class="o">=</span><span class="s2">&quot;correction&quot;</span><span class="p">,</span>
+            <span class="n">deembed_cross_sections</span><span class="o">=</span><span class="n">deembed_cross_sections</span><span class="p">,</span>
+            <span class="n">deembed_lens</span><span class="o">=</span><span class="n">deembed_lens</span><span class="p">,</span>
             <span class="n">sheet_approximations</span><span class="o">=</span><span class="p">{</span>
                 <span class="s2">&quot;MA&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thickness&quot;</span><span class="p">:</span> <span class="n">ma_thickness</span> <span class="o">*</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="s2">&quot;eps_r&quot;</span><span class="p">:</span> <span class="n">ma_eps_r</span><span class="p">,</span> <span class="s2">&quot;background_eps_r&quot;</span><span class="p">:</span> <span class="n">ma_bg_eps_r</span><span class="p">},</span>
                 <span class="s2">&quot;MS&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thickness&quot;</span><span class="p">:</span> <span class="n">ms_thickness</span> <span class="o">*</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="s2">&quot;eps_r&quot;</span><span class="p">:</span> <span class="n">ms_eps_r</span><span class="p">,</span> <span class="s2">&quot;background_eps_r&quot;</span><span class="p">:</span> <span class="n">ms_bg_eps_r</span><span class="p">},</span>

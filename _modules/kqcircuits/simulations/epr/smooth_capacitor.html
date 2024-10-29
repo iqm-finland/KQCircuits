@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.epr.smooth_capacitor &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.simulations.epr.smooth_capacitor &mdash; KQCircuits 4.8.8 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../../_static/documentation_options.js?v=28df94a1"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/js/theme.js"></script>
@@ -981,15 +981,27 @@
     <span class="n">port_a_width</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">a</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">simulation</span><span class="o">.</span><span class="n">b</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">metal_edge_dimension</span>
     <span class="n">port_a_middle</span> <span class="o">=</span> <span class="n">port_a_rf</span> <span class="o">-</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">port_a_len</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
     <span class="n">port_a_dp</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">port_a_len</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">port_a_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
-    <span class="n">port_a_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">port_a_middle</span> <span class="o">-</span> <span class="n">port_a_dp</span><span class="p">,</span> <span class="n">port_a_middle</span> <span class="o">+</span> <span class="n">port_a_dp</span><span class="p">)</span>
 
     <span class="n">port_b_len</span> <span class="o">=</span> <span class="mi">11</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">waveguide_length</span> <span class="o">+</span> <span class="n">metal_edge_dimension</span>  <span class="c1"># 11 is the hardcoded port dimension</span>
     <span class="n">port_b_width</span> <span class="o">=</span> <span class="n">a2</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">b2</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">metal_edge_dimension</span>
     <span class="n">port_b_middle</span> <span class="o">=</span> <span class="n">port_b_rf</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">port_b_len</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
     <span class="n">port_b_dp</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">port_b_len</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">port_b_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
-    <span class="n">port_b_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">port_b_middle</span> <span class="o">-</span> <span class="n">port_b_dp</span><span class="p">,</span> <span class="n">port_b_middle</span> <span class="o">+</span> <span class="n">port_b_dp</span><span class="p">)</span>
 
-    <span class="n">result</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="k">if</span> <span class="n">simulation</span><span class="o">.</span><span class="n">use_internal_ports</span><span class="p">:</span>
+        <span class="n">port_a_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">port_a_middle</span> <span class="o">-</span> <span class="n">port_a_dp</span><span class="p">,</span> <span class="n">port_a_middle</span> <span class="o">+</span> <span class="n">port_a_dp</span><span class="p">)</span>
+        <span class="n">port_b_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">port_b_middle</span> <span class="o">-</span> <span class="n">port_b_dp</span><span class="p">,</span> <span class="n">port_b_middle</span> <span class="o">+</span> <span class="n">port_b_dp</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">port_a_dpx_edge</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">simulation</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">width</span><span class="p">()</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="n">port_a_dpy</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">port_a_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">port_a_middley</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">port_a_middle</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">port_a_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">port_a_dpx_edge</span> <span class="o">+</span> <span class="n">port_a_middley</span> <span class="o">-</span> <span class="n">port_a_dpy</span><span class="p">,</span> <span class="n">port_a_middle</span> <span class="o">+</span> <span class="n">port_a_dp</span><span class="p">)</span>
+
+        <span class="n">port_b_dpx_edge</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">width</span><span class="p">(),</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="n">port_b_dpy</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">port_b_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">port_b_middley</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">port_b_middle</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">port_b_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">port_b_middle</span> <span class="o">-</span> <span class="n">port_b_dp</span><span class="p">,</span> <span class="n">port_b_dpx_edge</span> <span class="o">+</span> <span class="n">port_b_middley</span> <span class="o">+</span> <span class="n">port_b_dpy</span><span class="p">)</span>
+
+    <span class="n">port_regions</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">PartitionRegion</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">port_bmer&quot;</span><span class="p">,</span>
             <span class="n">face</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
@@ -1022,6 +1034,9 @@
             <span class="n">vertical_dimensions</span><span class="o">=</span><span class="n">vertical_dimension</span><span class="p">,</span>
             <span class="n">visualise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">),</span>
+    <span class="p">]</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">port_regions</span> <span class="o">+</span> <span class="p">[</span>
         <span class="n">PartitionRegion</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">fingersmer&quot;</span><span class="p">,</span>
             <span class="n">face</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>

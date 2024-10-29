@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.port &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.simulations.port &mdash; KQCircuits 4.8.8 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../_static/documentation_options.js?v=28df94a1"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -1075,6 +1075,7 @@
         <span class="n">face</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">junction</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">deembed_cross_section</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
@@ -1089,11 +1090,13 @@
 <span class="sd">            junction: Whether this port models a SQUID/Junction. Used in EPR calculations.</span>
 <span class="sd">            size: Width and height of the port to override Simulation.port_size. Optionally, the size can be set as a</span>
 <span class="sd">                list specifying the extensions from the center of the port to left, right, down and up, respectively.</span>
+<span class="sd">            deembed_cross_section: name of the port described by a cross-section</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="n">resistance</span><span class="p">,</span> <span class="n">reactance</span><span class="p">,</span> <span class="n">inductance</span><span class="p">,</span> <span class="n">capacitance</span><span class="p">,</span> <span class="n">face</span><span class="p">,</span> <span class="n">junction</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">signal_location</span> <span class="o">=</span> <span class="n">signal_location</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">deembed_len</span> <span class="o">=</span> <span class="n">deembed_len</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deembed_cross_section</span> <span class="o">=</span> <span class="n">deembed_cross_section</span></div>
 
 </pre></div>
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.util.refpoints &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.util.refpoints &mdash; KQCircuits 4.8.8 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../_static/documentation_options.js?v=28df94a1"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -1090,15 +1090,28 @@
         <span class="n">face</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">deembed_len</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">junction</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">deembed_cross_section</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">refpoint</span><span class="p">,</span> <span class="n">face</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">resistance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reactance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inductance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">capacitance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">deembed_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">junction</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resistance</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reactance</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inductance</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">capacitance</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">deembed_len</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">junction</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">deembed_cross_section</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">resistance</span><span class="p">,</span>
             <span class="n">reactance</span><span class="p">,</span>
             <span class="n">inductance</span><span class="p">,</span>
             <span class="n">capacitance</span><span class="p">,</span>
             <span class="n">deembed_len</span><span class="p">,</span>
             <span class="n">junction</span><span class="p">,</span>
+            <span class="n">size</span><span class="p">,</span>
+            <span class="n">deembed_cross_section</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -1127,6 +1140,7 @@
 <span class="sd">        b: Conductor gap width. Defaults to the value of the `b` parameter</span>
 <span class="sd">        over_etching: Expansion of gaps. Defaults to the value of the `over_etching` parameter</span>
 <span class="sd">        airbridge: if True, an airbridge will be inserted at location of the `refpoint`. Default False</span>
+<span class="sd">        deembed_cross_section: cross section to be used in deembedding</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -1143,6 +1157,7 @@
         <span class="n">b</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">over_etching</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">airbridge</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">deembed_cross_section</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">refpoint</span><span class="p">,</span> <span class="n">face</span><span class="p">)</span>
         <span class="p">(</span>
@@ -1156,7 +1171,20 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">over_etching</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">airbridge</span><span class="p">,</span>
-        <span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="n">towards</span><span class="p">,</span> <span class="n">side</span><span class="p">,</span> <span class="n">use_internal_ports</span><span class="p">,</span> <span class="n">waveguide_length</span><span class="p">,</span> <span class="n">term1</span><span class="p">,</span> <span class="n">turn_radius</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">over_etching</span><span class="p">,</span> <span class="n">airbridge</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">deembed_cross_section</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">towards</span><span class="p">,</span>
+            <span class="n">side</span><span class="p">,</span>
+            <span class="n">use_internal_ports</span><span class="p">,</span>
+            <span class="n">waveguide_length</span><span class="p">,</span>
+            <span class="n">term1</span><span class="p">,</span>
+            <span class="n">turn_radius</span><span class="p">,</span>
+            <span class="n">a</span><span class="p">,</span>
+            <span class="n">b</span><span class="p">,</span>
+            <span class="n">over_etching</span><span class="p">,</span>
+            <span class="n">airbridge</span><span class="p">,</span>
+            <span class="n">deembed_cross_section</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 
 
