@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.chips.chip &mdash; KQCircuits 4.8.7 documentation</title>
+  <title>kqcircuits.chips.chip &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=c0c53763"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -1007,7 +1007,6 @@
 
     <span class="c1"># TSV grid parameters</span>
     <span class="n">with_gnd_tsvs</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Make a grid of through-silicon vias (TSVs)&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-    <span class="n">with_face1_gnd_tsvs</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Make a grid of TSVs on top chip&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
     <span class="n">tsv_grid_spacing</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;TSV grid spacing (center to center)&quot;</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
     <span class="n">edge_from_tsv</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;TSV grid clearance to chip edge (center to edge)&quot;</span><span class="p">,</span> <span class="mi">550</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
     <span class="n">tsv_edge_to_tsv_edge_separation</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span>
@@ -1280,10 +1279,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">produce_frame</span><span class="p">(</span><span class="n">frame_parameters</span><span class="p">,</span> <span class="n">frame_trans</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_gnd_tsvs</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_produce_ground_tsvs</span><span class="p">(</span><span class="n">faces</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_face1_gnd_tsvs</span><span class="p">:</span>
-            <span class="n">tsv_box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_box</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">enlarged</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">edge_from_tsv</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">edge_from_tsv</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_produce_ground_tsvs</span><span class="p">(</span><span class="n">faces</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">tsv_box</span><span class="o">=</span><span class="n">tsv_box</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_produce_ground_tsvs</span><span class="p">(</span><span class="n">tsv_box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">enlarged</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">edge_from_tsv</span><span class="p">),</span> <span class="n">faces</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="Chip.get_box">
@@ -1678,10 +1674,18 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_grid_locations</span><span class="p">(</span><span class="n">tsv_box</span><span class="p">,</span> <span class="n">delta_x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tsv_grid_spacing</span><span class="p">,</span> <span class="n">delta_y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tsv_grid_spacing</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_produce_ground_tsvs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">faces</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">tsv_box</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># pylint: disable=dangerous-default-value</span>
+    <span class="k">def</span> <span class="nf">_produce_ground_tsvs</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">tsv_box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">faces</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+    <span class="p">):</span>  <span class="c1"># pylint: disable=dangerous-default-value</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Produces a grid of TSVs between given faces.</span>
 
 <span class="sd">        The TSVs avoid ground grid avoidance on both faces, and keep a distance to existing elements.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            tsv_box: DBox specifying the region that should be filled with TSVs</span>
+<span class="sd">            faces: indices of faces in self.face_ids that should have the TSVs</span>
+<span class="sd">        Returns: list of DPoint coordinates where a ground TSVs will be placed</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting TSV grid generation on face(s) </span><span class="si">{</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="n">face</span><span class="p">]</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">face</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">faces</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
@@ -1701,9 +1705,10 @@
             <span class="o">+</span> <span class="p">[(</span><span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">,</span> <span class="n">face</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tsv_edge_to_nearest_element</span><span class="p">)</span> <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">]</span>
             <span class="o">+</span> <span class="p">[(</span><span class="s2">&quot;through_silicon_via&quot;</span><span class="p">,</span> <span class="n">face</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tsv_edge_to_tsv_edge_separation</span><span class="p">)</span> <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">]</span>
         <span class="p">)</span>
-        <span class="n">locations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ground_tsv_locations</span><span class="p">(</span>
-            <span class="n">tsv_box</span> <span class="k">if</span> <span class="n">tsv_box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">enlarged</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">edge_from_tsv</span><span class="p">)</span>
-        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">tsv_box</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tsv_box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">enlarged</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">edge_from_tsv</span><span class="p">)</span>
+        <span class="n">locations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ground_tsv_locations</span><span class="p">(</span><span class="n">tsv_box</span><span class="p">)</span>
 
         <span class="c1"># Produce TSV grid</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">locations</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
