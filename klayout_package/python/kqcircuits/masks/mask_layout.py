@@ -221,21 +221,7 @@ class MaskLayout:
             for face_id, face_dictionary in default_faces.items():
                 if face_id != self.face_id:
                     for layer_info in face_dictionary.values():
-                        shapes_iter = new_cell.begin_shapes_rec(self.layout.layer(layer_info))
-
-                        # iterating shapes using shapes_iter.at_end() fails:
-                        # https://www.klayout.de/forum/discussion/comment/4275
-                        # solution is to use a separate buffer list to iterate
-                        shapes = []
-                        while not shapes_iter.at_end():
-                            try:
-                                shapes.append(shapes_iter.shape())
-                                shapes_iter.next()
-                            except ValueError:
-                                print(f"error occurs at {name} at {face_id}")
-
-                        for shapes_to_remove in shapes:
-                            shapes_to_remove.delete()
+                        new_cell.flatten(True).clear(self.layout.layer(layer_info))
 
             self.chips_map_legend[name] = new_cell
 

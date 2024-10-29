@@ -204,12 +204,12 @@ class MaskSet:
         # Pool.map() needs all arguments packed into a single list
         xargs = (self.name, self.with_grid, self._mask_set_dir, self.export_drc, self._extra_params)
         chip_args = ((chip, xargs) for chip in chips)
-
         file_names = []
+        print(f"Building chip variant(s) {[ch[1] for ch in chips]} using {cpus} process(es)")
         if cpus == 1 or self._single_process:
+
             file_names += map(self._create_chip, chip_args)
         else:
-            print(f"Building chip variants in parallel using {cpus} processes...")
             with Pool(cpus) as pool:
                 file_names += pool.map(self._create_chip, chip_args)
 
