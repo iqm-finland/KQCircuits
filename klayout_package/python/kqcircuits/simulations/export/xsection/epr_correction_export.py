@@ -179,14 +179,15 @@ def get_epr_correction_simulations(
             correction_simulations[-1][0].name = correction_simulations[-1][0].cell.name = source_sim.name + "_" + key
             visualise_xsection_cut_on_original_layout([source_sim], cords_list, cut_label=key, width_ratio=0.03)
 
-        if any(hasattr(port, "deembed_cross_section") and hasattr(port, "deembed_len") for port in source_sim.ports):
-            deembed_cross_sections[source_sim.name] = []
-            deembed_lens[source_sim.name] = []
-            for port in source_sim.ports:
-                if hasattr(port, "deembed_cross_section"):
-                    deembed_cross_sections[source_sim.name].append(port.deembed_cross_section)
-                if hasattr(port, "deembed_len"):
-                    deembed_lens[source_sim.name].append(port.deembed_len)
+        deembed_cs_cur = [getattr(port, "deembed_cross_section", None) for port in source_sim.ports]
+        deembed_lens_cur = [getattr(port, "deembed_len", None) for port in source_sim.ports]
+
+        deembed_tuples = [(cs, l) for cs, l in zip(deembed_cs_cur, deembed_lens_cur) if (cs and l)]
+
+        if deembed_tuples:
+            deembed_cs_cur, deembed_lens_cur = zip(*deembed_tuples)
+            deembed_cross_sections[source_sim.name] = list(deembed_cs_cur)
+            deembed_lens[source_sim.name] = list(deembed_lens_cur)
 
     post_process = [
         PostProcess(

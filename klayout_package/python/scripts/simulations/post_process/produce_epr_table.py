@@ -46,7 +46,7 @@ groups = pp_data.get("groups", [])
 region_corrections = pp_data.get("region_corrections", {})
 deembed_lens = pp_data.get("deembed_lens")
 deembed_cross_sections = pp_data.get("deembed_cross_sections")
-deembed = deembed_cross_sections is not None and deembed_lens is not None
+deembed = deembed_cross_sections and deembed_lens
 
 
 def _get_ith(d, i):
