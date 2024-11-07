@@ -4,15 +4,13 @@ User Guide
 ==========
 
 .. toctree::
-    :glob:
+    :maxdepth: 2
 
     usage
-    gui_features
-    gui_workflow
-    python_workflow
     macro_workflow
     mask_export
     simulations
     file_system_and_utilities
+    configuration
     xsection
     terminology

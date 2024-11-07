@@ -1,5 +1,7 @@
-Macro development
-=================
+.. _macro_workflow:
+
+Macro and script development
+============================
 
 KLayout macros are Python scripts which can be run inside KLayout Editor.
 They can be used, for example, to create or modify elements in the layout,
@@ -9,6 +11,9 @@ KLayout documentation about `macro development
 `programming scripts <https://www.klayout.de/doc-qt5/programming/index.html>`__
 , and the `KLayout API documentation
 <https://www.klayout.de/doc-qt5/code/index.html>`__.
+
+Stand-alone python scripts can also be used to generate and export geometry if KQCircuits is installed as a python
+library. See :ref:`standalone` for details.
 
 Running the first example
 -------------------------

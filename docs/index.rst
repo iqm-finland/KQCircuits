@@ -45,8 +45,8 @@ Documentation
 .. toctree::
    :maxdepth: 2
 
-   installation
-   salt
+   installation/index
+   getting_started/index
    user_guide/index
    developer/index
    api/kqcircuits

@@ -16,6 +16,7 @@ To use KQC in KLayout, open KLayout in
 `editing mode <https://www.klayout.de/doc/manual/edit_mode.html>`__ (go to
 ``File->Setup->Application->Editing mode``, check ``use editing mode by
 default`` and restart, or launch KLayout(Editor) application if on Windows).
+
 If KQC was installed successfully, you should then see KQC libraries such as
 ``Element library`` and ``Chip library`` in KLayout's library browser. The
 elements can then be dragged and dropped from there to the layout.
