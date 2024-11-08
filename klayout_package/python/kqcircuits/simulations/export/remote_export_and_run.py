@@ -99,10 +99,6 @@ def _remote_run(
     if platform.system() == "Windows":  # Windows
         logging.error("Connecting to remote host not supported on Windows")
         sys.exit()
-    elif platform.system() == "Darwin":  # macOS
-        logging.error("Connecting to remote host not supported on Mac OS")
-        sys.exit()
-    # Else linux
 
     # set defaults
     if kqc_remote_tmp_path is None:
@@ -306,9 +302,8 @@ def remote_export_and_run(
                                       If None, the simulation script name will be used
         quiet                 (bool): if True all the GUI dialogs are shown, otherwise not.
         export_only           (bool): Only exports the simulation files without running them
-        args                  (list): a list of strings:
-                                        - If starts with a letter and ends with ".py"  -> export script
-                                        - If starts with "-" or "--"                   -> script option
+        args                  (list): Strings ending with ".py" are interpret as export scripts and the rest are
+                                      passed as arguments to those scripts.
     """
 
     allowed_simulations, simdir, tmpdir = _allowed_simulations()
@@ -318,21 +313,18 @@ def remote_export_and_run(
     args_for_script = ["--use-sbatch"]
     # Separate export script filenames and script arguments
     for arg in args:
-        if arg.startswith("-"):
-            args_for_script.append(arg)
-        else:
-            if arg.endswith(".py"):
-                arg_filename = Path(arg).name
-                arg_path = Path(simdir) / arg_filename
-                if arg_filename != arg:
-                    logging.warning(f"Concatenating the path to its final component and search in {simdir} instead")
-                    logging.warning(f"{arg} -> {arg_filename} -> {arg_path}")
-                if arg in allowed_simulations:
-                    export_scripts.append(arg_path)
-                else:
-                    logging.warning(f"Skipping unkown simulation: {arg}")
+        if arg.endswith(".py"):
+            arg_filename = Path(arg).name
+            arg_path = Path(simdir) / arg_filename
+            if arg_filename != arg:
+                logging.warning(f"Concatenating the path to its final component and search in {simdir} instead")
+                logging.warning(f"{arg} -> {arg_filename} -> {arg_path}")
+            if arg in allowed_simulations:
+                export_scripts.append(arg_path)
             else:
-                logging.warning(f"Skipping unkown argument: {arg}")
+                logging.warning(f"Skipping unkown simulation: {arg}")
+        else:
+            args_for_script.append(arg)
 
     if len(export_scripts) == 0:
         logging.error("No valid simulation script provided in remote_export_and_run")
