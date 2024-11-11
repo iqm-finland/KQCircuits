@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.elements.airbridges &mdash; KQCircuits 4.8.8 documentation</title>
+  <title>kqcircuits.elements.airbridges &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
@@ -18,7 +18,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=28df94a1"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -50,63 +50,89 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../installation.html#klayout">KLayout</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../installation.html#known-installation-issues">Known installation issues</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../installation.html#installing-different-python-package-versions-to-klayout-manually">Installing different Python package versions to KLayout manually</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation/klayout.html">Installing KLayout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/known_issues.html">Known installation issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/known_issues.html#installing-different-python-package-versions-to-klayout-manually">Installing different Python package versions to KLayout manually</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../salt.html">Getting started (Salt package)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../salt.html#installing-kqcircuits-salt-package">Installing KQCircuits Salt Package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../salt.html#first-look-around">First look around</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../salt.html#setting-up-a-user-package-directory">Setting up a user package directory</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../salt.html#defining-a-custom-element">Defining a custom element</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../salt.html#defining-a-custom-chip">Defining a custom chip</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../salt.html#upgrading-or-removing-salt-package">Upgrading or Removing Salt Package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../salt.html#release-notes">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/salt.html">KQCircuits Salt package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/salt.html#installing-kqcircuits-salt-package">Installing KQCircuits Salt Package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/salt.html#setting-up-a-user-package-directory">Setting up a user package directory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/salt.html#upgrading-or-removing-salt-package">Upgrading or Removing Salt Package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/salt.html#release-notes">Release Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/first_look.html">First look around</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/first_look.html#introduction-to-elements">Introduction to Elements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/gui_features/index.html">GUI Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/gui_features/gui_elements.html">Placing Elements</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/gui_features/gui_elements.html#modifying-element-parameters">Modifying Element parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/gui_features/gui_waveguides.html">Using waveguides</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/gui_features/gui_waveguides.html#modifying-waveguides">Modifying waveguides</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/gui_features/gui_waveguides.html#editing-waveguidecomposite-nodes">Editing WaveguideComposite Nodes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/gui_features/gui_tutorial.html">Manual workflow tutorial</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/gui_features/gui_tutorial.html#generate-demo-chip">Generate <code class="docutils literal notranslate"><span class="pre">Demo</span></code> chip</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/gui_features/gui_tutorial.html#convert-the-chip-cell-to-static">Convert the chip cell to static</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/gui_features/gui_tutorial.html#change-the-shape-of-a-waveguide">Change the shape of a waveguide</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/gui_features/gui_tutorial.html#change-the-location-of-an-element">Change the location of an element</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/gui_features/gui_tutorial.html#modify-element-parameters">Modify element parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/gui_features/gui_tutorial.html#add-new-elements">Add new elements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/gui_features/gui_tutorial.html#adding-ground-grid">Adding ground grid</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/gui_features/gui_elements_to_code.html">Converting elements placed in GUI into code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/gui_features/gui_menu_commands.html">Useful commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/gui_features/gui_menu_commands.html#hotkeys">Hotkeys</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/gui_features/gui_menu_commands.html#kqcircuits-menu">KQCircuits menu</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/python_workflow/index.html">Python workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/python_workflow/python_start.html">Getting started</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/python_workflow/python_start.html#defining-a-custom-element">Defining a custom element</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/python_workflow/python_start.html#defining-a-custom-chip">Defining a custom chip</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/python_workflow/python_structure.html">Structure of Element code</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/python_workflow/python_structure.html#element-class"><code class="docutils literal notranslate"><span class="pre">Element</span></code> class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/python_workflow/python_structure.html#libraries">Libraries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/python_workflow/python_structure.html#parameters">Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/python_workflow/python_structure.html#build">Build</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/python_workflow/python_example.html">Detailed examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/python_workflow/python_example.html#example-of-defining-an-element">Example of defining an Element</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/python_workflow/python_example.html#example-of-defining-a-chip-and-inserting-elements-into-it">Example of defining a Chip and inserting elements into it</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/python_workflow/refpoints.html">Refpoints</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/python_workflow/refpoints.html#using-refpoints">Using refpoints</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/python_workflow/refpoints.html#port-refpoints">Port refpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/python_workflow/layers.html">KQCircuits Layers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/python_workflow/faces.html">Faces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/python_workflow/faces.html#using-faces">Using faces</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/index.html">User Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/usage.html">Usage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/gui_features.html">GUI Features</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/gui_features.html#useful-hotkeys">Useful hotkeys</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/gui_features.html#introduction-to-elements">Introduction to Elements</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/gui_features.html#placing-elements">Placing Elements</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/gui_features.html#modifying-element-parameters">Modifying Element parameters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/gui_features.html#modifying-waveguides">Modifying waveguides</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/gui_features.html#editing-waveguidecomposite-nodes">Editing WaveguideComposite Nodes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/gui_features.html#converting-elements-placed-in-gui-into-code">Converting elements placed in GUI into code</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/gui_features.html#useful-menu-commands">Useful Menu Commands</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/gui_workflow.html">Point-and-click workflow tutorial</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/python_workflow.html">Python workflow tutorial</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#file-system-hierarchy">File system hierarchy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#structure-of-element-code">Structure of Element code</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/python_workflow.html#element-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> class</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/python_workflow.html#libraries">Libraries</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/python_workflow.html#parameters">Parameters</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/python_workflow.html#build">Build</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#example-of-defining-an-element-class">Example of defining an <code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#example-of-defining-a-chip-and-inserting-elements-into-it">Example of defining a Chip and inserting elements into it</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/python_workflow.html#defining-sampleholder-types">Defining sampleholder types</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#refpoints">Refpoints</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#kqcircuits-layers">KQCircuits’ Layers</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#faces">Faces</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/python_workflow.html#layer-configuration-files">Layer configuration files</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/python_workflow.html#adding-a-new-face">Adding a new face</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#opening-element-or-chip-from-an-ide">Opening <code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">Chip</span></code> from an IDE</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/macro_workflow.html">Macro development</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/macro_workflow.html">Macro and script development</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/macro_workflow.html#running-the-first-example">Running the first example</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/macro_workflow.html#interacting-with-the-klayout-application">Interacting with the KLayout application</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../user_guide/macro_workflow.html#creating-a-new-panel">Creating a new panel</a></li>
@@ -160,6 +186,16 @@
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/file_system_and_utilities.html">General Structure and Miscellaneous Utilities</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/file_system_and_utilities.html#file-system-hierarchy">File system hierarchy</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/file_system_and_utilities.html#miscellaneous-utilities">Miscellaneous Utilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/file_system_and_utilities.html#opening-element-or-chip-from-an-ide">Opening <code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">Chip</span></code> from an IDE</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/configuration.html">Custom configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/configuration.html#configuring-sample-holders">Configuring sample holders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/configuration.html#configuring-faces">Configuring faces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/configuration.html#layer-configuration-files">Layer configuration files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/configuration.html#adding-a-new-face">Adding a new face</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/xsection.html">Creating cross section images</a><ul>
@@ -387,6 +423,7 @@
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.element.html#kqcircuits.elements.element.get_refpoints"><code class="docutils literal notranslate"><span class="pre">get_refpoints()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.element.html#kqcircuits.elements.element.insert_cell_into"><code class="docutils literal notranslate"><span class="pre">insert_cell_into()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.element.html#kqcircuits.elements.element.resolve_face"><code class="docutils literal notranslate"><span class="pre">resolve_face()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.element.html#kqcircuits.elements.element.parameter_order_key"><code class="docutils literal notranslate"><span class="pre">parameter_order_key()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.element.html#kqcircuits.elements.element.Element"><code class="docutils literal notranslate"><span class="pre">Element</span></code></a></li>
 </ul>
 </li>
@@ -552,6 +589,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.epr.html">kqcircuits.simulations.epr</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.circular_capacitor.html">kqcircuits.simulations.epr.circular_capacitor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.example.html">kqcircuits.simulations.epr.example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.gui_config.html">kqcircuits.simulations.epr.gui_config</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.smooth_capacitor.html">kqcircuits.simulations.epr.smooth_capacitor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.swissmon.html">kqcircuits.simulations.epr.swissmon</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.utils.html">kqcircuits.simulations.epr.utils</a></li>

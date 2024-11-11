@@ -1,3 +1,5 @@
+.. _simulation_object:
+
 Simulation objects
 ==================
 
