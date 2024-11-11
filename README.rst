@@ -5,8 +5,7 @@
    :align: center
 
 **KQCircuits** is a Python library developed by IQM for automating the design of
-superconducting quantum circuits. It uses the `KLayout <https://klayout.de>`__ layout design program
-API.
+superconducting quantum circuits. It uses the `KLayout <https://klayout.de>`__ layout design API.
 
 .. image:: https://github.com/iqm-finland/KQCircuits/actions/workflows/ci.yaml/badge.svg
    :target: https://github.com/iqm-finland/KQCircuits/actions/workflows/ci.yaml
@@ -54,82 +53,38 @@ Getting started
 ---------------
 
 KQCircuits is a KLayout extension. KLayout can be used either using a graphical user interface or as
-a standalone python module. For the first time users,
-the graphical user interface (GUI) mode is recommended.
+a standalone python module. For first time users, the graphical user interface (GUI) mode is recommended.
 
-Video tutorials for the GUI installation can be found on YouTube.
+To get a first introduction to KQCircuits, follow the
+`Getting started tutorial <https://iqm-finland.github.io/KQCircuits/getting_started/index.html>`__. It will show you
+how to install and use KQCircuits in the KLayout GUI, how to create your own custom elements and chips in python code,
+and explains the basics of the KQCircuits workflow.
 
-.. raw:: html
+The following video shows some of the KQC features:
 
-   <div style="overflow:auto;">
-     <table style="">
-       <tr>
-         <th>
-           Windows
-         </th>
-         <th>
-           Ubuntu
-         </th>
-         <th>
-           MacOS
-         </th>
-       </tr>
-       <tr>
-         <th>
-           <a href="https://youtu.be/9ra_5s2i3eU">
-             <img src="https://img.youtube.com/vi/9ra_5s2i3eU/mqdefault.jpg" width=300 alt="KQCircuits Getting Started (Windows)">
-           </a>
-         </th>
-         <th>
-           <a href="https://youtu.be/ml773WtfnT0">
-             <img src="https://img.youtube.com/vi/ml773WtfnT0/mqdefault.jpg" width=300 alt="KQCircuits Getting Started (Ubuntu)">
-           </a>
-         </th>
-         <th>
-           <a href="https://youtu.be/lt5ThOQ-caU">
-             <img src="https://img.youtube.com/vi/lt5ThOQ-caU/mqdefault.jpg" width=300 alt="KQCircuits Getting Started (MacOS)">
-           </a>
-         </th>
-       </tr>
-     </table>
-   </div>
+.. image:: https://img.youtube.com/vi/9ra_5s2i3eU/mqdefault.jpg
+   :target: https://youtu.be/9ra_5s2i3eU
+   :alt: KQCircuits Getting Started
 
 
-Install GUI
-^^^^^^^^^^^
+Installation (Klayout GUI)
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-`First install KLayout <https://www.klayout.de/build.html>`__.
-(For mac users we recommend using `HomeBrew <https://formulae.brew.sh/cask/klayout>`__).
-Afterwards you can install KQCircuits as a plug-in to use KQCircuits features
-within your KLayout GUI editor session.
+`First install KLayout <https://iqm-finland.github.io/KQCircuits/installation/klayout.html>`__.
+Then, KQCircuits can be installed in two ways:
 
-Salt installation
-"""""""""""""""""
+* `As a Salt package directly from KLayout  <https://iqm-finland.github.io/KQCircuits/getting_started/salt.html>`__.
+  This allows you to use the KQCircuits chips and elements, and create a user package for your own custom designs.
+* Download the GIT repository, and follow the `Developer GUI setup <https://iqm-finland.github.io/KQCircuits/developer/setup.html>`__.
+  Choose this if you want to modify the KQCircuits code and possibly contribute to the project.
 
-To quickly try out KQCircuits GUI features we recommend installing the Salt package of KQCircuits
-inside your KLayout application.
-The Salt package is easier to install and get started, but the built-in elements cannot be modified.
-`See Salt installation guide here  <https://iqm-finland.github.io/KQCircuits/salt.html>`__.
+You can always switch from Salt package to developer setup later on.
 
-Developer setup
-"""""""""""""""
+Installation as standalone python module
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The developer setup is recommended for advanced users who want to modify KQCircuits code and to contribute to the project.
-
-After installing KLayout run:
-
-.. code-block:: console
-
-   python setup_within_klayout.py
-
-For further details see the `developer setup
-documentation <https://iqm-finland.github.io/KQCircuits/developer/setup.html>`__.
-
-Install standalone python module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Installing KQCircuits as a standalone python module allows you to use KQCircuits features
-in your own python code with:
+`Installing KQCircuits as a stand alone python module <https://iqm-finland.github.io/KQCircuits/developer/standalone.html>`__
+allows you to use KQCircuits features in your own python code with:
 
 .. code-block:: console
 
@@ -148,9 +103,7 @@ For standalone installation run command
 
    python -m pip install -e "klayout_package/python[docs,tests,sim]"
 
-For improved security you can also validate the fetched dependencies of KQCircuits.
-Further details available in the `documentation
-<https://iqm-finland.github.io/KQCircuits/developer/standalone.html>`__.
+Further details available in the `documentation <https://iqm-finland.github.io/KQCircuits/developer/standalone.html>`__.
 
 Documentation
 -------------
@@ -162,10 +115,10 @@ It may also be generated from the sources with ``make html`` in the docs directo
 Tutorials
 ^^^^^^^^^
 
-Follow the `User Guide <https://iqm-finland.github.io/KQCircuits/user_guide/index.html>`__ for tutorials.
+Follow the `Getting started <https://iqm-finland.github.io/KQCircuits/getting_started/index.html>`__ section for tutorials.
 
 .. image:: /docs/images/gui_workflows/converting_gui_elements_to_code.gif
-   :target: https://iqm-finland.github.io/KQCircuits/user_guide/gui_features.html#converting-elements-placed-in-gui-into-code
+   :target: https://iqm-finland.github.io/KQCircuits/getting_started/gui_features/gui_elements_to_code.html
    :alt: Example of GUI elements
    :width: 600
 
