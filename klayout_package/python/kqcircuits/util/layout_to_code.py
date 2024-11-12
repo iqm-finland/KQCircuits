@@ -172,7 +172,7 @@ def convert_cells_to_code(
 
         wg_params = ""  # non-default parameters of the cell
         for k, v in inst.pcell_declaration().get_schema().items():
-            if k in _params and v.data_type != pdt.TypeShape and _params[k] != v.default:
+            if k in _params and v.data_type not in [pdt.TypeShape, pdt.TypeLayer] and _params[k] != v.default:
                 wg_params += f",  {k}={_params[k]}"
 
         for i, path_point in enumerate(wg_points):
@@ -311,9 +311,11 @@ def _pcell_params_as_string(cell):
     params_list = []
     for param_name, param_declaration in params_schema.items():
         if (
-            params[param_name] != param_declaration.default
+            not isinstance(params[param_name], pya.LayerInfo)
+            and params[param_name] != param_declaration.default
             and param_name != "refpoints"
-            and not (param_name.startswith("_") and param_name.endswith("_parameters"))
+            and not param_name.startswith("_")
+            and not param_name.endswith("_parameters")
         ):
             param_value = params[param_name]
             if isinstance(param_value, str):
