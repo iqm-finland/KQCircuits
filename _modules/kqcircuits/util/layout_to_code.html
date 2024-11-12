@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.util.layout_to_code &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.util.layout_to_code &mdash; KQCircuits 4.8.9 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../_static/documentation_options.js?v=8ca710b8"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -1137,7 +1137,7 @@
 
         <span class="n">wg_params</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>  <span class="c1"># non-default parameters of the cell</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">inst</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">()</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">_params</span> <span class="ow">and</span> <span class="n">v</span><span class="o">.</span><span class="n">data_type</span> <span class="o">!=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">TypeShape</span> <span class="ow">and</span> <span class="n">_params</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">!=</span> <span class="n">v</span><span class="o">.</span><span class="n">default</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">_params</span> <span class="ow">and</span> <span class="n">v</span><span class="o">.</span><span class="n">data_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeShape</span><span class="p">,</span> <span class="n">pdt</span><span class="o">.</span><span class="n">TypeLayer</span><span class="p">]</span> <span class="ow">and</span> <span class="n">_params</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">!=</span> <span class="n">v</span><span class="o">.</span><span class="n">default</span><span class="p">:</span>
                 <span class="n">wg_params</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;,  </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">_params</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">path_point</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">wg_points</span><span class="p">):</span>
@@ -1277,9 +1277,11 @@
     <span class="n">params_list</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">param_name</span><span class="p">,</span> <span class="n">param_declaration</span> <span class="ow">in</span> <span class="n">params_schema</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">if</span> <span class="p">(</span>
-            <span class="n">params</span><span class="p">[</span><span class="n">param_name</span><span class="p">]</span> <span class="o">!=</span> <span class="n">param_declaration</span><span class="o">.</span><span class="n">default</span>
+            <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="n">param_name</span><span class="p">],</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayerInfo</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">params</span><span class="p">[</span><span class="n">param_name</span><span class="p">]</span> <span class="o">!=</span> <span class="n">param_declaration</span><span class="o">.</span><span class="n">default</span>
             <span class="ow">and</span> <span class="n">param_name</span> <span class="o">!=</span> <span class="s2">&quot;refpoints&quot;</span>
-            <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="n">param_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">param_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;_parameters&quot;</span><span class="p">))</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="n">param_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="n">param_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;_parameters&quot;</span><span class="p">)</span>
         <span class="p">):</span>
             <span class="n">param_value</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="n">param_name</span><span class="p">]</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">param_value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.export.remote_export_and_run &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.simulations.export.remote_export_and_run &mdash; KQCircuits 4.8.9 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../../_static/documentation_options.js?v=8ca710b8"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/js/theme.js"></script>
@@ -1062,10 +1062,6 @@
     <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Windows&quot;</span><span class="p">:</span>  <span class="c1"># Windows</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Connecting to remote host not supported on Windows&quot;</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
-    <span class="k">elif</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Darwin&quot;</span><span class="p">:</span>  <span class="c1"># macOS</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Connecting to remote host not supported on Mac OS&quot;</span><span class="p">)</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
-    <span class="c1"># Else linux</span>
 
     <span class="c1"># set defaults</span>
     <span class="k">if</span> <span class="n">kqc_remote_tmp_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1271,9 +1267,8 @@
 <span class="sd">                                      If None, the simulation script name will be used</span>
 <span class="sd">        quiet                 (bool): if True all the GUI dialogs are shown, otherwise not.</span>
 <span class="sd">        export_only           (bool): Only exports the simulation files without running them</span>
-<span class="sd">        args                  (list): a list of strings:</span>
-<span class="sd">                                        - If starts with a letter and ends with &quot;.py&quot;  -&gt; export script</span>
-<span class="sd">                                        - If starts with &quot;-&quot; or &quot;--&quot;                   -&gt; script option</span>
+<span class="sd">        args                  (list): Strings ending with &quot;.py&quot; are interpret as export scripts and the rest are</span>
+<span class="sd">                                      passed as arguments to those scripts.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">allowed_simulations</span><span class="p">,</span> <span class="n">simdir</span><span class="p">,</span> <span class="n">tmpdir</span> <span class="o">=</span> <span class="n">_allowed_simulations</span><span class="p">()</span>
@@ -1283,21 +1278,18 @@
     <span class="n">args_for_script</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;--use-sbatch&quot;</span><span class="p">]</span>
     <span class="c1"># Separate export script filenames and script arguments</span>
     <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">arg</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">):</span>
-            <span class="n">args_for_script</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">arg</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.py&quot;</span><span class="p">):</span>
-                <span class="n">arg_filename</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
-                <span class="n">arg_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">simdir</span><span class="p">)</span> <span class="o">/</span> <span class="n">arg_filename</span>
-                <span class="k">if</span> <span class="n">arg_filename</span> <span class="o">!=</span> <span class="n">arg</span><span class="p">:</span>
-                    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Concatenating the path to its final component and search in </span><span class="si">{</span><span class="n">simdir</span><span class="si">}</span><span class="s2"> instead&quot;</span><span class="p">)</span>
-                    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">arg</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">arg_filename</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">arg_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">allowed_simulations</span><span class="p">:</span>
-                    <span class="n">export_scripts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arg_path</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Skipping unkown simulation: </span><span class="si">{</span><span class="n">arg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">arg</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.py&quot;</span><span class="p">):</span>
+            <span class="n">arg_filename</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">arg_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">simdir</span><span class="p">)</span> <span class="o">/</span> <span class="n">arg_filename</span>
+            <span class="k">if</span> <span class="n">arg_filename</span> <span class="o">!=</span> <span class="n">arg</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Concatenating the path to its final component and search in </span><span class="si">{</span><span class="n">simdir</span><span class="si">}</span><span class="s2"> instead&quot;</span><span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">arg</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">arg_filename</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">arg_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">allowed_simulations</span><span class="p">:</span>
+                <span class="n">export_scripts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arg_path</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Skipping unkown argument: </span><span class="si">{</span><span class="n">arg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Skipping unkown simulation: </span><span class="si">{</span><span class="n">arg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">args_for_script</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">export_scripts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;No valid simulation script provided in remote_export_and_run&quot;</span><span class="p">)</span>
