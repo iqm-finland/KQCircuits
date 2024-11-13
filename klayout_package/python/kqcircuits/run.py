@@ -91,6 +91,7 @@ def argument_parser():
     )
     mask_parser.add_argument("-s", "--skip_extras", action="store_true", help="Skip netlist and documentation export")
     mask_parser.add_argument("-c N", action="store_true", help="Limit the number of used CPUs to 'N'")
+    mask_parser.add_argument("-p", action="store", help="Path to export the mask to, defaults to TMP_PATH")
 
     singularity_parser.add_argument("--build", action="store_true", help="build singularity image locally")
     singularity_parser.add_argument(

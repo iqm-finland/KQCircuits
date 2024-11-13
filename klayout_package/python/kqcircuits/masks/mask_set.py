@@ -19,6 +19,7 @@
 import copy
 import os
 import logging
+import sys
 from sys import argv
 from time import perf_counter
 from inspect import isclass
@@ -29,6 +30,7 @@ from tqdm import tqdm
 
 from kqcircuits.chips.chip import Chip
 from kqcircuits.masks.multi_face_mask_layout import MultiFaceMaskLayout
+from kqcircuits.run import argument_parser
 from kqcircuits.util.log_router import route_log
 from kqcircuits.pya_resolver import pya, is_standalone_session
 from kqcircuits.defaults import default_bar_format, TMP_PATH, default_face_id
@@ -79,11 +81,16 @@ class MaskSet:
         with_grid=False,
         export_drc="",
         mask_export_layers=None,
-        export_path=TMP_PATH,
+        export_path=None,
         add_mask_name_to_chips=False,
     ):
 
         self._time = {"INIT": perf_counter(), "ADD_CHIPS": 0, "BUILD": 0, "EXPORT": 0, "END": 0}
+
+        if export_path is None:
+            arg_parser, _ = argument_parser()
+            arg_values, _ = arg_parser.parse_known_args(sys.argv[1:])
+            export_path = TMP_PATH if not arg_values.p else arg_values.p
 
         if view is None:
             self.view = KLayoutView()
@@ -100,6 +107,7 @@ class MaskSet:
         self.add_mask_name_to_chips = add_mask_name_to_chips
         self._extra_params = {}
         self._mask_set_dir = Path(export_path) / f"{name}_v{version}"
+        print(f"Exporting to: {str(self._mask_set_dir)}")
 
         self._mask_set_dir.mkdir(parents=True, exist_ok=True)
 
