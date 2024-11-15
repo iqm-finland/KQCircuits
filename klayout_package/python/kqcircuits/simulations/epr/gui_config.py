@@ -27,6 +27,10 @@ epr_gui_visualised_partition_regions = {
     "Smooth Capacitor": [
         "fingersbulk",
     ],
+    "Spiral Capacitor": [
+        "fingergmer",
+        "waveguides",
+    ],
     "Swissmon": [
         "crossbulk",
         "0cplrbulk",

@@ -212,6 +212,7 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
             "p2": port_a_rf + pya.DPoint(half_cut_len, simulation.a + simulation.b),
             "metal_edges": [
                 {"x": half_cut_len, "z": z_me},
+                {"x": half_cut_len + simulation.ground_gap, "z": z_me},
             ],
         },
     }

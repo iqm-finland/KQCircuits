@@ -24,6 +24,21 @@ from kqcircuits.elements.element import Element
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 
 
+def unit_vector(radians):
+    return pya.DVector(cos(radians), sin(radians))
+
+
+def segment_points(start_pos, start_ang, turn, length, n):
+    if length == 0:
+        return []
+    if turn == 0:
+        return [start_pos + length * unit_vector(start_ang)]
+    r = length / turn  # signed radius
+    center = start_pos + r * unit_vector(start_ang + pi / 2)  # center of the turn circle
+    num_pnts = max(round(abs(turn) * n / (2 * pi)), 1)  # number of new points
+    return [center - r * unit_vector(start_ang + pi / 2 + turn * (i + 1) / num_pnts) for i in range(num_pnts)]
+
+
 @add_parameters_from(FingerCapacitorSquare, "fixed_length", "a2", "b2", finger_width=10, finger_gap=5)
 class SmoothCapacitor(Element):
     """The PCell declaration for a smooth finger capacitor.
@@ -46,47 +61,33 @@ class SmoothCapacitor(Element):
     def can_create_from_shape_impl(self):
         return self.shape.is_path()
 
-    def segment_points(self, start_pos, start_ang, turn, length):
-
-        def unit_vector(radians):
-            return pya.DVector(cos(radians), sin(radians))
-
-        if length == 0:
-            return []
-        if turn == 0:
-            return [start_pos + length * unit_vector(start_ang)]
-        r = length / turn  # signed radius
-        center = start_pos + r * unit_vector(start_ang + pi / 2)  # center of the turn circle
-        num_pnts = max(round(abs(turn) * self.n / (2 * pi)), 1)  # number of new points
-        return [center - r * unit_vector(start_ang + pi / 2 + turn * (n + 1) / num_pnts) for n in range(num_pnts)]
-
     def t_poly(self, bend, length):
         r1 = self.finger_width / 2
         r2 = r1 + self.finger_gap
         # Bottom 180-degree bend starting from origin
         ang = 3 * pi / 2
-        pnts = self.segment_points(pya.DPoint(0, 0), ang, -pi, pi * r1)
+        pnts = segment_points(pya.DPoint(0, 0), ang, -pi, pi * r1, self.n)
         ang -= pi
         # Bend before straight segment
         bend0 = min(bend, pi / 2)
-        pnts += self.segment_points(pnts[-1], ang, bend0, bend0 * r2)
+        pnts += segment_points(pnts[-1], ang, bend0, bend0 * r2, self.n)
         ang += bend0
         # Straight segment, 180-degree bend, and straight segment back
-        pnts += self.segment_points(pnts[-1], ang, 0.0, length)
-        pnts += self.segment_points(pnts[-1], ang, -pi, pi * r1)
+        pnts += segment_points(pnts[-1], ang, 0.0, length, self.n)
+        pnts += segment_points(pnts[-1], ang, -pi, pi * r1, self.n)
         ang -= pi
-        pnts += self.segment_points(pnts[-1], ang, 0.0, length)
+        pnts += segment_points(pnts[-1], ang, 0.0, length, self.n)
         # Possible turn upwards if bend > pi/2
         turn = bend - pi / 2
         if turn > 0.0:
-            pnts += self.segment_points(pnts[-1], ang, turn, turn * r2)
+            pnts += segment_points(pnts[-1], ang, turn, turn * r2, self.n)
             ang += turn
         # The last bend back to origin
         last_bend = ang + pi / 2
         if last_bend > 1e-13:
             r3 = pnts[-1].x / (cos(last_bend) - 1)
-            pnts += self.segment_points(pnts[-1], ang, -last_bend, last_bend * r3)
-            pnts += self.segment_points(pnts[-1], -pi / 2, 0.0, max(pnts[-1].y, 0.0))
+            pnts += segment_points(pnts[-1], ang, -last_bend, last_bend * r3, self.n)
+            pnts += segment_points(pnts[-1], -pi / 2, 0.0, max(pnts[-1].y, 0.0), self.n)
         return pya.DPolygon(pnts)
 
     def finger_polygon(self, order_number):

@@ -819,18 +819,32 @@ class Simulation:
             """Subtracts tool from obj by modifying dimensions of obj. Returns True if successful."""
             if are_separate(obj, tool):
                 return True
-            subtract_diff = tool.get("subtract", set()) - obj.get("subtract", set())
+            subtract_diff = tool.get("subtract", set()) - obj["subtract"]
             if any(layers[s].get("material", None) is None and not are_separate(obj, layers[s]) for s in subtract_diff):
                 return False  # can't apply hard subtract if tool has non-material subtractions that obj doesn't have
             if obj["bottom"] < tool["bottom"]:
                 if tool["top"] < obj["top"]:
                     return False
-                if obj["region"].not_inside(tool["region"]).is_empty():
+                if obj["region"].not_inside(tool["region"]).is_empty() or not exists(
+                    {
+                        "bottom": tool["bottom"],
+                        "top": obj["top"],
+                        "region": obj["region"].dup(),
+                        "subtract": obj["subtract"].copy(),
+                    }
+                ):
                     obj["top"] = tool["bottom"]
                     return True
                 return False
             if tool["top"] < obj["top"]:
-                if obj["region"].not_inside(tool["region"]).is_empty():
+                if obj["region"].not_inside(tool["region"]).is_empty() or not exists(
+                    {
+                        "bottom": obj["bottom"],
+                        "top": tool["top"],
+                        "region": obj["region"].dup(),
+                        "subtract": obj["subtract"].copy(),
+                    }
+                ):
                     obj["bottom"] = tool["top"]
                     return True
                 return False
