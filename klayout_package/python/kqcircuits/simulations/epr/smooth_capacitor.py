@@ -183,6 +183,22 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
     a2 = simulation.a if simulation.a2 < 0 else simulation.a2
     b2 = simulation.b if simulation.b2 < 0 else simulation.b2
 
+    gaps = pya.Region(simulation.cell.begin_shapes_rec(simulation.get_layer("base_metal_gap_wo_grid")))
+    finger_top = None
+    finger_center = None
+    for polygon in gaps.each():
+        for edge in polygon.to_dtype(simulation.layout.dbu).each_edge():
+            # Hole edges are oriented counterclockwise while hull edges are oriented clockwise.
+            # Rely on this orientation to get top point of fingers.
+            if edge.d().x < 0.0 and (finger_top is None or edge.p1.y > finger_top.y):
+                finger_top = edge.p1
+
+            k = edge.d().sprod(base_rf - edge.p1) / edge.d().sq_abs()
+            nearest = (edge.p1 if k <= 0.0 else (edge.p2 if k >= 1.0 else edge.p1 + k * edge.d())) - base_rf
+            if finger_center is None or nearest.abs() < finger_center.abs():
+                if simulation.finger_control > 1.0 or abs(nearest.y) < abs(nearest.x):
+                    finger_center = nearest
+
     z_me = 0
     if not in_gui(simulation):
         port_a_len = 11 + simulation.waveguide_length + metal_edge_dimension  # 11 is the hardcoded port dimension
@@ -196,20 +212,20 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
         if len(simulation.face_stack) > 1:
             z_me = -simulation.substrate_height[1] - simulation.chip_distance - 2 * simulation.metal_height
 
-    scale = simulation.finger_width + simulation.finger_gap
+    fingersmer_end = finger_center * (1.0 + simulation.finger_width * 0.9 / finger_center.abs())
     half_cut_len = 25.0
     result = {
         f"{prefix}fingersmer": {
-            "p1": base_rf + pya.DPoint(0, -scale / 2),
-            "p2": base_rf + pya.DPoint(0, scale / 2),
+            "p1": base_rf + fingersmer_end,
+            "p2": base_rf - fingersmer_end,
             "metal_edges": [
-                {"x": (scale - simulation.finger_gap) / 2, "z": z_me},
-                {"x": (scale + simulation.finger_gap) / 2, "z": z_me},
+                {"x": simulation.finger_width * 0.9, "z": z_me},
+                {"x": 2 * fingersmer_end.abs() - simulation.finger_width * 0.9, "z": z_me},
             ],
         },
         f"{prefix}bcomplementmer": {
-            "p1": port_a_rf + pya.DPoint(-half_cut_len, simulation.a + simulation.b),
-            "p2": port_a_rf + pya.DPoint(half_cut_len, simulation.a + simulation.b),
+            "p1": finger_top + pya.DVector(0, simulation.ground_gap + half_cut_len),
+            "p2": finger_top - pya.DVector(0, simulation.finger_width * 0.9),
             "metal_edges": [
                 {"x": half_cut_len, "z": z_me},
                 {"x": half_cut_len + simulation.ground_gap, "z": z_me},
