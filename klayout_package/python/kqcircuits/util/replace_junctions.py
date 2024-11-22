@@ -80,7 +80,14 @@ def _check_missing_junction_parameters(
 
     Note that some parameter keys are ignored.
     """
-    ignore_param_keys = {"_junction_parameters", "junction_parameters", "display_name"}
+    ignore_param_keys = {
+        "_junction_parameters",
+        "junction_parameters",
+        "display_name",
+        "_epr_show",
+        "_epr_cross_section_cut_width",
+        "_epr_cross_section_cut_layer",
+    }
     if junction_class_name not in junction_schema_errors:
         junction_schema_errors[junction_class_name] = {"missing_fields": (set(), []), "surplus_fields": (set(), [])}
     missing_fields = set(params.keys()).difference(set(tuned_params.keys())).difference(ignore_param_keys)
