@@ -77,6 +77,7 @@ def to_1d_list(data):
     "junction_upper_pad_length",
     "junction_lower_pad_width",
     "junction_lower_pad_length",
+    "include_background_gap",
 )
 class Simulation:
     """Base class for simulation geometries.
