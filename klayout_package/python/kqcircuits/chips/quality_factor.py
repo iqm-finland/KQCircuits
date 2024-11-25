@@ -87,7 +87,7 @@ class QualityFactor(Chip):
         unit="μm",
         docstring="Resonators exceeding this length become meandering",
     )
-    ground_grid_in_trace = Param(pdt.TypeList, "Include ground-grid in the trace", [0] * 18)
+    ground_grid_in_trace = Param(pdt.TypeList, "Include ground-grid in the trace", [0] * 6)
     # override box to have hidden=False and allow GUI editing
     box = Param(pdt.TypeShape, "Border", pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000)))
 
@@ -162,7 +162,7 @@ class QualityFactor(Chip):
             _, refp = self.insert_cell(
                 QuarterWaveCpwResonator,
                 trans=pya.DTrans(2 if resonator_up else 0, False, tl_start + (i + 0.5) * v_res_step),
-                probeline_len=120.0,
+                probeline_length=120.0,
                 resonator_length=res_lengths[i],
                 max_res_len=max_res_len,
                 res_beg=res_beg[i],

@@ -38,6 +38,7 @@ from kqcircuits.junctions.sim import Sim
     "junction_upper_pad_length",
     "junction_lower_pad_width",
     "junction_lower_pad_length",
+    "include_background_gap",
 )
 class Qubit(Element):
     """Base class for qubit objects without actual produce function.

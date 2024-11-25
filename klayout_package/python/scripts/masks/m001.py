@@ -24,7 +24,7 @@ Q and AB tests. Showcases box maps and how to load cells from files to a mask.
 from kqcircuits.chips.airbridge_crossings import AirbridgeCrossings
 from kqcircuits.chips.quality_factor import QualityFactor
 from kqcircuits.pya_resolver import pya
-from kqcircuits.defaults import TMP_PATH
+from kqcircuits.defaults import TMP_PATH, default_airbridge_type
 from kqcircuits.klayout_view import KLayoutView
 from kqcircuits.masks.mask_set import MaskSet
 
@@ -60,7 +60,9 @@ parameters_qd = {
     "n_fingers": [4, 2, 2, 4, 4, 4, 4, 4, 2, 4, 4, 4, 4, 4, 2, 2, 4, 4],
     "res_beg": ["galvanic"] * 18,
     "res_a": [10] * 18,
-    "res_b": [6] * 18
+    "res_b": [6] * 18,
+    "ground_grid_in_trace": [0] * 18,
+    "res_airbridge_types": [default_airbridge_type] * 18,
 }
 # fmt: on
 
