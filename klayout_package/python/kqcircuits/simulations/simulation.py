@@ -901,6 +901,11 @@ class Simulation:
             for part in parts
             if part.face is None
         ]
+        # subtract the previous partition region from the latter if covering the z-range
+        for i, part1 in enumerate(part_list):
+            for part2 in part_list[i + 1 :]:
+                if part1["bottom"] <= part2["bottom"] and part2["top"] <= part1["top"]:
+                    part2["region"] -= part1["region"]
         merge_points_and_match_on_edges([part["region"] for part in part_list])
 
         for layer in sorted(layer_list, key=lambda x: (can_modify(x), x["top"] - x["bottom"], x["region"].area())):
