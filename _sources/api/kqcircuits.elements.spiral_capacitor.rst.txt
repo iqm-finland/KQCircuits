@@ -1,0 +1,12 @@
+:github_url: hide
+
+kqcircuits.elements.spiral\_capacitor
+=====================================
+
+.. automodule:: kqcircuits.elements.spiral_capacitor
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.elements.spiral_capacitor
+.. image:: ../pcell_images/kqcircuits.elements.spiral_capacitor.png

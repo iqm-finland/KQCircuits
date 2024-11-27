@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; KQCircuits  documentation</title>
+  <title>Index &mdash; KQCircuits 4.8.10 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/documentation_options.js?v=2e945a51"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -453,7 +453,13 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.elements.smooth_capacitor.html">kqcircuits.elements.smooth_capacitor</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.elements.smooth_capacitor.html#kqcircuits.elements.smooth_capacitor.unit_vector"><code class="docutils literal notranslate"><span class="pre">unit_vector()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.elements.smooth_capacitor.html#kqcircuits.elements.smooth_capacitor.segment_points"><code class="docutils literal notranslate"><span class="pre">segment_points()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.elements.smooth_capacitor.html#kqcircuits.elements.smooth_capacitor.SmoothCapacitor"><code class="docutils literal notranslate"><span class="pre">SmoothCapacitor</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.elements.spiral_capacitor.html">kqcircuits.elements.spiral_capacitor</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.elements.spiral_capacitor.html#kqcircuits.elements.spiral_capacitor.SpiralCapacitor"><code class="docutils literal notranslate"><span class="pre">SpiralCapacitor</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.elements.spiral_resonator_polygon.html">kqcircuits.elements.spiral_resonator_polygon</a><ul>
@@ -588,6 +594,7 @@
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.epr.example.html">kqcircuits.simulations.epr.example</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.epr.gui_config.html">kqcircuits.simulations.epr.gui_config</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.epr.smooth_capacitor.html">kqcircuits.simulations.epr.smooth_capacitor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.epr.spiral_capacitor.html">kqcircuits.simulations.epr.spiral_capacitor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.epr.swissmon.html">kqcircuits.simulations.epr.swissmon</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.epr.utils.html">kqcircuits.simulations.epr.utils</a></li>
 </ul>
@@ -1214,6 +1221,8 @@
 </li>
         <li><a href="api/kqcircuits.elements.smooth_capacitor.html#kqcircuits.elements.smooth_capacitor.SmoothCapacitor.build">(kqcircuits.elements.smooth_capacitor.SmoothCapacitor method)</a>
 </li>
+        <li><a href="api/kqcircuits.elements.spiral_capacitor.html#kqcircuits.elements.spiral_capacitor.SpiralCapacitor.build">(kqcircuits.elements.spiral_capacitor.SpiralCapacitor method)</a>
+</li>
         <li><a href="api/kqcircuits.elements.spiral_resonator_polygon.html#kqcircuits.elements.spiral_resonator_polygon.SpiralResonatorPolygon.build">(kqcircuits.elements.spiral_resonator_polygon.SpiralResonatorPolygon method)</a>
 </li>
         <li><a href="api/kqcircuits.elements.tsvs.tsv_standard.html#kqcircuits.elements.tsvs.tsv_standard.TsvStandard.build">(kqcircuits.elements.tsvs.tsv_standard.TsvStandard method)</a>
@@ -1303,6 +1312,8 @@
         <li><a href="api/kqcircuits.elements.meander.html#kqcircuits.elements.meander.Meander.can_create_from_shape_impl">(kqcircuits.elements.meander.Meander method)</a>
 </li>
         <li><a href="api/kqcircuits.elements.smooth_capacitor.html#kqcircuits.elements.smooth_capacitor.SmoothCapacitor.can_create_from_shape_impl">(kqcircuits.elements.smooth_capacitor.SmoothCapacitor method)</a>
+</li>
+        <li><a href="api/kqcircuits.elements.spiral_capacitor.html#kqcircuits.elements.spiral_capacitor.SpiralCapacitor.can_create_from_shape_impl">(kqcircuits.elements.spiral_capacitor.SpiralCapacitor method)</a>
 </li>
         <li><a href="api/kqcircuits.elements.waveguide_coplanar.html#kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.can_create_from_shape_impl">(kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar method)</a>
 </li>
@@ -1409,6 +1420,8 @@
         <li><a href="api/kqcircuits.simulations.epr.example.html#kqcircuits.simulations.epr.example.correction_cuts">(in module kqcircuits.simulations.epr.example)</a>
 </li>
         <li><a href="api/kqcircuits.simulations.epr.smooth_capacitor.html#kqcircuits.simulations.epr.smooth_capacitor.correction_cuts">(in module kqcircuits.simulations.epr.smooth_capacitor)</a>
+</li>
+        <li><a href="api/kqcircuits.simulations.epr.spiral_capacitor.html#kqcircuits.simulations.epr.spiral_capacitor.correction_cuts">(in module kqcircuits.simulations.epr.spiral_capacitor)</a>
 </li>
         <li><a href="api/kqcircuits.simulations.epr.swissmon.html#kqcircuits.simulations.epr.swissmon.correction_cuts">(in module kqcircuits.simulations.epr.swissmon)</a>
 </li>
@@ -1943,6 +1956,8 @@
         <li><a href="api/kqcircuits.elements.quarter_wave_cpw_resonator.html#kqcircuits.elements.quarter_wave_cpw_resonator.QuarterWaveCpwResonator.get_sim_ports">(kqcircuits.elements.quarter_wave_cpw_resonator.QuarterWaveCpwResonator class method)</a>
 </li>
         <li><a href="api/kqcircuits.elements.smooth_capacitor.html#kqcircuits.elements.smooth_capacitor.SmoothCapacitor.get_sim_ports">(kqcircuits.elements.smooth_capacitor.SmoothCapacitor class method)</a>
+</li>
+        <li><a href="api/kqcircuits.elements.spiral_capacitor.html#kqcircuits.elements.spiral_capacitor.SpiralCapacitor.get_sim_ports">(kqcircuits.elements.spiral_capacitor.SpiralCapacitor class method)</a>
 </li>
         <li><a href="api/kqcircuits.qubits.circular_transmon_single_island.html#kqcircuits.qubits.circular_transmon_single_island.CircularTransmonSingleIsland.get_sim_ports">(kqcircuits.qubits.circular_transmon_single_island.CircularTransmonSingleIsland class method)</a>
 </li>
@@ -2519,6 +2534,13 @@
 </li>
       </ul></li>
       <li>
+    kqcircuits.elements.spiral_capacitor
+
+      <ul>
+        <li><a href="api/kqcircuits.elements.spiral_capacitor.html#module-kqcircuits.elements.spiral_capacitor">module</a>
+</li>
+      </ul></li>
+      <li>
     kqcircuits.elements.spiral_resonator_polygon
 
       <ul>
@@ -2833,6 +2855,13 @@
 
       <ul>
         <li><a href="api/kqcircuits.simulations.epr.smooth_capacitor.html#module-kqcircuits.simulations.epr.smooth_capacitor">module</a>
+</li>
+      </ul></li>
+      <li>
+    kqcircuits.simulations.epr.spiral_capacitor
+
+      <ul>
+        <li><a href="api/kqcircuits.simulations.epr.spiral_capacitor.html#module-kqcircuits.simulations.epr.spiral_capacitor">module</a>
 </li>
       </ul></li>
       <li>
@@ -3667,6 +3696,8 @@
 </li>
         <li><a href="api/kqcircuits.elements.smooth_capacitor.html#module-kqcircuits.elements.smooth_capacitor">kqcircuits.elements.smooth_capacitor</a>
 </li>
+        <li><a href="api/kqcircuits.elements.spiral_capacitor.html#module-kqcircuits.elements.spiral_capacitor">kqcircuits.elements.spiral_capacitor</a>
+</li>
         <li><a href="api/kqcircuits.elements.spiral_resonator_polygon.html#module-kqcircuits.elements.spiral_resonator_polygon">kqcircuits.elements.spiral_resonator_polygon</a>
 </li>
         <li><a href="api/kqcircuits.elements.tsvs.html#module-kqcircuits.elements.tsvs">kqcircuits.elements.tsvs</a>
@@ -3756,6 +3787,8 @@
         <li><a href="api/kqcircuits.simulations.epr.gui_config.html#module-kqcircuits.simulations.epr.gui_config">kqcircuits.simulations.epr.gui_config</a>
 </li>
         <li><a href="api/kqcircuits.simulations.epr.smooth_capacitor.html#module-kqcircuits.simulations.epr.smooth_capacitor">kqcircuits.simulations.epr.smooth_capacitor</a>
+</li>
+        <li><a href="api/kqcircuits.simulations.epr.spiral_capacitor.html#module-kqcircuits.simulations.epr.spiral_capacitor">kqcircuits.simulations.epr.spiral_capacitor</a>
 </li>
         <li><a href="api/kqcircuits.simulations.epr.swissmon.html#module-kqcircuits.simulations.epr.swissmon">kqcircuits.simulations.epr.swissmon</a>
 </li>
@@ -3984,6 +4017,8 @@
         <li><a href="api/kqcircuits.simulations.epr.example.html#kqcircuits.simulations.epr.example.partition_regions">(in module kqcircuits.simulations.epr.example)</a>
 </li>
         <li><a href="api/kqcircuits.simulations.epr.smooth_capacitor.html#kqcircuits.simulations.epr.smooth_capacitor.partition_regions">(in module kqcircuits.simulations.epr.smooth_capacitor)</a>
+</li>
+        <li><a href="api/kqcircuits.simulations.epr.spiral_capacitor.html#kqcircuits.simulations.epr.spiral_capacitor.partition_regions">(in module kqcircuits.simulations.epr.spiral_capacitor)</a>
 </li>
         <li><a href="api/kqcircuits.simulations.epr.swissmon.html#kqcircuits.simulations.epr.swissmon.partition_regions">(in module kqcircuits.simulations.epr.swissmon)</a>
 </li>
@@ -4324,7 +4359,7 @@
 </li>
       <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.second_kind_basis">second_kind_basis (kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution attribute)</a>
 </li>
-      <li><a href="api/kqcircuits.elements.smooth_capacitor.html#kqcircuits.elements.smooth_capacitor.SmoothCapacitor.segment_points">segment_points() (kqcircuits.elements.smooth_capacitor.SmoothCapacitor method)</a>
+      <li><a href="api/kqcircuits.elements.smooth_capacitor.html#kqcircuits.elements.smooth_capacitor.segment_points">segment_points() (in module kqcircuits.elements.smooth_capacitor)</a>
 </li>
       <li><a href="api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.select">select() (kqcircuits.util.edit_node_plugin.EditNodePlugin method)</a>
 </li>
@@ -4365,6 +4400,8 @@
       <li><a href="api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite.snap_point">snap_point() (kqcircuits.elements.waveguide_composite.WaveguideComposite method)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.export.solution.html#kqcircuits.simulations.export.solution.Solution">Solution (class in kqcircuits.simulations.export.solution)</a>
+</li>
+      <li><a href="api/kqcircuits.elements.spiral_capacitor.html#kqcircuits.elements.spiral_capacitor.SpiralCapacitor">SpiralCapacitor (class in kqcircuits.elements.spiral_capacitor)</a>
 </li>
       <li><a href="api/kqcircuits.elements.spiral_resonator_polygon.html#kqcircuits.elements.spiral_resonator_polygon.SpiralResonatorPolygon">SpiralResonatorPolygon (class in kqcircuits.elements.spiral_resonator_polygon)</a>
 </li>
@@ -4500,14 +4537,16 @@
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/kqcircuits.elements.smooth_capacitor.html#kqcircuits.elements.smooth_capacitor.unit_vector">unit_vector() (in module kqcircuits.elements.smooth_capacitor)</a>
+</li>
       <li><a href="api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.update">update() (kqcircuits.util.edit_node_plugin.EditNodePlugin method)</a>
 </li>
       <li><a href="api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.update_form_from_node">update_form_from_node() (kqcircuits.util.edit_node_plugin.EditNodePlugin method)</a>
 </li>
-      <li><a href="api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.update_node_from_form">update_node_from_form() (kqcircuits.util.edit_node_plugin.EditNodePlugin method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.update_node_from_form">update_node_from_form() (kqcircuits.util.edit_node_plugin.EditNodePlugin method)</a>
+</li>
       <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.use_av">use_av (kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution attribute)</a>
 </li>
       <li><a href="api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.WaveguideToSimPort.use_internal_ports">use_internal_ports (kqcircuits.util.refpoints.WaveguideToSimPort attribute)</a>

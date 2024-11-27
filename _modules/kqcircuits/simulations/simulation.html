@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.simulation &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.simulations.simulation &mdash; KQCircuits 4.8.10 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../_static/documentation_options.js?v=2e945a51"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -453,7 +453,13 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.smooth_capacitor.html">kqcircuits.elements.smooth_capacitor</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.smooth_capacitor.html#kqcircuits.elements.smooth_capacitor.unit_vector"><code class="docutils literal notranslate"><span class="pre">unit_vector()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.smooth_capacitor.html#kqcircuits.elements.smooth_capacitor.segment_points"><code class="docutils literal notranslate"><span class="pre">segment_points()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.smooth_capacitor.html#kqcircuits.elements.smooth_capacitor.SmoothCapacitor"><code class="docutils literal notranslate"><span class="pre">SmoothCapacitor</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.spiral_capacitor.html">kqcircuits.elements.spiral_capacitor</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.spiral_capacitor.html#kqcircuits.elements.spiral_capacitor.SpiralCapacitor"><code class="docutils literal notranslate"><span class="pre">SpiralCapacitor</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.spiral_resonator_polygon.html">kqcircuits.elements.spiral_resonator_polygon</a><ul>
@@ -588,6 +594,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.epr.example.html">kqcircuits.simulations.epr.example</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.epr.gui_config.html">kqcircuits.simulations.epr.gui_config</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.epr.smooth_capacitor.html">kqcircuits.simulations.epr.smooth_capacitor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.epr.spiral_capacitor.html">kqcircuits.simulations.epr.spiral_capacitor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.epr.swissmon.html">kqcircuits.simulations.epr.swissmon</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.epr.utils.html">kqcircuits.simulations.epr.utils</a></li>
 </ul>
@@ -1825,18 +1832,32 @@
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Subtracts tool from obj by modifying dimensions of obj. Returns True if successful.&quot;&quot;&quot;</span>
             <span class="k">if</span> <span class="n">are_separate</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">tool</span><span class="p">):</span>
                 <span class="k">return</span> <span class="kc">True</span>
-            <span class="n">subtract_diff</span> <span class="o">=</span> <span class="n">tool</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;subtract&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span> <span class="o">-</span> <span class="n">obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;subtract&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
+            <span class="n">subtract_diff</span> <span class="o">=</span> <span class="n">tool</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;subtract&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span> <span class="o">-</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;subtract&quot;</span><span class="p">]</span>
             <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">layers</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;material&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">are_separate</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">layers</span><span class="p">[</span><span class="n">s</span><span class="p">])</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">subtract_diff</span><span class="p">):</span>
                 <span class="k">return</span> <span class="kc">False</span>  <span class="c1"># can&#39;t apply hard subtract if tool has non-material subtractions that obj doesn&#39;t have</span>
             <span class="k">if</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;bottom&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">tool</span><span class="p">[</span><span class="s2">&quot;bottom&quot;</span><span class="p">]:</span>
                 <span class="k">if</span> <span class="n">tool</span><span class="p">[</span><span class="s2">&quot;top&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;top&quot;</span><span class="p">]:</span>
                     <span class="k">return</span> <span class="kc">False</span>
-                <span class="k">if</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">not_inside</span><span class="p">(</span><span class="n">tool</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">not_inside</span><span class="p">(</span><span class="n">tool</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;bottom&quot;</span><span class="p">:</span> <span class="n">tool</span><span class="p">[</span><span class="s2">&quot;bottom&quot;</span><span class="p">],</span>
+                        <span class="s2">&quot;top&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;top&quot;</span><span class="p">],</span>
+                        <span class="s2">&quot;region&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dup</span><span class="p">(),</span>
+                        <span class="s2">&quot;subtract&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;subtract&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                    <span class="p">}</span>
+                <span class="p">):</span>
                     <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;top&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tool</span><span class="p">[</span><span class="s2">&quot;bottom&quot;</span><span class="p">]</span>
                     <span class="k">return</span> <span class="kc">True</span>
                 <span class="k">return</span> <span class="kc">False</span>
             <span class="k">if</span> <span class="n">tool</span><span class="p">[</span><span class="s2">&quot;top&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;top&quot;</span><span class="p">]:</span>
-                <span class="k">if</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">not_inside</span><span class="p">(</span><span class="n">tool</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">not_inside</span><span class="p">(</span><span class="n">tool</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;bottom&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;bottom&quot;</span><span class="p">],</span>
+                        <span class="s2">&quot;top&quot;</span><span class="p">:</span> <span class="n">tool</span><span class="p">[</span><span class="s2">&quot;top&quot;</span><span class="p">],</span>
+                        <span class="s2">&quot;region&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dup</span><span class="p">(),</span>
+                        <span class="s2">&quot;subtract&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;subtract&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                    <span class="p">}</span>
+                <span class="p">):</span>
                     <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;bottom&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tool</span><span class="p">[</span><span class="s2">&quot;top&quot;</span><span class="p">]</span>
                     <span class="k">return</span> <span class="kc">True</span>
                 <span class="k">return</span> <span class="kc">False</span>
