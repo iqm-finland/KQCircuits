@@ -21,7 +21,6 @@ import math
 
 from kqcircuits.elements.element import Element
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util.geometry_helper import round_dpath_width
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.elements.waveguide_coplanar_straight import WaveguideCoplanarStraight
@@ -66,25 +65,19 @@ class WaveguideCoplanarTaper(Element):
             pya.DPoint(0, self.a / 2 + self.b + self.margin),
         ]
         self.add_protection(pya.DPolygon(pts))
-        # Waveguide layer
-        pts = [
-            pya.DPoint(0, self.a / 2),
-            pya.DPoint(self.taper_length, self.a2 / 2),
-            pya.DPoint(self.taper_length, -self.a2 / 2),
-            pya.DPoint(0, -self.a / 2),
-        ]
-        shape = pya.DPolygon(pts)
-        self.cell.shapes(self.get_layer("waveguide_path")).insert(shape)
-        if self.add_metal:
-            self.cell.shapes(self.get_layer("base_metal_addition")).insert(shape)
-        pts = [
-            pya.DPoint(0, 0),
-            pya.DPoint(self.taper_length, 0),
-        ]
-        shape = round_dpath_width(pya.DPath(pts, min(self.a, self.a2)), self.layout.dbu)
-        self.cell.shapes(self.get_layer("waveguide_path")).insert(shape)
-        if self.add_metal:
-            self.cell.shapes(self.get_layer("base_metal_addition")).insert(shape)
+
+        # Waveguide path and base_metal_addition
+        path = pya.DPath([pya.DPoint(0, 0), pya.DPoint(self.taper_length, 0)], 0)
+        shape = pya.DPolygon(
+            [
+                pya.DPoint(0, self.a / 2),
+                pya.DPoint(self.taper_length, self.a2 / 2),
+                pya.DPoint(self.taper_length, -self.a2 / 2),
+                pya.DPoint(0, -self.a / 2),
+            ]
+        )
+        WaveguideCoplanarStraight.add_waveguide_path(self, path, shape)
+
         # refpoints for connecting to waveguides
         self.add_port("a", pya.DPoint(0, 0), pya.DVector(-1, 0))
         self.add_port("b", pya.DPoint(self.taper_length, 0), pya.DVector(1, 0))

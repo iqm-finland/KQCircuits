@@ -17,14 +17,16 @@
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 from math import cos, sin, pi, radians
 
+from kqcircuits.elements.waveguide_coplanar_straight import WaveguideCoplanarStraight
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
-from kqcircuits.util.geometry_helper import arc_points, round_dpath_width
+from kqcircuits.util.geometry_helper import arc_points
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.airbridges.airbridge import Airbridge
 
 
 @add_parameters_from(Airbridge, "airbridge_type")
+@add_parameters_from(WaveguideCoplanarStraight, "add_metal")
 class WaveguideCoplanarSplitter(Element):
     """
     The PCell declaration of a multiway waveguide splitter. The number of ports is defined by the length of the
@@ -98,12 +100,10 @@ class WaveguideCoplanarSplitter(Element):
                 pya.DVector(self.r * cos(angle_rad), self.r * sin(angle_rad)),
             )
 
-            # Waveguide length annotation
-            self.cell.shapes(self.get_layer("waveguide_path")).insert(
-                round_dpath_width(
-                    pya.DPath([self.refpoints[f"port_{port_name}"], self.refpoints["base"]], a), self.layout.dbu
-                )
-            )
+            # Waveguide path and base_metal_addition
+            path = pya.DPath([self.refpoints[f"port_{port_name}"], self.refpoints["base"]], 0)
+            shape = self._get_port_shape(angle_rad=angle_rad, length=length, width=a)
+            WaveguideCoplanarStraight.add_waveguide_path(self, path, shape)
 
             # Airbridges
             if self.use_airbridges:

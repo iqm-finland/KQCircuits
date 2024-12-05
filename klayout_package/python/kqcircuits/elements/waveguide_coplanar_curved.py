@@ -21,7 +21,7 @@ from math import pi, sin, cos, ceil
 
 from kqcircuits.elements.element import Element
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util.geometry_helper import vector_length_and_direction, round_dpath_width
+from kqcircuits.util.geometry_helper import vector_length_and_direction
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.elements.waveguide_coplanar_straight import WaveguideCoplanarStraight
 
@@ -97,12 +97,10 @@ class WaveguideCoplanarCurved(Element):
         shape_2 = pya.DPolygon(pts)
         element.cell.shapes(element.get_layer("base_metal_gap_wo_grid")).insert(trans * shape_2)
 
-        pts = annotation_arc
-        shape = round_dpath_width(pya.DPath(pts, element.a), element.layout.dbu)
-        element.cell.shapes(element.get_layer("waveguide_path")).insert(trans * shape)
-        if element.add_metal:
-            shape = pya.DPolygon(left_inner_arc + list(reversed(right_inner_arc)))
-            element.cell.shapes(element.get_layer("base_metal_addition")).insert(trans * shape)
+        # Waveguide path and base_metal_addition
+        path = pya.DPath(annotation_arc, 0)
+        shape = pya.DPolygon(left_inner_arc + list(reversed(right_inner_arc)))
+        WaveguideCoplanarStraight.add_waveguide_path(element, trans * path, trans * shape)
 
         # Protection layer
         if element.ground_grid_in_trace:

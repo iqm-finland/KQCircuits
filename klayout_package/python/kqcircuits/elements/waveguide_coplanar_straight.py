@@ -19,7 +19,6 @@
 
 from kqcircuits.elements.element import Element
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util.geometry_helper import round_dpath_width
 from kqcircuits.util.parameters import Param, pdt
 
 
@@ -37,23 +36,23 @@ class WaveguideCoplanarStraight(Element):
     def build_geometry(element, trans, l):
         # Refpoint in the first end
         # Left gap
-        pts = [
+        pts_1 = [
             pya.DPoint(0, element.a / 2 + 0),
             pya.DPoint(l, element.a / 2 + 0),
             pya.DPoint(l, element.a / 2 + element.b),
             pya.DPoint(0, element.a / 2 + element.b),
         ]
-        shape_1 = pya.DPolygon(pts)
+        shape_1 = pya.DPolygon(pts_1)
         element.cell.shapes(element.get_layer("base_metal_gap_wo_grid")).insert(trans * shape_1)
 
         # Right gap
-        pts = [
-            pya.DPoint(0, -element.a / 2 + 0),
+        pts_2 = [
             pya.DPoint(l, -element.a / 2 + 0),
-            pya.DPoint(l, -element.a / 2 - element.b),
+            pya.DPoint(0, -element.a / 2 + 0),
             pya.DPoint(0, -element.a / 2 - element.b),
+            pya.DPoint(l, -element.a / 2 - element.b),
         ]
-        shape_2 = pya.DPolygon(pts)
+        shape_2 = pya.DPolygon(pts_2)
         element.cell.shapes(element.get_layer("base_metal_gap_wo_grid")).insert(trans * shape_2)
 
         # Protection layer
@@ -65,15 +64,30 @@ class WaveguideCoplanarStraight(Element):
             pts = [pya.DPoint(0, -w), pya.DPoint(l, -w), pya.DPoint(l, w), pya.DPoint(0, w)]
             element.add_protection(trans * pya.DPolygon(pts))
 
-        # Waveguide length
-        pts = [
-            pya.DPoint(0, 0),
-            pya.DPoint(l, 0),
-        ]
-        shape = round_dpath_width(pya.DPath(pts, element.a), element.layout.dbu)
-        element.cell.shapes(element.get_layer("waveguide_path")).insert(trans * shape)
+        # Waveguide path and base_metal_addition
+        path = pya.DPath([pya.DPoint(0, 0), pya.DPoint(l, 0)], 0)
+        shape = pya.DPolygon(pts_1[:2] + pts_2[:2])
+        WaveguideCoplanarStraight.add_waveguide_path(element, trans * path, trans * shape)
+
+    @staticmethod
+    def add_waveguide_path(element, path: pya.DPath, shape: pya.DPolygon):
+        """Inserts the path and the shape to 'waveguide_path' layer. If element.add_metal is True, inserts the shape to
+        'base_metal_addition' layer.
+
+        Prefer this function to add path on a waveguide trace.
+
+        The path is used only for computing waveguide length and the path width should be zero to not mess up the shapes
+        in 'waveguide_path' layer.
+
+        Args:
+            element: An instance of a waveguide coplanar class.
+            path: The path along the centerline of the waveguide with zero width.
+            shape: The shape of the waveguide trace.
+        """
+        element.cell.shapes(element.get_layer("waveguide_path")).insert(path)
+        element.cell.shapes(element.get_layer("waveguide_path")).insert(shape)
         if element.add_metal:
-            element.cell.shapes(element.get_layer("base_metal_addition")).insert(trans * shape)
+            element.cell.shapes(element.get_layer("base_metal_addition")).insert(shape)
 
     def build(self):
         WaveguideCoplanarStraight.build_geometry(self, pya.DTrans(), self.l)
