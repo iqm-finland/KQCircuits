@@ -246,26 +246,23 @@ def merge_points_and_match_on_edges(regions, tolerance=2):
             if len(instances) < 2:
                 continue
             valid = max(valid, 0)  # duplicate instance exists
-            for i0 in instances:
-                for i1 in instances:
-                    if i0 == i1:
-                        continue
-                    p0 = pts[i0 - 1]
-                    p1 = pts[(i1 + 1) % len(pts)]
-                    if p0 == p1:
-                        continue
-                    valid = 1  # crossing next to duplicate
-                    p2 = pts[i1 - 1]
-                    if pya.Edge(p0, p).side_of(p2) + pya.Edge(p, p1).side_of(p2) < pya.Edge(p0, p).side_of(p1):
-                        continue  # detected a hole connection at p
-                    poly = fixed_polygon([pts[i % len(pts)] for i in range(i1, i0 + int(i0 < i1) * len(pts))])
-                    j0, j1 = i0, i1 + int(i0 > i1) * len(pts)
-                    while j1 - j0 >= 3:
-                        if pts[(j0 + 1) % len(pts)] != pts[(j1 - 1) % len(pts)]:
-                            return poly + fixed_polygon([pts[i % len(pts)] for i in range(j0, j1)])
-                        j0 += 1
-                        j1 -= 1
-                    return poly
+            for i0, i1 in zip(instances, instances[1:] + instances[:1]):
+                p0 = pts[i0 - 1]
+                p1 = pts[(i1 + 1) % len(pts)]
+                if p0 == p1:
+                    continue
+                valid = 1  # crossing next to duplicate
+                p2 = pts[i1 - 1]
+                if pya.Edge(p0, p).side_of(p2) + pya.Edge(p, p1).side_of(p2) < pya.Edge(p0, p).side_of(p1):
+                    continue  # detected a hole connection at p
+                poly = fixed_polygon([pts[i % len(pts)] for i in range(i1, i0 + int(i0 < i1) * len(pts))])
+                j0, j1 = i0, i1 + int(i0 > i1) * len(pts)
+                while j1 - j0 >= 3:
+                    if pts[(j0 + 1) % len(pts)] != pts[(j1 - 1) % len(pts)]:
+                        return poly + fixed_polygon([pts[i % len(pts)] for i in range(j0, j1)])
+                    j0 += 1
+                    j1 -= 1
+                return poly
         return [pya.SimplePolygon(pts, True)] if valid else []
 
     # Gather points from regions to `all_points` dictionary. This ignores duplicate points.
