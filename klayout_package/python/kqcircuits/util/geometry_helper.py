@@ -230,40 +230,71 @@ def merge_points_and_match_on_edges(regions, tolerance=2):
     """
 
     def fixed_polygon(pts):
-        """Recursively fixes and possibly splits the polygon. Returns list of polygons.
-        Assumes that len(pts) >= 3 and consecutive points are not duplicates.
-        - removes spikes of overlapping edges
-        - splits polygon if parts of it are connected with overlapping edges
+        """Recursively removes spikes of zero width and splits polygon into pieces if possible without adding edges.
+        Assumes that consecutive points in pts are not duplicates.
+        Returns polygon as list of lists of points.
         """
+        size = len(pts)
+        if size < 3:
+            return []  # ignore polygons with less than 3 points
+
+        # Check for spikes of zero width
+        for i, p in enumerate(pts):
+            if pts[(i + 2) % size] == p:
+                for j in range(1, (size - 1) // 2):
+                    if pts[i - j] != pts[(i + 2 + j) % size]:
+                        return fixed_polygon([pts[(i + 1 + j + k) % size] for k in range(size - 2 * j)])  # remove spike
+                return []  # ignore polygon with zero area
+
         # Create mapping from point to list of indices
         instance_map = {p: [] for p in pts}
         for i, p in enumerate(pts):
             instance_map[p].append(i)
 
-        # Go through all points. If same point has 2 or more instances, then possibly split polygon into smaller pieces.
-        valid = -1  # polygon is valid if there are no duplicate instances or there is a crossing next to any duplicate
+        # Check if polygon can be split
         for p, instances in instance_map.items():
             if len(instances) < 2:
                 continue
-            valid = max(valid, 0)  # duplicate instance exists
             for i0, i1 in zip(instances, instances[1:] + instances[:1]):
                 p0 = pts[i0 - 1]
-                p1 = pts[(i1 + 1) % len(pts)]
+                p1 = pts[(i1 + 1) % size]
                 if p0 == p1:
-                    continue
-                valid = 1  # crossing next to duplicate
+                    continue  # detect equal points at i0-1 and i1+1
                 p2 = pts[i1 - 1]
                 if pya.Edge(p0, p).side_of(p2) + pya.Edge(p, p1).side_of(p2) < pya.Edge(p0, p).side_of(p1):
                     continue  # detected a hole connection at p
-                poly = fixed_polygon([pts[i % len(pts)] for i in range(i1, i0 + int(i0 < i1) * len(pts))])
-                j0, j1 = i0, i1 + int(i0 > i1) * len(pts)
-                while j1 - j0 >= 3:
-                    if pts[(j0 + 1) % len(pts)] != pts[(j1 - 1) % len(pts)]:
-                        return poly + fixed_polygon([pts[i % len(pts)] for i in range(j0, j1)])
-                    j0 += 1
-                    j1 -= 1
-                return poly
-        return [pya.SimplePolygon(pts, True)] if valid else []
+                return fixed_polygon([pts[(i0 + k) % size] for k in range((i1 - i0) % size)]) + fixed_polygon(
+                    [pts[(i1 + k) % size] for k in range((i0 - i1) % size)]
+                )
+        return [pts]  # return polygon without modifications
+
+    def merged_polygon(pts1, pts2):
+        """Merges two polygons with common edges.
+        Returns merged polygon as list of points. Returns empty list if common edge not found.
+        """
+        intersection = set(pts1).intersection(pts2)
+        if len(intersection) < 2:
+            return []
+
+        size1, size2 = len(pts1), len(pts2)
+        i1, i2, length = 0, 0, 0
+        for pt in intersection:
+            instances1 = [i for i, p in enumerate(pts1) if p == pt]
+            instances2 = [i for i, p in enumerate(pts2) if p == pt]
+            for inst1 in instances1:
+                for inst2 in instances2:
+                    n = 1
+                    while n < len(intersection) and pts1[(inst1 + n) % size1] == pts2[(inst2 - n) % size2]:
+                        n += 1
+                    if n > length:
+                        i1, i2, length = inst1, inst2, n
+
+        if length < 2:
+            return []
+        j1, j2 = (i1 + length - 1) % size1, (i2 - length + 1) % size2
+        return [pts1[(j1 + k) % size1] for k in range((i1 - j1) % size1)] + [
+            pts2[(i2 + k) % size2] for k in range((j2 - i2) % size2)
+        ]
 
     # Gather points from regions to `all_points` dictionary. This ignores duplicate points.
     all_points = {}
@@ -332,14 +363,18 @@ def merge_points_and_match_on_edges(regions, tolerance=2):
                         new_points.append(moved[p0] if p0 in moved else p0)
 
             # Remove consecutive duplicate points and update list of polygons by fixed polygons
-            new_points_no_duplicates = [p for i, p in enumerate(new_points) if p != new_points[i - 1]]
-            if len(new_points_no_duplicates) >= 3:
-                polygons += fixed_polygon(new_points_no_duplicates)
+            polygons += fixed_polygon([p for i, p in enumerate(new_points) if p != new_points[i - 1]])
 
-        # Replace region with list of polygons
+        # Replace region with merged polygons
         region.clear()
-        for polygon in polygons:
-            region.insert(polygon)
+        for i, polygon in enumerate(polygons):
+            for j in range(i + 1, len(polygons)):
+                merged = merged_polygon(polygon, polygons[j])
+                if merged:
+                    polygons[j] = merged
+                    break
+            else:
+                region.insert(pya.SimplePolygon(polygon, True))
 
 
 def is_clockwise(polygon_points):

@@ -75,6 +75,7 @@ sim_parameters = {
         "oxideMS": {"permittivity": 11.4},
         "oxideSA": {"permittivity": 4},
     },
+    "small_shape_area": 0.1,
 }
 sol_parameters = {
     "sweep_enabled": False,

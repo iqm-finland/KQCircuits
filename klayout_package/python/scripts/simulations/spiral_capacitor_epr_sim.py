@@ -51,7 +51,7 @@ sim_parameters = {
     "box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(600, 600)),
     "tls_sheet_approximation": True,
     "detach_tls_sheets_from_body": False,  # elmer knows how to use the non-detached surfaces
-    "n": 32,
+    "n": 48,
     "ground_gap": 10,
     "face_stack": ["1t1", "2b1"],
     "chip_distance": 8,

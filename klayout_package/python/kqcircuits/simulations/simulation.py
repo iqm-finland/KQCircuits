@@ -258,6 +258,8 @@ class Simulation:
     minimum_point_spacing = Param(pdt.TypeDouble, "Tolerance for merging adjacent points in polygon", 0.01, unit="µm")
     polygon_tolerance = Param(pdt.TypeDouble, "Tolerance for merging adjacent polygons in a layer", 0.004, unit="µm")
 
+    small_shape_area = Param(pdt.TypeDouble, "Area below which shapes will trigger a warning.", 1.0, unit="µm²")
+
     extra_json_data = Param(
         pdt.TypeNone,
         "Extra data in dict form to store in resulting JSON",
@@ -312,6 +314,7 @@ class Simulation:
         self.layers = {}
         self.build()
         self.create_simulation_layers()
+        self.warn_of_small_shapes()
 
     @classmethod
     def from_cell(cls, cell, margin=300, grid_size=1, **kwargs):
@@ -973,6 +976,22 @@ class Simulation:
                 },
                 **({"subtract": subtract} if subtract else {}),
             }
+
+    def warn_of_small_shapes(self):
+        """Warns of small shapes in simulation layers."""
+        if self.small_shape_area <= 0.0:
+            return
+        for name, layer in self.layers.items():
+            if "layer" not in layer:
+                continue
+            shapes = self.cell.shapes(self.layout.layer(layer["layer"], 0))
+            for shape in shapes.each():
+                area = shape.darea()  # area in µm²
+                if area < self.small_shape_area:
+                    logging.warning(
+                        f"Layer '{name}' of simulation '{self.name}' contains a small shape of {round(area, 3)} µm² "
+                        f"with bounding box {shape.dbbox()}."
+                    )
 
     def ground_grid_region(self, face_id):
         """Returns region of ground grid for the given face id."""
