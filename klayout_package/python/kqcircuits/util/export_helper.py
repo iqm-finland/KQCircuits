@@ -349,6 +349,7 @@ def generate_probepoints_from_file(
 
 def create_or_empty_tmp_directory(dir_name):
     """Creates directory into TMP_PATH or removes its content if it exists.
+    Prompts user if existing path includes result files. Raises error if permission to overwrite results is denied.
     Returns directory path.
     """
 
@@ -368,6 +369,10 @@ def create_or_empty_tmp_directory(dir_name):
     dir_path = get_simulation_directory(dir_name)
 
     if dir_path.exists() and dir_path.is_dir():
+        if any(f.endswith("_project_results.json") for f in os.listdir(dir_path)):
+            print(f"Do you want to overwrite the existing results in {dir_path}? (y to continue):")
+            if not input().lower().startswith("y"):
+                raise ValueError(f"The permission to overwrite existing results in {dir_path} is denied by user.")
         remove_content(dir_path)
     else:
         dir_path.mkdir()

@@ -73,21 +73,19 @@ def run_export_script(export_script: Path, export_path: Path, quiet: bool = Fals
         + args
         + (["-q"] if quiet else [])
     )
-    # Run export script and capture stdout to be processed
-    with subprocess.Popen(export_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) as process:
-        process_stdout, process_stderr = process.communicate()
-        print(process_stdout)
-        print(process_stderr, file=sys.stderr)
+    # Run export script and capture script_export_paths to be processed
+    script_export_paths = []
+    with subprocess.Popen(export_cmd, stdout=subprocess.PIPE, text=True) as process:
+        for output in process.stdout:
+            # Print the output of the subprocess on the fly
+            print(output, end="")
+
+            # Parse export paths from output printed in `create_or_empty_tmp_directory`
+            if output.strip().startswith(EXPORT_PATH_IDENTIFIER):
+                script_export_paths.append(Path(output.strip().removeprefix(EXPORT_PATH_IDENTIFIER)))
+
         if process.returncode:
             raise subprocess.CalledProcessError(process.returncode, export_cmd)
-
-    # Parse export paths from stdout printed in `create_or_empty_tmp_directory`
-    script_export_paths = [l.strip() for l in process_stdout.split("\n")]
-    script_export_paths = [
-        Path(l.removeprefix(EXPORT_PATH_IDENTIFIER))
-        for l in script_export_paths
-        if l.startswith(EXPORT_PATH_IDENTIFIER)
-    ]
 
     # remove duplicate paths
     unique_paths = set()
