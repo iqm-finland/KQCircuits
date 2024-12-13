@@ -22,7 +22,7 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.util.geometry_helper import circle_polygon, arc_points
 from kqcircuits.elements.element import Element
-from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
+from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare, eval_a2, eval_b2
 
 
 @add_parameters_from(FingerCapacitorSquare, "fixed_length", "a2", "b2")
@@ -57,11 +57,8 @@ class CircularCapacitor(Element):
     ground_gap = Param(pdt.TypeDouble, "Ground plane padding", 20, unit="μm")
 
     def build(self):
-        self.a2 = self.a if self.a2 < 0 else self.a2
-        self.b2 = self.b if self.b2 < 0 else self.b2
-
         y_left = self.a / 2
-        y_right = self.a2 / 2
+        y_right = eval_a2(self) / 2
         x_end = self.r_outer + self.ground_gap
 
         capacitor_region = []
@@ -147,7 +144,7 @@ class CircularCapacitor(Element):
         island_ground = circle_polygon(self.r_outer + self.ground_gap, self.n)
         ground_region.append(island_ground)
         ground_region = pya.Region([poly.to_itype(self.layout.dbu) for poly in ground_region])
-        self._add_waveguides(ground_region, x_end, self.a / 2 + self.b, self.a2 / 2 + self.b2)
+        self._add_waveguides(ground_region, x_end, self.a / 2 + self.b, eval_a2(self) / 2 + eval_b2(self))
 
         return ground_region
 
@@ -182,4 +179,4 @@ class CircularCapacitor(Element):
 
     @classmethod
     def get_sim_ports(cls, simulation):
-        return Element.left_and_right_waveguides(simulation)
+        return FingerCapacitorSquare.get_sim_ports(simulation)

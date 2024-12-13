@@ -19,6 +19,7 @@
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.epr.utils import in_gui, EPRTarget
 from kqcircuits.simulations.partition_region import PartitionRegion
+from kqcircuits.elements.finger_capacitor_square import eval_a2, eval_b2
 
 vertical_dimension = 1.0
 metal_edge_dimension = 1.0
@@ -52,9 +53,7 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
             ]
         ).to_itype(simulation.layout.dbu)
     )
-    a2 = simulation.a if simulation.a2 < 0 else simulation.a2
-    b2 = simulation.b if simulation.b2 < 0 else simulation.b2
-    rb = a2 / 2 + b2 + waveguide_margin
+    rb = eval_a2(simulation) / 2 + eval_b2(simulation) + waveguide_margin
     port_b = simulation.refpoints["port_b"]
     dir_b = waveguide_length_scale * (simulation.refpoints["port_b_corner"] - port_b)
     cross_b = rb / dir_b.abs() * pya.DVector(dir_b.y, -dir_b.x)

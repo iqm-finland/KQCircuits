@@ -21,7 +21,7 @@ from math import pi, cos, sin, atan
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.elements.element import Element
-from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
+from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare, eval_a2, eval_b2
 
 
 def unit_vector(radians):
@@ -172,8 +172,7 @@ class SmoothCapacitor(Element):
         region_ground = right_fingers + left_fingers
         region_ground.size(self.ground_gap / self.layout.dbu, 5)
         region_ground += self.middle_gap_fill()
-        a2 = self.a if self.a2 < 0 else self.a2
-        b2 = self.b if self.b2 < 0 else self.b2
+        a2, b2 = eval_a2(self), eval_b2(self)
         self.insert_wg_joint(region_ground, xport, x_mid - self.ground_gap, b2 + a2 / 2)
         self.insert_wg_joint(region_ground, -xport, -x_mid + self.ground_gap, self.b + self.a / 2)
         region_ground = self.super_smoothen_region(region_ground, self.finger_gap + self.ground_gap)
@@ -220,4 +219,4 @@ class SmoothCapacitor(Element):
 
     @classmethod
     def get_sim_ports(cls, simulation):
-        return Element.left_and_right_waveguides(simulation)
+        return FingerCapacitorSquare.get_sim_ports(simulation)

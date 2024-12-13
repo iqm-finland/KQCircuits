@@ -20,6 +20,7 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.partition_region import PartitionRegion
 from kqcircuits.simulations.epr.utils import in_gui, EPRTarget
 from kqcircuits.elements.smooth_capacitor import SmoothCapacitor
+from kqcircuits.elements.finger_capacitor_square import eval_a2, eval_b2
 
 
 # Partition region and correction cuts definitions for Swissmon qubit
@@ -32,8 +33,7 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
     port_a_rf = simulation.refpoints["port_a"]
     port_b_rf = simulation.refpoints["port_b"]
 
-    a2 = simulation.a if simulation.a2 < 0 else simulation.a2
-    b2 = simulation.b if simulation.b2 < 0 else simulation.b2
+    a2, b2 = eval_a2(simulation), eval_b2(simulation)
 
     # Make a stub SmoothCapacitor instance, copy some attributes
     # then use some region generating functions to create a partition region shape overlapping finger edges
@@ -180,8 +180,7 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
     port_a_rf = simulation.refpoints["port_a"]
     port_b_rf = simulation.refpoints["port_b"]
 
-    a2 = simulation.a if simulation.a2 < 0 else simulation.a2
-    b2 = simulation.b if simulation.b2 < 0 else simulation.b2
+    a2, b2 = eval_a2(simulation), eval_b2(simulation)
 
     gaps = pya.Region(simulation.cell.begin_shapes_rec(simulation.get_layer("base_metal_gap_wo_grid")))
     finger_top = None

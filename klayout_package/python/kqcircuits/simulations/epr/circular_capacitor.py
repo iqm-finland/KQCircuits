@@ -23,6 +23,7 @@ from kqcircuits.simulations.epr.utils import extract_child_simulation, in_gui, E
 from kqcircuits.simulations.partition_region import PartitionRegion
 from kqcircuits.simulations.simulation import Simulation
 from kqcircuits.util.geometry_helper import arc_points
+from kqcircuits.elements.finger_capacitor_square import eval_a2, eval_b2
 
 # Partition region and correction cuts definitions for CircularCapacitor element
 
@@ -51,13 +52,6 @@ def _waveguide_end_dist(simulation):
             return x_guide + simulation.r_outer + simulation.ground_gap
     else:
         return simulation.box.width() / 2
-
-
-def _get_ab2(simulation):
-    """Get the correct a2 and b2 used in the geometry"""
-    a2 = simulation.a if simulation.a2 < 0 else simulation.a2
-    b2 = simulation.b if simulation.b2 < 0 else simulation.b2
-    return a2, b2
 
 
 def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[PartitionRegion]:
@@ -169,7 +163,7 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
         center + pya.DPoint(-r_tot - metal_edge_margin, -simulation.a / 2 - metal_edge_margin),
         center + pya.DPoint(-simulation.r_inner + metal_edge_margin, simulation.a / 2 + metal_edge_margin),
     )
-    a2, b2 = _get_ab2(simulation)
+    a2, b2 = eval_a2(simulation), eval_b2(simulation)
     lead2_region = pya.DBox(
         center + pya.DPoint(r_coupler_out - metal_edge_margin, -a2 / 2 - metal_edge_margin),
         center + pya.DPoint(r_tot + metal_edge_margin, a2 / 2 + metal_edge_margin),
@@ -241,7 +235,7 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
         s_to_s_gap = simulation.chip_distance + 2 * simulation.metal_height
         z_me = -simulation.substrate_height[1] - s_to_s_gap if is_flip_chip else 0
 
-    a2, b2 = _get_ab2(simulation)
+    a2, b2 = eval_a2(simulation), eval_b2(simulation)
 
     def _coupler_cut_lim(unit_vec, start_p, origin_p, rlim):
         """

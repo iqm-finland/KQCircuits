@@ -20,11 +20,12 @@
 import logging
 
 from kqcircuits.elements.element import Element
-from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
+from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare, eval_a2, eval_b2
 from kqcircuits.elements.flip_chip_connectors.flip_chip_connector import FlipChipConnector
 from kqcircuits.elements.launcher import Launcher
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
+from kqcircuits.util.refpoints import WaveguideToSimPort
 
 
 @add_parameters_from(FingerCapacitorSquare, "a2", "b2")
@@ -53,9 +54,6 @@ class FlipChipConnectorRf(Element):
             self.insert_cell(bump, pya.DTrans((i - (self.n_center_bumps - 1) / 2) * self.inter_bump_distance, 0))
         bump_ref = self.get_refpoints(bump)
         logging.debug("bump_ref: %s", bump_ref)
-
-        a2 = self.a2 if self.a2 >= 0 else self.a
-        b2 = self.b2 if self.b2 >= 0 else self.b
 
         if self.round_connector:
             # Rounded geometry
@@ -109,7 +107,7 @@ class FlipChipConnectorRf(Element):
                 )
 
             produce_shape(0, self.a, self.b, 0, 0)
-            produce_shape(1, a2, b2, 180, self.output_rotation - 180)
+            produce_shape(1, eval_a2(self), eval_b2(self), 180, self.output_rotation - 180)
 
         else:
             # Taper geometry
@@ -175,8 +173,8 @@ class FlipChipConnectorRf(Element):
                 b_launcher=self.connector_b,
                 launcher_frame_gap=self.connector_b,
                 face_ids=[self.face_ids[1], self.face_ids[0]],
-                a=a2,
-                b=b2,
+                a=eval_a2(self),
+                b=eval_b2(self),
                 add_metal=add_metal,
             )
 
@@ -196,4 +194,21 @@ class FlipChipConnectorRf(Element):
 
     @classmethod
     def get_sim_ports(cls, simulation):
-        return Element.face_changer_waveguides(simulation)
+        """An implementation of get_sim_ports that adds waveguides on both sides of a face-changing element.
+        The port names are '{face_ids[0]}_port' and '{face_ids[1]}_port'.
+        The first port points to left and the second port orientation is determined by output_rotation parameter.
+        The a and b values of the second waveguide are adjusted by a2 and b2 parameters.
+        """
+
+        def diff_to_rotation(x):
+            return abs(x - (simulation.output_rotation % 360))
+
+        side = {0: "left", 90: "bottom", 180: "right", 270: "top", 360: "left"}.get(
+            min([0, 90, 180, 270, 360], key=diff_to_rotation)
+        )
+        return [
+            WaveguideToSimPort(f"{simulation.face_ids[0]}_port", side="left"),
+            WaveguideToSimPort(
+                f"{simulation.face_ids[1]}_port", side=side, face=1, a=eval_a2(simulation), b=eval_b2(simulation)
+            ),
+        ]

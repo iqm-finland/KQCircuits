@@ -21,6 +21,17 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.finger_capacitor_taper import FingerCapacitorTaper
+from kqcircuits.util.refpoints import WaveguideToSimPort
+
+
+def eval_a2(element):
+    """Evaluation function for center conductor width on the other end."""
+    return element.a if element.a2 < 0 else element.a2
+
+
+def eval_b2(element):
+    """Evaluation function for gap width on the other end."""
+    return element.b if element.b2 < 0 else element.b2
 
 
 @add_parameters_from(FingerCapacitorTaper, "*", "taper_length")
@@ -58,7 +69,7 @@ class FingerCapacitorSquare(Element):
     def build(self):
         y_mid = self.finger_area_width() / 2
         y_left = self.a / 2
-        y_right = (self.a if self.a2 < 0 else self.a2) / 2
+        y_right = eval_a2(self) / 2
         x_mid = self.finger_area_length() / 2
         x_left = x_mid + self.finger_width + (self.ground_padding if y_left > y_mid else 0.0)
         x_right = x_mid + self.finger_width + (self.ground_padding if y_right > y_mid else 0.0)
@@ -137,7 +148,7 @@ class FingerCapacitorSquare(Element):
         finger_area_width = self.finger_area_width()
         y_mid = finger_area_width / 2 + self.ground_padding
         y_left = self.a / 2 + self.b
-        y_right = (self.a if self.a2 < 0 else self.a2) / 2 + (self.b if self.b2 < 0 else self.b2)
+        y_right = eval_a2(self) / 2 + eval_b2(self)
         x_mid = self.finger_area_length() / 2 + self.finger_width
         x_left = x_mid + (self.ground_padding if y_left < y_mid else 0.0)
         x_right = x_mid + (self.ground_padding if y_right < y_mid else 0.0)
@@ -235,4 +246,10 @@ class FingerCapacitorSquare(Element):
 
     @classmethod
     def get_sim_ports(cls, simulation):
-        return Element.left_and_right_waveguides(simulation)
+        """An implementation of get_sim_ports that adds left and right waveguides to port_a and port_b respectively.
+        The a and b values of right waveguide can be adjusted separately.
+        """
+        return [
+            WaveguideToSimPort("port_a", side="left", a=simulation.a, b=simulation.b),
+            WaveguideToSimPort("port_b", side="right", a=eval_a2(simulation), b=eval_b2(simulation)),
+        ]

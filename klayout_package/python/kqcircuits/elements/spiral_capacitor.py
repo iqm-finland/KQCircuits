@@ -19,6 +19,7 @@
 
 from math import pi, cos, sqrt
 
+from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare, eval_a2, eval_b2
 from kqcircuits.elements.smooth_capacitor import SmoothCapacitor, unit_vector, segment_points
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.geometry_helper import get_angle
@@ -120,8 +121,7 @@ class SpiralCapacitor(Element):
             return position + (distance - direction.sprod(position.to_v())) * direction
 
         # Process terms on the right
-        a2 = self.a if self.a2 < 0 else self.a2
-        b2 = self.b if self.b2 < 0 else self.b2
+        a2, b2 = eval_a2(self), eval_b2(self)
         finger_width2 = self.finger_width if self.finger_width2 < 0 else self.finger_width2
         ground_gap2 = self.ground_gap if self.ground_gap2 < 0 else self.ground_gap2
         spiral_angle2 = self.spiral_angle if self.spiral_angle2 < 0 else self.spiral_angle2
@@ -178,4 +178,4 @@ class SpiralCapacitor(Element):
 
     @classmethod
     def get_sim_ports(cls, simulation):
-        return Element.left_and_right_waveguides(simulation)
+        return FingerCapacitorSquare.get_sim_ports(simulation)

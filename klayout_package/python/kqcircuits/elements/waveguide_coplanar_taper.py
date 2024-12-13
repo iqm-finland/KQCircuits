@@ -22,7 +22,7 @@ import math
 from kqcircuits.elements.element import Element
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
-from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
+from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare, eval_a2, eval_b2
 from kqcircuits.elements.waveguide_coplanar_straight import WaveguideCoplanarStraight
 
 
@@ -38,12 +38,12 @@ class WaveguideCoplanarTaper(Element):
     m2 = Param(pdt.TypeDouble, "Margin of right waveguide protection layer", 5 * 2, unit="μm")
 
     def build(self):
-        #
+        a2, b2 = eval_a2(self), eval_b2(self)
         # gap 1
         pts = [
             pya.DPoint(0, self.a / 2 + 0),
-            pya.DPoint(self.taper_length, self.a2 / 2 + 0),
-            pya.DPoint(self.taper_length, self.a2 / 2 + self.b2),
+            pya.DPoint(self.taper_length, a2 / 2 + 0),
+            pya.DPoint(self.taper_length, a2 / 2 + b2),
             pya.DPoint(0, self.a / 2 + self.b),
         ]
         shape = pya.DPolygon(pts)
@@ -51,8 +51,8 @@ class WaveguideCoplanarTaper(Element):
         # gap 2
         pts = [
             pya.DPoint(0, -self.a / 2 + 0),
-            pya.DPoint(self.taper_length, -self.a2 / 2 + 0),
-            pya.DPoint(self.taper_length, -self.a2 / 2 - self.b2),
+            pya.DPoint(self.taper_length, -a2 / 2 + 0),
+            pya.DPoint(self.taper_length, -a2 / 2 - b2),
             pya.DPoint(0, -self.a / 2 - self.b),
         ]
         shape = pya.DPolygon(pts)
@@ -60,8 +60,8 @@ class WaveguideCoplanarTaper(Element):
         # Protection layer
         pts = [
             pya.DPoint(0, -self.a / 2 - self.b - self.margin),
-            pya.DPoint(self.taper_length, -self.a2 / 2 - self.b2 - self.m2),
-            pya.DPoint(self.taper_length, self.a2 / 2 + self.b2 + self.m2),
+            pya.DPoint(self.taper_length, -a2 / 2 - b2 - self.m2),
+            pya.DPoint(self.taper_length, a2 / 2 + b2 + self.m2),
             pya.DPoint(0, self.a / 2 + self.b + self.margin),
         ]
         self.add_protection(pya.DPolygon(pts))
@@ -71,8 +71,8 @@ class WaveguideCoplanarTaper(Element):
         shape = pya.DPolygon(
             [
                 pya.DPoint(0, self.a / 2),
-                pya.DPoint(self.taper_length, self.a2 / 2),
-                pya.DPoint(self.taper_length, -self.a2 / 2),
+                pya.DPoint(self.taper_length, a2 / 2),
+                pya.DPoint(self.taper_length, -a2 / 2),
                 pya.DPoint(0, -self.a / 2),
             ]
         )
