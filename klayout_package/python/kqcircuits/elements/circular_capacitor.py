@@ -20,7 +20,7 @@
 import math
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
-from kqcircuits.util.geometry_helper import circle_polygon, arc_points
+from kqcircuits.util.geometry_helper import circle_polygon, arc_points, force_rounded_corners
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare, eval_a2, eval_b2
 
@@ -91,7 +91,7 @@ class CircularCapacitor(Element):
                 ]
             ).to_itype(self.layout.dbu)
         )
-        capacitor_neg.round_corners(5 / self.layout.dbu, 5 / self.layout.dbu, self.n // 2)
+        capacitor_neg = force_rounded_corners(capacitor_neg, 5 / self.layout.dbu, 5 / self.layout.dbu, self.n // 2)
         self._add_waveguides(capacitor_neg, x_end, y_left, y_right)
 
         # define the capacitor in the ground

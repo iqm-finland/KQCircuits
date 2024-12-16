@@ -561,3 +561,64 @@ def round_dpath_width(dpath: pya.DPath, dbu: float, precision: int = 2) -> pya.D
     ipath = dpath.to_itype(dbu)
     ipath.width -= ipath.width % precision
     return ipath.to_dtype(dbu)
+
+
+def force_rounded_corners(region: pya.Region, r_inner: float, r_outer: float, n: int) -> pya.Region:
+    """Returns region with rounded corners by trying to force radius as given by r_inner and r_outer.
+
+    This function is useful when corner rounding is wanted next to curved segment. The point of curved segment that is
+    closest to the corner limits the radius produced by the klayout round_corners method. This function solves this
+    problem by removing the points next to the corner that prevent the full rounding radius from taking effect in the
+    round_corners method.
+
+    Please note that this function can't guarantee full radius in cases, where two corners are close to each other.
+    For example, if two 90 degree angles are closer than 2 * r distance apart, then the rounding radius is decreased.
+
+    Args:
+        region: Region whose corners need to be rounded
+        r_inner: Inner corner radius (in database units)
+        r_outer: Outer corner radius (in database units)
+        n: The number of points per circle
+
+    Returns:
+        Region with rounded corners
+    """
+
+    corner_max_cos = np.cos(3 * np.pi / n)  # consider point as corner if cos is below this
+
+    def process_points(pts: list[pya.Point]):
+        i0 = 0
+        while i0 < len(pts):
+            if len(pts) < 3:
+                return []
+            i1, i2, i3 = (i0 + 1) % len(pts), (i0 + 2) % len(pts), (i0 + 3) % len(pts)
+            p0, p1, p2, p3 = pts[i0 % len(pts)], pts[i1], pts[i2], pts[i3]
+            v0, v1, v2 = p1 - p0, p2 - p1, p3 - p2
+            l0, l1, l2 = v0.length(), v1.length(), v2.length()
+            cos0, cos1 = v0.sprod(v1) / (l0 * l1), v1.sprod(v2) / (l1 * l2)
+            if cos0 > corner_max_cos or cos1 > corner_max_cos:  # do nothing between two corners
+                r0, r1 = r_inner if v0.vprod(v1) > 0 else r_outer, r_inner if v1.vprod(v2) > 0 else r_outer
+                cut0, cut1 = r0 * np.sqrt((1 - cos0) / (1 + cos0)), r1 * np.sqrt((1 - cos1) / (1 + cos1))  # r*tan(a/2)
+                if cut0 + cut1 > l1:
+                    div, x0, x1 = v0.vprod(v2), v2.vprod(p0 - p3), v0.vprod(p0 - p3)
+                    if x1 * div < 0 < x0 * div:
+                        p_cross = p0 + x0 / div * v0
+                        if p_cross not in (p0, p3):
+                            pts[i1] = p_cross
+                            pts = [p for i, p in enumerate(pts) if i != i2]
+                            i0 -= 1 + int(i2 < i0)
+                            continue
+                    pts = [p for i, p in enumerate(pts) if i not in (i1, i2)]
+                    i0 -= 1 + int(i1 < i0) + int(i2 < i0)
+                    continue
+            i0 += 1
+        return pts
+
+    # Create new region and insert rounded shapes into it
+    result = pya.Region()
+    for polygon in region.each_merged():
+        poly = pya.Polygon(process_points(list(polygon.each_point_hull())))
+        for hole in range(polygon.holes()):
+            poly.insert_hole(process_points(list(polygon.each_point_hole(hole))))
+        result.insert(poly.round_corners(r_inner, r_outer, n))
+    return result
