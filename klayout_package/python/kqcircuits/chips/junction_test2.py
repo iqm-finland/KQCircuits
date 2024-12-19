@@ -52,9 +52,6 @@ class JunctionTest2(Chip):
         default=["large", "large", "small", "small", "small", "large"],
     )
 
-    def coerce_parameters_impl(self):
-        self.sync_parameters(JunctionTestPads)
-
     def build(self):
         left = self.box.left
         right = self.box.right

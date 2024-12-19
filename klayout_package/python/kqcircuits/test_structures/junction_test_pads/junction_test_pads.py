@@ -26,13 +26,10 @@ from kqcircuits.test_structures.test_structure import TestStructure
 from kqcircuits.defaults import default_junction_test_pads_type
 from kqcircuits.test_structures.junction_test_pads import junction_test_pads_type_choices
 from kqcircuits.junctions.manhattan import Manhattan
-from kqcircuits.junctions.junction import Junction
 
 
 @add_parameters_from(Manhattan)
-@add_parameters_from(
-    Qubit, "junction_type", "junction_width", "loop_area", "mirror_squid", "junction_parameters", "_junction_parameters"
-)
+@add_parameters_from(Qubit, "junction_type", "junction_width", "loop_area", "mirror_squid")
 class JunctionTestPads(TestStructure):
     """Base class for junction test structures."""
 
@@ -58,19 +55,12 @@ class JunctionTestPads(TestStructure):
         pdt.TypeString, "Type of junction test pads", default_type, choices=junction_test_pads_type_choices
     )
 
-    junction_test_pads_parameters = Param(pdt.TypeString, "Extra JunctionTestPads Parameters", "{}")
-    _junction_test_pads_parameters = Param(pdt.TypeString, "Previous state of *_parameters", "{}", hidden=True)
-
     produce_squid = Qubit.produce_squid
 
     @classmethod
     def create(cls, layout, library=None, junction_test_pads_type=None, **parameters):
         """Create a JunctionTestPads cell in layout."""
         return cls.create_subtype(layout, library, junction_test_pads_type, **parameters)[0]
-
-    def coerce_parameters_impl(self):
-        self.sync_parameters(Junction)
-        self.sync_parameters(JunctionTestPads)
 
     def _produce_impl(self):
         if self.pad_configuration == "2-port":

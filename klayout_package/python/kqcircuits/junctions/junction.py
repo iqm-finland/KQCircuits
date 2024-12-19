@@ -49,13 +49,8 @@ class Junction(Element):
         unit="μm",
         docstring="Junction width (only used for code generated element)",
     )
-    junction_parameters = Param(pdt.TypeString, "Extra Junction Parameters", "{}")
-    _junction_parameters = Param(pdt.TypeString, "Previous state of *_parameters", "{}", hidden=True)
 
     @classmethod
     def create(cls, layout, library=None, junction_type=None, **parameters):
         """Create cell for a junction in layout."""
         return cls.create_subtype(layout, library, junction_type, **parameters)[0]
-
-    def coerce_parameters_impl(self):
-        self.sync_parameters(Junction)

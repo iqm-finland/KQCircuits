@@ -33,16 +33,10 @@ class Fluxline(Element):
     fluxline_width = Param(pdt.TypeDouble, "Fluxline width", 18, unit="μm")
     fluxline_gap_width = Param(pdt.TypeDouble, "Fluxline gap width", 2, unit="μm")
 
-    fluxline_parameters = Param(pdt.TypeString, "Extra Fluxline Parameters", "{}")
-    _fluxline_parameters = Param(pdt.TypeString, "Previous state of *_parameters", "{}", hidden=True)
-
     @classmethod
     def create(cls, layout, library=None, fluxline_type=None, **parameters):
         """Create a Fluxline cell in layout."""
         return cls.create_subtype(layout, library, fluxline_type, **parameters)[0]
-
-    def coerce_parameters_impl(self):
-        self.sync_parameters(Fluxline)
 
     def _insert_fluxline_shapes(self, left_gap, right_gap):
         """Inserts the gap shapes to the cell.

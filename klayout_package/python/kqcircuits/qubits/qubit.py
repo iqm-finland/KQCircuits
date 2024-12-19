@@ -22,15 +22,12 @@ from kqcircuits.elements.element import Element
 from kqcircuits.elements.fluxlines.fluxline import Fluxline
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
-from kqcircuits.junctions.junction import Junction
 from kqcircuits.junctions.squid import Squid
 from kqcircuits.junctions.sim import Sim
 
 
-@add_parameters_from(Fluxline, "fluxline_type", "fluxline_parameters", "_fluxline_parameters")
-@add_parameters_from(
-    Squid, "junction_width", "loop_area", "junction_type", "junction_parameters", "_junction_parameters"
-)
+@add_parameters_from(Fluxline, "fluxline_type")
+@add_parameters_from(Squid, "junction_width", "loop_area", "junction_type")
 @add_parameters_from(
     Sim,
     "junction_total_length",
@@ -68,10 +65,6 @@ class Qubit(Element):
     LIBRARY_PATH = "qubits"
 
     mirror_squid = Param(pdt.TypeBoolean, "Mirror SQUID by its Y axis", False)
-
-    def coerce_parameters_impl(self):
-        self.sync_parameters(Fluxline)
-        self.sync_parameters(Junction)
 
     def produce_squid(self, transf, only_arms=False, **parameters):
         """Produces the squid.

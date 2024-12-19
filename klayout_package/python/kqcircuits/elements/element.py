@@ -19,15 +19,13 @@
 
 import importlib
 import importlib.util
-import json
 from inspect import isclass
 
 from kqcircuits.defaults import default_layers, default_faces, default_parameter_values
-from kqcircuits.pya_resolver import pya, is_standalone_session
+from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.epr.gui_config import epr_gui_visualised_partition_regions
 from kqcircuits.util.geometry_helper import get_cell_path_length
-from kqcircuits.util.geometry_json_encoder import GeometryJsonDecoder, GeometryJsonEncoder
-from kqcircuits.util.library_helper import load_libraries, to_library_name, to_module_name, element_by_class_name
+from kqcircuits.util.library_helper import load_libraries, to_library_name, to_module_name
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.util.refpoints import Refpoints
 
@@ -262,12 +260,6 @@ class Element(pya.PCellDeclarationHelper):
             subtype = to_library_name(cls.__name__)
 
         cl = cls._get_abstract()
-        module = to_module_name(cl.__name__)
-        pname = f"{module}_parameters"
-        if pname in parameters:
-            jp = dict(json.loads(parameters[pname], cls=GeometryJsonDecoder).items())
-            del parameters[pname], parameters[f"_{pname}"]
-            parameters = {**jp, **parameters}
 
         if subtype in library_layout.pcell_names():  # code generated
             pcell_class = type(library_layout.pcell_declaration(subtype))
@@ -627,66 +619,6 @@ class Element(pya.PCellDeclarationHelper):
                         if other_face != face:
                             self.cell.shapes(self.get_layer("ground_grid_avoidance", other_face)).insert(shape)
                     break
-
-    def sync_parameters(self, abc):
-        """Syncronise the calling class' parameters with a JSON representation.
-
-        This is called several times from coerce_parameters_impl() while using the PCell editor GUI. Particularly, each
-        time a parameter of abc's sub-class is changed by the user. It figures out which parameter is changed and
-        updates the ``*_parameters`` JSON strings accordingly, or the other way around.
-
-        For example, if abc is Fluxline and the fluxline_width parameter is changed in GUI then the fluxline_parameters
-        JSON string will be updated with this value. Or if fluxline_parameters string is changed then the corresponding
-        fluxline parameter of the calling pcell is updated.
-
-        Args:
-            abc: An abstract class. Only consider parameters of this class' descendants
-        """
-        if is_standalone_session():
-            return
-
-        def pformat(a):
-            if a.data_type == pdt.TypeInt:
-                return int(a.default)
-            elif a.data_type == pdt.TypeDouble:
-                return float(a.default)
-            return a.default
-
-        module = to_module_name(abc.__name__)
-        pname = f"{module}_parameters"
-        json_str = getattr(self, pname)
-        saved = getattr(self, f"_{pname}")
-        params = json.loads(json_str, cls=GeometryJsonDecoder) if json_str else {}
-        subtype = getattr(self, f"{module}_type")
-        pd = {}
-
-        if subtype == "none":
-            return
-        if json_str == "{}" or params[f"{module}_type"] != subtype:  # initialise defaults
-            if f"{module}_type" in params and json_str != saved and saved != {}:
-                subtype = params[f"{module}_type"]
-                setattr(self, f"{module}_type", subtype)
-            cls = element_by_class_name(subtype.replace(" ", ""), abc.LIBRARY_PATH, abc.LIBRARY_NAME)
-            schema = cls.get_schema(abstract_class=abc)
-            for k, v in schema.items():
-                if not k.endswith("_parameters"):
-                    pd[k] = getattr(self, k) if hasattr(self, k) else pformat(v)
-            json_str = json.dumps(pd, cls=GeometryJsonEncoder)
-            setattr(self, pname, json_str)
-            Param.get_all(abc)[pname].default = json_str
-        elif saved == json_str:  # some parameters changed, update the JSON string
-            for k, v in params.items():
-                pd[k] = getattr(self, k) if hasattr(self, k) else v
-            json_str = json.dumps(pd, cls=GeometryJsonEncoder)
-            setattr(self, pname, json_str)
-        else:  # the JSON string changed, use it to update other parameters
-            for k, v in params.items():
-                if k.startswith("_epr_"):
-                    # Don't sync epr visualisation parameters
-                    continue
-                if hasattr(self, k):
-                    setattr(self, k, v)
-        setattr(self, f"_{pname}", json_str)
 
     @classmethod
     def get_sim_ports(cls, simulation):  # pylint: disable=unused-argument
