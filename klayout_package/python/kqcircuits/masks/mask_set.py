@@ -61,6 +61,7 @@ class MaskSet:
         mask.export()
 
     Attributes:
+        view: KLayoutView object carrying the layout information.
         layout: pya.Layout of this mask set
         name: Name of the mask set
         version: Version of the mask set
@@ -92,8 +93,7 @@ class MaskSet:
             arg_values, _ = arg_parser.parse_known_args(sys.argv[1:])
             export_path = TMP_PATH if not arg_values.p else arg_values.p
 
-        if view is None:
-            self.view = KLayoutView()
+        self.view = KLayoutView() if view is None else view
         self.layout = self.view.layout
 
         self.name = name
