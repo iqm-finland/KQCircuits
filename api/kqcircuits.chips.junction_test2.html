@@ -771,6 +771,7 @@
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.bspline_points"><code class="docutils literal notranslate"><span class="pre">bspline_points()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.bezier_points"><code class="docutils literal notranslate"><span class="pre">bezier_points()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.round_dpath_width"><code class="docutils literal notranslate"><span class="pre">round_dpath_width()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.force_rounded_corners"><code class="docutils literal notranslate"><span class="pre">force_rounded_corners()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a><ul>
@@ -977,12 +978,6 @@
 <dd><p>Bases: <a class="reference internal" href="kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip" title="kqcircuits.chips.chip.Chip"><code class="xref py py-class docutils literal notranslate"><span class="pre">Chip</span></code></a></p>
 <p>The PCell declaration for a JunctionTest2 chip.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.chips.junction_test2.JunctionTest2.coerce_parameters_impl">
-<span class="sig-name descname"><span class="pre">coerce_parameters_impl</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/junction_test2.html#JunctionTest2.coerce_parameters_impl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.junction_test2.JunctionTest2.coerce_parameters_impl" title="Link to this definition"></a></dt>
-<dd><p>default implementation</p>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.junction_test2.JunctionTest2.build">
 <span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/junction_test2.html#JunctionTest2.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.junction_test2.JunctionTest2.build" title="Link to this definition"></a></dt>
 <dd><p>Child classes re-define this method to build the PCell.</p>
@@ -1025,11 +1020,7 @@
 <li><p><strong>junction_width_steps</strong><em> (List)</em><span> - Automatically generate junction widths [start, step]</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm,</span> <span class="pre">μm</span></code></p></li>
 <li><p><strong>junction_widths</strong><em> (List)</em><span> - Override the junction widths with these values.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[]</span></code></p></li>
 <li><p><strong>junction_test_pads_type</strong><em> (String)</em><span> - Type of junction test pads</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Junction</span> <span class="pre">Test</span> <span class="pre">Pads</span> <span class="pre">Simple</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Junction</span> <span class="pre">Test</span> <span class="pre">Pads</span> <span class="pre">Simple']</span></code></p></li>
-<li><p><strong>junction_test_pads_parameters</strong><em> (String)</em><span> - Extra JunctionTestPads Parameters</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">{}</span></code></p></li>
-<li><p><strong>_junction_test_pads_parameters</strong><em> (String)</em><span> - Previous state of *_parameters</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">{}</span></code></p></li>
 <li><p><strong>mirror_squid</strong><em> (Boolean)</em><span> - Mirror SQUID by its Y axis</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
-<li><p><strong>junction_parameters</strong><em> (String)</em><span> - Extra Junction Parameters</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">{}</span></code></p></li>
-<li><p><strong>_junction_parameters</strong><em> (String)</em><span> - Previous state of *_parameters</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">{}</span></code></p></li>
 <li><p><strong>finger_overshoot</strong><em> (Double)</em><span> - Length of fingers after the junction.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">1.0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>include_base_metal_gap</strong><em> (Boolean)</em><span> - Include base metal gap layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
 <li><p><strong>shadow_margin</strong><em> (Double)</em><span> - Shadow layer margin near the the pads</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">1.0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>

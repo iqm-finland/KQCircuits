@@ -768,6 +768,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.bspline_points"><code class="docutils literal notranslate"><span class="pre">bspline_points()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.bezier_points"><code class="docutils literal notranslate"><span class="pre">bezier_points()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.round_dpath_width"><code class="docutils literal notranslate"><span class="pre">round_dpath_width()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.force_rounded_corners"><code class="docutils literal notranslate"><span class="pre">force_rounded_corners()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a><ul>
@@ -1238,6 +1239,8 @@
     <span class="n">minimum_point_spacing</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Tolerance for merging adjacent points in polygon&quot;</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;µm&quot;</span><span class="p">)</span>
     <span class="n">polygon_tolerance</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Tolerance for merging adjacent polygons in a layer&quot;</span><span class="p">,</span> <span class="mf">0.004</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;µm&quot;</span><span class="p">)</span>
 
+    <span class="n">small_shape_area</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Area below which shapes will trigger a warning.&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;µm²&quot;</span><span class="p">)</span>
+
     <span class="n">extra_json_data</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span>
         <span class="n">pdt</span><span class="o">.</span><span class="n">TypeNone</span><span class="p">,</span>
         <span class="s2">&quot;Extra data in dict form to store in resulting JSON&quot;</span><span class="p">,</span>
@@ -1292,6 +1295,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">create_simulation_layers</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">warn_of_small_shapes</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Simulation.from_cell">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.from_cell">[docs]</a>
@@ -1988,6 +1992,25 @@
                 <span class="p">},</span>
                 <span class="o">**</span><span class="p">({</span><span class="s2">&quot;subtract&quot;</span><span class="p">:</span> <span class="n">subtract</span><span class="p">}</span> <span class="k">if</span> <span class="n">subtract</span> <span class="k">else</span> <span class="p">{}),</span>
             <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="Simulation.warn_of_small_shapes">
+<a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.warn_of_small_shapes">[docs]</a>
+    <span class="k">def</span> <span class="nf">warn_of_small_shapes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Warns of small shapes in simulation layers.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">small_shape_area</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="s2">&quot;layer&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">layer</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">shapes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">layer</span><span class="p">[</span><span class="s2">&quot;layer&quot;</span><span class="p">],</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">shape</span> <span class="ow">in</span> <span class="n">shapes</span><span class="o">.</span><span class="n">each</span><span class="p">():</span>
+                <span class="n">area</span> <span class="o">=</span> <span class="n">shape</span><span class="o">.</span><span class="n">darea</span><span class="p">()</span>  <span class="c1"># area in µm²</span>
+                <span class="k">if</span> <span class="n">area</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">small_shape_area</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Layer &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; of simulation &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; contains a small shape of </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">area</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s2"> µm² &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;with bounding box </span><span class="si">{</span><span class="n">shape</span><span class="o">.</span><span class="n">dbbox</span><span class="p">()</span><span class="si">}</span><span class="s2">.&quot;</span>
+                    <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Simulation.ground_grid_region">

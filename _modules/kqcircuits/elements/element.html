@@ -768,6 +768,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.bspline_points"><code class="docutils literal notranslate"><span class="pre">bspline_points()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.bezier_points"><code class="docutils literal notranslate"><span class="pre">bezier_points()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.round_dpath_width"><code class="docutils literal notranslate"><span class="pre">round_dpath_width()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.force_rounded_corners"><code class="docutils literal notranslate"><span class="pre">force_rounded_corners()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a><ul>
@@ -991,15 +992,13 @@
 
 <span class="kn">import</span> <span class="nn">importlib</span>
 <span class="kn">import</span> <span class="nn">importlib.util</span>
-<span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">isclass</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span><span class="p">,</span> <span class="n">default_faces</span><span class="p">,</span> <span class="n">default_parameter_values</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span><span class="p">,</span> <span class="n">is_standalone_session</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.epr.gui_config</span> <span class="kn">import</span> <span class="n">epr_gui_visualised_partition_regions</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_helper</span> <span class="kn">import</span> <span class="n">get_cell_path_length</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_json_encoder</span> <span class="kn">import</span> <span class="n">GeometryJsonDecoder</span><span class="p">,</span> <span class="n">GeometryJsonEncoder</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.library_helper</span> <span class="kn">import</span> <span class="n">load_libraries</span><span class="p">,</span> <span class="n">to_library_name</span><span class="p">,</span> <span class="n">to_module_name</span><span class="p">,</span> <span class="n">element_by_class_name</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.library_helper</span> <span class="kn">import</span> <span class="n">load_libraries</span><span class="p">,</span> <span class="n">to_library_name</span><span class="p">,</span> <span class="n">to_module_name</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.refpoints</span> <span class="kn">import</span> <span class="n">Refpoints</span>
 
@@ -1256,12 +1255,6 @@
             <span class="n">subtype</span> <span class="o">=</span> <span class="n">to_library_name</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 
         <span class="n">cl</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_abstract</span><span class="p">()</span>
-        <span class="n">module</span> <span class="o">=</span> <span class="n">to_module_name</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
-        <span class="n">pname</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">module</span><span class="si">}</span><span class="s2">_parameters&quot;</span>
-        <span class="k">if</span> <span class="n">pname</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
-            <span class="n">jp</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="n">pname</span><span class="p">],</span> <span class="bp">cls</span><span class="o">=</span><span class="n">GeometryJsonDecoder</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
-            <span class="k">del</span> <span class="n">parameters</span><span class="p">[</span><span class="n">pname</span><span class="p">],</span> <span class="n">parameters</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">pname</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
-            <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">jp</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">}</span>
 
         <span class="k">if</span> <span class="n">subtype</span> <span class="ow">in</span> <span class="n">library_layout</span><span class="o">.</span><span class="n">pcell_names</span><span class="p">():</span>  <span class="c1"># code generated</span>
             <span class="n">pcell_class</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">library_layout</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">(</span><span class="n">subtype</span><span class="p">))</span>
@@ -1672,69 +1665,6 @@
                         <span class="k">if</span> <span class="n">other_face</span> <span class="o">!=</span> <span class="n">face</span><span class="p">:</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">,</span> <span class="n">other_face</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
                     <span class="k">break</span></div>
-
-
-<div class="viewcode-block" id="Element.sync_parameters">
-<a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.sync_parameters">[docs]</a>
-    <span class="k">def</span> <span class="nf">sync_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">abc</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Syncronise the calling class&#39; parameters with a JSON representation.</span>
-
-<span class="sd">        This is called several times from coerce_parameters_impl() while using the PCell editor GUI. Particularly, each</span>
-<span class="sd">        time a parameter of abc&#39;s sub-class is changed by the user. It figures out which parameter is changed and</span>
-<span class="sd">        updates the ``*_parameters`` JSON strings accordingly, or the other way around.</span>
-
-<span class="sd">        For example, if abc is Fluxline and the fluxline_width parameter is changed in GUI then the fluxline_parameters</span>
-<span class="sd">        JSON string will be updated with this value. Or if fluxline_parameters string is changed then the corresponding</span>
-<span class="sd">        fluxline parameter of the calling pcell is updated.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            abc: An abstract class. Only consider parameters of this class&#39; descendants</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">is_standalone_session</span><span class="p">():</span>
-            <span class="k">return</span>
-
-        <span class="k">def</span> <span class="nf">pformat</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">data_type</span> <span class="o">==</span> <span class="n">pdt</span><span class="o">.</span><span class="n">TypeInt</span><span class="p">:</span>
-                <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">default</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">a</span><span class="o">.</span><span class="n">data_type</span> <span class="o">==</span> <span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">:</span>
-                <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">default</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">a</span><span class="o">.</span><span class="n">default</span>
-
-        <span class="n">module</span> <span class="o">=</span> <span class="n">to_module_name</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
-        <span class="n">pname</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">module</span><span class="si">}</span><span class="s2">_parameters&quot;</span>
-        <span class="n">json_str</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pname</span><span class="p">)</span>
-        <span class="n">saved</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">pname</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">params</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json_str</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">GeometryJsonDecoder</span><span class="p">)</span> <span class="k">if</span> <span class="n">json_str</span> <span class="k">else</span> <span class="p">{}</span>
-        <span class="n">subtype</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">module</span><span class="si">}</span><span class="s2">_type&quot;</span><span class="p">)</span>
-        <span class="n">pd</span> <span class="o">=</span> <span class="p">{}</span>
-
-        <span class="k">if</span> <span class="n">subtype</span> <span class="o">==</span> <span class="s2">&quot;none&quot;</span><span class="p">:</span>
-            <span class="k">return</span>
-        <span class="k">if</span> <span class="n">json_str</span> <span class="o">==</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span> <span class="ow">or</span> <span class="n">params</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">module</span><span class="si">}</span><span class="s2">_type&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">subtype</span><span class="p">:</span>  <span class="c1"># initialise defaults</span>
-            <span class="k">if</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">module</span><span class="si">}</span><span class="s2">_type&quot;</span> <span class="ow">in</span> <span class="n">params</span> <span class="ow">and</span> <span class="n">json_str</span> <span class="o">!=</span> <span class="n">saved</span> <span class="ow">and</span> <span class="n">saved</span> <span class="o">!=</span> <span class="p">{}:</span>
-                <span class="n">subtype</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">module</span><span class="si">}</span><span class="s2">_type&quot;</span><span class="p">]</span>
-                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">module</span><span class="si">}</span><span class="s2">_type&quot;</span><span class="p">,</span> <span class="n">subtype</span><span class="p">)</span>
-            <span class="bp">cls</span> <span class="o">=</span> <span class="n">element_by_class_name</span><span class="p">(</span><span class="n">subtype</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span> <span class="n">abc</span><span class="o">.</span><span class="n">LIBRARY_PATH</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">LIBRARY_NAME</span><span class="p">)</span>
-            <span class="n">schema</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_schema</span><span class="p">(</span><span class="n">abstract_class</span><span class="o">=</span><span class="n">abc</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">schema</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">k</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;_parameters&quot;</span><span class="p">):</span>
-                    <span class="n">pd</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">else</span> <span class="n">pformat</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-            <span class="n">json_str</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">pd</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">GeometryJsonEncoder</span><span class="p">)</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pname</span><span class="p">,</span> <span class="n">json_str</span><span class="p">)</span>
-            <span class="n">Param</span><span class="o">.</span><span class="n">get_all</span><span class="p">(</span><span class="n">abc</span><span class="p">)[</span><span class="n">pname</span><span class="p">]</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">json_str</span>
-        <span class="k">elif</span> <span class="n">saved</span> <span class="o">==</span> <span class="n">json_str</span><span class="p">:</span>  <span class="c1"># some parameters changed, update the JSON string</span>
-            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">pd</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">else</span> <span class="n">v</span>
-            <span class="n">json_str</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">pd</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">GeometryJsonEncoder</span><span class="p">)</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pname</span><span class="p">,</span> <span class="n">json_str</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>  <span class="c1"># the JSON string changed, use it to update other parameters</span>
-            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_epr_&quot;</span><span class="p">):</span>
-                    <span class="c1"># Don&#39;t sync epr visualisation parameters</span>
-                    <span class="k">continue</span>
-                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
-                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">pname</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">json_str</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Element.get_sim_ports">

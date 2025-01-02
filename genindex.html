@@ -768,6 +768,7 @@
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.bspline_points"><code class="docutils literal notranslate"><span class="pre">bspline_points()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.bezier_points"><code class="docutils literal notranslate"><span class="pre">bezier_points()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.round_dpath_width"><code class="docutils literal notranslate"><span class="pre">round_dpath_width()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.force_rounded_corners"><code class="docutils literal notranslate"><span class="pre">force_rounded_corners()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a><ul>
@@ -1372,20 +1373,10 @@
 </li>
       <li><a href="api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.close">close() (kqcircuits.klayout_view.KLayoutView method)</a>
 </li>
-      <li><a href="api/kqcircuits.chips.junction_test2.html#kqcircuits.chips.junction_test2.JunctionTest2.coerce_parameters_impl">coerce_parameters_impl() (kqcircuits.chips.junction_test2.JunctionTest2 method)</a>
+      <li><a href="api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite.coerce_parameters_impl">coerce_parameters_impl() (kqcircuits.elements.waveguide_composite.WaveguideComposite method)</a>
 
       <ul>
-        <li><a href="api/kqcircuits.elements.fluxlines.fluxline.html#kqcircuits.elements.fluxlines.fluxline.Fluxline.coerce_parameters_impl">(kqcircuits.elements.fluxlines.fluxline.Fluxline method)</a>
-</li>
-        <li><a href="api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite.coerce_parameters_impl">(kqcircuits.elements.waveguide_composite.WaveguideComposite method)</a>
-</li>
         <li><a href="api/kqcircuits.elements.waveguide_coplanar_curved.html#kqcircuits.elements.waveguide_coplanar_curved.WaveguideCoplanarCurved.coerce_parameters_impl">(kqcircuits.elements.waveguide_coplanar_curved.WaveguideCoplanarCurved method)</a>
-</li>
-        <li><a href="api/kqcircuits.junctions.junction.html#kqcircuits.junctions.junction.Junction.coerce_parameters_impl">(kqcircuits.junctions.junction.Junction method)</a>
-</li>
-        <li><a href="api/kqcircuits.qubits.qubit.html#kqcircuits.qubits.qubit.Qubit.coerce_parameters_impl">(kqcircuits.qubits.qubit.Qubit method)</a>
-</li>
-        <li><a href="api/kqcircuits.test_structures.junction_test_pads.junction_test_pads.html#kqcircuits.test_structures.junction_test_pads.junction_test_pads.JunctionTestPads.coerce_parameters_impl">(kqcircuits.test_structures.junction_test_pads.junction_test_pads.JunctionTestPads method)</a>
 </li>
       </ul></li>
       <li><a href="api/kqcircuits.qubits.concentric_transmon.html#kqcircuits.qubits.concentric_transmon.ConcentricTransmon">ConcentricTransmon (class in kqcircuits.qubits.concentric_transmon)</a>
@@ -1404,12 +1395,12 @@
         <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.convergence_tolerance">(kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.convert_cells_to_code">convert_cells_to_code() (in module kqcircuits.util.layout_to_code)</a>
 </li>
       <li><a href="api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.convert_cells_to_static">convert_cells_to_static() (in module kqcircuits.util.replace_junctions)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.util.merge.html#kqcircuits.util.merge.convert_child_instances_to_static">convert_child_instances_to_static() (in module kqcircuits.util.merge)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.export.simulation_export.html#kqcircuits.simulations.export.simulation_export.copy_content_into_directory">copy_content_into_directory() (in module kqcircuits.simulations.export.simulation_export)</a>
@@ -1750,10 +1741,10 @@
 </li>
       <li><a href="api/kqcircuits.elements.finger_capacitor_square.html#kqcircuits.elements.finger_capacitor_square.FingerCapacitorSquare">FingerCapacitorSquare (class in kqcircuits.elements.finger_capacitor_square)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.elements.finger_capacitor_taper.html#kqcircuits.elements.finger_capacitor_taper.FingerCapacitorTaper">FingerCapacitorTaper (class in kqcircuits.elements.finger_capacitor_taper)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.elements.flip_chip_connectors.flip_chip_connector.html#kqcircuits.elements.flip_chip_connectors.flip_chip_connector.FlipChipConnector">FlipChipConnector (class in kqcircuits.elements.flip_chip_connectors.flip_chip_connector)</a>
 </li>
       <li><a href="api/kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc.html#kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc.FlipChipConnectorDc">FlipChipConnectorDc (class in kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc)</a>
@@ -1771,6 +1762,8 @@
       <li><a href="api/kqcircuits.elements.fluxlines.fluxline_straight.html#kqcircuits.elements.fluxlines.fluxline_straight.FluxlineStraight">FluxlineStraight (class in kqcircuits.elements.fluxlines.fluxline_straight)</a>
 </li>
       <li><a href="api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.focus">focus() (kqcircuits.klayout_view.KLayoutView method)</a>
+</li>
+      <li><a href="api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.force_rounded_corners">force_rounded_corners() (in module kqcircuits.util.geometry_helper)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.export.xsection.xsection_export.html#kqcircuits.simulations.export.xsection.xsection_export.free_layer_slots">free_layer_slots() (in module kqcircuits.simulations.export.xsection.xsection_export)</a>
 </li>
@@ -4443,8 +4436,6 @@
 </li>
       <li><a href="api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.symmetry">symmetry() (in module kqcircuits.simulations.export.sonnet.parser)</a>
 </li>
-      <li><a href="api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.sync_parameters">sync_parameters() (kqcircuits.elements.element.Element method)</a>
-</li>
   </ul></td>
 </tr></table>
 
@@ -4600,6 +4591,8 @@
       <li><a href="api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.wafer_rad">wafer_rad (kqcircuits.masks.mask_layout.MaskLayout attribute)</a>
 </li>
       <li><a href="api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.wafer_top_flat_length">wafer_top_flat_length (kqcircuits.masks.mask_layout.MaskLayout attribute)</a>
+</li>
+      <li><a href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.warn_of_small_shapes">warn_of_small_shapes() (kqcircuits.simulations.simulation.Simulation method)</a>
 </li>
       <li><a href="api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.WaveguideToSimPort.waveguide_length">waveguide_length (kqcircuits.util.refpoints.WaveguideToSimPort attribute)</a>
 </li>
