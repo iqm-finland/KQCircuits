@@ -87,7 +87,7 @@ import re
 from versiontag import get_version
 
 project = "KQCircuits"
-copyright = "2021-2024, IQM"
+copyright = "2021-2025, IQM"
 author = "IQM"
 
 # Set supplied KQC version if found from Git tags
