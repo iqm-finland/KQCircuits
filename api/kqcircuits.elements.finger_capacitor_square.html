@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.elements.finger_capacitor_square &mdash; KQCircuits 4.8.10 documentation</title>
+  <title>kqcircuits.elements.finger_capacitor_square &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
@@ -18,7 +18,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=2e945a51"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -428,6 +428,8 @@
 </ul>
 </li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">kqcircuits.elements.finger_capacitor_square</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#kqcircuits.elements.finger_capacitor_square.eval_a2"><code class="docutils literal notranslate"><span class="pre">eval_a2()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#kqcircuits.elements.finger_capacitor_square.eval_b2"><code class="docutils literal notranslate"><span class="pre">eval_b2()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#kqcircuits.elements.finger_capacitor_square.FingerCapacitorSquare"><code class="docutils literal notranslate"><span class="pre">FingerCapacitorSquare</span></code></a></li>
 </ul>
 </li>
@@ -969,6 +971,18 @@
              
   <section id="module-kqcircuits.elements.finger_capacitor_square">
 <span id="kqcircuits-elements-finger-capacitor-square"></span><h1>kqcircuits.elements.finger_capacitor_square<a class="headerlink" href="#module-kqcircuits.elements.finger_capacitor_square" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.elements.finger_capacitor_square.eval_a2">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.elements.finger_capacitor_square.</span></span><span class="sig-name descname"><span class="pre">eval_a2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/finger_capacitor_square.html#eval_a2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.finger_capacitor_square.eval_a2" title="Link to this definition"></a></dt>
+<dd><p>Evaluation function for center conductor width on the other end.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.elements.finger_capacitor_square.eval_b2">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.elements.finger_capacitor_square.</span></span><span class="sig-name descname"><span class="pre">eval_b2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/finger_capacitor_square.html#eval_b2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.finger_capacitor_square.eval_b2" title="Link to this definition"></a></dt>
+<dd><p>Evaluation function for gap width on the other end.</p>
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="kqcircuits.elements.finger_capacitor_square.FingerCapacitorSquare">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.elements.finger_capacitor_square.</span></span><span class="sig-name descname"><span class="pre">FingerCapacitorSquare</span></span><a class="reference internal" href="../_modules/kqcircuits/elements/finger_capacitor_square.html#FingerCapacitorSquare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.finger_capacitor_square.FingerCapacitorSquare" title="Link to this definition"></a></dt>
@@ -1017,26 +1031,8 @@ the same length as the width of the ground gap around the coupler.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.elements.finger_capacitor_square.FingerCapacitorSquare.get_sim_ports">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_sim_ports</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulation</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/finger_capacitor_square.html#FingerCapacitorSquare.get_sim_ports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.finger_capacitor_square.FingerCapacitorSquare.get_sim_ports" title="Link to this definition"></a></dt>
-<dd><p>List of RefpointToSimPort objects defining which refpoints
-should be turned to simulation ports for the given element class</p>
-<p>Returns empty list if not implemented for Element subclass.
-When implementing this method, the best practice is for this method
-to have no “side effects”, that is all code contained within this method
-should only serve to derive the list of RefpointToSimPort objects and nothing
-else: no change in element’s geometry or parameter values.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>cls</strong> – Element class, this is a class method</p></li>
-<li><p><strong>simulation</strong> – Simulation object where a cell of this element class is placed.
-Use this argument if you need to decide certain arguments
-for RefpointToSimPort objects based on simulation’s parameters</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>List of RefpointToSimPort objects, empty list by default</p>
-</dd>
-</dl>
+<dd><p>An implementation of get_sim_ports that adds left and right waveguides to port_a and port_b respectively.
+The a and b values of right waveguide can be adjusted separately.</p>
 </dd></dl>
 
 </dd></dl>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf &mdash; KQCircuits 4.8.10 documentation</title>
+  <title>kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=2e945a51"></script>
+        <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/js/theme.js"></script>
@@ -425,6 +425,8 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.elements.finger_capacitor_square.html">kqcircuits.elements.finger_capacitor_square</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.elements.finger_capacitor_square.html#kqcircuits.elements.finger_capacitor_square.eval_a2"><code class="docutils literal notranslate"><span class="pre">eval_a2()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.elements.finger_capacitor_square.html#kqcircuits.elements.finger_capacitor_square.eval_b2"><code class="docutils literal notranslate"><span class="pre">eval_b2()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.elements.finger_capacitor_square.html#kqcircuits.elements.finger_capacitor_square.FingerCapacitorSquare"><code class="docutils literal notranslate"><span class="pre">FingerCapacitorSquare</span></code></a></li>
 </ul>
 </li>
@@ -990,11 +992,12 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.finger_capacitor_square</span> <span class="kn">import</span> <span class="n">FingerCapacitorSquare</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.finger_capacitor_square</span> <span class="kn">import</span> <span class="n">FingerCapacitorSquare</span><span class="p">,</span> <span class="n">eval_a2</span><span class="p">,</span> <span class="n">eval_b2</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.flip_chip_connectors.flip_chip_connector</span> <span class="kn">import</span> <span class="n">FlipChipConnector</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.launcher</span> <span class="kn">import</span> <span class="n">Launcher</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span><span class="p">,</span> <span class="n">add_parameters_from</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.refpoints</span> <span class="kn">import</span> <span class="n">WaveguideToSimPort</span>
 
 
 <div class="viewcode-block" id="FlipChipConnectorRf">
@@ -1027,9 +1030,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">bump</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">((</span><span class="n">i</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_center_bumps</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">inter_bump_distance</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
         <span class="n">bump_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_refpoints</span><span class="p">(</span><span class="n">bump</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;bump_ref: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">bump_ref</span><span class="p">)</span>
-
-        <span class="n">a2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a2</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">a2</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span>
-        <span class="n">b2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b2</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">b2</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">round_connector</span><span class="p">:</span>
             <span class="c1"># Rounded geometry</span>
@@ -1083,7 +1083,7 @@
                 <span class="p">)</span>
 
             <span class="n">produce_shape</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-            <span class="n">produce_shape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">b2</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_rotation</span> <span class="o">-</span> <span class="mi">180</span><span class="p">)</span>
+            <span class="n">produce_shape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">eval_a2</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">eval_b2</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="mi">180</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_rotation</span> <span class="o">-</span> <span class="mi">180</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Taper geometry</span>
@@ -1149,8 +1149,8 @@
                 <span class="n">b_launcher</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">connector_b</span><span class="p">,</span>
                 <span class="n">launcher_frame_gap</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">connector_b</span><span class="p">,</span>
                 <span class="n">face_ids</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
-                <span class="n">a</span><span class="o">=</span><span class="n">a2</span><span class="p">,</span>
-                <span class="n">b</span><span class="o">=</span><span class="n">b2</span><span class="p">,</span>
+                <span class="n">a</span><span class="o">=</span><span class="n">eval_a2</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+                <span class="n">b</span><span class="o">=</span><span class="n">eval_b2</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
                 <span class="n">add_metal</span><span class="o">=</span><span class="n">add_metal</span><span class="p">,</span>
             <span class="p">)</span>
 
@@ -1173,7 +1173,24 @@
 <a class="viewcode-back" href="../../../../api/kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf.html#kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf.FlipChipConnectorRf.get_sim_ports">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_sim_ports</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">simulation</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">Element</span><span class="o">.</span><span class="n">face_changer_waveguides</span><span class="p">(</span><span class="n">simulation</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;An implementation of get_sim_ports that adds waveguides on both sides of a face-changing element.</span>
+<span class="sd">        The port names are &#39;{face_ids[0]}_port&#39; and &#39;{face_ids[1]}_port&#39;.</span>
+<span class="sd">        The first port points to left and the second port orientation is determined by output_rotation parameter.</span>
+<span class="sd">        The a and b values of the second waveguide are adjusted by a2 and b2 parameters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">diff_to_rotation</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">output_rotation</span> <span class="o">%</span> <span class="mi">360</span><span class="p">))</span>
+
+        <span class="n">side</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="mi">90</span><span class="p">:</span> <span class="s2">&quot;bottom&quot;</span><span class="p">,</span> <span class="mi">180</span><span class="p">:</span> <span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="mi">270</span><span class="p">:</span> <span class="s2">&quot;top&quot;</span><span class="p">,</span> <span class="mi">360</span><span class="p">:</span> <span class="s2">&quot;left&quot;</span><span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="nb">min</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">270</span><span class="p">,</span> <span class="mi">360</span><span class="p">],</span> <span class="n">key</span><span class="o">=</span><span class="n">diff_to_rotation</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">WaveguideToSimPort</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">_port&quot;</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">),</span>
+            <span class="n">WaveguideToSimPort</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">_port&quot;</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="n">side</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">eval_a2</span><span class="p">(</span><span class="n">simulation</span><span class="p">),</span> <span class="n">b</span><span class="o">=</span><span class="n">eval_b2</span><span class="p">(</span><span class="n">simulation</span><span class="p">)</span>
+            <span class="p">),</span>
+        <span class="p">]</span></div>
 </div>
 
 </pre></div>

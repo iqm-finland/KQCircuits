@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.elements.circular_capacitor &mdash; KQCircuits 4.8.10 documentation</title>
+  <title>kqcircuits.elements.circular_capacitor &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=2e945a51"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -425,6 +425,8 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.finger_capacitor_square.html">kqcircuits.elements.finger_capacitor_square</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.finger_capacitor_square.html#kqcircuits.elements.finger_capacitor_square.eval_a2"><code class="docutils literal notranslate"><span class="pre">eval_a2()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.finger_capacitor_square.html#kqcircuits.elements.finger_capacitor_square.eval_b2"><code class="docutils literal notranslate"><span class="pre">eval_b2()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.finger_capacitor_square.html#kqcircuits.elements.finger_capacitor_square.FingerCapacitorSquare"><code class="docutils literal notranslate"><span class="pre">FingerCapacitorSquare</span></code></a></li>
 </ul>
 </li>
@@ -992,7 +994,7 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span><span class="p">,</span> <span class="n">add_parameters_from</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_helper</span> <span class="kn">import</span> <span class="n">circle_polygon</span><span class="p">,</span> <span class="n">arc_points</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.finger_capacitor_square</span> <span class="kn">import</span> <span class="n">FingerCapacitorSquare</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.finger_capacitor_square</span> <span class="kn">import</span> <span class="n">FingerCapacitorSquare</span><span class="p">,</span> <span class="n">eval_a2</span><span class="p">,</span> <span class="n">eval_b2</span>
 
 
 <div class="viewcode-block" id="CircularCapacitor">
@@ -1031,11 +1033,8 @@
 <div class="viewcode-block" id="CircularCapacitor.build">
 <a class="viewcode-back" href="../../../api/kqcircuits.elements.circular_capacitor.html#kqcircuits.elements.circular_capacitor.CircularCapacitor.build">[docs]</a>
     <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">a2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">a2</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">a2</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">b2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">b2</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">b2</span>
-
         <span class="n">y_left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">/</span> <span class="mi">2</span>
-        <span class="n">y_right</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a2</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">y_right</span> <span class="o">=</span> <span class="n">eval_a2</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
         <span class="n">x_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">r_outer</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ground_gap</span>
 
         <span class="n">capacitor_region</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1122,7 +1121,7 @@
         <span class="n">island_ground</span> <span class="o">=</span> <span class="n">circle_polygon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r_outer</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ground_gap</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
         <span class="n">ground_region</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">island_ground</span><span class="p">)</span>
         <span class="n">ground_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">([</span><span class="n">poly</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span> <span class="k">for</span> <span class="n">poly</span> <span class="ow">in</span> <span class="n">ground_region</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_waveguides</span><span class="p">(</span><span class="n">ground_region</span><span class="p">,</span> <span class="n">x_end</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">a2</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_waveguides</span><span class="p">(</span><span class="n">ground_region</span><span class="p">,</span> <span class="n">x_end</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="n">eval_a2</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">eval_b2</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">ground_region</span>
 
@@ -1159,7 +1158,7 @@
 <a class="viewcode-back" href="../../../api/kqcircuits.elements.circular_capacitor.html#kqcircuits.elements.circular_capacitor.CircularCapacitor.get_sim_ports">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_sim_ports</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">simulation</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">Element</span><span class="o">.</span><span class="n">left_and_right_waveguides</span><span class="p">(</span><span class="n">simulation</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">FingerCapacitorSquare</span><span class="o">.</span><span class="n">get_sim_ports</span><span class="p">(</span><span class="n">simulation</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

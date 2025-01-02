@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.elements.waveguide_coplanar_splitter &mdash; KQCircuits 4.8.10 documentation</title>
+  <title>kqcircuits.elements.waveguide_coplanar_splitter &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
@@ -18,7 +18,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=2e945a51"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -428,6 +428,8 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.finger_capacitor_square.html">kqcircuits.elements.finger_capacitor_square</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.finger_capacitor_square.html#kqcircuits.elements.finger_capacitor_square.eval_a2"><code class="docutils literal notranslate"><span class="pre">eval_a2()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.finger_capacitor_square.html#kqcircuits.elements.finger_capacitor_square.eval_b2"><code class="docutils literal notranslate"><span class="pre">eval_b2()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.finger_capacitor_square.html#kqcircuits.elements.finger_capacitor_square.FingerCapacitorSquare"><code class="docutils literal notranslate"><span class="pre">FingerCapacitorSquare</span></code></a></li>
 </ul>
 </li>
@@ -1013,6 +1015,7 @@ parameter lists. Ports are labelled by letters starting from <code class="docuti
 <li><p><strong>a_list</strong><em> (List)</em><span> - List of center conductor widths for each port. If empty, self.a will be used for all ports instead. [μm]</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
 <li><p><strong>b_list</strong><em> (List)</em><span> - List of gap widths for each port. If empty, self.b will be used for all ports instead. [μm]</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
 <li><p><strong>port_names</strong><em> (List)</em><span> - Port names</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['a',</span> <span class="pre">'b',</span> <span class="pre">'c',</span> <span class="pre">'d',</span> <span class="pre">'e',</span> <span class="pre">'f',</span> <span class="pre">'g',</span> <span class="pre">'h',</span> <span class="pre">'i',</span> <span class="pre">'j']</span></code></p></li>
+<li><p><strong>add_metal</strong><em> (Boolean)</em><span> - Add trace in base metal addition too</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>airbridge_type</strong><em> (String)</em><span> - Airbridge type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Airbridge</span> <span class="pre">Rectangular</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Airbridge</span> <span class="pre">Rectangular',</span> <span class="pre">'Airbridge</span> <span class="pre">Multi</span> <span class="pre">Face']</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.elements.waveguide_coplanar_splitter.png" src="../_images/kqcircuits.elements.waveguide_coplanar_splitter.png" />

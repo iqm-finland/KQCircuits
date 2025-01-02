@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.elements.waveguide_coplanar_splitter &mdash; KQCircuits 4.8.10 documentation</title>
+  <title>kqcircuits.elements.waveguide_coplanar_splitter &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=2e945a51"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -425,6 +425,8 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.finger_capacitor_square.html">kqcircuits.elements.finger_capacitor_square</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.finger_capacitor_square.html#kqcircuits.elements.finger_capacitor_square.eval_a2"><code class="docutils literal notranslate"><span class="pre">eval_a2()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.finger_capacitor_square.html#kqcircuits.elements.finger_capacitor_square.eval_b2"><code class="docutils literal notranslate"><span class="pre">eval_b2()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.finger_capacitor_square.html#kqcircuits.elements.finger_capacitor_square.FingerCapacitorSquare"><code class="docutils literal notranslate"><span class="pre">FingerCapacitorSquare</span></code></a></li>
 </ul>
 </li>
@@ -987,9 +989,10 @@
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">cos</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="n">radians</span>
 
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar_straight</span> <span class="kn">import</span> <span class="n">WaveguideCoplanarStraight</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span><span class="p">,</span> <span class="n">add_parameters_from</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_helper</span> <span class="kn">import</span> <span class="n">arc_points</span><span class="p">,</span> <span class="n">round_dpath_width</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_helper</span> <span class="kn">import</span> <span class="n">arc_points</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.airbridges.airbridge</span> <span class="kn">import</span> <span class="n">Airbridge</span>
 
@@ -997,6 +1000,7 @@
 <div class="viewcode-block" id="WaveguideCoplanarSplitter">
 <a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_splitter.html#kqcircuits.elements.waveguide_coplanar_splitter.WaveguideCoplanarSplitter">[docs]</a>
 <span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Airbridge</span><span class="p">,</span> <span class="s2">&quot;airbridge_type&quot;</span><span class="p">)</span>
+<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">WaveguideCoplanarStraight</span><span class="p">,</span> <span class="s2">&quot;add_metal&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">WaveguideCoplanarSplitter</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The PCell declaration of a multiway waveguide splitter. The number of ports is defined by the length of the</span>
@@ -1072,12 +1076,10 @@
                 <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">)),</span>
             <span class="p">)</span>
 
-            <span class="c1"># Waveguide length annotation</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;waveguide_path&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
-                <span class="n">round_dpath_width</span><span class="p">(</span>
-                    <span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;port_</span><span class="si">{</span><span class="n">port_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]],</span> <span class="n">a</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
+            <span class="c1"># Waveguide path and base_metal_addition</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;port_</span><span class="si">{</span><span class="n">port_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]],</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_port_shape</span><span class="p">(</span><span class="n">angle_rad</span><span class="o">=</span><span class="n">angle_rad</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">length</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">a</span><span class="p">)</span>
+            <span class="n">WaveguideCoplanarStraight</span><span class="o">.</span><span class="n">add_waveguide_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
 
             <span class="c1"># Airbridges</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_airbridges</span><span class="p">:</span>
