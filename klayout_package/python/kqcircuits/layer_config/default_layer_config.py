@@ -123,7 +123,6 @@ _aux_layers_dict = {
     "annotations_2": (221, 0),
     "instance_names": (222, 0),
     "mask_graphical_rep": (223, 0),
-    "waveguide_length": (224, 0),  # Length only, no DRC. When Waveguide leves its layer, e.g. Airbridge.
     "refpoints": (225, 0),
 }
 
@@ -226,7 +225,6 @@ default_path_length_layers = [
     "1t1_waveguide_path",
     "2b1_waveguide_path",
     "2t1_waveguide_path",
-    "waveguide_length",  # AirbridgeConnection uses this
 ]
 
 # default mask parameters for each face

@@ -48,7 +48,6 @@ default_layers["2_ports"] = pya.LayerInfo(40, 1, "2 ports")
 default_layers["2_wg_path"] = pya.LayerInfo(41, 1, "2 wg_path")
 # other layers
 default_layers["refpoints"] = pya.LayerInfo(100, 1, "refpoints")
-default_layers["waveguide_length"] = pya.LayerInfo(101, 1, "wg_length")
 default_layers["annotations"] = pya.LayerInfo(102, 1, "annotations")
 default_layers["instance_names"] = pya.LayerInfo(103, 1, "instance_names")
 
@@ -92,7 +91,7 @@ default_covered_region_excluded_layers = None
 mask_bitmap_export_layers = None
 all_layers_bitmap_hide_layers = None
 chip_export_layer_clusters = None
-default_path_length_layers = ["1_wg_path", "2_wg_path", "waveguide_length"]
+default_path_length_layers = ["1_wg_path", "2_wg_path"]
 default_mask_parameters = {
     "1": {
         "dice_width": 200,
