@@ -179,6 +179,8 @@ class FlipChipConnectorRf(Element):
             )
 
         self._insert_ground_bumps(bump)
+        for face_id in self.face_ids[:2]:
+            self.refpoints[f"{face_id}_signal_bump"] = pya.DPoint(0, 0)
 
     def _insert_ground_bumps(self, bump):
         # Insert ground bumps
