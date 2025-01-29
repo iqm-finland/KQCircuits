@@ -23,7 +23,7 @@ from pathlib import Path
 from shutil import copytree
 from typing import Sequence
 
-from kqcircuits.simulations.export.util import export_layers
+from kqcircuits.util.load_save_layout import save_layout
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
 
 
@@ -97,7 +97,7 @@ def export_simulation_oas(simulations, path: Path, file_prefix="simulation"):
 
     cells = [simulation.cell for simulation in simulations]
     oas_filename = str(path.joinpath(file_prefix + ".oas"))
-    export_layers(oas_filename, simulations[0].layout, cells, output_format="OASIS", layers=None)
+    save_layout(oas_filename, simulations[0].layout, cells, no_empty_cells=True)
     return oas_filename
 
 

@@ -84,15 +84,13 @@ copy_one_layer_of_cell(exported_file, top_cell, junctions, REFERENCE_LAYER)
 print(f"Extracted and tuned {len(junctions)} junctions")
 new_view = KLayoutView()
 new_view.layout.clear()
-new_view.layout.read(exported_file)
+new_view.load_layout(exported_file)
 top_cell = new_view.layout.top_cells()[-1]
 top_cell.flatten(True)
 place_junctions(top_cell, junctions)
 new_view.focus(top_cell)
 
 print(f"Saving tuned junctions to {exported_file}")
-svopt = pya.SaveLayoutOptions()
-svopt.set_format_from_filename(exported_file)
-new_view.layout.write(exported_file, svopt)
+new_view.save_layout(exported_file, write_context_info=True)
 </text>
 </klayout-macro>

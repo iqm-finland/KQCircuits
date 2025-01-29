@@ -23,7 +23,6 @@ Q and AB tests. Showcases box maps and how to load cells from files to a mask.
 """
 from kqcircuits.chips.airbridge_crossings import AirbridgeCrossings
 from kqcircuits.chips.quality_factor import QualityFactor
-from kqcircuits.pya_resolver import pya
 from kqcircuits.defaults import TMP_PATH, default_airbridge_type
 from kqcircuits.klayout_view import KLayoutView
 from kqcircuits.masks.mask_set import MaskSet
@@ -84,10 +83,8 @@ view_2.insert_cell(
     name_mask="M001",
     **{**parameters_qd, "n_ab": 18 * [5], "res_term": 18 * ["airbridge"]},
 )
-save_opts = pya.SaveLayoutOptions()
-save_opts.write_context_info = True
 file_name = str(TMP_PATH / "m001_QDD.oas")
-view_2.top_cell.write(file_name, save_opts)
+view_2.save_layout(file_name, write_context_info=True)
 view_2.close()
 
 print("Loading:", file_name)

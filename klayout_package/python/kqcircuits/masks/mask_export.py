@@ -38,6 +38,7 @@ from kqcircuits.util.area import get_area_and_density
 from kqcircuits.util.count_instances import count_instances_in_cell
 from kqcircuits.util.geometry_helper import circle_polygon
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
+from kqcircuits.util.load_save_layout import save_layout
 from kqcircuits.util.netlist_extraction import export_cell_netlist
 from kqcircuits.util.export_helper import export_drc_report
 from kqcircuits.util.replace_junctions import (
@@ -89,10 +90,7 @@ def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc, alt_netlists
     static_cell = layout.cell(layout.convert_cell_to_static(chip_cell.cell_index()))
 
     # save the chip .oas file with all layers and only containing static cells
-    save_opts = pya.SaveLayoutOptions()
-    save_opts.format = "OASIS"
-    save_opts.write_context_info = False  # to save all cells as static cells
-    static_cell.write(str(chip_dir / f"{chip_name}.oas"), save_opts)
+    save_layout(chip_dir / f"{chip_name}.oas", layout, [static_cell])
 
     if not skip_extras:
         # export netlist
@@ -383,24 +381,10 @@ def _export_cell(path, cell=None, layers_to_export=None):
     if (layers_to_export is None) or (layers_to_export == ""):
         layers_to_export = {}
 
-    svopt = pya.SaveLayoutOptions()
-    svopt.set_format_from_filename(str(path))
-
     if layers_to_export == "all":
-        svopt.clear_cells()
-        svopt.select_all_layers()
-        svopt.add_cell(cell.cell_index())
-        layout.write(str(path), svopt)
+        save_layout(path, layout, cells=[cell], write_context_info=True)
     else:
-        items = layers_to_export.items()
-        svopt.deselect_all_layers()
-        svopt.clear_cells()
-        svopt.add_cell(cell.cell_index())
-        for _, layer in items:
-            layer_info = layout.layer_infos()[layer]
-            svopt.add_layer(layer, layer_info)
-        svopt.write_context_info = False
-        layout.write(str(path), svopt)
+        save_layout(path, layout, cells=[cell], layers=[layout.layer_infos()[i] for i in layers_to_export.values()])
 
 
 def _get_directory(directory):

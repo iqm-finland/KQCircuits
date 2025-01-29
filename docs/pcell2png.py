@@ -87,10 +87,7 @@ view.insert_cell(cell)
 
 # save the element as static .oas file
 static_cell = layout.cell(layout.convert_cell_to_static(cell.cell_index()))
-save_opts = pya.SaveLayoutOptions()
-save_opts.format = "OASIS"
-save_opts.write_context_info = False  # to save all cells as static cells
-static_cell.write(f"{path}/{cls.__module__}.oas", save_opts)
+view.save_layout(f"{path}/{cls.__module__}.oas", cells=[static_cell])
 
 # Hides specified layers before saving png - improves readability and rulers
 layers_to_remove = ["refpoints", "1t1_ports", "1t1_ground_grid_avoidance", "2b1_ground_grid_avoidance"]

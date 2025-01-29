@@ -29,6 +29,7 @@ from kqcircuits.defaults import (
     default_faces,
     default_layer_props,
 )
+from kqcircuits.util.load_save_layout import load_layout, save_layout
 
 
 class KLayoutView:
@@ -294,6 +295,24 @@ class KLayoutView:
             return pixel_buffer
 
         return self._export_bitmap_configure(export_callback, cell, layers_set, box)
+
+    def load_layout(self, filename, **opts) -> None:
+        """Loads the active ``Layout`` from file. See global function ``load_layout`` for details.
+
+        Args:
+            filename: The name of the file to load.
+            opts: Custom keyword arguments passed to global function ``load_layout``.
+        """
+        load_layout(filename, self.layout, **opts)
+
+    def save_layout(self, filename, **opts) -> None:
+        """Saves the active ``Layout`` to file. See global function ``save_layout`` for details.
+
+        Args:
+            filename: The name of the file to save.
+            opts: Custom keyword arguments passed to global function ``save_layout``.
+        """
+        save_layout(filename, self.layout, **opts)
 
     @staticmethod
     def get_active_cell_view():

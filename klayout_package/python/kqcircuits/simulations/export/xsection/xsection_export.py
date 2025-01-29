@@ -27,7 +27,7 @@ from pathlib import Path
 from typing import Callable
 from kqcircuits.defaults import STARTUPINFO, XSECTION_PROCESS_PATH
 from kqcircuits.pya_resolver import pya, klayout_executable_command
-from kqcircuits.simulations.export.util import export_layers
+from kqcircuits.util.load_save_layout import load_layout, save_layout
 from kqcircuits.simulations.cross_section_simulation import CrossSectionSimulation
 from kqcircuits.simulations.simulation import Simulation, to_1d_list
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
@@ -239,16 +239,15 @@ def create_xsections_from_simulations(
     if layout is None:
         layout = pya.Layout()
     xsection_cells = []
-    load_opts = _load_layout_options_for_xsection_output()
     for simulation, cut in zip(simulations, cuts):
         _check_metal_heights(simulation)
         xsection_parameters = _dump_xsection_parameters(xsection_dir, simulation)
         simulation_file = xsection_dir / f"original_{simulation.cell.name}.oas"
         xsection_file = xsection_dir / f"xsection_{simulation.cell.name}.oas"
-        export_layers(str(simulation_file), simulation.layout, [simulation.cell], output_format="OASIS", layers=None)
+        save_layout(simulation_file, simulation.layout, [simulation.cell], no_empty_cells=True)
         xsection_call(simulation_file, xsection_file, cut[0], cut[1], process_path, xsection_parameters)
 
-        layout.read(str(xsection_file), load_opts)
+        load_layout(xsection_file, layout)
         for i in layout.layer_indexes():
             if all(layout.begin_shapes(cell, i).at_end() for cell in layout.top_cells()):
                 layout.delete_layer(i)  # delete empty layers caused by bug in klayout 0.29.0
@@ -369,12 +368,6 @@ def visualise_xsection_cut_on_original_layout(
         marker_path.width -= marker_path.width % 2
         marker = pya.Region(marker_path)
         simulation.visualise_region(marker, cut_label, "xsection_cut", cut)
-
-
-def _load_layout_options_for_xsection_output():
-    load_opts = pya.LoadLayoutOptions()
-    load_opts.cell_conflict_resolution = pya.LoadLayoutOptions.CellConflictResolution.RenameCell
-    return load_opts
 
 
 def _dump_xsection_parameters(xsection_dir, simulation):

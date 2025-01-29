@@ -24,24 +24,15 @@
 from sys import argv
 from os import path
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.load_save_layout import load_layout, save_layout
 
 file_in = argv[1]
 
-if file_in.endswith(".dxf"):
-    file_out = file_in[0:-4] + ".oas"
-else:
-    file_out = file_in[0:-4] + ".dxf"
-
 layout = pya.Layout()
-layout.read(file_in)
+load_layout(file_in, layout)
 
-slo = pya.SaveLayoutOptions()
-slo.set_format_from_filename(file_out)
-slo.write_context_info = False
-
-if file_out.endswith(".oas"):
-    slo.oasis_substitution_char = "*"
-    if file_in.endswith(".dxf"):  # DXF does not record TOP cell, let's use the file name
-        layout.top_cell().name = path.split(file_out)[1][:-4]
-
-layout.write(file_out, slo)
+if file_in.endswith(".dxf"):
+    layout.top_cell().name = path.split(file_in)[1][:-4]
+    save_layout(file_in[0:-4] + ".oas", layout, oasis_substitution_char="*")
+else:
+    save_layout(file_in[0:-4] + ".dxf", layout)

@@ -32,7 +32,7 @@ from kqcircuits.simulations.export.simulation_export import (
 )
 from kqcircuits.simulations.export.simulation_validate import validate_simulation
 from kqcircuits.util.export_helper import write_commit_reference_file
-from kqcircuits.simulations.export.util import export_layers
+from kqcircuits.util.load_save_layout import save_layout
 from kqcircuits.defaults import ANSYS_EXECUTABLE, ANSYS_SCRIPT_PATHS
 from kqcircuits.simulations.simulation import Simulation
 from kqcircuits.simulations.cross_section_simulation import CrossSectionSimulation
@@ -60,9 +60,7 @@ def export_ansys_json(simulation: Union[Simulation, CrossSectionSimulation], sol
     gds_scaling = min(1e3 * simulation.layout.dbu, 1.0)
     if not Path(gds_file_path).exists():
         simulation.layout.dbu /= gds_scaling
-        export_layers(
-            gds_file_path, simulation.layout, [simulation.cell], output_format="GDS2", layers=simulation.get_layers()
-        )
+        save_layout(gds_file_path, simulation.layout, [simulation.cell], simulation.get_layers(), no_empty_cells=True)
         simulation.layout.dbu *= gds_scaling
     full_name = simulation.name + solution.name
     # collect data for .json file

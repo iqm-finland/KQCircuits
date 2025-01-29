@@ -20,25 +20,6 @@
 import math
 from typing import List
 from kqcircuits.pya_resolver import pya
-from kqcircuits.defaults import default_output_format
-
-
-def export_layers(filename, layout, cells=None, layers=None, output_format=default_output_format):
-
-    svopt = pya.SaveLayoutOptions()
-    svopt.format = output_format
-    svopt.write_context_info = False
-    if layers is not None:
-        svopt.deselect_all_layers()
-        for layer in layers:
-            svopt.add_layer(layout.layer(layer), layer)
-    if cells is not None:
-        svopt.clear_cells()
-        for cell in cells:
-            svopt.add_cell(cell.cell_index())
-    svopt.no_empty_cells = True
-
-    layout.write(filename, svopt)
 
 
 def find_edge_from_point_in_cell(cell: pya.Cell, layer: int, point: pya.DPoint, dbu, tolerance=0.01):

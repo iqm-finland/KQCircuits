@@ -36,7 +36,7 @@ from kqcircuits.simulations.export.simulation_export import (
     export_simulation_json,
 )
 from kqcircuits.simulations.export.simulation_validate import validate_simulation
-from kqcircuits.simulations.export.util import export_layers
+from kqcircuits.util.load_save_layout import save_layout
 from kqcircuits.util.export_helper import write_commit_reference_file
 from kqcircuits.defaults import ELMER_SCRIPT_PATHS, KQC_REMOTE_ACCOUNT, SIM_SCRIPT_PATH
 from kqcircuits.simulations.simulation import Simulation
@@ -69,13 +69,7 @@ def export_elmer_json(
     gds_file = simulation.name + ".gds"
     gds_file_path = str(path.joinpath(gds_file))
     if not Path(gds_file_path).exists():
-        export_layers(
-            gds_file_path,
-            simulation.layout,
-            [simulation.cell],
-            output_format="GDS2",
-            layers=simulation.get_layers(),
-        )
+        save_layout(gds_file_path, simulation.layout, [simulation.cell], simulation.get_layers(), no_empty_cells=True)
 
     sim_data = simulation.get_simulation_data()
     sol_data = solution.get_solution_data()

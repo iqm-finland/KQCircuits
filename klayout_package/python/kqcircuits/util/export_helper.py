@@ -338,12 +338,9 @@ def generate_probepoints_from_file(
             Can be None so no "contact" site is added, or can be a list if a different "contact"
             site is needed for each reference
     """
-    load_opts = pya.LoadLayoutOptions()
-    load_opts.cell_conflict_resolution = pya.LoadLayoutOptions.CellConflictResolution.RenameCell
     view = KLayoutView()
-    layout = view.layout
-    layout.read(cell_file, load_opts)
-    cell = layout.top_cells()[-1]
+    view.load_layout(cell_file)
+    cell = view.layout.top_cells()[-1]
     return generate_probepoints_json(cell, face, flip_face, references, contact)
 
 

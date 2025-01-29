@@ -39,12 +39,7 @@ from pathlib import Path
 from sys import argv, exit as die
 from multiprocessing import Pool
 from kqcircuits.pya_resolver import pya, klayout_executable_command
-
-
-def _load_oas_file(layout, file_name):
-    load_opts = pya.LoadLayoutOptions()
-    load_opts.warn_level = 0
-    layout.read(file_name, load_opts)
+from kqcircuits.util.load_save_layout import load_layout
 
 
 def _filediff(files):
@@ -53,8 +48,8 @@ def _filediff(files):
     a, b = files
     l1 = pya.Layout()
     l2 = pya.Layout()
-    _load_oas_file(l1, str(a))
-    _load_oas_file(l2, str(b))
+    load_layout(a, l1, warn_level=0)
+    load_layout(b, l2, warn_level=0)
     c1 = l1.top_cells()[0] if smart else l1
     c2 = l2.top_cells()[0] if smart else l2
     if not diff.compare(c1, c2, smart):

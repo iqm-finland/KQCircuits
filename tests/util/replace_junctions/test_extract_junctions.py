@@ -21,6 +21,7 @@ from kqcircuits.chips.single_xmons import SingleXmons
 from kqcircuits.junctions.manhattan import Manhattan
 from kqcircuits.junctions.manhattan_single_junction import ManhattanSingleJunction
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.load_save_layout import load_layout, save_layout
 from kqcircuits.util.replace_junctions import extract_junctions, place_junctions, get_tuned_junction_json, JunctionEntry
 
 
@@ -44,12 +45,9 @@ def pcell(layout, test_chip):
 @pytest.fixture
 def static_cell(layout, test_chip, tmp_path):
     cell = layout.cell(layout.convert_cell_to_static(test_chip.cell_index()))
-    save_opts = pya.SaveLayoutOptions()
-    save_opts.format = "OASIS"
-    save_opts.write_context_info = False  # to save all cells as static cells
     static_cell_path = str(tmp_path / "static.oas")
-    cell.write(static_cell_path, save_opts)
-    layout.read(static_cell_path)
+    save_layout(static_cell_path, layout, [cell])
+    load_layout(static_cell_path, layout)
     return [c for c in layout.top_cells() if c.name != "top_pcell"][-1]
 
 

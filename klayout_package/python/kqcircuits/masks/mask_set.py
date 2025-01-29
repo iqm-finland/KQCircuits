@@ -274,10 +274,7 @@ class MaskSet:
                     params.update(chip_params)
                 cell = chip_class.create(layout, **params)
         else:  # it's a file name, load it
-            load_opts = pya.LoadLayoutOptions()
-            if hasattr(pya.LoadLayoutOptions, "CellConflictResolution"):
-                load_opts.cell_conflict_resolution = pya.LoadLayoutOptions.CellConflictResolution.RenameCell
-            layout.read(chip_class, load_opts)
+            view.load_layout(chip_class)
             cell = layout.top_cells()[-1]
 
         export_chip(cell, variant_name, chip_path, layout, export_drc, alt_netlists, skip_extras)
@@ -414,7 +411,5 @@ class MaskSet:
 
     def _load_chip_into_mask(self, file_name, variant_name):
         """Loads a chip from file_name to self.layout and adds it into self.chips_map_legend["variant_name"]"""
-        load_opts = pya.LoadLayoutOptions()
-        load_opts.cell_conflict_resolution = pya.LoadLayoutOptions.CellConflictResolution.RenameCell
-        self.layout.read(file_name, load_opts)
+        self.view.load_layout(file_name)
         self.chips_map_legend.update({variant_name: self.layout.top_cells()[-1]})

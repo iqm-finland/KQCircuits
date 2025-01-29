@@ -26,6 +26,7 @@ from os import path
 from typing import Dict, List
 import logging
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.load_save_layout import load_layout, save_layout
 from kqcircuits.junctions import junction_type_choices
 from kqcircuits.junctions.junction import Junction
 from kqcircuits.chips.chip import Chip
@@ -366,15 +367,7 @@ def copy_one_layer_of_cell(
         logging.exception(error_text, exc_info=error)
         raise error
     layer = layers[0]
-
-    svopt = pya.SaveLayoutOptions()
-    svopt.set_format_from_filename(write_path)
-    svopt.deselect_all_layers()
-    svopt.clear_cells()
-    svopt.add_cell(top_cell.cell_index())
-    svopt.add_layer(layout.layer(layer), layer)
-    svopt.write_context_info = False
-    layout.write(write_path, svopt)
+    save_layout(write_path, layout, [top_cell], [layer])
 
 
 def replace_squids(cell, junction_type, parameter_name, parameter_start, parameter_step, parameter_end=None):
@@ -477,9 +470,7 @@ def replace_squid(top_cell, inst_name, junction_type, mirror=False, squid_index=
         if not path.exists(junction_type):
             logging.warning(f"No file found at '{path.realpath(junction_type)}!")
             return
-        load_opts = pya.LoadLayoutOptions()
-        load_opts.cell_conflict_resolution = pya.LoadLayoutOptions.CellConflictResolution.RenameCell
-        layout.read(junction_type, load_opts)
+        load_layout(junction_type, layout)
         file_cell = layout.top_cells()[-1]
         file_cell.name = f"Junction Library.{file_cell.name}"
 

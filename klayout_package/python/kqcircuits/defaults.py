@@ -85,9 +85,6 @@ if os.name == "nt":
 # could be for example "IQM" or "A!"
 default_brand = "IQM"
 
-# default output format and extension
-default_output_format = "OASIS"
-
 # default bitmap dimensions
 default_png_dimensions = (1000, 1000)
 

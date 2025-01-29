@@ -49,9 +49,7 @@ def test_rounded_path_can_be_saved(tmp_path):
         [pya.DPoint(0, 0), pya.DPoint(0, 100), pya.DPoint(100, 100), pya.DPoint(100, 500)], 7.502857003982128
     )
     rounded_dpath = round_dpath_width(dpath, layout_view.layout.dbu)
-    save_opts = pya.SaveLayoutOptions()
-    save_opts.format = "OASIS"
     layout_view.top_cell.shapes(layout_view.layout.layer("waveguide_path")).insert(rounded_dpath)
     # Uncommenting below would cause RuntimeError: Paths with odd width cannot be written to OASIS files
     # layout_view.top_cell.shapes(layout_view.layout.layer("waveguide_path")).insert(dpath)
-    layout_view.layout.write(str(tmp_path) + "/rounded_path.oas", save_opts)
+    layout_view.save_layout(str(tmp_path) + "/rounded_path.oas")

@@ -80,7 +80,7 @@ from pathlib import Path
 import os
 
 gds_path = os.path.join(SRC_PATHS[0], Path("logo.gds"))
-view.layout.write(gds_path)
+view.save_layout(gds_path, write_context_info=True)
 view.focus()
 
 print(f"GDS written to {gds_path}")
