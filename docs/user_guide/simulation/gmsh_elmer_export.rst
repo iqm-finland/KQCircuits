@@ -120,6 +120,9 @@ Instead of forwarding the settings directly to ``sbatch`` command from ``workflo
         'gmsh_n_threads':10,        # <-- Threads per simulation
         'gmsh_mem':'64G',           # <-- Allocated memory per simulation
         'gmsh_time':'00:10:00',     # <-- Maximum time per simulation
+
+        'env_setup_cmds': ["module load elmer"] # <- Optional commands which can be used to setup the environment on the remote platform.
+                                                     An alternative is to add the commands to the remote profile file (e.g. `~/.bashrc`)
     }
 
 Additionally the account and partition info must be given:

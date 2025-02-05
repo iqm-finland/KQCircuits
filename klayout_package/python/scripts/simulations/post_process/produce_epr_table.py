@@ -150,6 +150,8 @@ def get_results_list(results):
     energy_results = {
         k: v for k, v in results.items() if k.startswith("E_") or k.startswith("Exy_") or k.startswith("Ez_")
     }
+    if not energy_results:
+        return []
 
     num_results_list = [len(v) if isinstance(v, (list, tuple)) else 1 for _, v in energy_results.items()]
     num_results = min(num_results_list)
@@ -185,6 +187,8 @@ if result_files:
             sim_data = json.load(f)
 
         results_list = get_results_list(result_json)
+        if not results_list:
+            print(f'No energy results found in "{result_file}".')
         original_params = parameter_values.pop(original_key)
         for result_id, result in enumerate(results_list, 1):
             energy = {k[2:]: v for k, v in result.items() if k.startswith("E_")}

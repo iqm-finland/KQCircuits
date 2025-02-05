@@ -339,6 +339,8 @@ def export_elmer_script(
             elmer_nodes_per_worker, elmer_tasks_per_worker, elmer_cpus_per_task, elmer_mem_per_worker
         )
 
+        env_setup = [s.removesuffix("\n") + "\n" for s in sbatch_parameters.pop("env_setup_cmds", [])]
+
         if len(sbatch_parameters) > 0:
             logging.warning("Unused sbatch parameters: ")
             for k, v in sbatch_parameters.items():
@@ -382,6 +384,7 @@ def export_elmer_script(
             (indep_mesh_scripts if mesh_name == simulation_name else dep_mesh_scripts).append(run_str)
 
         meshes_script_lines = _get_sbatch_lines(sbatch_settings_meshes)
+        meshes_script_lines += env_setup
         if compile_elmer_modules:
             meshes_script_lines.append(elmer_compile_str)
 
@@ -397,6 +400,7 @@ def export_elmer_script(
         _write_script(str(path.joinpath(file_prefix + "_meshes.sh")), meshes_script_lines)
 
         main_script_lines = _get_sbatch_lines(sbatch_settings_elmer)
+        main_script_lines += env_setup
 
         for i, json_filename in enumerate(json_filenames):
             simulation_name, sif_names = _get_from_json(json_filename, ["name", "sif_names"])

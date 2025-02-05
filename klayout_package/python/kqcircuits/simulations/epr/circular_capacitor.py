@@ -56,8 +56,8 @@ def _waveguide_end_dist(simulation):
 
 def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[PartitionRegion]:
 
-    mer_x_dim = 3.0
-    mer_y_dim = 2.0
+    mer_x_dim = 2.0
+    mer_y_dim = 1.0
     # Let's make the mer margin just a bit larger to prevent any artefacts
     region_safety_margin = 1.5  # um
     metal_edge_margin = mer_x_dim + region_safety_margin
@@ -111,7 +111,8 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
     angle_out = 2 * _angle_from_x(coupler_p_out)
 
     inner_gap_region = _symmetric_sector(
-        angle_in, r_coupler_in + simulation.outer_island_width / 2 + region_safety_margin
+        2 * _angle_from_x((coupler_p_in + coupler_p_out) / 2),
+        r_coupler_in + simulation.outer_island_width / 2 + region_safety_margin,
     )
     outer_gap_region = _symmetric_sector(
         angle_out, r_tot + 1.5 * metal_edge_margin, r_in=r_coupler_out - simulation.outer_island_width / 2
@@ -140,14 +141,14 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
                 r_coupler_out + metal_edge_margin,
                 start=angle_out / 2 - coupler_angle_offset_out,
                 stop=angle_out / 2 + coupler_angle_offset_out,
-                n=2,
+                n=simulation.n,
                 origin=center,
             )
             + arc_points(
                 r_coupler_in - metal_edge_margin,
                 start=angle_in / 2 + coupler_angle_offset_in,
                 stop=angle_in / 2 - coupler_angle_offset_in,
-                n=2,
+                n=simulation.n,
                 origin=center,
             )
         )
@@ -161,11 +162,11 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
 
     lead_region = pya.DBox(
         center + pya.DPoint(-r_tot - metal_edge_margin, -simulation.a / 2 - metal_edge_margin),
-        center + pya.DPoint(-simulation.r_inner + metal_edge_margin, simulation.a / 2 + metal_edge_margin),
+        center + pya.DPoint(-simulation.r_inner + 1.5 * metal_edge_margin, simulation.a / 2 + metal_edge_margin),
     )
     a2, b2 = eval_a2(simulation), eval_b2(simulation)
     lead2_region = pya.DBox(
-        center + pya.DPoint(r_coupler_out - metal_edge_margin, -a2 / 2 - metal_edge_margin),
+        center + pya.DPoint(r_coupler_out - 1.5 * metal_edge_margin, -a2 / 2 - metal_edge_margin),
         center + pya.DPoint(r_tot + metal_edge_margin, a2 / 2 + metal_edge_margin),
     )
     # Some of the regions overlap so the order of definition is important
@@ -246,7 +247,7 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
         pm = (dotp**2 - diff.sq_length() + rlim**2) ** 0.5
         return min(abs(dotp + pm), abs(dotp - pm))
 
-    cut_center = center + pya.DPoint(-simulation.r_inner - 0.5, 0)
+    cut_center = center + pya.DPoint((-simulation.r_inner - simulation.r_outer + simulation.outer_island_width) / 2, 0)
     cut_lim = _coupler_cut_lim(
         pya.DVector(0, 1), cut_center, center, simulation.r_outer - simulation.outer_island_width
     )
@@ -326,9 +327,10 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
     angle_margin = math.radians(0.5)
     wg2_angle = math.atan((b2 + a2 / 2) / (simulation.r_outer + simulation.ground_gap)) + angle_margin
     eff_coupler_angle = math.radians(simulation.swept_angle) / 2 - angle_margin
+    cut_angle = (wg2_angle + eff_coupler_angle) / 2
+    cut_unit_vector = pya.DVector(math.cos(cut_angle), math.sin(cut_angle))
 
-    if eff_coupler_angle > wg2_angle:
-        cut_unit_vector = pya.DVector(math.cos(wg2_angle), math.sin(wg2_angle))
+    if cut_angle > wg2_angle:
         cut_center = center + (simulation.r_outer + half_gap) * cut_unit_vector
         half_cut_length = half_gap + min(simulation.outer_island_width - cut_length_margin, 20)
 
@@ -341,7 +343,6 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
             ],
         }
     else:
-        cut_unit_vector = pya.DVector(math.cos(eff_coupler_angle / 2), math.sin(eff_coupler_angle / 2))
         cut_center = center + simulation.r_outer * cut_unit_vector
         half_cut_length = min(simulation.outer_island_width - cut_length_margin, 30)
 
