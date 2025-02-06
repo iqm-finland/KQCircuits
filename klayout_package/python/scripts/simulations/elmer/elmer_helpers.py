@@ -902,8 +902,9 @@ def sif_epr_3d(json_data: dict[str, Any], folder_path: Path, vtu_name: str | Pat
     """
 
     # p_element_order==1 solver does not support capacitance bodies on sif Body Force sections
-    c_matrix_output = json_data["p_element_order"] > 1
+    c_matrix_output = json_data["p_element_order"] > 1 and not json_data["voltage_excitations"]
     mesh_path = Path(json_data["mesh_name"])
+
     header = sif_common_header(
         json_data,
         folder_path,
@@ -990,8 +991,11 @@ def sif_epr_3d(json_data: dict[str, Any], folder_path: Path, vtu_name: str | Pat
         if excitation == 0:  # ground
             body_forces += sif_block(f"Body Force {n_body_forces}", [f"{excitation_str} 0"])
         else:  # signal
-            n_capacitance_bodies = n_capacitance_bodies + 1 if json_data["sequential_signal_excitation"] else 1
-            body_forces += sif_block(f"Body Force {n_body_forces}", [f"{excitation_str} {n_capacitance_bodies}"])
+            n_capacitance_bodies = n_capacitance_bodies + 1
+            voltage_exc = json_data["voltage_excitations"]
+            # If too few excitations given in voltage_exc, repeat the last voltage
+            condition = voltage_exc[min(excitation, len(voltage_exc)) - 1] if voltage_exc else n_capacitance_bodies
+            body_forces += sif_block(f"Body Force {n_body_forces}", [f"{excitation_str} {condition}"])
 
     boundary_conditions = ""
     # tls bcs
@@ -1038,13 +1042,23 @@ def sif_capacitance(
 
     name = "capacitance0" if with_zero else "capacitance"
     mesh_path = Path(json_data["mesh_name"])
-    header = sif_common_header(json_data, folder_path, mesh_path, angular_frequency=angular_frequency, dim=dim)
+
+    voltage_exc = json_data.get("voltage_excitations", None)
+    c_matrix_output = not bool(voltage_exc)
+
+    header = sif_common_header(
+        json_data,
+        folder_path,
+        mesh_path,
+        angular_frequency=angular_frequency,
+        dim=dim,
+        constraint_modes_analysis=c_matrix_output,
+    )
+
     constants = sif_block("Constants", [f"Permittivity Of Vacuum = {epsilon_0}"])
 
     solvers = get_electrostatics_solver(
-        json_data,
-        ordinate=1,
-        capacitance_file=folder_path / f"{name}.dat",
+        json_data, ordinate=1, capacitance_file=folder_path / f"{name}.dat", c_matrix_output=c_matrix_output
     )
 
     solvers += get_result_output_solver(
@@ -1084,7 +1098,9 @@ def sif_capacitance(
     for excitation, excitation_name in excitations:
         if excitation == 0:  # ground
             condition = "Potential = 0.0"
-        else:  # signal
+        elif voltage_exc:  # signal with specified voltage
+            condition = f"Potential = {voltage_exc[min(excitation, len(voltage_exc)) - 1]}"
+        else:  # signal for capacitance simulation
             n_capacitance_bodies += 1
             condition = f"Capacitance Body = {n_capacitance_bodies}"
 

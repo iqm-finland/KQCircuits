@@ -124,9 +124,10 @@ def get_epr_correction_simulations(
     deembed_lens = {}
     correction_simulations = []
     correction_layout = pya.Layout()
+    simulations = [sim if isinstance(sim, Sequence) else (sim, None) for sim in simulations]
+    source_sims, source_sols = list(zip(*simulations))
 
-    source_sims = {sim[0] if isinstance(sim, Sequence) else sim for sim in simulations}
-    for source_sim in source_sims:
+    for source_sim, source_sol in zip(source_sims, source_sols):
         if metal_height is not None:
             source_sim.metal_height = metal_height
         cuts = correction_cuts(source_sim) if callable(correction_cuts) else correction_cuts
@@ -160,17 +161,6 @@ def get_epr_correction_simulations(
                 dx = int(me.get("x_reversed", False))
                 dz = int(me.get("z_reversed", False))
                 mer_box.append(pya.DBox(x - h_dims[1 - dx], z - v_dims[dz], x + h_dims[dx], z + v_dims[1 - dz]))
-
-            if "solution" in cut:
-                cut_solution = cut["solution"]
-            else:
-                cut_solution = get_epr_correction_elmer_solution(
-                    **{
-                        k: v
-                        for k, v in cut.items()
-                        if k not in ["p1", "p2", "metal_edges", "partition_regions", "simulations"]
-                    }
-                )
 
             cords_list = [(cut["p1"], cut["p2"])]
             if xsection_path:
@@ -211,8 +201,24 @@ def get_epr_correction_simulations(
                     mer_box=mer_box,
                 )
 
+            if "solution" in cut:
+                cut_solution = cut["solution"]
+            else:
+                cut_solution = get_epr_correction_elmer_solution(
+                    voltage_excitations=getattr(source_sol, "voltage_excitations", None),
+                    **{
+                        k: v
+                        for k, v in cut.items()
+                        if k not in ["p1", "p2", "metal_edges", "partition_regions", "simulations"]
+                    },
+                )
+
             correction_simulations += cross_combine(cross_sections, cut_solution)
-            correction_simulations[-1][0].name = correction_simulations[-1][0].cell.name = source_sim.name + "_" + key
+
+            correction_simulations[-1][0].name = correction_simulations[-1][0].cell.name = (
+                source_sim.name + getattr(source_sol, "name", "") + "_" + key
+            )
+
             visualise_cross_section_cut_on_original_layout([source_sim], cords_list, cut_label=key, width_ratio=0.03)
 
         deembed_cs_cur = [getattr(port, "deembed_cross_section", None) for port in source_sim.ports]

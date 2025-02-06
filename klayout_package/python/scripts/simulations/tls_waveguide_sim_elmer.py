@@ -104,7 +104,7 @@ sol_parameters = {
     "tool": "epr_3d",
     "mesh_size": {"1t1_layerMAmer": 0.5, "1t1_layerMSmer": 0.5, "1t1_layerSAmer": 0.5},
     "linear_system_method": "mg",
-    "sequential_signal_excitation": True,  # choose whether to excite both signals at once or sequentially
+    "voltage_excitations": [1.0],  # This sets all signals to 1V instead of exciting them sequentially
 }
 
 if sheet_interfaces:

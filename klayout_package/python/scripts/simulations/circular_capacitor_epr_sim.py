@@ -48,6 +48,10 @@ flip_chip = False
 etch_opposite_face = False
 var_str = ("_f" if flip_chip else "") + ("e" if etch_opposite_face else "")
 
+# By default the simulation excites all signals present sequentially.
+# This keyword can be used to specify custom voltages on each signal instead
+# If used, no capacitance will be produced
+voltage_excitations = None  # [1.0, -0.5]
 
 ground_gap = 20
 # If False the waveguides connected to the element will extend to the boundary of
@@ -101,6 +105,7 @@ solution = ElmerEPR3DSolution(
         "optimize": {},
     },
     linear_system_method="mg",
+    voltage_excitations=voltage_excitations,
 )
 
 # Prepare output directory
@@ -170,6 +175,15 @@ if use_sbatch:
 export_elmer(simulations, path=dir_path, workflow=workflow, post_process=pp)
 
 correction_simulations, post_process = get_epr_correction_simulations(simulations, correction_cuts, metal_height=0.2)
+
+# Run cross-section simulations in parallel, each with a single task
+workflow.update(
+    {
+        "elmer_n_processes": 1,
+        "gmsh_n_threads": 1,
+        "n_workers": -1,
+    }
+)
 
 if use_sbatch:
     # Even though the cross-sections are already fast we can speed them up by redistributing the

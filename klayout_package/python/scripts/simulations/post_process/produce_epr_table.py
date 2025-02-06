@@ -93,6 +93,10 @@ def get_mer_coefficients(simulation, region):
 
         # always use the first signal excitation for corrections
         mer_total = sum(_get_ith(res[k], 0) for k in mer_keys)
+        if mer_total == 0:
+            print(f'Total energy 0 for correction of region "{region}" in "{simulation}"')
+            mer_total = float("inf")
+
         coefficient = {
             group: sum(_get_ith(res[k], 0) for k in mer_keys if group.lower() in k.lower()) / mer_total
             for group in groups
@@ -177,6 +181,8 @@ if result_files:
     for i, (original_key, result_file) in enumerate(zip(list(parameter_values.keys()), result_files)):
         with open(result_file, "r", encoding="utf-8") as f:
             result_json = json.load(f)
+        with open(f"{original_key}.json", "r", encoding="utf-8") as f:
+            sim_data = json.load(f)
 
         results_list = get_results_list(result_json)
         original_params = parameter_values.pop(original_key)
@@ -197,8 +203,6 @@ if result_files:
                 z_energy = {k[3:]: v for k, v in result.items() if k.startswith("Ez_")}
 
                 # read layers and material_dict data to determine sheet background materials
-                with open(f"{original_key}.json", "r", encoding="utf-8") as f:
-                    sim_data = json.load(f)
                 sheet_layers = [(k, d) for k, d in sim_data["layers"].items() if k in xy_energy or k in z_energy]
                 eps_r_dict = {k: d["permittivity"] for k, d in sim_data["material_dict"].items() if "permittivity" in d}
                 bg_key = {k: d.get("background", "unknown_sheet_background") for k, d in sheet_layers}
@@ -280,22 +284,29 @@ if result_files:
                     with open(f"{simulation}_{deembed_cs}.json", "r", encoding="utf-8") as f:
                         return [k for k, v in json.load(f)["layers"].items() if v.get("excitation") == result_id]
 
-                if original_key not in deembed_lens:
+                sim_name = sim_data["simulation_name"]
+                if sim_name not in deembed_lens:
                     print("`deembed_lens` not found in correction.json, something might not work correctly!")
-                if original_key not in deembed_cross_sections:
+                if sim_name not in deembed_cross_sections:
                     print("`deembed_cross_sections` not found in correction.json, something might not work correctly!")
-                deembed_len_list = deembed_lens[original_key]
-                deembed_cross_section_list = deembed_cross_sections[original_key]
+                deembed_len_list = deembed_lens[sim_name]
+                deembed_cross_section_list = deembed_cross_sections[sim_name]
                 for deembed_len, deembed_cs in zip(deembed_len_list, deembed_cross_section_list):
-                    excited_signals_cs = find_deembed_signals(original_key, deembed_cs, result_id)
                     deembed_dict = get_deembed_p_dict(original_key, deembed_cs, deembed_len, total_energy)
-                    # for now, if the model does not have signals matching to the solution, then
-                    # let's just scale the deembed participation to zero because in reality that
-                    # port is not excited, but in the case of only one signal, the case where
-                    # port signal is zero, is not computed.
-                    # TODO: find the correct deembed solution in `get_deembed_p_dict` in case of
-                    # multiple signals are excited
-                    port_excited = 0 if len(excited_signals_cs) == 0 else 1
+
+                    if sim_data["voltage_excitations"]:
+                        # with custom excitations we should have a single solution with all signals excited
+                        port_excited = 1
+                    else:
+                        # for now, if the model does not have signals matching to the solution, then
+                        # let's just scale the deembed participation to zero because in reality that
+                        # port is not excited, but in the case of only one signal, the case where
+                        # port signal is zero, is not computed.
+                        # TODO: find the correct deembed solution in `get_deembed_p_dict` in case of
+                        # multiple signals are excited
+                        excited_signals_cs = find_deembed_signals(original_key, deembed_cs, result_id)
+                        port_excited = 0 if len(excited_signals_cs) == 0 else 1
+
                     for k, v in deembed_dict.items():
                         epr_dict[key][f"deembed_{k}_{deembed_cs}"] = v * port_excited
 
