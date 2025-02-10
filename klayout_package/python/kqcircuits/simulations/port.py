@@ -79,7 +79,6 @@ class InternalPort(Port):
         capacitance: float = 0,
         face: int = 0,
         junction: bool = False,
-        signal_layer: str = "signal",
         etch_width: float = None,
         floating: bool = False,
     ):
@@ -94,15 +93,12 @@ class InternalPort(Port):
             capacitance: Capacitance of the element. Given in Farads (:math:`\\text{F}`).
             face: Integer-valued face index for the port.
             junction: Whether this port models a SQUID/Junction. Used in EPR calculations.
-            signal_layer: Manual override for simulation signal layer.
-                May be used to set ports across the ground layer with ``ground``.
             etch_width: Width of a trace between signal_location and ground_location, on which the metal is etched away.
                 Useful when adding a lumped port on a waveguide.
             floating: activate floating port -> does not force "ground side" to ground.
         """
         super().__init__(number, resistance, reactance, inductance, capacitance, face, junction)
         self.signal_location = signal_location
-        self.signal_layer = signal_layer
         if ground_location is not None:
             self.ground_location = ground_location
         if etch_width is not None:

@@ -55,7 +55,7 @@ if use_elmer:
         "1t1_gap": 50.0,
         "1t1_airbridge_flyover": 50.0,
         "1t1_airbridge_pads": 50.0,
-        "1t1_signal": 50.0,
+        **{f"1t1_signal_{i}": 50.0 for i in range(1, 15)},
         "1t1_ground": 200.0,
         "substrate": 200.0,
         "vacuum": 200.0,

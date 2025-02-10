@@ -36,7 +36,6 @@ from kqcircuits.defaults import XSECTION_PROCESS_PATH
 from kqcircuits.simulations.export.cross_section.cross_section_profile import CrossSectionProfile
 
 from kqcircuits.simulations.export.cross_section.cross_section_export import (
-    separate_signal_layer_shapes,
     create_cross_sections_from_simulations,
     visualise_cross_section_cut_on_original_layout,
 )
@@ -130,7 +129,6 @@ def get_epr_correction_simulations(
     for source_sim in source_sims:
         if metal_height is not None:
             source_sim.metal_height = metal_height
-        separate_signal_layer_shapes(source_sim)
         cuts = correction_cuts(source_sim) if callable(correction_cuts) else correction_cuts
 
         for key, cut in cuts.items():

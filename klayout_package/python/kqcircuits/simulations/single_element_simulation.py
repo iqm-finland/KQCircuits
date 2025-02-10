@@ -71,7 +71,6 @@ def _get_build_function(
                         capacitance=port.capacitance,
                         face=port.face,
                         junction=port.junction,
-                        signal_layer=port.signal_layer,
                     )
                 )
             elif isinstance(port, RefpointToEdgePort):

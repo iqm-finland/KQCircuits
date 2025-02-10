@@ -76,7 +76,8 @@ sim_parameters = {
 if use_elmer:
     mesh_size = {
         "global_max": 100.0,
-        "2b1_gap&2b1_signal": 1,
+        "2b1_gap&2b1_signal_1": 1,
+        "2b1_gap&2b1_signal_2": 1,
         "2b1_gap&2b1_ground": 1,
     }
 

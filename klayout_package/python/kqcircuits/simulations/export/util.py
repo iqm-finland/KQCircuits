@@ -22,13 +22,6 @@ from typing import List
 from kqcircuits.pya_resolver import pya
 
 
-def find_edge_from_point_in_cell(cell: pya.Cell, layer: int, point: pya.DPoint, dbu, tolerance=0.01):
-    """
-    Finds the edge closest to a point, and returns the edge as well as it's polygon and edge index
-    """
-    return find_edge_from_point_in_polygons(cell.shapes(layer).each(pya.Shapes.SPolygons), point, dbu, tolerance)
-
-
 def _dist(edge: pya.Edge, point: pya.Point):
     """
     If point projected to line by edge is in edge then use `distance_abs`

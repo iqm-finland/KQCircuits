@@ -196,40 +196,6 @@ def create_cross_sections_from_simulations(
     ]
 
 
-def separate_signal_layer_shapes(simulation: Simulation, sort_key: Callable[[pya.Shape], float] = None) -> None:
-    """Separate shapes in signal layer to their own dedicated signal layers for each face
-
-    Args:
-        simulation: A Simulation object where the layer will be separated
-        sort_key: A function that, given a Shape object, returns a number.
-            Shapes are sorted according to the number in increasing order.
-            If None, picks a point in shape polygon, sorts points top to bottom then tie-breaks left to right
-    """
-    if sort_key is None:
-
-        def sort_key(shape):
-            point_in_shape = list(shape.polygon.each_point_hull())[0]
-            return (-point_in_shape.y, point_in_shape.x)
-
-    signal_index = 1
-    gen_free_layer_slots = free_layer_slots(simulation.layout)
-    for face in simulation.face_ids:
-        signal_layer = find_layer_by_name(f"{face}_signal", simulation.layout)
-        if signal_layer is None:
-            continue
-        signal_layer_idx = simulation.layout.layer(signal_layer)
-        for shape in sorted(simulation.cell.each_shape(signal_layer_idx), key=sort_key):
-            # Reuse layer if it already used in layout
-            signal_layer = find_layer_by_name(f"{face}_signal_{signal_index}", simulation.layout)
-            # If no such layer, find next available layer index
-            if signal_layer is None:
-                layer_index = next(gen_free_layer_slots)
-                signal_layer = pya.LayerInfo(layer_index, 0, f"{face}_signal_{signal_index}")
-            simulation.cell.shapes(simulation.layout.layer(signal_layer)).insert(shape)
-            signal_index += 1
-        simulation.cell.clear(signal_layer_idx)
-
-
 def find_layer_by_name(layer_name: str, layout: pya.Layout) -> pya.LayerInfo:
     """Returns layerinfo if there already is a layer by layer_name in layout. None if no such layer exists"""
     for l in layout.layer_infos():

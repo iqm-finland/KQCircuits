@@ -52,7 +52,7 @@ export_parameters = {
 mesh_size = {
     "global_max": 400.0,
     "1t1_gap": 16.0,
-    "1t1_signal&1t1_gap": 8,
+    **{f"1t1_signal_{i}&1t1_gap": 8 for i in range(1, 10)},
 }
 
 # Here we select to use up to 4*2=8 cores with two levels of parallelisation

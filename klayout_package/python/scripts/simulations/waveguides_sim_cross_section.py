@@ -32,7 +32,6 @@ from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
 from kqcircuits.simulations.export.elmer.elmer_solution import ElmerCrossSectionSolution
 from kqcircuits.simulations.export.cross_section.cross_section_export import (
     create_cross_sections_from_simulations,
-    separate_signal_layer_shapes,
     visualise_cross_section_cut_on_original_layout,
 )
 from kqcircuits.simulations.post_process import PostProcess
@@ -103,9 +102,6 @@ layout = get_active_or_new_layout()
 
 sweep_parameters = {"n_guides": args.n_guides}
 simulations = sweep_simulation(layout, sim_class, sim_parameters, sweep_parameters)
-
-for simulation in simulations:
-    separate_signal_layer_shapes(simulation)
 
 # Take cross sections from sweeped simulations
 # Oxide layer permittivity and thickness values same as in double_pads_sim.py simulation

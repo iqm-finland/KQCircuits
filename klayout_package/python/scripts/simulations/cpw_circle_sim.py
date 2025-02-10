@@ -52,7 +52,7 @@ class CpwCircleSim(Simulation):
         # Add an internal port
         ground_point = self.box.center() + pya.DVector(r - self.a / 2 - self.b, 0.0)
         signal_point = self.box.center() + pya.DVector(r - self.a / 2, 0.0)
-        self.ports.append(InternalPort(0, signal_point, ground_point))
+        self.ports.append(InternalPort(1, signal_point, ground_point))
 
 
 # Prepare output directory
@@ -88,7 +88,7 @@ if use_elmer:
     }
     mesh_size = {
         "global_max": 200.0,
-        "1t1_gap&1t1_signal": 2.0,
+        "1t1_gap&1t1_signal_1": 2.0,
         "1t1_gap&1t1_ground": 2.0,
     }
     workflow = {

@@ -26,7 +26,6 @@ from kqcircuits.simulations.export.simulation_export import export_simulation_oa
 from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
 from kqcircuits.simulations.export.cross_section.cross_section_export import (
     create_cross_sections_from_simulations,
-    separate_signal_layer_shapes,
     visualise_cross_section_cut_on_original_layout,
 )
 from kqcircuits.simulations.waveguides_sim import WaveGuidesSim
@@ -107,8 +106,6 @@ logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 layout = get_active_or_new_layout()
 
 simulations = [sim_class(layout, **sim_parameters)]
-for simulation in simulations:
-    separate_signal_layer_shapes(simulation)
 
 # Take cross sections from sweeped simulations
 # Oxide layer permittivity and thickness values same as in double_pads_sim.py simulation

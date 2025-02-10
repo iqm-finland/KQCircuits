@@ -77,7 +77,7 @@ if use_elmer:
         "global_max": 50.0,
         "1t1_gap": 2.0,
         "1t1_gap&1t1_ground": [0.5, 0.5, 2],
-        "1t1_gap&1t1_signal": [0.5, 0.5, 2],
+        "1t1_gap&1t1_signal_1": [0.5, 0.5, 2],
         **{f"port_{i}": 20.0 for i in range(1, 5)},
     }
 

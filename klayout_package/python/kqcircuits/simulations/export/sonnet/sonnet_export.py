@@ -25,7 +25,7 @@ from kqcircuits.defaults import default_layers
 from kqcircuits.simulations.export.sonnet import parser
 from kqcircuits.simulations.export.util import find_edge_from_point_in_polygons
 from kqcircuits.simulations.port import InternalPort, EdgePort
-from kqcircuits.simulations.simulation import Simulation, get_simulation_layer_by_name
+from kqcircuits.simulations.simulation import Simulation
 from kqcircuits.util.export_helper import write_commit_reference_file
 
 
@@ -79,19 +79,20 @@ def export_sonnet_son(
     if simulation is None or not isinstance(simulation, Simulation):
         raise ValueError("Cannot export without simulation")
 
-    def get_sonnet_strings(material_type, grid_size, symmetry):
+    def get_layer_polygons(layer_name_starts_with):
         layout = simulation.cell.layout()
-        dbu = layout.dbu
-        layer_pad = layout.layer(get_simulation_layer_by_name("1t1_airbridge_pads"))
-        layer_bridge = layout.layer(get_simulation_layer_by_name("1t1_airbridge_flyover"))
-        layer_son = layout.layer(get_simulation_layer_by_name("1t1_signal"))
-        layer_son_ground = layout.layer(get_simulation_layer_by_name("1t1_ground"))
+        polygons = []
+        for layer_info in layout.layer_infos():
+            if layer_info.name.startswith(layer_name_starts_with):
+                polygons += [p.polygon for p in simulation.cell.shapes(layout.layer(layer_info)).each()]
+        return polygons
 
-        simpolygons = [p.polygon for p in simulation.cell.shapes(layer_son).each()] + [
-            p.polygon for p in simulation.cell.shapes(layer_son_ground).each()
-        ]
-        airbridge_polygons = [p.polygon for p in simulation.cell.shapes(layer_bridge).each()]
-        airpads_polygons = [p.polygon for p in simulation.cell.shapes(layer_pad).each()]
+    def get_sonnet_strings(material_type, grid_size, symmetry):
+        dbu = simulation.cell.layout().dbu
+
+        simpolygons = get_layer_polygons("1t1_signal") + get_layer_polygons("1t1_ground")
+        airbridge_polygons = get_layer_polygons("1t1_airbridge_flyover")
+        airpads_polygons = get_layer_polygons("1t1_airbridge_pads")
         for p in airpads_polygons:
             p.isVia = True
 

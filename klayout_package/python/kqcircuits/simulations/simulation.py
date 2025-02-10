@@ -35,7 +35,7 @@ from kqcircuits.util.geometry_helper import (
     merge_points_and_match_on_edges,
 )
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
-from kqcircuits.simulations.export.util import find_edge_from_point_in_cell
+from kqcircuits.simulations.export.util import find_edge_from_point_in_polygons
 from kqcircuits.simulations.export.util import get_enclosing_polygon
 from kqcircuits.util.groundgrid import make_grid
 from kqcircuits.junctions.sim import Sim
@@ -453,7 +453,12 @@ class Simulation:
     def insert_layer(self, layer_name, region, z0, z1, **params):
         """Adds layer parameters into 'self.layers' if region is non-empty."""
         if not region.is_empty():
-            self.layers[layer_name] = {"region": region.dup(), "bottom": min(z0, z1), "top": max(z0, z1), **params}
+            self.layers[layer_name] = {
+                "region": region.dup(),
+                "bottom": round(min(z0, z1), 12),
+                "top": round(max(z0, z1), 12),
+                **params,
+            }
 
     def insert_stacked_up_layers(self, stack, z0):
         """Produces the layer stack-up and adds the layers into 'self.layers'.
@@ -550,6 +555,115 @@ class Simulation:
                 )
         return sum_region
 
+    def split_metal_layers_by_excitation(self):
+        """Split metal layers in self.layers such that ground, signal, and floating metals are separated.
+
+        Adds 'excitation' keyword to metal layers having values 'gnd', {port.number}, and 'flt', respectively for
+        ground, signals and floating layers.
+
+        This function should be called before `produce_layers`.
+        """
+
+        def are_connected(part1, part2):
+            """Return True only if part1 and part2 are connected."""
+            for n1, r1 in part1.items():
+                l1 = self.layers[n1]
+                for n2, r2 in part2.items():
+                    if n1 == n2:
+                        continue
+                    l2 = self.layers[n2]
+                    if l1["bottom"] <= l2["top"] and l2["bottom"] <= l1["top"] and not r1.interacting(r2).is_empty():
+                        return True
+            return False
+
+        def merge_parts(part1, part2):
+            """Merge part1 into part2 and clear part1."""
+            for n, r in part1.items():
+                if n in part2:
+                    part2[n].insert(r)
+                else:
+                    part2[n] = r
+            part1.clear()
+
+        def get_connected_part(pos, height):
+            """Return the first part from parts that covers the point of pos and height. Return empty dictionary if
+            such part does not exist.
+            """
+            for p in parts:
+                for n, r in p.items():
+                    layer = self.layers[n]
+                    if layer["bottom"] <= height <= layer["top"] and not r.interacting(pya.Edge(pos, pos)).is_empty():
+                        return p
+            return {}
+
+        # consider metal-edge layers as solid metals for simplicity, i.e., hollow tsv is considered as full metal
+        metal_names = [n for n, l in self.layers.items() if "pec" in [l.get("material"), l.get("edge_material")]]
+
+        # create individual part for each metal polygon
+        parts = [{n: pya.Region(p)} for n in metal_names for p in self.layers[n]["region"].each()]
+
+        # combine connected parts
+        for i in range(1, len(parts)):
+            for j in range(i):
+                if are_connected(parts[i], parts[j]):
+                    merge_parts(parts[j], parts[i])
+        parts = [p for p in parts if p]
+
+        # assign excitation to parts
+        ports = sorted(self.ports, key=lambda p: p.number) if self.use_ports else []
+        excitation = {**{p.number: {} for p in ports}, "gnd": {}, "flt": {}}
+        z = self.face_z_levels()
+        for port in ports:
+            signal_z = round(z[resolve_face(port.face, self.face_ids)][0], 12)
+            if hasattr(port, "ground_location"):
+                v_mps = port.signal_location - port.ground_location
+                v_mps = self.minimum_point_spacing * v_mps / v_mps.abs()
+                signal_loc = (port.signal_location + v_mps).to_itype(self.layout.dbu)
+                if not port.floating:
+                    ground_loc = (port.ground_location - v_mps).to_itype(self.layout.dbu)
+                    merge_parts(get_connected_part(ground_loc, signal_z), excitation["gnd"])
+            else:
+                signal_loc = port.signal_location.to_itype(self.layout.dbu)
+            merge_parts(get_connected_part(signal_loc, signal_z), excitation[port.number])
+
+        # assign remaining parts as ground if they touch edge, bottom, or top of the simulation box, otherwise floating
+        ground_edges = pya.Region(self.box.to_itype(self.layout.dbu)).edges()
+        for part in parts:
+            if any(
+                self.layers[n]["bottom"] <= round(z[0], 12)
+                or round(z[-1], 12) <= self.layers[n]["top"]
+                or not r.interacting(ground_edges).is_empty()
+                for n, r in part.items()
+            ):
+                merge_parts(part, excitation["gnd"])  # ground
+            else:
+                merge_parts(part, excitation["flt"])  # floating
+
+        # split metals by excitations
+        for name in metal_names:
+            if name.endswith("_metal"):  # split base metal layers
+                for key, part in excitation.items():
+                    if name in part.keys():
+                        n = name.replace("_metal", "_ground" if key == "gnd" else f"_signal_{key}")
+                        self.layers[n] = {**self.layers[name], "region": part[name], "excitation": key}
+                del self.layers[name]
+            else:  # split metals with multiple excitations in general
+                layer_excitations = []
+                for key, part in excitation.items():
+                    if name in part.keys():
+                        layer_excitations.append(key)
+
+                if len(layer_excitations) > 1:
+                    for i, key in enumerate(layer_excitations):
+                        self.layers[f"{name}_{key}"] = {
+                            **self.layers[name],
+                            "region": excitation[key][name],
+                            "excitation": key,
+                        }
+                    del self.layers[name]
+                else:
+                    self.layers[name]["excitation"] = layer_excitations[0]
+
     def create_simulation_layers(self):
         """Create the layers used for simulation export.
 
@@ -577,7 +691,7 @@ class Simulation:
             tsv_params = {"edge_material": "pec"} if self.hollow_tsv else {"material": "pec"}
             tsv_region = self.insert_layers_between_faces(i, i - sign, "through_silicon_via", **tsv_params)
             bump_region = self.insert_layers_between_faces(i, i + sign, "indium_bump", material="pec")
-            ground_box_region = pya.Region(self._face_box(i).to_itype(self.layout.dbu))
+            face_box_region = pya.Region(self._face_box(i).to_itype(self.layout.dbu))
 
             for j, face_id in enumerate(face_ids):
                 metal_gap_region = self.region_from_layer(face_id, "base_metal_gap_wo_grid")
@@ -586,78 +700,45 @@ class Simulation:
                 if self.over_etching >= 0:
                     lithography_region = self.simplified_region(metal_gap_region - metal_add_region, self.over_etching)
                 else:
-                    lithography_region = ground_box_region - self.simplified_region(
-                        ground_box_region - (metal_gap_region - metal_add_region), -self.over_etching
+                    lithography_region = face_box_region - self.simplified_region(
+                        face_box_region - (metal_gap_region - metal_add_region), -self.over_etching
                     )
                 for port in self.ports:
                     if resolve_face(port.face, self.face_ids) == face_id and hasattr(port, "get_etch_polygon"):
                         lithography_region += pya.Region(port.get_etch_polygon().to_itype(self.layout.dbu))
 
-                if lithography_region.is_empty():
-                    signal_region = pya.Region()
-                    ground_region = ground_box_region.dup()
-                else:
-                    signal_region = ground_box_region - lithography_region
-
-                    # Find the ground plane and subtract it from the simulation area
-                    # First, add all polygons touching any of the edges
-                    ground_region = pya.Region()
-                    for edge in ground_box_region.edges():
-                        ground_region += signal_region.interacting(edge)
-                    # Now, remove all edge polygons which are also a port
-                    if self.use_ports:
-                        for port in self.ports:
-                            if resolve_face(port.face, self.face_ids) == face_id:
-                                if hasattr(port, "ground_location"):
-                                    v_mps = port.signal_location - port.ground_location
-                                    v_mps = self.minimum_point_spacing * v_mps / v_mps.abs()
-                                    signal_loc = (port.signal_location + v_mps).to_itype(self.layout.dbu)
-                                    ground_region -= ground_region.interacting(pya.Edge(signal_loc, signal_loc))
-
-                                    ground_loc = (port.ground_location - v_mps).to_itype(self.layout.dbu)
-                                    if not port.floating:
-                                        ground_region += signal_region.interacting(pya.Edge(ground_loc, ground_loc))
-                                else:
-                                    signal_loc = port.signal_location.to_itype(self.layout.dbu)
-                                    ground_region -= ground_region.interacting(pya.Edge(signal_loc, signal_loc))
-
-                    ground_region.merge()
-                    signal_region -= ground_region
-
-                dielectric_region = ground_box_region - self.simplified_region(
+                metal_region = face_box_region - lithography_region
+                dielectric_region = face_box_region - self.simplified_region(
                     self.region_from_layer(face_id, "dielectric_etch")
                 )
 
                 # Create gap and etch regions and update metals
-                gap_region = ground_box_region - signal_region - ground_region  # excluding ground grid
+                gap_region = face_box_region - metal_region  # excluding ground grid
                 if self.with_grid:
-                    ground_region -= self.ground_grid_region(face_id)
-                etch_region = ground_box_region - signal_region - ground_region  # including ground grid
-                signal_region -= tsv_region
-                ground_region -= tsv_region
+                    metal_region -= self.ground_grid_region(face_id)
+                etch_region = face_box_region - metal_region  # including ground grid
+                metal_region -= tsv_region
                 dielectric_region -= tsv_region
-                metal_region = signal_region + ground_region
                 for part in parts:
                     if part.face is not None and resolve_face(part.face, self.face_ids) == face_id:
                         part.limit_face(z[face_id][0], sign, metal_region, etch_region, self.layout.dbu)
 
-                # Insert signal, ground and dielectric layers
+                # Insert metal and dielectric layers
                 dielectric_thickness = z[face_id][2] - z[face_id][1]
                 if self.fixed_level_stackup:
                     # Use fixed level stack-up
-                    self.insert_layer(face_id + "_signal", signal_region, z[face_id][0], z[face_id][1], material="pec")
-                    self.insert_layer(face_id + "_ground", ground_region, z[face_id][0], z[face_id][1], material="pec")
+                    self.insert_layer(face_id + "_metal", metal_region, z[face_id][0], z[face_id][1], material="pec")
                     if dielectric_thickness != 0.0:
                         self.insert_layer(
                             face_id + "_via",
-                            ground_box_region - dielectric_region,
+                            face_box_region - dielectric_region,
                             z[face_id][1],
                             z[face_id][2],
                             material="pec",
                         )
                         self.insert_layer(
                             face_id + "_dielectric",
-                            ground_box_region,
+                            face_box_region,
                             z[face_id][0],
                             z[face_id][2],
                             material=self.ith_value(dielectric_material, j),
@@ -666,8 +747,7 @@ class Simulation:
                 else:
                     # Use stack to produce drop-down stack-up
                     metal_thickness = z[face_id][1] - z[face_id][0]
-                    stack.append((signal_region, face_id + "_signal", metal_thickness, "pec"))
-                    stack.append((ground_region, face_id + "_ground", metal_thickness, "pec"))
+                    stack.append((metal_region, face_id + "_metal", metal_thickness, "pec"))
                     if dielectric_thickness != 0.0:
                         stack.append(
                             (
@@ -688,7 +768,7 @@ class Simulation:
                 # Insert airbridges
                 bridge_z = z[face_id][1] + sign * self.airbridge_height
                 ab_flyover_region = (
-                    self.simplified_region(self.region_from_layer(face_id, "airbridge_flyover")) & ground_box_region
+                    self.simplified_region(self.region_from_layer(face_id, "airbridge_flyover")) & face_box_region
                 )
                 self.insert_layer(
                     face_id + "_airbridge_flyover",
@@ -698,7 +778,7 @@ class Simulation:
                     material="pec",
                 )
                 ab_pads_region = (
-                    self.simplified_region(self.region_from_layer(face_id, "airbridge_pads")) & ground_box_region
+                    self.simplified_region(self.region_from_layer(face_id, "airbridge_pads")) & face_box_region
                 )
                 self.insert_layer(face_id + "_airbridge_pads", ab_pads_region, z[face_id][1], bridge_z, material="pec")
 
@@ -774,6 +854,7 @@ class Simulation:
             material="vacuum",
         )
 
+        self.split_metal_layers_by_excitation()
         self.produce_layers(parts)
 
         # Visualise parititon regions
@@ -885,15 +966,7 @@ class Simulation:
                 below -= s_below
             return above, below
 
-        layer_list = [
-            {
-                "name": name,
-                "bottom": round(layer["bottom"], 12),
-                "top": round(layer["top"], 12),
-                **{n: v for n, v in layer.items() if n not in ["bottom", "top"]},
-            }
-            for name, layer in self.layers.items()
-        ]
+        layer_list = [{"name": name, **dict(layer.items())} for name, layer in self.layers.items()]
         part_list = [
             {
                 "name": part.name,
@@ -967,13 +1040,12 @@ class Simulation:
                 for n in sorted(layer.get("subtract", set()), reverse=True)
                 if layers[n]["name"] in self.layers
             ]
+            other_keys = {"material", "edge_material", "background", "excitation"}
             self.layers[layer["name"]] = {
                 "z": round(layer["bottom"], 12),
                 "thickness": round(layer["top"] - layer["bottom"], 12),
                 **({"layer": sim_layer.layer} if limit_region else {}),
-                **{
-                    k: v for k, v in layer.items() if k in ["material", "edge_material", "background"] and v is not None
-                },
+                **{k: v for k, v in layer.items() if k in other_keys and v is not None},
                 **({"subtract": subtract} if subtract else {}),
             }
 
@@ -1161,21 +1233,21 @@ class Simulation:
         * signal_edge: point coordinates of the signal edge
         * ground_edge: point coordinates of the ground edge
         """
-        simulation = self
         z = self.face_z_levels()
+        dbu = self.layout.dbu
         # gather port data
         port_data = []
-        if simulation.use_ports:
-            for port in simulation.ports:
+        if self.use_ports:
+            for port in self.ports:
                 # Basic data from Port
                 p_data = {**port.as_dict()}  # Shallow copy to not modify the ports
 
-                face_id = self.face_ids[port.face]
+                face_id = resolve_face(port.face, self.face_ids)
 
                 # Define a 3D polygon for each port
                 if isinstance(port, EdgePort):
 
-                    port_size = simulation.port_size if port.size is None else port.size
+                    port_size = self.port_size if port.size is None else port.size
                     ps = port_size if isinstance(port_size, list) else [port_size / 2] * 4
 
                     port_z0 = max(z[face_id][0] - ps[2], z[0])
@@ -1184,18 +1256,18 @@ class Simulation:
                     # Determine which edge this port is on
                     port_x0 = port_x1 = port.signal_location.x
                     port_y0 = port_y1 = port.signal_location.y
-                    if abs(port.signal_location.x - simulation.box.left) < self.layout.dbu:
-                        port_y0 = max(port.signal_location.y - ps[1], simulation.box.bottom)
-                        port_y1 = min(port.signal_location.y + ps[0], simulation.box.top)
-                    elif abs(port.signal_location.x - simulation.box.right) < self.layout.dbu:
-                        port_y0 = max(port.signal_location.y - ps[0], simulation.box.bottom)
-                        port_y1 = min(port.signal_location.y + ps[1], simulation.box.top)
-                    elif abs(port.signal_location.y - simulation.box.bottom) < self.layout.dbu:
-                        port_x0 = max(port.signal_location.x - ps[0], simulation.box.left)
-                        port_x1 = min(port.signal_location.x + ps[1], simulation.box.right)
-                    elif abs(port.signal_location.y - simulation.box.top) < self.layout.dbu:
-                        port_x0 = max(port.signal_location.x - ps[1], simulation.box.left)
-                        port_x1 = min(port.signal_location.x + ps[0], simulation.box.right)
+                    if abs(port.signal_location.x - self.box.left) < dbu:
+                        port_y0 = max(port.signal_location.y - ps[1], self.box.bottom)
+                        port_y1 = min(port.signal_location.y + ps[0], self.box.top)
+                    elif abs(port.signal_location.x - self.box.right) < dbu:
+                        port_y0 = max(port.signal_location.y - ps[0], self.box.bottom)
+                        port_y1 = min(port.signal_location.y + ps[1], self.box.top)
+                    elif abs(port.signal_location.y - self.box.bottom) < dbu:
+                        port_x0 = max(port.signal_location.x - ps[0], self.box.left)
+                        port_x1 = min(port.signal_location.x + ps[1], self.box.right)
+                    elif abs(port.signal_location.y - self.box.top) < dbu:
+                        port_x0 = max(port.signal_location.x - ps[1], self.box.left)
+                        port_x1 = min(port.signal_location.x + ps[0], self.box.right)
                     else:
                         raise ValueError(f"Port {port.number} is an EdgePort but not on the edge of the simulation box")
 
@@ -1209,25 +1281,16 @@ class Simulation:
                 elif isinstance(port, InternalPort):
                     if hasattr(port, "ground_location"):
                         try:
-                            _, _, signal_edge = find_edge_from_point_in_cell(
-                                simulation.cell,
-                                # simulation.get_layer(port.signal_layer, port.face),
-                                self.layout.layer(get_simulation_layer_by_name(face_id + "_" + port.signal_layer)),
-                                port.signal_location,
-                                simulation.layout.dbu,
-                            )
-                            if port.floating:
-                                ground_search = face_id + "_" + port.signal_layer
-                            else:
-                                ground_search = face_id + "_ground"
+                            # find list of base metal polygons on port face_id
+                            region = pya.Region()
+                            for n, lay in self.layers.items():
+                                if (n == f"{face_id}_ground" or n.startswith(f"{face_id}_signal_")) and "layer" in lay:
+                                    region.insert(self.cell.begin_shapes_rec(self.layout.layer(lay["layer"], 0)))
+                            base_metal = list(region.each())
 
-                            _, _, ground_edge = find_edge_from_point_in_cell(
-                                simulation.cell,
-                                # simulation.get_layer('simulation_ground', port.face),
-                                self.layout.layer(get_simulation_layer_by_name(ground_search)),
-                                port.ground_location,
-                                simulation.layout.dbu,
-                            )
+                            # find signal and ground edges from the base metal polygons
+                            _, _, signal_edge = find_edge_from_point_in_polygons(base_metal, port.signal_location, dbu)
+                            _, _, ground_edge = find_edge_from_point_in_polygons(base_metal, port.ground_location, dbu)
 
                             port_z = z[face_id][0]
                             p_data["polygon"] = get_enclosing_polygon(

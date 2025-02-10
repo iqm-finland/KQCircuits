@@ -115,7 +115,6 @@ class RefpointToInternalPort(RefpointToSimPort):
         capacitance=0,
         face=0,
         junction=False,
-        signal_layer="signal",
     ):
         super().__init__(refpoint, face)
         (
@@ -125,8 +124,7 @@ class RefpointToInternalPort(RefpointToSimPort):
             self.inductance,
             self.capacitance,
             self.junction,
-            self.signal_layer,
-        ) = (ground_refpoint, resistance, reactance, inductance, capacitance, junction, signal_layer)
+        ) = (ground_refpoint, resistance, reactance, inductance, capacitance, junction)
 
 
 class RefpointToEdgePort(RefpointToSimPort):
