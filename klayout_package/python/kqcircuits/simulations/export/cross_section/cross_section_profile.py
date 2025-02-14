@@ -63,10 +63,6 @@ class CrossSectionProfile:
         self._layer_priority = {}
         self._layer_change_map = {}
 
-        # TODO: This member adjusts the y position of cross section shapes such that they match exactly
-        # the cross section geometry generated with XSection. Remove this member eventually.
-        self.add_this_to_xor_with_master = 0
-
     def level(
         self,
         regex: str,
@@ -217,7 +213,6 @@ class CrossSectionProfile:
 def get_single_face_cross_section_profile() -> CrossSectionProfile:
     """Standard KQC single face cross section profile"""
     profile = CrossSectionProfile()
-    profile.add_this_to_xor_with_master = 0.0  # TODO: remove this
     # Add standard 1t1 face
     profile.add_face("1t1")
     # Define levels for bottom substrate
@@ -242,7 +237,6 @@ def get_flip_chip_cross_section_profile() -> CrossSectionProfile:
     """Standard KQC flip chip cross section profile"""
     # Take single face profile and add stuff on top of it
     profile = get_single_face_cross_section_profile()
-    profile.add_this_to_xor_with_master = -383.4  # TODO: remove this
     # Add standard 2b1 face
     profile.add_face("2b1")
     # Define levels for top substrate

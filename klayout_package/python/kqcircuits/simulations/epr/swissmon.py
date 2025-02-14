@@ -19,7 +19,7 @@
 import logging
 from typing import Callable
 from kqcircuits.pya_resolver import pya
-from kqcircuits.simulations.epr.utils import extract_child_simulation, EPRTarget
+from kqcircuits.simulations.epr.util import extract_child_simulation, EPRTarget
 from kqcircuits.simulations.partition_region import PartitionRegion
 
 

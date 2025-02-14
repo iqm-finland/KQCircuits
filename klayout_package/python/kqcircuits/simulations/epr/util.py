@@ -16,6 +16,7 @@
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
+import logging
 from typing import Callable
 from kqcircuits.elements.element import Element
 from kqcircuits.simulations.simulation import Simulation
@@ -33,6 +34,21 @@ def in_gui(element: EPRTarget) -> bool:
     attributes need to be used.
     """
     return not isinstance(element, Simulation)
+
+
+def get_mer_z(element: EPRTarget, face_base: str) -> float:
+    """Determines z position of a MER box postitioned at the base of the face
+    given ``face_base`` as face id string."""
+    if in_gui(element):
+        return 0
+    z_levels = element.face_z_levels()
+    if face_base not in z_levels:
+        logging.warning(
+            f"Couldn't get z coordinate of face {face_base}, "
+            "please check how 'face_stack' is defined. Defaulting to 0 for MER box."
+        )
+        return 0
+    return z_levels[face_base][0]
 
 
 def extract_child_simulation(
@@ -84,8 +100,20 @@ def extract_child_simulation(
         if refpoint_prefix
         else dict(simulation.refpoints)
     )
-    if needed_parameters is None:
-        return child_simulation
+    # Add default simulation parameters that should always be included
+    needed_parameters = set(
+        needed_parameters
+        + [
+            "face_ids",
+            "face_stack",
+            "lower_box_height",
+            "upper_box_height",
+            "substrate_height",
+            "metal_height",
+            "dielectric_height",
+            "chip_distance",
+        ]
+    )
     for parameter in needed_parameters:
         if parameter_remap_function:
             value = parameter_remap_function(simulation, parameter)

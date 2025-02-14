@@ -17,10 +17,10 @@
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
 from kqcircuits.pya_resolver import pya
-from kqcircuits.simulations.partition_region import PartitionRegion
-from kqcircuits.simulations.epr.utils import in_gui, EPRTarget
 from kqcircuits.elements.smooth_capacitor import SmoothCapacitor
 from kqcircuits.elements.finger_capacitor_square import eval_a2, eval_b2
+from kqcircuits.simulations.epr.util import in_gui, EPRTarget, get_mer_z
+from kqcircuits.simulations.partition_region import PartitionRegion
 
 
 # Partition region and correction cuts definitions for Swissmon qubit
@@ -198,7 +198,6 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
                 if simulation.finger_control > 1.0 or abs(nearest.y) < abs(nearest.x):
                     finger_center = nearest
 
-    z_me = 0
     if not in_gui(simulation):
         port_a_len = 11 + simulation.waveguide_length + metal_edge_dimension  # 11 is the hardcoded port dimension
         port_a_middle = port_a_rf - pya.DPoint(port_a_len / 2.0, 0)
@@ -208,9 +207,7 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
         port_b_middle = port_b_rf + pya.DPoint(port_b_len / 2.0, 0)
         port_b_width = a2 + 2 * b2 + 2 * metal_edge_dimension
 
-        if len(simulation.face_stack) > 1:
-            z_me = -simulation.substrate_height[1] - simulation.chip_distance - 2 * simulation.metal_height
-
+    z_me = get_mer_z(simulation, simulation.face_ids[0])
     fingersmer_end = finger_center * (1.0 + simulation.finger_width * 0.9 / finger_center.abs())
     half_cut_len = 25.0
     result = {

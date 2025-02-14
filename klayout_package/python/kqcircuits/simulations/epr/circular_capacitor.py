@@ -19,7 +19,7 @@
 import math
 from typing import Callable
 from kqcircuits.pya_resolver import pya
-from kqcircuits.simulations.epr.utils import extract_child_simulation, in_gui, EPRTarget
+from kqcircuits.simulations.epr.util import extract_child_simulation, in_gui, EPRTarget, get_mer_z
 from kqcircuits.simulations.partition_region import PartitionRegion
 from kqcircuits.simulations.simulation import Simulation
 from kqcircuits.util.geometry_helper import arc_points
@@ -227,13 +227,9 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
     # Make cuts this much shorter than allowed by perfect rounding to account for discretization
     cut_length_margin = 0.5
 
-    s_to_s_gap = 0
-    z_me = 0
+    z_me_b = get_mer_z(simulation, simulation.face_ids[0])
     r_tot = simulation.r_outer + simulation.ground_gap
     is_flip_chip = _is_flip_chip(simulation)
-    if not in_gui(simulation):
-        s_to_s_gap = simulation.chip_distance + 2 * simulation.metal_height
-        z_me = -simulation.substrate_height[1] - s_to_s_gap if is_flip_chip else 0
 
     a2, b2 = eval_a2(simulation), eval_b2(simulation)
 
@@ -259,8 +255,8 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
         "p1": cut_center + pya.DPoint(0, -half_cut_length),
         "p2": cut_center + pya.DPoint(0, half_cut_length),
         "metal_edges": [
-            {"x": half_cut_length - simulation.a / 2, "x_reversed": True, "z": z_me},
-            {"x": half_cut_length + simulation.a / 2, "z": z_me},
+            {"x": half_cut_length - simulation.a / 2, "x_reversed": True, "z": z_me_b},
+            {"x": half_cut_length + simulation.a / 2, "z": z_me_b},
         ],
         "boundary_conditions": {"xmin": {"potential": 0}, "xmax": {"potential": 0}},
     }
@@ -272,8 +268,8 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
         "p1": cut_center + pya.DPoint(0, -half_cut_length),
         "p2": cut_center + pya.DPoint(0, half_cut_length),
         "metal_edges": [
-            {"x": half_cut_length - a2 / 2, "x_reversed": True, "z": z_me},
-            {"x": half_cut_length + a2 / 2, "z": z_me},
+            {"x": half_cut_length - a2 / 2, "x_reversed": True, "z": z_me_b},
+            {"x": half_cut_length + a2 / 2, "z": z_me_b},
         ],
         "boundary_conditions": {"xmin": {"potential": 0}, "xmax": {"potential": 0}},
     }
@@ -289,10 +285,10 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
             "p1": cut_center + pya.DPoint(0, -half_cut_length),
             "p2": cut_center + pya.DPoint(0, half_cut_length),
             "metal_edges": [
-                {"x": half_cut_length - simulation.a / 2 - simulation.b, "z": z_me},
-                {"x": half_cut_length - simulation.a / 2, "x_reversed": True, "z": z_me},
-                {"x": half_cut_length + simulation.a / 2, "z": z_me},
-                {"x": half_cut_length + simulation.a / 2 + simulation.b, "x_reversed": True, "z": z_me},
+                {"x": half_cut_length - simulation.a / 2 - simulation.b, "z": z_me_b},
+                {"x": half_cut_length - simulation.a / 2, "x_reversed": True, "z": z_me_b},
+                {"x": half_cut_length + simulation.a / 2, "z": z_me_b},
+                {"x": half_cut_length + simulation.a / 2 + simulation.b, "x_reversed": True, "z": z_me_b},
             ],
         }
 
@@ -303,10 +299,10 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
             "p1": cut_center + pya.DPoint(0, -half_cut_length),
             "p2": cut_center + pya.DPoint(0, half_cut_length),
             "metal_edges": [
-                {"x": half_cut_length - a2 / 2 - b2, "z": z_me},
-                {"x": half_cut_length - a2 / 2, "x_reversed": True, "z": z_me},
-                {"x": half_cut_length + a2 / 2, "z": z_me},
-                {"x": half_cut_length + a2 / 2 + b2, "x_reversed": True, "z": z_me},
+                {"x": half_cut_length - a2 / 2 - b2, "z": z_me_b},
+                {"x": half_cut_length - a2 / 2, "x_reversed": True, "z": z_me_b},
+                {"x": half_cut_length + a2 / 2, "z": z_me_b},
+                {"x": half_cut_length + a2 / 2 + b2, "x_reversed": True, "z": z_me_b},
             ],
         }
 
@@ -318,8 +314,8 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
         "p1": cut_center + pya.DPoint(-half_cut_length, 0),
         "p2": cut_center + pya.DPoint(half_cut_length, 0),
         "metal_edges": [
-            {"x": half_cut_length - half_gap, "z": z_me},
-            {"x": half_cut_length + half_gap, "x_reversed": True, "z": z_me},
+            {"x": half_cut_length - half_gap, "z": z_me_b},
+            {"x": half_cut_length + half_gap, "x_reversed": True, "z": z_me_b},
         ],
     }
 
@@ -340,8 +336,8 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
             "p1": cut_center - half_cut_length * cut_unit_vector,
             "p2": cut_center + half_cut_length * cut_unit_vector,
             "metal_edges": [
-                {"x": half_cut_length - half_gap, "z": z_me},
-                {"x": half_cut_length + half_gap, "x_reversed": True, "z": z_me},
+                {"x": half_cut_length - half_gap, "z": z_me_b},
+                {"x": half_cut_length + half_gap, "x_reversed": True, "z": z_me_b},
             ],
         }
     else:
@@ -353,7 +349,7 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
             "p1": cut_center - half_cut_length * cut_unit_vector,
             "p2": cut_center + half_cut_length * cut_unit_vector,
             "metal_edges": [
-                {"x": half_cut_length - half_gap, "z": z_me},
+                {"x": half_cut_length - half_gap, "z": z_me_b},
             ],
             "boundary_conditions": {"xmax": {"potential": 0}},
         }
@@ -382,10 +378,10 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
             "p1": cut_center - half_cut_length * cut_unit_vector,
             "p2": cut_center + half_cut_length * cut_unit_vector,
             "metal_edges": [
-                {"x": half_cut_length - simulation.a / 2 - cplr_gap_width, "z": z_me},
-                {"x": half_cut_length - simulation.a / 2, "x_reversed": True, "z": z_me},
-                {"x": half_cut_length + simulation.a / 2, "z": z_me},
-                {"x": half_cut_length + simulation.a / 2 + cplr_gap_width, "x_reversed": True, "z": z_me},
+                {"x": half_cut_length - simulation.a / 2 - cplr_gap_width, "z": z_me_b},
+                {"x": half_cut_length - simulation.a / 2, "x_reversed": True, "z": z_me_b},
+                {"x": half_cut_length + simulation.a / 2, "z": z_me_b},
+                {"x": half_cut_length + simulation.a / 2 + cplr_gap_width, "x_reversed": True, "z": z_me_b},
             ],
         }
     else:
@@ -409,7 +405,7 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
             "p1": cut_center - half_cut_length * cut_unit_vector,
             "p2": cut_center + half_cut_length * cut_unit_vector,
             "metal_edges": [
-                {"x": half_cut_length, "z": z_me},
+                {"x": half_cut_length, "z": z_me_b},
             ],
             "boundary_conditions": {"xmax": {"potential": 0}},
         }
@@ -431,7 +427,7 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
         "p1": cut_center + half_cut_length * cut_unit_vector,
         "p2": cut_center - half_cut_length * cut_unit_vector,
         "metal_edges": [
-            {"x": half_cut_length, "z": z_me},
+            {"x": half_cut_length, "z": z_me_b},
         ],
         "boundary_conditions": {"xmax": {"potential": 1}},
     }
@@ -444,11 +440,12 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
             + (simulation.r_outer + simulation.ground_gap + simulation.etch_opposite_face_margin) * cut_unit_vector
         )
         half_cut_length = 30
+        z_me_t = get_mer_z(simulation, simulation.face_ids[1])
         result[f"{prefix}tcomplementmer"] = {
             "p1": cut_center + half_cut_length * cut_unit_vector,
             "p2": cut_center - half_cut_length * cut_unit_vector,
             "metal_edges": [
-                {"x": half_cut_length, "z": z_me + s_to_s_gap},
+                {"x": half_cut_length, "z": z_me_t},
             ],
             "boundary_conditions": {"xmax": {"potential": 1}},
         }

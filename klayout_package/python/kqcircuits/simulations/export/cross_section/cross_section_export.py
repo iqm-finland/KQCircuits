@@ -608,15 +608,7 @@ def produce_intersection_shapes(
         level = profile.get_level(layer_info.name, simulation)
         output_region = pya.Region()
         for start, end in segments:
-            # TODO: remove add_this_to_xor_with_master
-            output_region += pya.Region(
-                pya.DBox(
-                    start,
-                    min(level) + profile.add_this_to_xor_with_master,
-                    end,
-                    max(level) + profile.add_this_to_xor_with_master,
-                ).to_itype(layout.dbu)
-            )
+            output_region += pya.Region(pya.DBox(start, min(level), end, max(level)).to_itype(layout.dbu))
         raw_regions[layer_info] = output_region
 
     # Process layers by profile priority, where in case of shape overlap preserve higher priority layer

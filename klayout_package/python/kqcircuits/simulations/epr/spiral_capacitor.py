@@ -17,9 +17,9 @@
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
 from kqcircuits.pya_resolver import pya
-from kqcircuits.simulations.epr.utils import in_gui, EPRTarget
-from kqcircuits.simulations.partition_region import PartitionRegion
 from kqcircuits.elements.finger_capacitor_square import eval_a2, eval_b2
+from kqcircuits.simulations.epr.util import get_mer_z, EPRTarget
+from kqcircuits.simulations.partition_region import PartitionRegion
 
 vertical_dimension = 1.0
 metal_edge_dimension = 1.0
@@ -102,11 +102,6 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
 
     base_rf = simulation.refpoints["base"]
 
-    z_me = 0
-    if not in_gui(simulation):
-        if len(simulation.face_stack) > 1:
-            z_me = -simulation.substrate_height[1] - simulation.chip_distance - 2 * simulation.metal_height
-
     gaps = pya.Region(simulation.cell.begin_shapes_rec(simulation.get_layer("base_metal_gap_wo_grid")))
     top_most = None
     center_most = None
@@ -123,6 +118,7 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
     center_gap_len = center_dir.abs()
     center_dir /= center_gap_len
     half_cut_len = 25.0
+    z_me = get_mer_z(simulation, simulation.face_ids[0])
     result = {
         f"{prefix}fingergmer": {
             "p1": center_most + simulation.finger_width * 0.9 * center_dir,

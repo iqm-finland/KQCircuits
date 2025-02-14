@@ -18,7 +18,7 @@
 
 from typing import Callable
 from kqcircuits.pya_resolver import pya
-from kqcircuits.simulations.epr.utils import extract_child_simulation, EPRTarget
+from kqcircuits.simulations.epr.util import extract_child_simulation, EPRTarget, get_mer_z
 from kqcircuits.simulations.partition_region import PartitionRegion
 from kqcircuits.simulations.simulation import Simulation
 
@@ -117,21 +117,23 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
     Returns:
         Configuration dict of correction cuts used by ``get_epr_correction_simulations``
     """
+    # MER box z position determined by face_ids[0] face
+    z_me = get_mer_z(simulation, simulation.face_ids[0])
     return {
         f"{prefix}1region": {
             "p1": simulation.refpoints["base"] + pya.DPoint(0, -30),
             "p2": simulation.refpoints["base"] + pya.DPoint(0, 30),
-            "metal_edges": [{"x": 20}],
+            "metal_edges": [{"x": 20, "z": z_me}],
         },
         f"{prefix}2region": {
             "p1": simulation.refpoints["coupler"] + pya.DPoint(simulation.a, -30),
             "p2": simulation.refpoints["coupler"] + pya.DPoint(simulation.a, 30),
-            "metal_edges": [{"x": 30}],
+            "metal_edges": [{"x": 30, "z": z_me}],
         },
         f"{prefix}3region": {
             "p1": simulation.refpoints["ro"] + pya.DPoint(-30, simulation.b),
             "p2": simulation.refpoints["ro"] + pya.DPoint(30, simulation.b),
-            "metal_edges": [{"x": 30}],
+            "metal_edges": [{"x": 30, "z": z_me}],
         },
     }
 
