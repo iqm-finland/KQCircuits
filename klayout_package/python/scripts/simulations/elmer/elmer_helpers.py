@@ -457,12 +457,9 @@ def get_electrostatics_solver(
     Returns:
         electrostatics solver in sif file format
     """
-    # Adaptive meshing not yet working with vectorised version (github.com/ElmerCSC/elmerfem/issues/401)
-    useVectorised = json_data["p_element_order"] > 1
-    solver = "StatElecSolveVec" if useVectorised else "StatElecSolve"
     solver_lines = [
         "Equation = Electro Statics",
-        f'Procedure = "{solver}" "StatElecSolver"',
+        'Procedure = "StatElecSolveVec" "StatElecSolver"',
         "Variable = Potential",
         f"Calculate Capacitance Matrix = {c_matrix_output}",
         "Calculate Electric Field = True",
@@ -478,10 +475,7 @@ def get_electrostatics_solver(
     if json_data["maximum_passes"] > 1:
         solver_lines += sif_adaptive_mesh(json_data)
 
-    if useVectorised:
-        solver_lines += ["Vector Assembly = True"]
-        solver_lines += ["Element = p:$pn"]
-        solver_lines += ["Calculate Elemental Fields = True"]
+    solver_lines += ["Vector Assembly = True", "Element = p:$pn", "Calculate Elemental Fields = True"]
 
     return sif_block(f"Solver {ordinate}", solver_lines)
 
@@ -901,8 +895,8 @@ def sif_epr_3d(json_data: dict[str, Any], folder_path: Path, vtu_name: str | Pat
         Elmer solver input file for 3D EPR simulation
     """
 
-    # p_element_order==1 solver does not support capacitance bodies on sif Body Force sections
-    c_matrix_output = json_data["p_element_order"] > 1 and not json_data["voltage_excitations"]
+    voltage_exc = json_data["voltage_excitations"]
+    c_matrix_output = not bool(voltage_exc)
     mesh_path = Path(json_data["mesh_name"])
 
     header = sif_common_header(
@@ -991,7 +985,6 @@ def sif_epr_3d(json_data: dict[str, Any], folder_path: Path, vtu_name: str | Pat
             body_forces += sif_block(f"Body Force {n_body_forces}", [f"{excitation_str} 0"])
         else:  # signal
             n_capacitance_bodies = n_capacitance_bodies + 1
-            voltage_exc = json_data["voltage_excitations"]
             # If too few excitations given in voltage_exc, repeat the last voltage
             condition = voltage_exc[min(excitation, len(voltage_exc)) - 1] if voltage_exc else n_capacitance_bodies
             body_forces += sif_block(f"Body Force {n_body_forces}", [f"{excitation_str} {condition}"])

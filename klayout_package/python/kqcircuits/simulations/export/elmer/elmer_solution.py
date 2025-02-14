@@ -194,8 +194,7 @@ class ElmerCrossSectionSolution(ElmerSolution):
 class ElmerEPR3DSolution(ElmerSolution):
     """
     Class for Elmer 3D EPR simulations. Similar to electrostatics simulations done with ElmerCapacitanceSolution,
-    but supports separating energies by PartitionRegions. Produces no capacitance matrix if p_element_order==1.
-    Always reports energies for each layer.
+    but supports separating energies by PartitionRegions. Always reports energies for each layer.
 
     Args:
         p_element_order: polynomial order of p-elements
