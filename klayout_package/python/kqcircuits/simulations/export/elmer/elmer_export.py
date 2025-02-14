@@ -46,7 +46,11 @@ from kqcircuits.simulations.post_process import PostProcess
 
 
 def export_elmer_json(
-    simulation: Union[Simulation, CrossSectionSimulation], solution: ElmerSolution, path: Path, workflow: dict
+    simulation: Union[Simulation, CrossSectionSimulation],
+    solution: ElmerSolution,
+    path: Path,
+    workflow: dict,
+    mesh_reuse_name: str | None = None,
 ):
     """
     Export Elmer simulation into json and gds files.
@@ -56,6 +60,7 @@ def export_elmer_json(
         solution: The solution to be exported.
         path: Location where to write json and gds files.
         workflow: Parameters for simulation workflow
+        mesh_reuse_name: Name of a mesh to be reused from another simulation
 
     Returns:
          Path to exported json file.
@@ -92,6 +97,7 @@ def export_elmer_json(
 
     json_data = {
         "name": full_name,
+        "mesh_name": mesh_reuse_name if mesh_reuse_name else full_name,
         "workflow": workflow,
         **sim_data,
         **sol_data,
@@ -338,32 +344,31 @@ def export_elmer_script(
             for k, v in sbatch_parameters.items():
                 logging.warning(f"{k} : {v}")
 
-        meshes_script_lines = _get_sbatch_lines(sbatch_settings_meshes)
-
-        if compile_elmer_modules:
-            meshes_script_lines.append(elmer_compile_str)
-
+        dep_mesh_scripts = []
+        indep_mesh_scripts = []
         for i, json_filename in enumerate(json_filenames):
 
-            (simulation_name,) = _get_from_json(json_filename, ["name"])
+            (simulation_name, mesh_name) = _get_from_json(json_filename, ["name", "mesh_name"])
             python_run_cmd = f'{python_executable} -u "{execution_script}" "{Path(json_filename).relative_to(path)}"'
 
             def get_log_cmd(logfile_suffix, filename=simulation_name):
                 return f'2>&1 >> "log_files/{filename}.{logfile_suffix}.log"\n'
 
-            script_lines = [
-                "set -e\n",
-                _sim_part_echo(i, "Gmsh"),
-                f'{srun_cmd_gmsh} {python_run_cmd} --only-gmsh -q {get_log_cmd("Gmsh")}',
-                _sim_part_echo(i, "ElmerGrid"),
-                f'{srun_cmd_gmsh} ElmerGrid 14 2 "{simulation_name}.msh" {get_log_cmd("ElmerGrid")}',
-            ]
+            script_lines = ["set -e\n"]
 
-            if int(elmer_tasks_per_worker) > 1:
-                script_lines.append(
-                    f'{srun_cmd_gmsh} ElmerGrid 2 2 "{simulation_name}" -metis {elmer_tasks_per_worker}'
-                    f' 4 --partdual --removeunused {get_log_cmd("ElmerGrid")}'
-                )
+            if mesh_name == simulation_name:
+                script_lines += [
+                    _sim_part_echo(i, "Gmsh"),
+                    f'{srun_cmd_gmsh} {python_run_cmd} --only-gmsh -q {get_log_cmd("Gmsh")}',
+                    _sim_part_echo(i, "ElmerGrid"),
+                    f'{srun_cmd_gmsh} ElmerGrid 14 2 "{simulation_name}.msh" {get_log_cmd("ElmerGrid")}',
+                ]
+
+                if int(elmer_tasks_per_worker) > 1:
+                    script_lines.append(
+                        f'{srun_cmd_gmsh} ElmerGrid 2 2 "{simulation_name}" -metis {elmer_tasks_per_worker}'
+                        f' 4 --partdual --removeunused {get_log_cmd("ElmerGrid")}'
+                    )
 
             script_lines += [
                 _sim_part_echo(i, "Write Elmer sif files"),
@@ -373,14 +378,21 @@ def export_elmer_script(
             script_filename_meshes = str(path.joinpath(simulation_name + "_meshes.sh"))
             _write_script(script_filename_meshes, script_lines)
 
-            meshes_script_lines += [
-                f'echo "Submitting gmsh and ElmerGrid part {i + 1}/{n_jsons}"\n',
-                'echo "--------------------------------------------"\n',
-                f'source "{Path(script_filename_meshes).relative_to(path)}" &\n',
-            ]
+            run_str = f'source "{Path(script_filename_meshes).relative_to(path)}" &\n'
+            (indep_mesh_scripts if mesh_name == simulation_name else dep_mesh_scripts).append(run_str)
 
-            if (i + 1) % n_workers_full == 0 or (i + 1) == n_jsons:
-                meshes_script_lines.append("wait\n")
+        meshes_script_lines = _get_sbatch_lines(sbatch_settings_meshes)
+        if compile_elmer_modules:
+            meshes_script_lines.append(elmer_compile_str)
+
+        meshes_script_lines += [
+            s + ("wait\n" if i % n_workers_full == 0 or i == len(indep_mesh_scripts) else "")
+            for i, s in enumerate(indep_mesh_scripts, 1)
+        ]
+        meshes_script_lines += [
+            s + ("wait\n" if i % n_workers_full == 0 or i == len(dep_mesh_scripts) else "")
+            for i, s in enumerate(dep_mesh_scripts, 1)
+        ]
 
         _write_script(str(path.joinpath(file_prefix + "_meshes.sh")), meshes_script_lines)
 
@@ -418,8 +430,6 @@ def export_elmer_script(
             _write_script(script_filename, script_lines)
 
             main_script_lines += [
-                f'echo "Submitting ElmerSolver part {i + 1}/{n_jsons}"\n',
-                'echo "--------------------------------------------"\n',
                 f'source "{Path(script_filename).relative_to(path)}" &\n',
             ]
             if (i + 1) % n_workers_full == 0 or (i + 1) == n_jsons:
@@ -445,14 +455,16 @@ def export_elmer_script(
             main_script_lines.append(f"export OMP_NUM_THREADS={workflow['elmer_n_threads']}\n")
             main_script_lines.append(f"{python_executable} {script_folder}/simple_workload_manager.py {n_workers}")
 
+        dependent_sims = []
         for i, json_filename in enumerate(json_filenames):
-            (simulation_name,) = _get_from_json(json_filename, ["name"])
+            (simulation_name, mesh_name) = _get_from_json(json_filename, ["name", "mesh_name"])
             python_run_cmd = f'{python_executable} "{execution_script}" "{Path(json_filename).relative_to(path)}"'
 
             def get_log_cmd(logfile_suffix, filename=simulation_name):
                 return f'2>&1 >> "log_files/{filename}.{logfile_suffix}.log"\n'
 
             script_filename = str(path.joinpath(simulation_name + ".sh"))
+
             script_lines = [
                 "set -e\n",
                 _sim_part_echo(i, "Gmsh"),
@@ -472,7 +484,11 @@ def export_elmer_script(
             _write_script(script_filename, script_lines)
 
             if parallelize_workload:
-                main_script_lines.append(f' "./{Path(script_filename).relative_to(path)}"')
+                run_str = f' "./{Path(script_filename).relative_to(path)}"'
+                if mesh_name == simulation_name:
+                    main_script_lines.append(run_str)
+                else:
+                    dependent_sims.append(run_str)
             else:
                 main_script_lines += [
                     f'echo "Submitting the main script of simulation {i + 1}/{n_jsons}"\n',
@@ -480,8 +496,12 @@ def export_elmer_script(
                     f'"./{Path(script_filename).relative_to(path)}"\n',
                 ]
 
+        if dependent_sims:
+            main_script_lines.append(f"\n{python_executable} {script_folder}/simple_workload_manager.py {n_workers}")
+            main_script_lines += dependent_sims
+
         main_script_lines += [
-            'echo "--------------------------------------------"\n',
+            '\necho "--------------------------------------------"\n',
             'echo "Write versions file"\n',
             f"{python_run_cmd} --write-versions-file\n",
         ]
@@ -556,14 +576,32 @@ def export_elmer(
 
         return (sim, replace(sol, name=sol_name))
 
-    json_filenames = []
+    simulations = [
+        make_names_elmer_compatible(*(sim_sol if isinstance(sim_sol, Sequence) else (sim_sol, common_sol)))
+        for sim_sol in simulations
+    ]
+    sim_objects, sol_objects = list(zip(*simulations))
 
-    for sim_sol in simulations:
-        simulation, solution = sim_sol if isinstance(sim_sol, Sequence) else (sim_sol, common_sol)
-        simulation, solution = make_names_elmer_compatible(simulation, solution)
+    n_sim = len(simulations)
+    mesh_reuse_name = n_sim * [None]
+    for i in range(n_sim):
+        for j in range(i):
+            if (
+                sim_objects[i] == sim_objects[j]
+                and sol_objects[i].mesh_size == sol_objects[j].mesh_size
+                and sol_objects[i].tool == sol_objects[j].tool
+            ):
+                mesh_reuse_name[i] = (
+                    mesh_reuse_name[j] if mesh_reuse_name[j] else (sim_objects[j].name + sol_objects[j].name)
+                )
+                break
+
+    json_filenames = []
+    for simulation, solution, mesh_reuse in zip(sim_objects, sol_objects, mesh_reuse_name):
         validate_simulation(simulation, solution)
+
         try:
-            json_filenames.append(export_elmer_json(simulation, solution, path, workflow))
+            json_filenames.append(export_elmer_json(simulation, solution, path, workflow, mesh_reuse))
         except (IndexError, ValueError, Exception) as e:  # pylint: disable=broad-except
             if skip_errors:
                 logging.warning(

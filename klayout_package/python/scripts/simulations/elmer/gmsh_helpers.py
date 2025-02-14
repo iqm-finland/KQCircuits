@@ -49,6 +49,9 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
         json_data: all the model data produced by `export_elmer_json`
         msh_file: mesh file name
     """
+    if Path(msh_file).exists():
+        print(f"Reusing existing mesh from {str(msh_file)}")
+        return
 
     # Initialize gmsh
     gmsh.initialize()

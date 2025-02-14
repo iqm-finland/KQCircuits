@@ -64,9 +64,9 @@ def _load_elmer_runtimes(path: Path, name: str, elmer_n_processes: int) -> dict:
     return times
 
 
-def _load_elmer_elements(path: Path, name: str) -> dict:
+def _load_elmer_elements(path: Path, mesh_name: str) -> dict:
     """Parse path/mesh.header for the number of mesh elements used in Elmer"""
-    log_file = Path(path).joinpath(name).joinpath("mesh.header")
+    log_file = Path(path).joinpath(mesh_name).joinpath("mesh.header")
     if log_file.is_file():
         with open(log_file, "r", encoding="utf-8") as f:
             for line in f:
@@ -76,9 +76,9 @@ def _load_elmer_elements(path: Path, name: str) -> dict:
         return {}
 
 
-def _load_gmsh_data(path: Path, name: str) -> dict:
+def _load_gmsh_data(path: Path, mesh_name: str) -> dict:
     """Parse Gmsh log file found in path/log_files for the CPU and real runtimes"""
-    log_file = Path(path).joinpath("log_files").joinpath(name + ".Gmsh.log")
+    log_file = Path(path).joinpath("log_files").joinpath(mesh_name + ".Gmsh.log")
 
     if log_file.is_file():
         with open(log_file, "r", encoding="utf-8") as f:
@@ -120,11 +120,15 @@ if names:
     res = {}
     for key, name, definition_file in zip(parameter_values.keys(), names, definition_files):
         workflow_data = _load_workflow_data(definition_file)
+        with open(definition_file, "r", encoding="utf-8") as f:
+            json_data = json.load(f)
+            mesh_name = json_data["mesh_name"]
+
         res[key] = {
             **workflow_data,
-            **_load_gmsh_data(path, name),
+            **_load_gmsh_data(path, mesh_name),
             **_load_elmer_runtimes(path, name, workflow_data["elmer_n_processes"]),
-            **_load_elmer_elements(path, name),
+            **_load_elmer_elements(path, mesh_name),
         }
 
     tabulate_into_csv(f"{os.path.basename(os.path.abspath(path))}_profile.csv", res, parameters, parameter_values)

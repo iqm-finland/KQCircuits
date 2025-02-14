@@ -56,6 +56,10 @@ def produce_cross_section_mesh(json_data: dict[str, Any], msh_file: Path | str) 
         msh_file: mesh file name
     """
 
+    if Path(msh_file).exists():
+        print(f"Reusing existing mesh from {str(msh_file)}")
+        return
+
     # Initialize gmsh
     gmsh.initialize()
 
@@ -232,6 +236,7 @@ def produce_cross_section_sif_files(json_data: dict[str, Any], folder_path: Path
             f.write(content)
         return file_name
 
+    folder_path.mkdir(exist_ok=True, parents=True)
     sif_names = json_data["sif_names"]
 
     sif_files = [

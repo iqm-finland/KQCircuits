@@ -97,6 +97,7 @@ def coordinate_scaling(json_data: dict[str, Any]) -> float:
 def sif_common_header(
     json_data: dict[str, Any],
     folder_path: Path | str,
+    mesh_path: Path | str,
     angular_frequency: str | float | None = None,
     def_file: str | None = None,
     dim: int = 3,
@@ -109,10 +110,10 @@ def sif_common_header(
 
     """
     res = "Check Keywords Warn\n"
-    res += f"INCLUDE {folder_path}/mesh.names\n"
+    res += f"INCLUDE {mesh_path}/mesh.names\n"
     if def_file:
-        res += f"INCLUDE {folder_path}/{def_file}\n"
-    res += sif_block("Header", [f'Mesh DB "." "{folder_path}"', f'Results Directory "{folder_path}"'])
+        res += f"INCLUDE {mesh_path}/{def_file}\n"
+    res += sif_block("Header", [f'Mesh DB "." "{mesh_path}"', f'Results Directory "{folder_path}"'])
 
     if json_data.get("maximum_passes", 1) > 1:
         reset_adaptive_remesh_str = ["Reset Adaptive Mesh = Logical True"]
@@ -1005,8 +1006,14 @@ def sif_epr_3d(json_data: dict[str, Any], folder_path: Path, vtu_name: str | Pat
 
     # p_element_order==1 solver does not support capacitance bodies on sif Body Force sections
     c_matrix_output = json_data["p_element_order"] > 1
+    mesh_path = Path(json_data["mesh_name"])
     header = sif_common_header(
-        json_data, folder_path, angular_frequency=0, dim=3, constraint_modes_analysis=c_matrix_output
+        json_data,
+        folder_path,
+        mesh_path,
+        angular_frequency=0,
+        dim=3,
+        constraint_modes_analysis=c_matrix_output,
     )
     constants = sif_block("Constants", [f"Permittivity Of Vacuum = {epsilon_0}"])
 
@@ -1026,8 +1033,8 @@ def sif_epr_3d(json_data: dict[str, Any], folder_path: Path, vtu_name: str | Pat
         solver_ids=[1],
     )
 
-    mesh_bodies = read_mesh_bodies(folder_path)
-    mesh_boundaries = read_mesh_boundaries(folder_path)
+    mesh_bodies = read_mesh_bodies(mesh_path)
+    mesh_boundaries = read_mesh_boundaries(mesh_path)
 
     grounds = [n for n in mesh_bodies if n.startswith("ground")]
     signals = [n for n in mesh_bodies if n.startswith("signal")]
@@ -1158,8 +1165,8 @@ def sif_capacitance(
     """
 
     name = "capacitance0" if with_zero else "capacitance"
-
-    header = sif_common_header(json_data, folder_path, angular_frequency=angular_frequency, dim=dim)
+    mesh_path = Path(json_data["mesh_name"])
+    header = sif_common_header(json_data, folder_path, mesh_path, angular_frequency=angular_frequency, dim=dim)
     constants = sif_block("Constants", [f"Permittivity Of Vacuum = {epsilon_0}"])
 
     solvers = get_electrostatics_solver(
@@ -1180,7 +1187,7 @@ def sif_capacitance(
         keywords=["Calculate Electric Energy = True"] if dim == 2 else [],
     )
 
-    mesh_names = read_mesh_names(folder_path)
+    mesh_names = read_mesh_names(mesh_path)
     body_list = get_body_list(json_data, dim=dim, mesh_names=mesh_names)
     permittivity_list = get_permittivities(json_data, with_zero=with_zero, dim=dim, mesh_names=mesh_names)
 
@@ -1279,7 +1286,8 @@ def sif_inductance(
     Returns:
         elmer solver input file for inductance computation
     """
-    header = sif_common_header(json_data, folder_path, angular_frequency, circuit_definitions_file, dim=2)
+    mesh_path = Path(json_data["mesh_name"])
+    header = sif_common_header(json_data, folder_path, mesh_path, angular_frequency, circuit_definitions_file, dim=2)
     equations = get_equation(ordinate=1, solver_ids=[1, 2, 3])
 
     solvers = get_circuit_solver(ordinate=1, p_element_order=json_data["p_element_order"], exec_solver="Always")
@@ -1301,7 +1309,7 @@ def sif_inductance(
     solvers += get_save_data_solver(ordinate=6, result_file="inductance.dat")
 
     # Divide layers into different materials
-    mesh_names = read_mesh_names(folder_path)
+    mesh_names = read_mesh_names(mesh_path)
     signals = sorted(get_signals(json_data, dim=2, mesh_names=mesh_names))
     grounds = sorted(get_grounds(json_data, dim=2, mesh_names=mesh_names))
     body_list = get_body_list(json_data, dim=2, mesh_names=mesh_names)
@@ -1481,11 +1489,12 @@ def sif_wave_equation(
     metal_height = metal_heights[0]
 
     dim = 3
-    header = sif_common_header(json_data, folder_path, discontinuous_boundary=(use_av and metal_height == 0))
+    mesh_path = Path(json_data["mesh_name"])
+    header = sif_common_header(json_data, folder_path, mesh_path, discontinuous_boundary=(use_av and metal_height == 0))
     constants = sif_block("Constants", [f"Permittivity Of Vacuum = {epsilon_0}"])
 
     # Bodies and materials
-    mesh_names = read_mesh_names(folder_path)
+    mesh_names = read_mesh_names(mesh_path)
     body_list = get_body_list(json_data, dim=dim, mesh_names=mesh_names)
     permittivity_list = get_permittivities(json_data, with_zero=False, dim=dim, mesh_names=mesh_names)
 

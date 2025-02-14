@@ -89,9 +89,10 @@ workflow = {
     "run_elmer": True,
     "run_paraview": True,  # this is visual view of the results which can be removed to speed up the process
     "python_executable": "python",  # use 'kqclib' when using singularity image (you can also put a full path)
-    "elmer_n_processes": -1,  # -1 means all the physical cores
-    "elmer_n_threads": 1,  # number of omp threads
-    "gmsh_n_threads": -1,
+    "elmer_n_processes": 1,
+    "elmer_n_threads": 1,
+    "gmsh_n_threads": 1,
+    "n_workers": 10,  # Run maximum of 10 parallel simulations, each with 1 core/thread
 }
 
 mesh_size = {"global_max": 100, "ma_layer": 1, "ms_layer": 1, "sa_layer": 1, "ma_layer&ms_layer": [0.5e-3, 0.5e-3, 0.2]}

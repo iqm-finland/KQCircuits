@@ -128,10 +128,11 @@ if args.q:
 elmer_n_processes = workflow.get("elmer_n_processes", 1)
 
 tool = json_data["tool"]
+mesh_name = json_data["mesh_name"]
+msh_file = f"{mesh_name}.msh"
+
 if tool == "cross-section":
     # Generate mesh
-    msh_file = f"{name}.msh"
-
     if workflow.get("run_gmsh", True):
         produce_cross_section_mesh(json_data, path.joinpath(msh_file))
 
@@ -158,8 +159,6 @@ if tool == "cross-section":
 
 else:
     # Generate mesh
-    msh_file = f"{name}.msh"
-
     if workflow.get("run_gmsh", True):
         produce_mesh(json_data, path.joinpath(msh_file))
 
@@ -184,4 +183,4 @@ else:
         write_project_results_json(json_data, path, path.joinpath(msh_file))
 
 if args.write_versions_file:
-    write_simulation_machine_versions_file(path, json_data["name"])
+    write_simulation_machine_versions_file(path)

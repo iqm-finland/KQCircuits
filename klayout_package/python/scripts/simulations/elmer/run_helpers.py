@@ -35,7 +35,7 @@ if has_tqdm:
     from tqdm import tqdm
 
 
-def write_simulation_machine_versions_file(path: Path, name: str) -> None:
+def write_simulation_machine_versions_file(path: Path) -> None:
     """
     Writes file SIMULATION_MACHINE_VERSIONS into given file path.
     """
@@ -44,7 +44,7 @@ def write_simulation_machine_versions_file(path: Path, name: str) -> None:
     versions["python"] = sys.version_info
 
     gmsh_versions_list = []
-    with open(path.joinpath("log_files").joinpath(name + ".Gmsh.log"), encoding="utf-8") as f:
+    with open(next(path.joinpath("log_files").glob("*.Gmsh.log")), encoding="utf-8") as f:
         gmsh_log = f.readlines()
         gmsh_versions_list = [line.replace("\n", "") for line in gmsh_log if "ersion" in line]
 
@@ -78,6 +78,10 @@ def write_simulation_machine_versions_file(path: Path, name: str) -> None:
 
 def run_elmer_grid(msh_path: Path | str, n_processes: int, exec_path_override: Path | None = None) -> None:
     """Run ElmerGrid to process meshes from .msh format to Elmer's mesh format. Partitions mesh if n_processes > 1"""
+    mesh_dir = Path(msh_path).stem
+    if Path(mesh_dir).is_dir():
+        print(f"Reusing existing mesh from {str(mesh_dir)}/")
+        return
     elmergrid_executable = shutil.which("ElmerGrid")
     if elmergrid_executable is not None:
         subprocess.check_call([elmergrid_executable, "14", "2", msh_path], cwd=exec_path_override)
@@ -87,7 +91,7 @@ def run_elmer_grid(msh_path: Path | str, n_processes: int, exec_path_override: P
                     elmergrid_executable,
                     "2",
                     "2",
-                    Path(msh_path).stem + "/",
+                    mesh_dir + "/",
                     "-metis",
                     str(n_processes),
                     "4",
