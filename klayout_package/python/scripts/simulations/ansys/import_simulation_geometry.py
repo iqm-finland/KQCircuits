@@ -223,10 +223,17 @@ if pec_sheets:
         )
 
 
-# Subtract objects from others
-for lname, ldata in layers.items():
-    if "subtract" in ldata:
-        subtract(oEditor, objects[lname], [o for n in ldata["subtract"] for o in objects[n]], True)
+# Subtract objects from others. Each tool layer subtraction is performed before it's used as tool for other subtraction.
+need_subtraction = [n for n, d in layers.items() if "subtract" in d]
+while need_subtraction:
+    for name in need_subtraction:
+        if not any(s in need_subtraction for s in layers[name]["subtract"]):
+            subtract(oEditor, objects[name], [o for n in layers[name]["subtract"] for o in objects[n]], True)
+            need_subtraction = [s for s in need_subtraction if s != name]
+            break
+    else:
+        oDesktop.AddMessage("", "", 0, "Encountered circular subtractions in layers {}.".format(need_subtraction))
+        break
 
 
 # Create ports or nets
