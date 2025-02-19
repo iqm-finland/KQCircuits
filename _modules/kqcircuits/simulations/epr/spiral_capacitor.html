@@ -606,7 +606,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.simulations.epr.smooth_capacitor.html">kqcircuits.simulations.epr.smooth_capacitor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.simulations.epr.spiral_capacitor.html">kqcircuits.simulations.epr.spiral_capacitor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.simulations.epr.swissmon.html">kqcircuits.simulations.epr.swissmon</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.simulations.epr.utils.html">kqcircuits.simulations.epr.utils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.simulations.epr.util.html">kqcircuits.simulations.epr.util</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.simulations.export.html">kqcircuits.simulations.export</a><ul>
@@ -1004,9 +1004,9 @@
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.epr.utils</span> <span class="kn">import</span> <span class="n">in_gui</span><span class="p">,</span> <span class="n">EPRTarget</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.partition_region</span> <span class="kn">import</span> <span class="n">PartitionRegion</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.finger_capacitor_square</span> <span class="kn">import</span> <span class="n">eval_a2</span><span class="p">,</span> <span class="n">eval_b2</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.simulations.epr.util</span> <span class="kn">import</span> <span class="n">get_mer_z</span><span class="p">,</span> <span class="n">EPRTarget</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.simulations.partition_region</span> <span class="kn">import</span> <span class="n">PartitionRegion</span>
 
 <span class="n">vertical_dimension</span> <span class="o">=</span> <span class="mf">1.0</span>
 <span class="n">metal_edge_dimension</span> <span class="o">=</span> <span class="mf">1.0</span>
@@ -1094,11 +1094,6 @@
 
     <span class="n">base_rf</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]</span>
 
-    <span class="n">z_me</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">in_gui</span><span class="p">(</span><span class="n">simulation</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_stack</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">z_me</span> <span class="o">=</span> <span class="o">-</span><span class="n">simulation</span><span class="o">.</span><span class="n">substrate_height</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">simulation</span><span class="o">.</span><span class="n">chip_distance</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">simulation</span><span class="o">.</span><span class="n">metal_height</span>
-
     <span class="n">gaps</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">begin_shapes_rec</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">)))</span>
     <span class="n">top_most</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">center_most</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1115,6 +1110,7 @@
     <span class="n">center_gap_len</span> <span class="o">=</span> <span class="n">center_dir</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span>
     <span class="n">center_dir</span> <span class="o">/=</span> <span class="n">center_gap_len</span>
     <span class="n">half_cut_len</span> <span class="o">=</span> <span class="mf">25.0</span>
+    <span class="n">z_me</span> <span class="o">=</span> <span class="n">get_mer_z</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">result</span> <span class="o">=</span> <span class="p">{</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">fingergmer&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">&quot;p1&quot;</span><span class="p">:</span> <span class="n">center_most</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">finger_width</span> <span class="o">*</span> <span class="mf">0.9</span> <span class="o">*</span> <span class="n">center_dir</span><span class="p">,</span>

@@ -12,4 +12,4 @@ kqcircuits.simulations.epr
    kqcircuits.simulations.epr.smooth_capacitor
    kqcircuits.simulations.epr.spiral_capacitor
    kqcircuits.simulations.epr.swissmon
-   kqcircuits.simulations.epr.utils
+   kqcircuits.simulations.epr.util

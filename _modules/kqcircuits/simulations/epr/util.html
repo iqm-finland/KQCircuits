@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.epr.utils &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.simulations.epr.util &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
@@ -606,7 +606,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.simulations.epr.smooth_capacitor.html">kqcircuits.simulations.epr.smooth_capacitor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.simulations.epr.spiral_capacitor.html">kqcircuits.simulations.epr.spiral_capacitor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.simulations.epr.swissmon.html">kqcircuits.simulations.epr.swissmon</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.simulations.epr.utils.html">kqcircuits.simulations.epr.utils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.simulations.epr.util.html">kqcircuits.simulations.epr.util</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.simulations.export.html">kqcircuits.simulations.export</a><ul>
@@ -971,7 +971,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">kqcircuits.simulations.epr.utils</li>
+      <li class="breadcrumb-item active">kqcircuits.simulations.epr.util</li>
 
 
       <li class="wy-breadcrumbs-aside">
@@ -984,7 +984,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for kqcircuits.simulations.epr.utils</h1><div class="highlight"><pre>
+  <h1>Source code for kqcircuits.simulations.epr.util</h1><div class="highlight"><pre>
 <span></span><span class="c1"># This code is part of KQCircuits</span>
 <span class="c1"># Copyright (C) 2024 IQM Finland Oy</span>
 <span class="c1">#</span>
@@ -1003,6 +1003,7 @@
 <span class="c1"># Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)</span>
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
 
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
@@ -1012,7 +1013,7 @@
 
 
 <div class="viewcode-block" id="in_gui">
-<a class="viewcode-back" href="../../../../api/kqcircuits.simulations.epr.utils.html#kqcircuits.simulations.epr.utils.in_gui">[docs]</a>
+<a class="viewcode-back" href="../../../../api/kqcircuits.simulations.epr.util.html#kqcircuits.simulations.epr.util.in_gui">[docs]</a>
 <span class="k">def</span> <span class="nf">in_gui</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">EPRTarget</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;``partition_regions`` and ``correction_cuts`` can be called for elements</span>
 <span class="sd">    when KLayout is in GUI mode, in which case element is not of type Simulation.</span>
@@ -1025,8 +1026,26 @@
 
 
 
+<div class="viewcode-block" id="get_mer_z">
+<a class="viewcode-back" href="../../../../api/kqcircuits.simulations.epr.util.html#kqcircuits.simulations.epr.util.get_mer_z">[docs]</a>
+<span class="k">def</span> <span class="nf">get_mer_z</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">EPRTarget</span><span class="p">,</span> <span class="n">face_base</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Determines z position of a MER box postitioned at the base of the face</span>
+<span class="sd">    given ``face_base`` as face id string.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">in_gui</span><span class="p">(</span><span class="n">element</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="n">z_levels</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">face_z_levels</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">face_base</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">z_levels</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Couldn&#39;t get z coordinate of face </span><span class="si">{</span><span class="n">face_base</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="s2">&quot;please check how &#39;face_stack&#39; is defined. Defaulting to 0 for MER box.&quot;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="n">z_levels</span><span class="p">[</span><span class="n">face_base</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+
 <div class="viewcode-block" id="extract_child_simulation">
-<a class="viewcode-back" href="../../../../api/kqcircuits.simulations.epr.utils.html#kqcircuits.simulations.epr.utils.extract_child_simulation">[docs]</a>
+<a class="viewcode-back" href="../../../../api/kqcircuits.simulations.epr.util.html#kqcircuits.simulations.epr.util.extract_child_simulation">[docs]</a>
 <span class="k">def</span> <span class="nf">extract_child_simulation</span><span class="p">(</span>
     <span class="n">simulation</span><span class="p">:</span> <span class="n">EPRTarget</span><span class="p">,</span>
     <span class="n">refpoint_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1076,8 +1095,20 @@
         <span class="k">if</span> <span class="n">refpoint_prefix</span>
         <span class="k">else</span> <span class="nb">dict</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">)</span>
     <span class="p">)</span>
-    <span class="k">if</span> <span class="n">needed_parameters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">child_simulation</span>
+    <span class="c1"># Add default simulation parameters that should always be included</span>
+    <span class="n">needed_parameters</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
+        <span class="n">needed_parameters</span>
+        <span class="o">+</span> <span class="p">[</span>
+            <span class="s2">&quot;face_ids&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;face_stack&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;lower_box_height&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;upper_box_height&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;substrate_height&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;metal_height&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;dielectric_height&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;chip_distance&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
     <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">needed_parameters</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">parameter_remap_function</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">parameter_remap_function</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">parameter</span><span class="p">)</span>

@@ -606,7 +606,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.epr.smooth_capacitor.html">kqcircuits.simulations.epr.smooth_capacitor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.epr.spiral_capacitor.html">kqcircuits.simulations.epr.spiral_capacitor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.epr.swissmon.html">kqcircuits.simulations.epr.swissmon</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.epr.utils.html">kqcircuits.simulations.epr.utils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.epr.util.html">kqcircuits.simulations.epr.util</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.export.html">kqcircuits.simulations.export</a><ul>
@@ -1052,10 +1052,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_layer_priority</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_layer_change_map</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="c1"># TODO: This member adjusts the y position of cross section shapes such that they match exactly</span>
-        <span class="c1"># the cross section geometry generated with XSection. Remove this member eventually.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_this_to_xor_with_master</span> <span class="o">=</span> <span class="mi">0</span>
-
 <div class="viewcode-block" id="CrossSectionProfile.level">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cross_section_profile.html#kqcircuits.simulations.export.cross_section.cross_section_profile.CrossSectionProfile.level">[docs]</a>
     <span class="k">def</span> <span class="nf">level</span><span class="p">(</span>
@@ -1233,7 +1229,6 @@
 <span class="k">def</span> <span class="nf">get_single_face_cross_section_profile</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">CrossSectionProfile</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Standard KQC single face cross section profile&quot;&quot;&quot;</span>
     <span class="n">profile</span> <span class="o">=</span> <span class="n">CrossSectionProfile</span><span class="p">()</span>
-    <span class="n">profile</span><span class="o">.</span><span class="n">add_this_to_xor_with_master</span> <span class="o">=</span> <span class="mf">0.0</span>  <span class="c1"># TODO: remove this</span>
     <span class="c1"># Add standard 1t1 face</span>
     <span class="n">profile</span><span class="o">.</span><span class="n">add_face</span><span class="p">(</span><span class="s2">&quot;1t1&quot;</span><span class="p">)</span>
     <span class="c1"># Define levels for bottom substrate</span>
@@ -1261,7 +1256,6 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Standard KQC flip chip cross section profile&quot;&quot;&quot;</span>
     <span class="c1"># Take single face profile and add stuff on top of it</span>
     <span class="n">profile</span> <span class="o">=</span> <span class="n">get_single_face_cross_section_profile</span><span class="p">()</span>
-    <span class="n">profile</span><span class="o">.</span><span class="n">add_this_to_xor_with_master</span> <span class="o">=</span> <span class="o">-</span><span class="mf">383.4</span>  <span class="c1"># TODO: remove this</span>
     <span class="c1"># Add standard 2b1 face</span>
     <span class="n">profile</span><span class="o">.</span><span class="n">add_face</span><span class="p">(</span><span class="s2">&quot;2b1&quot;</span><span class="p">)</span>
     <span class="c1"># Define levels for top substrate</span>

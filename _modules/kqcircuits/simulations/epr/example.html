@@ -606,7 +606,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.simulations.epr.smooth_capacitor.html">kqcircuits.simulations.epr.smooth_capacitor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.simulations.epr.spiral_capacitor.html">kqcircuits.simulations.epr.spiral_capacitor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.simulations.epr.swissmon.html">kqcircuits.simulations.epr.swissmon</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.simulations.epr.utils.html">kqcircuits.simulations.epr.utils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.simulations.epr.util.html">kqcircuits.simulations.epr.util</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.simulations.export.html">kqcircuits.simulations.export</a><ul>
@@ -1005,7 +1005,7 @@
 
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.epr.utils</span> <span class="kn">import</span> <span class="n">extract_child_simulation</span><span class="p">,</span> <span class="n">EPRTarget</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.simulations.epr.util</span> <span class="kn">import</span> <span class="n">extract_child_simulation</span><span class="p">,</span> <span class="n">EPRTarget</span><span class="p">,</span> <span class="n">get_mer_z</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.partition_region</span> <span class="kn">import</span> <span class="n">PartitionRegion</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
 
@@ -1109,21 +1109,23 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        Configuration dict of correction cuts used by ``get_epr_correction_simulations``</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># MER box z position determined by face_ids[0] face</span>
+    <span class="n">z_me</span> <span class="o">=</span> <span class="n">get_mer_z</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">return</span> <span class="p">{</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">1region&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">&quot;p1&quot;</span><span class="p">:</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">30</span><span class="p">),</span>
             <span class="s2">&quot;p2&quot;</span><span class="p">:</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
-            <span class="s2">&quot;metal_edges&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">}],</span>
+            <span class="s2">&quot;metal_edges&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="n">z_me</span><span class="p">}],</span>
         <span class="p">},</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">2region&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">&quot;p1&quot;</span><span class="p">:</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;coupler&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="o">-</span><span class="mi">30</span><span class="p">),</span>
             <span class="s2">&quot;p2&quot;</span><span class="p">:</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;coupler&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
-            <span class="s2">&quot;metal_edges&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">}],</span>
+            <span class="s2">&quot;metal_edges&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="n">z_me</span><span class="p">}],</span>
         <span class="p">},</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">3region&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">&quot;p1&quot;</span><span class="p">:</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;ro&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="mi">30</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">b</span><span class="p">),</span>
             <span class="s2">&quot;p2&quot;</span><span class="p">:</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;ro&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">b</span><span class="p">),</span>
-            <span class="s2">&quot;metal_edges&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">}],</span>
+            <span class="s2">&quot;metal_edges&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="n">z_me</span><span class="p">}],</span>
         <span class="p">},</span>
     <span class="p">}</span></div>
 

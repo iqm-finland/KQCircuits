@@ -1,0 +1,12 @@
+:github_url: hide
+
+kqcircuits.simulations.epr.util
+===============================
+
+.. automodule:: kqcircuits.simulations.epr.util
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.simulations.epr.util
+.. image:: ../pcell_images/kqcircuits.simulations.epr.util.png

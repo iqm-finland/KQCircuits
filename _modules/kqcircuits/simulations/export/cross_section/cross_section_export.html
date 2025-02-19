@@ -606,7 +606,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.epr.smooth_capacitor.html">kqcircuits.simulations.epr.smooth_capacitor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.epr.spiral_capacitor.html">kqcircuits.simulations.epr.spiral_capacitor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.epr.swissmon.html">kqcircuits.simulations.epr.swissmon</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.epr.utils.html">kqcircuits.simulations.epr.utils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.epr.util.html">kqcircuits.simulations.epr.util</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.export.html">kqcircuits.simulations.export</a><ul>
@@ -1612,15 +1612,7 @@
         <span class="n">level</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">get_level</span><span class="p">(</span><span class="n">layer_info</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">simulation</span><span class="p">)</span>
         <span class="n">output_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="n">segments</span><span class="p">:</span>
-            <span class="c1"># TODO: remove add_this_to_xor_with_master</span>
-            <span class="n">output_region</span> <span class="o">+=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span>
-                <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span>
-                    <span class="n">start</span><span class="p">,</span>
-                    <span class="nb">min</span><span class="p">(</span><span class="n">level</span><span class="p">)</span> <span class="o">+</span> <span class="n">profile</span><span class="o">.</span><span class="n">add_this_to_xor_with_master</span><span class="p">,</span>
-                    <span class="n">end</span><span class="p">,</span>
-                    <span class="nb">max</span><span class="p">(</span><span class="n">level</span><span class="p">)</span> <span class="o">+</span> <span class="n">profile</span><span class="o">.</span><span class="n">add_this_to_xor_with_master</span><span class="p">,</span>
-                <span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
-            <span class="p">)</span>
+            <span class="n">output_region</span> <span class="o">+=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">level</span><span class="p">),</span> <span class="n">end</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">level</span><span class="p">))</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
         <span class="n">raw_regions</span><span class="p">[</span><span class="n">layer_info</span><span class="p">]</span> <span class="o">=</span> <span class="n">output_region</span>
 
     <span class="c1"># Process layers by profile priority, where in case of shape overlap preserve higher priority layer</span>
