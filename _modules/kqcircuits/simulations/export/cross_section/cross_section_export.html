@@ -1186,43 +1186,6 @@
 
 
 
-<div class="viewcode-block" id="separate_signal_layer_shapes">
-<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cross_section_export.html#kqcircuits.simulations.export.cross_section.cross_section_export.separate_signal_layer_shapes">[docs]</a>
-<span class="k">def</span> <span class="nf">separate_signal_layer_shapes</span><span class="p">(</span><span class="n">simulation</span><span class="p">:</span> <span class="n">Simulation</span><span class="p">,</span> <span class="n">sort_key</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">pya</span><span class="o">.</span><span class="n">Shape</span><span class="p">],</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Separate shapes in signal layer to their own dedicated signal layers for each face</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        simulation: A Simulation object where the layer will be separated</span>
-<span class="sd">        sort_key: A function that, given a Shape object, returns a number.</span>
-<span class="sd">            Shapes are sorted according to the number in increasing order.</span>
-<span class="sd">            If None, picks a point in shape polygon, sorts points top to bottom then tie-breaks left to right</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">sort_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-
-        <span class="k">def</span> <span class="nf">sort_key</span><span class="p">(</span><span class="n">shape</span><span class="p">):</span>
-            <span class="n">point_in_shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">polygon</span><span class="o">.</span><span class="n">each_point_hull</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="n">point_in_shape</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">point_in_shape</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
-
-    <span class="n">signal_index</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="n">gen_free_layer_slots</span> <span class="o">=</span> <span class="n">free_layer_slots</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">:</span>
-        <span class="n">signal_layer</span> <span class="o">=</span> <span class="n">find_layer_by_name</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">face</span><span class="si">}</span><span class="s2">_signal&quot;</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">signal_layer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">continue</span>
-        <span class="n">signal_layer_idx</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">signal_layer</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">shape</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">each_shape</span><span class="p">(</span><span class="n">signal_layer_idx</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="n">sort_key</span><span class="p">):</span>
-            <span class="c1"># Reuse layer if it already used in layout</span>
-            <span class="n">signal_layer</span> <span class="o">=</span> <span class="n">find_layer_by_name</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">face</span><span class="si">}</span><span class="s2">_signal_</span><span class="si">{</span><span class="n">signal_index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="p">)</span>
-            <span class="c1"># If no such layer, find next available layer index</span>
-            <span class="k">if</span> <span class="n">signal_layer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">layer_index</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">gen_free_layer_slots</span><span class="p">)</span>
-                <span class="n">signal_layer</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayerInfo</span><span class="p">(</span><span class="n">layer_index</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">face</span><span class="si">}</span><span class="s2">_signal_</span><span class="si">{</span><span class="n">signal_index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">signal_layer</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
-            <span class="n">signal_index</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">signal_layer_idx</span><span class="p">)</span></div>
-
-
-
 <div class="viewcode-block" id="find_layer_by_name">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cross_section_export.html#kqcircuits.simulations.export.cross_section.cross_section_export.find_layer_by_name">[docs]</a>
 <span class="k">def</span> <span class="nf">find_layer_by_name</span><span class="p">(</span><span class="n">layer_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">layout</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Layout</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayerInfo</span><span class="p">:</span>

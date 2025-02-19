@@ -1074,7 +1074,6 @@
         <span class="n">capacitance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">face</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">junction</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">signal_layer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;signal&quot;</span><span class="p">,</span>
         <span class="n">etch_width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">floating</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
@@ -1089,15 +1088,12 @@
 <span class="sd">            capacitance: Capacitance of the element. Given in Farads (:math:`\\text{F}`).</span>
 <span class="sd">            face: Integer-valued face index for the port.</span>
 <span class="sd">            junction: Whether this port models a SQUID/Junction. Used in EPR calculations.</span>
-<span class="sd">            signal_layer: Manual override for simulation signal layer.</span>
-<span class="sd">                May be used to set ports across the ground layer with ``ground``.</span>
 <span class="sd">            etch_width: Width of a trace between signal_location and ground_location, on which the metal is etched away.</span>
 <span class="sd">                Useful when adding a lumped port on a waveguide.</span>
 <span class="sd">            floating: activate floating port -&gt; does not force &quot;ground side&quot; to ground.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="n">resistance</span><span class="p">,</span> <span class="n">reactance</span><span class="p">,</span> <span class="n">inductance</span><span class="p">,</span> <span class="n">capacitance</span><span class="p">,</span> <span class="n">face</span><span class="p">,</span> <span class="n">junction</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">signal_location</span> <span class="o">=</span> <span class="n">signal_location</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">signal_layer</span> <span class="o">=</span> <span class="n">signal_layer</span>
         <span class="k">if</span> <span class="n">ground_location</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ground_location</span> <span class="o">=</span> <span class="n">ground_location</span>
         <span class="k">if</span> <span class="n">etch_width</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>

@@ -1036,22 +1036,6 @@ Consider setting non-zero value when using oxide layers with &lt; 1e-3 layer thi
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="kqcircuits.simulations.export.cross_section.cross_section_export.separate_signal_layer_shapes">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.cross_section.cross_section_export.</span></span><span class="sig-name descname"><span class="pre">separate_signal_layer_shapes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><span class="pre">Simulation</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Shape</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/cross_section/cross_section_export.html#separate_signal_layer_shapes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.cross_section.cross_section_export.separate_signal_layer_shapes" title="Link to this definition"></a></dt>
-<dd><p>Separate shapes in signal layer to their own dedicated signal layers for each face</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>simulation</strong> – A Simulation object where the layer will be separated</p></li>
-<li><p><strong>sort_key</strong> – A function that, given a Shape object, returns a number.
-Shapes are sorted according to the number in increasing order.
-If None, picks a point in shape polygon, sorts points top to bottom then tie-breaks left to right</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.simulations.export.cross_section.cross_section_export.find_layer_by_name">
 <span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.cross_section.cross_section_export.</span></span><span class="sig-name descname"><span class="pre">find_layer_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Layout</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">LayerInfo</span></span></span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/cross_section/cross_section_export.html#find_layer_by_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.cross_section.cross_section_export.find_layer_by_name" title="Link to this definition"></a></dt>
 <dd><p>Returns layerinfo if there already is a layer by layer_name in layout. None if no such layer exists</p>
