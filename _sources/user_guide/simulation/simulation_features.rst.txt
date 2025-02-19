@@ -152,9 +152,7 @@ and call the :func:`~kqcircuits.simulations.export.elmer.elmer_export.export_elm
 An example for simulating coplanar-waveguide cross-section can be found in
 :git_url:`klayout_package/python/scripts/simulations/cpw_cross_section_sim.py`.
 
-There is an additional ``Xsection`` tool to create cross-sectional geometries out of the x-y-layouts.
-The tool is described in more details in :ref:`Creating cross section images` and an example simulation can be found in
-:git_url:`klayout_package/python/scripts/simulations/waveguides_sim_xsection.py`.
+The cross sections can be generated from arbitrary geometries. See more details in :ref:`cross_sections`.
 
 .. _py-epr:
 

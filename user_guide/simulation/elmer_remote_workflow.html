@@ -25,7 +25,7 @@
     <link rel="author" title="About these documents" href="../../about.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="General Structure and Miscellaneous Utilities" href="../file_system_and_utilities.html" />
+    <link rel="next" title="Cross sections" href="../cross_section.html" />
     <link rel="prev" title="Run and export in one line" href="export_and_run.html" /> 
 </head>
 
@@ -183,6 +183,20 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Elmer remote simulations workflow</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../cross_section.html">Cross sections</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cross_section.html#creating-cross-sections-with-kqcircuits">Creating cross sections with KQCircuits</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cross_section.html#in-gui">In GUI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cross_section.html#in-kqc-code">In KQC code</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cross_section.html#xsection-tool">XSection tool</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cross_section.html#klayout-gui-xsection-tool">KLayout GUI XSection tool</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cross_section.html#xsection-call-in-kqc-code">XSection call in KQC code</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cross_section.html#process-files-xs">Process files (.xs)</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../file_system_and_utilities.html">General Structure and Miscellaneous Utilities</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../file_system_and_utilities.html#file-system-hierarchy">File system hierarchy</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../file_system_and_utilities.html#miscellaneous-utilities">Miscellaneous Utilities</a></li>
@@ -196,12 +210,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../configuration.html#adding-a-new-face">Adding a new face</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../xsection.html">Creating cross section images</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../xsection.html#klayout-gui-xsection-tool">KLayout GUI XSection tool</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../xsection.html#xsection-call-in-kqc-code">XSection call in KQC code</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../xsection.html#process-files-xs">Process files (.xs)</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../terminology.html">Terminology</a></li>
@@ -606,9 +614,9 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.simulations.export.html">kqcircuits.simulations.export</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../api/kqcircuits.simulations.export.ansys.html">kqcircuits.simulations.export.ansys</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/kqcircuits.simulations.export.cross_section.html">kqcircuits.simulations.export.cross_section</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/kqcircuits.simulations.export.elmer.html">kqcircuits.simulations.export.elmer</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/kqcircuits.simulations.export.sonnet.html">kqcircuits.simulations.export.sonnet</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../api/kqcircuits.simulations.export.xsection.html">kqcircuits.simulations.export.xsection</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/kqcircuits.simulations.export.export_and_run.html">kqcircuits.simulations.export.export_and_run</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/kqcircuits.simulations.export.export_singularity.html">kqcircuits.simulations.export.export_singularity</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/kqcircuits.simulations.export.remote_export_and_run.html">kqcircuits.simulations.export.remote_export_and_run</a></li>
@@ -1040,7 +1048,7 @@ can be exported and only exported simulations from <code class="docutils literal
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="export_and_run.html" class="btn btn-neutral float-left" title="Run and export in one line" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../file_system_and_utilities.html" class="btn btn-neutral float-right" title="General Structure and Miscellaneous Utilities" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../cross_section.html" class="btn btn-neutral float-right" title="Cross sections" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

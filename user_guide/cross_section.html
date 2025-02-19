@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Creating cross section images &mdash; KQCircuits  documentation</title>
+  <title>Cross sections &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
@@ -25,8 +25,8 @@
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Terminology" href="terminology.html" />
-    <link rel="prev" title="Custom configuration" href="configuration.html" /> 
+    <link rel="next" title="General Structure and Miscellaneous Utilities" href="file_system_and_utilities.html" />
+    <link rel="prev" title="Elmer remote simulations workflow" href="simulation/elmer_remote_workflow.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -183,6 +183,20 @@
 <li class="toctree-l3"><a class="reference internal" href="simulation/elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
 </ul>
 </li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Cross sections</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#creating-cross-sections-with-kqcircuits">Creating cross sections with KQCircuits</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#in-gui">In GUI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#in-kqc-code">In KQC code</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#xsection-tool">XSection tool</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#klayout-gui-xsection-tool">KLayout GUI XSection tool</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xsection-call-in-kqc-code">XSection call in KQC code</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#process-files-xs">Process files (.xs)</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="file_system_and_utilities.html">General Structure and Miscellaneous Utilities</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="file_system_and_utilities.html#file-system-hierarchy">File system hierarchy</a></li>
 <li class="toctree-l3"><a class="reference internal" href="file_system_and_utilities.html#miscellaneous-utilities">Miscellaneous Utilities</a></li>
@@ -196,12 +210,6 @@
 <li class="toctree-l4"><a class="reference internal" href="configuration.html#adding-a-new-face">Adding a new face</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Creating cross section images</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#klayout-gui-xsection-tool">KLayout GUI XSection tool</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#xsection-call-in-kqc-code">XSection call in KQC code</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#process-files-xs">Process files (.xs)</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="terminology.html">Terminology</a></li>
@@ -606,9 +614,9 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.simulations.export.html">kqcircuits.simulations.export</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.simulations.export.ansys.html">kqcircuits.simulations.export.ansys</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.simulations.export.cross_section.html">kqcircuits.simulations.export.cross_section</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.simulations.export.elmer.html">kqcircuits.simulations.export.elmer</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.simulations.export.sonnet.html">kqcircuits.simulations.export.sonnet</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.simulations.export.xsection.html">kqcircuits.simulations.export.xsection</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.simulations.export.export_and_run.html">kqcircuits.simulations.export.export_and_run</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.simulations.export.export_singularity.html">kqcircuits.simulations.export.export_singularity</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.simulations.export.remote_export_and_run.html">kqcircuits.simulations.export.remote_export_and_run</a></li>
@@ -966,11 +974,11 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="index.html">User Guide</a></li>
-      <li class="breadcrumb-item active">Creating cross section images</li>
+      <li class="breadcrumb-item active">Cross sections</li>
 
 
       <li class="wy-breadcrumbs-aside">
-              <a href="https://github.com/iqm-finland/KQCircuits/blob/main/docs/user_guide/xsection.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/iqm-finland/KQCircuits/blob/main/docs/user_guide/cross_section.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
 
 
@@ -980,34 +988,56 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="creating-cross-section-images">
-<span id="id1"></span><h1>Creating cross section images<a class="headerlink" href="#creating-cross-section-images" title="Link to this heading"></a></h1>
-<p>Vertical cross-section images of layouts can be created using the
-<a class="reference external" href="https://klayoutmatthias.github.io/xsection/">XSection plugin</a> for KLayout.
+  <section id="cross-sections">
+<span id="id1"></span><h1>Cross sections<a class="headerlink" href="#cross-sections" title="Link to this heading"></a></h1>
+<p>It is possible to generate vertical cross section geometries from an arbitrary KQC layout,
+by specifying two points that form a line from which a cross-section is formed.
+Following are the ways to generate a cross section.</p>
+<section id="creating-cross-sections-with-kqcircuits">
+<h2>Creating cross sections with KQCircuits<a class="headerlink" href="#creating-cross-sections-with-kqcircuits" title="Link to this heading"></a></h2>
+<section id="in-gui">
+<h3>In GUI<a class="headerlink" href="#in-gui" title="Link to this heading"></a></h3>
+<p>There is currently no convenient way to create cross sections using this method in KLayout GUI,
+therefore its better to use the XSection tool for this purpose.</p>
+</section>
+<section id="in-kqc-code">
+<h3>In KQC code<a class="headerlink" href="#in-kqc-code" title="Link to this heading"></a></h3>
+<p><a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits/simulations/export/cross_section/cross_section_export.py">klayout_package/python/kqcircuits/simulations/export/cross_section/cross_section_export.py</a> includes
+a <code class="docutils literal notranslate"><span class="pre">create_cross_sections_from_simulations</span></code> function. Given list of <code class="docutils literal notranslate"><span class="pre">Simulation</span></code> instances and two <code class="docutils literal notranslate"><span class="pre">DPoint</span></code>
+values, a list of <code class="docutils literal notranslate"><span class="pre">CrossSectionSimulation</span></code> objects will be created to a separate layout. See
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations/waveguides_sim_cross_section.py">klayout_package/python/scripts/simulations/waveguides_sim_cross_section.py</a> for an example use case.</p>
+<p>Cross sections are an essential part in calculating EPR for elements. See docstring in
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits/simulations/export/cross_section/epr_correction_export.py">klayout_package/python/kqcircuits/simulations/export/cross_section/epr_correction_export.py</a>
+and <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations/swissmon_epr_sim.py">klayout_package/python/scripts/simulations/swissmon_epr_sim.py</a> for an example use case.</p>
+</section>
+</section>
+<section id="xsection-tool">
+<h2>XSection tool<a class="headerlink" href="#xsection-tool" title="Link to this heading"></a></h2>
+<p>XSection tool is an external plug-in developed by KLayout developer.
 To use it, install the XSection plugin from <code class="docutils literal notranslate"><span class="pre">KLayout</span> <span class="pre">-&gt;</span> <span class="pre">Tools</span> <span class="pre">-&gt;</span> <span class="pre">Manage</span> <span class="pre">packages</span></code>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>XSection only works with the default KLayout setup, secondary environments are not yet supported.</p>
-</div>
 <section id="klayout-gui-xsection-tool">
-<h2>KLayout GUI XSection tool<a class="headerlink" href="#klayout-gui-xsection-tool" title="Link to this heading"></a></h2>
+<h3>KLayout GUI XSection tool<a class="headerlink" href="#klayout-gui-xsection-tool" title="Link to this heading"></a></h3>
 <p>Once XSection plugin is installed in KLayout, a “XSection” ruler tool is available
 as a scroll option for the Ruler tool.</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li><p>Use the Ruler tool in KLayout to choose the cuts along which the vertical
-cross-sections are created. Select the “XSection” ruler type if you want to
-use other rulers for measurements.</p></li>
-<li><p>To create the cross-sections: <code class="docutils literal notranslate"><span class="pre">Tools</span> <span class="pre">-&gt;</span> <span class="pre">XSection</span> <span class="pre">scripts</span> <span class="pre">-&gt;</span> <span class="pre">Run</span> <span class="pre">script</span> <span class="pre">-&gt;</span>
-<span class="pre">example.xs</span></code></p></li>
+<li><p>Use the “XSection” Ruler tool in KLayout to choose the cuts along which the vertical
+cross-sections are created</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Tools</span> <span class="pre">-&gt;</span> <span class="pre">XSection</span> <span class="pre">scripts</span> <span class="pre">-&gt;</span> <span class="pre">Run</span> <span class="pre">script</span> <span class="pre">-&gt;</span> <span class="pre">example.xs</span></code> will open another layout
+displaying the cross section geometry.</p></li>
 </ol>
 </div></blockquote>
 </section>
 <section id="xsection-call-in-kqc-code">
-<h2>XSection call in KQC code<a class="headerlink" href="#xsection-call-in-kqc-code" title="Link to this heading"></a></h2>
+<h3>XSection call in KQC code<a class="headerlink" href="#xsection-call-in-kqc-code" title="Link to this heading"></a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The use of XSection tool within KQCircuits code is deprecated, it is recommended
+to use internal KQCircuits utilities instead to generate cross sections</p>
+</div>
 <p>XSection plugin can be called from python code to automate cross-section geometry
 generation for simulation files.
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits/simulations/export/xsection/xsection_export.py">klayout_package/python/kqcircuits/simulations/export/xsection/xsection_export.py</a> includes</p>
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits/simulations/export/cross_section/xsection_export.py">klayout_package/python/kqcircuits/simulations/export/cross_section/xsection_export.py</a> includes</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">create_xsections_from_simulations</span></code>, a high level method to take a cross-section
@@ -1018,8 +1048,6 @@ If <a class="reference external" href="https://github.com/iqm-finland/KQCircuits
 provide a path to the parameters json file as well.</p></li>
 </ul>
 </div></blockquote>
-<p>An example of using XSection tool to produce cross-section simulation files is
-demonstrated in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations/waveguides_sim_xsection.py">klayout_package/python/scripts/simulations/waveguides_sim_xsection.py</a></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>XSection 1.7 does not work with KQCircuits. If you have such version installed, please
@@ -1027,7 +1055,7 @@ update to the newest release of XSection.</p>
 </div>
 </section>
 <section id="process-files-xs">
-<h2>Process files (.xs)<a class="headerlink" href="#process-files-xs" title="Link to this heading"></a></h2>
+<h3>Process files (.xs)<a class="headerlink" href="#process-files-xs" title="Link to this heading"></a></h3>
 <p>The process by which the actual physical shapes are created from the layout
 layers is defined in <code class="docutils literal notranslate"><span class="pre">.xs</span></code> files. The xsection folder in KQC contains two
 process files:</p>
@@ -1035,7 +1063,7 @@ process files:</p>
 <div><ol class="arabic simple">
 <li><p>Lightweight example process file <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//xsection/example.xs">xsection/example.xs</a>, intended for taking cross-sections
 using a KLayout GUI tool</p></li>
-<li><p><a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//xsection/kqc_process.xs">xsection/kqc_process.xs</a> intended only for use by a <code class="docutils literal notranslate"><span class="pre">create_xsections_from_simulations</span></code>
+<li><p><strong>(deprecated)</strong> <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//xsection/kqc_process.xs">xsection/kqc_process.xs</a> intended only for use by a <code class="docutils literal notranslate"><span class="pre">create_xsections_from_simulations</span></code>
 call in KQC code</p></li>
 </ol>
 </div></blockquote>
@@ -1048,13 +1076,14 @@ call in KQC code</p></li>
 </ul>
 </section>
 </section>
+</section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="configuration.html" class="btn btn-neutral float-left" title="Custom configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="terminology.html" class="btn btn-neutral float-right" title="Terminology" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="simulation/elmer_remote_workflow.html" class="btn btn-neutral float-left" title="Elmer remote simulations workflow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="file_system_and_utilities.html" class="btn btn-neutral float-right" title="General Structure and Miscellaneous Utilities" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

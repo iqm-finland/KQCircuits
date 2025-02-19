@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.export.xsection &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.simulations.export.cross_section &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
@@ -25,8 +25,8 @@
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kqcircuits.simulations.export.xsection.epr_correction_export" href="kqcircuits.simulations.export.xsection.epr_correction_export.html" />
-    <link rel="prev" title="kqcircuits.simulations.export.sonnet.sonnet_export" href="kqcircuits.simulations.export.sonnet.sonnet_export.html" /> 
+    <link rel="next" title="kqcircuits.simulations.export.cross_section.cross_section_export" href="kqcircuits.simulations.export.cross_section.cross_section_export.html" />
+    <link rel="prev" title="kqcircuits.simulations.export.ansys.ansys_solution" href="kqcircuits.simulations.export.ansys.ansys_solution.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -183,6 +183,20 @@
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/cross_section.html">Cross sections</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/cross_section.html#creating-cross-sections-with-kqcircuits">Creating cross sections with KQCircuits</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/cross_section.html#in-gui">In GUI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/cross_section.html#in-kqc-code">In KQC code</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/cross_section.html#xsection-tool">XSection tool</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/cross_section.html#klayout-gui-xsection-tool">KLayout GUI XSection tool</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/cross_section.html#xsection-call-in-kqc-code">XSection call in KQC code</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/cross_section.html#process-files-xs">Process files (.xs)</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/file_system_and_utilities.html">General Structure and Miscellaneous Utilities</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/file_system_and_utilities.html#file-system-hierarchy">File system hierarchy</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/file_system_and_utilities.html#miscellaneous-utilities">Miscellaneous Utilities</a></li>
@@ -196,12 +210,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../user_guide/configuration.html#adding-a-new-face">Adding a new face</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/xsection.html">Creating cross section images</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/xsection.html#klayout-gui-xsection-tool">KLayout GUI XSection tool</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/xsection.html#xsection-call-in-kqc-code">XSection call in KQC code</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/xsection.html#process-files-xs">Process files (.xs)</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/terminology.html">Terminology</a></li>
@@ -606,9 +614,9 @@
 </li>
 <li class="toctree-l3 current"><a class="reference internal" href="kqcircuits.simulations.export.html">kqcircuits.simulations.export</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.ansys.html">kqcircuits.simulations.export.ansys</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">kqcircuits.simulations.export.cross_section</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.elmer.html">kqcircuits.simulations.export.elmer</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.sonnet.html">kqcircuits.simulations.export.sonnet</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">kqcircuits.simulations.export.xsection</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.export_and_run.html">kqcircuits.simulations.export.export_and_run</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.export_singularity.html">kqcircuits.simulations.export.export_singularity</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.remote_export_and_run.html">kqcircuits.simulations.export.remote_export_and_run</a></li>
@@ -968,7 +976,7 @@
           <li class="breadcrumb-item"><a href="kqcircuits.html">API documentation</a></li>
           <li class="breadcrumb-item"><a href="kqcircuits.simulations.html">kqcircuits.simulations</a></li>
           <li class="breadcrumb-item"><a href="kqcircuits.simulations.export.html">kqcircuits.simulations.export</a></li>
-      <li class="breadcrumb-item active">kqcircuits.simulations.export.xsection</li>
+      <li class="breadcrumb-item active">kqcircuits.simulations.export.cross_section</li>
 
 
   </ul>
@@ -977,28 +985,51 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="kqcircuits-simulations-export-xsection">
-<h1>kqcircuits.simulations.export.xsection<a class="headerlink" href="#kqcircuits-simulations-export-xsection" title="Link to this heading"></a></h1>
+  <section id="kqcircuits-simulations-export-cross-section">
+<h1>kqcircuits.simulations.export.cross_section<a class="headerlink" href="#kqcircuits-simulations-export-cross-section" title="Link to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="kqcircuits.simulations.export.xsection.epr_correction_export.html">kqcircuits.simulations.export.xsection.epr_correction_export</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.export.xsection.epr_correction_export.html#kqcircuits.simulations.export.xsection.epr_correction_export.get_epr_correction_elmer_solution"><code class="docutils literal notranslate"><span class="pre">get_epr_correction_elmer_solution()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.export.xsection.epr_correction_export.html#kqcircuits.simulations.export.xsection.epr_correction_export.get_epr_correction_simulations"><code class="docutils literal notranslate"><span class="pre">get_epr_correction_simulations()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="kqcircuits.simulations.export.cross_section.cross_section_export.html">kqcircuits.simulations.export.cross_section.cross_section_export</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.export.cross_section.cross_section_export.html#kqcircuits.simulations.export.cross_section.cross_section_export.create_cross_sections_from_simulations"><code class="docutils literal notranslate"><span class="pre">create_cross_sections_from_simulations()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.export.cross_section.cross_section_export.html#kqcircuits.simulations.export.cross_section.cross_section_export.separate_signal_layer_shapes"><code class="docutils literal notranslate"><span class="pre">separate_signal_layer_shapes()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.export.cross_section.cross_section_export.html#kqcircuits.simulations.export.cross_section.cross_section_export.find_layer_by_name"><code class="docutils literal notranslate"><span class="pre">find_layer_by_name()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.export.cross_section.cross_section_export.html#kqcircuits.simulations.export.cross_section.cross_section_export.free_layer_slots"><code class="docutils literal notranslate"><span class="pre">free_layer_slots()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.export.cross_section.cross_section_export.html#kqcircuits.simulations.export.cross_section.cross_section_export.visualise_cross_section_cut_on_original_layout"><code class="docutils literal notranslate"><span class="pre">visualise_cross_section_cut_on_original_layout()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.export.cross_section.cross_section_export.html#kqcircuits.simulations.export.cross_section.cross_section_export.take_cross_section"><code class="docutils literal notranslate"><span class="pre">take_cross_section()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.export.cross_section.cross_section_export.html#kqcircuits.simulations.export.cross_section.cross_section_export.produce_intersection_shapes"><code class="docutils literal notranslate"><span class="pre">produce_intersection_shapes()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="kqcircuits.simulations.export.xsection.xsection_export.html">kqcircuits.simulations.export.xsection.xsection_export</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.export.xsection.xsection_export.html#kqcircuits.simulations.export.xsection.xsection_export.xsection_call"><code class="docutils literal notranslate"><span class="pre">xsection_call()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.export.xsection.xsection_export.html#kqcircuits.simulations.export.xsection.xsection_export.create_xsections_from_simulations"><code class="docutils literal notranslate"><span class="pre">create_xsections_from_simulations()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.export.xsection.xsection_export.html#kqcircuits.simulations.export.xsection.xsection_export.separate_signal_layer_shapes"><code class="docutils literal notranslate"><span class="pre">separate_signal_layer_shapes()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.export.xsection.xsection_export.html#kqcircuits.simulations.export.xsection.xsection_export.find_layer_by_name"><code class="docutils literal notranslate"><span class="pre">find_layer_by_name()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.export.xsection.xsection_export.html#kqcircuits.simulations.export.xsection.xsection_export.free_layer_slots"><code class="docutils literal notranslate"><span class="pre">free_layer_slots()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.export.xsection.xsection_export.html#kqcircuits.simulations.export.xsection.xsection_export.visualise_xsection_cut_on_original_layout"><code class="docutils literal notranslate"><span class="pre">visualise_xsection_cut_on_original_layout()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="kqcircuits.simulations.export.cross_section.cross_section_profile.html">kqcircuits.simulations.export.cross_section.cross_section_profile</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.export.cross_section.cross_section_profile.html#kqcircuits.simulations.export.cross_section.cross_section_profile.CrossSectionProfile"><code class="docutils literal notranslate"><span class="pre">CrossSectionProfile</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.export.cross_section.cross_section_profile.html#kqcircuits.simulations.export.cross_section.cross_section_profile.CrossSectionProfile.level"><code class="docutils literal notranslate"><span class="pre">CrossSectionProfile.level()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.export.cross_section.cross_section_profile.html#kqcircuits.simulations.export.cross_section.cross_section_profile.CrossSectionProfile.priority"><code class="docutils literal notranslate"><span class="pre">CrossSectionProfile.priority()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.export.cross_section.cross_section_profile.html#kqcircuits.simulations.export.cross_section.cross_section_profile.CrossSectionProfile.get_layers"><code class="docutils literal notranslate"><span class="pre">CrossSectionProfile.get_layers()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.export.cross_section.cross_section_profile.html#kqcircuits.simulations.export.cross_section.cross_section_profile.CrossSectionProfile.get_level"><code class="docutils literal notranslate"><span class="pre">CrossSectionProfile.get_level()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.export.cross_section.cross_section_profile.html#kqcircuits.simulations.export.cross_section.cross_section_profile.CrossSectionProfile.get_dominant_layer_regex"><code class="docutils literal notranslate"><span class="pre">CrossSectionProfile.get_dominant_layer_regex()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.export.cross_section.cross_section_profile.html#kqcircuits.simulations.export.cross_section.cross_section_profile.CrossSectionProfile.get_invisible_layers"><code class="docutils literal notranslate"><span class="pre">CrossSectionProfile.get_invisible_layers()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.export.cross_section.cross_section_profile.html#kqcircuits.simulations.export.cross_section.cross_section_profile.CrossSectionProfile.change_layer"><code class="docutils literal notranslate"><span class="pre">CrossSectionProfile.change_layer()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.export.cross_section.cross_section_profile.html#kqcircuits.simulations.export.cross_section.cross_section_profile.CrossSectionProfile.add_face"><code class="docutils literal notranslate"><span class="pre">CrossSectionProfile.add_face()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.export.cross_section.cross_section_profile.html#kqcircuits.simulations.export.cross_section.cross_section_profile.get_single_face_cross_section_profile"><code class="docutils literal notranslate"><span class="pre">get_single_face_cross_section_profile()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.export.cross_section.cross_section_profile.html#kqcircuits.simulations.export.cross_section.cross_section_profile.get_flip_chip_cross_section_profile"><code class="docutils literal notranslate"><span class="pre">get_flip_chip_cross_section_profile()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.export.cross_section.cross_section_profile.html#kqcircuits.simulations.export.cross_section.cross_section_profile.get_cross_section_profile"><code class="docutils literal notranslate"><span class="pre">get_cross_section_profile()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="kqcircuits.simulations.export.cross_section.epr_correction_export.html">kqcircuits.simulations.export.cross_section.epr_correction_export</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.export.cross_section.epr_correction_export.html#kqcircuits.simulations.export.cross_section.epr_correction_export.get_epr_correction_elmer_solution"><code class="docutils literal notranslate"><span class="pre">get_epr_correction_elmer_solution()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.export.cross_section.epr_correction_export.html#kqcircuits.simulations.export.cross_section.epr_correction_export.get_epr_correction_simulations"><code class="docutils literal notranslate"><span class="pre">get_epr_correction_simulations()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="kqcircuits.simulations.export.cross_section.xsection_export.html">kqcircuits.simulations.export.cross_section.xsection_export</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.export.cross_section.xsection_export.html#kqcircuits.simulations.export.cross_section.xsection_export.xsection_call"><code class="docutils literal notranslate"><span class="pre">xsection_call()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.export.cross_section.xsection_export.html#kqcircuits.simulations.export.cross_section.xsection_export.create_xsections_from_simulations"><code class="docutils literal notranslate"><span class="pre">create_xsections_from_simulations()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </div>
-<section id="module-kqcircuits.simulations.export.xsection">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-kqcircuits.simulations.export.xsection" title="Link to this heading"></a></h2>
+<section id="module-kqcircuits.simulations.export.cross_section">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-kqcircuits.simulations.export.cross_section" title="Link to this heading"></a></h2>
 </section>
 </section>
 
@@ -1006,8 +1037,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="kqcircuits.simulations.export.sonnet.sonnet_export.html" class="btn btn-neutral float-left" title="kqcircuits.simulations.export.sonnet.sonnet_export" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="kqcircuits.simulations.export.xsection.epr_correction_export.html" class="btn btn-neutral float-right" title="kqcircuits.simulations.export.xsection.epr_correction_export" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kqcircuits.simulations.export.ansys.ansys_solution.html" class="btn btn-neutral float-left" title="kqcircuits.simulations.export.ansys.ansys_solution" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kqcircuits.simulations.export.cross_section.cross_section_export.html" class="btn btn-neutral float-right" title="kqcircuits.simulations.export.cross_section.cross_section_export" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

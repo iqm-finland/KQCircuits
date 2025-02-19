@@ -26,7 +26,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Custom configuration" href="configuration.html" />
-    <link rel="prev" title="Elmer remote simulations workflow" href="simulation/elmer_remote_workflow.html" /> 
+    <link rel="prev" title="Cross sections" href="cross_section.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -183,6 +183,20 @@
 <li class="toctree-l3"><a class="reference internal" href="simulation/elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="cross_section.html">Cross sections</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cross_section.html#creating-cross-sections-with-kqcircuits">Creating cross sections with KQCircuits</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cross_section.html#in-gui">In GUI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cross_section.html#in-kqc-code">In KQC code</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cross_section.html#xsection-tool">XSection tool</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cross_section.html#klayout-gui-xsection-tool">KLayout GUI XSection tool</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cross_section.html#xsection-call-in-kqc-code">XSection call in KQC code</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cross_section.html#process-files-xs">Process files (.xs)</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">General Structure and Miscellaneous Utilities</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#file-system-hierarchy">File system hierarchy</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#miscellaneous-utilities">Miscellaneous Utilities</a></li>
@@ -196,12 +210,6 @@
 <li class="toctree-l4"><a class="reference internal" href="configuration.html#adding-a-new-face">Adding a new face</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="xsection.html">Creating cross section images</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="xsection.html#klayout-gui-xsection-tool">KLayout GUI XSection tool</a></li>
-<li class="toctree-l3"><a class="reference internal" href="xsection.html#xsection-call-in-kqc-code">XSection call in KQC code</a></li>
-<li class="toctree-l3"><a class="reference internal" href="xsection.html#process-files-xs">Process files (.xs)</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="terminology.html">Terminology</a></li>
@@ -606,9 +614,9 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.simulations.export.html">kqcircuits.simulations.export</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.simulations.export.ansys.html">kqcircuits.simulations.export.ansys</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.simulations.export.cross_section.html">kqcircuits.simulations.export.cross_section</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.simulations.export.elmer.html">kqcircuits.simulations.export.elmer</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.simulations.export.sonnet.html">kqcircuits.simulations.export.sonnet</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.simulations.export.xsection.html">kqcircuits.simulations.export.xsection</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.simulations.export.export_and_run.html">kqcircuits.simulations.export.export_and_run</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.simulations.export.export_singularity.html">kqcircuits.simulations.export.export_singularity</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.simulations.export.remote_export_and_run.html">kqcircuits.simulations.export.remote_export_and_run</a></li>
@@ -1006,14 +1014,18 @@ needed for KQCircuits code.</p>
 <p>High level annotated picture of KQCircuits repository’s different subdirectories:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>KQCircuits                      Git repository root
 ├── ci
+├── docs
 ├── klayout_package
 │   └── python                  Salt package
-│       ├── console_scripts
 │       ├── drc                 Design Rule Checks
 │       ├── kqcircuits          PyPI package
 │       │   ├── chips
 │       │   ├── elements        Basic Elements
-│       │   └── ...
+│       │   ├── ...
+│       │   ├── layer_config    Layer visualisation
+│       │   ├── masks           Lithography mask structure
+│       │   ├── simulations     Simulation utilities
+│       │   └── util            Other KQC library functions
 │       └── requirements        Listed dependencies of KQC
 │           ├── linux
 │           ├── mac
@@ -1021,6 +1033,7 @@ needed for KQCircuits code.</p>
 │       └── scripts
 │           ├── macros
 │           ├── masks
+│           ├── resources
 │           └── simulations
 ├── docs                        Documentation sources
 ├── singularity
@@ -1029,7 +1042,7 @@ needed for KQCircuits code.</p>
 │   ├── elements
 │   ├── ...
 ├── util                        Utility scripts
-└── xsection
+└── xsection                    XSection process files, recommended to only use in GUI
 </pre></div>
 </div>
 <p>In the KQCircuits root folder the most important folder for most users is the
@@ -1103,7 +1116,7 @@ Use what is easiest to implement for your workflow.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="simulation/elmer_remote_workflow.html" class="btn btn-neutral float-left" title="Elmer remote simulations workflow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cross_section.html" class="btn btn-neutral float-left" title="Cross sections" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="configuration.html" class="btn btn-neutral float-right" title="Custom configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

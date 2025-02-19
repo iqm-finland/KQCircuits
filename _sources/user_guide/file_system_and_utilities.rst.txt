@@ -33,14 +33,18 @@ High level annotated picture of KQCircuits repository's different subdirectories
 
     KQCircuits                      Git repository root
     ├── ci
+    ├── docs
     ├── klayout_package
     │   └── python                  Salt package
-    │       ├── console_scripts
     │       ├── drc                 Design Rule Checks
     │       ├── kqcircuits          PyPI package
     │       │   ├── chips
     │       │   ├── elements        Basic Elements
-    │       │   └── ...
+    │       │   ├── ...
+    │       │   ├── layer_config    Layer visualisation
+    │       │   ├── masks           Lithography mask structure
+    │       │   ├── simulations     Simulation utilities
+    │       │   └── util            Other KQC library functions
     │       └── requirements        Listed dependencies of KQC
     │           ├── linux
     │           ├── mac
@@ -48,6 +52,7 @@ High level annotated picture of KQCircuits repository's different subdirectories
     │       └── scripts
     │           ├── macros
     │           ├── masks
+    │           ├── resources
     │           └── simulations
     ├── docs                        Documentation sources
     ├── singularity
@@ -56,7 +61,7 @@ High level annotated picture of KQCircuits repository's different subdirectories
     │   ├── elements
     │   ├── ...
     ├── util                        Utility scripts
-    └── xsection
+    └── xsection                    XSection process files, recommended to only use in GUI
 
 In the KQCircuits root folder the most important folder for most users is the
 :git_url:`klayout_package` folder, which is also all that is included in the Salt

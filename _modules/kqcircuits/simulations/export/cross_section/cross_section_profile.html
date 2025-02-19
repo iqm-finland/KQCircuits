@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.export.xsection.epr_correction_export &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.simulations.export.cross_section.cross_section_profile &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
@@ -180,6 +180,20 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/simulation/elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../user_guide/cross_section.html">Cross sections</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/cross_section.html#creating-cross-sections-with-kqcircuits">Creating cross sections with KQCircuits</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/cross_section.html#in-gui">In GUI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/cross_section.html#in-kqc-code">In KQC code</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/cross_section.html#xsection-tool">XSection tool</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/cross_section.html#klayout-gui-xsection-tool">KLayout GUI XSection tool</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/cross_section.html#xsection-call-in-kqc-code">XSection call in KQC code</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/cross_section.html#process-files-xs">Process files (.xs)</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../user_guide/file_system_and_utilities.html">General Structure and Miscellaneous Utilities</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/file_system_and_utilities.html#file-system-hierarchy">File system hierarchy</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/file_system_and_utilities.html#miscellaneous-utilities">Miscellaneous Utilities</a></li>
@@ -193,12 +207,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/configuration.html#adding-a-new-face">Adding a new face</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../../user_guide/xsection.html">Creating cross section images</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/xsection.html#klayout-gui-xsection-tool">KLayout GUI XSection tool</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/xsection.html#xsection-call-in-kqc-code">XSection call in KQC code</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/xsection.html#process-files-xs">Process files (.xs)</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../user_guide/terminology.html">Terminology</a></li>
@@ -603,9 +611,9 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.export.html">kqcircuits.simulations.export</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.export.ansys.html">kqcircuits.simulations.export.ansys</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.export.cross_section.html">kqcircuits.simulations.export.cross_section</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.export.elmer.html">kqcircuits.simulations.export.elmer</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.export.sonnet.html">kqcircuits.simulations.export.sonnet</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.export.xsection.html">kqcircuits.simulations.export.xsection</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.export.export_and_run.html">kqcircuits.simulations.export.export_and_run</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.export.export_singularity.html">kqcircuits.simulations.export.export_singularity</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.export.remote_export_and_run.html">kqcircuits.simulations.export.remote_export_and_run</a></li>
@@ -963,7 +971,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">kqcircuits.simulations.export.xsection.epr_correction_export</li>
+      <li class="breadcrumb-item active">kqcircuits.simulations.export.cross_section.cross_section_profile</li>
 
 
       <li class="wy-breadcrumbs-aside">
@@ -976,9 +984,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for kqcircuits.simulations.export.xsection.epr_correction_export</h1><div class="highlight"><pre>
+  <h1>Source code for kqcircuits.simulations.export.cross_section.cross_section_profile</h1><div class="highlight"><pre>
 <span></span><span class="c1"># This code is part of KQCircuits</span>
-<span class="c1"># Copyright (C) 2024 IQM Finland Oy</span>
+<span class="c1"># Copyright (C) 2025 IQM Finland Oy</span>
 <span class="c1">#</span>
 <span class="c1"># This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public</span>
 <span class="c1"># License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later</span>
@@ -994,204 +1002,294 @@
 <span class="c1"># (meetiqm.com/iqm-open-source-trademark-policy). IQM welcomes contributions to the code.</span>
 <span class="c1"># Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)</span>
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Sequence</span>
 
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
+<span class="c1"># This file shouldn&#39;t import anything substantial from kqcircuits to prevent cyclical import</span>
 
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.partition_region</span> <span class="kn">import</span> <span class="n">get_list_of_two</span>
-
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.simulation_export</span> <span class="kn">import</span> <span class="n">cross_combine</span>
-
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.elmer.elmer_solution</span> <span class="kn">import</span> <span class="n">ElmerCrossSectionSolution</span>
-
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">XSECTION_PROCESS_PATH</span>
-
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.xsection.xsection_export</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">separate_signal_layer_shapes</span><span class="p">,</span>
-    <span class="n">create_xsections_from_simulations</span><span class="p">,</span>
-    <span class="n">visualise_xsection_cut_on_original_layout</span><span class="p">,</span>
-<span class="p">)</span>
-
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Sequence</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.post_process</span> <span class="kn">import</span> <span class="n">PostProcess</span>
 
 
-<div class="viewcode-block" id="get_epr_correction_elmer_solution">
-<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.xsection.epr_correction_export.html#kqcircuits.simulations.export.xsection.epr_correction_export.get_epr_correction_elmer_solution">[docs]</a>
-<span class="k">def</span> <span class="nf">get_epr_correction_elmer_solution</span><span class="p">(</span><span class="o">**</span><span class="n">override_args</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns ElmerCrossSectionSolution for EPR correction simulations with default arguments.</span>
-<span class="sd">    Optionally, &#39;override_args&#39; can be used to override any arguments.</span>
+<span class="n">SimulationFunction</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="s2">&quot;Simulation&quot;</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_wrap_constant_or_function</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SimulationFunction</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;If value is constant, returns function that returns value for any argument&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="k">lambda</span> <span class="n">simulation</span><span class="p">:</span> <span class="n">value</span>
+    <span class="k">return</span> <span class="n">value</span>
+
+
+<span class="k">def</span> <span class="nf">_collect_layers_from_regexes</span><span class="p">(</span><span class="n">layer_keys</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">LayerInfo</span><span class="p">],</span> <span class="n">regexes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">LayerInfo</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Given set of layers ``layer_keys``, select layers whose name matches at least one regex from ``regexes``&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">set</span><span class="p">(</span>
+        <span class="n">layer_info</span>
+        <span class="k">for</span> <span class="n">layer_regex</span> <span class="ow">in</span> <span class="n">regexes</span>
+        <span class="k">for</span> <span class="n">layer_info</span> <span class="ow">in</span> <span class="p">[</span><span class="n">l</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">layer_keys</span> <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="n">layer_regex</span><span class="p">,</span> <span class="n">l</span><span class="o">.</span><span class="n">name</span><span class="p">)]</span>
+    <span class="p">)</span>
+
+
+<div class="viewcode-block" id="CrossSectionProfile">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cross_section_profile.html#kqcircuits.simulations.export.cross_section.cross_section_profile.CrossSectionProfile">[docs]</a>
+<span class="k">class</span> <span class="nc">CrossSectionProfile</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Defines vertical level (bottom, top) values for each layer in order to produce cross section geometry.</span>
+
+<span class="sd">    Also contains following features::</span>
+<span class="sd">        * Level values can be configured using functions ``Simulation -&gt; float``</span>
+<span class="sd">            so that the value is calculated from Simulation&#39;s parameters</span>
+<span class="sd">        * Set priority by regex - if a shape from one layer overlaps with shape from another layer,</span>
+<span class="sd">            keep regions disjoint by cutting out the overlap region on former layer</span>
+<span class="sd">        * Layer in original layout may have its cross section placed at another layer in cross section layout.</span>
+
+<span class="sd">    When developing class methods here, please maintain the assumption that a simulation instance passed</span>
+<span class="sd">    here is not modified.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ElmerCrossSectionSolution</span><span class="p">(</span>
-        <span class="o">**</span><span class="p">{</span>
-            <span class="s2">&quot;linear_system_method&quot;</span><span class="p">:</span> <span class="s2">&quot;mg&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;p_element_order&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-            <span class="s2">&quot;is_axisymmetric&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="s2">&quot;mesh_size&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;ms_layer_mer&amp;ma_layer_mer&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0005</span><span class="p">,</span> <span class="mf">0.0005</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
-            <span class="p">},</span>
-            <span class="s2">&quot;integrate_energies&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-            <span class="s2">&quot;run_inductance_sim&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="o">**</span><span class="n">override_args</span><span class="p">,</span>
-        <span class="p">}</span>
-    <span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_levels</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layer_priority</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layer_change_map</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># TODO: This member adjusts the y position of cross section shapes such that they match exactly</span>
+        <span class="c1"># the cross section geometry generated with XSection. Remove this member eventually.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_this_to_xor_with_master</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="CrossSectionProfile.level">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cross_section_profile.html#kqcircuits.simulations.export.cross_section.cross_section_profile.CrossSectionProfile.level">[docs]</a>
+    <span class="k">def</span> <span class="nf">level</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">regex</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">bottom_function</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">SimulationFunction</span><span class="p">,</span>
+        <span class="n">top_function</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">SimulationFunction</span><span class="p">,</span>
+        <span class="n">change_to_layer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">SimulationFunction</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Define level values for layers whose name matches ``regex``.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            regex: this level configuration takes effect for layers whose name matches regex.</span>
+<span class="sd">            bottom_function: z value for the bottom of the cross section shape, can be defined as function</span>
+<span class="sd">            top_function: z value for the top of the cross section shape, can be defined as function</span>
+<span class="sd">            change_to_layer: (Optional) cross section shapes on layers that match ``regex`` will be placed to</span>
+<span class="sd">                ``change_to_layer`` layer in cross section layout.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_levels</span><span class="p">[</span><span class="n">regex</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">_wrap_constant_or_function</span><span class="p">(</span><span class="n">bottom_function</span><span class="p">),</span> <span class="n">_wrap_constant_or_function</span><span class="p">(</span><span class="n">top_function</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layer_change_map</span><span class="p">[</span><span class="n">regex</span><span class="p">]</span> <span class="o">=</span> <span class="n">_wrap_constant_or_function</span><span class="p">(</span><span class="n">change_to_layer</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="CrossSectionProfile.priority">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cross_section_profile.html#kqcircuits.simulations.export.cross_section.cross_section_profile.CrossSectionProfile.priority">[docs]</a>
+    <span class="k">def</span> <span class="nf">priority</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_layer_regex</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dominant_layer_regex</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Configure profile so that in case a region from a layer that matches ``target_layer_regex``</span>
+<span class="sd">        overlaps a region that matches ``dominant_layer_regex``, the regions will be made disjoint</span>
+<span class="sd">        by removing the overlapping region from layer matching ``target_layer_regex``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layer_priority</span><span class="p">[</span><span class="n">target_layer_regex</span><span class="p">]</span> <span class="o">=</span> <span class="n">_wrap_constant_or_function</span><span class="p">(</span><span class="n">dominant_layer_regex</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="get_epr_correction_simulations">
-<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.xsection.epr_correction_export.html#kqcircuits.simulations.export.xsection.epr_correction_export.get_epr_correction_simulations">[docs]</a>
-<span class="k">def</span> <span class="nf">get_epr_correction_simulations</span><span class="p">(</span>
-    <span class="n">simulations</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Simulation</span><span class="p">],</span>
-    <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
-    <span class="n">correction_cuts</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Simulation</span><span class="p">],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]],</span>
-    <span class="n">ma_eps_r</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>
-    <span class="n">ms_eps_r</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">11.4</span><span class="p">,</span>
-    <span class="n">sa_eps_r</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
-    <span class="n">ma_thickness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">4.8e-3</span><span class="p">,</span>  <span class="c1"># in µm</span>
-    <span class="n">ms_thickness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3e-3</span><span class="p">,</span>  <span class="c1"># in µm</span>
-    <span class="n">sa_thickness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.4e-3</span><span class="p">,</span>  <span class="c1"># in µm</span>
-    <span class="n">ma_bg_eps_r</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="n">ms_bg_eps_r</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">11.45</span><span class="p">,</span>
-    <span class="n">sa_bg_eps_r</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">11.45</span><span class="p">,</span>
-    <span class="n">metal_height</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Simulation</span><span class="p">,</span> <span class="n">ElmerCrossSectionSolution</span><span class="p">]],</span> <span class="nb">list</span><span class="p">[</span><span class="n">PostProcess</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function to produce EPR correction simulations.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        simulations: list of simulation objects</span>
-<span class="sd">        path: path to simulation folder</span>
-<span class="sd">        correction_cuts: dictionary or function that returns a dictionary of correction cuts for given simulation.</span>
-<span class="sd">        Key is the name of cut and values are dicts containing:</span>
-<span class="sd">        - p1: pya.DPoint indicating the first end of the cut segment</span>
-<span class="sd">        - p2: pya.DPoint indicating the second end of the cut segment</span>
-<span class="sd">        - metal_edges: list of dictionaries indicating metal-edge-region locations and orientations in 2D simulation.</span>
-<span class="sd">            Can contain keywords:</span>
-<span class="sd">            - x: lateral distance from p1 to mer metal edge,</span>
-<span class="sd">            - x_reversed: whether gap is closer to p1 than metal, default=False</span>
-<span class="sd">            - z: height of substrate-vacuum interface, default=0</span>
-<span class="sd">            - z_reversed: whether vacuum is below substrate, default=False</span>
-<span class="sd">        - partition_regions: (optional) list of partition region names. The correction cut key is used if not assigned.</span>
-<span class="sd">        - simulations: (optional) list of simulation names. Is applied on all simulations if not assigned.</span>
-<span class="sd">        - solution: (optional) solution object for the sim. `get_epr_correction_elmer_solution` is used if not assigned.</span>
-<span class="sd">            If `solution` is not set, all items under `correction_cuts[Key]`</span>
-<span class="sd">            are given to `get_epr_correction_elmer_solution` except</span>
-<span class="sd">            items with keys `[&quot;p1&quot;, &quot;p2&quot;, &quot;metal_edges&quot;, &quot;partition_regions&quot;, &quot;simulations&quot;]`.</span>
-<span class="sd">        ma_eps_r: relative permittivity of MA layer</span>
-<span class="sd">        ms_eps_r: relative permittivity of MS layer</span>
-<span class="sd">        sa_eps_r: relative permittivity of SA layer</span>
-<span class="sd">        ma_thickness: thickness of MA layer</span>
-<span class="sd">        ms_thickness: thickness of MS layer</span>
-<span class="sd">        sa_thickness: thickness of SA layer</span>
-<span class="sd">        ma_bg_eps_r: rel permittivity at the location of MA layer in 3D simulation (sheet approximation in use)</span>
-<span class="sd">        ms_bg_eps_r: rel permittivity at the location of MS layer in 3D simulation (sheet approximation in use)</span>
-<span class="sd">        sa_bg_eps_r: rel permittivity at the location of SA layer in 3D simulation (sheet approximation in use)</span>
-<span class="sd">        metal_height: height of metal layers in correction simulations. Use None to get heights from 3D stack</span>
+<div class="viewcode-block" id="CrossSectionProfile.get_layers">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cross_section_profile.html#kqcircuits.simulations.export.cross_section.cross_section_profile.CrossSectionProfile.get_layers">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layout</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Layout</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">LayerInfo</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Collect all layers from ``layout`` that were configured to this profile using ``level`` function&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_collect_layers_from_regexes</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_levels</span><span class="p">)</span></div>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        tuple containing list of correction simulations and list of post_process objects</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">deembed_cross_sections</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">deembed_lens</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">correction_simulations</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">correction_layout</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Layout</span><span class="p">()</span>
-    <span class="n">source_sims</span> <span class="o">=</span> <span class="p">{</span><span class="n">sim</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">)</span> <span class="k">else</span> <span class="n">sim</span> <span class="k">for</span> <span class="n">sim</span> <span class="ow">in</span> <span class="n">simulations</span><span class="p">}</span>
-    <span class="k">for</span> <span class="n">source_sim</span> <span class="ow">in</span> <span class="n">source_sims</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">metal_height</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">source_sim</span><span class="o">.</span><span class="n">metal_height</span> <span class="o">=</span> <span class="n">metal_height</span>
-        <span class="n">separate_signal_layer_shapes</span><span class="p">(</span><span class="n">source_sim</span><span class="p">)</span>
-        <span class="n">cuts</span> <span class="o">=</span> <span class="n">correction_cuts</span><span class="p">(</span><span class="n">source_sim</span><span class="p">)</span> <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">correction_cuts</span><span class="p">)</span> <span class="k">else</span> <span class="n">correction_cuts</span>
 
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">cut</span> <span class="ow">in</span> <span class="n">cuts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="s2">&quot;simulations&quot;</span> <span class="ow">in</span> <span class="n">cut</span> <span class="ow">and</span> <span class="n">source_sim</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cut</span><span class="p">[</span><span class="s2">&quot;simulations&quot;</span><span class="p">]:</span>
-                <span class="k">continue</span>
+<div class="viewcode-block" id="CrossSectionProfile.get_level">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cross_section_profile.html#kqcircuits.simulations.export.cross_section.cross_section_profile.CrossSectionProfile.get_level">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">simulation</span><span class="p">:</span> <span class="s2">&quot;Simulation&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Given concrete layer name, returns bottom and top level for such layer in cross section profile</span>
 
-            <span class="n">part_names</span> <span class="o">=</span> <span class="n">cut</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;partition_regions&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">key</span><span class="p">])</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">part_names</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Correction cut has no partition region attached&quot;</span><span class="p">)</span>
+<span class="sd">        Args:</span>
+<span class="sd">            layer_name: concrete layer name, not regex</span>
+<span class="sd">            simulation: simulation object from which cross section is taken</span>
 
-            <span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">source_sim</span><span class="o">.</span><span class="n">get_partition_regions</span><span class="p">()</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">part_names</span><span class="p">]</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">parts</span><span class="p">:</span>
-                <span class="k">continue</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple - coordinate of bottom and top levels for given layer in the cross section profile</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">level</span><span class="p">,</span> <span class="n">first_match</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">layer_regex</span><span class="p">,</span> <span class="n">lvl</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_levels</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="n">layer_regex</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">level</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer </span><span class="si">{</span><span class="n">layer_name</span><span class="si">}</span><span class="s2"> matches both </span><span class="si">{</span><span class="n">first_match</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">layer_regex</span><span class="si">}</span><span class="s2"> regexes&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">first_match</span> <span class="o">=</span> <span class="n">layer_regex</span>
+                <span class="n">level</span> <span class="o">=</span> <span class="n">lvl</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">level</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer </span><span class="si">{</span><span class="n">layer_name</span><span class="si">}</span><span class="s2"> matches no regex configured in the cross section profile&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">level</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">simulation</span><span class="p">),</span> <span class="n">level</span><span class="p">[</span><span class="mi">1</span><span class="p">](</span><span class="n">simulation</span><span class="p">))</span></div>
 
-            <span class="n">v_dims</span> <span class="o">=</span> <span class="n">get_list_of_two</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">vertical_dimensions</span><span class="p">)</span>
-            <span class="n">h_dims</span> <span class="o">=</span> <span class="n">get_list_of_two</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">metal_edge_dimensions</span><span class="p">)</span>
-            <span class="k">if</span> <span class="kc">None</span> <span class="ow">in</span> <span class="n">v_dims</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span><span class="n">v_dims</span> <span class="o">!=</span> <span class="n">get_list_of_two</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">vertical_dimensions</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Partition region vertical_dimensions are invalid for correction_cut </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="kc">None</span> <span class="ow">in</span> <span class="n">h_dims</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span><span class="n">h_dims</span> <span class="o">!=</span> <span class="n">get_list_of_two</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">metal_edge_dimensions</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Partition region metal_edge_dimensions are invalid for correction_cut </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
-            <span class="n">mer_box</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">me</span> <span class="ow">in</span> <span class="n">cut</span><span class="p">[</span><span class="s2">&quot;metal_edges&quot;</span><span class="p">]:</span>
-                <span class="n">x</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-                <span class="n">z</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-                <span class="n">dx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;x_reversed&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
-                <span class="n">dz</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;z_reversed&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
-                <span class="n">mer_box</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">h_dims</span><span class="p">[</span><span class="mi">1</span> <span class="o">-</span> <span class="n">dx</span><span class="p">],</span> <span class="n">z</span> <span class="o">-</span> <span class="n">v_dims</span><span class="p">[</span><span class="n">dz</span><span class="p">],</span> <span class="n">x</span> <span class="o">+</span> <span class="n">h_dims</span><span class="p">[</span><span class="n">dx</span><span class="p">],</span> <span class="n">z</span> <span class="o">+</span> <span class="n">v_dims</span><span class="p">[</span><span class="mi">1</span> <span class="o">-</span> <span class="n">dz</span><span class="p">]))</span>
+<div class="viewcode-block" id="CrossSectionProfile.get_dominant_layer_regex">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cross_section_profile.html#kqcircuits.simulations.export.cross_section.cross_section_profile.CrossSectionProfile.get_dominant_layer_regex">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_dominant_layer_regex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">simulation</span><span class="p">:</span> <span class="s2">&quot;Simulation&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructs a regex for all layers that have higher priority than ``layer_name``.</span>
 
-            <span class="k">if</span> <span class="s2">&quot;solution&quot;</span> <span class="ow">in</span> <span class="n">cut</span><span class="p">:</span>
-                <span class="n">cut_solution</span> <span class="o">=</span> <span class="n">cut</span><span class="p">[</span><span class="s2">&quot;solution&quot;</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">cut_solution</span> <span class="o">=</span> <span class="n">get_epr_correction_elmer_solution</span><span class="p">(</span>
-                    <span class="o">**</span><span class="p">{</span>
-                        <span class="n">k</span><span class="p">:</span> <span class="n">v</span>
-                        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">cut</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-                        <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;p1&quot;</span><span class="p">,</span> <span class="s2">&quot;p2&quot;</span><span class="p">,</span> <span class="s2">&quot;metal_edges&quot;</span><span class="p">,</span> <span class="s2">&quot;partition_regions&quot;</span><span class="p">,</span> <span class="s2">&quot;simulations&quot;</span><span class="p">]</span>
-                    <span class="p">}</span>
-                <span class="p">)</span>
+<span class="sd">        Args:</span>
+<span class="sd">            layer_name: Name of the layer (not regex) for which we wish to know what layers it is dominated by</span>
+<span class="sd">            simulation: simulation object from which cross section is taken</span>
 
-            <span class="n">cords_list</span> <span class="o">=</span> <span class="p">[(</span><span class="n">cut</span><span class="p">[</span><span class="s2">&quot;p1&quot;</span><span class="p">],</span> <span class="n">cut</span><span class="p">[</span><span class="s2">&quot;p2&quot;</span><span class="p">])]</span>
-            <span class="n">correction_simulations</span> <span class="o">+=</span> <span class="n">cross_combine</span><span class="p">(</span>
-                <span class="n">create_xsections_from_simulations</span><span class="p">(</span>
-                    <span class="p">[</span><span class="n">source_sim</span><span class="p">],</span>
-                    <span class="n">path</span><span class="p">,</span>
-                    <span class="n">cords_list</span><span class="p">,</span>
-                    <span class="n">layout</span><span class="o">=</span><span class="n">correction_layout</span><span class="p">,</span>
-                    <span class="n">ma_permittivity</span><span class="o">=</span><span class="n">ma_eps_r</span><span class="p">,</span>
-                    <span class="n">ms_permittivity</span><span class="o">=</span><span class="n">ms_eps_r</span><span class="p">,</span>
-                    <span class="n">sa_permittivity</span><span class="o">=</span><span class="n">sa_eps_r</span><span class="p">,</span>
-                    <span class="n">ma_thickness</span><span class="o">=</span><span class="n">ma_thickness</span><span class="p">,</span>
-                    <span class="n">ms_thickness</span><span class="o">=</span><span class="n">ms_thickness</span><span class="p">,</span>
-                    <span class="n">sa_thickness</span><span class="o">=</span><span class="n">sa_thickness</span><span class="p">,</span>
-                    <span class="n">magnification_order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                    <span class="n">process_path</span><span class="o">=</span><span class="n">XSECTION_PROCESS_PATH</span><span class="p">,</span>
-                    <span class="n">mer_box</span><span class="o">=</span><span class="n">mer_box</span><span class="p">,</span>
-                <span class="p">),</span>
-                <span class="n">cut_solution</span><span class="p">,</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Regex, matching any layer that dominates layer with name ``layer_name``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dominant_layer_regex</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">layer_regex</span><span class="p">,</span> <span class="n">dom_layers</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layer_priority</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="n">layer_regex</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">):</span>
+                <span class="n">dom_layers_value</span> <span class="o">=</span> <span class="n">dom_layers</span><span class="p">(</span><span class="n">simulation</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">dominant_layer_regex</span><span class="p">:</span>
+                    <span class="n">dominant_layer_regex</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dominant_layer_regex</span><span class="si">}</span><span class="s2">|(</span><span class="si">{</span><span class="n">dom_layers_value</span><span class="si">}</span><span class="s2">)&quot;</span>
+                <span class="n">dominant_layer_regex</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">dom_layers_value</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="k">return</span> <span class="n">dominant_layer_regex</span></div>
+
+
+<div class="viewcode-block" id="CrossSectionProfile.get_invisible_layers">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cross_section_profile.html#kqcircuits.simulations.export.cross_section.cross_section_profile.CrossSectionProfile.get_invisible_layers">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_invisible_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simulation</span><span class="p">:</span> <span class="s2">&quot;Simulation&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">LayerInfo</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Setting ``change_to_layer`` to None causes the level to not be written to any layer.</span>
+<span class="sd">        This function returns all layers that are configured in such way.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            simulation: simulation object from which cross section is taken</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Set of layers that will be made invisible in the cross section</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">invis_layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">l_regex</span> <span class="k">for</span> <span class="n">l_regex</span><span class="p">,</span> <span class="n">l_output</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layer_change_map</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">l_output</span><span class="p">(</span><span class="n">simulation</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">_collect_layers_from_regexes</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">(),</span> <span class="n">invis_layers</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CrossSectionProfile.change_layer">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cross_section_profile.html#kqcircuits.simulations.export.cross_section.cross_section_profile.CrossSectionProfile.change_layer">[docs]</a>
+    <span class="k">def</span> <span class="nf">change_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_layer</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayerInfo</span><span class="p">,</span> <span class="n">simulation</span><span class="p">:</span> <span class="s2">&quot;Simulation&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayerInfo</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Given ``input_layer`` on original layout, returns which layer on the cross section layout</span>
+<span class="sd">        the shapes should be added to.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_layer: Layer in original layout, for which to look up the layer on the cross section layout</span>
+<span class="sd">            simulation: simulation object from which cross section is taken</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Layer on the cross section layout, where the cross section shape of ``input_layer`` will be written to.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output_layer</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">previous_layer_regex</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">layer_regex</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layer_change_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="n">layer_regex</span><span class="p">,</span> <span class="n">input_layer</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">output_layer</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Layer </span><span class="si">{</span><span class="n">input_layer</span><span class="si">}</span><span class="s2"> matching &#39;</span><span class="si">{</span><span class="n">layer_regex</span><span class="si">}</span><span class="s2">&#39; already matched &#39;</span><span class="si">{</span><span class="n">previous_layer_regex</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+                    <span class="p">)</span>
+                <span class="n">layer_value</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">simulation</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">layer_value</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                    <span class="n">output_layer</span> <span class="o">=</span> <span class="n">layer_value</span>
+                    <span class="n">previous_layer_regex</span> <span class="o">=</span> <span class="n">layer_regex</span>
+
+        <span class="c1"># input_layer not configured to change, so we just write the cross section to input_layer</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">output_layer</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">input_layer</span>
+
+        <span class="c1"># Find pya.LayerInfo with output_layer as name</span>
+        <span class="n">layer_info_matches</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">())</span> <span class="k">if</span> <span class="n">l</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">output_layer</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">layer_info_matches</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Multiple layers with name </span><span class="si">{</span><span class="n">output_layer</span><span class="si">}</span><span class="s2"> found: </span><span class="si">{</span><span class="n">layer_info_matches</span><span class="si">}</span><span class="s2">. Returning first layer.&quot;</span>
             <span class="p">)</span>
-            <span class="n">correction_simulations</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">correction_simulations</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">source_sim</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">key</span>
-            <span class="n">visualise_xsection_cut_on_original_layout</span><span class="p">([</span><span class="n">source_sim</span><span class="p">],</span> <span class="n">cords_list</span><span class="p">,</span> <span class="n">cut_label</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">width_ratio</span><span class="o">=</span><span class="mf">0.03</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">layer_info_matches</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No layers found with name </span><span class="si">{</span><span class="n">output_layer</span><span class="si">}</span><span class="s2">. Initialising such layer&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayerInfo</span><span class="p">(</span><span class="n">output_layer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">layer_info_matches</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
-        <span class="n">deembed_cs_cur</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="s2">&quot;deembed_cross_section&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">source_sim</span><span class="o">.</span><span class="n">ports</span><span class="p">]</span>
-        <span class="n">deembed_lens_cur</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="s2">&quot;deembed_len&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">source_sim</span><span class="o">.</span><span class="n">ports</span><span class="p">]</span>
 
-        <span class="n">deembed_tuples</span> <span class="o">=</span> <span class="p">[(</span><span class="n">cs</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">cs</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">deembed_cs_cur</span><span class="p">,</span> <span class="n">deembed_lens_cur</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">cs</span> <span class="ow">and</span> <span class="n">l</span><span class="p">)]</span>
+<div class="viewcode-block" id="CrossSectionProfile.add_face">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cross_section_profile.html#kqcircuits.simulations.export.cross_section.cross_section_profile.CrossSectionProfile.add_face">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_face</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add standard configuration within KQC context for given face&quot;&quot;&quot;</span>
+        <span class="c1"># Use face_z_levels to determine levels for ground metal</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">face_id</span><span class="si">}</span><span class="s2">_ground&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">face_z_levels</span><span class="p">()[</span><span class="n">face_id</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">face_z_levels</span><span class="p">()[</span><span class="n">face_id</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="c1"># Do the same for all signal metals</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">face_id</span><span class="si">}</span><span class="s2">_signal_?[0-9]*&quot;</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">face_z_levels</span><span class="p">()[</span><span class="n">face_id</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+            <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">face_z_levels</span><span class="p">()[</span><span class="n">face_id</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="c1"># Also determine level for possible dielectric layer between metals</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">face_id</span><span class="si">}</span><span class="s2">_dielectric&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">face_z_levels</span><span class="p">()[</span><span class="n">face_id</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">face_z_levels</span><span class="p">()[</span><span class="n">face_id</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="c1"># Remove parts of dielectric if metal shapes overlap with it</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">priority</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">face_id</span><span class="si">}</span><span class="s2">_dielectric&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">face_id</span><span class="si">}</span><span class="s2">_ground|(</span><span class="si">{</span><span class="n">face_id</span><span class="si">}</span><span class="s2">_signal_?[0-9]*)&quot;</span><span class="p">)</span></div>
+</div>
 
-        <span class="k">if</span> <span class="n">deembed_tuples</span><span class="p">:</span>
-            <span class="n">deembed_cs_cur</span><span class="p">,</span> <span class="n">deembed_lens_cur</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">deembed_tuples</span><span class="p">)</span>
-            <span class="n">deembed_cross_sections</span><span class="p">[</span><span class="n">source_sim</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">deembed_cs_cur</span><span class="p">)</span>
-            <span class="n">deembed_lens</span><span class="p">[</span><span class="n">source_sim</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">deembed_lens_cur</span><span class="p">)</span>
 
-    <span class="n">post_process</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">PostProcess</span><span class="p">(</span>
-            <span class="s2">&quot;produce_epr_table.py&quot;</span><span class="p">,</span>
-            <span class="n">data_file_prefix</span><span class="o">=</span><span class="s2">&quot;correction&quot;</span><span class="p">,</span>
-            <span class="n">deembed_cross_sections</span><span class="o">=</span><span class="n">deembed_cross_sections</span><span class="p">,</span>
-            <span class="n">deembed_lens</span><span class="o">=</span><span class="n">deembed_lens</span><span class="p">,</span>
-            <span class="n">sheet_approximations</span><span class="o">=</span><span class="p">{</span>
-                <span class="s2">&quot;MA&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thickness&quot;</span><span class="p">:</span> <span class="n">ma_thickness</span> <span class="o">*</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="s2">&quot;eps_r&quot;</span><span class="p">:</span> <span class="n">ma_eps_r</span><span class="p">,</span> <span class="s2">&quot;background_eps_r&quot;</span><span class="p">:</span> <span class="n">ma_bg_eps_r</span><span class="p">},</span>
-                <span class="s2">&quot;MS&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thickness&quot;</span><span class="p">:</span> <span class="n">ms_thickness</span> <span class="o">*</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="s2">&quot;eps_r&quot;</span><span class="p">:</span> <span class="n">ms_eps_r</span><span class="p">,</span> <span class="s2">&quot;background_eps_r&quot;</span><span class="p">:</span> <span class="n">ms_bg_eps_r</span><span class="p">},</span>
-                <span class="s2">&quot;SA&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thickness&quot;</span><span class="p">:</span> <span class="n">sa_thickness</span> <span class="o">*</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="s2">&quot;eps_r&quot;</span><span class="p">:</span> <span class="n">sa_eps_r</span><span class="p">,</span> <span class="s2">&quot;background_eps_r&quot;</span><span class="p">:</span> <span class="n">sa_bg_eps_r</span><span class="p">},</span>
-            <span class="p">},</span>
-            <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;MA&quot;</span><span class="p">,</span> <span class="s2">&quot;MS&quot;</span><span class="p">,</span> <span class="s2">&quot;SA&quot;</span><span class="p">,</span> <span class="s2">&quot;substrate&quot;</span><span class="p">,</span> <span class="s2">&quot;vacuum&quot;</span><span class="p">],</span>
-            <span class="n">region_corrections</span><span class="o">=</span><span class="p">{</span>
-                <span class="o">**</span><span class="p">{</span><span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">source_sims</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">get_partition_regions</span><span class="p">()},</span>
-                <span class="o">**</span><span class="p">{</span><span class="n">p</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">cuts</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;partition_regions&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">k</span><span class="p">])},</span>
-            <span class="p">},</span>
-        <span class="p">),</span>
-    <span class="p">]</span>
-    <span class="k">return</span> <span class="n">correction_simulations</span><span class="p">,</span> <span class="n">post_process</span></div>
+
+<span class="c1"># Prepared cross section profiles</span>
+
+
+<div class="viewcode-block" id="get_single_face_cross_section_profile">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cross_section_profile.html#kqcircuits.simulations.export.cross_section.cross_section_profile.get_single_face_cross_section_profile">[docs]</a>
+<span class="k">def</span> <span class="nf">get_single_face_cross_section_profile</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">CrossSectionProfile</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Standard KQC single face cross section profile&quot;&quot;&quot;</span>
+    <span class="n">profile</span> <span class="o">=</span> <span class="n">CrossSectionProfile</span><span class="p">()</span>
+    <span class="n">profile</span><span class="o">.</span><span class="n">add_this_to_xor_with_master</span> <span class="o">=</span> <span class="mf">0.0</span>  <span class="c1"># TODO: remove this</span>
+    <span class="c1"># Add standard 1t1 face</span>
+    <span class="n">profile</span><span class="o">.</span><span class="n">add_face</span><span class="p">(</span><span class="s2">&quot;1t1&quot;</span><span class="p">)</span>
+    <span class="c1"># Define levels for bottom substrate</span>
+    <span class="n">profile</span><span class="o">.</span><span class="n">level</span><span class="p">(</span>
+        <span class="s2">&quot;substrate_1&quot;</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">face_z_levels</span><span class="p">()[</span><span class="s2">&quot;1t1&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">s</span><span class="o">.</span><span class="n">substrate_height</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">face_z_levels</span><span class="p">()[</span><span class="s2">&quot;1t1&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="c1"># Define levels for gaps (including possible over etching) and change it to vacuum layer</span>
+    <span class="n">profile</span><span class="o">.</span><span class="n">level</span><span class="p">(</span>
+        <span class="s2">&quot;1t1_gap&quot;</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">face_z_levels</span><span class="p">()[</span><span class="s2">&quot;1t1&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">s</span><span class="o">.</span><span class="n">vertical_over_etching</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">face_z_levels</span><span class="p">()[</span><span class="s2">&quot;1t1&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">change_to_layer</span><span class="o">=</span><span class="s2">&quot;vacuum&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="c1"># Make sure gap regions eat away from substrate</span>
+    <span class="n">profile</span><span class="o">.</span><span class="n">priority</span><span class="p">(</span><span class="s2">&quot;substrate_1&quot;</span><span class="p">,</span> <span class="s2">&quot;1t1_gap&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">profile</span></div>
+
+
+
+<div class="viewcode-block" id="get_flip_chip_cross_section_profile">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cross_section_profile.html#kqcircuits.simulations.export.cross_section.cross_section_profile.get_flip_chip_cross_section_profile">[docs]</a>
+<span class="k">def</span> <span class="nf">get_flip_chip_cross_section_profile</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">CrossSectionProfile</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Standard KQC flip chip cross section profile&quot;&quot;&quot;</span>
+    <span class="c1"># Take single face profile and add stuff on top of it</span>
+    <span class="n">profile</span> <span class="o">=</span> <span class="n">get_single_face_cross_section_profile</span><span class="p">()</span>
+    <span class="n">profile</span><span class="o">.</span><span class="n">add_this_to_xor_with_master</span> <span class="o">=</span> <span class="o">-</span><span class="mf">383.4</span>  <span class="c1"># TODO: remove this</span>
+    <span class="c1"># Add standard 2b1 face</span>
+    <span class="n">profile</span><span class="o">.</span><span class="n">add_face</span><span class="p">(</span><span class="s2">&quot;2b1&quot;</span><span class="p">)</span>
+    <span class="c1"># Define levels for top substrate</span>
+    <span class="n">profile</span><span class="o">.</span><span class="n">level</span><span class="p">(</span>
+        <span class="s2">&quot;substrate_2&quot;</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">face_z_levels</span><span class="p">()[</span><span class="s2">&quot;2b1&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">s</span><span class="o">.</span><span class="n">substrate_height</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">face_z_levels</span><span class="p">()[</span><span class="s2">&quot;2b1&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="c1"># Define levels for gaps (including possible over etching) and change it to vacuum layer</span>
+    <span class="n">profile</span><span class="o">.</span><span class="n">level</span><span class="p">(</span>
+        <span class="s2">&quot;2b1_gap&quot;</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">face_z_levels</span><span class="p">()[</span><span class="s2">&quot;2b1&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">s</span><span class="o">.</span><span class="n">vertical_over_etching</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">face_z_levels</span><span class="p">()[</span><span class="s2">&quot;2b1&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">change_to_layer</span><span class="o">=</span><span class="s2">&quot;vacuum&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="c1"># Make sure gap regions eat away from substrate</span>
+    <span class="n">profile</span><span class="o">.</span><span class="n">priority</span><span class="p">(</span><span class="s2">&quot;substrate_2&quot;</span><span class="p">,</span> <span class="s2">&quot;2b1_gap&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">profile</span></div>
+
+
+
+<div class="viewcode-block" id="get_cross_section_profile">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cross_section_profile.html#kqcircuits.simulations.export.cross_section.cross_section_profile.get_cross_section_profile">[docs]</a>
+<span class="k">def</span> <span class="nf">get_cross_section_profile</span><span class="p">(</span><span class="n">simulation</span><span class="p">:</span> <span class="s2">&quot;Simulation&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CrossSectionProfile</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Given simulation&#39;s face_stack, either returns single face or flip chip cross section profile&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_stack</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">get_flip_chip_cross_section_profile</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">get_single_face_cross_section_profile</span><span class="p">()</span></div>
 
 </pre></div>
 
