@@ -23,6 +23,7 @@ kqcircuits.util
    kqcircuits.util.label_polygons
    kqcircuits.util.layout_to_code
    kqcircuits.util.library_helper
+   kqcircuits.util.load_save_layout
    kqcircuits.util.log_router
    kqcircuits.util.merge
    kqcircuits.util.netlist_extraction
