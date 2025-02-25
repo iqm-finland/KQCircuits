@@ -15,6 +15,7 @@
 # (meetiqm.com/iqm-open-source-trademark-policy). IQM welcomes contributions to the code.
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
+from math import cos, pi
 
 
 # pylint: disable=consider-using-f-string
@@ -278,6 +279,20 @@ def add_material(oDefinitionManager, name, **parameters):
     for key, value in parameters.items():
         param_list += ["{}:=".format(key), str(value)]
     oDefinitionManager.AddMaterial(param_list)
+
+
+def is_metal(material, material_dict):
+    """Returns true if material is considered as metal."""
+    return material == "pec" or material_dict.get(material, {}).get("conductivity", 0) > 0
+
+
+def color_by_material(material, material_dict, is_sheet=True):
+    """Helper function to define colors by material. Returns tuple containing red, green, blue, and transparency."""
+    if is_metal(material, material_dict):
+        return 240, 120, 240, 0.5
+    n = 0.3 * (material_dict.get(material, {}).get("permittivity", 1.0) - 1.0)
+    alpha = 0.93 ** (2 * n if is_sheet else n)
+    return tuple(int(100 + 80 * c) for c in [cos(n - pi / 3), cos(n + pi), cos(n + pi / 3)]) + (alpha,)
 
 
 def set_color(oEditor, objects, red, green, blue, transparency):

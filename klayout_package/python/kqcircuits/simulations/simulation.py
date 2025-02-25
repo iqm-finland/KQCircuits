@@ -196,8 +196,12 @@ class Simulation:
         pdt.TypeString,
         "Dictionary of dielectric materials",
         "{'silicon': {'permittivity': 11.45}}",
-        docstring="Material property keywords follow Ansys Electromagnetics property names. "
-        "For example 'permittivity', 'dielectric_loss_tangent', etc.",
+        docstring="Contains the material names as keys and material properties as values. If the material property has "
+        "positive value for keyword 'conductivity', the material is considered as metal. Otherwise, the material is "
+        "considered as dielectric. The material names 'vacuum' and 'pec' (perfect electric conductor) are excluded and "
+        "they can be used without defining them explicitly. The property keyword 'permittivity' is fully supported and "
+        "keywords 'conductivity', 'dielectric_loss_tangent', 'permeability', 'magnetic_loss_tangent', and "
+        "'london_penetration_depth' are partly supported depending on the solver.",
     )
     chip_distance = Param(
         pdt.TypeList,
@@ -556,10 +560,14 @@ class Simulation:
         return sum_region
 
     def split_metal_layers_by_excitation(self):
-        """Split metal layers in self.layers such that ground, signal, and floating metals are separated.
+        """Split metal layers in self.layers such that ground and signal metals are separated.
 
-        Adds 'excitation' keyword to metal layers having values 'gnd', {port.number}, and 'flt', respectively for
-        ground, signals and floating layers.
+        Adds 'excitation' keyword to metal layers. Excitation 0 means ground and other excitations are signals.
+
+        The signal numbers start from 1, and they are ordered such that first comes metals connected to ports (ordered
+        by port number). The floating metals (that are not connected to any port) are also assigned as signals and their
+        numbering is quite arbitrary after the port metals. Note that the excitation number does not necessarily match
+        with port numbers.
 
         This function should be called before `produce_layers`.
         """
@@ -611,7 +619,7 @@ class Simulation:
 
         # assign excitation to parts
         ports = sorted(self.ports, key=lambda p: p.number) if self.use_ports else []
-        excitation = {**{p.number: {} for p in ports}, "gnd": {}, "flt": {}}
+        excitations = [{}]
         z = self.face_z_levels()
         for port in ports:
             signal_z = round(z[resolve_face(port.face, self.face_ids)][0], 12)
@@ -621,10 +629,15 @@ class Simulation:
                 signal_loc = (port.signal_location + v_mps).to_itype(self.layout.dbu)
                 if not port.floating:
                     ground_loc = (port.ground_location - v_mps).to_itype(self.layout.dbu)
-                    merge_parts(get_connected_part(ground_loc, signal_z), excitation["gnd"])
+                    merge_parts(get_connected_part(ground_loc, signal_z), excitations[0])  # ground excitation
             else:
                 signal_loc = port.signal_location.to_itype(self.layout.dbu)
-            merge_parts(get_connected_part(signal_loc, signal_z), excitation[port.number])
+
+            # append port excitation to excitations if it exists
+            port_excitation = {}
+            merge_parts(get_connected_part(signal_loc, signal_z), port_excitation)
+            if port_excitation:
+                excitations.append(port_excitation)
 
         # assign remaining parts as ground if they touch edge, bottom, or top of the simulation box, otherwise floating
         ground_edges = pya.Region(self.box.to_itype(self.layout.dbu)).edges()
@@ -635,21 +648,24 @@ class Simulation:
                 or not r.interacting(ground_edges).is_empty()
                 for n, r in part.items()
             ):
-                merge_parts(part, excitation["gnd"])  # ground
+                merge_parts(part, excitations[0])  # ground excitation
             else:
-                merge_parts(part, excitation["flt"])  # floating
+                floating_excitation = {}
+                merge_parts(part, floating_excitation)
+                if floating_excitation:
+                    excitations.append(floating_excitation)
 
         # split metals by excitations
         for name in metal_names:
             if name.endswith("_metal"):  # split base metal layers
-                for key, part in excitation.items():
+                for key, part in enumerate(excitations):
                     if name in part.keys():
-                        n = name.replace("_metal", "_ground" if key == "gnd" else f"_signal_{key}")
+                        n = name.replace("_metal", "_ground" if key == 0 else f"_signal_{key}")
                         self.layers[n] = {**self.layers[name], "region": part[name], "excitation": key}
                 del self.layers[name]
             else:  # split metals with multiple excitations in general
                 layer_excitations = []
-                for key, part in excitation.items():
+                for key, part in enumerate(excitations):
                     if name in part.keys():
                         layer_excitations.append(key)
 
@@ -657,7 +673,7 @@ class Simulation:
                     for i, key in enumerate(layer_excitations):
                         self.layers[f"{name}_{key}"] = {
                             **self.layers[name],
-                            "region": excitation[key][name],
+                            "region": excitations[key][name],
                             "excitation": key,
                         }
                     del self.layers[name]

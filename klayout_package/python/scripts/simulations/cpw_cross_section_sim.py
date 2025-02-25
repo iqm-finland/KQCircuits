@@ -125,7 +125,7 @@ class CpwCrossSectionSim(CrossSectionSimulation):
         self.cell.shapes(self.get_sim_layer("substrate")).insert(substrate)
         self.set_permittivity("substrate", 11.45)
         for i, s in enumerate(signals):
-            self.cell.shapes(self.get_sim_layer(f"signal_{i}")).insert(s)
+            self.cell.shapes(self.get_sim_layer(f"signal_{i + 1}")).insert(s)
         self.cell.shapes(self.get_sim_layer("ground")).insert(ground)
 
         if any((self.ma_layer_thickness, self.ms_layer_thickness, self.sa_layer_thickness)):

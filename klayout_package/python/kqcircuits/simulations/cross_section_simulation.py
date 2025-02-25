@@ -176,17 +176,65 @@ class CrossSectionSimulation:
     def get_layers(self):
         return self.layer_dict.values()
 
+    def get_new_layers_format(self):
+        """This is temporary function to convert data from self.layer_dict, permittivity_dict, and
+        self.get_dict_by_layers("london_penetration_depth") into format similar to Simulation.layers and
+        Simulation.material_dict. Does work in general.
+        """
+        # ToDo: remove this function
+        london = self.get_dict_by_layers("london_penetration_depth")
+        set_london = {v for v in london.values() if v != 0.0}
+        london_materials = {v: f"pec_london_{i+1}" for i, v in enumerate(set_london)}
+
+        dielectric = {n: v for n in self.layer_dict for k, v in self.permittivity_dict.items() if n.startswith(k)}
+        set_dielectric = {v for v in dielectric.values() if v != 1.0}
+        dielectric_materials = {v: f"dielectric_{i+1}" for i, v in enumerate(set_dielectric)}
+
+        layers = {}
+        material_dict = {
+            **{n: {"conductivity": 1e30, "london_penetration_depth": v} for v, n in london_materials.items()},
+            **{n: {"permittivity": v} for v, n in dielectric_materials.items()},
+        }
+        for name, layer in self.layer_dict.items():
+            if london.get(name, 0.0) != 0.0:
+                material = london_materials[london[name]]
+            elif "signal" in name or "ground" in name:
+                material = "pec"
+            elif dielectric.get(name, 1.0) != 1.0:
+                material = dielectric_materials[dielectric[name]]
+            else:
+                material = "vacuum"
+
+            excitation = None
+            if "ground" in name:
+                excitation = 0
+            elif "signal" in name:
+                splt = name[name.find("signal") :].split("_")
+                try:
+                    excitation = int(splt[1])
+                except (ValueError, IndexError):
+                    excitation = 1
+
+            layers[name] = {
+                "layer": layer.layer,
+                "material": material,
+                **({} if excitation is None else {"excitation": excitation}),
+            }
+
+        return layers, material_dict
+
     def get_simulation_data(self):
         """Return the simulation data in dictionary form.
 
         Returns:
             dictionary of relevant parameters for simulation
         """
+        layers, material_dict = self.get_new_layers_format()
+
         simulation_data = {
             "simulation_name": self.name,
             "units": self.units,
-            "layers": {k: v.layer for k, v in self.layer_dict.items()},
-            "london_penetration_depth": self.get_dict_by_layers("london_penetration_depth"),
-            **{f"{k}_permittivity": v for k, v in self.permittivity_dict.items()},
+            "layers": layers,
+            "material_dict": material_dict,
         }
         return simulation_data

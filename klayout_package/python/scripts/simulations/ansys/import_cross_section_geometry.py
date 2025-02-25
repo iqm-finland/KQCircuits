@@ -18,7 +18,6 @@
 
 
 # This is a Python 2.7 script that should be run in Ansys Electronic Desktop in order to import and run the simulation
-from math import cos, pi
 import time
 import os
 import sys
@@ -27,7 +26,15 @@ import ScriptEnv
 
 # TODO: Figure out how to set the python path for the Ansys internal IronPython
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "util"))
-from geometry import set_material, add_layer, add_material, set_color, scale  # pylint: disable=wrong-import-position
+from geometry import (  # pylint: disable=wrong-import-position
+    set_material,
+    add_layer,
+    add_material,
+    is_metal,
+    color_by_material,
+    set_color,
+    scale,
+)
 
 # pylint: disable=consider-using-f-string
 # Set up environment
@@ -44,6 +51,7 @@ with open(jsonfile, "r") as fjsonfile:  # pylint: disable=unspecified-encoding
 simulation_flags = data["simulation_flags"]
 gds_file = data["gds_file"]
 units = data.get("units", "um")
+material_dict = data.get("material_dict", {})
 
 ansys_project_template = data.get("ansys_project_template", "")
 mesh_size = data.get("mesh_size", {})
@@ -60,18 +68,12 @@ oEditor = oDesign.SetActiveEditor("3D Modeler")
 oBoundarySetup = oDesign.GetModule("BoundarySetup")
 oAnalysisSetup = oDesign.GetModule("AnalysisSetup")
 
-
-# Define colors
-def color_by_material(is_pec=False, permittivity=1.0):
-    if is_pec:
-        return 240, 120, 240, 0.5
-    n = 0.3 * (permittivity - 1.0)
-    alpha = 0.93 ** (2 * n)
-    return tuple(int(100 + 80 * c) for c in [cos(n - pi / 3), cos(n + pi), cos(n + pi / 3)]) + (alpha,)
-
-
 # Set units
 oEditor.SetModelUnits(["NAME:Units Parameter", "Units:=", units, "Rescale:=", False])
+
+# Add materials
+for name, params in material_dict.items():
+    add_material(oDefinitionManager, name, **params)
 
 # Import GDSII geometry
 layers = data.get("layers", {})
@@ -80,7 +82,7 @@ order_map = []
 layer_map = ["NAME:LayerMap"]
 order = 0
 for lname, ldata in layers.items():
-    add_layer(layer_map, order_map, ldata, lname, order)
+    add_layer(layer_map, order_map, ldata["layer"], lname, order)
     order += 1
 
 oEditor.ImportGDSII(
@@ -102,53 +104,37 @@ scale(oEditor, oEditor.GetObjectsInGroup("Sheets"), data["gds_scaling"])
 
 # Get imported objects
 objects = {}
-for lname, _ in layers.items():
+metals = []
+for lname, ldata in layers.items():
     objects[lname] = oEditor.GetMatchedObjectName(lname + "_*")
-    if "signal" in lname or "ground" in lname:
-        set_material(oEditor, objects[lname], "pec")
-        set_color(oEditor, objects[lname], *color_by_material(is_pec=True))
-    elif lname + "_permittivity" in data:
-        add_material(oDefinitionManager, lname, permittivity=data[lname + "_permittivity"])
-        set_material(oEditor, objects[lname], lname)
-        set_color(oEditor, objects[lname], *color_by_material(permittivity=data[lname + "_permittivity"]))
+    material = ldata["material"]
+    if is_metal(material, material_dict):
+        metals.append(lname)
+    set_material(oEditor, objects[lname], material)
+    set_color(oEditor, objects[lname], *color_by_material(material, material_dict))
+
+# Assign signal, ground, and floating objects
+excitations = {layers[n].get("excitation") for n in metals}
+for excitation in excitations:
+    objs = [o for n in metals if layers[n].get("excitation") == excitation for o in objects[n]]
+    if not objs:
+        continue
+    if excitation == 0:
+        fun = oBoundarySetup.AssignSingleReferenceGround
+        name = "ground"
+    elif excitation is None:
+        fun = oBoundarySetup.AssignSingleFloatingLine
+        name = "floating"
     else:
-        set_material(oEditor, objects[lname], "vacuum")
-        set_color(oEditor, objects[lname], *color_by_material())
-
-
-# assign signals and grounds
-ground_objects = [o for n, v in objects.items() if "ground" in n for o in v]
-if ground_objects:
-    oBoundarySetup.AssignSingleReferenceGround(
-        [
-            "NAME:ground",
-            "Objects:=",
-            [o for n, v in objects.items() if "ground" in n for o in v],
-            "SolveOption:=",
-            "SolveInside",
-            "Thickness:=",
-            "-1000mm",
-        ]
-    )
-for name, objs in objects.items():
-    if "signal" in name and objs:
-        oBoundarySetup.AssignSingleSignalLine(
-            [
-                "NAME:{}".format(name),
-                "Objects:=",
-                objs,
-                "SolveOption:=",
-                "SolveInside",
-                "Thickness:=",
-                "-1000mm",
-            ]
-        )
+        fun = oBoundarySetup.AssignSingleSignalLine
+        name = "signal_{}".format(excitation)
+    fun(["NAME:{}".format(name), "Objects:=", objs, "SolveOption:=", "Automatic", "Thickness:=", "-1000mm"])
 
 # Add field calculations
 if data.get("integrate_energies", False):
     oModule = oDesign.GetModule("FieldsReporter")
     for name, objs in objects.items():
-        if "signal" in name or "ground" in name:
+        if name in metals:
             continue
 
         for i, obj in enumerate(objs):

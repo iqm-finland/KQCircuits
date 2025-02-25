@@ -18,7 +18,6 @@
 
 
 # This is a Python 2.7 script that should be run in Ansys Electronic Desktop in order to import and run the simulation
-from math import cos, pi
 import time
 import os
 import sys
@@ -39,6 +38,7 @@ from geometry import (  # pylint: disable=wrong-import-position
     delete,
     objects_from_sheet_edges,
     add_material,
+    color_by_material,
     set_color,
     scale,
 )
@@ -96,16 +96,6 @@ oAnalysisSetup = oDesign.GetModule("AnalysisSetup")
 oOutputVariable = oDesign.GetModule("OutputVariable")
 oSolutions = oDesign.GetModule("Solutions")
 oReportSetup = oDesign.GetModule("ReportSetup")
-
-
-# Define colors
-def color_by_material(material, is_sheet=False):
-    if material == "pec":
-        return 240, 120, 240, 0.5
-    n = 0.3 * (material_dict.get(material, {}).get("permittivity", 1.0) - 1.0)
-    alpha = 0.93 ** (2 * n if is_sheet else n)
-    return tuple(int(100 + 80 * c) for c in [cos(n - pi / 3), cos(n + pi), cos(n + pi / 3)]) + (alpha,)
-
 
 # Set units
 oEditor.SetModelUnits(["NAME:Units Parameter", "Units:=", units, "Rescale:=", False])
@@ -196,17 +186,17 @@ for lname, ldata in layers.items():
         # Solve Inside doesn't exist in 'q3d', so we use None to ignore the parameter.
         solve_inside = material != "pec" if ansys_tool in hfss_tools else None
         set_material(oEditor, objects[lname], material, solve_inside)
-        set_color(oEditor, objects[lname], *color_by_material(material))
+        set_color(oEditor, objects[lname], *color_by_material(material, material_dict, False))
     elif material == "pec":
         pec_sheets += objects[lname]
     else:
-        set_color(oEditor, objects[lname], *color_by_material(material, True))
+        set_color(oEditor, objects[lname], *color_by_material(material, material_dict))
         if lname not in mesh_size:
             set_material(oEditor, objects[lname], None, None)  # set sheet as non-model
 
 # Assign perfect electric conductor to metal sheets
 if pec_sheets:
-    set_color(oEditor, pec_sheets, *color_by_material("pec", True))
+    set_color(oEditor, pec_sheets, *color_by_material("pec", material_dict))
     if ansys_tool in hfss_tools:
         oBoundarySetup.AssignPerfectE(["NAME:PerfE1", "Objects:=", pec_sheets, "InfGroundPlane:=", False])
     elif ansys_tool == "q3d":

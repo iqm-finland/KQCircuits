@@ -24,13 +24,17 @@ import time
 import shutil
 from pathlib import Path
 from typing import Any
-from gmsh_helpers import get_elmer_layers, MESH_LAYER_PREFIX
+from gmsh_helpers import get_elmer_layers, MESH_LAYER_PREFIX, get_metal_layers
 
 
 from scipy.constants import epsilon_0
 from scipy.signal import find_peaks
 import numpy as np
 import pandas as pd
+
+
+def use_london_equations(json_data):
+    return any(m.get("london_penetration_depth", 0) > 0 for m in json_data["material_dict"].values())
 
 
 def read_mesh_names(path: Path) -> list[str]:
@@ -897,19 +901,12 @@ def get_permittivities(json_data: dict[str, Any], with_zero: bool, dim: int, mes
     Returns:
         list of body permittivities
     """
-
-    def _search_permittivity(json_data: dict[str, Any], body: str) -> float:
-        json_bodies = [k[:-13] for k in json_data.keys() if k.endswith("_permittivity")]
-        for p in json_bodies:
-            if body.startswith(p):
-                used_perm = json_data[f"{p}_permittivity"]
-                return used_perm
-        return 1.0
-
     bodies = get_body_list(json_data, dim, mesh_names)
     if dim == 2:
+        layers = get_elmer_layers(json_data["layers"])
         return [
-            1.0 if with_zero else json_data.get(f"{s}_permittivity", _search_permittivity(json_data, s)) for s in bodies
+            1.0 if with_zero else json_data["material_dict"].get(layers[n]["material"], {}).get("permittivity", 1.0)
+            for n in bodies
         ]
     elif dim == 3:
         return [1.0 if with_zero else json_data["material_dict"].get(n, {}).get("permittivity", 1.0) for n in bodies]
@@ -929,7 +926,8 @@ def get_signals(json_data: dict[str, Any], dim: int, mesh_names: list[str]) -> l
         list of signals
     """
     if dim == 2:
-        return [n for n in get_elmer_layers(json_data["layers"]).keys() if "signal" in n and n in mesh_names]
+        metals = {n: l for n, l in get_elmer_layers(get_metal_layers(json_data)).items() if n in mesh_names}
+        return [n for n, l in metals.items() if l.get("excitation") != 0]
     elif dim == 3:
         port_numbers = sorted([port["number"] for port in json_data["ports"]])
         return [n for n in [f"signal_{i}" for i in port_numbers] if n in mesh_names]
@@ -949,12 +947,8 @@ def get_grounds(json_data: dict[str, Any], dim: int, mesh_names: list[str]) -> l
         list of grounds
     """
     if dim == 2:
-        signals = get_signals(json_data, dim, mesh_names)
-        return [
-            n
-            for n in get_elmer_layers(json_data["layers"]).keys()
-            if "ground" in n and n not in signals and n in mesh_names
-        ]
+        metals = {n: l for n, l in get_elmer_layers(get_metal_layers(json_data)).items() if n in mesh_names}
+        return [n for n, l in metals.items() if l.get("excitation") == 0]
     elif dim == 3:
         return [n for n in mesh_names if n.startswith("ground")]
     return []
@@ -1341,14 +1335,12 @@ def sif_inductance(
         ],
     )
 
-    londons_dict = get_elmer_layers(json_data["london_penetration_depth"])
-    use_london_eq = any((london > 0 for london in londons_dict.values()))
+    layers = get_elmer_layers(json_data["layers"])
+    mat = json_data["material_dict"]
+    londons_dict = {n: mat.get(v["material"], {}).get("london_penetration_depth", 0) for n, v in layers.items()}
 
     metals = signals + grounds
     for l, metal_body in enumerate(metals, 2):
-        if metal_body not in londons_dict:
-            logging.warning(f"No london penetration depth found for {metal_body}")
-
         lambda_l = londons_dict.get(metal_body, 0.0)
         bodies += sif_body(ordinate=l, target_bodies=[metal_body], equation=1, material=l)
 
@@ -1371,7 +1363,7 @@ def sif_inductance(
             ],
         )
 
-    london_param = ["London Equations = Logical True"] if use_london_eq else []
+    london_param = ["London Equations = Logical True"] if use_london_equations(json_data) else []
     components = sif_component(
         ordinate=1,
         master_bodies=list(range(2, 2 + len(signals))),
@@ -1398,7 +1390,7 @@ def sif_circuit_definitions(json_data: dict[str, Any]) -> str:
     res = "$ Circuits = 1\n"
 
     # Define variable count and initialize circuit matrices.
-    use_london_eq = any((london > 0 for london in json_data["london_penetration_depth"].values()))
+    use_london_eq = use_london_equations(json_data)
 
     n_equations = 4 + int(use_london_eq)
     res += f"\n$ C.1.perm = zeros({n_equations})\n"

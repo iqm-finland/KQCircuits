@@ -83,7 +83,7 @@ def export_elmer_json(
     if is_cross_section:
         sif_names = [f"{full_name}_C"]
         if sol_data["run_inductance_sim"]:
-            if any((london > 0 for london in sim_data["london_penetration_depth"].values())):
+            if any(m.get("london_penetration_depth", 0) > 0 for m in sim_data["material_dict"].values()):
                 sif_names += [f"{full_name}_L"]
             else:
                 sif_names += [f"{full_name}_C0"]

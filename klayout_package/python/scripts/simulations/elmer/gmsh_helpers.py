@@ -32,6 +32,15 @@ MESH_LAYER_PREFIX = "elmer_prefix_"
 DimTag = tuple[int, int]
 
 
+def get_metal_layers(json_data):
+    material_dict = json_data["material_dict"]
+    return {
+        k: v
+        for k, v in json_data["layers"].items()
+        if v.get("material") == "pec" or material_dict.get(v.get("material"), {}).get("conductivity", 0) > 0
+    }
+
+
 def get_elmer_layers(data):
     """Prefixes dict keys if starting with number. Returns new modified dict"""
     return {apply_elmer_layer_prefix(k): v for k, v in data.items()}

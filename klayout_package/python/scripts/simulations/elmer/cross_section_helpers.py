@@ -24,9 +24,12 @@ import pandas as pd
 import gmsh
 from scipy.constants import mu_0, epsilon_0
 
-
-from elmer_helpers import sif_capacitance, sif_inductance, sif_circuit_definitions
-
+from elmer_helpers import (
+    sif_capacitance,
+    sif_inductance,
+    sif_circuit_definitions,
+    use_london_equations,
+)
 
 from gmsh_helpers import (
     separated_hull_and_holes,
@@ -35,6 +38,7 @@ from gmsh_helpers import (
     get_recursive_children,
     set_meshing_options,
     apply_elmer_layer_prefix,
+    get_metal_layers,
 )
 
 try:
@@ -74,8 +78,8 @@ def produce_cross_section_mesh(json_data: dict[str, Any], msh_file: Path | str) 
     gmsh.model.add("cross_section")
 
     dim_tags = {}
-    for name, num in layers.items():
-        reg = pya.Region(cell.shapes(layout.layer(num, 0)))
+    for name, data in layers.items():
+        reg = pya.Region(cell.shapes(layout.layer(data["layer"], 0)))
         layer_dim_tags = []
         for simple_poly in reg.each():
             poly = separated_hull_and_holes(simple_poly)
@@ -146,7 +150,7 @@ def produce_cross_section_mesh(json_data: dict[str, Any], msh_file: Path | str) 
     # Add physical groups
     for n in new_tags:
         gmsh.model.addPhysicalGroup(2, [t[1] for t in new_tags[n]], name=apply_elmer_layer_prefix(n))
-    metals = [n for n in new_tags if "signal" in n or "ground" in n]
+    metals = [n for n in get_metal_layers(json_data) if n in new_tags]
     for n in metals:
         metal_boundary = gmsh.model.getBoundary(new_tags[n], combined=False, oriented=False, recursive=False)
         gmsh.model.addPhysicalGroup(1, [t[1] for t in metal_boundary], name=f"{apply_elmer_layer_prefix(n)}_boundary")
@@ -246,7 +250,7 @@ def produce_cross_section_sif_files(json_data: dict[str, Any], folder_path: Path
         )
     ]
     if json_data["run_inductance_sim"]:
-        if any((london > 0 for london in json_data["london_penetration_depth"].values())):
+        if use_london_equations(json_data):
             circuit_definitions_file = save("inductance.definitions", sif_circuit_definitions(json_data))
             sif_files.append(
                 save(
@@ -286,7 +290,7 @@ def get_cross_section_capacitance_and_inductance(
         return {"Cs": None, "Ls": None}
 
     try:
-        if any((london > 0 for london in json_data["london_penetration_depth"].values())):
+        if use_london_equations(json_data):
             l_matrix_file_name = "inductance.dat"
             l_matrix_file = Path(folder_path).joinpath(l_matrix_file_name)
             if not l_matrix_file.is_file():
