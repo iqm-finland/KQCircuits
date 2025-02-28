@@ -44,108 +44,109 @@ if len(sys.argv) > 1:
 
 groups = pp_data.get("groups", [])
 region_corrections = pp_data.get("region_corrections", {})
-deembed_lens = pp_data.get("deembed_lens")
-deembed_cross_sections = pp_data.get("deembed_cross_sections")
+deembed_lens = pp_data.get("deembed_lens", [])
+deembed_cross_sections = pp_data.get("deembed_cross_sections", [])
 deembed = deembed_cross_sections and deembed_lens
 
 
-def _get_ith(d, i):
+def _get_ith(d: list | tuple | float, i: int):
     """gets the ith element of a list that also works for scalars"""
     return d[i] if isinstance(d, (list, tuple)) else d
 
 
-def get_mer_coefficients(simulation, region):
+def excitation_list(json_data: dict):
+    """Excitation indices in ascending order (excludes ground, excitation 0)"""
+    return sorted(set(l["excitation"] for _, l in json_data["layers"].items() if "excitation" in l) - {0})
+
+
+def get_ind_by_exc(simulation: str, excitation: int):
+    with open(f"{simulation}.json", "r", encoding="utf-8") as f:
+        sim_data = json.load(f)
+
+    excitations = excitation_list(sim_data)
+    return excitations.index(excitation) if excitation in excitations else 0
+
+
+def get_mer_coefficients(simulation: str, region: str, excitation: int):
     """
-    returns the MER coefficients for certain path and saves the loaded coefficients in a separate json file.
+    Returns the MER correction coefficients, i.e., EPRs from the 2D cross-section simulation normalized within MER.
+    Groups the EPRs according to the global variable `groups`
 
     Args:
-        simulation(String): Simulation key
-        region(String): Name of the partition region
+        simulation: Simulation name
+        region:     Name of the partition region
+        excitation: signal excitation for the 3D result
 
     Returns:
         Dictionary containing EPRs in metal-edge-region for each group
-
     """
     correction_key = region_corrections.get(region)
     if correction_key is None:
         return None
 
-    correction_file = f"coefficients_{simulation}_{region}.json"
-    # Load the correction file if it already exists
-    if os.path.isfile(correction_file):
-        with open(correction_file, "r", encoding="utf-8") as f:
-            coefficient = json.load(f)
-    else:
-        corr_key = "_" + correction_key
-        corr_file = {f for f in correction_files if corr_key in f and simulation.startswith(f[: f.find(corr_key)])}
-        if len(corr_file) > 1:
-            corr_file = {f for f in corr_file if simulation == f[: f.find(corr_key)]}
-        if not corr_file:
-            print(f"Expected correction file not found with keys {simulation} and {correction_key}.")
-            return None
-        if len(corr_file) > 1:
-            print(f"Multiple matching correction files found with keys {simulation} and {correction_key}.")
-            return None
+    cs_name = simulation + "_" + correction_key
 
-        with open(corr_file.pop(), "r", encoding="utf-8") as f:
-            res = json.load(f)
-        mer_keys = [k for k, _ in res.items() if "mer" in k and k.startswith("E_")]
+    with open(f"{cs_name}_project_results.json", "r", encoding="utf-8") as f:
+        res = json.load(f)
 
-        # always use the first signal excitation for corrections
-        mer_total = sum(_get_ith(res[k], 0) for k in mer_keys)
-        if mer_total == 0:
-            print(f'Total energy 0 for correction of region "{region}" in "{simulation}"')
-            mer_total = float("inf")
+    result_ind = get_ind_by_exc(cs_name, excitation)
 
-        coefficient = {
-            group: sum(_get_ith(res[k], 0) for k in mer_keys if group.lower() in k.lower()) / mer_total
-            for group in groups
-        }
+    mer_keys = [k for k, _ in res.items() if "mer" in k and k.startswith("E_")]
 
-        with open(correction_file, "w", encoding="utf-8") as f:
-            json.dump(coefficient, f)
+    mer_total = sum(_get_ith(res[k], result_ind) for k in mer_keys)
+    if mer_total == 0:
+        print(f'Total energy 0 for correction of region "{region}" in "{simulation}"')
+        mer_total = float("inf")
+
+    coefficient = {
+        group: sum(_get_ith(res[k], result_ind) for k in mer_keys if group.lower() in k.lower()) / mer_total
+        for group in groups
+    }
 
     return coefficient
 
 
-def get_deembed_p_dict(simulation, region, deembed_len, total_energy):
+def get_deembed_p_dict(simulation: str, region: str, deembed_len: float, total_energy: float, excitation: int):
+    """
+    Returns the 3D EPRs of a cross-section simulation extruded to having a length `deembed_len` and
+    normalized by `total energy`. Can be used to deembed the effect of the region in post-processsings.
+
+    Groups the EPRs according to the global variable `groups`
+
+    Args:
+        simulation:   Simulation name
+        region:       Name of the partition region
+        deembed_len:  Length of the deembedding in micrometers
+        total_energy: Total energy of the 3D simulation
+        excitation:   signal excitation for the 3D result
+
+    Returns:
+        Dictionary containing the EPRs for each group
+    """
     correction_key = region_corrections.get(region)
     if correction_key is None:
         return None
 
-    corr_key = "_" + correction_key
-    corr_file = {f for f in correction_files if corr_key in f and simulation.startswith(f[: f.find(corr_key)])}
-    if len(corr_file) > 1:
-        corr_file = {f for f in corr_file if simulation == f[: f.find(corr_key)]}
-    if not corr_file:
-        print(f"Expected correction file not found with keys {simulation} and {correction_key}.")
-        return None
-    if len(corr_file) > 1:
-        print(f"Multiple matching correction files found with keys {simulation} and {correction_key}.")
-        return None
+    cs_name = simulation + "_" + correction_key
 
-    with open(corr_file.pop(), "r", encoding="utf-8") as f:
+    with open(f"{cs_name}_project_results.json", "r", encoding="utf-8") as f:
         res = json.load(f)
-    energy_keys = [k for k, v in res.items() if k.startswith("E_")]
-    e_scale = deembed_len * 1e-6  # um scale
 
-    # TODO: find the correct deembed solution in `get_deembed_p_dict` in case of
-    # multiple signals are excited. The information for that is already provided at
-    # `find_deembed_signals`
+    result_ind = get_ind_by_exc(cs_name, excitation)
+
+    energy_keys = [k for k, _ in res.items() if k.startswith("E_")]
+    e_scale = deembed_len * 1e-6  # um scale
     deembed_dict = {
         f"p_{group}": e_scale
-        * sum(_get_ith(res[k], 0) for k in energy_keys if group.lower() in k.lower())
+        * sum(_get_ith(res[k], result_ind) for k in energy_keys if group.lower() in k.lower())
         / total_energy
         for group in groups
     }
 
-    with open(f"p_deembed_{simulation}_{region}.json", "w", encoding="utf-8") as f:
-        json.dump(deembed_dict, f)
-
     return deembed_dict
 
 
-def get_results_list(results):
+def get_results_list(results: dict[str, list[float] | float]):
     """Transforms a single dictionary with list values to a list of dictionaries with scalar values"""
     energy_results = {
         k: v for k, v in results.items() if k.startswith("E_") or k.startswith("Exy_") or k.startswith("Ez_")
@@ -189,14 +190,15 @@ if result_files:
         results_list = get_results_list(result_json)
         if not results_list:
             print(f'No energy results found in "{result_file}".')
+
         original_params = parameter_values.pop(original_key)
-        for result_id, result in enumerate(results_list, 1):
+        for excitation, result in zip(excitation_list(sim_data), results_list):
             energy = {k[2:]: v for k, v in result.items() if k.startswith("E_")}
 
             # Add result index if we have multiple results
-            key = original_key + ("_" + str(result_id) if len(results_list) > 1 else "")
+            key = original_key + ("_" + str(excitation) if len(results_list) > 1 else "")
             # duplicate params for each result in the json and add the result index
-            parameter_values[key] = [result_id] + original_params
+            parameter_values[key] = [excitation] + original_params
 
             def _sum_value(_dict, _key, _addition):
                 _dict[_key] = _dict.get(_key, 0.0) + _addition
@@ -253,7 +255,7 @@ if result_files:
                 for reg, corr in region_corrections.items():
                     reg_energy = {k: v for k, v in energy.items() if reg in k}
 
-                    coefficients = get_mer_coefficients(original_key, reg)
+                    coefficients = get_mer_coefficients(original_key, reg, excitation)
                     if coefficients is None:
                         epr_dict[key].update(
                             {
@@ -284,9 +286,12 @@ if result_files:
                 )
             if deembed:
 
-                def find_deembed_signals(simulation, deembed_cs, result_id):
-                    with open(f"{simulation}_{deembed_cs}.json", "r", encoding="utf-8") as f:
-                        return [k for k, v in json.load(f)["layers"].items() if v.get("excitation") == result_id]
+                def is_port_excited(original_key, deembed_cs, excitation):
+                    with open(f"{original_key}_{deembed_cs}.json", "r", encoding="utf-8") as f:
+                        cs_data = json.load(f)
+                    if cs_data.get("voltage_excitations"):
+                        return True
+                    return any(v.get("excitation") == excitation for v in cs_data["layers"].values())
 
                 sim_name = sim_data["simulation_name"]
                 if sim_name not in deembed_lens:
@@ -296,21 +301,8 @@ if result_files:
                 deembed_len_list = deembed_lens[sim_name]
                 deembed_cross_section_list = deembed_cross_sections[sim_name]
                 for deembed_len, deembed_cs in zip(deembed_len_list, deembed_cross_section_list):
-                    deembed_dict = get_deembed_p_dict(original_key, deembed_cs, deembed_len, total_energy)
-
-                    if sim_data["voltage_excitations"]:
-                        # with custom excitations we should have a single solution with all signals excited
-                        port_excited = 1
-                    else:
-                        # for now, if the model does not have signals matching to the solution, then
-                        # let's just scale the deembed participation to zero because in reality that
-                        # port is not excited, but in the case of only one signal, the case where
-                        # port signal is zero, is not computed.
-                        # TODO: find the correct deembed solution in `get_deembed_p_dict` in case of
-                        # multiple signals are excited
-                        excited_signals_cs = find_deembed_signals(original_key, deembed_cs, result_id)
-                        port_excited = 0 if len(excited_signals_cs) == 0 else 1
-
+                    deembed_dict = get_deembed_p_dict(original_key, deembed_cs, deembed_len, total_energy, excitation)
+                    port_excited = is_port_excited(original_key, deembed_cs, excitation)
                     for k, v in deembed_dict.items():
                         epr_dict[key][f"deembed_{k}_{deembed_cs}"] = v * port_excited
 
