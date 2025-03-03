@@ -38,6 +38,7 @@ from geometry import (  # pylint: disable=wrong-import-position
     delete,
     objects_from_sheet_edges,
     add_material,
+    is_metal,
     color_by_material,
     set_color,
     scale,
@@ -136,7 +137,8 @@ scale(oEditor, oEditor.GetObjectsInGroup("Sheets"), data["gds_scaling"])
 
 # Create 3D geometry
 objects = {}
-pec_sheets = []
+metals = []
+metal_sheets = []
 for lname, ldata in layers.items():
     z = ldata.get("z", 0.0)
     thickness = ldata.get("thickness", 0.0)
@@ -145,10 +147,10 @@ for lname, ldata in layers.items():
         objects[lname] = oEditor.GetMatchedObjectName(lname + "_*")
         move_vertically(oEditor, objects[lname], z, units)
 
-        # Create pec-sheets from edges
+        # Create metal sheets from edges
         edge_material = ldata.get("edge_material", None)
-        if edge_material == "pec" and thickness != 0.0:
-            pec_sheets += objects_from_sheet_edges(oEditor, objects[lname], thickness, units)
+        if is_metal(edge_material, material_dict) and thickness != 0.0:
+            metal_sheets += objects_from_sheet_edges(oEditor, objects[lname], thickness, units)
 
         thicken_sheet(oEditor, objects[lname], thickness, units)
     else:
@@ -184,27 +186,30 @@ for lname, ldata in layers.items():
     if thickness != 0.0:
         # Solve Inside parameter must be set in hfss_tools simulations to avoid warnings.
         # Solve Inside doesn't exist in 'q3d', so we use None to ignore the parameter.
-        solve_inside = material != "pec" if ansys_tool in hfss_tools else None
+        solve_inside = not is_metal(material, material_dict) if ansys_tool in hfss_tools else None
         set_material(oEditor, objects[lname], material, solve_inside)
         set_color(oEditor, objects[lname], *color_by_material(material, material_dict, False))
-    elif material == "pec":
-        pec_sheets += objects[lname]
+    elif is_metal(material, material_dict):
+        metal_sheets += objects[lname]
     else:
         set_color(oEditor, objects[lname], *color_by_material(material, material_dict))
         if lname not in mesh_size:
             set_material(oEditor, objects[lname], None, None)  # set sheet as non-model
 
+    if is_metal(material, material_dict):
+        metals.append(lname)
+
 # Assign perfect electric conductor to metal sheets
-if pec_sheets:
-    set_color(oEditor, pec_sheets, *color_by_material("pec", material_dict))
+if metal_sheets:
+    set_color(oEditor, metal_sheets, *color_by_material("pec", material_dict))
     if ansys_tool in hfss_tools:
-        oBoundarySetup.AssignPerfectE(["NAME:PerfE1", "Objects:=", pec_sheets, "InfGroundPlane:=", False])
+        oBoundarySetup.AssignPerfectE(["NAME:PerfE1", "Objects:=", metal_sheets, "InfGroundPlane:=", False])
     elif ansys_tool == "q3d":
         oBoundarySetup.AssignThinConductor(
             [
                 "NAME:ThinCond1",
                 "Objects:=",
-                pec_sheets,
+                metal_sheets,
                 "Material:=",
                 "pec",
                 "Thickness:=",
@@ -227,8 +232,6 @@ while need_subtraction:
 
 
 # Create ports or nets
-signal_objects = [o for n, v in objects.items() if "_signal" in n for o in v]
-ground_objects = [o for n, v in objects.items() if "_ground" in n for o in v]
 if ansys_tool in hfss_tools:
     ports = sorted(data["ports"], key=lambda k: k["number"])
     for port in ports:
@@ -244,6 +247,7 @@ if ansys_tool in hfss_tools:
             set_color(oEditor, [polyname], 240, 180, 180, 0.8)
 
             if ansys_tool == "hfss":
+                ground_objects = [o for n in metals if layers[n].get("excitation") == 0 for o in objects[n]]
                 oBoundarySetup.AutoIdentifyPorts(
                     ["NAME:Faces", int(oEditor.GetFaceIDs(polyname)[0])],
                     is_wave_port,
@@ -475,39 +479,19 @@ if ansys_tool in hfss_tools:
 
 
 elif ansys_tool == "q3d":
-    port_objects = []  # signal objects to be assigned as SignalNets
-    ports = sorted(data["ports"], key=lambda k: k["number"])
-    for port in ports:
-        signal_location = port["signal_location"]
-        if "ground_location" in port:
-            # Use 1e-2 safe margin to ensure that signal_location is inside the signal polygon:
-            signal_location = [x + 1e-2 * (x - y) for x, y in zip(signal_location, port["ground_location"])]
-        port_object = oEditor.GetBodyNamesByPosition(
-            [
-                "NAME:Parameters",
-                "XPosition:=",
-                str(signal_location[0]) + units,
-                "YPosition:=",
-                str(signal_location[1]) + units,
-                "ZPosition:=",
-                str(signal_location[2]) + units,
-            ]
-        )
-
-        port_object = [o for o in port_object if "_signal" in o]
-
-        if len(port_object) == 1 and port_object[0] not in port_objects and port_object[0] in signal_objects:
-            port_objects.append(port_object[0])
-
-    if not port_objects:
-        port_objects = signal_objects  # port_objects is empty -> assign all signals as SignalNets without sorting
-
-    for i, signal_object in enumerate(port_objects):
-        oBoundarySetup.AssignSignalNet(["NAME:Net{}".format(i + 1), "Objects:=", [signal_object]])
-    for i, floating_object in enumerate([obj for obj in signal_objects if obj not in port_objects]):
-        oBoundarySetup.AssignFloatingNet(["NAME:Floating{}".format(i + 1), "Objects:=", [floating_object]])
-    for i, ground_object in enumerate(ground_objects):
-        oBoundarySetup.AssignGroundNet(["NAME:Ground{}".format(i + 1), "Objects:=", [ground_object]])
+    excitations = {layers[n].get("excitation") for n in metals}
+    for excitation in excitations:
+        objs = [o for n in metals if layers[n].get("excitation") == excitation for o in objects[n]]
+        if not objs:
+            continue
+        if excitation == 0:
+            for i, obj in enumerate(objs):
+                oBoundarySetup.AssignGroundNet(["NAME:Ground{}".format(i + 1), "Objects:=", [obj]])
+        elif excitation is None:
+            for i, obj in enumerate(objs):
+                oBoundarySetup.AssignFloatingNet(["NAME:Floating{}".format(i + 1), "Objects:=", [obj]])
+        else:
+            oBoundarySetup.AssignSignalNet(["NAME:Net{}".format(excitation), "Objects:=", objs])
     oBoundarySetup.AutoIdentifyNets()  # Combine Nets by conductor connections. Order: GroundNet, SignalNet, FloatingNet
 
 

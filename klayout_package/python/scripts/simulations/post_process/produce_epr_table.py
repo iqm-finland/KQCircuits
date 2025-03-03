@@ -277,24 +277,8 @@ if result_files:
             if deembed:
 
                 def find_deembed_signals(simulation, deembed_cs, result_id):
-                    with open(f"{simulation}_cbody_map.json", "r", encoding="utf-8") as f:
-                        cbody_map = json.load(f)
-
-                    with open(f"{simulation}_{deembed_cs}_cbody_map.json", "r", encoding="utf-8") as f:
-                        cbody_map_cs = json.load(f)
-
-                    excited_signals = []
-                    for k, v in cbody_map.items():
-                        if result_id == v:
-                            excited_signals.append(k)
-
-                    excited_signals_cs = []
-                    for k, v in cbody_map_cs.items():
-                        for excited_signal in excited_signals:
-                            if excited_signal in k:
-                                excited_signals_cs.append({excited_signal: k})
-
-                    return excited_signals_cs
+                    with open(f"{simulation}_{deembed_cs}.json", "r", encoding="utf-8") as f:
+                        return [k for k, v in json.load(f)["layers"].items() if v.get("excitation") == result_id]
 
                 if original_key not in deembed_lens:
                     print("`deembed_lens` not found in correction.json, something might not work correctly!")

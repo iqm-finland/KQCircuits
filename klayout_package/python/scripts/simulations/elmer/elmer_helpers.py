@@ -24,8 +24,7 @@ import time
 import shutil
 from pathlib import Path
 from typing import Any
-from gmsh_helpers import get_elmer_layers, MESH_LAYER_PREFIX, get_metal_layers
-
+from gmsh_helpers import get_elmer_layers, MESH_LAYER_PREFIX, get_metal_layers, apply_elmer_layer_prefix
 
 from scipy.constants import epsilon_0
 from scipy.signal import find_peaks
@@ -37,51 +36,22 @@ def use_london_equations(json_data):
     return any(m.get("london_penetration_depth", 0) > 0 for m in json_data["material_dict"].values())
 
 
-def read_mesh_names(path: Path) -> list[str]:
-    """Returns all names from mesh.names file"""
-    list_of_names = []
+def read_mesh_names(path: Path) -> tuple[list[str], list[str]]:
+    """Returns names of bodies and boundaries, respectively, from mesh.names file"""
+    list_of_bodies = []
+    list_of_boundaries = []
+    current_list = list_of_bodies
     with open(path.joinpath("mesh.names"), encoding="utf-8") as file:
         for line in file:
-            if line.startswith("$ "):
+            if "! ----- names for bodies -----" in line:
+                current_list = list_of_bodies
+            elif "! ----- names for boundaries -----" in line:
+                current_list = list_of_boundaries
+            elif line.startswith("$ "):
                 eq_sign = line.find(" =")
                 if eq_sign > 2:
-                    list_of_names.append(line[2:eq_sign])
-    return list_of_names
-
-
-def read_mesh_bodies(path: Path) -> list[str]:
-    """Returns names of bodies from mesh.names file"""
-    list_of_names = []
-    with open(path.joinpath("mesh.names"), encoding="utf-8") as file:
-        for line in file:
-            if "! ----- names for boundaries -----" in line:
-                break
-            if line.startswith("$ "):
-                eq_sign = line.find(" =")
-                if eq_sign > 2:
-                    list_of_names.append(line[2:eq_sign])
-    return list_of_names
-
-
-def read_mesh_boundaries(path: Path) -> list[str]:
-    """Returns names of boundaries from mesh.names file"""
-    with open(path.joinpath("mesh.names"), encoding="utf-8") as file:
-        lines = [line.strip() for line in file]
-
-    i = 0
-    while i < len(lines) and "! ----- names for boundaries -----" not in lines[i]:
-        i += 1
-
-    list_of_names = []
-    for line in lines[i + 1 :]:
-        if line.startswith("$ "):
-            eq_sign = line.find(" =")
-            if eq_sign > 2:
-                list_of_names.append(line[2:eq_sign])
-        else:
-            logging.warning(f"Unexpected mesh boundary name: {line}")
-            break
-    return list_of_names
+                    current_list.append(line[2:eq_sign])
+    return list_of_bodies, list_of_boundaries
 
 
 def coordinate_scaling(json_data: dict[str, Any]) -> float:
@@ -861,29 +831,22 @@ def produce_sif_files(json_data: dict[str, Any], path: Path) -> list[Path]:
     return sif_filepaths
 
 
-def get_body_list(json_data: dict[str, Any], dim: int, mesh_names: list[str]) -> list[str]:
+def get_layer_list(json_data: dict[str, Any], mesh_names: list[str]) -> list[str]:
     """
-    Returns body list for 2d or 3d model.
+    Returns layer list included in mesh_names.
 
     Args:
         json_data: all the model data produced by `export_elmer_json`
-        dim: dimensionality of the model (options: 2 or 3)
         mesh_names: list of physical group names from the mesh.names file
 
     Returns:
-        list of model bodies
+        list of model layers
     """
-    body_list = []
-    if dim == 2:
-        body_list = [n for n in ["vacuum", *get_elmer_layers(json_data["layers"]).keys()] if n in mesh_names]
-    elif dim == 3:
-        body_list = [n for n in ["vacuum", "pec", *json_data["material_dict"].keys()] if n in mesh_names]
-
-    # remove duplicate elements
-    return list(dict.fromkeys(body_list))
+    layer_names = {apply_elmer_layer_prefix(k) for k in json_data["layers"]}
+    return [n for n in mesh_names if n in layer_names]
 
 
-def get_permittivities(json_data: dict[str, Any], with_zero: bool, dim: int, mesh_names: list[str]) -> list[float]:
+def get_permittivities(json_data: dict[str, Any], with_zero: bool, mesh_names: list[str]) -> list[float]:
     """
     Returns permittivities of bodies.
 
@@ -895,63 +858,16 @@ def get_permittivities(json_data: dict[str, Any], with_zero: bool, dim: int, mes
     Args:
         json_data: all the model data produced by `export_elmer_json`
         with_zero: without dielectrics if true
-        dim: dimensionality of the model (options: 2 or 3)
         mesh_names: list of physical group names from the mesh.names file
 
     Returns:
         list of body permittivities
     """
-    bodies = get_body_list(json_data, dim, mesh_names)
-    if dim == 2:
-        layers = get_elmer_layers(json_data["layers"])
-        return [
-            1.0 if with_zero else json_data["material_dict"].get(layers[n]["material"], {}).get("permittivity", 1.0)
-            for n in bodies
-        ]
-    elif dim == 3:
-        return [1.0 if with_zero else json_data["material_dict"].get(n, {}).get("permittivity", 1.0) for n in bodies]
-    return []
-
-
-def get_signals(json_data: dict[str, Any], dim: int, mesh_names: list[str]) -> list[str]:
-    """
-    Returns model signals.
-
-    Args:
-        json_data: all the model data produced by `export_elmer_json`
-        dim: dimensionality of the model (options: 2 or 3)
-        mesh_names: list of physical group names from the mesh.names file
-
-    Returns:
-        list of signals
-    """
-    if dim == 2:
-        metals = {n: l for n, l in get_elmer_layers(get_metal_layers(json_data)).items() if n in mesh_names}
-        return [n for n, l in metals.items() if l.get("excitation") != 0]
-    elif dim == 3:
-        port_numbers = sorted([port["number"] for port in json_data["ports"]])
-        return [n for n in [f"signal_{i}" for i in port_numbers] if n in mesh_names]
-    return []
-
-
-def get_grounds(json_data: dict[str, Any], dim: int, mesh_names: list[str]) -> list[str]:
-    """
-    Returns model grounds.
-
-    Args:
-        json_data: all the model data produced by `export_elmer_json`
-        dim: dimensionality of the model (options: 2 or 3)
-        mesh_names: list of physical group names from the mesh.names file
-
-    Returns:
-        list of grounds
-    """
-    if dim == 2:
-        metals = {n: l for n, l in get_elmer_layers(get_metal_layers(json_data)).items() if n in mesh_names}
-        return [n for n, l in metals.items() if l.get("excitation") == 0]
-    elif dim == 3:
-        return [n for n in mesh_names if n.startswith("ground")]
-    return []
+    if with_zero:
+        return [1.0 for _ in mesh_names]
+    layers = get_elmer_layers(json_data["layers"])
+    material_dict = json_data["material_dict"]
+    return [material_dict.get(layers.get(n, {}).get("material"), {}).get("permittivity", 1.0) for n in mesh_names]
 
 
 def sif_placeholder_boundaries(groups: list[str], n_boundaries: int) -> str:
@@ -966,19 +882,6 @@ def sif_placeholder_boundaries(groups: list[str], n_boundaries: int) -> str:
             ],
         )
     return boundary_conditions
-
-
-def _get_cbody_map(signals_boundaries):
-    # If a connected piece of signal is partitioned into multiple layers
-    # we need to set the same capacitance body for each layer
-    cbody_map: dict[str, int] = {}
-    for s in signals_boundaries:
-        s_wo_mer = s.replace("_mer", "")
-        if s_wo_mer in cbody_map:
-            cbody_map[s] = cbody_map[s_wo_mer]
-        else:
-            cbody_map[s] = max(cbody_map.values(), default=0) + 1
-    return cbody_map
 
 
 def sif_epr_3d(json_data: dict[str, Any], folder_path: Path, vtu_name: str | Path) -> str:
@@ -1027,23 +930,13 @@ def sif_epr_3d(json_data: dict[str, Any], folder_path: Path, vtu_name: str | Pat
         solver_ids=[1],
     )
 
-    mesh_bodies = read_mesh_bodies(mesh_path)
-    mesh_boundaries = read_mesh_boundaries(mesh_path)
+    body_names, boundary_names = read_mesh_names(mesh_path)
+    mesh_boundaries = get_layer_list(json_data, boundary_names)
 
-    grounds = [n for n in mesh_bodies if n.startswith("ground")]
-    signals = [n for n in mesh_bodies if n.startswith("signal")]
-    mesh_bodies = [n for n in mesh_bodies if n not in grounds + signals]
+    metal_layers = {n: l for n, l in get_elmer_layers(get_metal_layers(json_data)).items() if n in body_names}
+    mesh_bodies = get_layer_list(json_data, [n for n in body_names if n not in metal_layers])
 
-    permittivity_list = []
-    for b in mesh_bodies:
-        # mesh names have gmsh prefix if layer starts with number
-        mat = get_elmer_layers(json_data["layers"]).get(b, {}).get("material", "vacuum")
-        perm = 1.0
-        if mat in json_data["material_dict"]:
-            perm = json_data["material_dict"][mat]["permittivity"]
-        elif mat != "vacuum":
-            logging.warning(f"Material {mat} not in material_dict. Using permittivity 1.0")
-        permittivity_list.append(perm)
+    permittivity_list = get_permittivities(json_data, False, mesh_bodies)
 
     # Solver(s) with masks for saving energy
     solver_lines = [
@@ -1075,45 +968,30 @@ def sif_epr_3d(json_data: dict[str, Any], folder_path: Path, vtu_name: str | Pat
     pec_material_index = n_bodies + 1
     materials += sif_block(f"Material {pec_material_index}", ["Relative Permittivity = 1.0"])
 
-    if len(signals) == 0:
-        raise RuntimeError("No signals in the system!")
-
-    cbody_map = _get_cbody_map(signals)
-    if not json_data["sequential_signal_excitation"]:
-        # set all capacitance bodies to 1
-        cbody_map = dict.fromkeys(cbody_map, 1)
-
-    with open(f'{json_data["name"]}_cbody_map.json', "w", encoding="utf-8") as f:
-        json.dump(cbody_map, f)
-
-    n_excitations = max(cbody_map.values())
+    n_capacitance_bodies = 0
+    n_body_forces = 0
     excitation_str = "Capacitance Body = integer" if c_matrix_output else "Potential = Real"
+    excitations = sorted({d.get("excitation") for n, d in metal_layers.items()})
+    for excitation in excitations:
+        if excitation is None:
+            raise RuntimeError("Found metal layer without excitation keyword!")
 
-    # signals
-    for s in signals:
+        excitation_bodies = [n for n, d in metal_layers.items() if d.get("excitation") == excitation]
+
+        n_bodies += 1
+        n_body_forces += 1
         bodies += sif_body(
-            ordinate=n_bodies + 1,
-            target_bodies=[s],
+            ordinate=n_bodies,
+            target_bodies=excitation_bodies,
             equation=1,
             material=pec_material_index,
-            keywords=[f"Body Force = {cbody_map[s]}"],
+            keywords=[f"Body Force = {n_body_forces}"],
         )
-        n_bodies += 1
-
-    for s in range(1, n_excitations + 1):
-        body_forces += sif_block(f"Body Force {s}", [f"{excitation_str} {s}"])
-
-    # grounds
-    bodies += sif_body(
-        ordinate=n_bodies + 1,
-        target_bodies=grounds,
-        equation=1,
-        material=pec_material_index,
-        keywords=[f"Body Force = {n_excitations + 1}"],
-    )
-    n_bodies += 1
-
-    body_forces += sif_block(f"Body Force {n_excitations + 1}", [f"{excitation_str} 0"])
+        if excitation == 0:  # ground
+            body_forces += sif_block(f"Body Force {n_body_forces}", [f"{excitation_str} 0"])
+        else:  # signal
+            n_capacitance_bodies = n_capacitance_bodies + 1 if json_data["sequential_signal_excitation"] else 1
+            body_forces += sif_block(f"Body Force {n_body_forces}", [f"{excitation_str} {n_capacitance_bodies}"])
 
     boundary_conditions = ""
     # tls bcs
@@ -1181,9 +1059,9 @@ def sif_capacitance(
         keywords=["Calculate Electric Energy = True"] if dim == 2 else [],
     )
 
-    mesh_names = read_mesh_names(mesh_path)
-    body_list = get_body_list(json_data, dim=dim, mesh_names=mesh_names)
-    permittivity_list = get_permittivities(json_data, with_zero=with_zero, dim=dim, mesh_names=mesh_names)
+    body_names, boundary_names = read_mesh_names(mesh_path)
+    body_list = get_layer_list(json_data, body_names)
+    permittivity_list = get_permittivities(json_data, with_zero, body_list)
 
     if json_data.get("integrate_energies", False) and not with_zero:  # no EPR for inductance
         solvers += get_save_energy_solver(ordinate=3, energy_file="energy.dat", bodies=body_list)
@@ -1198,41 +1076,20 @@ def sif_capacitance(
         materials += sif_block(f"Material {i}", [f"Relative Permittivity = {perm}"])
 
     # Boundary conditions
+    n_capacitance_bodies = 0
     boundary_conditions = ""
-    grounds = sorted(get_grounds(json_data, dim=dim, mesh_names=mesh_names))
-    signals = sorted(get_signals(json_data, dim=dim, mesh_names=mesh_names))
-
-    potentials = ({1} if signals else set()) | ({0} if grounds else set())
-    potentials = potentials | set(
-        (float(v["potential"]) for v in json_data.get("boundary_conditions", {}).values() if "potential" in v)
-    )
-
-    if len(signals) < 2 and len(potentials) < 2:
-        logging.warning("Simulation has no potential differences. Result will be trivially zero.")
-        logging.warning(f"Signals: {signals}")
-        logging.warning(f"Grounds: {grounds}")
-        logging.warning(f"Boundary conditions: {json_data.get('boundary_conditions',  {})}")
-
-    ground_boundaries = [f"{g}_boundary" for g in grounds] if dim == 2 else grounds
-    signals_boundaries = [f"{s}_boundary" for s in signals] if dim == 2 else signals
-
-    cbody_map = _get_cbody_map(signals_boundaries)
-
-    with open(f'{json_data["name"]}_cbody_map.json', "w", encoding="utf-8") as f:
-        json.dump(cbody_map, f)
-
     n_boundaries = 0
-    if len(ground_boundaries) > 0:
-        n_boundaries += 1
-        boundary_conditions += sif_boundary_condition(
-            ordinate=n_boundaries, target_boundaries=ground_boundaries, conditions=["Potential = 0.0"]
-        )
+    excitation_names = [n for n in boundary_names if n.startswith("excitation_") and n.endswith("_boundary")]
+    excitations = sorted([(int(n[11:-9]), n) for n in excitation_names])
+    for excitation, excitation_name in excitations:
+        if excitation == 0:  # ground
+            condition = "Potential = 0.0"
+        else:  # signal
+            n_capacitance_bodies += 1
+            condition = f"Capacitance Body = {n_capacitance_bodies}"
 
-    for s in signals_boundaries:
         n_boundaries += 1
-        boundary_conditions += sif_boundary_condition(
-            ordinate=n_boundaries, target_boundaries=[s], conditions=[f"Capacitance Body = {cbody_map[s]}"]
-        )
+        boundary_conditions += sif_boundary_condition(n_boundaries, [excitation_name], [condition])
 
     outer_bc_names = []
     bc_dict = json_data.get("boundary_conditions", None)
@@ -1250,11 +1107,7 @@ def sif_capacitance(
                     outer_bc_names.append(bc_name)
 
     # Add place-holder boundaries (if additional physical groups are given)
-    other_groups = [
-        n
-        for n in mesh_names
-        if n not in body_list + ground_boundaries + signals_boundaries + outer_bc_names and not n.startswith("port_")
-    ]
+    other_groups = [n for n in body_names + boundary_names if n not in body_list + excitation_names + outer_bc_names]
     boundary_conditions += sif_placeholder_boundaries(other_groups, n_boundaries)
     n_boundaries += len(other_groups)
 
@@ -1303,24 +1156,14 @@ def sif_inductance(
     solvers += get_save_data_solver(ordinate=6, result_file="inductance.dat")
 
     # Divide layers into different materials
-    mesh_names = read_mesh_names(mesh_path)
-    signals = sorted(get_signals(json_data, dim=2, mesh_names=mesh_names))
-    grounds = sorted(get_grounds(json_data, dim=2, mesh_names=mesh_names))
-    body_list = get_body_list(json_data, dim=2, mesh_names=mesh_names)
-    others = list((set(body_list) - set(signals) - set(grounds)).union(["vacuum"]))
-
-    if len(signals) == 0:
-        logging.warning("No signals found in inductance simulation!")
-
-    if len(signals) > 1:
-        logging.warning(f"Multiple signals ({len(signals)}) found in inductance simulation!")
-        logging.warning(f'Treating "{signals[0]}" as signal and "{signals[1:]}" as grounds')
-        grounds = grounds + signals[1:]
-        signals = signals[0:1]
+    body_names, boundary_names = read_mesh_names(mesh_path)
+    body_list = get_layer_list(json_data, body_names)
+    metal_layers = get_elmer_layers(get_metal_layers(json_data))
+    non_metal_bodies = list(set(body_list) - set(metal_layers))
 
     bodies = sif_body(
         ordinate=1,
-        target_bodies=others,
+        target_bodies=non_metal_bodies,
         equation=1,
         material=1,
         keywords=["Body Force = 1 ! No effect. Set to suppress warnings"],
@@ -1335,15 +1178,23 @@ def sif_inductance(
         ],
     )
 
-    layers = get_elmer_layers(json_data["layers"])
-    mat = json_data["material_dict"]
-    londons_dict = {n: mat.get(v["material"], {}).get("london_penetration_depth", 0) for n, v in layers.items()}
+    n_bodies = 1
+    master_bodies = []
+    max_excitation = 0
+    material_dict = json_data["material_dict"]
+    for name, data in metal_layers.items():
+        if name not in body_list:
+            continue
 
-    metals = signals + grounds
-    for l, metal_body in enumerate(metals, 2):
-        lambda_l = londons_dict.get(metal_body, 0.0)
-        bodies += sif_body(ordinate=l, target_bodies=[metal_body], equation=1, material=l)
+        n_bodies += 1
+        bodies += sif_body(ordinate=n_bodies, target_bodies=[name], equation=1, material=n_bodies)
 
+        excitation = data.get("excitation", 0)
+        max_excitation = max(max_excitation, excitation)
+        if excitation == 1:
+            master_bodies.append(n_bodies)  # apply only the first signal to the master bodies
+
+        lambda_l = material_dict.get(data.get("material"), {}).get("london_penetration_depth", 0)
         if lambda_l > 0:
             opt_params = [
                 "Electric Conductivity = 0",
@@ -1355,7 +1206,7 @@ def sif_inductance(
             opt_params = ["Electric Conductivity = 1e10"]
 
         materials += sif_block(
-            f"Material {l}",
+            f"Material {n_bodies}",
             [
                 "Relative Permeability = 1  ! No effect. Set to suppress warnings",
                 "Relative Permittivity = 1000",
@@ -1363,10 +1214,16 @@ def sif_inductance(
             ],
         )
 
+    if max_excitation == 0:
+        logging.warning("No excitations found in inductance simulation!")
+    elif max_excitation > 1:
+        logging.warning(f"Multiple excitations ({max_excitation}) found in inductance simulation!")
+        logging.warning("Treating excitation 1 as signal and other excitations as grounds.")
+
     london_param = ["London Equations = Logical True"] if use_london_equations(json_data) else []
     components = sif_component(
         ordinate=1,
-        master_bodies=list(range(2, 2 + len(signals))),
+        master_bodies=master_bodies,
         coil_type="Massive",
         keywords=london_param,
     )
@@ -1374,7 +1231,7 @@ def sif_inductance(
     body_force = sif_block("Body Force 1", ['Name = "Circuit"', "testsource Re = Real 1.0", "testsource Im = Real 0.0"])
 
     # Add place-holder boundaries (if additional physical groups are given)
-    other_groups = [n for n in mesh_names if n not in body_list and not n.startswith("port_")]
+    other_groups = [n for n in body_names + boundary_names if n not in body_list]
     boundary_conditions = "" + sif_placeholder_boundaries(other_groups, 0)
 
     return header + equations + solvers + materials + bodies + components + body_force + boundary_conditions
@@ -1480,15 +1337,16 @@ def sif_wave_equation(
         )
     metal_height = metal_heights[0]
 
-    dim = 3
     mesh_path = Path(json_data["mesh_name"])
     header = sif_common_header(json_data, folder_path, mesh_path, discontinuous_boundary=(use_av and metal_height == 0))
     constants = sif_block("Constants", [f"Permittivity Of Vacuum = {epsilon_0}"])
 
     # Bodies and materials
-    mesh_names = read_mesh_names(mesh_path)
-    body_list = get_body_list(json_data, dim=dim, mesh_names=mesh_names)
-    permittivity_list = get_permittivities(json_data, with_zero=False, dim=dim, mesh_names=mesh_names)
+    body_names, boundary_names = read_mesh_names(mesh_path)
+    mesh_names = body_names + boundary_names
+    body_list = get_layer_list(json_data, body_names)
+    metal_layers = get_elmer_layers(get_metal_layers(json_data))
+    permittivity_list = get_permittivities(json_data, False, body_list)
 
     bodies = ""
     materials = ""
@@ -1496,14 +1354,15 @@ def sif_wave_equation(
 
     for i, (body, perm) in enumerate(zip(body_list, permittivity_list), 1):
         material_parameters = [f'Name = "{body}"']
-        if body == "pec" and use_av:
+        if body in metal_layers and use_av:
             bodies += sif_block(f"Body {i}", [f"Target Bodies(1) = $ {body}", f"Material = {i}"])
         else:
             bodies += sif_body(ordinate=i, target_bodies=[body], equation=1, material=i)
             material_parameters += [f"Relative Permittivity = {perm}"]
 
         materials += sif_block(f"Material {i}", material_parameters)
-        betas.append(f"beta_{body} = w*sqrt({perm}*eps0*mu0)")
+        if body not in metal_layers:
+            betas.append(f"beta_{body} = w*sqrt({perm}*eps0*mu0)")
 
     n_bodies = len(body_list)
 
@@ -1579,10 +1438,9 @@ def sif_wave_equation(
 
     # Boundary conditions
     boundary_conditions = ""
-    grounds = get_grounds(json_data, dim=dim, mesh_names=mesh_names)
-
-    pec_box = grounds[-1]
-    sc_grounds = grounds[:-1]
+    sc_grounds = ["excitation_0_boundary"]
+    pec_box = "domain_boundary"
+    grounds = sc_grounds + [pec_box]
 
     if use_av:
         pec_conditions = ["AV re {e} = 0", "AV im {e} = 0", "AV re = Real 0", "AV im = Real 0"]
@@ -1621,7 +1479,9 @@ def sif_wave_equation(
     n_boundaries += 1
 
     signal_bc_inds = []
-    signals = get_signals(json_data, dim=dim, mesh_names=mesh_names)
+    signals = [
+        n for n in boundary_names if n.startswith("excitation_") and n.endswith("_boundary") and n not in sc_grounds
+    ]
     for i, s in enumerate(signals, 1):
         signal_bc_inds.append(i + n_boundaries)
         boundary_conditions += sif_boundary_condition(
@@ -1636,12 +1496,16 @@ def sif_wave_equation(
         port_name = f'port_{port["number"]}'
         if port["type"] == "EdgePort":
             # The edge port is split by dielectric materials
-            port_parts = [(n, n[len(port_name + "_") :]) for n in mesh_names if n.startswith(port_name + "_")]
+            port_parts = [
+                (n, apply_elmer_layer_prefix(n[len(port_name + "_") :]))
+                for n in boundary_names
+                if n.startswith(port_name + "_")
+            ]
         else:
             # The material is assumed to be homogeneous throughout the internal port, so any material can be used.
             # We pick 'vacuum' by default if it exists.
             any_material = "vacuum" if "vacuum" in body_list else body_list[0]
-            port_parts = [(port_name, any_material)] if port_name in mesh_names else []
+            port_parts = [(port_name, any_material)] if port_name in boundary_names else []
 
         port_part_bc_indices = {}
         for name, mat in port_parts:
@@ -1652,13 +1516,13 @@ def sif_wave_equation(
                 conditions = ["AV re {e} = 0", "AV im {e} = 0"]
             else:
                 # Add body for the port equation, if it doesn't exist yet
-                if mat not in ("signal", "ground"):
+                if mat not in metal_layers:
                     if body_ids[mat] is None:
                         n_bodies += 1
                         body_ids[mat] = n_bodies
                         bodies += sif_body(
                             ordinate=body_ids[mat],
-                            target_bodies=[f"{body_ids[mat]}"],
+                            target_bodies=[],
                             equation=2,
                             material=body_list.index(mat) + 1,
                         )
@@ -1849,7 +1713,7 @@ def write_snp_file(
         for freq, smatrix_full in zip(frequencies, smatrix_arr):
             for row_ind, row in enumerate(smatrix_full):
                 if row_ind == 0:
-                    touchstone_file.write(f"{freq:30s} ")
+                    touchstone_file.write(f"{str(freq):30s} ")
                 else:
                     touchstone_file.write(f"{' ':30s} ")
                 for elem in row:

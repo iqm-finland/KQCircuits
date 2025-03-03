@@ -32,13 +32,14 @@ MESH_LAYER_PREFIX = "elmer_prefix_"
 DimTag = tuple[int, int]
 
 
+def is_metal(material, material_dict):
+    """Returns true if material is considered as metal."""
+    return material == "pec" or material_dict.get(material, {}).get("conductivity", 0) > 0
+
+
 def get_metal_layers(json_data):
     material_dict = json_data["material_dict"]
-    return {
-        k: v
-        for k, v in json_data["layers"].items()
-        if v.get("material") == "pec" or material_dict.get(v.get("material"), {}).get("conductivity", 0) > 0
-    }
+    return {k: v for k, v in json_data["layers"].items() if is_metal(v.get("material"), material_dict)}
 
 
 def get_elmer_layers(data):
@@ -85,6 +86,7 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
     gmsh.model.add("3D-mesh")
     dim_tags = {}
     layers = json_data["layers"]
+    material_dict = json_data["material_dict"]
     for name, data in layers.items():
         # Get layer region
         if "layer" in data:
@@ -131,7 +133,7 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
             layer_dim_tags = [(d, t) for d, t in extruded if d == 3]
 
             # Create dim_tags instance for edge if edge material is given
-            edge_material = data.get("edge_material", None)
+            edge_material = data.get("edge_material")
             if edge_material is not None:
                 edge_extruded = gmsh.model.occ.extrude([(1, i) for i in layer_edge_ids], 0, 0, thickness)
                 dim_tags["&" + name] = [(d, t) for d, t in edge_extruded if d == 2]
@@ -139,13 +141,13 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
         # Store layer into dim_tags
         dim_tags[name] = layer_dim_tags
 
-    # Ports
-    ports = json_data["ports"]
-    for port in ports:
-        if "polygon" in port:
-            # add port polygon and store its dim_tag
-            surface_id, _ = add_polygon(port["polygon"])
-            dim_tags[f'port_{port["number"]}'] = [(2, surface_id)]
+    # Add ports for wave equation simulations
+    if json_data["tool"] == "wave_equation":
+        for port in json_data["ports"]:
+            if "polygon" in port:
+                # add port polygon and store its dim_tag
+                surface_id, _ = add_polygon(port["polygon"])
+                dim_tags[f'port_{port["number"]}'] = [(2, surface_id)]
 
     # Subtract layers
     for name, data in layers.items():
@@ -190,149 +192,62 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
     gmsh_n_threads = int(n_threads_dict.get("gmsh_n_threads", 1))
     set_meshing_options(mesh_field_ids, mesh_global_max_size, gmsh_n_threads)
 
-    tls_sheet_layers = {
-        name: data
-        for name, data in layers.items()
-        if any(("_layer" + layer_key in name for layer_key in ["MA", "MS", "SA"])) and data["thickness"] == 0.0
-    }
-
-    accepted_thin_materials = ["pec"]
-    accepted_thin_materials += list({data["material"] for _, data in tls_sheet_layers.items()})
-
-    materials = list(set(accepted_thin_materials + list(json_data["material_dict"].keys()) + ["vacuum"]))
-
-    filtered_tags_with_material = {}  # store material as the 3rd component of the tuple
+    # Remove layers without material
     for name, data in layers.items():
-        material = data.get("material", None)
-        if material in accepted_thin_materials:
-            filtered_tags_with_material[name] = [(d, t, material) for d, t in new_tags.get(name, []) if d in [2, 3]]
-        elif material in materials:
-            filtered_tags_with_material[name] = [(d, t, material) for d, t in new_tags.get(name, []) if d == 3]
+        if name in new_tags and data.get("material") is None:
+            del new_tags[name]
 
-        edge_material = data.get("edge_material", None)
-        if edge_material in accepted_thin_materials:
-            filtered_tags_with_material["&" + name] += [
-                (d, t, material) for d, t in new_tags.get("&" + name, []) if d == 2
-            ]
-
-    # Remove empty layers from the tags
-    filtered_tags_with_material = {k: v for k, v in filtered_tags_with_material.items() if v}
-    # Group dim tags by material
-    material_dim_tags: dict[str, list[DimTag]] = {m: [] for m in materials}
-    for _, tags in filtered_tags_with_material.items():
-        material = tags[0][2]
-        material_dim_tags[material] += [(d, t) for d, t, _ in tags]
-
-    # Sort boundaries of material_dim_tags['pec'] into pec_islands and leave the bodies into material_dim_tags['pec']
-    pec_with_boundaries = get_recursive_children(material_dim_tags["pec"]).union(material_dim_tags["pec"])
-    pec_islands = [[(d, t)] for d, t in pec_with_boundaries if d == 2]
-    material_dim_tags["pec"] = [(d, t) for d, t in pec_with_boundaries if d == 3]
-
-    # Combine touching metal parts to form connected islands
-    for i in range(1, len(pec_islands)):
-        i_boundary = get_recursive_children(pec_islands[i])
-        for j in range(i):
-            j_boundary = get_recursive_children(pec_islands[j])
-            if i_boundary.intersection(j_boundary):
-                pec_islands[i] += pec_islands[j]
-                pec_islands[j] = []
-
-    # Assign metal areas as signals and ground
-    def _find_island_at(_location, _islands):
-        for i, island in enumerate(_islands):
-            for dt in island:
-                if gmsh.model.isInside(*dt, _location):
-                    # isInside doesn't check if _location and entity are in same subspace, so we check it next
-                    projection_point = gmsh.model.getClosestPoint(*dt, _location)[0]
-                    if all(abs(x - y) < 1e-8 for x, y in zip(_location, projection_point)):
-                        return i
-        return None
-
-    # signals
-    for port in ports:
-        if "ground_location" in port:
-            # Use 1e-2 safe margin to ensure that signal_location is in the signal polygon:
-            signal_location = [x + 1e-2 * (x - y) for x, y in zip(port["signal_location"], port["ground_location"])]
-        else:
-            signal_location = list(port["signal_location"])
-        island_id = _find_island_at(signal_location, pec_islands)
-        if island_id is not None:
-            material_dim_tags[f'signal_{port["number"]}'] = pec_islands[island_id]
-            pec_islands[island_id] = []
-    # ground
-    counter = 0
-    for pec_island in pec_islands:
-        if pec_island:
-            material_dim_tags[f"ground_{counter}"] = pec_island
-            counter += 1
-
-    ports_dts = [dt for port in ports for dt in new_tags.get(f'port_{port["number"]}', [])]
-    # set domain boundary as ground for wave equation simulations
-    if json_data["tool"] == "wave_equation":
-        solid_dts = [(d, t) for dts in material_dim_tags.values() for d, t in dts if d == 3]
-        face_dts = [(d, t) for dt in solid_dts for d, t in get_recursive_children([dt]) if d == 2]
-        material_dim_tags[f"ground_{counter}"] = [d for d in face_dts if face_dts.count(d) == 1 and d not in ports_dts]
-
-    if json_data["tool"] == "epr_3d":
-        # replace 2d pec boundaries with the corresponding 3d bodies
-        # also remove 3d pec body containing all of these
-
-        phys_group_tags = {
-            k: [(d, t) for d, t, _ in dts] for k, dts in filtered_tags_with_material.items() if dts[0][2] != "pec"
-        }
-
-        if material_dim_tags["pec"]:
-            for name, dt_list in material_dim_tags.items():
-                if name.startswith("signal_") or name.startswith("ground_"):
-                    signal_tags_3d = set()
-                    for dim, tag in dt_list:
-                        parent_pec_tags_3d, _ = gmsh.model.getAdjacencies(dim, tag)
-                        parent_pec_tags_3d = [
-                            (3, tag) for tag in parent_pec_tags_3d if (3, tag) in material_dim_tags["pec"]
-                        ]
-                        signal_tags_3d.update(parent_pec_tags_3d)
-                    phys_group_tags[name] = list(signal_tags_3d)
-
-    else:
-        phys_group_tags = material_dim_tags
-
-    # add physical groups
-    for name, dts in phys_group_tags.items():
-        no_port_dts = [dt for dt in dts if dt not in ports_dts]
-        if no_port_dts:
-            gmsh.model.addPhysicalGroup(
-                max(dt[0] for dt in no_port_dts), [dt[1] for dt in no_port_dts], name=apply_elmer_layer_prefix(name)
-            )
-
+    # Add excitation boundaries and remove those from original metal layers
     if json_data["tool"] != "epr_3d":
-        # port physical groups
-        for port in ports:
+        excitations = {d.get("excitation") for n, d in layers.items()} - {None}
+        for excitation in excitations:
+            excitation_names = []
+            for name, data in layers.items():
+                if data.get("excitation") == excitation:
+                    if is_metal(data.get("material"), material_dict):
+                        excitation_names.append(name)
+                    if is_metal(data.get("edge_material"), material_dict):
+                        excitation_names.append("&" + name)
+            excitation_names = [n for n in excitation_names if n in new_tags]
+            excitation_dts = [dt for n in excitation_names for dt in new_tags[n]]
+            excitation_with_boundary = get_recursive_children(excitation_dts).union(excitation_dts)
+            new_tags[f"excitation_{excitation}_boundary"] = [(d, t) for d, t in excitation_with_boundary if d == 2]
+            for n in excitation_names:
+                new_tags[n] = [(d, t) for d, t in new_tags[n] if d == 3]
+
+    # Modify new_tags for wave equation simulations
+    if json_data["tool"] == "wave_equation":
+        # Split edge ports into parts by intersecting layers
+        edge_ports_dts = set()
+        for port in json_data["ports"]:
             port_name = f'port_{port["number"]}'
-            if port_name in new_tags:
-                if port["type"] == "EdgePort":
-                    port_dts = set(new_tags[port_name])
-                    key_dts: dict[str, list[DimTag]] = {"signal": [], "ground": []}
-                    for mat, dts in material_dim_tags.items():
-                        if mat.startswith("signal"):
-                            key_dts["signal"] += [(d, t) for d, t in port_dts.intersection(dts) if d == 2]
-                        elif mat.startswith("ground"):
-                            key_dts["ground"] += [(d, t) for d, t in port_dts.intersection(dts) if d == 2]
-                        elif mat != "pec":
-                            key_dts[mat] = [
-                                (d, t) for d, t in port_dts.intersection(get_recursive_children(dts)) if d == 2
-                            ]
-                    for key, dts in key_dts.items():
-                        if dts:
-                            gmsh.model.addPhysicalGroup(2, [dt[1] for dt in dts], name=f"{port_name}_{key}")
-                else:
-                    gmsh.model.addPhysicalGroup(2, [dt[1] for dt in new_tags[port_name]], name=port_name)
+            if port_name in new_tags and port["type"] == "EdgePort":
+                port_dts = set(new_tags[port_name])
+                edge_ports_dts.update(port_dts)
+                for name, dts in list(new_tags.items()):
+                    part_dts = [(d, t) for d, t in port_dts.intersection(get_recursive_children(dts)) if d == 2]
+                    if part_dts:
+                        new_tags[f"{port_name}_{name}"] = part_dts
+                del new_tags[port_name]
+
+        # Set domain boundary as ground
+        solid_dts = [(d, t) for dts in new_tags.values() for d, t in dts if d == 3]
+        face_dts = [(d, t) for dt in solid_dts for d, t in get_recursive_children([dt]) if d == 2]
+        new_tags["domain_boundary"] = [d for d in face_dts if face_dts.count(d) == 1 and d not in edge_ports_dts]
+
+    # Create physical groups from each object in new_tags
+    for name, dts in new_tags.items():
+        if dts:
+            gmsh.model.addPhysicalGroup(
+                max(d for d, _ in dts), [t for _, t in dts], name=apply_elmer_layer_prefix(name)
+            )
 
     # Generate and save mesh
     gmsh.model.mesh.generate(1)
     gmsh.model.mesh.generate(2)
     gmsh.model.mesh.generate(3)
-    # Optimize the mesh if the dict exists
 
+    # Optimize the mesh if the dict exists
     optimize_params = mesh_size.get("optimize", None)
 
     if optimize_params is not None:
