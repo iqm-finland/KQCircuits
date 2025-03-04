@@ -30,7 +30,6 @@ from geometry import (  # pylint: disable=wrong-import-position
     set_material,
     add_layer,
     add_material,
-    is_metal,
     color_by_material,
     set_color,
     scale,
@@ -77,6 +76,7 @@ for name, params in material_dict.items():
 
 # Import GDSII geometry
 layers = data.get("layers", {})
+metal_layers = {n: d for n, d in layers.items() if "excitation" in d}
 
 order_map = []
 layer_map = ["NAME:LayerMap"]
@@ -104,19 +104,16 @@ scale(oEditor, oEditor.GetObjectsInGroup("Sheets"), data["gds_scaling"])
 
 # Get imported objects
 objects = {}
-metals = []
 for lname, ldata in layers.items():
     objects[lname] = oEditor.GetMatchedObjectName(lname + "_*")
     material = ldata["material"]
-    if is_metal(material, material_dict):
-        metals.append(lname)
     set_material(oEditor, objects[lname], material)
     set_color(oEditor, objects[lname], *color_by_material(material, material_dict))
 
 # Assign signal, ground, and floating objects
-excitations = {layers[n].get("excitation") for n in metals}
+excitations = {d["excitation"] for d in metal_layers.values()}
 for excitation in excitations:
-    objs = [o for n in metals if layers[n].get("excitation") == excitation for o in objects[n]]
+    objs = [o for n, d in metal_layers.items() if d["excitation"] == excitation for o in objects[n]]
     if not objs:
         continue
     if excitation == 0:
@@ -134,7 +131,7 @@ for excitation in excitations:
 if data.get("integrate_energies", False):
     oModule = oDesign.GetModule("FieldsReporter")
     for name, objs in objects.items():
-        if name in metals:
+        if name in metal_layers:
             continue
 
         for i, obj in enumerate(objs):

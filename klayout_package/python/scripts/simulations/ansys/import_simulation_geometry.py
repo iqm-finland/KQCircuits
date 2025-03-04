@@ -36,9 +36,7 @@ from geometry import (  # pylint: disable=wrong-import-position
     subtract,
     move_vertically,
     delete,
-    objects_from_sheet_edges,
     add_material,
-    is_metal,
     color_by_material,
     set_color,
     scale,
@@ -109,6 +107,7 @@ for name, params in material_dict.items():
 layers = data.get("layers", {})
 # ignore gap objects if they are not used
 layers = {n: d for n, d in layers.items() if "_gap" not in n or n in mesh_size}
+metal_layers = {n: d for n, d in layers.items() if "excitation" in d}
 
 order_map = []
 layer_map = ["NAME:LayerMap"]
@@ -137,7 +136,6 @@ scale(oEditor, oEditor.GetObjectsInGroup("Sheets"), data["gds_scaling"])
 
 # Create 3D geometry
 objects = {}
-metals = []
 metal_sheets = []
 for lname, ldata in layers.items():
     z = ldata.get("z", 0.0)
@@ -146,12 +144,6 @@ for lname, ldata in layers.items():
         # Get imported objects
         objects[lname] = oEditor.GetMatchedObjectName(lname + "_*")
         move_vertically(oEditor, objects[lname], z, units)
-
-        # Create metal sheets from edges
-        edge_material = ldata.get("edge_material", None)
-        if is_metal(edge_material, material_dict) and thickness != 0.0:
-            metal_sheets += objects_from_sheet_edges(oEditor, objects[lname], thickness, units)
-
         thicken_sheet(oEditor, objects[lname], thickness, units)
     else:
         # Create object covering full box
@@ -182,26 +174,21 @@ for lname, ldata in layers.items():
             )
 
     # Set material
-    material = ldata.get("material", None)
+    material = ldata.get("material")
     if thickness != 0.0:
         # Solve Inside parameter must be set in hfss_tools simulations to avoid warnings.
         # Solve Inside doesn't exist in 'q3d', so we use None to ignore the parameter.
-        solve_inside = not is_metal(material, material_dict) if ansys_tool in hfss_tools else None
+        solve_inside = lname not in metal_layers if ansys_tool in hfss_tools else None
         set_material(oEditor, objects[lname], material, solve_inside)
-        set_color(oEditor, objects[lname], *color_by_material(material, material_dict, False))
-    elif is_metal(material, material_dict):
+    elif lname in metal_layers:  # is metal
         metal_sheets += objects[lname]
-    else:
-        set_color(oEditor, objects[lname], *color_by_material(material, material_dict))
-        if lname not in mesh_size:
-            set_material(oEditor, objects[lname], None, None)  # set sheet as non-model
+    elif lname not in mesh_size:
+        set_material(oEditor, objects[lname], None, None)  # set sheet as non-model
 
-    if is_metal(material, material_dict):
-        metals.append(lname)
+    set_color(oEditor, objects[lname], *color_by_material(material, material_dict, thickness == 0.0))
 
 # Assign perfect electric conductor to metal sheets
 if metal_sheets:
-    set_color(oEditor, metal_sheets, *color_by_material("pec", material_dict))
     if ansys_tool in hfss_tools:
         oBoundarySetup.AssignPerfectE(["NAME:PerfE1", "Objects:=", metal_sheets, "InfGroundPlane:=", False])
     elif ansys_tool == "q3d":
@@ -247,7 +234,7 @@ if ansys_tool in hfss_tools:
             set_color(oEditor, [polyname], 240, 180, 180, 0.8)
 
             if ansys_tool == "hfss":
-                ground_objects = [o for n in metals if layers[n].get("excitation") == 0 for o in objects[n]]
+                ground_objects = [o for n, d in metal_layers.items() if d["excitation"] == 0 for o in objects[n]]
                 oBoundarySetup.AutoIdentifyPorts(
                     ["NAME:Faces", int(oEditor.GetFaceIDs(polyname)[0])],
                     is_wave_port,
@@ -479,9 +466,9 @@ if ansys_tool in hfss_tools:
 
 
 elif ansys_tool == "q3d":
-    excitations = {layers[n].get("excitation") for n in metals}
+    excitations = {d["excitation"] for d in metal_layers.values()}
     for excitation in excitations:
-        objs = [o for n in metals if layers[n].get("excitation") == excitation for o in objects[n]]
+        objs = [o for n, d in metal_layers.items() if d["excitation"] == excitation for o in objects[n]]
         if not objs:
             continue
         if excitation == 0:
@@ -505,8 +492,7 @@ if data.get("integrate_energies", False) and ansys_tool in hfss_tools:
     # Create energy integral terms for each object
     epsilon_0 = 8.8541878128e-12
     for lname, ldata in layers.items():
-        material = ldata.get("material", None)
-        if material == "pec":
+        if lname in metal_layers:
             continue
 
         thickness = ldata.get("thickness", 0.0)
@@ -515,14 +501,16 @@ if data.get("integrate_energies", False) and ansys_tool in hfss_tools:
             add_energy_integral_expression(
                 oModule, "Exy_{}".format(lname), objects[lname], "Esq", 2, epsilon_0, "Ez_{}".format(lname)
             )
-        elif material is not None:
-            epsilon = epsilon_0 * material_dict.get(material, {}).get("permittivity", 1.0)
-            add_energy_integral_expression(oModule, "E_{}".format(lname), objects[lname], "Esq", 3, epsilon, "")
+        else:
+            material = ldata.get("material", None)
+            if material is not None:
+                epsilon = epsilon_0 * material_dict.get(material, {}).get("permittivity", 1.0)
+                add_energy_integral_expression(oModule, "E_{}".format(lname), objects[lname], "Esq", 3, epsilon, "")
 
 if data.get("integrate_magnetic_flux", False) and ansys_tool in hfss_tools:
     oModule = oDesign.GetModule("FieldsReporter")
     for lname, ldata in layers.items():
-        if ldata.get("thickness", 0.0) != 0.0 or ldata.get("material", None) == "pec":
+        if ldata.get("thickness", 0.0) != 0.0 or lname in metal_layers:
             continue
 
         add_magnetic_flux_integral_expression(oModule, "flux_{}".format(lname), objects[lname])

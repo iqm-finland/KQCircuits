@@ -38,6 +38,7 @@ from gmsh_helpers import (
     get_recursive_children,
     set_meshing_options,
     apply_elmer_layer_prefix,
+    get_metal_layers,
 )
 
 try:
@@ -147,9 +148,10 @@ def produce_cross_section_mesh(json_data: dict[str, Any], msh_file: Path | str) 
     set_meshing_options(mesh_field_ids, mesh_global_max_size, gmsh_n_threads)
 
     # Add excitation boundaries
-    excitations = {d.get("excitation") for n, d in layers.items()} - {None}
+    metal_layers = get_metal_layers(layers)
+    excitations = {d["excitation"] for d in metal_layers.values()}
     for excitation in excitations:
-        exc_dts = [dt for n, d in layers.items() if d.get("excitation") == excitation for dt in new_tags.get(n, [])]
+        exc_dts = [dt for n, d in metal_layers.items() if d["excitation"] == excitation for dt in new_tags.get(n, [])]
         new_tags[f"excitation_{excitation}_boundary"] = [(d, t) for d, t in get_recursive_children(exc_dts) if d == 1]
 
     # Include outer boundaries to new_tags

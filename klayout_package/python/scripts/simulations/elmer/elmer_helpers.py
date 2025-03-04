@@ -934,7 +934,7 @@ def sif_epr_3d(json_data: dict[str, Any], folder_path: Path, vtu_name: str | Pat
     body_names, boundary_names = read_mesh_names(mesh_path)
     mesh_boundaries = get_layer_list(json_data, boundary_names)
 
-    metal_layers = {n: l for n, l in get_elmer_layers(get_metal_layers(json_data)).items() if n in body_names}
+    metal_layers = {n: l for n, l in get_elmer_layers(get_metal_layers(json_data["layers"])).items() if n in body_names}
     mesh_bodies = get_layer_list(json_data, [n for n in body_names if n not in metal_layers])
 
     permittivity_list = get_permittivities(json_data, False, mesh_bodies)
@@ -972,12 +972,11 @@ def sif_epr_3d(json_data: dict[str, Any], folder_path: Path, vtu_name: str | Pat
     n_capacitance_bodies = 0
     n_body_forces = 0
     excitation_str = "Capacitance Body = integer" if c_matrix_output else "Potential = Real"
-    excitations = sorted({d.get("excitation") for n, d in metal_layers.items()})
-    for excitation in excitations:
-        if excitation is None:
-            raise RuntimeError("Found metal layer without excitation keyword!")
-
-        excitation_bodies = [n for n, d in metal_layers.items() if d.get("excitation") == excitation]
+    excitations = {d["excitation"] for n, d in metal_layers.items()}
+    if None in excitations:
+        raise RuntimeError("Floating excitation is not supported. Use only integer excitation values.")
+    for excitation in sorted(excitations):
+        excitation_bodies = [n for n, d in metal_layers.items() if d["excitation"] == excitation]
 
         n_bodies += 1
         n_body_forces += 1
@@ -1094,6 +1093,8 @@ def sif_capacitance(
     boundary_conditions = ""
     n_boundaries = 0
     excitation_names = [n for n in boundary_names if n.startswith("excitation_") and n.endswith("_boundary")]
+    if "excitation_None_boundary" in excitation_names:
+        raise RuntimeError("Floating excitation is not supported. Use only integer excitation values.")
     excitations = sorted([(int(n[11:-9]), n) for n in excitation_names])
     for excitation, excitation_name in excitations:
         if excitation == 0:  # ground
@@ -1174,7 +1175,7 @@ def sif_inductance(
     # Divide layers into different materials
     body_names, boundary_names = read_mesh_names(mesh_path)
     body_list = get_layer_list(json_data, body_names)
-    metal_layers = get_elmer_layers(get_metal_layers(json_data))
+    metal_layers = get_elmer_layers(get_metal_layers(json_data["layers"]))
     non_metal_bodies = list(set(body_list) - set(metal_layers))
 
     bodies = sif_body(
@@ -1205,7 +1206,9 @@ def sif_inductance(
         n_bodies += 1
         bodies += sif_body(ordinate=n_bodies, target_bodies=[name], equation=1, material=n_bodies)
 
-        excitation = data.get("excitation", 0)
+        excitation = data["excitation"]
+        if excitation is None:
+            raise RuntimeError("Floating excitation is not supported. Use only integer excitation values.")
         max_excitation = max(max_excitation, excitation)
         if excitation == 1:
             master_bodies.append(n_bodies)  # apply only the first signal to the master bodies
@@ -1361,7 +1364,7 @@ def sif_wave_equation(
     body_names, boundary_names = read_mesh_names(mesh_path)
     mesh_names = body_names + boundary_names
     body_list = get_layer_list(json_data, body_names)
-    metal_layers = get_elmer_layers(get_metal_layers(json_data))
+    metal_layers = get_elmer_layers(get_metal_layers(json_data["layers"]))
     permittivity_list = get_permittivities(json_data, False, body_list)
 
     bodies = ""

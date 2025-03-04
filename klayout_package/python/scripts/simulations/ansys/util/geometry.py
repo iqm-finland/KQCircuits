@@ -250,22 +250,6 @@ def unite(oEditor, objects, keep_originals=False):
         )
 
 
-def objects_from_sheet_edges(oEditor, objects, thickness, units):
-    """Creates boundary objects for each sheet and returns object names in list."""
-    edges = []
-    for o in objects:
-        boundary_ids = [int(i) for i in oEditor.GetEdgeIDsFromObject(o)]
-        edge_list = oEditor.CreateObjectFromEdges(
-            ["NAME:Selections", "Selections:=", o, "NewPartsModelFlag:=", "Model"],
-            ["NAME:Parameters", ["NAME:BodyFromEdgeToParameters", "Edges:=", boundary_ids]],
-            ["CreateGroupsForNewObjects:=", False],
-        )
-        thicken_sheet(oEditor, edge_list, thickness, units)
-        unite(oEditor, edge_list, False)
-        edges.append(edge_list[0])
-    return edges
-
-
 def add_material(oDefinitionManager, name, **parameters):
     """Adds material with given name and parameters."""
     param_list = [
@@ -281,14 +265,9 @@ def add_material(oDefinitionManager, name, **parameters):
     oDefinitionManager.AddMaterial(param_list)
 
 
-def is_metal(material, material_dict):
-    """Returns true if material is considered as metal."""
-    return material == "pec" or material_dict.get(material, {}).get("conductivity", 0) > 0
-
-
 def color_by_material(material, material_dict, is_sheet=True):
     """Helper function to define colors by material. Returns tuple containing red, green, blue, and transparency."""
-    if is_metal(material, material_dict):
+    if material == "pec" or material_dict.get(material, {}).get("conductivity", 0) > 0:
         return 240, 120, 240, 0.5
     n = 0.3 * (material_dict.get(material, {}).get("permittivity", 1.0) - 1.0)
     alpha = 0.93 ** (2 * n if is_sheet else n)

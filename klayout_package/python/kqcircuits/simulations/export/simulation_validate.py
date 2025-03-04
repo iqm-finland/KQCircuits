@@ -125,13 +125,12 @@ def flux_integration_layer_exists_if_needed(simulation, solution):
     has_integrate_flux = hasattr(solution, "integrate_magnetic_flux")
     integrate_flux = solution.integrate_magnetic_flux if has_integrate_flux else False
 
-    # Ensures that a layer with thickness == 0 and a material != "pec"
-    # exists in the setup when "integrate_magnetic_flux" is True.
+    # Ensures that a non-metal layer with thickness == 0 exists in the setup when "integrate_magnetic_flux" is True.
     if integrate_flux:
         layers = simulation.layers
         has_flux_integration_layer = False
         for layer in layers.values():
-            if layer.get("thickness", -1) == 0 and layer.get("material", "") != "pec":
+            if layer.get("thickness") == 0 and not simulation.is_metal(layer.get("material")):
                 has_flux_integration_layer = True
                 break
         if not has_flux_integration_layer:

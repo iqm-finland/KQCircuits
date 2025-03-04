@@ -208,7 +208,7 @@ simulations = [
         text_faces=["2t1"],
         tsv_faces=[["1b1", "1t1"]],
         lower_box_height=1000,
-        hollow_tsv=True,
+        hollow_tsv=1.0,
         metal_height=[0.0, 1.0, 0.0, 1.0],
     ),
     # a three-wafer simulation with alternative face order, also emphasize individual chip distance and substrate height

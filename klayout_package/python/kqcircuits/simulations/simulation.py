@@ -232,7 +232,7 @@ class Simulation:
     )
     over_etching = Param(pdt.TypeDouble, "Expansion of metal gaps (negative to shrink the gaps).", 0, unit="μm")
     vertical_over_etching = Param(pdt.TypeDouble, "Vertical over-etching into substrates at gaps.", 0, unit="μm")
-    hollow_tsv = Param(pdt.TypeBoolean, "Make TSVs hollow with vacuum inside and thin metal boundary.", False)
+    hollow_tsv = Param(pdt.TypeDouble, "Thickness of the TSV metal boundary or 0 for solid metal.", 0, unit="μm")
 
     partition_regions = Param(
         pdt.TypeString,
@@ -559,6 +559,10 @@ class Simulation:
                 )
         return sum_region
 
+    def is_metal(self, material):
+        mater_dict = ast.literal_eval(self.material_dict) if isinstance(self.material_dict, str) else self.material_dict
+        return material == "pec" or mater_dict.get(material, {}).get("conductivity", 0) > 0
+
     def split_metal_layers_by_excitation(self):
         """Split metal layers in self.layers such that ground and signal metals are separated.
 
@@ -604,10 +608,8 @@ class Simulation:
                         return p
             return {}
 
-        # consider metal-edge layers as solid metals for simplicity, i.e., hollow tsv is considered as full metal
-        metal_names = [n for n, l in self.layers.items() if "pec" in [l.get("material"), l.get("edge_material")]]
-
         # create individual part for each metal polygon
+        metal_names = [n for n, l in self.layers.items() if self.is_metal(l.get("material"))]
         parts = [{n: pya.Region(p)} for n in metal_names for p in self.layers[n]["region"].each()]
 
         # combine connected parts
@@ -704,8 +706,7 @@ class Simulation:
             dielectric_material = self.ith_value(self.dielectric_material, i)
 
             # insert TSVs and indium bumps
-            tsv_params = {"edge_material": "pec"} if self.hollow_tsv else {"material": "pec"}
-            tsv_region = self.insert_layers_between_faces(i, i - sign, "through_silicon_via", **tsv_params)
+            tsv_region = self.insert_layers_between_faces(i, i - sign, "through_silicon_via", material="pec")
             bump_region = self.insert_layers_between_faces(i, i + sign, "indium_bump", material="pec")
             face_box_region = pya.Region(self._face_box(i).to_itype(self.layout.dbu))
 
@@ -850,6 +851,16 @@ class Simulation:
                 ][layer_num]
                 self.insert_layer(layer_name, layer_region, material=material, **z_params)
 
+        # Make TSVs hollow
+        if self.hollow_tsv > 0:
+            tsv_layers = {k: v for k, v in self.layers.items() if "_through_silicon_via" in k}
+            for tsv_name, tsv_layer in tsv_layers.items():
+                name = tsv_name.replace("_through_silicon_via", "_tsv_etch")
+                region = tsv_layer["region"].sized(-self.hollow_tsv / self.layout.dbu)
+                if not region.is_empty():
+                    self.layers[name] = {"region": region, "bottom": tsv_layer["bottom"], "top": tsv_layer["top"]}
+                    tsv_layer["region"] -= region
+
         # Insert substrates
         for i in range(int(self.lower_box_height > 0), len(face_stack) + 1, 2):
             self.insert_layer(
@@ -858,7 +869,7 @@ class Simulation:
                 z[i],
                 z[i + 1],
                 material=self.ith_value(self.substrate_material, i // 2),
-                subtract_keys=["_etch", "_through_silicon_via"],
+                subtract_keys=["_etch"],
             )
 
         # Insert vacuum
@@ -892,7 +903,7 @@ class Simulation:
         layers = []
 
         def can_modify(obj):
-            return obj.get("material", None) not in ["pec", None]
+            return obj.get("material") is not None and not self.is_metal(obj["material"])
 
         def are_separate(obj, tool):
             """Returns True if obj and tool do not overlap"""
@@ -1056,7 +1067,7 @@ class Simulation:
                 for n in sorted(layer.get("subtract", set()), reverse=True)
                 if layers[n]["name"] in self.layers
             ]
-            other_keys = {"material", "edge_material", "background", "excitation"}
+            other_keys = {"material", "background", "excitation"}
             self.layers[layer["name"]] = {
                 "z": round(layer["bottom"], 12),
                 "thickness": round(layer["top"] - layer["bottom"], 12),

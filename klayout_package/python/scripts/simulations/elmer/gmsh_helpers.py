@@ -32,19 +32,13 @@ MESH_LAYER_PREFIX = "elmer_prefix_"
 DimTag = tuple[int, int]
 
 
-def is_metal(material, material_dict):
-    """Returns true if material is considered as metal."""
-    return material == "pec" or material_dict.get(material, {}).get("conductivity", 0) > 0
+def get_metal_layers(layers):
+    return {k: v for k, v in layers.items() if "excitation" in v}
 
 
-def get_metal_layers(json_data):
-    material_dict = json_data["material_dict"]
-    return {k: v for k, v in json_data["layers"].items() if is_metal(v.get("material"), material_dict)}
-
-
-def get_elmer_layers(data):
+def get_elmer_layers(layers):
     """Prefixes dict keys if starting with number. Returns new modified dict"""
-    return {apply_elmer_layer_prefix(k): v for k, v in data.items()}
+    return {apply_elmer_layer_prefix(k): v for k, v in layers.items()}
 
 
 def apply_elmer_layer_prefix(name):
@@ -86,7 +80,6 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
     gmsh.model.add("3D-mesh")
     dim_tags = {}
     layers = json_data["layers"]
-    material_dict = json_data["material_dict"]
     for name, data in layers.items():
         # Get layer region
         if "layer" in data:
@@ -131,12 +124,6 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
         if thickness != 0.0:
             extruded = gmsh.model.occ.extrude(layer_dim_tags, 0, 0, thickness)
             layer_dim_tags = [(d, t) for d, t in extruded if d == 3]
-
-            # Create dim_tags instance for edge if edge material is given
-            edge_material = data.get("edge_material")
-            if edge_material is not None:
-                edge_extruded = gmsh.model.occ.extrude([(1, i) for i in layer_edge_ids], 0, 0, thickness)
-                dim_tags["&" + name] = [(d, t) for d, t in edge_extruded if d == 2]
 
         # Store layer into dim_tags
         dim_tags[name] = layer_dim_tags
@@ -199,16 +186,10 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
 
     # Add excitation boundaries and remove those from original metal layers
     if json_data["tool"] != "epr_3d":
-        excitations = {d.get("excitation") for n, d in layers.items()} - {None}
+        metal_layers = get_metal_layers(layers)
+        excitations = {d["excitation"] for d in metal_layers.values()}
         for excitation in excitations:
-            excitation_names = []
-            for name, data in layers.items():
-                if data.get("excitation") == excitation:
-                    if is_metal(data.get("material"), material_dict):
-                        excitation_names.append(name)
-                    if is_metal(data.get("edge_material"), material_dict):
-                        excitation_names.append("&" + name)
-            excitation_names = [n for n in excitation_names if n in new_tags]
+            excitation_names = [n for n, d in metal_layers.items() if d["excitation"] == excitation and n in new_tags]
             excitation_dts = [dt for n in excitation_names for dt in new_tags[n]]
             excitation_with_boundary = get_recursive_children(excitation_dts).union(excitation_dts)
             new_tags[f"excitation_{excitation}_boundary"] = [(d, t) for d, t in excitation_with_boundary if d == 2]
