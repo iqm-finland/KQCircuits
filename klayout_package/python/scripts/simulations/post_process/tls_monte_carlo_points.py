@@ -122,9 +122,15 @@ def get_z(
 
 parser = argparse.ArgumentParser(description="Monte carlo point sampler for TLS")
 parser.add_argument("--seed", type=int, default=None, help="Specify seed if you want deterministic sampling")
-parser.add_argument("--density-ma", type=float, required=True, help="MA TLS sampling area density, unit: defects/µm^2")
-parser.add_argument("--density-ms", type=float, required=True, help="MS TLS sampling area density, unit: defects/µm^2")
-parser.add_argument("--density-sa", type=float, required=True, help="SA TLS sampling area density, unit: defects/µm^2")
+parser.add_argument(
+    "--density-ma", type=float, required=True, help="MA TLS sampling volume density, unit: defects/µm^3"
+)
+parser.add_argument(
+    "--density-ms", type=float, required=True, help="MS TLS sampling volume density, unit: defects/µm^3"
+)
+parser.add_argument(
+    "--density-sa", type=float, required=True, help="SA TLS sampling volume density, unit: defects/µm^3"
+)
 parser.add_argument(
     "--density-substrate", type=float, required=True, help="Substrate sampling volume density, unit: defects/µm^3"
 )
@@ -186,14 +192,25 @@ for file_name, parameters in sim_parameters.items():
             "box_y2": box_y2,
         }
     }
+
+    sheet_distributions = ["ma", "ms", "sa"]
+    extra_json_data = parameters.get("parameters", {}).get("extra_json_data", {})
+
+    if not extra_json_data or any((f"{dist}_thickness" not in extra_json_data for dist in sheet_distributions)):
+        print(
+            f"some of interface thicknesses {sheet_distributions} missing from extra_json_data, "
+            f"can't extract monte carlo points from {file_name}"
+        )
+        continue
+
     # Use same seed for all sweeps
     rng = random.Random(seed)
     # Number of sample points = given defect density * sampling box area
     sampling_box_area = (box_x2 - box_x1) * (box_y2 - box_y1)
+
     tls_n_points = {
-        "ma": int(args.density_ma * sampling_box_area),
-        "ms": int(args.density_ms * sampling_box_area),
-        "sa": int(args.density_sa * sampling_box_area),
+        dist: int(getattr(args, f"density_{dist}") * extra_json_data[f"{dist}_thickness"] * sampling_box_area)
+        for dist in sheet_distributions
     }
 
     layout = klayout.db.Layout()
@@ -208,14 +225,7 @@ for file_name, parameters in sim_parameters.items():
     }
 
     for face in face_stack:
-        for distribution in ["ma", "ms", "sa"]:
-            extra_json_data = parameters.get("parameters", {}).get("extra_json_data", {})
-            if not extra_json_data or f"{distribution}_thickness" not in extra_json_data:
-                print(
-                    f"{distribution}_thickness missing from extra_json_data, "
-                    f"can't extract monte carlo points from {file_name}"
-                )
-                continue
+        for distribution in sheet_distributions:
             points = []
             print(
                 f"Sampling {file_name} {distribution} TLS layer on face {face} "

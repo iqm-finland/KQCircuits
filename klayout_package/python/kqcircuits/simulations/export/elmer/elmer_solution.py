@@ -49,7 +49,8 @@ class ElmerSolution(Solution):
             then "Netgen" is used by default as method.
         vtu_output: Output vtu files to view fields in Paraview.
                     Turning this off will make the simulations slightly faster
-
+        save_elmer_data: Save the full Elmer model after simulation. This can be used to restart the simulation
+                         or extract result field values as a post-processing step.
     """
 
     tool: ClassVar[str] = ""
@@ -63,6 +64,7 @@ class ElmerSolution(Solution):
     mesh_levels: int = 1
     mesh_size: dict = field(default_factory=dict)
     vtu_output: bool = True
+    save_elmer_data: bool = False
 
     def get_solution_data(self):
         """Return the solution data in dictionary form."""

@@ -77,6 +77,9 @@ def sif_common_header(
     dim: int = 3,
     discontinuous_boundary: bool = False,
     constraint_modes_analysis: bool = True,
+    output_file: str | None = None,
+    restart_file: str | None = None,
+    restart_position: int | None = None,
 ) -> str:
     """
     Returns common header and simulation blocks of a sif file in string format.
@@ -114,11 +117,14 @@ def sif_common_header(
             'Simulation Type = "Steady State"',
             f'Steady State Max Iterations = {json_data.get("maximum_passes", 1)}',
             f'Steady State Min Iterations = {json_data.get("minimum_passes", 1)}',
-            ("" if angular_frequency is None else f"Angular Frequency = {angular_frequency}"),
             f"Coordinate Scaling = {coordinate_scaling(json_data)}",
             f'Mesh Levels = {json_data.get("mesh_levels", 1)}',
-            "Discontinuous Boundary Full Angle = Logical True" if discontinuous_boundary else "",
-        ],
+        ]
+        + ("Discontinuous Boundary Full Angle = Logical True" if discontinuous_boundary else [])
+        + ([] if angular_frequency is None else [f"Angular Frequency = {angular_frequency}"])
+        + ([f'Output File = "{output_file}"', "Binary Output = True", "Output Intervals(1) = 1"] if output_file else [])
+        + ([f'Restart File = "{restart_file}"'] if restart_file else [])
+        + ([f"Restart Position = {restart_position}"] if restart_position is not None else []),
     )
     return res
 
@@ -170,6 +176,8 @@ def sif_linsys(json_data: dict) -> list[str]:
     """
     linsys = [
         f"$pn={json_data['p_element_order']}",
+        "Element = p:$pn",
+        "Vector Assembly = True",
     ]
     linsys_method = json_data["linear_system_method"].lower()
     preconditioner = json_data["linear_system_preconditioning"]
@@ -463,7 +471,8 @@ def get_electrostatics_solver(
         "Variable = Potential",
         f"Calculate Capacitance Matrix = {c_matrix_output}",
         "Calculate Electric Field = True",
-        "Calculate Elemental Fields = True",
+        # NOTE field point data cannot be extracted from elemental fields
+        f"Calculate Elemental Fields = {not json_data['save_elmer_data']}",
         "Average Within Materials = False",
         f"Capacitance Matrix Filename = {capacitance_file}",
         "Nonlinear System Max Iterations = 1",
@@ -475,8 +484,6 @@ def get_electrostatics_solver(
     if json_data["maximum_passes"] > 1:
         solver_lines += sif_adaptive_mesh(json_data)
 
-    solver_lines += ["Vector Assembly = True", "Element = p:$pn", "Calculate Elemental Fields = True"]
-
     return sif_block(f"Solver {ordinate}", solver_lines)
 
 
@@ -486,7 +493,7 @@ def get_circuit_solver(ordinate: str | int, p_element_order: int, exec_solver="A
 
     Args:
         ordinate: solver ordinate
-        p_element_order: p-element order, see `sif_linsys`
+        p_element_order: p-element order
         exec_solver: Execute solver (options: 'Always', 'After Timestep', 'Never')
 
     Returns:
@@ -575,7 +582,7 @@ def get_magneto_dynamics_calc_fields(ordinate: str | int, p_element_order: int) 
 
     Args:
         ordinate: solver ordinate
-        p_element_order: p-element order, see `sif_linsys`
+        p_element_order: p-element order
 
     Returns:
         magneto-dynamics calculate fields solver in sif file format
@@ -628,13 +635,16 @@ def get_result_output_solver(ordinate: str | int, output_file_name: str | Path, 
     return sif_block(f"Solver {ordinate}", solver_lines)
 
 
-def get_save_data_solver(ordinate: str | int, result_file: str = "results.dat") -> str:
+def get_save_data_solver(
+    ordinate: str | int, result_file: str = "results.dat", save_coordinates: list[list] | None = None
+) -> str:
     """
     Returns save data solver in sif file format.
 
     Args:
         ordinate: solver ordinate
         result_file: data file name for results
+        save_coordinates: list of coordinates to extract the field values at
 
     Returns:
         save data solver in sif file format
@@ -645,6 +655,14 @@ def get_save_data_solver(ordinate: str | int, result_file: str = "results.dat") 
         'Procedure = "SaveData" "SaveScalars"',
         f"Filename = {result_file}",
     ]
+    if save_coordinates:
+        coords_str = " ".join([str(c) for clist in save_coordinates for c in clist])
+        solver_lines += [
+            f"Save Coordinates({len(save_coordinates)}, {len(save_coordinates[0])}) = {coords_str}",
+            "Exact Coordinates = Logical True",
+            "Parallel Reduce = Logical True",
+        ]
+
     return sif_block(f"Solver {ordinate}", solver_lines)
 
 
@@ -906,6 +924,7 @@ def sif_epr_3d(json_data: dict[str, Any], folder_path: Path, vtu_name: str | Pat
         angular_frequency=0,
         dim=3,
         constraint_modes_analysis=c_matrix_output,
+        output_file=(f"{folder_path}.result" if json_data["save_elmer_data"] else None),
     )
     constants = sif_block("Constants", [f"Permittivity Of Vacuum = {epsilon_0}"])
 
@@ -1045,6 +1064,7 @@ def sif_capacitance(
         angular_frequency=angular_frequency,
         dim=dim,
         constraint_modes_analysis=c_matrix_output,
+        output_file=(f"{folder_path}.result" if json_data["save_elmer_data"] else None),
     )
 
     constants = sif_block("Constants", [f"Permittivity Of Vacuum = {epsilon_0}"])
@@ -1144,7 +1164,15 @@ def sif_inductance(
         elmer solver input file for inductance computation
     """
     mesh_path = Path(json_data["mesh_name"])
-    header = sif_common_header(json_data, folder_path, mesh_path, angular_frequency, circuit_definitions_file, dim=2)
+    header = sif_common_header(
+        json_data,
+        folder_path,
+        mesh_path,
+        angular_frequency,
+        circuit_definitions_file,
+        dim=2,
+        output_file=("inductance.result" if json_data["save_elmer_data"] else None),
+    )
     equations = get_equation(ordinate=1, solver_ids=[1, 2, 3])
 
     solvers = get_circuit_solver(ordinate=1, p_element_order=json_data["p_element_order"], exec_solver="Always")
@@ -1349,8 +1377,17 @@ def sif_wave_equation(
         )
     metal_height = metal_heights[0]
 
+    smatrix_filename = _get_smatrix_filename(json_data["name"], frequency)
+    uniq_name = smatrix_filename.removeprefix("SMatrix_").removesuffix(".dat")
+
     mesh_path = Path(json_data["mesh_name"])
-    header = sif_common_header(json_data, folder_path, mesh_path, discontinuous_boundary=(use_av and metal_height == 0))
+    header = sif_common_header(
+        json_data,
+        folder_path,
+        mesh_path,
+        discontinuous_boundary=(use_av and metal_height == 0),
+        output_file=(f"{uniq_name}.result" if json_data["save_elmer_data"] else None),
+    )
     constants = sif_block("Constants", [f"Permittivity Of Vacuum = {epsilon_0}"])
 
     # Bodies and materials
@@ -1419,7 +1456,7 @@ def sif_wave_equation(
     matc_blocks = sif_matc_block(matc_list)
 
     # Solvers & Equations
-    result_file = folder_path / _get_smatrix_filename(json_data["name"], frequency)
+    result_file = folder_path / smatrix_filename
     solvers = ""
     solver_ordinate = 1
     if not use_av:
@@ -1439,7 +1476,7 @@ def sif_wave_equation(
 
     solvers += get_result_output_solver(
         ordinate=solver_ordinate + 2,
-        output_file_name=Path(str(folder_path) + "_f" + str(frequency).replace(".", "_")),
+        output_file_name=uniq_name,
         exec_solver="Always" if json_data["vtu_output"] else "Never",
     )
 
@@ -1644,6 +1681,35 @@ def read_result_smatrix(s_matrix_filename: str | Path, path: Path | None = None,
     return smatrix_full
 
 
+def read_elmer_results(result_file: Path | str):
+    """
+    Args:
+        result_file: path to the results including the filename and extension
+
+    Returns:
+        DataFrame with the results
+    """
+    try:
+        data = np.loadtxt(result_file, ndmin=2)
+
+        col_names = []
+        with open(str(result_file) + ".names", encoding="utf-8") as fp:
+            reached_data = False
+            for line in fp:
+                if not reached_data and "Variables in columns of matrix:" in line:
+                    reached_data = True
+                    continue
+
+                if reached_data:
+                    col_names.append(line.strip())
+
+        return pd.DataFrame(data, columns=col_names)
+
+    except FileNotFoundError:
+        logging.warning(f"Elmer result file not found in {result_file}")
+        return None
+
+
 def get_energy_integrals(path: Path | str) -> dict:
     """
     Return electric energy integrals
@@ -1654,34 +1720,39 @@ def get_energy_integrals(path: Path | str) -> dict:
     Returns:
         energies formatted as dictionary
     """
-    try:
-        energy_data, energy_layer_data = Path(path) / "energy.dat", Path(path) / "energy.dat.names"
-        energies = pd.read_csv(energy_data, sep=r"\s+", header=None).transpose().values.squeeze().tolist()
 
-        energy_layers = []
-        with open(energy_layer_data, encoding="utf-8") as fp:
-            reached_data = False
-            for line in fp:
-                if not reached_data and "Variables in columns of matrix:" in line:
-                    reached_data = True
-                    continue
+    def _rename_energy_key(e_name: str) -> str:
+        """Rename energy dictionary keys from Elmer results to correspond to the Ansys result format"""
+        # Change 2-component energies to same naming as used in Ansys
+        if e_name.endswith("_norm_component"):
+            e_name = "Ez" + e_name.removesuffix("_norm_component").removeprefix("E")
+        elif e_name.endswith("_tan_component"):
+            e_name = "Exy" + e_name.removesuffix("_tan_component").removeprefix("E")
 
-                if reached_data:
-                    matches = [
-                        match.group(1) for match in re.finditer("diffusive energy: potential mask ([a-z_0-9]+)", line)
-                    ]
-                    if matches:
-                        energy_layers += matches
-                    else:
-                        matches_custom_e_module = line.strip().partition(": ")[2]
-                        if matches_custom_e_module:
-                            energy_layers += [matches_custom_e_module]
+        # Elmer forces all keys to be lowercase so let's capitalise the interface abbreviations
+        # to correspond to Ansys naming
+        for k in ("MA", "MS", "SA"):
+            elmer_int_key = "_layer" + k.lower()
+            if elmer_int_key in e_name:
+                e_name = e_name.replace(elmer_int_key, "_layer" + k)
+                break
 
-        return {f"E_{k.removeprefix(MESH_LAYER_PREFIX)}": energy for k, energy in zip(energy_layers, energies)}
+        return e_name
 
-    except FileNotFoundError:
-        logging.warning(f"Energy file not found in {path}")
-        return {"total_energy": None}
+    res_df = read_elmer_results(Path(path) / "energy.dat")
+
+    edict = {}
+    for col, data_series in res_df.items():
+
+        matches = [match.group(1) for match in re.finditer("diffusive energy: potential mask ([a-z_0-9]+)", col)]
+
+        col_new = matches[0] if matches else col.strip().partition(": ")[2]
+        # Discard any Elmer default results starting with "res: "
+        if col_new and not col_new.startswith("res: "):
+            col_new = _rename_energy_key(f"E_{col_new.removeprefix(MESH_LAYER_PREFIX)}")
+            edict[col_new] = data_series.values.squeeze().tolist()
+
+    return edict
 
 
 def write_snp_file(
@@ -1812,24 +1883,6 @@ def write_project_results_json(json_data: dict[str, Any], path: Path, msh_filepa
     json_filename = main_sim_folder / (sif_folder.name + "_project_results.json")
     simname = json_data["name"]
 
-    def _rename_energy_key(e_name: str) -> str:
-        """Rename energy dictionary keys from Elmer results to correspond to the Ansys result format"""
-        # Change 2-component energies to same naming as used in Ansys
-        if e_name.endswith("_norm_component"):
-            e_name = "Ez" + e_name.removesuffix("_norm_component").removeprefix("E")
-        elif e_name.endswith("_tan_component"):
-            e_name = "Exy" + e_name.removesuffix("_tan_component").removeprefix("E")
-
-        # Elmer forces all keys to be lowercase so let's capitalise the interface abbreviations
-        # to correspond to Ansys naming
-        for k in ("MA", "MS", "SA"):
-            elmer_int_key = "_layer" + k.lower()
-            if elmer_int_key in e_name:
-                e_name = e_name.replace(elmer_int_key, "_layer" + k)
-                break
-
-        return e_name
-
     if tool in ("capacitance", "epr_3d"):
         results = {}
 
@@ -1853,7 +1906,7 @@ def write_project_results_json(json_data: dict[str, Any], path: Path, msh_filepa
                 }
             )
         if tool == "epr_3d" or json_data["integrate_energies"]:
-            results.update({_rename_energy_key(k): v for k, v in get_energy_integrals(sif_folder).items()})
+            results.update(get_energy_integrals(sif_folder))
 
         with open(json_filename, "w", encoding="utf-8") as outfile:
             json.dump(

@@ -88,9 +88,9 @@ export_parameters = {
     "post_process": PostProcess(
         "produce_epr_table.py",
         sheet_approximations={
-            "MA": {"thickness": 1e-8, "eps_r": 8, "background_eps_r": 1.0},
-            "SA": {"thickness": 1e-8, "eps_r": 4, "background_eps_r": 11.45},
-            "MS": {"thickness": 1e-8, "eps_r": 11.4, "background_eps_r": 11.45},
+            "MA": {"thickness": 1e-8, "eps_r": 8},
+            "SA": {"thickness": 1e-8, "eps_r": 4},
+            "MS": {"thickness": 1e-8, "eps_r": 11.4},
         },
     ),
 }

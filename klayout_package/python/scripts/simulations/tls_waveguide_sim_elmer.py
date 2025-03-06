@@ -79,10 +79,11 @@ sheet_interfaces = True
 
 
 dielectric_surfaces = {
-    "MA": {"thickness": 1e-8, "eps_r": 8, "background_eps_r": 1.0},
-    "SA": {"thickness": 1e-8, "eps_r": 4, "background_eps_r": 11.45},
-    "MS": {"thickness": 1e-8, "eps_r": 11.4, "background_eps_r": 11.45},
+    "MA": {"thickness": 4.8e-9, "eps_r": 8},
+    "MS": {"thickness": 2.4e-9, "eps_r": 11.4},
+    "SA": {"thickness": 0.3e-9, "eps_r": 4},
 }
+tls_layer_thickness = [dielectric_surfaces[layer]["thickness"] * 1e6 for layer in ("MA", "MS", "SA")]
 
 # Simulation parameters
 sim_class = TlsWaveguideSim2  # pylint: disable=invalid-name
@@ -98,25 +99,37 @@ sim_parameters = {
     ],
     "tls_sheet_approximation": sheet_interfaces,
     "detach_tls_sheets_from_body": not sheet_interfaces,
+    "extra_json_data": {f"{k}_thickness": t for t, k in zip(tls_layer_thickness, ("ma", "ms", "sa"))},
 }
 
 sol_parameters = {
     "tool": "epr_3d",
     "mesh_size": {"1t1_layerMAmer": 0.5, "1t1_layerMSmer": 0.5, "1t1_layerSAmer": 0.5},
     "linear_system_method": "mg",
-    "voltage_excitations": [1.0],  # This sets all signals to 1V instead of exciting them sequentially
+    "voltage_excitations": [1.0, 0.5],  # Explicitly set the signal voltages
+    "save_elmer_data": True,
 }
 
+post_process = [
+    PostProcess(
+        "tls_monte_carlo_points.py",
+        arguments="--density-ma 200 --density-ms 200 --density-sa 200 --density-substrate 0.002",
+    ),
+    PostProcess("extract_field_values.py"),
+]
+
 if sheet_interfaces:
-    post_process = PostProcess(
-        "produce_epr_table.py",
-        sheet_approximations=dielectric_surfaces,
-    )
+    post_process = [
+        PostProcess(
+            "produce_epr_table.py",
+            sheet_approximations=dielectric_surfaces,
+        )
+    ] + post_process
 else:
     # change TLS layer material and set their thicknesses
     sim_parameters.update(
         {
-            "tls_layer_thickness": [dielectric_surfaces[layer]["thickness"] * 1e6 for layer in ("MA", "MS", "SA")],
+            "tls_layer_thickness": tls_layer_thickness,
             "tls_layer_material": ["oxideMA", "oxideMS", "oxideSA"],
             "material_dict": {
                 **ast.literal_eval(Simulation.material_dict),
@@ -130,8 +143,7 @@ else:
     # Refine MA wall if using 3D interfaces
     sol_parameters["mesh_size"]["1t1_layerMAwallmer"] = 0.3
 
-    post_process = PostProcess("produce_epr_table.py")
-
+    post_process = [PostProcess("produce_epr_table.py")] + post_process
 
 workflow = {
     "run_gmsh_gui": False,
@@ -140,7 +152,7 @@ workflow = {
     "run_paraview": False,
     "python_executable": "python",
     "gmsh_n_threads": -1,  #  Number of omp threads in gmsh
-    "elmer_n_processes": -1,  # Number of dependent processes (tasks) in elmer
+    "elmer_n_processes": 2,  # Number of dependent processes (tasks) in elmer
     "elmer_n_threads": 1,  # Number of omp threads per process in elmer
 }
 
