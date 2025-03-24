@@ -1189,6 +1189,56 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()</span></div>
 
 
+<div class="viewcode-block" id="CrossSectionSimulation.get_new_layers_format">
+<a class="viewcode-back" href="../../../api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_new_layers_format">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_new_layers_format</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This is temporary function to convert data from self.layer_dict, permittivity_dict, and</span>
+<span class="sd">        self.get_dict_by_layers(&quot;london_penetration_depth&quot;) into format similar to Simulation.layers and</span>
+<span class="sd">        Simulation.material_dict. Does work in general.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># ToDo: remove this function</span>
+        <span class="n">london</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dict_by_layers</span><span class="p">(</span><span class="s2">&quot;london_penetration_depth&quot;</span><span class="p">)</span>
+        <span class="n">set_london</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">london</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">}</span>
+        <span class="n">london_materials</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;pec_london_</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">set_london</span><span class="p">)}</span>
+
+        <span class="n">dielectric</span> <span class="o">=</span> <span class="p">{</span><span class="n">n</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_dict</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">permittivity_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">k</span><span class="p">)}</span>
+        <span class="n">set_dielectric</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">dielectric</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="mf">1.0</span><span class="p">}</span>
+        <span class="n">dielectric_materials</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;dielectric_</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">set_dielectric</span><span class="p">)}</span>
+
+        <span class="n">layers</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">material_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="o">**</span><span class="p">{</span><span class="n">n</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;conductivity&quot;</span><span class="p">:</span> <span class="mf">1e30</span><span class="p">,</span> <span class="s2">&quot;london_penetration_depth&quot;</span><span class="p">:</span> <span class="n">v</span><span class="p">}</span> <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">london_materials</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
+            <span class="o">**</span><span class="p">{</span><span class="n">n</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;permittivity&quot;</span><span class="p">:</span> <span class="n">v</span><span class="p">}</span> <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">dielectric_materials</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">london</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
+                <span class="n">material</span> <span class="o">=</span> <span class="n">london_materials</span><span class="p">[</span><span class="n">london</span><span class="p">[</span><span class="n">name</span><span class="p">]]</span>
+            <span class="k">elif</span> <span class="s2">&quot;signal&quot;</span> <span class="ow">in</span> <span class="n">name</span> <span class="ow">or</span> <span class="s2">&quot;ground&quot;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+                <span class="n">material</span> <span class="o">=</span> <span class="s2">&quot;pec&quot;</span>
+            <span class="k">elif</span> <span class="n">dielectric</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">!=</span> <span class="mf">1.0</span><span class="p">:</span>
+                <span class="n">material</span> <span class="o">=</span> <span class="n">dielectric_materials</span><span class="p">[</span><span class="n">dielectric</span><span class="p">[</span><span class="n">name</span><span class="p">]]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">material</span> <span class="o">=</span> <span class="s2">&quot;vacuum&quot;</span>
+
+            <span class="n">excitation</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="s2">&quot;ground&quot;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+                <span class="n">excitation</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">elif</span> <span class="s2">&quot;signal&quot;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+                <span class="n">splt</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="n">name</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;signal&quot;</span><span class="p">)</span> <span class="p">:]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">excitation</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">splt</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
+                    <span class="n">excitation</span> <span class="o">=</span> <span class="mi">1</span>
+
+            <span class="n">layers</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;layer&quot;</span><span class="p">:</span> <span class="n">layer</span><span class="o">.</span><span class="n">layer</span><span class="p">,</span>
+                <span class="s2">&quot;material&quot;</span><span class="p">:</span> <span class="n">material</span><span class="p">,</span>
+                <span class="o">**</span><span class="p">({}</span> <span class="k">if</span> <span class="n">excitation</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{</span><span class="s2">&quot;excitation&quot;</span><span class="p">:</span> <span class="n">excitation</span><span class="p">}),</span>
+            <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">layers</span><span class="p">,</span> <span class="n">material_dict</span></div>
+
+
 <div class="viewcode-block" id="CrossSectionSimulation.get_simulation_data">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_simulation_data">[docs]</a>
     <span class="k">def</span> <span class="nf">get_simulation_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1197,12 +1247,13 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            dictionary of relevant parameters for simulation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">layers</span><span class="p">,</span> <span class="n">material_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_new_layers_format</span><span class="p">()</span>
+
         <span class="n">simulation_data</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;simulation_name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
             <span class="s2">&quot;units&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">,</span>
-            <span class="s2">&quot;layers&quot;</span><span class="p">:</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">layer</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
-            <span class="s2">&quot;london_penetration_depth&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dict_by_layers</span><span class="p">(</span><span class="s2">&quot;london_penetration_depth&quot;</span><span class="p">),</span>
-            <span class="o">**</span><span class="p">{</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">_permittivity&quot;</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">permittivity_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
+            <span class="s2">&quot;layers&quot;</span><span class="p">:</span> <span class="n">layers</span><span class="p">,</span>
+            <span class="s2">&quot;material_dict&quot;</span><span class="p">:</span> <span class="n">material_dict</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="k">return</span> <span class="n">simulation_data</span></div>
 </div>

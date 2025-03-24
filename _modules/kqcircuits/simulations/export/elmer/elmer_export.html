@@ -1035,7 +1035,11 @@
 <div class="viewcode-block" id="export_elmer_json">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer_json">[docs]</a>
 <span class="k">def</span> <span class="nf">export_elmer_json</span><span class="p">(</span>
-    <span class="n">simulation</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Simulation</span><span class="p">,</span> <span class="n">CrossSectionSimulation</span><span class="p">],</span> <span class="n">solution</span><span class="p">:</span> <span class="n">ElmerSolution</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">workflow</span><span class="p">:</span> <span class="nb">dict</span>
+    <span class="n">simulation</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Simulation</span><span class="p">,</span> <span class="n">CrossSectionSimulation</span><span class="p">],</span>
+    <span class="n">solution</span><span class="p">:</span> <span class="n">ElmerSolution</span><span class="p">,</span>
+    <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="n">workflow</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+    <span class="n">mesh_reuse_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Export Elmer simulation into json and gds files.</span>
@@ -1045,6 +1049,7 @@
 <span class="sd">        solution: The solution to be exported.</span>
 <span class="sd">        path: Location where to write json and gds files.</span>
 <span class="sd">        workflow: Parameters for simulation workflow</span>
+<span class="sd">        mesh_reuse_name: Name of a mesh to be reused from another simulation</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">         Path to exported json file.</span>
@@ -1067,7 +1072,7 @@
     <span class="k">if</span> <span class="n">is_cross_section</span><span class="p">:</span>
         <span class="n">sif_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">full_name</span><span class="si">}</span><span class="s2">_C&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">sol_data</span><span class="p">[</span><span class="s2">&quot;run_inductance_sim&quot;</span><span class="p">]:</span>
-            <span class="k">if</span> <span class="nb">any</span><span class="p">((</span><span class="n">london</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">london</span> <span class="ow">in</span> <span class="n">sim_data</span><span class="p">[</span><span class="s2">&quot;london_penetration_depth&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">())):</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;london_penetration_depth&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">sim_data</span><span class="p">[</span><span class="s2">&quot;material_dict&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
                 <span class="n">sif_names</span> <span class="o">+=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">full_name</span><span class="si">}</span><span class="s2">_L&quot;</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">sif_names</span> <span class="o">+=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">full_name</span><span class="si">}</span><span class="s2">_C0&quot;</span><span class="p">]</span>
@@ -1081,6 +1086,7 @@
 
     <span class="n">json_data</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">full_name</span><span class="p">,</span>
+        <span class="s2">&quot;mesh_name&quot;</span><span class="p">:</span> <span class="n">mesh_reuse_name</span> <span class="k">if</span> <span class="n">mesh_reuse_name</span> <span class="k">else</span> <span class="n">full_name</span><span class="p">,</span>
         <span class="s2">&quot;workflow&quot;</span><span class="p">:</span> <span class="n">workflow</span><span class="p">,</span>
         <span class="o">**</span><span class="n">sim_data</span><span class="p">,</span>
         <span class="o">**</span><span class="n">sol_data</span><span class="p">,</span>
@@ -1325,37 +1331,38 @@
             <span class="n">elmer_nodes_per_worker</span><span class="p">,</span> <span class="n">elmer_tasks_per_worker</span><span class="p">,</span> <span class="n">elmer_cpus_per_task</span><span class="p">,</span> <span class="n">elmer_mem_per_worker</span>
         <span class="p">)</span>
 
+        <span class="n">env_setup</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">removesuffix</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sbatch_parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;env_setup_cmds&quot;</span><span class="p">,</span> <span class="p">[])]</span>
+
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sbatch_parameters</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Unused sbatch parameters: &quot;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">sbatch_parameters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> : </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="n">meshes_script_lines</span> <span class="o">=</span> <span class="n">_get_sbatch_lines</span><span class="p">(</span><span class="n">sbatch_settings_meshes</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">compile_elmer_modules</span><span class="p">:</span>
-            <span class="n">meshes_script_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elmer_compile_str</span><span class="p">)</span>
-
+        <span class="n">dep_mesh_scripts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">indep_mesh_scripts</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">json_filename</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">):</span>
 
-            <span class="p">(</span><span class="n">simulation_name</span><span class="p">,)</span> <span class="o">=</span> <span class="n">_get_from_json</span><span class="p">(</span><span class="n">json_filename</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
+            <span class="p">(</span><span class="n">simulation_name</span><span class="p">,</span> <span class="n">mesh_name</span><span class="p">)</span> <span class="o">=</span> <span class="n">_get_from_json</span><span class="p">(</span><span class="n">json_filename</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;mesh_name&quot;</span><span class="p">])</span>
             <span class="n">python_run_cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">python_executable</span><span class="si">}</span><span class="s1"> -u &quot;</span><span class="si">{</span><span class="n">execution_script</span><span class="si">}</span><span class="s1">&quot; &quot;</span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
 
             <span class="k">def</span> <span class="nf">get_log_cmd</span><span class="p">(</span><span class="n">logfile_suffix</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">simulation_name</span><span class="p">):</span>
                 <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;2&gt;&amp;1 &gt;&gt; &quot;log_files/</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">logfile_suffix</span><span class="si">}</span><span class="s1">.log&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
 
-            <span class="n">script_lines</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="s2">&quot;set -e</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
-                <span class="n">_sim_part_echo</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;Gmsh&quot;</span><span class="p">),</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">srun_cmd_gmsh</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">python_run_cmd</span><span class="si">}</span><span class="s1"> --only-gmsh -q </span><span class="si">{</span><span class="n">get_log_cmd</span><span class="p">(</span><span class="s2">&quot;Gmsh&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
-                <span class="n">_sim_part_echo</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;ElmerGrid&quot;</span><span class="p">),</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">srun_cmd_gmsh</span><span class="si">}</span><span class="s1"> ElmerGrid 14 2 &quot;</span><span class="si">{</span><span class="n">simulation_name</span><span class="si">}</span><span class="s1">.msh&quot; </span><span class="si">{</span><span class="n">get_log_cmd</span><span class="p">(</span><span class="s2">&quot;ElmerGrid&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
-            <span class="p">]</span>
+            <span class="n">script_lines</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;set -e</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">]</span>
 
-            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">elmer_tasks_per_worker</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">script_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">srun_cmd_gmsh</span><span class="si">}</span><span class="s1"> ElmerGrid 2 2 &quot;</span><span class="si">{</span><span class="n">simulation_name</span><span class="si">}</span><span class="s1">&quot; -metis </span><span class="si">{</span><span class="n">elmer_tasks_per_worker</span><span class="si">}</span><span class="s1">&#39;</span>
-                    <span class="sa">f</span><span class="s1">&#39; 4 --partdual --removeunused </span><span class="si">{</span><span class="n">get_log_cmd</span><span class="p">(</span><span class="s2">&quot;ElmerGrid&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
-                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">mesh_name</span> <span class="o">==</span> <span class="n">simulation_name</span><span class="p">:</span>
+                <span class="n">script_lines</span> <span class="o">+=</span> <span class="p">[</span>
+                    <span class="n">_sim_part_echo</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;Gmsh&quot;</span><span class="p">),</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">srun_cmd_gmsh</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">python_run_cmd</span><span class="si">}</span><span class="s1"> --only-gmsh -q </span><span class="si">{</span><span class="n">get_log_cmd</span><span class="p">(</span><span class="s2">&quot;Gmsh&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                    <span class="n">_sim_part_echo</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;ElmerGrid&quot;</span><span class="p">),</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">srun_cmd_gmsh</span><span class="si">}</span><span class="s1"> ElmerGrid 14 2 &quot;</span><span class="si">{</span><span class="n">simulation_name</span><span class="si">}</span><span class="s1">.msh&quot; </span><span class="si">{</span><span class="n">get_log_cmd</span><span class="p">(</span><span class="s2">&quot;ElmerGrid&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="p">]</span>
+
+                <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">elmer_tasks_per_worker</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">script_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">srun_cmd_gmsh</span><span class="si">}</span><span class="s1"> ElmerGrid 2 2 &quot;</span><span class="si">{</span><span class="n">simulation_name</span><span class="si">}</span><span class="s1">&quot; -metis </span><span class="si">{</span><span class="n">elmer_tasks_per_worker</span><span class="si">}</span><span class="s1">&#39;</span>
+                        <span class="sa">f</span><span class="s1">&#39; 4 --partdual --removeunused </span><span class="si">{</span><span class="n">get_log_cmd</span><span class="p">(</span><span class="s2">&quot;ElmerGrid&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+                    <span class="p">)</span>
 
             <span class="n">script_lines</span> <span class="o">+=</span> <span class="p">[</span>
                 <span class="n">_sim_part_echo</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;Write Elmer sif files&quot;</span><span class="p">),</span>
@@ -1365,18 +1372,27 @@
             <span class="n">script_filename_meshes</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">simulation_name</span> <span class="o">+</span> <span class="s2">&quot;_meshes.sh&quot;</span><span class="p">))</span>
             <span class="n">_write_script</span><span class="p">(</span><span class="n">script_filename_meshes</span><span class="p">,</span> <span class="n">script_lines</span><span class="p">)</span>
 
-            <span class="n">meshes_script_lines</span> <span class="o">+=</span> <span class="p">[</span>
-                <span class="sa">f</span><span class="s1">&#39;echo &quot;Submitting gmsh and ElmerGrid part </span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">n_jsons</span><span class="si">}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;echo &quot;--------------------------------------------&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
-                <span class="sa">f</span><span class="s1">&#39;source &quot;</span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">script_filename_meshes</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s1">&quot; &amp;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
-            <span class="p">]</span>
+            <span class="n">run_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;source &quot;</span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">script_filename_meshes</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s1">&quot; &amp;</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="p">(</span><span class="n">indep_mesh_scripts</span> <span class="k">if</span> <span class="n">mesh_name</span> <span class="o">==</span> <span class="n">simulation_name</span> <span class="k">else</span> <span class="n">dep_mesh_scripts</span><span class="p">)</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run_str</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">n_workers_full</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">n_jsons</span><span class="p">:</span>
-                <span class="n">meshes_script_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;wait</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">meshes_script_lines</span> <span class="o">=</span> <span class="n">_get_sbatch_lines</span><span class="p">(</span><span class="n">sbatch_settings_meshes</span><span class="p">)</span>
+        <span class="n">meshes_script_lines</span> <span class="o">+=</span> <span class="n">env_setup</span>
+        <span class="k">if</span> <span class="n">compile_elmer_modules</span><span class="p">:</span>
+            <span class="n">meshes_script_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elmer_compile_str</span><span class="p">)</span>
+
+        <span class="n">meshes_script_lines</span> <span class="o">+=</span> <span class="p">[</span>
+            <span class="n">s</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;wait</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="n">n_workers_full</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">indep_mesh_scripts</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">indep_mesh_scripts</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">meshes_script_lines</span> <span class="o">+=</span> <span class="p">[</span>
+            <span class="n">s</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;wait</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="n">n_workers_full</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">dep_mesh_scripts</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dep_mesh_scripts</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">]</span>
 
         <span class="n">_write_script</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">file_prefix</span> <span class="o">+</span> <span class="s2">&quot;_meshes.sh&quot;</span><span class="p">)),</span> <span class="n">meshes_script_lines</span><span class="p">)</span>
 
         <span class="n">main_script_lines</span> <span class="o">=</span> <span class="n">_get_sbatch_lines</span><span class="p">(</span><span class="n">sbatch_settings_elmer</span><span class="p">)</span>
+        <span class="n">main_script_lines</span> <span class="o">+=</span> <span class="n">env_setup</span>
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">json_filename</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">):</span>
             <span class="n">simulation_name</span><span class="p">,</span> <span class="n">sif_names</span> <span class="o">=</span> <span class="n">_get_from_json</span><span class="p">(</span><span class="n">json_filename</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;sif_names&quot;</span><span class="p">])</span>
@@ -1410,8 +1426,6 @@
             <span class="n">_write_script</span><span class="p">(</span><span class="n">script_filename</span><span class="p">,</span> <span class="n">script_lines</span><span class="p">)</span>
 
             <span class="n">main_script_lines</span> <span class="o">+=</span> <span class="p">[</span>
-                <span class="sa">f</span><span class="s1">&#39;echo &quot;Submitting ElmerSolver part </span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">n_jsons</span><span class="si">}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;echo &quot;--------------------------------------------&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
                 <span class="sa">f</span><span class="s1">&#39;source &quot;</span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">script_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s1">&quot; &amp;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
             <span class="p">]</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">n_workers_full</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">n_jsons</span><span class="p">:</span>
@@ -1437,14 +1451,16 @@
             <span class="n">main_script_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;export OMP_NUM_THREADS=</span><span class="si">{</span><span class="n">workflow</span><span class="p">[</span><span class="s1">&#39;elmer_n_threads&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">main_script_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">python_executable</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">script_folder</span><span class="si">}</span><span class="s2">/simple_workload_manager.py </span><span class="si">{</span><span class="n">n_workers</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
+        <span class="n">dependent_sims</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">json_filename</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">):</span>
-            <span class="p">(</span><span class="n">simulation_name</span><span class="p">,)</span> <span class="o">=</span> <span class="n">_get_from_json</span><span class="p">(</span><span class="n">json_filename</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
+            <span class="p">(</span><span class="n">simulation_name</span><span class="p">,</span> <span class="n">mesh_name</span><span class="p">)</span> <span class="o">=</span> <span class="n">_get_from_json</span><span class="p">(</span><span class="n">json_filename</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;mesh_name&quot;</span><span class="p">])</span>
             <span class="n">python_run_cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">python_executable</span><span class="si">}</span><span class="s1"> &quot;</span><span class="si">{</span><span class="n">execution_script</span><span class="si">}</span><span class="s1">&quot; &quot;</span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
 
             <span class="k">def</span> <span class="nf">get_log_cmd</span><span class="p">(</span><span class="n">logfile_suffix</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">simulation_name</span><span class="p">):</span>
                 <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;2&gt;&amp;1 &gt;&gt; &quot;log_files/</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">logfile_suffix</span><span class="si">}</span><span class="s1">.log&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
 
             <span class="n">script_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">simulation_name</span> <span class="o">+</span> <span class="s2">&quot;.sh&quot;</span><span class="p">))</span>
+
             <span class="n">script_lines</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="s2">&quot;set -e</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
                 <span class="n">_sim_part_echo</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;Gmsh&quot;</span><span class="p">),</span>
@@ -1464,7 +1480,11 @@
             <span class="n">_write_script</span><span class="p">(</span><span class="n">script_filename</span><span class="p">,</span> <span class="n">script_lines</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">parallelize_workload</span><span class="p">:</span>
-                <span class="n">main_script_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; &quot;./</span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">script_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+                <span class="n">run_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39; &quot;./</span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">script_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+                <span class="k">if</span> <span class="n">mesh_name</span> <span class="o">==</span> <span class="n">simulation_name</span><span class="p">:</span>
+                    <span class="n">main_script_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run_str</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">dependent_sims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run_str</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">main_script_lines</span> <span class="o">+=</span> <span class="p">[</span>
                     <span class="sa">f</span><span class="s1">&#39;echo &quot;Submitting the main script of simulation </span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">n_jsons</span><span class="si">}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
@@ -1472,8 +1492,12 @@
                     <span class="sa">f</span><span class="s1">&#39;&quot;./</span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">script_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
                 <span class="p">]</span>
 
+        <span class="k">if</span> <span class="n">dependent_sims</span><span class="p">:</span>
+            <span class="n">main_script_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">python_executable</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">script_folder</span><span class="si">}</span><span class="s2">/simple_workload_manager.py </span><span class="si">{</span><span class="n">n_workers</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">main_script_lines</span> <span class="o">+=</span> <span class="n">dependent_sims</span>
+
         <span class="n">main_script_lines</span> <span class="o">+=</span> <span class="p">[</span>
-            <span class="s1">&#39;echo &quot;--------------------------------------------&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">echo &quot;--------------------------------------------&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
             <span class="s1">&#39;echo &quot;Write versions file&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">python_run_cmd</span><span class="si">}</span><span class="s2"> --write-versions-file</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="p">]</span>
@@ -1551,14 +1575,32 @@
 
         <span class="k">return</span> <span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">replace</span><span class="p">(</span><span class="n">sol</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">sol_name</span><span class="p">))</span>
 
-    <span class="n">json_filenames</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">simulations</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">make_names_elmer_compatible</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">sim_sol</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sim_sol</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">sim_sol</span><span class="p">,</span> <span class="n">common_sol</span><span class="p">)))</span>
+        <span class="k">for</span> <span class="n">sim_sol</span> <span class="ow">in</span> <span class="n">simulations</span>
+    <span class="p">]</span>
+    <span class="n">sim_objects</span><span class="p">,</span> <span class="n">sol_objects</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">simulations</span><span class="p">))</span>
 
-    <span class="k">for</span> <span class="n">sim_sol</span> <span class="ow">in</span> <span class="n">simulations</span><span class="p">:</span>
-        <span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span> <span class="o">=</span> <span class="n">sim_sol</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sim_sol</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">sim_sol</span><span class="p">,</span> <span class="n">common_sol</span><span class="p">)</span>
-        <span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span> <span class="o">=</span> <span class="n">make_names_elmer_compatible</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">)</span>
+    <span class="n">n_sim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">simulations</span><span class="p">)</span>
+    <span class="n">mesh_reuse_name</span> <span class="o">=</span> <span class="n">n_sim</span> <span class="o">*</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_sim</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">sim_objects</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">sim_objects</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="ow">and</span> <span class="n">sol_objects</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">mesh_size</span> <span class="o">==</span> <span class="n">sol_objects</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">mesh_size</span>
+                <span class="ow">and</span> <span class="n">sol_objects</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">tool</span> <span class="o">==</span> <span class="n">sol_objects</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">tool</span>
+            <span class="p">):</span>
+                <span class="n">mesh_reuse_name</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">mesh_reuse_name</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">if</span> <span class="n">mesh_reuse_name</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">else</span> <span class="p">(</span><span class="n">sim_objects</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="n">sol_objects</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="k">break</span>
+
+    <span class="n">json_filenames</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">,</span> <span class="n">mesh_reuse</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">sim_objects</span><span class="p">,</span> <span class="n">sol_objects</span><span class="p">,</span> <span class="n">mesh_reuse_name</span><span class="p">):</span>
         <span class="n">validate_simulation</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">)</span>
+
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">json_filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">export_elmer_json</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">workflow</span><span class="p">))</span>
+            <span class="n">json_filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">export_elmer_json</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">workflow</span><span class="p">,</span> <span class="n">mesh_reuse</span><span class="p">))</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
             <span class="k">if</span> <span class="n">skip_errors</span><span class="p">:</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>

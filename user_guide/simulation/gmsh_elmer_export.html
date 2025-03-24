@@ -1784,20 +1784,23 @@ defining <code class="docutils literal notranslate"><span class="pre">workflow['
 <li><p>“Elmer” part. Runs ElmerSolver with any requested resources. Also runs writing the results and project version with single thread</p></li>
 </ol>
 <p>Instead of forwarding the settings directly to <code class="docutils literal notranslate"><span class="pre">sbatch</span></code> command from <code class="docutils literal notranslate"><span class="pre">workflow[sbatch_parameters]</span></code>, the following custom options are used:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">workflow</span><span class="p">[</span><span class="s1">&#39;sbatch_parameters&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;n_workers&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>             <span class="c1"># &lt;-- Number of parallel simulations, the total amount of resources requested</span>
-                                <span class="c1">#     is `n_workers` times the definitions below for single simulation</span>
-    <span class="s1">&#39;max_threads_per_node&#39;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="c1"># &lt;-- Max number of tasks allowed on a node. dependent on the used remote host</span>
-                                <span class="c1">#     Automatically divides the tasks to as few nodes as possible</span>
-    <span class="s1">&#39;elmer_n_processes&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span>     <span class="c1"># &lt;-- Number of tasks per simulation</span>
-    <span class="s1">&#39;elmer_n_threads&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span>        <span class="c1"># &lt;-- Number of threads per task</span>
-    <span class="s1">&#39;elmer_mem&#39;</span><span class="p">:</span><span class="s1">&#39;64G&#39;</span><span class="p">,</span>          <span class="c1"># &lt;-- Amount of memory per simulation</span>
-    <span class="s1">&#39;elmer_time&#39;</span><span class="p">:</span><span class="s1">&#39;00:10:00&#39;</span><span class="p">,</span>    <span class="c1"># &lt;-- Maximum time per simulation</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>workflow[&#39;sbatch_parameters&#39;] = {
+    &#39;n_workers&#39;: 2,             # &lt;-- Number of parallel simulations, the total amount of resources requested
+                                #     is `n_workers` times the definitions below for single simulation
+    &#39;max_threads_per_node&#39;: 20, # &lt;-- Max number of tasks allowed on a node. dependent on the used remote host
+                                #     Automatically divides the tasks to as few nodes as possible
+    &#39;elmer_n_processes&#39;:10,     # &lt;-- Number of tasks per simulation
+    &#39;elmer_n_threads&#39;:1,        # &lt;-- Number of threads per task
+    &#39;elmer_mem&#39;:&#39;64G&#39;,          # &lt;-- Amount of memory per simulation
+    &#39;elmer_time&#39;:&#39;00:10:00&#39;,    # &lt;-- Maximum time per simulation
 
-    <span class="s1">&#39;gmsh_n_threads&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span>        <span class="c1"># &lt;-- Threads per simulation</span>
-    <span class="s1">&#39;gmsh_mem&#39;</span><span class="p">:</span><span class="s1">&#39;64G&#39;</span><span class="p">,</span>           <span class="c1"># &lt;-- Allocated memory per simulation</span>
-    <span class="s1">&#39;gmsh_time&#39;</span><span class="p">:</span><span class="s1">&#39;00:10:00&#39;</span><span class="p">,</span>     <span class="c1"># &lt;-- Maximum time per simulation</span>
-<span class="p">}</span>
+    &#39;gmsh_n_threads&#39;:10,        # &lt;-- Threads per simulation
+    &#39;gmsh_mem&#39;:&#39;64G&#39;,           # &lt;-- Allocated memory per simulation
+    &#39;gmsh_time&#39;:&#39;00:10:00&#39;,     # &lt;-- Maximum time per simulation
+
+    &#39;env_setup_cmds&#39;: [&quot;module load elmer&quot;] # &lt;- Optional commands which can be used to setup the environment on the remote platform.
+                                                 An alternative is to add the commands to the remote profile file (e.g. `~/.bashrc`)
+}
 </pre></div>
 </div>
 <p>Additionally the account and partition info must be given:</p>

@@ -1126,13 +1126,12 @@
     <span class="n">has_integrate_flux</span> <span class="o">=</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">solution</span><span class="p">,</span> <span class="s2">&quot;integrate_magnetic_flux&quot;</span><span class="p">)</span>
     <span class="n">integrate_flux</span> <span class="o">=</span> <span class="n">solution</span><span class="o">.</span><span class="n">integrate_magnetic_flux</span> <span class="k">if</span> <span class="n">has_integrate_flux</span> <span class="k">else</span> <span class="kc">False</span>
 
-    <span class="c1"># Ensures that a layer with thickness == 0 and a material != &quot;pec&quot;</span>
-    <span class="c1"># exists in the setup when &quot;integrate_magnetic_flux&quot; is True.</span>
+    <span class="c1"># Ensures that a non-metal layer with thickness == 0 exists in the setup when &quot;integrate_magnetic_flux&quot; is True.</span>
     <span class="k">if</span> <span class="n">integrate_flux</span><span class="p">:</span>
         <span class="n">layers</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">layers</span>
         <span class="n">has_flux_integration_layer</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">layer</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;thickness&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">layer</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;material&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;pec&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">layer</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;thickness&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">simulation</span><span class="o">.</span><span class="n">is_metal</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;material&quot;</span><span class="p">)):</span>
                 <span class="n">has_flux_integration_layer</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="k">break</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">has_flux_integration_layer</span><span class="p">:</span>
