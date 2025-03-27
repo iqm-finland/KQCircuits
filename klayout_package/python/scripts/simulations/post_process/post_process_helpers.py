@@ -61,7 +61,7 @@ def tabulate_into_csv(file_name, data_dict, parameters, parameter_values):
         parameters: list of parameter names changed between simulations
         parameter_values: dictionary with list of parameter values as value
     """
-    with open(file_name, "w", encoding="utf-8") as csvfile:
+    with open(file_name, "w", encoding="utf-8", newline="") as csvfile:
         writer = csv.writer(csvfile, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
         layer_names = sorted({n for v in data_dict.values() for n in v})

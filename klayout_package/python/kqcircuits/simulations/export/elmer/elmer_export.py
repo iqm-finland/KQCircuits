@@ -135,7 +135,7 @@ def export_elmer_script(
         file_prefix: File prefix of the script file to be created.
         script_file: Name of the script file to run.
         post_process: List of PostProcess objects, a single PostProcess object, or None to be executed after simulations
-        compile_elmer_modules: Compile custom Elmer energy integration module at runtime. Not supported on Windows.
+        compile_elmer_modules: Compile custom Elmer energy integration module at runtime.
 
     Returns:
 
@@ -151,10 +151,17 @@ def export_elmer_script(
     execution_script = Path(script_folder).joinpath(script_file)
 
     n_jsons = len(json_filenames)
-    elmer_compile_str = (
-        'echo "Compiling Elmer modules"\n'
-        f"elmerf90 -fcheck=all {script_folder}/SaveBoundaryEnergy.F90 -o SaveBoundaryEnergy > /dev/null\n"
-    )
+
+    elmer_compile_str = 'echo "Compiling Elmer modules"\n'
+
+    if platform.system() == "Windows":
+        elmer_compile_str += (
+            f'cmd //c "elmerf90 -fcheck=all {script_folder}/SaveBoundaryEnergy.F90 -o SaveBoundaryEnergy.dll"\n'
+        )
+    else:
+        elmer_compile_str += (
+            f"elmerf90 -fcheck=all {script_folder}/SaveBoundaryEnergy.F90 -o SaveBoundaryEnergy > /dev/null\n"
+        )
 
     path.joinpath("log_files").mkdir(parents=True, exist_ok=True)
 
@@ -641,8 +648,6 @@ def _is_epr_sim(simulations, common_sol):
     elif isinstance(common_sol, ElmerEPR3DSolution):
         epr_sim = True
 
-    if epr_sim and platform.system() == "Windows":
-        logging.warning("Elmer 3D EPR Simulations are not supported on Windows")
     return epr_sim
 
 

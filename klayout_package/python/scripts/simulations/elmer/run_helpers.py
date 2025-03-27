@@ -271,7 +271,7 @@ def _run_elmer_solver(
     elmersolver_executable = shutil.which("ElmerSolver")
     elmersolver_mpi_executable = shutil.which("ElmerSolver_mpi")
 
-    sif_paths = [str(Path(sim_name).joinpath(f"{sif_file}.sif")) for sif_file in sif_names]
+    sif_paths = [str(Path(sim_name).joinpath(f"{sif_file}.sif").as_posix()) for sif_file in sif_names]
 
     if n_processes > 1 and elmersolver_mpi_executable is not None:
         if is_microsoft(exec_path_override) and is_singularity(exec_path_override):
