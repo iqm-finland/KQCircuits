@@ -81,6 +81,12 @@ sim_parameters = {
     "metal_height": 0.2,
     "etch_whole_opposite_face": args.etch_whole_opposite_face,
 }
+if args.london_penetration_depth != 0.0:
+    sim_parameters["metal_material"] = "london_pec"
+    sim_parameters["material_dict"] = {
+        "silicon": {"permittivity": 11.45},
+        "london_pec": {"london_penetration_depth": args.london_penetration_depth},
+    }
 
 workflow = {
     "run_gmsh": True,
@@ -117,7 +123,6 @@ cross_sections = create_cross_sections_from_simulations(
     ms_thickness=0.0003,
     sa_thickness=0.0024,
     magnification_order=3,  # Zoom to nanometers due to thin oxide layers
-    london_penetration_depth=args.london_penetration_depth,
 )
 loss_tangents = {
     "substrate_1": 5e-7,

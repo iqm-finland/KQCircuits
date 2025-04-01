@@ -23,6 +23,7 @@ from kqcircuits.simulations.export.ansys.ansys_solution import (
     AnsysVoltageSolution,
     AnsysHfssSolution,
     AnsysCrossSectionSolution,
+    AnsysSolution,
 )
 from kqcircuits.simulations.export.elmer.elmer_solution import (
     ElmerVectorHelmholtzSolution,
@@ -44,6 +45,7 @@ def validate_simulation(simulation, solution):
     has_no_ports_when_required(simulation, solution)
     has_edgeport_when_forbidden(simulation, solution)
     flux_integration_layer_exists_if_needed(simulation, solution)
+    london_penetration_depth_with_ansys(simulation, solution)
 
 
 def simulation_and_solution_types_match(simulation, solution):
@@ -111,6 +113,26 @@ def has_edgeport_when_forbidden(simulation, solution):
             f"Simulation '{sim_name}' has at least one 'EdgePort'. This is incompatible with {type(solution)}",
             validation_type=has_edgeport_when_forbidden.__name__,
         )
+
+
+def london_penetration_depth_with_ansys(simulation, solution):
+    """Validation check: ensure that london penetration depth is not used with AnsysSolutions.
+    Args:
+        simulation: A Simulation object.
+        solution: A Solution object.
+    Raises:
+        Errors when validation criteria are not met.
+    """
+    if not isinstance(solution, AnsysSolution):
+        return
+
+    material_dict = simulation.get_material_dict()
+    for material, material_def in material_dict.items():
+        if "london_penetration_depth" in material_def:
+            raise ValidateSimError(
+                f"Material {material} of simulation '{simulation.name}' defines London penetration "
+                "depth, but the feature is not supported with Ansys solution."
+            )
 
 
 def flux_integration_layer_exists_if_needed(simulation, solution):

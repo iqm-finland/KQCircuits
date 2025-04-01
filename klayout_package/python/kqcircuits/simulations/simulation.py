@@ -214,7 +214,8 @@ class Simulation:
     )
 
     airbridge_height = Param(pdt.TypeDouble, "Height of airbridges.", 3.4, unit="µm")
-    metal_height = Param(pdt.TypeList, "Height of metal sheet on each face.", [0.0], unit="µm")
+    metal_height = Param(pdt.TypeList, "Height of base metal on each face.", [0.0], unit="µm")
+    metal_material = Param(pdt.TypeList, "Base metal material on each face.", ["pec"])
     dielectric_height = Param(pdt.TypeList, "Height of insulator dielectric on each face.", [0.0], unit="µm")
     dielectric_material = Param(
         pdt.TypeList,
@@ -560,8 +561,11 @@ class Simulation:
         return sum_region
 
     def is_metal(self, material):
-        mater_dict = ast.literal_eval(self.material_dict) if isinstance(self.material_dict, str) else self.material_dict
-        return material == "pec" or mater_dict.get(material, {}).get("conductivity", 0) > 0
+        """Return True if material is metal and False otherwise"""
+        if material == "pec":
+            return True
+        material_definition = self.get_material_dict().get(material, {})
+        return material_definition.get("conductivity", 0) > 0 or "london_penetration_depth" in material_definition
 
     def split_metal_layers_by_excitation(self):
         """Split metal layers in self.layers such that ground and signal metals are separated.
@@ -742,16 +746,19 @@ class Simulation:
 
                 # Insert metal and dielectric layers
                 dielectric_thickness = z[face_id][2] - z[face_id][1]
+                metal_material = self.ith_value(self.ith_value(self.metal_material, i), j)
                 if self.fixed_level_stackup:
                     # Use fixed level stack-up
-                    self.insert_layer(face_id + "_metal", metal_region, z[face_id][0], z[face_id][1], material="pec")
+                    self.insert_layer(
+                        face_id + "_metal", metal_region, z[face_id][0], z[face_id][1], material=metal_material
+                    )
                     if dielectric_thickness != 0.0:
                         self.insert_layer(
                             face_id + "_via",
                             face_box_region - dielectric_region,
                             z[face_id][1],
                             z[face_id][2],
-                            material="pec",
+                            material=metal_material,
                         )
                         self.insert_layer(
                             face_id + "_dielectric",
@@ -764,7 +771,7 @@ class Simulation:
                 else:
                     # Use stack to produce drop-down stack-up
                     metal_thickness = z[face_id][1] - z[face_id][0]
-                    stack.append((metal_region, face_id + "_metal", metal_thickness, "pec"))
+                    stack.append((metal_region, face_id + "_metal", metal_thickness, metal_material))
                     if dielectric_thickness != 0.0:
                         stack.append(
                             (
@@ -1355,6 +1362,19 @@ class Simulation:
 
         return port_data
 
+    def get_material_dict(self):
+        """Return material_dict as dictionary."""
+        return ast.literal_eval(self.material_dict) if isinstance(self.material_dict, str) else self.material_dict
+
+    def check_material_dict(self):
+        """Check that used materials are defined in material_dict and return material_dict as dictionary."""
+        materials = {layer["material"] for layer in self.layers.values() if "material" in layer}
+        mater_dict = self.get_material_dict()
+        for name in materials:
+            if name not in mater_dict and name not in ["pec", "vacuum", None]:
+                raise ValueError(f"Material '{name}' used but not defined in {self.__class__.__name__}.material_dict")
+        return mater_dict
+
     def get_simulation_data(self):
         """Return the simulation data in dictionary form. Contains following:
 
@@ -1364,18 +1384,11 @@ class Simulation:
         * box: Boundary box,
         * ports: Port data in dictionary form, see self.get_port_data(),
         """
-        # check that materials are defined in material_dict
-        materials = [layer["material"] for layer in self.layers.values() if "material" in layer]
-        mater_dict = ast.literal_eval(self.material_dict) if isinstance(self.material_dict, str) else self.material_dict
-        for name in materials:
-            if name not in mater_dict and name not in ["pec", "vacuum", None]:
-                raise ValueError("Material '{name}' used but not defined in Simulation.material_dict")
-
         return {
             "simulation_name": self.name,
             "units": "um",  # hardcoded assumption in multiple places
             "layers": self.layers,
-            "material_dict": mater_dict,
+            "material_dict": self.check_material_dict(),
             "box": self.box,
             "ports": self.get_port_data(),
         }

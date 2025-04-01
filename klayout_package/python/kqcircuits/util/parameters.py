@@ -121,7 +121,6 @@ class pdt:  # pylint: disable=invalid-name
     TypeInt = pya.PCellParameterDeclaration.TypeInt
     TypeList = pya.PCellParameterDeclaration.TypeList
     TypeString = pya.PCellParameterDeclaration.TypeString
-    TypeNone = pya.PCellParameterDeclaration.TypeNone
     TypeShape = pya.PCellParameterDeclaration.TypeShape
     TypeBoolean = pya.PCellParameterDeclaration.TypeBoolean
     TypeLayer = pya.PCellParameterDeclaration.TypeLayer

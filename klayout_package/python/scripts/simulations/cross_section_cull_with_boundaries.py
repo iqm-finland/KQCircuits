@@ -70,7 +70,13 @@ sim_parameters = {
     "face_stack": ["1t1", "2b1"] if multiface else ["1t1"],
     "etch_whole_opposite_face": args.etch_whole_opposite_face,
     "n_guides": 1,
-    "metal_height": [0.2, 0.1] if multiface else [0.2],
+    "metal_height": [0.2, 0.1],
+    "metal_material": ["london_pec_bottom", "london_pec_top"],
+    "material_dict": {
+        "silicon": {"permittivity": 11.45},
+        "london_pec_bottom": {"london_penetration_depth": 100e-9},
+        "london_pec_top": {"london_penetration_depth": 200e-9},
+    },
 }
 
 
@@ -120,7 +126,6 @@ cross_sections = create_cross_sections_from_simulations(
     ms_thickness=0.0003,
     sa_thickness=0.0024,
     magnification_order=3,  # Zoom to nanometers due to thin oxide layers
-    london_penetration_depth=[100e-9, 200e-9] if multiface else [100e-9],
     vertical_cull=(
         (
             -simulations[0].substrate_height[1] + 3,

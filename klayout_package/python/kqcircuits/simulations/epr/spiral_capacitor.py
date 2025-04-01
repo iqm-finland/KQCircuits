@@ -18,7 +18,7 @@
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.elements.finger_capacitor_square import eval_a2, eval_b2
-from kqcircuits.simulations.epr.util import get_mer_z, EPRTarget
+from kqcircuits.simulations.epr.util import EPRTarget
 from kqcircuits.simulations.partition_region import PartitionRegion
 
 vertical_dimension = 1.0
@@ -118,23 +118,14 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
     center_gap_len = center_dir.abs()
     center_dir /= center_gap_len
     half_cut_len = 25.0
-    z_me = get_mer_z(simulation, simulation.face_ids[0])
     result = {
         f"{prefix}fingergmer": {
-            "p1": center_most + simulation.finger_width * 0.9 * center_dir,
-            "p2": center_most - center_dir * (center_gap_len + simulation.finger_width * 0.9),
-            "metal_edges": [
-                {"x": simulation.finger_width * 0.9, "z": z_me},
-                {"x": center_gap_len + simulation.finger_width * 0.9, "z": z_me},
-            ],
+            "p1": center_most + simulation.finger_width * 0.5 * center_dir,
+            "p2": center_most - center_dir * (center_gap_len + simulation.finger_width * 0.5),
         },
         f"{prefix}groundgmer": {
             "p1": top_most + pya.DPoint(0, half_cut_len),
-            "p2": top_most - pya.DPoint(0, simulation.ground_gap + simulation.finger_width * 0.9),
-            "metal_edges": [
-                {"x": half_cut_len, "z": z_me},
-                {"x": half_cut_len + simulation.ground_gap, "z": z_me},
-            ],
+            "p2": top_most - pya.DPoint(0, simulation.ground_gap + simulation.finger_width * 0.5),
         },
     }
     return result

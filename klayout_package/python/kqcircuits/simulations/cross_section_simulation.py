@@ -23,44 +23,24 @@ import logging
 
 from kqcircuits.elements.element import Element
 from kqcircuits.pya_resolver import pya
-from kqcircuits.simulations.simulation import Simulation, get_simulation_layer_by_name, to_1d_list
-from kqcircuits.util.parameters import Param, pdt, add_parameters_from
+from kqcircuits.simulations.simulation import Simulation, get_simulation_layer_by_name
+from kqcircuits.util.geometry_helper import merge_points_and_match_on_edges
+from kqcircuits.util.parameters import add_parameters_from
 
 
-@add_parameters_from(Simulation, "name", "box", "extra_json_data")
+@add_parameters_from(Simulation, "name", "material_dict", "extra_json_data")
 class CrossSectionSimulation:
-    """Class for co-planar waveguide cross-section simulations.
+    """Base class for cross-section simulation geometries.
 
-    This class is intended to be subclassed by a specific simulation implementation;  The subclass should implement the
-    method 'build' which defines the simulation geometry and material properties.
+    The geometry consist of 2-dimensional layers which are thought as cross sections of 3-dimensional geometry.
+    This allows for modeling waveguide-like geometries where the cross section is constant for relatively long segments.
 
-    Layer names in cross-section geometry don't need to obey KQC default layers. The layers use following name coding:
-    - Layer name 'vacuum' is reserved for vacuum material. The vacuum layer can be left empty; then the empty space
-    inside the 'box' is automatically filled with vacuum.
-    - All layers that include word 'signal' are considered as signal metals. Different signal layers are considered as
-    separate signals so that the result matrices has row and column for each signal layer. The order of signals is the
-    same as where they are introduced by calling 'get_sim_layer' function.
-    - All layers that include word 'ground'  are considered as ground metal.
-    - Any other layer is considered as dielectric. The permittivity can be set using the 'set_permittivity' function.
+    This class is intended to be subclassed by a specific simulation implementation; The subclass should implement the
+    method 'build' which defines the simulation geometry and material properties. The helper function 'insert_layer'
+    should be called internally to build the geometry.
     """
 
     LIBRARY_NAME = None  # This is needed by some methods inherited from Element.
-
-    london_penetration_depth = Param(
-        pdt.TypeList,
-        "London penetration depth of metals",
-        0.0,
-        unit="m",
-        docstring="London penetration depth is implemented for one signal simulation only",
-    )
-    # TODO: deprecate. With internal cross section method, we can simply copy the parameters over
-    xsection_source_class = Param(
-        pdt.TypeNone,
-        "Simulation class XSection tool was used on",
-        None,
-        docstring="Class from which the simulation was generated using the XSection tool. Used to get the schema.",
-    )
-    ignore_process_layers = Param(pdt.TypeBoolean, "Ignores automatic function call of process_layers", False)
 
     def __init__(self, layout, **kwargs):
         """Initialize a CrossSectionSimulation.
@@ -93,15 +73,18 @@ class CrossSectionSimulation:
 
         self.cell = kwargs["cell"] if "cell" in kwargs else layout.create_cell(self.name)
 
-        self.layer_dict = {}
-        self.permittivity_dict = {}
+        self.layers = {}
         self.units = kwargs.get("units", "um")
         self.build()
-        if not self.ignore_process_layers:
-            self.process_layers()
+        self.process_layers()
 
     # Inherit specific methods from Element
     get_schema = classmethod(Element.get_schema.__func__)
+    get_layers = Simulation.get_layers
+    get_parameters = Simulation.get_parameters
+    is_metal = Simulation.is_metal
+    get_material_dict = Simulation.get_material_dict
+    check_material_dict = Simulation.check_material_dict
 
     @abc.abstractmethod
     def build(self):
@@ -112,116 +95,54 @@ class CrossSectionSimulation:
         return
 
     def process_layers(self):
-        """Limit layers by self.box and create vacuum layer if it doesn't exist."""
-        bbox = pya.Region(self.box.to_itype(self.layout.dbu))
-        for layer in self.layer_dict.values():
-            shapes = self.cell.shapes(self.layout.layer(layer))
-            region = pya.Region(shapes) & bbox
-            shapes.clear()
-            shapes.insert(region)
+        """Process and check validity of self.layers. Is called after build method.
 
-        if "vacuum" not in self.layer_dict:
-            vacuum = bbox.dup()
-            for v in self.layer_dict.values():
-                vacuum -= pya.Region(self.cell.shapes(self.layout.layer(v)))
-            self.cell.shapes(self.get_sim_layer("vacuum")).insert(vacuum)
-
-    def register_cell_layers_as_sim_layers(self):
-        """Takes all layers that contain any geometry and registers them as simulation layers
-
-        This method resets the internal simulation layer dictionary.
+        Internally,
+        * call merge_points_and_match_on_edges to avoid small-scale geometry artifacts
+        * ignore layers with empty region
+        * check if 'excitation' keywords are set correctly
+        * insert layer shapes to self.cell.shapes and replace 'region' keyword with 'layer' keyword.
         """
-        self.layer_dict = {}
-        self.permittivity_dict = {}
-        for l in self.layout.layer_infos():
-            if len(list(self.cell.each_shape(self.layout.layer(l)))) > 0:
-                self.layer_dict[l.name] = l
-
-    def get_sim_layer(self, layer_name):
-        """Returns layer of given name. If layer doesn't exist, a new layer is created."""
-        if layer_name not in self.layer_dict:
-            layer_info = None
-            for l in self.layout.layer_infos():
-                if l.datatype == 0 and l.name == layer_name:
-                    # If there is a layer with layer_name in layout (used by other cell), reuse that
-                    layer_info = l
-            if layer_info is None:
-                layer_info = get_simulation_layer_by_name(layer_name)
-            self.layer_dict[layer_name] = layer_info
-        return self.layout.layer(self.layer_dict[layer_name])
-
-    def set_permittivity(self, layer_name, permittivity):
-        """Sets permittivity for layer of given name."""
-        self.permittivity_dict[layer_name] = permittivity
-
-    def get_parameters(self):
-        """Return dictionary with all parameters and their values."""
-        return {param: getattr(self, param) for param in (self.xsection_source_class or type(self)).get_schema()}
-
-    def get_dict_by_layers(self, param_name):
-        """Helper function to cast a parameter given as a list of same length as the face stack into
-        a dict of the format simulation_layer -> value"""
-        face_list = to_1d_list(self.face_stack) if hasattr(self, "face_stack") else [""]
-        data_list = to_1d_list(getattr(self, param_name))
-
-        num_faces = len(face_list)
-        if len(data_list) == 1 and num_faces > 1:
-            data_list = num_faces * [data_list[0]]
-        elif len(data_list) != num_faces:
-            logging.warning(f"Number of faces and {param_name} do not match ({num_faces} vs {len(data_list)})")
-
-        metal_layers = [n for n in self.layer_dict if "signal" in n or "ground" in n]
-        return {layer: v for face, v in zip(face_list, data_list) for layer in metal_layers if layer.startswith(face)}
-
-    def get_layers(self):
-        return self.layer_dict.values()
-
-    def get_new_layers_format(self):
-        """This is temporary function to convert data from self.layer_dict, permittivity_dict, and
-        self.get_dict_by_layers("london_penetration_depth") into format similar to Simulation.layers and
-        Simulation.material_dict. Does work in general.
-        """
-        # ToDo: remove this function
-        london = self.get_dict_by_layers("london_penetration_depth")
-        set_london = {v for v in london.values() if v != 0.0}
-        london_materials = {v: f"pec_london_{i+1}" for i, v in enumerate(set_london)}
-
-        dielectric = {n: v for n in self.layer_dict for k, v in self.permittivity_dict.items() if n.startswith(k)}
-        set_dielectric = {v for v in dielectric.values() if v != 1.0}
-        dielectric_materials = {v: f"dielectric_{i+1}" for i, v in enumerate(set_dielectric)}
+        merge_points_and_match_on_edges([layer["region"] for layer in self.layers.values()], tolerance=1)
 
         layers = {}
-        material_dict = {
-            **{n: {"conductivity": 1e30, "london_penetration_depth": v} for v, n in london_materials.items()},
-            **{n: {"permittivity": v} for v, n in dielectric_materials.items()},
-        }
-        for name, layer in self.layer_dict.items():
-            if london.get(name, 0.0) != 0.0:
-                material = london_materials[london[name]]
-            elif "signal" in name or "ground" in name:
-                material = "pec"
-            elif dielectric.get(name, 1.0) != 1.0:
-                material = dielectric_materials[dielectric[name]]
-            else:
-                material = "vacuum"
+        for name, data in self.layers.items():
+            if data["region"].is_empty():
+                continue  # ignore layer with empty region
 
-            excitation = None
-            if "ground" in name:
-                excitation = 0
-            elif "signal" in name:
-                splt = name[name.find("signal") :].split("_")
-                try:
-                    excitation = int(splt[1])
-                except (ValueError, IndexError):
-                    excitation = 1
+            # check if excitation keyword is set correctly
+            if self.is_metal(data.get("material")):
+                if "excitation" not in data:
+                    raise ValueError(f"Layer {name} is metal but integer excitation value is not set.")
+                if not isinstance(data["excitation"], int):
+                    raise ValueError(f"Excitation should be integer but {data['excitation']} is set for layer {name}.")
+            elif "excitation" in data:
+                raise ValueError(f"Layer {name} is dielectric but excitation value is set.")
 
-            layers[name] = {
-                "layer": layer.layer,
-                "material": material,
-                **({} if excitation is None else {"excitation": excitation}),
-            }
+            # insert layer shape to self.cell.shapes and replace region keyword with layer keyword
+            layer_info = get_simulation_layer_by_name(name)
+            self.cell.shapes(self.layout.layer(layer_info)).insert(data["region"])
+            layers[name] = {"layer": layer_info.layer, **{k: v for k, v in data.items() if k != "region"}}
 
-        return layers, material_dict
+        self.layers = layers
+
+    def insert_layer(self, layer_name: str, region: pya.Region, material: str, **params):
+        """Add layer parameters into 'self.layers' if region is non-empty."""
+        if not region.is_empty():
+            self.layers[layer_name] = {"region": region.dup(), "material": material, **params}
+
+    def restrict_layer_regions(self, bbox: pya.DBox):
+        """Limit the regions of self.layers inside the bounding box."""
+        region = pya.Region(bbox.to_itype(self.layout.dbu))
+        for layer in self.layers.values():
+            layer["region"] &= region
+
+    def get_unfilled_region(self, bbox: pya.DBox) -> pya.Region:
+        """Return region inside bbox that is not covered yet by layers."""
+        region = pya.Region(bbox.to_itype(self.layout.dbu))
+        for layer in self.layers.values():
+            region -= layer["region"]
+        return region
 
     def get_simulation_data(self):
         """Return the simulation data in dictionary form.
@@ -229,12 +150,10 @@ class CrossSectionSimulation:
         Returns:
             dictionary of relevant parameters for simulation
         """
-        layers, material_dict = self.get_new_layers_format()
-
         simulation_data = {
             "simulation_name": self.name,
             "units": self.units,
-            "layers": layers,
-            "material_dict": material_dict,
+            "layers": self.layers,
+            "material_dict": self.check_material_dict(),
         }
         return simulation_data

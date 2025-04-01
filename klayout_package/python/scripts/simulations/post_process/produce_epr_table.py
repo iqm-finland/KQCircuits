@@ -21,7 +21,7 @@ Produces EPR table from Ansys or Elmer results
 Args:
     sys.argv[1]: parameter file for EPR calculations. Can include following:
     - sheet_approximations: dictionary to transform sheet integral to thin layer integral. Includes parameters for
-        thickness, eps_r, and background_eps_r
+        thickness and eps_r
     - groups: List of layer keys. If given, the layers including a key are grouped together and other layers are ignored
     - region_corrections: Dictionary with partition region names as keys and EPR correction keys as values.
         If given, the script tries to look for cross-section results for EPR correction and groups EPRs by partition

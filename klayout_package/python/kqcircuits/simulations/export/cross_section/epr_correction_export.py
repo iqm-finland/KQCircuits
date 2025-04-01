@@ -15,13 +15,12 @@
 # (meetiqm.com/iqm-open-source-trademark-policy). IQM welcomes contributions to the code.
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
-import logging
-
-from pathlib import Path
-
 from typing import Callable, Sequence
 
-from kqcircuits.defaults import default_cross_section_profile
+from kqcircuits.simulations.export.cross_section.cross_section_export import (
+    visualise_cross_section_cut_on_original_layout,
+)
+from kqcircuits.simulations.export.cross_section.cut_simulation import CutSimulation
 
 from kqcircuits.simulations.simulation import Simulation
 
@@ -30,17 +29,6 @@ from kqcircuits.simulations.partition_region import get_list_of_two
 from kqcircuits.simulations.export.simulation_export import cross_combine
 
 from kqcircuits.simulations.export.elmer.elmer_solution import ElmerCrossSectionSolution
-
-from kqcircuits.defaults import XSECTION_PROCESS_PATH
-
-from kqcircuits.simulations.export.cross_section.cross_section_profile import CrossSectionProfile
-
-from kqcircuits.simulations.export.cross_section.cross_section_export import (
-    create_cross_sections_from_simulations,
-    visualise_cross_section_cut_on_original_layout,
-)
-
-from kqcircuits.simulations.export.cross_section.xsection_export import create_xsections_from_simulations
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.post_process import PostProcess
@@ -68,21 +56,14 @@ def get_epr_correction_elmer_solution(**override_args):
 def get_epr_correction_simulations(
     simulations: list[Simulation],
     correction_cuts: dict[str, dict] | Callable[[Simulation], dict[str, dict]],
-    cross_section_profile: (
-        CrossSectionProfile | Callable[[Simulation], CrossSectionProfile]
-    ) = default_cross_section_profile,
-    xsection_path: None | Path = None,
     ma_eps_r: float = 8,
     ms_eps_r: float = 11.4,
     sa_eps_r: float = 4,
     ma_thickness: float = 4.8e-3,  # in µm
     ms_thickness: float = 0.3e-3,  # in µm
     sa_thickness: float = 2.4e-3,  # in µm
-    ma_bg_eps_r: float = 1,
-    ms_bg_eps_r: float = 11.45,
-    sa_bg_eps_r: float = 11.45,
-    metal_height: float | None = None,
-) -> tuple[list[tuple[Simulation, ElmerCrossSectionSolution]], list[PostProcess]]:
+    metal_height: float = 0.2,
+) -> tuple[list[tuple[CutSimulation, ElmerCrossSectionSolution]], list[PostProcess]]:
     """Helper function to produce EPR correction simulations.
 
     Args:
@@ -103,19 +84,13 @@ def get_epr_correction_simulations(
             If `solution` is not set, all items under `correction_cuts[Key]`
             are given to `get_epr_correction_elmer_solution` except
             items with keys `["p1", "p2", "metal_edges", "partition_regions", "simulations"]`.
-        cross_section_profile: CrossSectionProfile object that defines vertical level values for each layer.
-            Uses ``default_cross_section_profile`` by default.
-        xsection_path: path to simulation folder. Only set this if you want to use older external XSection tool.
         ma_eps_r: relative permittivity of MA layer
         ms_eps_r: relative permittivity of MS layer
         sa_eps_r: relative permittivity of SA layer
         ma_thickness: thickness of MA layer
         ms_thickness: thickness of MS layer
         sa_thickness: thickness of SA layer
-        ma_bg_eps_r: rel permittivity at the location of MA layer in 3D simulation (sheet approximation in use)
-        ms_bg_eps_r: rel permittivity at the location of MS layer in 3D simulation (sheet approximation in use)
-        sa_bg_eps_r: rel permittivity at the location of SA layer in 3D simulation (sheet approximation in use)
-        metal_height: height of metal layers in correction simulations. Use None to get heights from 3D stack
+        metal_height: Thickness of metal layer if sheet in the source simulation
 
     Returns:
         tuple containing list of correction simulations and list of post_process objects
@@ -128,8 +103,6 @@ def get_epr_correction_simulations(
     source_sims, source_sols = list(zip(*simulations))
 
     for source_sim, source_sol in zip(source_sims, source_sols):
-        if metal_height is not None:
-            source_sim.metal_height = metal_height
         cuts = correction_cuts(source_sim) if callable(correction_cuts) else correction_cuts
 
         for key, cut in cuts.items():
@@ -152,7 +125,7 @@ def get_epr_correction_simulations(
                 raise ValueError(f"Partition region metal_edge_dimensions are invalid for correction_cut {key}.")
 
             mer_box = []
-            for me in cut["metal_edges"]:
+            for me in cut.get("metal_edges", []):
                 # TODO: replace x, z, x_reversed, z_reversed with face, intersection_n
                 # TODO: we can deduce x from intersection data, just need to know which intersection from the left
                 # TODO: we can deduce z from face name. z_reversed implicit from face name (t or b)
@@ -163,43 +136,23 @@ def get_epr_correction_simulations(
                 mer_box.append(pya.DBox(x - h_dims[1 - dx], z - v_dims[dz], x + h_dims[dx], z + v_dims[1 - dz]))
 
             cords_list = [(cut["p1"], cut["p2"])]
-            if xsection_path:
-                logging.warning(
-                    "get_epr_correction_simulations called with xsection_path argument, "
-                    "prompting to use external XSection tool to generate cross sections. "
-                    "This is a deprecated method, it is recommended to remove this argument "
-                    "so that a native cross section generating utility is prompted."
-                )
-                cross_sections = create_xsections_from_simulations(
-                    [source_sim],
-                    xsection_path,
-                    cords_list,
-                    layout=correction_layout,
-                    ma_permittivity=ma_eps_r,
-                    ms_permittivity=ms_eps_r,
-                    sa_permittivity=sa_eps_r,
-                    ma_thickness=ma_thickness,
-                    ms_thickness=ms_thickness,
-                    sa_thickness=sa_thickness,
-                    magnification_order=1,
-                    process_path=XSECTION_PROCESS_PATH,
-                    mer_box=mer_box,
-                )
-            else:
-                cross_sections = create_cross_sections_from_simulations(
-                    [source_sim],
-                    cords_list,
-                    cross_section_profile,
-                    layout=correction_layout,
-                    ma_permittivity=ma_eps_r,
-                    ms_permittivity=ms_eps_r,
-                    sa_permittivity=sa_eps_r,
-                    ma_thickness=ma_thickness,
-                    ms_thickness=ms_thickness,
-                    sa_thickness=sa_thickness,
-                    magnification_order=1,
-                    mer_box=mer_box,
-                )
+            correction_layout.dbu = 1e-4
+            cross_section = CutSimulation(
+                correction_layout,
+                name=source_sim.name + getattr(source_sol, "name", "") + "_" + key,
+                source_sim=source_sim,
+                cut_start=cut["p1"],
+                cut_end=cut["p2"],
+                tls_layer_thickness=[ma_thickness, ms_thickness, sa_thickness],
+                tls_layer_material=["ma", "ms", "sa"],
+                material_dict={
+                    "ma": {"permittivity": ma_eps_r},
+                    "ms": {"permittivity": ms_eps_r},
+                    "sa": {"permittivity": sa_eps_r},
+                },
+                region_map={"_mer": mer_box or part_names},
+                metal_height=metal_height,
+            )
 
             if "solution" in cut:
                 cut_solution = cut["solution"]
@@ -213,11 +166,7 @@ def get_epr_correction_simulations(
                     },
                 )
 
-            correction_simulations += cross_combine(cross_sections, cut_solution)
-
-            correction_simulations[-1][0].name = correction_simulations[-1][0].cell.name = (
-                source_sim.name + getattr(source_sol, "name", "") + "_" + key
-            )
+            correction_simulations += cross_combine(cross_section, cut_solution)
 
             visualise_cross_section_cut_on_original_layout([source_sim], cords_list, cut_label=key, width_ratio=0.03)
 
@@ -238,9 +187,9 @@ def get_epr_correction_simulations(
             deembed_cross_sections=deembed_cross_sections,
             deembed_lens=deembed_lens,
             sheet_approximations={
-                "MA": {"thickness": ma_thickness * 1e-6, "eps_r": ma_eps_r, "background_eps_r": ma_bg_eps_r},
-                "MS": {"thickness": ms_thickness * 1e-6, "eps_r": ms_eps_r, "background_eps_r": ms_bg_eps_r},
-                "SA": {"thickness": sa_thickness * 1e-6, "eps_r": sa_eps_r, "background_eps_r": sa_bg_eps_r},
+                "MA": {"thickness": ma_thickness * 1e-6, "eps_r": ma_eps_r},
+                "MS": {"thickness": ms_thickness * 1e-6, "eps_r": ms_eps_r},
+                "SA": {"thickness": sa_thickness * 1e-6, "eps_r": sa_eps_r},
             },
             groups=["MA", "MS", "SA", "substrate", "vacuum"],
             region_corrections={

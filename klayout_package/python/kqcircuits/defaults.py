@@ -25,7 +25,6 @@ import os
 import subprocess
 from pathlib import Path
 
-from kqcircuits.simulations.export.cross_section.cross_section_profile import get_cross_section_profile
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.defaults_helper import find_ansys_executable
 from kqcircuits.util.import_helper import module_from_file
@@ -64,10 +63,6 @@ ELMER_SCRIPT_PATHS = [
     SCRIPTS_PATH.joinpath("simulations").joinpath("elmer"),
     SCRIPTS_PATH.joinpath("simulations").joinpath("post_process"),
 ]
-# When taking cross sections, if profile not specified, will default to executing this function
-# with signature (simulation: Simulation) -> CrossSectionProfile:
-default_cross_section_profile = get_cross_section_profile
-XSECTION_PROCESS_PATH = ROOT_PATH.joinpath("xsection/kqc_process.xs")
 
 VERSION_PATHS = {}
 VERSION_PATHS["KQC"] = ROOT_PATH

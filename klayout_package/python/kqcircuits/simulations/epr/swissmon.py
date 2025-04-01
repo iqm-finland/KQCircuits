@@ -87,6 +87,7 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
 
 def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
     cross_corner = simulation.refpoints["epr_cross_09"]
+    cross_corner_h = (cross_corner.y - simulation.refpoints["epr_cross_06"].y) / 2
     coupler_corner = (
         simulation.refpoints["epr_cplr0_max"]
         if float(simulation.cpl_length[0]) > 0
@@ -100,13 +101,12 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
             "Using correction with %s gap for all arms with gap widths %s", str(2 * half_gap), str(simulation.gap_width)
         )
 
-    cross_xsection_center = pya.DPoint((cross_corner.x + coupler_corner.x) / 2, cross_corner.y - half_gap)
-    half_cut_length = 30.0
+    cross_xsection_center = pya.DPoint((cross_corner.x + coupler_corner.x) / 2, cross_corner.y - cross_corner_h)
+    half_cut_length = 30.0 + cross_corner_h
     result = {
         f"{prefix}crossmer": {
             "p1": cross_xsection_center + pya.DPoint(0, -half_cut_length),
             "p2": cross_xsection_center + pya.DPoint(0, half_cut_length),
-            "metal_edges": [{"x": half_cut_length - half_gap}, {"x": half_cut_length + half_gap, "x_reversed": True}],
         }
     }
 
@@ -116,21 +116,18 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
         result[f"{prefix}0cplrmer"] = {
             "p1": simulation.refpoints["port_cplr0"] + pya.DPoint(-half_cut_length + half_gap, xsection_point),
             "p2": simulation.refpoints["port_cplr0"] + pya.DPoint(half_cut_length + half_gap, xsection_point),
-            "metal_edges": [{"x": half_cut_length - half_gap}, {"x": half_cut_length + half_gap, "x_reversed": True}],
         }
     if float(simulation.cpl_length[1]) > 0:
         xsection_point = float(simulation.cpl_gap[1]) / 2 + float(simulation.cpl_width[1]) / 2
         result[f"{prefix}1cplrmer"] = {
             "p1": simulation.refpoints["port_cplr1"] + pya.DPoint(xsection_point, half_cut_length - half_gap),
             "p2": simulation.refpoints["port_cplr1"] + pya.DPoint(xsection_point, -half_cut_length - half_gap),
-            "metal_edges": [{"x": half_cut_length - half_gap}, {"x": half_cut_length + half_gap, "x_reversed": True}],
         }
     if float(simulation.cpl_length[2]) > 0:
         xsection_point = float(simulation.cpl_gap[2]) / 2 + float(simulation.cpl_width[2]) / 2
         result[f"{prefix}2cplrmer"] = {
             "p1": simulation.refpoints["port_cplr2"] + pya.DPoint(-half_cut_length - half_gap, xsection_point),
             "p2": simulation.refpoints["port_cplr2"] + pya.DPoint(half_cut_length - half_gap, xsection_point),
-            "metal_edges": [{"x": half_cut_length - half_gap}, {"x": half_cut_length + half_gap, "x_reversed": True}],
         }
     return result
 

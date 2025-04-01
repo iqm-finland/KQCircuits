@@ -32,6 +32,7 @@ from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
 from kqcircuits.simulations.export.simulation_export import export_simulation_oas, cross_sweep_simulation
 from kqcircuits.simulations.post_process import PostProcess
+from kqcircuits.simulations.simulation import Simulation
 
 from kqcircuits.util.export_helper import (
     create_or_empty_tmp_directory,
@@ -42,20 +43,28 @@ from kqcircuits.util.parameters import add_parameters_from, Param, pdt
 
 
 @add_parameters_from(Element, "a", "b")
+@add_parameters_from(
+    Simulation,
+    "box",
+    metal_height=[0.2],
+    vertical_over_etching=0,
+    tls_layer_material=["MA", "MS", "SA"],
+    tls_layer_thickness=[0.0048, 0.0003, 0.0024],
+    material_dict={
+        "silicon": {"permittivity": 11.45},
+        "MA": {"permittivity": 8.0},
+        "MS": {"permittivity": 11.4},
+        "SA": {"permittivity": 4.0},
+    },
+)
 class CpwCrossSectionSim(CrossSectionSimulation):
 
     number_of_cpws = Param(pdt.TypeInt, "Number of co-planar waveguides.", 1)
     cpw_distance = Param(pdt.TypeDouble, "Distance between nearest co-planar waveguides.", 50, unit="μm")
     is_axisymmetric = Param(pdt.TypeBoolean, "Draw half of a CPW for Axi Symmetric case", False)
 
-    vertical_over_etching = Param(pdt.TypeDouble, "Vertical over-etching into substrates at gaps.", 0, unit="μm")
-    metal_thickness = Param(pdt.TypeDouble, "Thickness of metal sheets", 0.2, unit="µm")
-    ma_layer_thickness = Param(pdt.TypeDouble, "Thickness of metal-air layer", 0.0048, unit="µm")
-    ms_layer_thickness = Param(pdt.TypeDouble, "Thickness of metal-substrate layer", 0.0003, unit="µm")
-    sa_layer_thickness = Param(pdt.TypeDouble, "Thickness of substrate-air layer", 0.0024, unit="µm")
-
     def build(self):
-        cx = self.box.p1.x if self.is_axisymmetric else self.box.center().x
+        cx = self.box.left if self.is_axisymmetric else self.box.center().x
         cy = self.box.center().y
 
         # substrate
@@ -66,8 +75,9 @@ class CpwCrossSectionSim(CrossSectionSimulation):
         )
 
         # ground
+        metal_thickness = Simulation.ith_value(self.metal_height, 0)
         ground = pya.Region(
-            pya.DBox(pya.DPoint(self.box.left, cy), pya.DPoint(self.box.right, cy + self.metal_thickness)).to_itype(
+            pya.DBox(pya.DPoint(self.box.left, cy), pya.DPoint(self.box.right, cy + metal_thickness)).to_itype(
                 self.layout.dbu
             )
         )
@@ -80,14 +90,14 @@ class CpwCrossSectionSim(CrossSectionSimulation):
                 pya.Region(
                     pya.DBox(
                         pya.DPoint(sx if self.is_axisymmetric else (sx - self.a / 2), cy),
-                        pya.DPoint(sx + self.a / 2, cy + self.metal_thickness),
+                        pya.DPoint(sx + self.a / 2, cy + metal_thickness),
                     ).to_itype(self.layout.dbu)
                 )
             )
             ground -= pya.Region(
                 pya.DBox(
                     pya.DPoint(sx - self.a / 2 - self.b, cy),
-                    pya.DPoint(sx + self.a / 2 + self.b, cy + self.metal_thickness),
+                    pya.DPoint(sx + self.a / 2 + self.b, cy + metal_thickness),
                 ).to_itype(self.layout.dbu)
             )
             substrate -= pya.Region(
@@ -103,38 +113,36 @@ class CpwCrossSectionSim(CrossSectionSimulation):
                 ).to_itype(self.layout.dbu)
             )
 
-        # oxide layers
-        if any((self.ma_layer_thickness, self.ms_layer_thickness, self.sa_layer_thickness)):
+        # interface layers
+        if_thickness = [Simulation.ith_value(self.tls_layer_thickness, i) for i in range(3)]
+        if_layer = {}
+        if any(if_thickness):
             box_region = pya.Region(self.box.to_itype(self.layout.dbu))
             metals = pya.Region()
             for s in signals:
                 metals += s
             metals += ground
-            ma_layer = (metals.sized(self.ma_layer_thickness / self.layout.dbu + 0.5) - substrate - metals) & box_region
-            ms_layer = metals.sized(self.ms_layer_thickness / self.layout.dbu + 0.5) & substrate
-            substrate -= ms_layer
-            sa_layer = (
-                (substrate.sized(self.sa_layer_thickness / self.layout.dbu + 0.5) & box_region)
+            if_layer["ma"] = (metals.sized(if_thickness[0] / self.layout.dbu + 0.5) - substrate - metals) & box_region
+            if_layer["ms"] = metals.sized(if_thickness[1] / self.layout.dbu + 0.5) & substrate
+            substrate -= if_layer["ms"]
+            if_layer["sa"] = (
+                (substrate.sized(if_thickness[2] / self.layout.dbu + 0.5) & box_region)
                 - substrate
                 - metals
-                - ms_layer
-                - ma_layer
+                - if_layer["ma"]
+                - if_layer["ms"]
             )
 
         # Insert shapes
-        self.cell.shapes(self.get_sim_layer("substrate")).insert(substrate)
-        self.set_permittivity("substrate", 11.45)
-        for i, s in enumerate(signals):
-            self.cell.shapes(self.get_sim_layer(f"signal_{i + 1}")).insert(s)
-        self.cell.shapes(self.get_sim_layer("ground")).insert(ground)
+        self.insert_layer("substrate", substrate, "silicon")
+        for i, reg in enumerate(signals, 1):
+            self.insert_layer(f"signal_{i}", reg, "pec", excitation=i)
+        self.insert_layer("ground", ground, "pec", excitation=0)
 
-        if any((self.ma_layer_thickness, self.ms_layer_thickness, self.sa_layer_thickness)):
-            self.cell.shapes(self.get_sim_layer("ma_layer")).insert(ma_layer)
-            self.set_permittivity("ma_layer", 8.0)
-            self.cell.shapes(self.get_sim_layer("ms_layer")).insert(ms_layer)
-            self.set_permittivity("ms_layer", 11.4)
-            self.cell.shapes(self.get_sim_layer("sa_layer")).insert(sa_layer)
-            self.set_permittivity("sa_layer", 4.0)
+        for i, (key, reg) in enumerate(if_layer.items()):
+            self.insert_layer(f"{key}_layer", reg, Simulation.ith_value(self.tls_layer_material, i))
+
+        self.insert_layer("vacuum", self.get_unfilled_region(self.box), "vacuum")
 
 
 parser = argparse.ArgumentParser()
@@ -163,7 +171,7 @@ sim_parameters = {
     "name": "cpw_cross_section",
     "box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(100, 100)),
     "is_axisymmetric": is_axisymmetric,
-    "ms_layer_thickness": 0.003,  # too thin layer would give error in Ansys, so this is increased
+    "tls_layer_thickness": [0.0048, 0.003, 0.0024],  # too thin layer would give error in Ansys, so ms is increased
 }
 
 mesh_size = {
