@@ -66,7 +66,6 @@ class DoublePads(Qubit):
     with_squid = Param(pdt.TypeBoolean, "Boolean whether to include the squid", True)
 
     def build(self):
-
         # Qubit base
         ground_gap_points = [
             pya.DPoint(float(self.ground_gap[0]) / 2, float(self.ground_gap[1]) / 2),
@@ -144,6 +143,10 @@ class DoublePads(Qubit):
         self.refpoints["probe_island_2"] = pya.DPoint(
             0, self.squid_offset - squid_height / 2 - taper_height - float(self.island2_extent[1]) / 2
         )
+
+        # Now actually add SQUID
+        self.refpoints["junction1"] = pya.DPoint(0, squid_height / 2.0)
+        self.refpoints["junction2"] = pya.DPoint(0, -squid_height / 2.0)
 
     def _build_coupler(self, first_island_top_edge):
         coupler_top_edge = first_island_top_edge + self.coupler_offset + float(self.coupler_extent[1])
