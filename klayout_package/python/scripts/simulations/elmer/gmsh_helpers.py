@@ -160,7 +160,7 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
     for name, size in mesh_size.items():
         intersection: set[tuple[int, int]] = set()
         split_names = name.split("&")
-        if all((name in new_tags for name in split_names)):
+        if all(n in new_tags for n in split_names):
             for sname in split_names:
                 family = get_recursive_children(new_tags[sname]).union(new_tags[sname])
                 intersection = intersection.intersection(family) if intersection else family
@@ -316,7 +316,7 @@ def set_mesh_size(
     max_mesh_size: float,
     dist_min: float,
     dist_max: float,
-    sampling: float | None = None,
+    sampling: int | None = None,
 ) -> list[int]:
     """
     Set the mesh size such that it is `min_mesh_size` when near the curves of boundaries defined by the entities of
@@ -344,11 +344,11 @@ def set_mesh_size(
         max_mesh_size: maximum mesh size
         dist_min: distance to which the minimum mesh size is used
         dist_max: distance after which the maximum mesh size is used
-        sampling: number of sampling points when computing the distance from the curve. The default
-                         value is None. In that case the value is determined by 1.5 times the maximum reachable
-                         distance in the bounding box of the entity (curve) divided by the minimum mesh size. At
-                         the moment there is no obvious way to implement curve_length/min_mesh_size type of
-                         algorithm.
+        sampling: number of sampling points when computing the distance from the curve. The default value is None.
+                  In that case, the value is determined by 1.5 times the maximum reachable distance in the bounding box
+                  of the entity (curve) divided by the minimum mesh size. The sampling value is forced to be at least 3
+                  to avoid bug in line-based mesh refinement. At the moment there is no obvious way to implement
+                  curve_length/min_mesh_size type of algorithm.
 
     Returns:
         list of the threshold field ids that were defined in this function
@@ -363,16 +363,12 @@ def set_mesh_size(
         gmsh.model.mesh.field.setNumbers(tag_distance_field, key_dict[dim_tag[0]], [dim_tag[1]])
 
         # Sample the object with points
-        if sampling is not None:
-            # Manual sampling
-            gmsh.model.mesh.field.setNumber(tag_distance_field, "Sampling", sampling)
-        elif dim_tag[0] > 0:
-            # The sampling is determined by 1.5 times the maximum reachable distance in the bounding box of the entity
-            # (curve) divided by the minimum mesh size. At the moment there is no obvious way to implement
-            # curve_length/min_mesh_size type of algorithm.
-            bbox = gmsh.model.occ.getBoundingBox(*dim_tag)
-            bbox_diam = coord_dist(bbox[0:3], bbox[3:6])  # diameter of bounding box
-            gmsh.model.mesh.field.setNumber(tag_distance_field, "Sampling", np.ceil(1.5 * bbox_diam / min_mesh_size))
+        if dim_tag[0] > 0:
+            if sampling is None:
+                bbox = gmsh.model.occ.getBoundingBox(*dim_tag)
+                bbox_diam = coord_dist(bbox[0:3], bbox[3:6])  # diameter of bounding box
+                sampling = np.ceil(1.5 * bbox_diam / min_mesh_size)
+            gmsh.model.mesh.field.setNumber(tag_distance_field, "Sampling", max(3, sampling))
 
         mesh_field_id = gmsh.model.mesh.field.add("Threshold")
         gmsh.model.mesh.field.setNumber(mesh_field_id, "InField", tag_distance_field)
