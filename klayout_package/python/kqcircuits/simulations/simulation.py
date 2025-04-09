@@ -265,6 +265,8 @@ class Simulation:
 
     small_shape_area = Param(pdt.TypeDouble, "Area below which shapes will trigger a warning.", 1.0, unit="µm²")
 
+    base_metal_addition_layers = Param(pdt.TypeList, "Layers to be added to base metal", ["base_metal_addition"])
+
     extra_json_data = Param(
         pdt.TypeNone,
         "Extra data in dict form to store in resulting JSON",
@@ -716,7 +718,9 @@ class Simulation:
 
             for j, face_id in enumerate(face_ids):
                 metal_gap_region = self.region_from_layer(face_id, "base_metal_gap_wo_grid")
-                metal_add_region = self.region_from_layer(face_id, "base_metal_addition")
+                metal_add_region = pya.Region()
+                for base_metal_addition_layer in self.base_metal_addition_layers:
+                    metal_add_region += self.region_from_layer(face_id, base_metal_addition_layer)
 
                 if self.over_etching >= 0:
                     lithography_region = self.simplified_region(metal_gap_region - metal_add_region, self.over_etching)
