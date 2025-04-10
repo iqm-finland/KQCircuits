@@ -598,7 +598,9 @@ class Element(pya.PCellDeclarationHelper):
             "TEXT", "Basic", {"layer": default_layers["annotations"], "text": error_msg, "mag": 10.0}
         )
         text_center = error_text_cell.bbox().center().to_dtype(self.layout.dbu)
-        self.insert_cell(error_text_cell, pya.DTrans(position - text_center))
+        text_inst, _ = self.insert_cell(error_text_cell, pya.DTrans(position - text_center))
+        text_inst.set_property("error_on_cell", error_msg)
+        text_inst.set_property("error_on_cell_position", str(position))
         raise ValueError(error_msg)
 
     def add_protection(self, shape, face_id=0):

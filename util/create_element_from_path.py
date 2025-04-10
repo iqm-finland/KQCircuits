@@ -23,6 +23,7 @@ import pathlib
 import importlib
 
 from kqcircuits.klayout_view import KLayoutView
+from kqcircuits.util.error_on_cell import formatted_errors_on_cells
 from kqcircuits.util.log_router import route_log
 from kqcircuits.defaults import TMP_PATH
 from kqcircuits.util.plugin_startup import register_plugins
@@ -163,3 +164,7 @@ else:
 view = KLayoutView()
 view.insert_cell(cls)
 view.focus()
+
+errors = formatted_errors_on_cells(view.layout)
+if errors:
+    logging.warning(f"Found errors on cells:\n{errors}")

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description>Show errors on cells</description>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <priority>0</priority>
+ <shortcut/>
+ <show-in-menu>true</show-in-menu>
+ <group-name>misc</group-name>
+ <menu-path>kqcircuits_menu.#8</menu-path>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text># This code is part of KQCircuits
+# Copyright (C) 2025 IQM Finland Oy
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
+# License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program. If not, see
+# https://www.gnu.org/licenses/gpl-3.0.html.
+#
+# The software distribution should follow IQM trademark policy for open-source software
+# (meetiqm.com/iqm-open-source-trademark-policy). IQM welcomes contributions to the code.
+# Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
+# and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
+
+
+from kqcircuits.util.error_on_cell import formatted_errors_on_cells
+from kqcircuits.klayout_view import KLayoutView
+from kqcircuits.pya_resolver import pya
+
+view = KLayoutView(current=True)
+
+errors = formatted_errors_on_cells(view.layout)
+if errors:
+    pya.MessageBox.warning("Errors on cells", f"Found errors on cells:\n\n{errors}", pya.MessageBox.Ok)
+else:
+    pya.MessageBox.info("Errors on cells", "No errors found", pya.MessageBox.Ok)
+</text>
+</klayout-macro>
