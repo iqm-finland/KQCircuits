@@ -451,6 +451,7 @@ def get_electrostatics_solver(
     ordinate: str | int,
     capacitance_file: Path | str,
     c_matrix_output: bool = True,
+    exec_solver: str = "Always",
 ) -> str:
     """
     Returns electrostatics solver in sif file format.
@@ -466,13 +467,13 @@ def get_electrostatics_solver(
         electrostatics solver in sif file format
     """
     solver_lines = [
+        f"Exec Solver = {exec_solver}",
         "Equation = Electro Statics",
         'Procedure = "StatElecSolveVec" "StatElecSolver"',
         "Variable = Potential",
         f"Calculate Capacitance Matrix = {c_matrix_output}",
         "Calculate Electric Field = True",
-        # NOTE field point data cannot be extracted from elemental fields
-        f"Calculate Elemental Fields = {not json_data['save_elmer_data']}",
+        "Calculate Elemental Fields = True",
         "Average Within Materials = False",
         f"Capacitance Matrix Filename = {capacitance_file}",
         "Nonlinear System Max Iterations = 1",

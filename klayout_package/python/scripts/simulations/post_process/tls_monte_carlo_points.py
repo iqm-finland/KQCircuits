@@ -100,7 +100,7 @@ def get_z(
         z coordinate of the point projected, or None if not applicable
     """
     if is_metal_distribution:
-        consider_layers = [l for l in point_in_layers if "excitation" in layers[l]]
+        consider_layers = [l for l in point_in_layers if "excitation" in layers[l] and l.startswith(face)]
     else:
         consider_layers = [l for l in point_in_layers if l == f"{face}_etch"]
         if not consider_layers:
@@ -111,10 +111,13 @@ def get_z(
     zs = [layers[l]["z"] + (layers[l]["thickness"] if add_thickness else 0) for l in consider_layers]
     if len(set(zs)) > 1:
         print("WARNING: multiple z values found")
+
+    # `take_top` indicates MA layer for which we need to sample opposite side of `zs` compared to other interfaces
+    sign = -1 if take_top else 1
     if face[1] == "t":
-        return max(zs) - interface_thickness / 2.0
+        return max(zs) - sign * interface_thickness / 2.0
     elif face[1] == "b":
-        return min(zs) + interface_thickness / 2.0
+        return min(zs) + sign * interface_thickness / 2.0
     else:
         print(f"Unexpected character '{face[1]}' at face {face}")
         return None
@@ -217,14 +220,16 @@ for file_name, parameters in sim_parameters.items():
     layout.read(parameters["gds_file"])
     # Prepare Regions for each relevant layer in simulation
     regions = {
-        layer_name: klayout.db.Region(
-            layout.begin_shapes(layout.top_cell(), layout.layer(layer_dict["layer"], 0))
-        ).merged()
+        layer_name: (
+            klayout.db.Region(layout.begin_shapes(layout.top_cell(), layout.layer(layer_dict["layer"], 0))).merged()
+            if "layer" in layer_dict
+            else None
+        )
         for layer_name, layer_dict in parameters["layers"].items()
-        if "layer" in layer_dict
     }
 
     for face in face_stack:
+        result[face] = {}
         for distribution in sheet_distributions:
             points = []
             print(
@@ -236,7 +241,7 @@ for file_name, parameters in sim_parameters.items():
                 point_in_layers = set(
                     layer_name
                     for layer_name, region in regions.items()
-                    if any(poly.inside(point) for poly in region.each())
+                    if region is None or any(poly.inside(point) for poly in region.each())
                 )
                 z = get_z(
                     parameters["layers"],
@@ -249,7 +254,7 @@ for file_name, parameters in sim_parameters.items():
                 # Reject point if sampled outside of region
                 if z is not None:
                     points.append({"x": dpoint.x, "y": dpoint.y, "z": z})
-            result[distribution] = points
+            result[face][distribution] = points
         # Fourth, substrate distribution
         substrate_i = face[0]
         substrate = parameters["layers"][f"substrate_{substrate_i}"]
@@ -270,6 +275,7 @@ for file_name, parameters in sim_parameters.items():
                     if z < parameters["layers"][etch_layer]["z"] + parameters["layers"][etch_layer]["thickness"]:
                         continue
             points.append({"x": dpoint.x, "y": dpoint.y, "z": float(f"{z:.5f}")})
-        result["substrate"] = points
-        with open(f"{parameters['name']}_{face}_tls_mc.json", "w", encoding="utf-8") as file:
-            json.dump(result, file, indent=4)
+        result[face]["substrate"] = points
+
+    with open(f"{parameters['name']}_tls_mc.json", "w", encoding="utf-8") as file:
+        json.dump(result, file, indent=4)

@@ -39,6 +39,7 @@ from elmer_helpers import (
     get_layer_list,
     get_save_data_solver,
     read_elmer_results,
+    get_electrostatics_solver,
 )
 from run_helpers import _run_elmer_solver
 
@@ -74,7 +75,10 @@ def get_data_extraction_sif(
     unit = 1e-6
     points_list = [[unit * vd["x"], unit * vd["y"]] + ([unit * vd["z"]] if dim == 3 else []) for vd in points_list]
 
-    solver = get_save_data_solver(1, result_file=results_file, save_coordinates=points_list)
+    # We do not run this solver, but need it for Elmer to correctly load the elemental field data
+    solver = get_electrostatics_solver(json_data, 1, "f.dat", c_matrix_output=False, exec_solver="Never")
+
+    solver += get_save_data_solver(2, result_file=results_file, save_coordinates=points_list)
 
     placeholders = sif_block("Equation 1", ["Active Solvers(1) = 1"])
     placeholders += sif_block("Boundary Condition 1", [" Target Boundaries(0) = "])
@@ -116,8 +120,6 @@ def get_elmer_results(path: str | Path, tmp_results_file: str):
         print(f"Warning: incorrect data shape in {tmp_results_file}. Expected a single row.")
 
     # rename columns `coordinate 1` -> `x` and `electric field 1` -> `E_x`
-    if "electric field e 1" in data_keys:
-        print("Warning: Elmer simulation run with Elemental fields set to True. Electric field will be wrong")
 
     col_map = {}
     for i, coord in enumerate(["x", "y", "z"], 1):
@@ -139,9 +141,7 @@ if not tls_files:
     sys.exit()
 
 for tls_file in tls_files:
-    def_file = str(tls_file).removesuffix("_tls_mc.json").rpartition("_")
-    face = def_file[2]
-    def_file = def_file[0] + ".json"
+    def_file = str(tls_file).removesuffix("_tls_mc.json") + ".json"
 
     if not Path(def_file).exists():
         print(f'Simulation definition file "{def_file}" not found')
@@ -169,31 +169,33 @@ for tls_file in tls_files:
         excitations = [1]
     else:
         excitations = sorted(set(l["excitation"] for _, l in json_data["layers"].items() if "excitation" in l) - {0})
-
-    for layer, values in tls_data.items():
-        if layer == "metadata" or not values:
+    for face, face_data in tls_data.items():
+        if face == "metadata":
             continue
-        for exc in excitations:
-            tmp_results_file = f"fields_{layer}_{face}_{exc}.dat"
-            sif_filename = f"field_extractor_{layer}_{face}_{exc}"
-            sif_contents = get_data_extraction_sif(
-                json_data, elmer_data_file, tmp_results_file, values, restart_position=exc
-            )
-            with open(Path(sim_folder) / f"{sif_filename}.sif", "w", encoding="utf-8") as f:
-                f.write(sif_contents)
-
-            _run_elmer_solver(sim_folder, [sif_filename], 1, elmer_partitions, 1)
-
-            df_layer = get_elmer_results(sim_folder, tmp_results_file)
-            if df_layer is None:
+        for layer, values in face_data.items():
+            if not values:
                 continue
+            for exc in excitations:
+                tmp_results_file = f"fields_{layer}_{face}_{exc}.dat"
+                sif_filename = f"field_extractor_{layer}_{face}_{exc}"
+                sif_contents = get_data_extraction_sif(
+                    json_data, elmer_data_file, tmp_results_file, values, restart_position=exc
+                )
+                with open(Path(sim_folder) / f"{sif_filename}.sif", "w", encoding="utf-8") as f:
+                    f.write(sif_contents)
 
-            df_layer["excitation"] = exc
-            df_layer["face"] = face
-            df_layer["layer"] = layer
-            df_layer["E_abs"] = np.sqrt(
-                np.square(df_layer["E_x"]) + np.square(df_layer["E_y"]) + np.square(df_layer.get("E_z", 0))
-            )
-            df_list.append(df_layer)
+                _run_elmer_solver(sim_folder, [sif_filename], 1, elmer_partitions, 1)
+
+                df_layer = get_elmer_results(sim_folder, tmp_results_file)
+                if df_layer is None:
+                    continue
+
+                df_layer["excitation"] = exc
+                df_layer["face"] = face
+                df_layer["layer"] = layer
+                df_layer["E_abs"] = np.sqrt(
+                    np.square(df_layer["E_x"]) + np.square(df_layer["E_y"]) + np.square(df_layer.get("E_z", 0))
+                )
+                df_list.append(df_layer)
 
     pd.concat(df_list).to_csv(final_result_filename)

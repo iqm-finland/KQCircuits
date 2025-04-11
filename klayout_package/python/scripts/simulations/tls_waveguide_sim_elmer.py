@@ -80,8 +80,8 @@ sheet_interfaces = True
 
 dielectric_surfaces = {
     "MA": {"thickness": 4.8e-9, "eps_r": 8},
-    "MS": {"thickness": 2.4e-9, "eps_r": 11.4},
-    "SA": {"thickness": 0.3e-9, "eps_r": 4},
+    "MS": {"thickness": 0.3e-9, "eps_r": 11.4},
+    "SA": {"thickness": 2.4e-9, "eps_r": 4},
 }
 tls_layer_thickness = [dielectric_surfaces[layer]["thickness"] * 1e6 for layer in ("MA", "MS", "SA")]
 
