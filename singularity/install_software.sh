@@ -212,6 +212,8 @@ compile_mmg_and_parmmg () {
     git clone https://github.com/MmgTools/mmg.git
     cd mmg || exit
     git checkout develop
+    # Use version from 12/2024. Recent versions cause Elmer compilation to fail.
+    git checkout e4fe5516a6f6dc49f59d6d35b4ce8fbaba2bfea3
     mkdir build
     cd build || exit
     cmake -DCMAKE_INSTALL_PREFIX="/opt/mmg" -D CMAKE_BUILD_TYPE=RelWithDebInfo -D BUILD_SHARED_LIBS:BOOL=TRUE \
