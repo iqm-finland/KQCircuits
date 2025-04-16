@@ -160,7 +160,7 @@ Contributing
 
 Contributions to KQC are welcome from the community. Contributors are expected to accept IQM
 Individual Contributor License Agreement by filling `a form at IQM website
-<https://www.meetiqm.com/technology/iqm-kqcircuits#iqm-contributor-license-agreement>`__.
+<https://www.meetiqm.com/technology/iqm-kqcircuits/iqm-individual-contributor-license-agreement/>`__.
 See also section `Contributing
 <https://iqm-finland.github.io/KQCircuits/contributing.html>`__ in the
 documentation.
