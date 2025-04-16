@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.cross_section_simulation &mdash; KQCircuits 4.8.16 documentation</title>
+  <title>kqcircuits.simulations.cross_section_simulation &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=41654e85"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -171,27 +171,12 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/simulation_features.html#capacitance-matrix">Capacitance matrix</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/simulation_features.html#eigenmode">Eigenmode</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/simulation_features.html#energy-integrals-and-participation-ratio">Energy integrals and participation ratio</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/simulation_features.html#cross-sectional-simulations">Cross-sectional simulations</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/simulation_features.html#pyepr">pyEPR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/simulation_features.html#cross-section-simulations">Cross-section simulations</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/export_and_run.html">Run and export in one line</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/cross_section.html">Cross sections</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/cross_section.html#creating-cross-sections-with-kqcircuits">Creating cross sections with KQCircuits</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/cross_section.html#in-gui">In GUI</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/cross_section.html#in-kqc-code">In KQC code</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/cross_section.html#xsection-tool">XSection tool</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/cross_section.html#klayout-gui-xsection-tool">KLayout GUI XSection tool</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/cross_section.html#xsection-call-in-kqc-code">XSection call in KQC code</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/cross_section.html#process-files-xs">Process files (.xs)</a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../user_guide/file_system_and_utilities.html">General Structure and Miscellaneous Utilities</a><ul>
@@ -1010,46 +995,26 @@
 
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span><span class="p">,</span> <span class="n">get_simulation_layer_by_name</span><span class="p">,</span> <span class="n">to_1d_list</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span><span class="p">,</span> <span class="n">add_parameters_from</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span><span class="p">,</span> <span class="n">get_simulation_layer_by_name</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_helper</span> <span class="kn">import</span> <span class="n">merge_points_and_match_on_edges</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">add_parameters_from</span>
 
 
 <div class="viewcode-block" id="CrossSectionSimulation">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation">[docs]</a>
-<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Simulation</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;box&quot;</span><span class="p">,</span> <span class="s2">&quot;extra_json_data&quot;</span><span class="p">)</span>
+<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Simulation</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;material_dict&quot;</span><span class="p">,</span> <span class="s2">&quot;extra_json_data&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">CrossSectionSimulation</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for co-planar waveguide cross-section simulations.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for cross-section simulation geometries.</span>
 
-<span class="sd">    This class is intended to be subclassed by a specific simulation implementation;  The subclass should implement the</span>
-<span class="sd">    method &#39;build&#39; which defines the simulation geometry and material properties.</span>
+<span class="sd">    The geometry consist of 2-dimensional layers which are thought as cross sections of 3-dimensional geometry.</span>
+<span class="sd">    This allows for modeling waveguide-like geometries where the cross section is constant for relatively long segments.</span>
 
-<span class="sd">    Layer names in cross-section geometry don&#39;t need to obey KQC default layers. The layers use following name coding:</span>
-<span class="sd">    - Layer name &#39;vacuum&#39; is reserved for vacuum material. The vacuum layer can be left empty; then the empty space</span>
-<span class="sd">    inside the &#39;box&#39; is automatically filled with vacuum.</span>
-<span class="sd">    - All layers that include word &#39;signal&#39; are considered as signal metals. Different signal layers are considered as</span>
-<span class="sd">    separate signals so that the result matrices has row and column for each signal layer. The order of signals is the</span>
-<span class="sd">    same as where they are introduced by calling &#39;get_sim_layer&#39; function.</span>
-<span class="sd">    - All layers that include word &#39;ground&#39;  are considered as ground metal.</span>
-<span class="sd">    - Any other layer is considered as dielectric. The permittivity can be set using the &#39;set_permittivity&#39; function.</span>
+<span class="sd">    This class is intended to be subclassed by a specific simulation implementation; The subclass should implement the</span>
+<span class="sd">    method &#39;build&#39; which defines the simulation geometry and material properties. The helper function &#39;insert_layer&#39;</span>
+<span class="sd">    should be called internally to build the geometry.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">LIBRARY_NAME</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># This is needed by some methods inherited from Element.</span>
-
-    <span class="n">london_penetration_depth</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span>
-        <span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span>
-        <span class="s2">&quot;London penetration depth of metals&quot;</span><span class="p">,</span>
-        <span class="mf">0.0</span><span class="p">,</span>
-        <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">,</span>
-        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;London penetration depth is implemented for one signal simulation only&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="c1"># TODO: deprecate. With internal cross section method, we can simply copy the parameters over</span>
-    <span class="n">xsection_source_class</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span>
-        <span class="n">pdt</span><span class="o">.</span><span class="n">TypeNone</span><span class="p">,</span>
-        <span class="s2">&quot;Simulation class XSection tool was used on&quot;</span><span class="p">,</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Class from which the simulation was generated using the XSection tool. Used to get the schema.&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">ignore_process_layers</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Ignores automatic function call of process_layers&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a CrossSectionSimulation.</span>
@@ -1082,15 +1047,18 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;cell&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;cell&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="k">else</span> <span class="n">layout</span><span class="o">.</span><span class="n">create_cell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">layer_dict</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">permittivity_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;units&quot;</span><span class="p">,</span> <span class="s2">&quot;um&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_process_layers</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">process_layers</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process_layers</span><span class="p">()</span>
 
     <span class="c1"># Inherit specific methods from Element</span>
     <span class="n">get_schema</span> <span class="o">=</span> <span class="nb">classmethod</span><span class="p">(</span><span class="n">Element</span><span class="o">.</span><span class="n">get_schema</span><span class="o">.</span><span class="vm">__func__</span><span class="p">)</span>
+    <span class="n">get_layers</span> <span class="o">=</span> <span class="n">Simulation</span><span class="o">.</span><span class="n">get_layers</span>
+    <span class="n">get_parameters</span> <span class="o">=</span> <span class="n">Simulation</span><span class="o">.</span><span class="n">get_parameters</span>
+    <span class="n">is_metal</span> <span class="o">=</span> <span class="n">Simulation</span><span class="o">.</span><span class="n">is_metal</span>
+    <span class="n">get_material_dict</span> <span class="o">=</span> <span class="n">Simulation</span><span class="o">.</span><span class="n">get_material_dict</span>
+    <span class="n">check_material_dict</span> <span class="o">=</span> <span class="n">Simulation</span><span class="o">.</span><span class="n">check_material_dict</span>
 
 <div class="viewcode-block" id="CrossSectionSimulation.build">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.build">[docs]</a>
@@ -1106,137 +1074,63 @@
 <div class="viewcode-block" id="CrossSectionSimulation.process_layers">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.process_layers">[docs]</a>
     <span class="k">def</span> <span class="nf">process_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Limit layers by self.box and create vacuum layer if it doesn&#39;t exist.&quot;&quot;&quot;</span>
-        <span class="n">bbox</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_dict</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="n">shapes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">layer</span><span class="p">))</span>
-            <span class="n">region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">shapes</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">bbox</span>
-            <span class="n">shapes</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-            <span class="n">shapes</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">region</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Process and check validity of self.layers. Is called after build method.</span>
 
-        <span class="k">if</span> <span class="s2">&quot;vacuum&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_dict</span><span class="p">:</span>
-            <span class="n">vacuum</span> <span class="o">=</span> <span class="n">bbox</span><span class="o">.</span><span class="n">dup</span><span class="p">()</span>
-            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_dict</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-                <span class="n">vacuum</span> <span class="o">-=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">v</span><span class="p">)))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_sim_layer</span><span class="p">(</span><span class="s2">&quot;vacuum&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">vacuum</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="CrossSectionSimulation.register_cell_layers_as_sim_layers">
-<a class="viewcode-back" href="../../../api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.register_cell_layers_as_sim_layers">[docs]</a>
-    <span class="k">def</span> <span class="nf">register_cell_layers_as_sim_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Takes all layers that contain any geometry and registers them as simulation layers</span>
-
-<span class="sd">        This method resets the internal simulation layer dictionary.</span>
+<span class="sd">        Internally,</span>
+<span class="sd">        * call merge_points_and_match_on_edges to avoid small-scale geometry artifacts</span>
+<span class="sd">        * ignore layers with empty region</span>
+<span class="sd">        * check if &#39;excitation&#39; keywords are set correctly</span>
+<span class="sd">        * insert layer shapes to self.cell.shapes and replace &#39;region&#39; keyword with &#39;layer&#39; keyword.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layer_dict</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">permittivity_dict</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">():</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">each_shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">l</span><span class="p">))))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">layer_dict</span><span class="p">[</span><span class="n">l</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span></div>
-
-
-<div class="viewcode-block" id="CrossSectionSimulation.get_sim_layer">
-<a class="viewcode-back" href="../../../api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_sim_layer">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_sim_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns layer of given name. If layer doesn&#39;t exist, a new layer is created.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">layer_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_dict</span><span class="p">:</span>
-            <span class="n">layer_info</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">l</span><span class="o">.</span><span class="n">datatype</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">l</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">layer_name</span><span class="p">:</span>
-                    <span class="c1"># If there is a layer with layer_name in layout (used by other cell), reuse that</span>
-                    <span class="n">layer_info</span> <span class="o">=</span> <span class="n">l</span>
-            <span class="k">if</span> <span class="n">layer_info</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">layer_info</span> <span class="o">=</span> <span class="n">get_simulation_layer_by_name</span><span class="p">(</span><span class="n">layer_name</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">layer_dict</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">layer_info</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layer_dict</span><span class="p">[</span><span class="n">layer_name</span><span class="p">])</span></div>
-
-
-<div class="viewcode-block" id="CrossSectionSimulation.set_permittivity">
-<a class="viewcode-back" href="../../../api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.set_permittivity">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_permittivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">,</span> <span class="n">permittivity</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets permittivity for layer of given name.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">permittivity_dict</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">permittivity</span></div>
-
-
-<div class="viewcode-block" id="CrossSectionSimulation.get_parameters">
-<a class="viewcode-back" href="../../../api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_parameters">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return dictionary with all parameters and their values.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span><span class="n">param</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xsection_source_class</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()}</span></div>
-
-
-<div class="viewcode-block" id="CrossSectionSimulation.get_dict_by_layers">
-<a class="viewcode-back" href="../../../api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_dict_by_layers">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_dict_by_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_name</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Helper function to cast a parameter given as a list of same length as the face stack into</span>
-<span class="sd">        a dict of the format simulation_layer -&gt; value&quot;&quot;&quot;</span>
-        <span class="n">face_list</span> <span class="o">=</span> <span class="n">to_1d_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">face_stack</span><span class="p">)</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;face_stack&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span>
-        <span class="n">data_list</span> <span class="o">=</span> <span class="n">to_1d_list</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_name</span><span class="p">))</span>
-
-        <span class="n">num_faces</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">face_list</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">num_faces</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">data_list</span> <span class="o">=</span> <span class="n">num_faces</span> <span class="o">*</span> <span class="p">[</span><span class="n">data_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
-        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_list</span><span class="p">)</span> <span class="o">!=</span> <span class="n">num_faces</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of faces and </span><span class="si">{</span><span class="n">param_name</span><span class="si">}</span><span class="s2"> do not match (</span><span class="si">{</span><span class="n">num_faces</span><span class="si">}</span><span class="s2"> vs </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">data_list</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-
-        <span class="n">metal_layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_dict</span> <span class="k">if</span> <span class="s2">&quot;signal&quot;</span> <span class="ow">in</span> <span class="n">n</span> <span class="ow">or</span> <span class="s2">&quot;ground&quot;</span> <span class="ow">in</span> <span class="n">n</span><span class="p">]</span>
-        <span class="k">return</span> <span class="p">{</span><span class="n">layer</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">face</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">face_list</span><span class="p">,</span> <span class="n">data_list</span><span class="p">)</span> <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">metal_layers</span> <span class="k">if</span> <span class="n">layer</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">face</span><span class="p">)}</span></div>
-
-
-<div class="viewcode-block" id="CrossSectionSimulation.get_layers">
-<a class="viewcode-back" href="../../../api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_layers">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="CrossSectionSimulation.get_new_layers_format">
-<a class="viewcode-back" href="../../../api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_new_layers_format">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_new_layers_format</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;This is temporary function to convert data from self.layer_dict, permittivity_dict, and</span>
-<span class="sd">        self.get_dict_by_layers(&quot;london_penetration_depth&quot;) into format similar to Simulation.layers and</span>
-<span class="sd">        Simulation.material_dict. Does work in general.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># ToDo: remove this function</span>
-        <span class="n">london</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dict_by_layers</span><span class="p">(</span><span class="s2">&quot;london_penetration_depth&quot;</span><span class="p">)</span>
-        <span class="n">set_london</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">london</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">}</span>
-        <span class="n">london_materials</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;pec_london_</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">set_london</span><span class="p">)}</span>
-
-        <span class="n">dielectric</span> <span class="o">=</span> <span class="p">{</span><span class="n">n</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_dict</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">permittivity_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">k</span><span class="p">)}</span>
-        <span class="n">set_dielectric</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">dielectric</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="mf">1.0</span><span class="p">}</span>
-        <span class="n">dielectric_materials</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;dielectric_</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">set_dielectric</span><span class="p">)}</span>
+        <span class="n">merge_points_and_match_on_edges</span><span class="p">([</span><span class="n">layer</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span> <span class="n">tolerance</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="n">layers</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">material_dict</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="o">**</span><span class="p">{</span><span class="n">n</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;conductivity&quot;</span><span class="p">:</span> <span class="mf">1e30</span><span class="p">,</span> <span class="s2">&quot;london_penetration_depth&quot;</span><span class="p">:</span> <span class="n">v</span><span class="p">}</span> <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">london_materials</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
-            <span class="o">**</span><span class="p">{</span><span class="n">n</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;permittivity&quot;</span><span class="p">:</span> <span class="n">v</span><span class="p">}</span> <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">dielectric_materials</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
-        <span class="p">}</span>
-        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">london</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
-                <span class="n">material</span> <span class="o">=</span> <span class="n">london_materials</span><span class="p">[</span><span class="n">london</span><span class="p">[</span><span class="n">name</span><span class="p">]]</span>
-            <span class="k">elif</span> <span class="s2">&quot;signal&quot;</span> <span class="ow">in</span> <span class="n">name</span> <span class="ow">or</span> <span class="s2">&quot;ground&quot;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
-                <span class="n">material</span> <span class="o">=</span> <span class="s2">&quot;pec&quot;</span>
-            <span class="k">elif</span> <span class="n">dielectric</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">!=</span> <span class="mf">1.0</span><span class="p">:</span>
-                <span class="n">material</span> <span class="o">=</span> <span class="n">dielectric_materials</span><span class="p">[</span><span class="n">dielectric</span><span class="p">[</span><span class="n">name</span><span class="p">]]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">material</span> <span class="o">=</span> <span class="s2">&quot;vacuum&quot;</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
+                <span class="k">continue</span>  <span class="c1"># ignore layer with empty region</span>
 
-            <span class="n">excitation</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">if</span> <span class="s2">&quot;ground&quot;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
-                <span class="n">excitation</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">elif</span> <span class="s2">&quot;signal&quot;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
-                <span class="n">splt</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="n">name</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;signal&quot;</span><span class="p">)</span> <span class="p">:]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">excitation</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">splt</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
-                    <span class="n">excitation</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="c1"># check if excitation keyword is set correctly</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_metal</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;material&quot;</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="s2">&quot;excitation&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> is metal but integer excitation value is not set.&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;excitation&quot;</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Excitation should be integer but </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;excitation&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> is set for layer </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="s2">&quot;excitation&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> is dielectric but excitation value is set.&quot;</span><span class="p">)</span>
 
-            <span class="n">layers</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;layer&quot;</span><span class="p">:</span> <span class="n">layer</span><span class="o">.</span><span class="n">layer</span><span class="p">,</span>
-                <span class="s2">&quot;material&quot;</span><span class="p">:</span> <span class="n">material</span><span class="p">,</span>
-                <span class="o">**</span><span class="p">({}</span> <span class="k">if</span> <span class="n">excitation</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{</span><span class="s2">&quot;excitation&quot;</span><span class="p">:</span> <span class="n">excitation</span><span class="p">}),</span>
-            <span class="p">}</span>
+            <span class="c1"># insert layer shape to self.cell.shapes and replace region keyword with layer keyword</span>
+            <span class="n">layer_info</span> <span class="o">=</span> <span class="n">get_simulation_layer_by_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">layer_info</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">])</span>
+            <span class="n">layers</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;layer&quot;</span><span class="p">:</span> <span class="n">layer_info</span><span class="o">.</span><span class="n">layer</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s2">&quot;region&quot;</span><span class="p">}}</span>
 
-        <span class="k">return</span> <span class="n">layers</span><span class="p">,</span> <span class="n">material_dict</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">layers</span></div>
+
+
+<div class="viewcode-block" id="CrossSectionSimulation.insert_layer">
+<a class="viewcode-back" href="../../../api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.insert_layer">[docs]</a>
+    <span class="k">def</span> <span class="nf">insert_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">region</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">,</span> <span class="n">material</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add layer parameters into &#39;self.layers&#39; if region is non-empty.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">region</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;region&quot;</span><span class="p">:</span> <span class="n">region</span><span class="o">.</span><span class="n">dup</span><span class="p">(),</span> <span class="s2">&quot;material&quot;</span><span class="p">:</span> <span class="n">material</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="CrossSectionSimulation.restrict_layer_regions">
+<a class="viewcode-back" href="../../../api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.restrict_layer_regions">[docs]</a>
+    <span class="k">def</span> <span class="nf">restrict_layer_regions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bbox</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Limit the regions of self.layers inside the bounding box.&quot;&quot;&quot;</span>
+        <span class="n">region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">layer</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span> <span class="o">&amp;=</span> <span class="n">region</span></div>
+
+
+<div class="viewcode-block" id="CrossSectionSimulation.get_unfilled_region">
+<a class="viewcode-back" href="../../../api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_unfilled_region">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_unfilled_region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bbox</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return region inside bbox that is not covered yet by layers.&quot;&quot;&quot;</span>
+        <span class="n">region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">region</span> <span class="o">-=</span> <span class="n">layer</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">region</span></div>
 
 
 <div class="viewcode-block" id="CrossSectionSimulation.get_simulation_data">
@@ -1247,13 +1141,11 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            dictionary of relevant parameters for simulation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">layers</span><span class="p">,</span> <span class="n">material_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_new_layers_format</span><span class="p">()</span>
-
         <span class="n">simulation_data</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;simulation_name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
             <span class="s2">&quot;units&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">,</span>
-            <span class="s2">&quot;layers&quot;</span><span class="p">:</span> <span class="n">layers</span><span class="p">,</span>
-            <span class="s2">&quot;material_dict&quot;</span><span class="p">:</span> <span class="n">material_dict</span><span class="p">,</span>
+            <span class="s2">&quot;layers&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">,</span>
+            <span class="s2">&quot;material_dict&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_material_dict</span><span class="p">(),</span>
         <span class="p">}</span>
         <span class="k">return</span> <span class="n">simulation_data</span></div>
 </div>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.export.cross_section.cross_section_export &mdash; KQCircuits 4.8.16 documentation</title>
+  <title>kqcircuits.simulations.export.cross_section.cross_section_export &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
@@ -18,14 +18,14 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=41654e85"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kqcircuits.simulations.export.cross_section.cross_section_profile" href="kqcircuits.simulations.export.cross_section.cross_section_profile.html" />
+    <link rel="next" title="kqcircuits.simulations.export.cross_section.cut_simulation" href="kqcircuits.simulations.export.cross_section.cut_simulation.html" />
     <link rel="prev" title="kqcircuits.simulations.export.cross_section" href="kqcircuits.simulations.export.cross_section.html" /> 
 </head>
 
@@ -174,27 +174,12 @@
 <li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_features.html#capacitance-matrix">Capacitance matrix</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_features.html#eigenmode">Eigenmode</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_features.html#energy-integrals-and-participation-ratio">Energy integrals and participation ratio</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_features.html#cross-sectional-simulations">Cross-sectional simulations</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_features.html#pyepr">pyEPR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_features.html#cross-section-simulations">Cross-section simulations</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/export_and_run.html">Run and export in one line</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/cross_section.html">Cross sections</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/cross_section.html#creating-cross-sections-with-kqcircuits">Creating cross sections with KQCircuits</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/cross_section.html#in-gui">In GUI</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/cross_section.html#in-kqc-code">In KQC code</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/cross_section.html#xsection-tool">XSection tool</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/cross_section.html#klayout-gui-xsection-tool">KLayout GUI XSection tool</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/cross_section.html#xsection-call-in-kqc-code">XSection call in KQC code</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/cross_section.html#process-files-xs">Process files (.xs)</a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/file_system_and_utilities.html">General Structure and Miscellaneous Utilities</a><ul>
@@ -990,7 +975,7 @@
 <span id="kqcircuits-simulations-export-cross-section-cross-section-export"></span><h1>kqcircuits.simulations.export.cross_section.cross_section_export<a class="headerlink" href="#module-kqcircuits.simulations.export.cross_section.cross_section_export" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.simulations.export.cross_section.cross_section_export.create_cross_sections_from_simulations">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.cross_section.cross_section_export.</span></span><span class="sig-name descname"><span class="pre">create_cross_sections_from_simulations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">simulations:</span> <span class="pre">list[~kqcircuits.simulations.simulation.Simulation],</span> <span class="pre">cuts:</span> <span class="pre">tuple[~klayout.pyacore.DPoint,</span> <span class="pre">~klayout.pyacore.DPoint]</span> <span class="pre">|</span> <span class="pre">list[tuple[~klayout.pyacore.DPoint,</span> <span class="pre">~klayout.pyacore.DPoint]],</span> <span class="pre">profile:</span> <span class="pre">~kqcircuits.simulations.export.cross_section.cross_section_profile.CrossSectionProfile</span> <span class="pre">|</span> <span class="pre">~typing.Callable[[~kqcircuits.simulations.simulation.Simulation],</span> <span class="pre">~kqcircuits.simulations.export.cross_section.cross_section_profile.CrossSectionProfile]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">get_cross_section_profile&gt;,</span> <span class="pre">post_processing_function:</span> <span class="pre">None</span> <span class="pre">|</span> <span class="pre">~typing.Callable[[~kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation],</span> <span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">oxidise_layers_function:</span> <span class="pre">~typing.Callable[[~kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation,</span> <span class="pre">float,</span> <span class="pre">float,</span> <span class="pre">float],</span> <span class="pre">None]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">_oxidise_layers&gt;,</span> <span class="pre">ma_permittivity:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0,</span> <span class="pre">ms_permittivity:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0,</span> <span class="pre">sa_permittivity:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0,</span> <span class="pre">ma_thickness:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0,</span> <span class="pre">ms_thickness:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0,</span> <span class="pre">sa_thickness:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0,</span> <span class="pre">vertical_cull:</span> <span class="pre">tuple[float,</span> <span class="pre">float]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">mer_box:</span> <span class="pre">~klayout.pyacore.DBox</span> <span class="pre">|</span> <span class="pre">list[~klayout.pyacore.DBox]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">london_penetration_depth:</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">list</span> <span class="pre">=</span> <span class="pre">0,</span> <span class="pre">magnification_order:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">0,</span> <span class="pre">layout:</span> <span class="pre">~klayout.pyacore.Layout</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><span class="pre">Simulation</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/cross_section/cross_section_export.html#create_cross_sections_from_simulations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.cross_section.cross_section_export.create_cross_sections_from_simulations" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.cross_section.cross_section_export.</span></span><span class="sig-name descname"><span class="pre">create_cross_sections_from_simulations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">simulations:</span> <span class="pre">list[~kqcircuits.simulations.simulation.Simulation],</span> <span class="pre">cuts:</span> <span class="pre">tuple[~klayout.pyacore.DPoint,</span> <span class="pre">~klayout.pyacore.DPoint]</span> <span class="pre">|</span> <span class="pre">list[tuple[~klayout.pyacore.DPoint,</span> <span class="pre">~klayout.pyacore.DPoint]],</span> <span class="pre">ma_permittivity:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0,</span> <span class="pre">ms_permittivity:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0,</span> <span class="pre">sa_permittivity:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0,</span> <span class="pre">ma_thickness:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0,</span> <span class="pre">ms_thickness:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0,</span> <span class="pre">sa_thickness:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0,</span> <span class="pre">vertical_cull:</span> <span class="pre">tuple[float,</span> <span class="pre">float]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">mer_box:</span> <span class="pre">~klayout.pyacore.DBox</span> <span class="pre">|</span> <span class="pre">list[~klayout.pyacore.DBox]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">magnification_order:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">0,</span> <span class="pre">layout:</span> <span class="pre">~klayout.pyacore.Layout</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">sim_class:</span> <span class="pre">type[~kqcircuits.simulations.export.cross_section.cut_simulation.CutSimulation]</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'kqcircuits.simulations.export.cross_section.cut_simulation.CutSimulation'&gt;,</span> <span class="pre">**kwargs</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="kqcircuits.simulations.export.cross_section.cut_simulation.html#kqcircuits.simulations.export.cross_section.cut_simulation.CutSimulation" title="kqcircuits.simulations.export.cross_section.cut_simulation.CutSimulation"><span class="pre">CutSimulation</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/cross_section/cross_section_export.html#create_cross_sections_from_simulations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.cross_section.cross_section_export.create_cross_sections_from_simulations" title="Link to this definition"></a></dt>
 <dd><p>Create cross-sections of all simulation geometries in the list.
 Will set ‘box’ and ‘cell’ parameters according to the produced cross-section geometry data.</p>
 <dl class="field-list simple">
@@ -1002,14 +987,6 @@ Will set ‘box’ and ‘cell’ parameters according to the produced cross-sec
 <li><p>a list of such tuples such that each Simulation object gets an individual cut</p></li>
 </ol>
 </p></li>
-<li><p><strong>profile</strong> – CrossSectionProfile object that defines vertical level values for each layer.
-If not set, will use <code class="docutils literal notranslate"><span class="pre">default_cross_section_profile</span></code></p></li>
-<li><p><strong>post_processing_function</strong> – Additional function to post-process the cross-section geometry.
-Defaults to None, in which case no post-processing is performed.
-The function takes a CrossSectionSimulation object as argument</p></li>
-<li><p><strong>oxidise_layers_function</strong> – Set this argument if you have a custom way of introducing
-oxidization layers to the cross-section metal deposits and substrate.
-See expected function signature from typehints</p></li>
 <li><p><strong>ma_permittivity</strong> – Permittivity of metal–vacuum (air) interface</p></li>
 <li><p><strong>ms_permittivity</strong> – Permittivity of metal–substrate interface</p></li>
 <li><p><strong>sa_permittivity</strong> – Permittivity of substrate–vacuum (air) interface</p></li>
@@ -1020,31 +997,20 @@ See expected function signature from typehints</p></li>
 None by default, which means all geometry is retained.</p></li>
 <li><p><strong>mer_box</strong> – If set as pya.DBox, will create a specified box as metal edge region,
 meaning that the geometry inside the region are separated into different layers with ‘_mer’ suffix</p></li>
-<li><p><strong>london_penetration_depth</strong> – London penetration depth of the superconducting material</p></li>
 <li><p><strong>magnification_order</strong> – Increase magnification of simulation geometry to accomodate more precise spacial units.
 0 =   no magnification with 1e-3 dbu
 1 =  10x magnification with 1e-4 dbu
 2 = 100x magnification with 1e-5 dbu etc
 Consider setting non-zero value when using oxide layers with &lt; 1e-3 layer thickness</p></li>
 <li><p><strong>layout</strong> – predefined layout for the cross-section simulation. If not set, will create new layout.</p></li>
+<li><p><strong>sim_class</strong> – CutSimulation or its subclass used for processing the cross-section layers</p></li>
+<li><p><strong>kwargs</strong> – Additional arguments passed to sim_class</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>List of CrossSectionSimulation objects for each Simulation object in simulations</p>
+<dd class="field-even"><p>List of XSectionSimulation objects for each Simulation object in simulations</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kqcircuits.simulations.export.cross_section.cross_section_export.find_layer_by_name">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.cross_section.cross_section_export.</span></span><span class="sig-name descname"><span class="pre">find_layer_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Layout</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">LayerInfo</span></span></span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/cross_section/cross_section_export.html#find_layer_by_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.cross_section.cross_section_export.find_layer_by_name" title="Link to this definition"></a></dt>
-<dd><p>Returns layerinfo if there already is a layer by layer_name in layout. None if no such layer exists</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kqcircuits.simulations.export.cross_section.cross_section_export.free_layer_slots">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.cross_section.cross_section_export.</span></span><span class="sig-name descname"><span class="pre">free_layer_slots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Layout</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/cross_section/cross_section_export.html#free_layer_slots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.cross_section.cross_section_export.free_layer_slots" title="Link to this definition"></a></dt>
-<dd><p>A generator of available layer slots</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1077,34 +1043,6 @@ By default will set 0 width line, which is visualised in KLayout.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="kqcircuits.simulations.export.cross_section.cross_section_export.take_cross_section">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.cross_section.cross_section_export.</span></span><span class="sig-name descname"><span class="pre">take_cross_section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cut</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">DPoint</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DPoint</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">profile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="kqcircuits.simulations.export.cross_section.cross_section_profile.html#kqcircuits.simulations.export.cross_section.cross_section_profile.CrossSectionProfile" title="kqcircuits.simulations.export.cross_section.cross_section_profile.CrossSectionProfile"><span class="pre">CrossSectionProfile</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">LayerInfo</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/cross_section/cross_section_export.html#take_cross_section"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.cross_section.cross_section_export.take_cross_section" title="Link to this definition"></a></dt>
-<dd><p>Collect intersections between <code class="docutils literal notranslate"><span class="pre">cut</span></code> and polygons in <code class="docutils literal notranslate"><span class="pre">cell</span></code> for each layer taken into account in <code class="docutils literal notranslate"><span class="pre">profile</span></code>.</p>
-<p>Returns: Dictionary mapping each pya.LayerInfo into segments where <code class="docutils literal notranslate"><span class="pre">cut</span></code> overlaps with layer polygon. Segments are
-given as sorted list of tuples (start, end) indicating distances from <code class="docutils literal notranslate"><span class="pre">cut[0]</span></code> to the segment points.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kqcircuits.simulations.export.cross_section.cross_section_export.produce_intersection_shapes">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.cross_section.cross_section_export.</span></span><span class="sig-name descname"><span class="pre">produce_intersection_shapes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><span class="pre">Simulation</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segments_by_layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">LayerInfo</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">profile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="kqcircuits.simulations.export.cross_section.cross_section_profile.html#kqcircuits.simulations.export.cross_section.cross_section_profile.CrossSectionProfile" title="kqcircuits.simulations.export.cross_section.cross_section_profile.CrossSectionProfile"><span class="pre">CrossSectionProfile</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Cell</span></span></span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/cross_section/cross_section_export.html#produce_intersection_shapes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.cross_section.cross_section_export.produce_intersection_shapes" title="Link to this definition"></a></dt>
-<dd><p>Based on collected intersections of a cut, produces cross-section shapes.
-Shapes are placed to same layers, but to separate cell existing at separate layout.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>simulation</strong> – Original Simulation object from which cross-section is taken from.</p></li>
-<li><p><strong>layout</strong> – Layout where cross-section cell will be placed.</p></li>
-<li><p><strong>segments_by_layer</strong> – layer segment data returned by <code class="docutils literal notranslate"><span class="pre">take_cross_section</span></code></p></li>
-<li><p><strong>profile</strong> – CrossSectionProfile object that defines vertical level values for each layer.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Cell placed to <code class="docutils literal notranslate"><span class="pre">layout</span></code> that contains cross-section shapes</p>
-</dd>
-</dl>
-</dd></dl>
-
 <img alt="../_images/kqcircuits.simulations.export.cross_section.cross_section_export.png" src="../_images/kqcircuits.simulations.export.cross_section.cross_section_export.png" />
 </section>
 
@@ -1113,7 +1051,7 @@ Shapes are placed to same layers, but to separate cell existing at separate layo
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="kqcircuits.simulations.export.cross_section.html" class="btn btn-neutral float-left" title="kqcircuits.simulations.export.cross_section" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="kqcircuits.simulations.export.cross_section.cross_section_profile.html" class="btn btn-neutral float-right" title="kqcircuits.simulations.export.cross_section.cross_section_profile" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kqcircuits.simulations.export.cross_section.cut_simulation.html" class="btn btn-neutral float-right" title="kqcircuits.simulations.export.cross_section.cut_simulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

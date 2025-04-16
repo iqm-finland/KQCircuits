@@ -10,7 +10,6 @@ User Guide
     macro_workflow
     mask_export
     simulations
-    cross_section
     file_system_and_utilities
     configuration
     terminology

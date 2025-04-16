@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Simulation features &mdash; KQCircuits 4.8.16 documentation</title>
+  <title>Simulation features &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
@@ -18,10 +18,9 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=41654e85"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../about.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -175,27 +174,12 @@
 <li class="toctree-l4"><a class="reference internal" href="#capacitance-matrix">Capacitance matrix</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#eigenmode">Eigenmode</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#energy-integrals-and-participation-ratio">Energy integrals and participation ratio</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#cross-sectional-simulations">Cross-sectional simulations</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#pyepr">pyEPR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cross-section-simulations">Cross-section simulations</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="export_and_run.html">Run and export in one line</a></li>
 <li class="toctree-l3"><a class="reference internal" href="elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../cross_section.html">Cross sections</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../cross_section.html#creating-cross-sections-with-kqcircuits">Creating cross sections with KQCircuits</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../cross_section.html#in-gui">In GUI</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../cross_section.html#in-kqc-code">In KQC code</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../cross_section.html#xsection-tool">XSection tool</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../cross_section.html#klayout-gui-xsection-tool">KLayout GUI XSection tool</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../cross_section.html#xsection-call-in-kqc-code">XSection call in KQC code</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../cross_section.html#process-files-xs">Process files (.xs)</a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../file_system_and_utilities.html">General Structure and Miscellaneous Utilities</a><ul>
@@ -1008,29 +992,12 @@ parameter from the exported json file.</p>
 <p>The resulting S-parameter matrices are stored in <code class="docutils literal notranslate"><span class="pre">SnP</span></code> (Touchstone) file format, where the file
 extension are <code class="docutils literal notranslate"><span class="pre">.s1p</span></code>, <code class="docutils literal notranslate"><span class="pre">.s2p</span></code>, <code class="docutils literal notranslate"><span class="pre">.s3p</span></code>, and so forth).</p>
 <p>In Ansys Electronic Desktop, the S-parameter simulation feature employs HFSS Terminal solution type.
-The S-parameter feature is activated using parameter <code class="docutils literal notranslate"><span class="pre">ansys_tool='hfss'</span></code>.
-The relevant <code class="docutils literal notranslate"><span class="pre">ansys_export</span></code> parameters and their default values are listed below:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export_parameters</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
-    <span class="s1">&#39;ansys_tool&#39;</span><span class="p">:</span> <span class="s1">&#39;hfss&#39;</span><span class="p">,</span>  <span class="c1"># Determines whether to use HFSS (&#39;hfss&#39;), Q3D Extractor (&#39;q3d&#39;) or HFSS eigenmode (&#39;eigenmode&#39;)</span>
-    <span class="s1">&#39;frequency_units&#39;</span><span class="p">:</span> <span class="s2">&quot;GHz&quot;</span><span class="p">,</span>  <span class="c1"># Units of frequency.</span>
-    <span class="s1">&#39;frequency&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>  <span class="c1"># Frequency for mesh refinement. To set up multifrequency analysis in HFSS use list of numbers.</span>
-    <span class="s1">&#39;max_delta_s&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>  <span class="c1"># Stopping criterion in HFSS simulation.</span>
-    <span class="s1">&#39;percent_refinement&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>  <span class="c1"># Percentage of mesh refinement on each iteration.</span>
-    <span class="s1">&#39;maximum_passes&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>  <span class="c1"># Maximum number of iterations in simulation.</span>
-    <span class="s1">&#39;minimum_passes&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># Minimum number of iterations in simulation.</span>
-    <span class="s1">&#39;minimum_converged_passes&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># Determines how many iterations have to meet the stopping criterion to stop simulation.</span>
-    <span class="s1">&#39;sweep_enabled&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># Determines if HFSS frequency sweep is enabled.</span>
-    <span class="s1">&#39;sweep_start&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>  <span class="c1"># The lowest frequency in the sweep.</span>
-    <span class="s1">&#39;sweep_end&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>  <span class="c1"># The highest frequency in the sweep.</span>
-    <span class="s1">&#39;sweep_count&#39;</span><span class="p">:</span> <span class="mi">101</span><span class="p">,</span>  <span class="c1"># Number of frequencies in the sweep.</span>
-    <span class="s1">&#39;sweep_type&#39;</span><span class="p">:</span> <span class="s1">&#39;interpolating&#39;</span><span class="p">,</span>  <span class="c1"># choices are &quot;interpolating&quot;, &quot;discrete&quot; or &quot;fast&quot;</span>
-<span class="p">})</span>
-</pre></div>
-</div>
-<p>The open-source alternative to calculate S-parameters is to use <code class="docutils literal notranslate"><span class="pre">elmer_export</span></code> with the export parameter
-<code class="docutils literal notranslate"><span class="pre">tool='wave_equation'</span></code>.
-For other relevant export parameters, please consult API docs for the function
-<a class="reference internal" href="../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer" title="kqcircuits.simulations.export.elmer.elmer_export.export_elmer"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_elmer()</span></code></a>.</p>
+The S-parameter feature is activated using the <a class="reference internal" href="../../api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysHfssSolution" title="kqcircuits.simulations.export.ansys.ansys_solution.AnsysHfssSolution"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnsysHfssSolution</span></code></a> solution type or argument
+<code class="docutils literal notranslate"><span class="pre">ansys_tool='hfss'</span></code> in the <a class="reference internal" href="../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys" title="kqcircuits.simulations.export.ansys.ansys_export.export_ansys"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_ansys()</span></code></a> function.</p>
+<p>The open-source alternative to calculate S-parameters is to use
+<a class="reference internal" href="../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer" title="kqcircuits.simulations.export.elmer.elmer_export.export_elmer"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_elmer()</span></code></a> function with the
+<a class="reference internal" href="../../api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution" title="kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElmerVectorHelmholtzSolution</span></code></a> solution type or argument <code class="docutils literal notranslate"><span class="pre">tool='wave_equation'</span></code>.
+The Elmer S-parameter calculation is only partly supported at the moment.</p>
 </section>
 <section id="capacitance-matrix">
 <h2>Capacitance matrix<a class="headerlink" href="#capacitance-matrix" title="Link to this heading"></a></h2>
@@ -1042,18 +1009,7 @@ and a diagonal term <code class="docutils literal notranslate"><span class="pre"
 The port variable <code class="docutils literal notranslate"><span class="pre">signal_location</span></code> determines the location of the signal island. The variable <code class="docutils literal notranslate"><span class="pre">ground_location</span></code>
 can be used to force any floating metal island as the ground.</p>
 <p>From Ansys tool package, the Q3D solver is recommended for capacitance simulations.
-This is activated with export parameter <code class="docutils literal notranslate"><span class="pre">ansys_tool='q3d'</span></code>.
-The other relevant parameters and their default values are:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export_parameters</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
-    <span class="s1">&#39;ansys_tool&#39;</span><span class="p">:</span> <span class="s1">&#39;q3d&#39;</span><span class="p">,</span>  <span class="c1"># Determines whether to use HFSS (&#39;hfss&#39;), Q3D Extractor (&#39;q3d&#39;) or HFSS eigenmode (&#39;eigenmode&#39;)</span>
-    <span class="s1">&#39;percent_error&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>  <span class="c1"># Stopping criterion in Q3D simulation.</span>
-    <span class="s1">&#39;percent_refinement&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>  <span class="c1"># Percentage of mesh refinement on each iteration.</span>
-    <span class="s1">&#39;maximum_passes&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>  <span class="c1"># Maximum number of iterations in simulation.</span>
-    <span class="s1">&#39;minimum_passes&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># Minimum number of iterations in simulation.</span>
-    <span class="s1">&#39;minimum_converged_passes&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># Determines how many iterations have to meet the stopping criterion to stop simulation.</span>
-<span class="p">})</span>
-</pre></div>
-</div>
+This is activated with the export parameter <code class="docutils literal notranslate"><span class="pre">ansys_tool='q3d'</span></code> or with solution type <a class="reference internal" href="../../api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysQ3dSolution" title="kqcircuits.simulations.export.ansys.ansys_solution.AnsysQ3dSolution"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnsysQ3dSolution</span></code></a>.</p>
 <p>The capacitance matrix simulations are also available with Ansys HFSS framework, which is useful in case if only HFSS
 license is available.
 For the usage one must perform a HFSS S-parameter simulation as indicated above and use the export parameter
@@ -1061,9 +1017,8 @@ For the usage one must perform a HFSS S-parameter simulation as indicated above 
 This method assumes a purely capacitive model and is valid as long as the resulting <code class="docutils literal notranslate"><span class="pre">C_i_j</span></code> are constant over
 frequency.</p>
 <p>The Elmer export provides the open source alternative for capacitance matrix simulations.
-The Elmer capacitance matrix simulation can be activated by using <code class="docutils literal notranslate"><span class="pre">elmer_export</span></code> with the export parameter
-<code class="docutils literal notranslate"><span class="pre">tool='capacitance'</span></code>.
-Please consult API docs of <a class="reference internal" href="../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer" title="kqcircuits.simulations.export.elmer.elmer_export.export_elmer"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_elmer()</span></code></a> for more information.</p>
+The Elmer capacitance matrix simulation can be activated with the export parameter
+<code class="docutils literal notranslate"><span class="pre">tool='capacitance'</span></code> or with solution type <a class="reference internal" href="../../api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerCapacitanceSolution" title="kqcircuits.simulations.export.elmer.elmer_solution.ElmerCapacitanceSolution"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElmerCapacitanceSolution</span></code></a>.</p>
 </section>
 <section id="eigenmode">
 <h2>Eigenmode<a class="headerlink" href="#eigenmode" title="Link to this heading"></a></h2>
@@ -1080,71 +1035,55 @@ This is done by setting the port parameter <code class="docutils literal notrans
 (default <cite>False</cite>). This avoids the “ground side island” of the port becoming part of ground layer. This is recommended
 in junctions between floating island qubit simulations.</p>
 <p>Ansys HFSS Eigenmode solution type is employed in the eigenmode simulations.
-The eigenmode simulations are activated by using <code class="docutils literal notranslate"><span class="pre">export_ansys</span></code> with export parameter <code class="docutils literal notranslate"><span class="pre">ansys_tool='eigenmode'</span></code>.
-The other relevant parameters and their default values are:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export_parameters</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
-    <span class="s1">&#39;ansys_tool&#39;</span><span class="p">:</span> <span class="s1">&#39;eigenmode&#39;</span><span class="p">,</span>  <span class="c1"># Determines whether to use HFSS (&#39;hfss&#39;), Q3D Extractor (&#39;q3d&#39;) or HFSS eigenmode (&#39;eigenmode&#39;)</span>
-    <span class="s1">&#39;frequency_units&#39;</span><span class="p">:</span> <span class="s2">&quot;GHz&quot;</span><span class="p">,</span>  <span class="c1"># Units of frequency.</span>
-    <span class="s1">&#39;min_frequency&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>  <span class="c1"># the lower limit for eigenfrequency.</span>
-    <span class="s1">&#39;max_delta_f&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>  <span class="c1"># Maximum allowed relative difference in eigenfrequency (%).</span>
-    <span class="s1">&#39;n_modes&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>  <span class="c1"># Number of eigenmodes to solve.</span>
-    <span class="s1">&#39;percent_refinement&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>  <span class="c1"># Percentage of mesh refinement on each iteration.</span>
-    <span class="s1">&#39;maximum_passes&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>  <span class="c1"># Maximum number of iterations in simulation.</span>
-    <span class="s1">&#39;minimum_passes&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># Minimum number of iterations in simulation.</span>
-    <span class="s1">&#39;minimum_converged_passes&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># Determines how many iterations have to meet the stopping criterion to stop simulation.</span>
-<span class="p">})</span>
-</pre></div>
-</div>
+The eigenmode simulations are activated by using <a class="reference internal" href="../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys" title="kqcircuits.simulations.export.ansys.ansys_export.export_ansys"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_ansys()</span></code></a>
+with argument <code class="docutils literal notranslate"><span class="pre">ansys_tool='eigenmode'</span></code> or with solution type <a class="reference internal" href="../../api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysEigenmodeSolution" title="kqcircuits.simulations.export.ansys.ansys_solution.AnsysEigenmodeSolution"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnsysEigenmodeSolution</span></code></a>.</p>
 </section>
 <section id="energy-integrals-and-participation-ratio">
 <h2>Energy integrals and participation ratio<a class="headerlink" href="#energy-integrals-and-participation-ratio" title="Link to this heading"></a></h2>
-<p>The energy integrals can be calculated from HFSS S-parameter or eigenmode simulations by setting export parameter
-<code class="docutils literal notranslate"><span class="pre">integrate_energies=True</span></code> in <code class="docutils literal notranslate"><span class="pre">ansys_export</span></code> function call.
-The energy integrals of each simulation are stored into file ending with <code class="docutils literal notranslate"><span class="pre">_energies.cvs</span></code>.
-This file includes energy integrals of each surface/solid objects and the total energy integrated over all solid
+<p>The energy integrals can be calculated from HFSS S-parameter or eigenmode simulations by setting solution argument
+<code class="docutils literal notranslate"><span class="pre">integrate_energies=True</span></code>.
+The energy integrals are computed for each surface/solid objects and the total energy is integrated over all solid
 material objects.</p>
+<p>The open-source alternative for computing energy integrals is activated by calling export function
+<a class="reference internal" href="../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer" title="kqcircuits.simulations.export.elmer.elmer_export.export_elmer"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_elmer()</span></code></a> with solution type <a class="reference internal" href="../../api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerEPR3DSolution" title="kqcircuits.simulations.export.elmer.elmer_solution.ElmerEPR3DSolution"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElmerEPR3DSolution</span></code></a>
+or argument <code class="docutils literal notranslate"><span class="pre">tool='epr_3d'</span></code>. This simulation tool computes the capacitance matrix and the energy integrals for
+each layer.</p>
 <p>The energy participation ratios (EPRs) are calculated from energy integrals using the post processing script
 <code class="docutils literal notranslate"><span class="pre">export_epr.py</span></code>.
 This is activated by export parameter <code class="docutils literal notranslate"><span class="pre">post_process_script='export_epr.py'</span></code>.
 The EPRs are saved into a file ending with <code class="docutils literal notranslate"><span class="pre">_epr.csv</span></code>.</p>
 </section>
-<section id="cross-sectional-simulations">
-<span id="id1"></span><h2>Cross-sectional simulations<a class="headerlink" href="#cross-sectional-simulations" title="Link to this heading"></a></h2>
-<p>KQCircuits offers possibility to export Elmer cross-sectional simulations to calculate capacitance and inductance per
-unit length.
-In cross-sectional simulations, the geometry is technically 2-dimensional, which enables more precise accuracy than
-with the fully 3-dimensional simulations.
+<section id="cross-section-simulations">
+<span id="cross-sectional-simulations"></span><h2>Cross-section simulations<a class="headerlink" href="#cross-section-simulations" title="Link to this heading"></a></h2>
+<p>KQCircuits offers possibility to export Ansys or Elmer cross-section simulations for modeling 3-dimensional objects,
+such as waveguides, where the transverse geometry remain constant over a relatively long distance.
+The geometry of cross-section simulation is technically 2-dimensional, which enables more precise accuracy than
+available with the fully 3-dimensional simulations.
 The reduced complexity of dimensions also allows a more detailed model to be used, for example considering the London
 penetration depth of metals.
-The cross-sectional simulations are valid only if the cross-section of the corresponding 3-dimensional geometry is
-constant.
-That includes for example waveguides.</p>
-<p>The geometry of the cross-sectional simulations is described by an instance of a <a class="reference internal" href="../../api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation" title="kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">CrossSectionSimulation</span></code></a>
-subclass.
-The cross-sectional simulation export follows similar logic to 3-dimensional simulations.
-That is, you create a simulation subclass, create an empty folder for export files, build a list of simulation objects,
-and call the <a class="reference internal" href="../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer" title="kqcircuits.simulations.export.elmer.elmer_export.export_elmer"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_elmer()</span></code></a> function with suitable
-<code class="docutils literal notranslate"><span class="pre">export_parameters</span></code>.
-An example for simulating coplanar-waveguide cross-section can be found in
+The cross-sectional simulations can be used to compute capacitance and inductance values per unit length and energy
+integrals over layers.</p>
+<p>The cross-section geometry is described in a subclass of <a class="reference internal" href="../../api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation" title="kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">CrossSectionSimulation</span></code></a> by implementing the
+<a class="reference internal" href="../../api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.build" title="kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.build"><code class="xref py py-meth docutils literal notranslate"><span class="pre">build()</span></code></a> method.
+Exporting a cross-section simulation follows similar logic to 3-dimensional simulation export.
+That is, we create a simulation subclass, create an empty folder for export files, build a list of simulation objects,
+and call the <a class="reference internal" href="../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys" title="kqcircuits.simulations.export.ansys.ansys_export.export_ansys"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_ansys()</span></code></a> or
+<a class="reference internal" href="../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer" title="kqcircuits.simulations.export.elmer.elmer_export.export_elmer"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_elmer()</span></code></a> function with suitable parameters.
+The available solution types for cross-section simulations are
+<a class="reference internal" href="../../api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysCrossSectionSolution" title="kqcircuits.simulations.export.ansys.ansys_solution.AnsysCrossSectionSolution"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnsysCrossSectionSolution</span></code></a> and <a class="reference internal" href="../../api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerCrossSectionSolution" title="kqcircuits.simulations.export.elmer.elmer_solution.ElmerCrossSectionSolution"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElmerCrossSectionSolution</span></code></a>.
+An example for building and exporting a cross-section simulation can be found in
 <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations/cpw_cross_section_sim.py">klayout_package/python/scripts/simulations/cpw_cross_section_sim.py</a>.</p>
-<p>The cross sections can be generated from arbitrary geometries. See more details in <a class="reference internal" href="../cross_section.html#cross-sections"><span class="std std-ref">Cross sections</span></a>.</p>
-</section>
-<section id="pyepr">
-<span id="py-epr"></span><h2>pyEPR<a class="headerlink" href="#pyepr" title="Link to this heading"></a></h2>
-<p><a class="reference external" href="https://github.com/zlatko-minev/pyEPR">pyEPR</a> is supported for HFSS eigenmode simulations.
-A pyEPR simulation is activated using <code class="docutils literal notranslate"><span class="pre">ansys_tool='eigenmode'</span></code> and <code class="docutils literal notranslate"><span class="pre">simulation_flags=['pyepr']</span></code> in the
-<code class="docutils literal notranslate"><span class="pre">export_ansys</span></code> function call.
-An example simulation is found at <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations/xmons_direct_coupling_pyepr.py">klayout_package/python/scripts/simulations/xmons_direct_coupling_pyepr.py</a>.
-See <a class="reference external" href="https://github.com/iqm-finland/KQCircuits-Examples/blob/main/notebooks/pyEPR_example.ipynb">pyEPR_example.ipynb</a>
-in the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits-Examples/">KQCircuits-Examples</a> repository for an example on using
-pyEPR itself.</p>
-<p>The pyEPR can be used for TLS-limited <span class="math notranslate nohighlight">\(T_1\)</span> estimation by using additional export parameter
-<code class="docutils literal notranslate"><span class="pre">intermediate_processing_command='python</span> <span class="pre">&quot;scripts/t1_estimate.py&quot;'</span></code>.
-This will run <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations/ansys/t1_estimate.py">t1_estimate.py</a> between
-queued simulations and compute the electrical participations in the lossy interfaces.
-See <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations/double_pads_sim.py">double_pads_sim.py</a> for an example and
-<cite>N. Savola, ‘Design and modelling of long-coherence qubits using energy participation ratios’, Master’s thesis,
-Aalto University, 2023</cite>, for details on the method.</p>
+<p>It is possible to generate vertical cross section from 3-dimensional layer stack-up using the <a class="reference internal" href="../../api/kqcircuits.simulations.export.cross_section.cut_simulation.html#kqcircuits.simulations.export.cross_section.cut_simulation.CutSimulation" title="kqcircuits.simulations.export.cross_section.cut_simulation.CutSimulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">CutSimulation</span></code></a>
+class which is a subclass of the <a class="reference internal" href="../../api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation" title="kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">CrossSectionSimulation</span></code></a>.
+For this we create the 3-dimensional geometry as a <a class="reference internal" href="../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Simulation</span></code></a> object and then specify a line segment with
+two points from which the cross section is formed.</p>
+<p>Alternatively, we can produce multiple cross sections from a list of <a class="reference internal" href="../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Simulation</span></code></a> objects at once with the
+<a class="reference internal" href="../../api/kqcircuits.simulations.export.cross_section.cross_section_export.html#kqcircuits.simulations.export.cross_section.cross_section_export.create_cross_sections_from_simulations" title="kqcircuits.simulations.export.cross_section.cross_section_export.create_cross_sections_from_simulations"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_cross_sections_from_simulations()</span></code></a>
+function. See
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations/waveguides_sim_cross_section.py">klayout_package/python/scripts/simulations/waveguides_sim_cross_section.py</a> for an example use case.</p>
+<p>Cross sections are an essential part in calculating energy participation ratios for elements. See docstring in
+<a class="reference internal" href="../../api/kqcircuits.simulations.export.cross_section.epr_correction_export.html#kqcircuits.simulations.export.cross_section.epr_correction_export.get_epr_correction_simulations" title="kqcircuits.simulations.export.cross_section.epr_correction_export.get_epr_correction_simulations"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_epr_correction_simulations()</span></code></a>
+and <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations/swissmon_epr_sim.py">klayout_package/python/scripts/simulations/swissmon_epr_sim.py</a> for an example use case.</p>
 </section>
 </section>
 

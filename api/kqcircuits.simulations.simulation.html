@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.simulation &mdash; KQCircuits 4.8.16 documentation</title>
+  <title>kqcircuits.simulations.simulation &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
@@ -18,7 +18,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=41654e85"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -174,27 +174,12 @@
 <li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_features.html#capacitance-matrix">Capacitance matrix</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_features.html#eigenmode">Eigenmode</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_features.html#energy-integrals-and-participation-ratio">Energy integrals and participation ratio</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_features.html#cross-sectional-simulations">Cross-sectional simulations</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_features.html#pyepr">pyEPR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_features.html#cross-section-simulations">Cross-section simulations</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/export_and_run.html">Run and export in one line</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/cross_section.html">Cross sections</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/cross_section.html#creating-cross-sections-with-kqcircuits">Creating cross sections with KQCircuits</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/cross_section.html#in-gui">In GUI</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/cross_section.html#in-kqc-code">In KQC code</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/cross_section.html#xsection-tool">XSection tool</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/cross_section.html#klayout-gui-xsection-tool">KLayout GUI XSection tool</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/cross_section.html#xsection-call-in-kqc-code">XSection call in KQC code</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/cross_section.html#process-files-xs">Process files (.xs)</a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/file_system_and_utilities.html">General Structure and Miscellaneous Utilities</a><ul>
@@ -1261,7 +1246,8 @@ Each layer is split into sub-layers by their z-level.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.is_metal">
 <span class="sig-name descname"><span class="pre">is_metal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">material</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.is_metal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.is_metal" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Return True if material is metal and False otherwise</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.split_metal_layers_by_excitation">
@@ -1383,6 +1369,18 @@ This function must be used when initializing InternalPort.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.get_material_dict">
+<span class="sig-name descname"><span class="pre">get_material_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.get_material_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.get_material_dict" title="Link to this definition"></a></dt>
+<dd><p>Return material_dict as dictionary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.check_material_dict">
+<span class="sig-name descname"><span class="pre">check_material_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.check_material_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.check_material_dict" title="Link to this definition"></a></dt>
+<dd><p>Check that used materials are defined in material_dict and return material_dict as dictionary.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.get_simulation_data">
 <span class="sig-name descname"><span class="pre">get_simulation_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.get_simulation_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.get_simulation_data" title="Link to this definition"></a></dt>
 <dd><p>Return the simulation data in dictionary form. Contains following:</p>
@@ -1454,7 +1452,8 @@ By default places one point at the middle of the region’s boundary box.</p></l
 <li><p><strong>material_dict</strong><em> (String)</em><span> - Contains the material names as keys and material properties as values. If the material property has positive value for keyword ‘conductivity’, the material is considered as metal. Otherwise, the material is considered as dielectric. The material names ‘vacuum’ and ‘pec’ (perfect electric conductor) are excluded and they can be used without defining them explicitly. The property keyword ‘permittivity’ is fully supported and keywords ‘conductivity’, ‘dielectric_loss_tangent’, ‘permeability’, ‘magnetic_loss_tangent’, and ‘london_penetration_depth’ are partly supported depending on the solver.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">{'silicon':</span> <span class="pre">{'permittivity':</span> <span class="pre">11.45}}</span></code></p></li>
 <li><p><strong>chip_distance</strong><em> (List)</em><span> - The value can be scalar or list of scalars. Set as list to use individual chip distances from bottom to top. The chip distances are measured between the closest layers of the opposing chips.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[8.0]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[µm]</span></code></p></li>
 <li><p><strong>airbridge_height</strong><em> (Double)</em><span> - Height of airbridges.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">3.4</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
-<li><p><strong>metal_height</strong><em> (List)</em><span> - Height of metal sheet on each face.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[0.0]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
+<li><p><strong>metal_height</strong><em> (List)</em><span> - Height of base metal on each face.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[0.0]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
+<li><p><strong>metal_material</strong><em> (List)</em><span> - Base metal material on each face.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['pec']</span></code></p></li>
 <li><p><strong>dielectric_height</strong><em> (List)</em><span> - Height of insulator dielectric on each face.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[0.0]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
 <li><p><strong>dielectric_material</strong><em> (List)</em><span> - Use only keywords introduced in material_dict.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['silicon']</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
 <li><p><strong>waveguide_length</strong><em> (Double)</em><span> - Length of waveguide stubs or distance between couplers and waveguide turning point</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.export.cross_section.epr_correction_export &mdash; KQCircuits 4.8.16 documentation</title>
+  <title>kqcircuits.simulations.export.cross_section.epr_correction_export &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../../_static/documentation_options.js?v=41654e85"></script>
+        <script src="../../../../../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/js/theme.js"></script>
@@ -171,27 +171,12 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/simulation/simulation_features.html#capacitance-matrix">Capacitance matrix</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/simulation/simulation_features.html#eigenmode">Eigenmode</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/simulation/simulation_features.html#energy-integrals-and-participation-ratio">Energy integrals and participation ratio</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/simulation/simulation_features.html#cross-sectional-simulations">Cross-sectional simulations</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/simulation/simulation_features.html#pyepr">pyEPR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/simulation/simulation_features.html#cross-section-simulations">Cross-section simulations</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/simulation/export_and_run.html">Run and export in one line</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/simulation/elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../../user_guide/cross_section.html">Cross sections</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/cross_section.html#creating-cross-sections-with-kqcircuits">Creating cross sections with KQCircuits</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/cross_section.html#in-gui">In GUI</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/cross_section.html#in-kqc-code">In KQC code</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/cross_section.html#xsection-tool">XSection tool</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/cross_section.html#klayout-gui-xsection-tool">KLayout GUI XSection tool</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/cross_section.html#xsection-call-in-kqc-code">XSection call in KQC code</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/cross_section.html#process-files-xs">Process files (.xs)</a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../user_guide/file_system_and_utilities.html">General Structure and Miscellaneous Utilities</a><ul>
@@ -1002,13 +987,12 @@
 <span class="c1"># (meetiqm.com/iqm-open-source-trademark-policy). IQM welcomes contributions to the code.</span>
 <span class="c1"># Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)</span>
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Sequence</span>
 
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_cross_section_profile</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.cross_section.cross_section_export</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">visualise_cross_section_cut_on_original_layout</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.cross_section.cut_simulation</span> <span class="kn">import</span> <span class="n">CutSimulation</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
 
@@ -1017,17 +1001,6 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.simulation_export</span> <span class="kn">import</span> <span class="n">cross_combine</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.elmer.elmer_solution</span> <span class="kn">import</span> <span class="n">ElmerCrossSectionSolution</span>
-
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">XSECTION_PROCESS_PATH</span>
-
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.cross_section.cross_section_profile</span> <span class="kn">import</span> <span class="n">CrossSectionProfile</span>
-
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.cross_section.cross_section_export</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">create_cross_sections_from_simulations</span><span class="p">,</span>
-    <span class="n">visualise_cross_section_cut_on_original_layout</span><span class="p">,</span>
-<span class="p">)</span>
-
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.cross_section.xsection_export</span> <span class="kn">import</span> <span class="n">create_xsections_from_simulations</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.post_process</span> <span class="kn">import</span> <span class="n">PostProcess</span>
@@ -1060,21 +1033,14 @@
 <span class="k">def</span> <span class="nf">get_epr_correction_simulations</span><span class="p">(</span>
     <span class="n">simulations</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Simulation</span><span class="p">],</span>
     <span class="n">correction_cuts</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Simulation</span><span class="p">],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]],</span>
-    <span class="n">cross_section_profile</span><span class="p">:</span> <span class="p">(</span>
-        <span class="n">CrossSectionProfile</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Simulation</span><span class="p">],</span> <span class="n">CrossSectionProfile</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">=</span> <span class="n">default_cross_section_profile</span><span class="p">,</span>
-    <span class="n">xsection_path</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">Path</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">ma_eps_r</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>
     <span class="n">ms_eps_r</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">11.4</span><span class="p">,</span>
     <span class="n">sa_eps_r</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
     <span class="n">ma_thickness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">4.8e-3</span><span class="p">,</span>  <span class="c1"># in µm</span>
     <span class="n">ms_thickness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3e-3</span><span class="p">,</span>  <span class="c1"># in µm</span>
     <span class="n">sa_thickness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.4e-3</span><span class="p">,</span>  <span class="c1"># in µm</span>
-    <span class="n">ma_bg_eps_r</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="n">ms_bg_eps_r</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">11.45</span><span class="p">,</span>
-    <span class="n">sa_bg_eps_r</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">11.45</span><span class="p">,</span>
-    <span class="n">metal_height</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Simulation</span><span class="p">,</span> <span class="n">ElmerCrossSectionSolution</span><span class="p">]],</span> <span class="nb">list</span><span class="p">[</span><span class="n">PostProcess</span><span class="p">]]:</span>
+    <span class="n">metal_height</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">CutSimulation</span><span class="p">,</span> <span class="n">ElmerCrossSectionSolution</span><span class="p">]],</span> <span class="nb">list</span><span class="p">[</span><span class="n">PostProcess</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function to produce EPR correction simulations.</span>
 
 <span class="sd">    Args:</span>
@@ -1095,19 +1061,13 @@
 <span class="sd">            If `solution` is not set, all items under `correction_cuts[Key]`</span>
 <span class="sd">            are given to `get_epr_correction_elmer_solution` except</span>
 <span class="sd">            items with keys `[&quot;p1&quot;, &quot;p2&quot;, &quot;metal_edges&quot;, &quot;partition_regions&quot;, &quot;simulations&quot;]`.</span>
-<span class="sd">        cross_section_profile: CrossSectionProfile object that defines vertical level values for each layer.</span>
-<span class="sd">            Uses ``default_cross_section_profile`` by default.</span>
-<span class="sd">        xsection_path: path to simulation folder. Only set this if you want to use older external XSection tool.</span>
 <span class="sd">        ma_eps_r: relative permittivity of MA layer</span>
 <span class="sd">        ms_eps_r: relative permittivity of MS layer</span>
 <span class="sd">        sa_eps_r: relative permittivity of SA layer</span>
 <span class="sd">        ma_thickness: thickness of MA layer</span>
 <span class="sd">        ms_thickness: thickness of MS layer</span>
 <span class="sd">        sa_thickness: thickness of SA layer</span>
-<span class="sd">        ma_bg_eps_r: rel permittivity at the location of MA layer in 3D simulation (sheet approximation in use)</span>
-<span class="sd">        ms_bg_eps_r: rel permittivity at the location of MS layer in 3D simulation (sheet approximation in use)</span>
-<span class="sd">        sa_bg_eps_r: rel permittivity at the location of SA layer in 3D simulation (sheet approximation in use)</span>
-<span class="sd">        metal_height: height of metal layers in correction simulations. Use None to get heights from 3D stack</span>
+<span class="sd">        metal_height: Thickness of metal layer if sheet in the source simulation</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        tuple containing list of correction simulations and list of post_process objects</span>
@@ -1120,8 +1080,6 @@
     <span class="n">source_sims</span><span class="p">,</span> <span class="n">source_sols</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">simulations</span><span class="p">))</span>
 
     <span class="k">for</span> <span class="n">source_sim</span><span class="p">,</span> <span class="n">source_sol</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">source_sims</span><span class="p">,</span> <span class="n">source_sols</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">metal_height</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">source_sim</span><span class="o">.</span><span class="n">metal_height</span> <span class="o">=</span> <span class="n">metal_height</span>
         <span class="n">cuts</span> <span class="o">=</span> <span class="n">correction_cuts</span><span class="p">(</span><span class="n">source_sim</span><span class="p">)</span> <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">correction_cuts</span><span class="p">)</span> <span class="k">else</span> <span class="n">correction_cuts</span>
 
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">cut</span> <span class="ow">in</span> <span class="n">cuts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -1144,7 +1102,7 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Partition region metal_edge_dimensions are invalid for correction_cut </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
             <span class="n">mer_box</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">me</span> <span class="ow">in</span> <span class="n">cut</span><span class="p">[</span><span class="s2">&quot;metal_edges&quot;</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">me</span> <span class="ow">in</span> <span class="n">cut</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metal_edges&quot;</span><span class="p">,</span> <span class="p">[]):</span>
                 <span class="c1"># TODO: replace x, z, x_reversed, z_reversed with face, intersection_n</span>
                 <span class="c1"># TODO: we can deduce x from intersection data, just need to know which intersection from the left</span>
                 <span class="c1"># TODO: we can deduce z from face name. z_reversed implicit from face name (t or b)</span>
@@ -1155,43 +1113,23 @@
                 <span class="n">mer_box</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">h_dims</span><span class="p">[</span><span class="mi">1</span> <span class="o">-</span> <span class="n">dx</span><span class="p">],</span> <span class="n">z</span> <span class="o">-</span> <span class="n">v_dims</span><span class="p">[</span><span class="n">dz</span><span class="p">],</span> <span class="n">x</span> <span class="o">+</span> <span class="n">h_dims</span><span class="p">[</span><span class="n">dx</span><span class="p">],</span> <span class="n">z</span> <span class="o">+</span> <span class="n">v_dims</span><span class="p">[</span><span class="mi">1</span> <span class="o">-</span> <span class="n">dz</span><span class="p">]))</span>
 
             <span class="n">cords_list</span> <span class="o">=</span> <span class="p">[(</span><span class="n">cut</span><span class="p">[</span><span class="s2">&quot;p1&quot;</span><span class="p">],</span> <span class="n">cut</span><span class="p">[</span><span class="s2">&quot;p2&quot;</span><span class="p">])]</span>
-            <span class="k">if</span> <span class="n">xsection_path</span><span class="p">:</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="s2">&quot;get_epr_correction_simulations called with xsection_path argument, &quot;</span>
-                    <span class="s2">&quot;prompting to use external XSection tool to generate cross sections. &quot;</span>
-                    <span class="s2">&quot;This is a deprecated method, it is recommended to remove this argument &quot;</span>
-                    <span class="s2">&quot;so that a native cross section generating utility is prompted.&quot;</span>
-                <span class="p">)</span>
-                <span class="n">cross_sections</span> <span class="o">=</span> <span class="n">create_xsections_from_simulations</span><span class="p">(</span>
-                    <span class="p">[</span><span class="n">source_sim</span><span class="p">],</span>
-                    <span class="n">xsection_path</span><span class="p">,</span>
-                    <span class="n">cords_list</span><span class="p">,</span>
-                    <span class="n">layout</span><span class="o">=</span><span class="n">correction_layout</span><span class="p">,</span>
-                    <span class="n">ma_permittivity</span><span class="o">=</span><span class="n">ma_eps_r</span><span class="p">,</span>
-                    <span class="n">ms_permittivity</span><span class="o">=</span><span class="n">ms_eps_r</span><span class="p">,</span>
-                    <span class="n">sa_permittivity</span><span class="o">=</span><span class="n">sa_eps_r</span><span class="p">,</span>
-                    <span class="n">ma_thickness</span><span class="o">=</span><span class="n">ma_thickness</span><span class="p">,</span>
-                    <span class="n">ms_thickness</span><span class="o">=</span><span class="n">ms_thickness</span><span class="p">,</span>
-                    <span class="n">sa_thickness</span><span class="o">=</span><span class="n">sa_thickness</span><span class="p">,</span>
-                    <span class="n">magnification_order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                    <span class="n">process_path</span><span class="o">=</span><span class="n">XSECTION_PROCESS_PATH</span><span class="p">,</span>
-                    <span class="n">mer_box</span><span class="o">=</span><span class="n">mer_box</span><span class="p">,</span>
-                <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">cross_sections</span> <span class="o">=</span> <span class="n">create_cross_sections_from_simulations</span><span class="p">(</span>
-                    <span class="p">[</span><span class="n">source_sim</span><span class="p">],</span>
-                    <span class="n">cords_list</span><span class="p">,</span>
-                    <span class="n">cross_section_profile</span><span class="p">,</span>
-                    <span class="n">layout</span><span class="o">=</span><span class="n">correction_layout</span><span class="p">,</span>
-                    <span class="n">ma_permittivity</span><span class="o">=</span><span class="n">ma_eps_r</span><span class="p">,</span>
-                    <span class="n">ms_permittivity</span><span class="o">=</span><span class="n">ms_eps_r</span><span class="p">,</span>
-                    <span class="n">sa_permittivity</span><span class="o">=</span><span class="n">sa_eps_r</span><span class="p">,</span>
-                    <span class="n">ma_thickness</span><span class="o">=</span><span class="n">ma_thickness</span><span class="p">,</span>
-                    <span class="n">ms_thickness</span><span class="o">=</span><span class="n">ms_thickness</span><span class="p">,</span>
-                    <span class="n">sa_thickness</span><span class="o">=</span><span class="n">sa_thickness</span><span class="p">,</span>
-                    <span class="n">magnification_order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                    <span class="n">mer_box</span><span class="o">=</span><span class="n">mer_box</span><span class="p">,</span>
-                <span class="p">)</span>
+            <span class="n">correction_layout</span><span class="o">.</span><span class="n">dbu</span> <span class="o">=</span> <span class="mf">1e-4</span>
+            <span class="n">cross_section</span> <span class="o">=</span> <span class="n">CutSimulation</span><span class="p">(</span>
+                <span class="n">correction_layout</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">source_sim</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">source_sol</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">key</span><span class="p">,</span>
+                <span class="n">source_sim</span><span class="o">=</span><span class="n">source_sim</span><span class="p">,</span>
+                <span class="n">cut_start</span><span class="o">=</span><span class="n">cut</span><span class="p">[</span><span class="s2">&quot;p1&quot;</span><span class="p">],</span>
+                <span class="n">cut_end</span><span class="o">=</span><span class="n">cut</span><span class="p">[</span><span class="s2">&quot;p2&quot;</span><span class="p">],</span>
+                <span class="n">tls_layer_thickness</span><span class="o">=</span><span class="p">[</span><span class="n">ma_thickness</span><span class="p">,</span> <span class="n">ms_thickness</span><span class="p">,</span> <span class="n">sa_thickness</span><span class="p">],</span>
+                <span class="n">tls_layer_material</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ma&quot;</span><span class="p">,</span> <span class="s2">&quot;ms&quot;</span><span class="p">,</span> <span class="s2">&quot;sa&quot;</span><span class="p">],</span>
+                <span class="n">material_dict</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">&quot;ma&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;permittivity&quot;</span><span class="p">:</span> <span class="n">ma_eps_r</span><span class="p">},</span>
+                    <span class="s2">&quot;ms&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;permittivity&quot;</span><span class="p">:</span> <span class="n">ms_eps_r</span><span class="p">},</span>
+                    <span class="s2">&quot;sa&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;permittivity&quot;</span><span class="p">:</span> <span class="n">sa_eps_r</span><span class="p">},</span>
+                <span class="p">},</span>
+                <span class="n">region_map</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;_mer&quot;</span><span class="p">:</span> <span class="n">mer_box</span> <span class="ow">or</span> <span class="n">part_names</span><span class="p">},</span>
+                <span class="n">metal_height</span><span class="o">=</span><span class="n">metal_height</span><span class="p">,</span>
+            <span class="p">)</span>
 
             <span class="k">if</span> <span class="s2">&quot;solution&quot;</span> <span class="ow">in</span> <span class="n">cut</span><span class="p">:</span>
                 <span class="n">cut_solution</span> <span class="o">=</span> <span class="n">cut</span><span class="p">[</span><span class="s2">&quot;solution&quot;</span><span class="p">]</span>
@@ -1205,11 +1143,7 @@
                     <span class="p">},</span>
                 <span class="p">)</span>
 
-            <span class="n">correction_simulations</span> <span class="o">+=</span> <span class="n">cross_combine</span><span class="p">(</span><span class="n">cross_sections</span><span class="p">,</span> <span class="n">cut_solution</span><span class="p">)</span>
-
-            <span class="n">correction_simulations</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">correction_simulations</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">source_sim</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">source_sol</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">key</span>
-            <span class="p">)</span>
+            <span class="n">correction_simulations</span> <span class="o">+=</span> <span class="n">cross_combine</span><span class="p">(</span><span class="n">cross_section</span><span class="p">,</span> <span class="n">cut_solution</span><span class="p">)</span>
 
             <span class="n">visualise_cross_section_cut_on_original_layout</span><span class="p">([</span><span class="n">source_sim</span><span class="p">],</span> <span class="n">cords_list</span><span class="p">,</span> <span class="n">cut_label</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">width_ratio</span><span class="o">=</span><span class="mf">0.03</span><span class="p">)</span>
 
@@ -1230,9 +1164,9 @@
             <span class="n">deembed_cross_sections</span><span class="o">=</span><span class="n">deembed_cross_sections</span><span class="p">,</span>
             <span class="n">deembed_lens</span><span class="o">=</span><span class="n">deembed_lens</span><span class="p">,</span>
             <span class="n">sheet_approximations</span><span class="o">=</span><span class="p">{</span>
-                <span class="s2">&quot;MA&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thickness&quot;</span><span class="p">:</span> <span class="n">ma_thickness</span> <span class="o">*</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="s2">&quot;eps_r&quot;</span><span class="p">:</span> <span class="n">ma_eps_r</span><span class="p">,</span> <span class="s2">&quot;background_eps_r&quot;</span><span class="p">:</span> <span class="n">ma_bg_eps_r</span><span class="p">},</span>
-                <span class="s2">&quot;MS&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thickness&quot;</span><span class="p">:</span> <span class="n">ms_thickness</span> <span class="o">*</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="s2">&quot;eps_r&quot;</span><span class="p">:</span> <span class="n">ms_eps_r</span><span class="p">,</span> <span class="s2">&quot;background_eps_r&quot;</span><span class="p">:</span> <span class="n">ms_bg_eps_r</span><span class="p">},</span>
-                <span class="s2">&quot;SA&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thickness&quot;</span><span class="p">:</span> <span class="n">sa_thickness</span> <span class="o">*</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="s2">&quot;eps_r&quot;</span><span class="p">:</span> <span class="n">sa_eps_r</span><span class="p">,</span> <span class="s2">&quot;background_eps_r&quot;</span><span class="p">:</span> <span class="n">sa_bg_eps_r</span><span class="p">},</span>
+                <span class="s2">&quot;MA&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thickness&quot;</span><span class="p">:</span> <span class="n">ma_thickness</span> <span class="o">*</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="s2">&quot;eps_r&quot;</span><span class="p">:</span> <span class="n">ma_eps_r</span><span class="p">},</span>
+                <span class="s2">&quot;MS&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thickness&quot;</span><span class="p">:</span> <span class="n">ms_thickness</span> <span class="o">*</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="s2">&quot;eps_r&quot;</span><span class="p">:</span> <span class="n">ms_eps_r</span><span class="p">},</span>
+                <span class="s2">&quot;SA&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thickness&quot;</span><span class="p">:</span> <span class="n">sa_thickness</span> <span class="o">*</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="s2">&quot;eps_r&quot;</span><span class="p">:</span> <span class="n">sa_eps_r</span><span class="p">},</span>
             <span class="p">},</span>
             <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;MA&quot;</span><span class="p">,</span> <span class="s2">&quot;MS&quot;</span><span class="p">,</span> <span class="s2">&quot;SA&quot;</span><span class="p">,</span> <span class="s2">&quot;substrate&quot;</span><span class="p">,</span> <span class="s2">&quot;vacuum&quot;</span><span class="p">],</span>
             <span class="n">region_corrections</span><span class="o">=</span><span class="p">{</span>

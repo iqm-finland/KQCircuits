@@ -20,29 +20,13 @@ The resulting S-parameter matrices are stored in ``SnP`` (Touchstone) file forma
 extension are ``.s1p``, ``.s2p``, ``.s3p``, and so forth).
 
 In Ansys Electronic Desktop, the S-parameter simulation feature employs HFSS Terminal solution type.
-The S-parameter feature is activated using parameter ``ansys_tool='hfss'``.
-The relevant ``ansys_export`` parameters and their default values are listed below::
+The S-parameter feature is activated using the :class:`.AnsysHfssSolution` solution type or argument
+``ansys_tool='hfss'`` in the :func:`~kqcircuits.simulations.export.ansys.ansys_export.export_ansys` function.
 
-    export_parameters.update({
-        'ansys_tool': 'hfss',  # Determines whether to use HFSS ('hfss'), Q3D Extractor ('q3d') or HFSS eigenmode ('eigenmode')
-        'frequency_units': "GHz",  # Units of frequency.
-        'frequency': 5,  # Frequency for mesh refinement. To set up multifrequency analysis in HFSS use list of numbers.
-        'max_delta_s': 0.1,  # Stopping criterion in HFSS simulation.
-        'percent_refinement': 30,  # Percentage of mesh refinement on each iteration.
-        'maximum_passes': 12,  # Maximum number of iterations in simulation.
-        'minimum_passes': 1,  # Minimum number of iterations in simulation.
-        'minimum_converged_passes': 1,  # Determines how many iterations have to meet the stopping criterion to stop simulation.
-        'sweep_enabled': True,  # Determines if HFSS frequency sweep is enabled.
-        'sweep_start': 0,  # The lowest frequency in the sweep.
-        'sweep_end': 10,  # The highest frequency in the sweep.
-        'sweep_count': 101,  # Number of frequencies in the sweep.
-        'sweep_type': 'interpolating',  # choices are "interpolating", "discrete" or "fast"
-    })
-
-The open-source alternative to calculate S-parameters is to use ``elmer_export`` with the export parameter
-``tool='wave_equation'``.
-For other relevant export parameters, please consult API docs for the function
-:func:`~kqcircuits.simulations.export.elmer.elmer_export.export_elmer`.
+The open-source alternative to calculate S-parameters is to use
+:func:`~kqcircuits.simulations.export.elmer.elmer_export.export_elmer` function with the
+:class:`.ElmerVectorHelmholtzSolution` solution type or argument ``tool='wave_equation'``.
+The Elmer S-parameter calculation is only partly supported at the moment.
 
 Capacitance matrix
 ^^^^^^^^^^^^^^^^^^
@@ -57,17 +41,7 @@ The port variable ``signal_location`` determines the location of the signal isla
 can be used to force any floating metal island as the ground.
 
 From Ansys tool package, the Q3D solver is recommended for capacitance simulations.
-This is activated with export parameter ``ansys_tool='q3d'``.
-The other relevant parameters and their default values are::
-
-    export_parameters.update({
-        'ansys_tool': 'q3d',  # Determines whether to use HFSS ('hfss'), Q3D Extractor ('q3d') or HFSS eigenmode ('eigenmode')
-        'percent_error': 0.1,  # Stopping criterion in Q3D simulation.
-        'percent_refinement': 30,  # Percentage of mesh refinement on each iteration.
-        'maximum_passes': 12,  # Maximum number of iterations in simulation.
-        'minimum_passes': 1,  # Minimum number of iterations in simulation.
-        'minimum_converged_passes': 1,  # Determines how many iterations have to meet the stopping criterion to stop simulation.
-    })
+This is activated with the export parameter ``ansys_tool='q3d'`` or with solution type :class:`.AnsysQ3dSolution`.
 
 The capacitance matrix simulations are also available with Ansys HFSS framework, which is useful in case if only HFSS
 license is available.
@@ -77,9 +51,8 @@ This method assumes a purely capacitive model and is valid as long as the result
 frequency.
 
 The Elmer export provides the open source alternative for capacitance matrix simulations.
-The Elmer capacitance matrix simulation can be activated by using ``elmer_export`` with the export parameter
-``tool='capacitance'``.
-Please consult API docs of :func:`~kqcircuits.simulations.export.elmer.elmer_export.export_elmer` for more information.
+The Elmer capacitance matrix simulation can be activated with the export parameter
+``tool='capacitance'`` or with solution type :class:`.ElmerCapacitanceSolution`.
 
 Eigenmode
 ^^^^^^^^^
@@ -99,29 +72,21 @@ This is done by setting the port parameter ``junction=True`` and by giving the d
 in junctions between floating island qubit simulations.
 
 Ansys HFSS Eigenmode solution type is employed in the eigenmode simulations.
-The eigenmode simulations are activated by using ``export_ansys`` with export parameter ``ansys_tool='eigenmode'``.
-The other relevant parameters and their default values are::
-
-    export_parameters.update({
-        'ansys_tool': 'eigenmode',  # Determines whether to use HFSS ('hfss'), Q3D Extractor ('q3d') or HFSS eigenmode ('eigenmode')
-        'frequency_units': "GHz",  # Units of frequency.
-        'min_frequency': 5,  # the lower limit for eigenfrequency.
-        'max_delta_f': 0.1,  # Maximum allowed relative difference in eigenfrequency (%).
-        'n_modes': 2,  # Number of eigenmodes to solve.
-        'percent_refinement': 30,  # Percentage of mesh refinement on each iteration.
-        'maximum_passes': 12,  # Maximum number of iterations in simulation.
-        'minimum_passes': 1,  # Minimum number of iterations in simulation.
-        'minimum_converged_passes': 1,  # Determines how many iterations have to meet the stopping criterion to stop simulation.
-    })
+The eigenmode simulations are activated by using :func:`~kqcircuits.simulations.export.ansys.ansys_export.export_ansys`
+with argument ``ansys_tool='eigenmode'`` or with solution type :class:`.AnsysEigenmodeSolution`.
 
 Energy integrals and participation ratio
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The energy integrals can be calculated from HFSS S-parameter or eigenmode simulations by setting export parameter
-``integrate_energies=True`` in ``ansys_export`` function call.
-The energy integrals of each simulation are stored into file ending with ``_energies.cvs``.
-This file includes energy integrals of each surface/solid objects and the total energy integrated over all solid
+The energy integrals can be calculated from HFSS S-parameter or eigenmode simulations by setting solution argument
+``integrate_energies=True``.
+The energy integrals are computed for each surface/solid objects and the total energy is integrated over all solid
 material objects.
+
+The open-source alternative for computing energy integrals is activated by calling export function
+:func:`~kqcircuits.simulations.export.elmer.elmer_export.export_elmer` with solution type :class:`.ElmerEPR3DSolution`
+or argument ``tool='epr_3d'``. This simulation tool computes the capacitance matrix and the energy integrals for
+each layer.
 
 The energy participation ratios (EPRs) are calculated from energy integrals using the post processing script
 ``export_epr.py``.
@@ -130,47 +95,39 @@ The EPRs are saved into a file ending with ``_epr.csv``.
 
 .. _Cross-sectional simulations:
 
-Cross-sectional simulations
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Cross-section simulations
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
-KQCircuits offers possibility to export Elmer cross-sectional simulations to calculate capacitance and inductance per
-unit length.
-In cross-sectional simulations, the geometry is technically 2-dimensional, which enables more precise accuracy than
-with the fully 3-dimensional simulations.
+KQCircuits offers possibility to export Ansys or Elmer cross-section simulations for modeling 3-dimensional objects,
+such as waveguides, where the transverse geometry remain constant over a relatively long distance.
+The geometry of cross-section simulation is technically 2-dimensional, which enables more precise accuracy than
+available with the fully 3-dimensional simulations.
 The reduced complexity of dimensions also allows a more detailed model to be used, for example considering the London
 penetration depth of metals.
-The cross-sectional simulations are valid only if the cross-section of the corresponding 3-dimensional geometry is
-constant.
-That includes for example waveguides.
+The cross-sectional simulations can be used to compute capacitance and inductance values per unit length and energy
+integrals over layers.
 
-The geometry of the cross-sectional simulations is described by an instance of a :class:`.CrossSectionSimulation`
-subclass.
-The cross-sectional simulation export follows similar logic to 3-dimensional simulations.
-That is, you create a simulation subclass, create an empty folder for export files, build a list of simulation objects,
-and call the :func:`~kqcircuits.simulations.export.elmer.elmer_export.export_elmer` function with suitable
-``export_parameters``.
-An example for simulating coplanar-waveguide cross-section can be found in
+The cross-section geometry is described in a subclass of :class:`.CrossSectionSimulation` by implementing the
+:py:meth:`~kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.build` method.
+Exporting a cross-section simulation follows similar logic to 3-dimensional simulation export.
+That is, we create a simulation subclass, create an empty folder for export files, build a list of simulation objects,
+and call the :func:`~kqcircuits.simulations.export.ansys.ansys_export.export_ansys` or
+:func:`~kqcircuits.simulations.export.elmer.elmer_export.export_elmer` function with suitable parameters.
+The available solution types for cross-section simulations are
+:class:`.AnsysCrossSectionSolution` and :class:`.ElmerCrossSectionSolution`.
+An example for building and exporting a cross-section simulation can be found in
 :git_url:`klayout_package/python/scripts/simulations/cpw_cross_section_sim.py`.
 
-The cross sections can be generated from arbitrary geometries. See more details in :ref:`cross_sections`.
+It is possible to generate vertical cross section from 3-dimensional layer stack-up using the :class:`.CutSimulation`
+class which is a subclass of the :class:`.CrossSectionSimulation`.
+For this we create the 3-dimensional geometry as a :class:`.Simulation` object and then specify a line segment with
+two points from which the cross section is formed.
 
-.. _py-epr:
+Alternatively, we can produce multiple cross sections from a list of :class:`.Simulation` objects at once with the
+:func:`~kqcircuits.simulations.export.cross_section.cross_section_export.create_cross_sections_from_simulations`
+function. See
+:git_url:`klayout_package/python/scripts/simulations/waveguides_sim_cross_section.py` for an example use case.
 
-pyEPR
-^^^^^
-
-`pyEPR <https://github.com/zlatko-minev/pyEPR>`_ is supported for HFSS eigenmode simulations.
-A pyEPR simulation is activated using ``ansys_tool='eigenmode'`` and ``simulation_flags=['pyepr']`` in the
-``export_ansys`` function call.
-An example simulation is found at :git_url:`klayout_package/python/scripts/simulations/xmons_direct_coupling_pyepr.py`.
-See `pyEPR_example.ipynb <https://github.com/iqm-finland/KQCircuits-Examples/blob/main/notebooks/pyEPR_example.ipynb>`_
-in the `KQCircuits-Examples <https://github.com/iqm-finland/KQCircuits-Examples/>`_ repository for an example on using
-pyEPR itself.
-
-The pyEPR can be used for TLS-limited :math:`T_1` estimation by using additional export parameter
-``intermediate_processing_command='python "scripts/t1_estimate.py"'``.
-This will run :git_url:`t1_estimate.py <klayout_package/python/scripts/simulations/ansys/t1_estimate.py>` between
-queued simulations and compute the electrical participations in the lossy interfaces.
-See :git_url:`double_pads_sim.py <klayout_package/python/scripts/simulations/double_pads_sim.py>` for an example and
-`N. Savola, ‘Design and modelling of long-coherence qubits using energy participation ratios’, Master's thesis,
-Aalto University, 2023`, for details on the method.
+Cross sections are an essential part in calculating energy participation ratios for elements. See docstring in
+:func:`~kqcircuits.simulations.export.cross_section.epr_correction_export.get_epr_correction_simulations`
+and :git_url:`klayout_package/python/scripts/simulations/swissmon_epr_sim.py` for an example use case.

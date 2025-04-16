@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.export.cross_section.xsection_export &mdash; KQCircuits 4.8.16 documentation</title>
+  <title>kqcircuits.simulations.export.cross_section.cut_simulation &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=d10597a4" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../../_static/documentation_options.js?v=41654e85"></script>
+        <script src="../../../../../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/js/theme.js"></script>
@@ -171,27 +171,12 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/simulation/simulation_features.html#capacitance-matrix">Capacitance matrix</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/simulation/simulation_features.html#eigenmode">Eigenmode</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/simulation/simulation_features.html#energy-integrals-and-participation-ratio">Energy integrals and participation ratio</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/simulation/simulation_features.html#cross-sectional-simulations">Cross-sectional simulations</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/simulation/simulation_features.html#pyepr">pyEPR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/simulation/simulation_features.html#cross-section-simulations">Cross-section simulations</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/simulation/export_and_run.html">Run and export in one line</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/simulation/elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../../user_guide/cross_section.html">Cross sections</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/cross_section.html#creating-cross-sections-with-kqcircuits">Creating cross sections with KQCircuits</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/cross_section.html#in-gui">In GUI</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/cross_section.html#in-kqc-code">In KQC code</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/cross_section.html#xsection-tool">XSection tool</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/cross_section.html#klayout-gui-xsection-tool">KLayout GUI XSection tool</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/cross_section.html#xsection-call-in-kqc-code">XSection call in KQC code</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/cross_section.html#process-files-xs">Process files (.xs)</a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../user_guide/file_system_and_utilities.html">General Structure and Miscellaneous Utilities</a><ul>
@@ -971,7 +956,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">kqcircuits.simulations.export.cross_section.xsection_export</li>
+      <li class="breadcrumb-item active">kqcircuits.simulations.export.cross_section.cut_simulation</li>
 
 
       <li class="wy-breadcrumbs-aside">
@@ -984,7 +969,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for kqcircuits.simulations.export.cross_section.xsection_export</h1><div class="highlight"><pre>
+  <h1>Source code for kqcircuits.simulations.export.cross_section.cut_simulation</h1><div class="highlight"><pre>
 <span></span><span class="c1"># This code is part of KQCircuits</span>
 <span class="c1"># Copyright (C) 2025 IQM Finland Oy</span>
 <span class="c1">#</span>
@@ -1002,334 +987,307 @@
 <span class="c1"># (meetiqm.com/iqm-open-source-trademark-policy). IQM welcomes contributions to the code.</span>
 <span class="c1"># Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)</span>
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
-
-
 <span class="kn">import</span> <span class="nn">ast</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">STARTUPINFO</span><span class="p">,</span> <span class="n">XSECTION_PROCESS_PATH</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span><span class="p">,</span> <span class="n">klayout_executable_command</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.cross_section.cross_section_export</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">_check_metal_heights</span><span class="p">,</span>
-    <span class="n">_iterate_layers_and_modify_region</span><span class="p">,</span>
-    <span class="n">_oxidise_layers</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.load_save_layout</span> <span class="kn">import</span> <span class="n">load_layout</span><span class="p">,</span> <span class="n">save_layout</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+
+<span class="kn">from</span> <span class="nn">klayout</span> <span class="kn">import</span> <span class="n">pya</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.cross_section_simulation</span> <span class="kn">import</span> <span class="n">CrossSectionSimulation</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span><span class="p">,</span> <span class="n">to_1d_list</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_json_encoder</span> <span class="kn">import</span> <span class="n">GeometryJsonEncoder</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span><span class="p">,</span> <span class="n">add_parameters_from</span>
 
 
-<span class="c1">### DEPRECATED!</span>
-<span class="c1">### This file contains utility functions that use XSection as an external tool to produce cross sections</span>
-<span class="c1">### for sweeped simulations.</span>
-<span class="c1">### Active development should instead be done on kqcircuits.simulations.export.cross_section_export,</span>
-<span class="c1">### which uses KQCircuits native implementation to produce cross sections.</span>
+<div class="viewcode-block" id="CutSimulation">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cut_simulation.html#kqcircuits.simulations.export.cross_section.cut_simulation.CutSimulation">[docs]</a>
+<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Simulation</span><span class="p">,</span> <span class="s2">&quot;tls_layer_thickness&quot;</span><span class="p">,</span> <span class="s2">&quot;tls_layer_material&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">CutSimulation</span><span class="p">(</span><span class="n">CrossSectionSimulation</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for cross-section simulations with geometry generated from a 3D Simulation.</span>
 
+<span class="sd">    By default, renames the layers such that partition regions of source simulation are basically ignored.</span>
+<span class="sd">    The ``region_map`` can be used to define new partition regions or copy partition regions from source simulation.</span>
 
-<div class="viewcode-block" id="xsection_call">
-<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.xsection_export.html#kqcircuits.simulations.export.cross_section.xsection_export.xsection_call">[docs]</a>
-<span class="k">def</span> <span class="nf">xsection_call</span><span class="p">(</span>
-    <span class="n">input_oas</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
-    <span class="n">output_oas</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
-    <span class="n">cut1</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">,</span>
-    <span class="n">cut2</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">,</span>
-    <span class="n">process_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">XSECTION_PROCESS_PATH</span><span class="p">,</span>
-    <span class="n">parameters_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calls on KLayout to run the XSection plugin</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        input_oas: Input OAS file (top-down geometry)</span>
-<span class="sd">        output_oas: Output OAS file (Cross-section of input geometry)</span>
-<span class="sd">        cut1: DPoint of first endpoint of the cross-section cut</span>
-<span class="sd">        cut2: DPoint of second endpoint of the cross-section cut</span>
-<span class="sd">        process_path: XSection process file that defines cross-section etching depths etc</span>
-<span class="sd">        parameters_path: If process_path points to kqc_process.xs,</span>
-<span class="sd">            parameters_path should point to the XSection parameters json file</span>
-<span class="sd">            containing sweeped parameters and layer information.</span>
+<span class="sd">    Adds interface layers &#39;ma&#39;, &#39;ms&#39;, and &#39;sa&#39; if ``tls_layer_thickness`` and ``tls_layer_material`` are set properly.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;nt&quot;</span><span class="p">:</span>
-        <span class="n">klayout_dir_name</span> <span class="o">=</span> <span class="s2">&quot;KLayout&quot;</span>
-    <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;posix&quot;</span><span class="p">:</span>
-        <span class="n">klayout_dir_name</span> <span class="o">=</span> <span class="s2">&quot;.klayout&quot;</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">SystemError</span><span class="p">(</span><span class="s2">&quot;Error: unsupported operating system&quot;</span><span class="p">)</span>
-    <span class="n">xsection_plugin_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">&quot;~&quot;</span><span class="p">),</span> <span class="n">klayout_dir_name</span><span class="p">,</span> <span class="s2">&quot;salt/xsection/macros/xsection.lym&quot;</span><span class="p">)</span>
-    <span class="n">cut_string</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cut1</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">cut1</span><span class="o">.</span><span class="n">y</span><span class="si">}</span><span class="s2">;</span><span class="si">{</span><span class="n">cut2</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">cut2</span><span class="o">.</span><span class="n">y</span><span class="si">}</span><span class="s2">&quot;</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">klayout_executable_command</span><span class="p">():</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Can&#39;t find klayout executable command!&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">Path</span><span class="p">(</span><span class="n">xsection_plugin_path</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;The &#39;xsection&#39; plugin is missing in KLayout! Go to &#39;Tools-&gt;Manage Packages&#39; to install it.&quot;</span><span class="p">)</span>
+    <span class="n">source_sim</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeNone</span><span class="p">,</span> <span class="s2">&quot;Instance of Simulation subclass from which the cross section is generated&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">cut_start</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeShape</span><span class="p">,</span> <span class="s2">&quot;Start point of the cut segment&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="n">cut_end</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeShape</span><span class="p">,</span> <span class="s2">&quot;End point of the cut segment&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="n">cut_bottom</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Bottom of the cross section&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mf">1e30</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;µm&quot;</span><span class="p">)</span>
+    <span class="n">cut_top</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Top of the cross section&quot;</span><span class="p">,</span> <span class="mf">1e30</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;µm&quot;</span><span class="p">)</span>
+    <span class="n">region_map</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span>
+        <span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span>
+        <span class="s2">&quot;Dictionary with new partition region suffixes as keys and region definitions as values&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;The region definition is a list of pya.DBox or string instances. Use string instance to copy &quot;</span>
+        <span class="s2">&quot;partition region from the source simulation.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">metal_height</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Thickness of metal layer if sheet in the source simulation.&quot;</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;µm&quot;</span><span class="p">)</span>
 
-    <span class="c1"># Hack: Weird prefix keeps getting added when path is converted to string which breaks the ruby plugin</span>
-    <span class="n">xs_run</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">process_path</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\\\</span><span class="s2">?</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-    <span class="n">xs_params</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">parameters_path</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\\\</span><span class="s2">?</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-    <span class="c1"># When debugging, remove &#39;-z&#39; argument to see ruby error messages</span>
-    <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-        <span class="p">[</span>
-            <span class="n">klayout_executable_command</span><span class="p">(),</span>
-            <span class="n">input_oas</span><span class="o">.</span><span class="n">absolute</span><span class="p">(),</span>
-            <span class="s2">&quot;-z&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;-nc&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;-rx&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;-r&quot;</span><span class="p">,</span>
-            <span class="n">xsection_plugin_path</span><span class="p">,</span>
-            <span class="s2">&quot;-rd&quot;</span><span class="p">,</span>
-            <span class="sa">f</span><span class="s2">&quot;xs_run=</span><span class="si">{</span><span class="n">xs_run</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;-rd&quot;</span><span class="p">,</span>
-            <span class="sa">f</span><span class="s2">&quot;xs_params=</span><span class="si">{</span><span class="n">xs_params</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;-rd&quot;</span><span class="p">,</span>
-            <span class="sa">f</span><span class="s2">&quot;xs_cut=</span><span class="si">{</span><span class="n">cut_string</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;-rd&quot;</span><span class="p">,</span>
-            <span class="sa">f</span><span class="s2">&quot;xs_out=</span><span class="si">{</span><span class="n">output_oas</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-        <span class="p">],</span>
-        <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">startupinfo</span><span class="o">=</span><span class="n">STARTUPINFO</span><span class="p">,</span>
-    <span class="p">)</span></div>
+<div class="viewcode-block" id="CutSimulation.build">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cut_simulation.html#kqcircuits.simulations.export.cross_section.cut_simulation.CutSimulation.build">[docs]</a>
+    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cross_section_layers</span><span class="p">()</span>
+        <span class="n">partition_regions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_partition_regions</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process_geometry</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apply_partition_regions</span><span class="p">(</span><span class="n">partition_regions</span><span class="p">)</span></div>
 
 
-
-<div class="viewcode-block" id="create_xsections_from_simulations">
-<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.xsection_export.html#kqcircuits.simulations.export.cross_section.xsection_export.create_xsections_from_simulations">[docs]</a>
-<span class="k">def</span> <span class="nf">create_xsections_from_simulations</span><span class="p">(</span>
-    <span class="n">simulations</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Simulation</span><span class="p">],</span>
-    <span class="n">output_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
-    <span class="n">cuts</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">]</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">]],</span>
-    <span class="n">process_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">XSECTION_PROCESS_PATH</span><span class="p">,</span>
-    <span class="n">post_processing_function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">CrossSectionSimulation</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">oxidise_layers_function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">CrossSectionSimulation</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">_oxidise_layers</span><span class="p">,</span>
-    <span class="n">ma_permittivity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">ms_permittivity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">sa_permittivity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">ma_thickness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">ms_thickness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">sa_thickness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">vertical_cull</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">mer_box</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">london_penetration_depth</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">magnification_order</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">layout</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Layout</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Simulation</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create cross-sections of all simulation geometries in the list.</span>
-<span class="sd">    Will set &#39;box&#39; and &#39;cell&#39; parameters according to the produced cross-section geometry data.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        simulations: List of Simulation objects, usually produced by a sweep</span>
-<span class="sd">        output_path: Path for the exported simulation files</span>
-<span class="sd">        cuts: 1. A tuple (p1, p2), where p1 and p2 are endpoints of a cross-section cut or</span>
-<span class="sd">              2. a list of such tuples such that each Simulation object gets an individual cut</span>
-<span class="sd">        process_path: XSection process file that defines cross-section etching depths etc</span>
-<span class="sd">        post_processing_function: Additional function to post-process the cross-section geometry.</span>
-<span class="sd">            Defaults to None, in which case no post-processing is performed.</span>
-<span class="sd">            The function takes a CrossSectionSimulation object as argument</span>
-<span class="sd">        oxidise_layers_function: Set this argument if you have a custom way of introducing</span>
-<span class="sd">            oxidization layers to the cross-section metal deposits and substrate.</span>
-<span class="sd">            See expected function signature from pyhints</span>
-<span class="sd">        ma_permittivity: Permittivity of metal–vacuum (air) interface</span>
-<span class="sd">        ms_permittivity: Permittivity of metal–substrate interface</span>
-<span class="sd">        sa_permittivity: Permittivity of substrate–vacuum (air) interface</span>
-<span class="sd">        ma_thickness: Thickness of metal–vacuum (air) interface</span>
-<span class="sd">        ms_thickness: Thickness of metal–substrate interface</span>
-<span class="sd">        sa_thickness: Thickness of substrate–vacuum (air) interface</span>
-<span class="sd">        vertical_cull: Tuple of two y-coordinates, will cull all geometry not in-between the y-coordinates.</span>
-<span class="sd">            None by default, which means all geometry is retained.</span>
-<span class="sd">        mer_box: If set as pya.DBox, will create a specified box as metal edge region,</span>
-<span class="sd">            meaning that the geometry inside the region are separated into different layers with &#39;_mer&#39; suffix</span>
-<span class="sd">        london_penetration_depth: London penetration depth of the superconducting material</span>
-<span class="sd">        magnification_order: Increase magnification of simulation geometry to accomodate more precise spacial units.</span>
-<span class="sd">            0 =   no magnification with 1e-3 dbu</span>
-<span class="sd">            1 =  10x magnification with 1e-4 dbu</span>
-<span class="sd">            2 = 100x magnification with 1e-5 dbu etc</span>
-<span class="sd">            Consider setting non-zero value when using oxide layers with &lt; 1e-3 layer thickness or</span>
-<span class="sd">            taking cross-sections of thin objects</span>
-<span class="sd">        layout: predefined layout for the cross-section simulation (optional)</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        List of CrossSectionSimulation objects for each Simulation object in simulations</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cuts</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-        <span class="n">cuts</span> <span class="o">=</span> <span class="p">[</span><span class="n">cuts</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">simulations</span><span class="p">)</span>
-    <span class="n">cuts</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">c</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">)</span> <span class="k">else</span> <span class="n">c</span><span class="o">.</span><span class="n">to_p</span><span class="p">()</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cut</span><span class="p">)</span> <span class="k">for</span> <span class="n">cut</span> <span class="ow">in</span> <span class="n">cuts</span><span class="p">]</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">simulations</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cuts</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Number of cuts did not match the number of simulations&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">()[</span><span class="s2">&quot;face_stack&quot;</span><span class="p">])</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="n">simulation</span> <span class="ow">in</span> <span class="n">simulations</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only single face and flip chip cross section simulations currently supported&quot;</span><span class="p">)</span>
-
-    <span class="n">xsection_dir</span> <span class="o">=</span> <span class="n">output_path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;xsection_tmp&quot;</span><span class="p">)</span>
-    <span class="n">xsection_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">layout</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">layout</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Layout</span><span class="p">()</span>
-    <span class="n">xsection_cells</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">simulation</span><span class="p">,</span> <span class="n">cut</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="n">cuts</span><span class="p">):</span>
-        <span class="n">_check_metal_heights</span><span class="p">(</span><span class="n">simulation</span><span class="p">)</span>
-        <span class="n">xsection_parameters</span> <span class="o">=</span> <span class="n">_dump_xsection_parameters</span><span class="p">(</span><span class="n">xsection_dir</span><span class="p">,</span> <span class="n">simulation</span><span class="p">)</span>
-        <span class="n">simulation_file</span> <span class="o">=</span> <span class="n">xsection_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;original_</span><span class="si">{</span><span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.oas&quot;</span>
-        <span class="n">xsection_file</span> <span class="o">=</span> <span class="n">xsection_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;xsection_</span><span class="si">{</span><span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.oas&quot;</span>
-        <span class="n">save_layout</span><span class="p">(</span><span class="n">simulation_file</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="p">[</span><span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="p">],</span> <span class="n">no_empty_cells</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">xsection_call</span><span class="p">(</span><span class="n">simulation_file</span><span class="p">,</span> <span class="n">xsection_file</span><span class="p">,</span> <span class="n">cut</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cut</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">process_path</span><span class="p">,</span> <span class="n">xsection_parameters</span><span class="p">)</span>
-
-        <span class="n">load_layout</span><span class="p">(</span><span class="n">xsection_file</span><span class="p">,</span> <span class="n">layout</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer_indexes</span><span class="p">():</span>
-            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">begin_shapes</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">at_end</span><span class="p">()</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">layout</span><span class="o">.</span><span class="n">top_cells</span><span class="p">()):</span>
-                <span class="n">layout</span><span class="o">.</span><span class="n">delete_layer</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>  <span class="c1"># delete empty layers caused by bug in klayout 0.29.0</span>
-        <span class="n">xsection_cells</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">top_cells</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-        <span class="n">xsection_cells</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">name</span>
-
-    <span class="n">_clean_tmp_xsection_directory</span><span class="p">(</span><span class="n">xsection_dir</span><span class="p">,</span> <span class="n">simulations</span><span class="p">)</span>
-    <span class="c1"># Collect cross-section simulation sweeps</span>
-    <span class="k">return</span> <span class="p">[</span>
-        <span class="n">_construct_cross_section_simulation</span><span class="p">(</span>
-            <span class="n">layout</span><span class="p">,</span>
-            <span class="n">xsection_cell</span><span class="p">,</span>
-            <span class="n">simulations</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
-            <span class="n">post_processing_function</span><span class="p">,</span>
-            <span class="n">oxidise_layers_function</span><span class="p">,</span>
-            <span class="n">ma_permittivity</span><span class="p">,</span>
-            <span class="n">ms_permittivity</span><span class="p">,</span>
-            <span class="n">sa_permittivity</span><span class="p">,</span>
-            <span class="n">ma_thickness</span><span class="p">,</span>
-            <span class="n">ms_thickness</span><span class="p">,</span>
-            <span class="n">sa_thickness</span><span class="p">,</span>
-            <span class="n">vertical_cull</span><span class="p">,</span>
-            <span class="n">mer_box</span><span class="p">,</span>
-            <span class="n">london_penetration_depth</span><span class="p">,</span>
-            <span class="n">magnification_order</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">xsection_cell</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">xsection_cells</span><span class="p">)</span>
-    <span class="p">]</span></div>
+<div class="viewcode-block" id="CutSimulation.process_geometry">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cut_simulation.html#kqcircuits.simulations.export.cross_section.cut_simulation.CutSimulation.process_geometry">[docs]</a>
+    <span class="k">def</span> <span class="nf">process_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">regroup_layers</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_tls_layers</span><span class="p">()</span></div>
 
 
-
-<span class="k">def</span> <span class="nf">_dump_xsection_parameters</span><span class="p">(</span><span class="n">xsection_dir</span><span class="p">,</span> <span class="n">simulation</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;If we&#39;re sweeping xsection specific parameters,</span>
-<span class="sd">    dump them in external file for xsection process file to pick up</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">simulation_params</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="n">param_name</span><span class="p">:</span> <span class="n">param_value</span>
-        <span class="k">for</span> <span class="n">param_name</span><span class="p">,</span> <span class="n">param_value</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">param_value</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">)</span>
-    <span class="p">}</span>  <span class="c1"># Hack: ignore non-serializable params</span>
-    <span class="n">simulation_params</span><span class="p">[</span><span class="s2">&quot;chip_distance&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_1d_list</span><span class="p">(</span><span class="n">simulation_params</span><span class="p">[</span><span class="s2">&quot;chip_distance&quot;</span><span class="p">])</span>
-    <span class="c1"># Also dump all used layers in the simulation cell</span>
-    <span class="n">simulation_params</span><span class="p">[</span><span class="s2">&quot;sim_layers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">l</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">l</span><span class="o">.</span><span class="n">layer</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">l</span><span class="o">.</span><span class="n">datatype</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">()}</span>
-    <span class="n">xsection_parameters_file</span> <span class="o">=</span> <span class="n">xsection_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;parameters_</span><span class="si">{</span><span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.json&quot;</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">xsection_parameters_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">sweep_file</span><span class="p">:</span>
-        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">simulation_params</span><span class="p">,</span> <span class="n">sweep_file</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">GeometryJsonEncoder</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">xsection_parameters_file</span>
+<div class="viewcode-block" id="CutSimulation.limited_region">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cut_simulation.html#kqcircuits.simulations.export.cross_section.cut_simulation.CutSimulation.limited_region">[docs]</a>
+    <span class="k">def</span> <span class="nf">limited_region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">):</span>
+        <span class="n">bottom</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">bottom</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cut_bottom</span><span class="p">)</span>
+        <span class="n">top</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">top</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cut_top</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">bottom</span> <span class="o">&gt;=</span> <span class="n">top</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">bottom</span><span class="p">,</span> <span class="n">box</span><span class="o">.</span><span class="n">right</span><span class="p">,</span> <span class="n">top</span><span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span></div>
 
 
-<span class="k">def</span> <span class="nf">_clean_tmp_xsection_directory</span><span class="p">(</span><span class="n">xsection_dir</span><span class="p">,</span> <span class="n">simulations</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">simulation</span> <span class="ow">in</span> <span class="n">simulations</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">xsection_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;original_</span><span class="si">{</span><span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.oas&quot;</span><span class="p">):</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">xsection_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;original_</span><span class="si">{</span><span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.oas&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">xsection_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;xsection_</span><span class="si">{</span><span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.oas&quot;</span><span class="p">):</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">xsection_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;xsection_</span><span class="si">{</span><span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.oas&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">xsection_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;parameters_</span><span class="si">{</span><span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.json&quot;</span><span class="p">):</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">xsection_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;parameters_</span><span class="si">{</span><span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.json&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">xsection_dir</span><span class="p">):</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">rmdir</span><span class="p">(</span><span class="n">xsection_dir</span><span class="p">)</span>
+<div class="viewcode-block" id="CutSimulation.insert_cross_section_layers">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cut_simulation.html#kqcircuits.simulations.export.cross_section.cut_simulation.CutSimulation.insert_cross_section_layers">[docs]</a>
+    <span class="k">def</span> <span class="nf">insert_cross_section_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Insert cross sections from each layer of ``self.source_sim`` into ``self.layers``.</span>
+<span class="sd">        Thicken sheet metals by ``self.metal_height``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_sim</span><span class="o">.</span><span class="n">layout</span>
+        <span class="n">cut_edge</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DEdge</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cut_start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cut_end</span><span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
+        <span class="n">cut_vector</span> <span class="o">=</span> <span class="n">cut_edge</span><span class="o">.</span><span class="n">d</span><span class="p">()</span>
+
+        <span class="c1"># Place constants related to non-orthogonal edges warning</span>
+        <span class="n">appr_edge_slope_tolerance</span> <span class="o">=</span> <span class="mf">0.2</span>  <span class="c1"># warning is given if edge slope compared to orthogonal exceeds appr. this</span>
+        <span class="n">database_unit_tolerance</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># the database unit tolerance</span>
+
+        <span class="c1"># Compute variables related to non-orthogonal edges warning</span>
+        <span class="n">cut_region_width</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">database_unit_tolerance</span> <span class="o">/</span> <span class="n">appr_edge_slope_tolerance</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
+        <span class="n">max_cut_vector_sprod</span> <span class="o">=</span> <span class="n">cut_region_width</span> <span class="o">*</span> <span class="n">appr_edge_slope_tolerance</span> <span class="o">*</span> <span class="n">cut_vector</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span>
+
+        <span class="c1"># Simple path region for cut with small width. Use KLayout&#39;s boolean operators to detect the intersections.</span>
+        <span class="n">cut_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Path</span><span class="p">([</span><span class="n">cut_edge</span><span class="o">.</span><span class="n">p1</span><span class="p">,</span> <span class="n">cut_edge</span><span class="o">.</span><span class="n">p2</span><span class="p">],</span> <span class="n">cut_region_width</span><span class="p">))</span>
+
+        <span class="c1"># Scale intersection dot products within confines of the cut</span>
+        <span class="n">crossing_edges</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">cut_region</span><span class="o">.</span><span class="n">each</span><span class="p">()</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">each_edge</span><span class="p">()</span> <span class="k">if</span> <span class="n">cut_edge</span><span class="o">.</span><span class="n">crossed_by</span><span class="p">(</span><span class="n">e</span><span class="p">)]</span>
+        <span class="n">prods</span> <span class="o">=</span> <span class="p">[</span><span class="n">cut_vector</span><span class="o">.</span><span class="n">sprod</span><span class="p">(</span><span class="n">cut_edge</span><span class="o">.</span><span class="n">crossing_point</span><span class="p">(</span><span class="n">e</span><span class="p">))</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">crossing_edges</span><span class="p">]</span>
+        <span class="n">cut_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">prods</span><span class="p">)</span>
+        <span class="n">cut_length</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cut_end</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">cut_start</span><span class="p">)</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span>
+        <span class="n">cut_scale</span> <span class="o">=</span> <span class="n">cut_length</span> <span class="o">/</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">prods</span><span class="p">)</span> <span class="o">-</span> <span class="n">cut_min</span><span class="p">)</span>
+
+        <span class="n">regions</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">sheet_metals</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_sim</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="s2">&quot;layer&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="n">segments</span> <span class="o">=</span> <span class="p">[(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">cut_length</span><span class="p">)]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">layer_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source_sim</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">begin_shapes_rec</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;layer&quot;</span><span class="p">],</span> <span class="mi">0</span><span class="p">)))</span>
+                <span class="n">intersection</span> <span class="o">=</span> <span class="p">(</span><span class="n">cut_region</span> <span class="o">&amp;</span> <span class="n">layer_region</span><span class="p">)</span><span class="o">.</span><span class="n">merged</span><span class="p">()</span>
+                <span class="n">segments</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">polygon</span> <span class="ow">in</span> <span class="n">intersection</span><span class="o">.</span><span class="n">each</span><span class="p">():</span>
+                    <span class="n">crossing_edges</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">polygon</span><span class="o">.</span><span class="n">each_edge</span><span class="p">()</span> <span class="k">if</span> <span class="n">cut_edge</span><span class="o">.</span><span class="n">crossed_by</span><span class="p">(</span><span class="n">e</span><span class="p">)]</span>
+
+                    <span class="c1"># Warn if cross-section is taken with non-orthogonal edges</span>
+                    <span class="n">skew_edges</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">crossing_edges</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">cut_vector</span><span class="o">.</span><span class="n">sprod</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">d</span><span class="p">()))</span> <span class="o">&gt;</span> <span class="n">max_cut_vector_sprod</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">skew_edge</span> <span class="ow">in</span> <span class="n">skew_edges</span><span class="p">:</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;Cross section is taken with non-orthogonal edge from simulation &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">source_sim</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;layer &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; at location (</span><span class="si">{</span><span class="n">cut_edge</span><span class="o">.</span><span class="n">crossing_point</span><span class="p">(</span><span class="n">skew_edge</span><span class="p">)</span><span class="o">.</span><span class="n">to_dtype</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span><span class="si">}</span><span class="s2">).&quot;</span>
+                        <span class="p">)</span>
+
+                    <span class="c1"># Calculate intersection as value between 0 and cut length</span>
+                    <span class="n">dists</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="p">(</span><span class="n">cut_vector</span><span class="o">.</span><span class="n">sprod</span><span class="p">(</span><span class="n">cut_edge</span><span class="o">.</span><span class="n">crossing_point</span><span class="p">(</span><span class="n">e</span><span class="p">))</span> <span class="o">-</span> <span class="n">cut_min</span><span class="p">)</span> <span class="o">*</span> <span class="n">cut_scale</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">crossing_edges</span>
+                    <span class="p">]</span>
+                    <span class="n">segments</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">min</span><span class="p">(</span><span class="n">dists</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">dists</span><span class="p">)))</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">segments</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Add sheet metal cross sections to sheet_metals dictionary (to insert them later)</span>
+            <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;thickness&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="s2">&quot;excitation&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="n">edges</span> <span class="o">=</span> <span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DEdge</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">],</span> <span class="n">right</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span> <span class="ow">in</span> <span class="n">segments</span><span class="p">]</span>
+                <span class="n">sheet_metals</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;edges&quot;</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Edges</span><span class="p">([</span><span class="n">e</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">]),</span>
+                    <span class="s2">&quot;material&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;material&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;excitation&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;excitation&quot;</span><span class="p">],</span>
+                <span class="p">}</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Build region out of segments</span>
+            <span class="n">bottom</span><span class="p">,</span> <span class="n">top</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;thickness&quot;</span><span class="p">]</span>
+            <span class="n">regions</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span> <span class="ow">in</span> <span class="n">segments</span><span class="p">:</span>
+                <span class="n">regions</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">limited_region</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">bottom</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">top</span><span class="p">))</span>
+
+            <span class="c1"># Apply subtractions defined by layers</span>
+            <span class="k">for</span> <span class="n">subtract</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;subtract&quot;</span><span class="p">,</span> <span class="p">[]):</span>
+                <span class="k">if</span> <span class="n">subtract</span> <span class="ow">in</span> <span class="n">regions</span><span class="p">:</span>
+                    <span class="n">regions</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">-=</span> <span class="n">regions</span><span class="p">[</span><span class="n">subtract</span><span class="p">]</span>
+
+            <span class="c1"># Insert layer that has material and non-empty region</span>
+            <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;material&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">excitation</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;excitation&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;excitation&quot;</span><span class="p">]}</span> <span class="k">if</span> <span class="s2">&quot;excitation&quot;</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">else</span> <span class="p">{}</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">insert_layer</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">regions</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;material&quot;</span><span class="p">],</span> <span class="o">**</span><span class="n">excitation</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_sheet_metals</span><span class="p">(</span><span class="n">sheet_metals</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">_construct_cross_section_simulation</span><span class="p">(</span>
-    <span class="n">layout</span><span class="p">,</span>
-    <span class="n">xsection_cell</span><span class="p">,</span>
-    <span class="n">simulation</span><span class="p">,</span>
-    <span class="n">post_processing_function</span><span class="p">,</span>
-    <span class="n">oxidise_layers_function</span><span class="p">,</span>
-    <span class="n">ma_permittivity</span><span class="p">,</span>
-    <span class="n">ms_permittivity</span><span class="p">,</span>
-    <span class="n">sa_permittivity</span><span class="p">,</span>
-    <span class="n">ma_thickness</span><span class="p">,</span>
-    <span class="n">ms_thickness</span><span class="p">,</span>
-    <span class="n">sa_thickness</span><span class="p">,</span>
-    <span class="n">vertical_cull</span><span class="p">,</span>
-    <span class="n">mer_box</span><span class="p">,</span>
-    <span class="n">london_penetration_depth</span><span class="p">,</span>
-    <span class="n">magnification_order</span><span class="p">,</span>
-<span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Produce CrossSectionSimulation object&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">magnification_order</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">layout</span><span class="o">.</span><span class="n">dbu</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span> <span class="o">-</span> <span class="n">magnification_order</span><span class="p">)</span>
-        <span class="n">xsection_cell</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="n">magnification_order</span><span class="p">))</span>
-    <span class="n">xsection_parameters</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">()</span>
-    <span class="n">xsection_parameters</span><span class="p">[</span><span class="s2">&quot;london_penetration_depth&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">london_penetration_depth</span>
-    <span class="n">cell_bbox</span> <span class="o">=</span> <span class="n">xsection_cell</span><span class="o">.</span><span class="n">dbbox</span><span class="p">()</span>
-    <span class="c1"># Disabled for single face and flip-chip cases</span>
-    <span class="c1"># cell_bbox.p1 -= pya.DPoint(0, xsection_parameters[&#39;lower_box_height&#39;])</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">xsection_parameters</span><span class="p">[</span><span class="s2">&quot;face_stack&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">cell_bbox</span><span class="o">.</span><span class="n">p2</span> <span class="o">+=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">xsection_parameters</span><span class="p">[</span><span class="s2">&quot;upper_box_height&quot;</span><span class="p">])</span>
-    <span class="k">if</span> <span class="n">vertical_cull</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">cell_bbox</span><span class="o">.</span><span class="n">p1</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">cell_bbox</span><span class="o">.</span><span class="n">p1</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">vertical_cull</span><span class="p">))</span>
-        <span class="n">cell_bbox</span><span class="o">.</span><span class="n">p2</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">cell_bbox</span><span class="o">.</span><span class="n">p2</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">vertical_cull</span><span class="p">))</span>
-    <span class="n">xsection_parameters</span><span class="p">[</span><span class="s2">&quot;box&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cell_bbox</span>
-    <span class="n">xsection_parameters</span><span class="p">[</span><span class="s2">&quot;cell&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xsection_cell</span>
-    <span class="n">xsection_simulation</span> <span class="o">=</span> <span class="n">CrossSectionSimulation</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="o">**</span><span class="n">xsection_parameters</span><span class="p">,</span> <span class="n">ignore_process_layers</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="c1"># Keep all parameters given in simulations for JSON</span>
-    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">xsection_parameters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="n">xsection_simulation</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-    <span class="n">xsection_simulation</span><span class="o">.</span><span class="n">xsection_source_class</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">simulation</span><span class="p">)</span>
-    <span class="n">xsection_simulation</span><span class="o">.</span><span class="n">register_cell_layers_as_sim_layers</span><span class="p">()</span>
+<div class="viewcode-block" id="CutSimulation.insert_sheet_metals">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cut_simulation.html#kqcircuits.simulations.export.cross_section.cut_simulation.CutSimulation.insert_sheet_metals">[docs]</a>
+    <span class="k">def</span> <span class="nf">insert_sheet_metals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sheet_metals</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Inserts sheet metal layers thickened by ``self.metal_height`` on vacuum side.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metal_height</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">return</span>
 
-    <span class="n">material_dict</span> <span class="o">=</span> <span class="n">xsection_parameters</span><span class="p">[</span><span class="s2">&quot;material_dict&quot;</span><span class="p">]</span>
-    <span class="n">material_dict</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">material_dict</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">material_dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">material_dict</span>
-    <span class="n">substrate_material</span> <span class="o">=</span> <span class="n">xsection_parameters</span><span class="p">[</span><span class="s2">&quot;substrate_material&quot;</span><span class="p">]</span>
-    <span class="n">substrate_1_permittivity</span> <span class="o">=</span> <span class="n">material_dict</span><span class="p">[</span><span class="n">substrate_material</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="s2">&quot;permittivity&quot;</span><span class="p">]</span>
+        <span class="n">vacuum_regions</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;material&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;vacuum&quot;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">sheet_metals</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">extended_region</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;edges&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">extents</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metal_height</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
+            <span class="n">region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">vacuum_region</span> <span class="ow">in</span> <span class="n">vacuum_regions</span><span class="p">:</span>
+                <span class="n">region</span> <span class="o">+=</span> <span class="n">extended_region</span> <span class="o">&amp;</span> <span class="n">vacuum_region</span>
+                <span class="n">vacuum_region</span> <span class="o">-=</span> <span class="n">extended_region</span>
 
-    <span class="n">xsection_simulation</span><span class="o">.</span><span class="n">set_permittivity</span><span class="p">(</span><span class="s2">&quot;substrate_1&quot;</span><span class="p">,</span> <span class="n">substrate_1_permittivity</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">xsection_parameters</span><span class="p">[</span><span class="s2">&quot;face_stack&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="n">substrate_2_permittivity</span> <span class="o">=</span> <span class="n">substrate_1_permittivity</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">substrate_material</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">substrate_2_permittivity</span> <span class="o">=</span> <span class="n">material_dict</span><span class="p">[</span><span class="n">substrate_material</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="s2">&quot;permittivity&quot;</span><span class="p">]</span>
-        <span class="n">xsection_simulation</span><span class="o">.</span><span class="n">set_permittivity</span><span class="p">(</span><span class="s2">&quot;substrate_2&quot;</span><span class="p">,</span> <span class="n">substrate_2_permittivity</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_sim</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">insert_layer</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s2">&quot;edges&quot;</span><span class="p">})</span></div>
 
-    <span class="k">if</span> <span class="n">post_processing_function</span><span class="p">:</span>
-        <span class="n">post_processing_function</span><span class="p">(</span><span class="n">xsection_simulation</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">oxidise_layers_function</span><span class="p">:</span>
-        <span class="n">oxidise_layers_function</span><span class="p">(</span><span class="n">xsection_simulation</span><span class="p">,</span> <span class="n">ma_thickness</span><span class="p">,</span> <span class="n">ms_thickness</span><span class="p">,</span> <span class="n">sa_thickness</span><span class="p">)</span>
+<div class="viewcode-block" id="CutSimulation.get_partition_regions">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cut_simulation.html#kqcircuits.simulations.export.cross_section.cut_simulation.CutSimulation.get_partition_regions">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_partition_regions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return partition regions defined by ``self.region_map``.</span>
 
-    <span class="k">if</span> <span class="n">vertical_cull</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<span class="sd">        Returns:</span>
+<span class="sd">             dictionary containing the layer name suffixes as keys and regions as values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">region_map</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">region_map</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">region_map</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">region_map</span>
+        <span class="n">regions</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">part</span><span class="p">,</span> <span class="n">definitions</span> <span class="ow">in</span> <span class="n">region_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">regions</span><span class="p">[</span><span class="n">part</span><span class="p">]</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">()</span>
 
-        <span class="k">def</span> <span class="nf">_cull_region_vertically</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">layer</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
-            <span class="k">return</span> <span class="n">region</span> <span class="o">&amp;</span> <span class="n">cell_bbox</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="n">xsection_cell</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">definition</span> <span class="ow">in</span> <span class="n">definitions</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">definition</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">):</span>
+                    <span class="n">regions</span><span class="p">[</span><span class="n">part</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">limited_region</span><span class="p">(</span><span class="n">definition</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">definition</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">definition</span><span class="p">):</span>
+                            <span class="n">regions</span><span class="p">[</span><span class="n">part</span><span class="p">]</span> <span class="o">+=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">extents</span><span class="p">()</span>  <span class="c1"># add bboxes of each polygon of data[&quot;region&quot;]</span>
+                            <span class="c1"># The above could be relaxed to regions[part] += data[&quot;region&quot;] if ma_layer was extended</span>
+                            <span class="c1"># from metal to vacuum and not the opposite.</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The region_map term </span><span class="si">{</span><span class="n">definition</span><span class="si">}</span><span class="s2"> is ignored due to unsupported type.&quot;</span><span class="p">)</span>
 
-        <span class="n">_iterate_layers_and_modify_region</span><span class="p">(</span><span class="n">xsection_cell</span><span class="p">,</span> <span class="n">_cull_region_vertically</span><span class="p">)</span>
+            <span class="n">regions</span><span class="p">[</span><span class="n">part</span><span class="p">]</span><span class="o">.</span><span class="n">merge</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">regions</span></div>
 
-    <span class="k">if</span> <span class="n">mer_box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">regions_to_update</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mer_box</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="n">box_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">()</span>
-            <span class="k">for</span> <span class="n">mb</span> <span class="ow">in</span> <span class="n">mer_box</span><span class="p">:</span>
-                <span class="n">box_region</span> <span class="o">+=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">mb</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="n">xsection_cell</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">box_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">mer_box</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="n">xsection_cell</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
 
-        <span class="k">def</span> <span class="nf">_separate_region_in_mer_box</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">layer</span><span class="p">):</span>
-            <span class="n">region_in_box</span> <span class="o">=</span> <span class="n">region</span> <span class="o">&amp;</span> <span class="n">box_region</span>
-            <span class="n">regions_to_update</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layer</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_mer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">region_in_box</span>
-            <span class="k">return</span> <span class="n">region</span> <span class="o">-</span> <span class="n">box_region</span>
+<div class="viewcode-block" id="CutSimulation.apply_partition_regions">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cut_simulation.html#kqcircuits.simulations.export.cross_section.cut_simulation.CutSimulation.apply_partition_regions">[docs]</a>
+    <span class="k">def</span> <span class="nf">apply_partition_regions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regions</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Partition every non-metal layer into regions.</span>
 
-        <span class="n">_iterate_layers_and_modify_region</span><span class="p">(</span><span class="n">xsection_cell</span><span class="p">,</span> <span class="n">_separate_region_in_mer_box</span><span class="p">)</span>
-        <span class="n">vacuum_in_box</span> <span class="o">=</span> <span class="n">box_region</span>
-        <span class="k">for</span> <span class="n">layer</span><span class="p">,</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">regions_to_update</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">vacuum_in_box</span> <span class="o">-=</span> <span class="n">region</span>
-            <span class="n">xsection_cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">xsection_simulation</span><span class="o">.</span><span class="n">get_sim_layer</span><span class="p">(</span><span class="n">layer</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">region</span><span class="p">)</span>
-        <span class="n">xsection_cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">xsection_simulation</span><span class="o">.</span><span class="n">get_sim_layer</span><span class="p">(</span><span class="s2">&quot;vacuum_mer&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">vacuum_in_box</span><span class="p">)</span>
+<span class="sd">        Args:</span>
+<span class="sd">            regions: dictionary containing the layer name suffixes as keys and regions as values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="s2">&quot;excitation&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">for</span> <span class="n">part</span><span class="p">,</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">regions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">insert_layer</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}{</span><span class="n">part</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;region&quot;</span><span class="p">:</span> <span class="n">region</span> <span class="o">&amp;</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]})</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span> <span class="o">-=</span> <span class="n">region</span></div>
 
-    <span class="k">if</span> <span class="n">ma_thickness</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
-        <span class="n">xsection_simulation</span><span class="o">.</span><span class="n">set_permittivity</span><span class="p">(</span><span class="s2">&quot;ma_layer&quot;</span><span class="p">,</span> <span class="n">ma_permittivity</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">ms_thickness</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
-        <span class="n">xsection_simulation</span><span class="o">.</span><span class="n">set_permittivity</span><span class="p">(</span><span class="s2">&quot;ms_layer&quot;</span><span class="p">,</span> <span class="n">ms_permittivity</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">sa_thickness</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
-        <span class="n">xsection_simulation</span><span class="o">.</span><span class="n">set_permittivity</span><span class="p">(</span><span class="s2">&quot;sa_layer&quot;</span><span class="p">,</span> <span class="n">sa_permittivity</span><span class="p">)</span>
-    <span class="n">xsection_simulation</span><span class="o">.</span><span class="n">process_layers</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">xsection_simulation</span>
+
+<div class="viewcode-block" id="CutSimulation.regroup_layers">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cut_simulation.html#kqcircuits.simulations.export.cross_section.cut_simulation.CutSimulation.regroup_layers">[docs]</a>
+    <span class="k">def</span> <span class="nf">regroup_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Group and rename layers such that a layer name doesn&#39;t start other layer name.</span>
+
+<span class="sd">        For example, if there are two source layers &#39;vacuum&#39;, &#39;vacuum_part&#39;, then both are merged into &#39;vacuum&#39; layer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">old_layers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">base_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">old_layers</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">old_layers</span> <span class="k">if</span> <span class="n">n</span> <span class="o">!=</span> <span class="n">k</span><span class="p">)]</span>
+
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">old_layers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">base_name</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">base_names</span> <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">base_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="n">base_name</span><span class="p">][</span><span class="s2">&quot;region&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span>
+                <span class="n">base_wo_region</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="n">base_name</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s2">&quot;region&quot;</span><span class="p">}</span>
+                <span class="n">data_wo_region</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s2">&quot;region&quot;</span><span class="p">}</span>
+                <span class="k">if</span> <span class="n">base_wo_region</span> <span class="o">!=</span> <span class="n">data_wo_region</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Inconsistent layer data for &#39;</span><span class="si">{</span><span class="n">base_name</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">insert_layer</span><span class="p">(</span><span class="n">base_name</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CutSimulation.insert_tls_layers">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cut_simulation.html#kqcircuits.simulations.export.cross_section.cut_simulation.CutSimulation.insert_tls_layers">[docs]</a>
+    <span class="k">def</span> <span class="nf">insert_tls_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Insert TLS interface layers into the model.&quot;&quot;&quot;</span>
+        <span class="n">metals</span><span class="p">,</span> <span class="n">vacuums</span><span class="p">,</span> <span class="n">substrates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_metals_vacuums_substrates</span><span class="p">()</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ma_layer&quot;</span><span class="p">,</span> <span class="s2">&quot;ms_layer&quot;</span><span class="p">,</span> <span class="s2">&quot;sa_layer&quot;</span><span class="p">]</span>
+        <span class="n">sources</span> <span class="o">=</span> <span class="p">[</span><span class="n">vacuums</span><span class="p">,</span> <span class="n">metals</span><span class="p">,</span> <span class="n">vacuums</span><span class="p">]</span>
+        <span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="n">metals</span><span class="p">,</span> <span class="n">substrates</span><span class="p">,</span> <span class="n">substrates</span><span class="p">]</span>
+        <span class="n">interfaces</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sum_region</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">sum_region</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span> <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">sources</span><span class="p">,</span> <span class="n">targets</span><span class="p">)]</span>
+        <span class="n">thickness</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">Simulation</span><span class="o">.</span><span class="n">ith_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tls_layer_thickness</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+        <span class="n">material</span> <span class="o">=</span> <span class="p">[</span><span class="n">Simulation</span><span class="o">.</span><span class="n">ith_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tls_layer_material</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="n">extension</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">thickness</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
+            <span class="n">region</span> <span class="o">=</span> <span class="n">interfaces</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">extended</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">extension</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">sum_region</span><span class="p">(</span><span class="n">targets</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">insert_layer</span><span class="p">(</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">region</span><span class="p">,</span> <span class="n">material</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">subtract_region</span><span class="p">(</span><span class="n">targets</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">region</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CutSimulation.get_metals_vacuums_substrates">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cut_simulation.html#kqcircuits.simulations.export.cross_section.cut_simulation.CutSimulation.get_metals_vacuums_substrates">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_metals_vacuums_substrates</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return layer names for metals, vacuums, and substrates.&quot;&quot;&quot;</span>
+        <span class="n">metals</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="s2">&quot;excitation&quot;</span> <span class="ow">in</span> <span class="n">d</span><span class="p">]</span>
+        <span class="n">vacuums</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;material&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;vacuum&quot;</span><span class="p">]</span>
+        <span class="n">substrates</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="k">if</span> <span class="n">n</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">metals</span> <span class="o">+</span> <span class="n">vacuums</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">metals</span><span class="p">,</span> <span class="n">vacuums</span><span class="p">,</span> <span class="n">substrates</span></div>
+
+
+<div class="viewcode-block" id="CutSimulation.sum_region">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cut_simulation.html#kqcircuits.simulations.export.cross_section.cut_simulation.CutSimulation.sum_region">[docs]</a>
+    <span class="k">def</span> <span class="nf">sum_region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layers</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return union of regions of given layers.&quot;&quot;&quot;</span>
+        <span class="n">region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
+            <span class="n">region</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="n">layer</span><span class="p">][</span><span class="s2">&quot;region&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">region</span></div>
+
+
+<div class="viewcode-block" id="CutSimulation.subtract_region">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cut_simulation.html#kqcircuits.simulations.export.cross_section.cut_simulation.CutSimulation.subtract_region">[docs]</a>
+    <span class="k">def</span> <span class="nf">subtract_region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layers</span><span class="p">,</span> <span class="n">region</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Subtract region from given layers.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="n">layer</span><span class="p">][</span><span class="s2">&quot;region&quot;</span><span class="p">]</span> <span class="o">-=</span> <span class="n">region</span></div>
+
+
+<div class="viewcode-block" id="CutSimulation.get_material_dict">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cut_simulation.html#kqcircuits.simulations.export.cross_section.cut_simulation.CutSimulation.get_material_dict">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_material_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Override CrossSectionSimulation method to combine source simulation and self materials&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">source_sim</span><span class="o">.</span><span class="n">get_material_dict</span><span class="p">(),</span> <span class="o">**</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_material_dict</span><span class="p">()}</span></div>
+
+
+<div class="viewcode-block" id="CutSimulation.get_parameters">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.cross_section.cut_simulation.html#kqcircuits.simulations.export.cross_section.cut_simulation.CutSimulation.get_parameters">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Override CrossSectionSimulation method to combine source simulation and self parameters&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="o">**</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">(),</span>
+            <span class="s2">&quot;source_sim&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_sim</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+            <span class="o">**</span><span class="p">{</span><span class="sa">f</span><span class="s2">&quot;source_</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_sim</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
+        <span class="p">}</span></div>
+</div>
+
 </pre></div>
 
            </div>

@@ -61,7 +61,6 @@ High level annotated picture of KQCircuits repository's different subdirectories
     │   ├── elements
     │   ├── ...
     ├── util                        Utility scripts
-    └── xsection                    XSection process files, recommended to only use in GUI
 
 In the KQCircuits root folder the most important folder for most users is the
 :git_url:`klayout_package` folder, which is also all that is included in the Salt
