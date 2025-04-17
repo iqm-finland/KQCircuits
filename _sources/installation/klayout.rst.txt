@@ -24,9 +24,9 @@ KLayout is an actively maintained project with regular feature updates, bugfixes
 stability improvements. We recommend using the latest version. KQCircuits is automatically
 tested using KLayout versions:
 
-- 0.27.13
 - 0.28.17
-- latest version of 0.29
+- 0.29.12
+- latest version of 0.30
 
 on the following platforms:
 
