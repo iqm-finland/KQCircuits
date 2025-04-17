@@ -27,7 +27,6 @@ Args:
         If given, the script tries to look for cross-section results for EPR correction and groups EPRs by partition
         region names.
 """
-import json
 import os
 import sys
 
@@ -35,18 +34,15 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "util"))
 from post_process_helpers import (  # pylint: disable=wrong-import-position, no-name-in-module
     find_varied_parameters,
     tabulate_into_csv,
+    load_json,
 )
 
 pp_data = {}
 if len(sys.argv) > 1:
-    with open(sys.argv[1], "r", encoding="utf-8") as fp:
-        pp_data = json.load(fp)
+    pp_data = load_json(sys.argv[1])
 
 groups = pp_data.get("groups", [])
 region_corrections = pp_data.get("region_corrections", {})
-deembed_lens = pp_data.get("deembed_lens", [])
-deembed_cross_sections = pp_data.get("deembed_cross_sections", [])
-deembed = deembed_cross_sections and deembed_lens
 
 
 def _get_ith(d: list | tuple | float, i: int):
@@ -60,9 +56,7 @@ def excitation_list(json_data: dict):
 
 
 def get_ind_by_exc(simulation: str, excitation: int):
-    with open(f"{simulation}.json", "r", encoding="utf-8") as f:
-        sim_data = json.load(f)
-
+    sim_data = load_json(f"{simulation}.json")
     excitations = excitation_list(sim_data)
     return excitations.index(excitation) if excitation in excitations else 0
 
@@ -85,9 +79,7 @@ def get_mer_coefficients(simulation: str, region: str, excitation: int):
         return None
 
     cs_name = simulation + "_" + correction_key
-
-    with open(f"{cs_name}_project_results.json", "r", encoding="utf-8") as f:
-        res = json.load(f)
+    res = load_json(f"{cs_name}_project_results.json")
 
     result_ind = get_ind_by_exc(cs_name, excitation)
 
@@ -106,44 +98,68 @@ def get_mer_coefficients(simulation: str, region: str, excitation: int):
     return coefficient
 
 
-def get_deembed_p_dict(simulation: str, region: str, deembed_len: float, total_energy: float, excitation: int):
+def get_deembed_e_dict(simulation: str, region: str, deembed_len: float, excitation: int):
     """
-    Returns the 3D EPRs of a cross-section simulation extruded to having a length `deembed_len` and
+    Returns the 3D energies of a cross-section simulation extruded to having a length `deembed_len` and
     normalized by `total energy`. Can be used to deembed the effect of the region in post-processsings.
 
-    Groups the EPRs according to the global variable `groups`
+    Groups the energies according to the global variable `groups`
 
     Args:
         simulation:   Simulation name
         region:       Name of the partition region
         deembed_len:  Length of the deembedding in micrometers
-        total_energy: Total energy of the 3D simulation
         excitation:   signal excitation for the 3D result
 
     Returns:
-        Dictionary containing the EPRs for each group
+        Dictionary containing the energies for each group
     """
     correction_key = region_corrections.get(region)
     if correction_key is None:
         return None
 
     cs_name = simulation + "_" + correction_key
-
-    with open(f"{cs_name}_project_results.json", "r", encoding="utf-8") as f:
-        res = json.load(f)
+    res = load_json(f"{cs_name}_project_results.json")
 
     result_ind = get_ind_by_exc(cs_name, excitation)
 
     energy_keys = [k for k, _ in res.items() if k.startswith("E_")]
     e_scale = deembed_len * 1e-6  # um scale
     deembed_dict = {
-        f"p_{group}": e_scale
-        * sum(_get_ith(res[k], result_ind) for k in energy_keys if group.lower() in k.lower())
-        / total_energy
+        f"E_{group}": e_scale * sum(_get_ith(res[k], result_ind) for k in energy_keys if group.lower() in k.lower())
         for group in groups
     }
 
     return deembed_dict
+
+
+def get_all_deembed_energies(sim_data):
+    """Gathers deembed energies for all ports with `deembed_len` and `deembed_cross_section` defined
+    and results from corresponding cross-section found by `get_deembed_e_dict`. The returned energy values
+    have a `_deembed` suffix.
+
+    Args:
+        sim_data: contents of the simulation input json file
+    """
+
+    def is_port_excited(original_key, deembed_cs, excitation):
+        """Checks if the port corresponding to deembed_cs is excited in 3D simulation based on layer excitations."""
+        cs_data = load_json(f"{original_key}_{deembed_cs}.json")
+        if cs_data.get("voltage_excitations"):
+            return True
+        return any(v.get("excitation") == excitation for v in cs_data["layers"].values())
+
+    original_key = sim_data["name"]
+    regional_deembed_energies = {}
+    for port in sim_data.get("ports", []):
+        deembed_len, deembed_cs = port.get("deembed_len"), port.get("deembed_cross_section")
+        if deembed_len and deembed_cs:
+            deembed_dict = get_deembed_e_dict(original_key, deembed_cs, deembed_len, excitation)
+            if deembed_dict:
+                port_excited = is_port_excited(original_key, deembed_cs, excitation)
+                for k, v in deembed_dict.items():
+                    regional_deembed_energies[f"{k}_{deembed_cs}_deembed"] = v * port_excited
+    return regional_deembed_energies
 
 
 def get_results_list(results: dict[str, list[float] | float]):
@@ -182,10 +198,8 @@ if result_files:
     # Load result data
     epr_dict = {}
     for i, (original_key, result_file) in enumerate(zip(list(parameter_values.keys()), result_files)):
-        with open(result_file, "r", encoding="utf-8") as f:
-            result_json = json.load(f)
-        with open(f"{original_key}.json", "r", encoding="utf-8") as f:
-            sim_data = json.load(f)
+        result_json = load_json(result_file)
+        sim_data = load_json(f"{original_key}.json")
 
         results_list = get_results_list(result_json)
         if not results_list:
@@ -236,22 +250,31 @@ if result_files:
                     "Boundary energies will be ignored in EPR",
                 )
 
-            total_energy = sum(energy.values())
-            if total_energy == 0.0:
-                print(f'Total energy 0 for simulation "{key}". No EPRs will be written.')
+            deembed_energy = get_all_deembed_energies(sim_data)
+            total_deembed_energy = sum(deembed_energy.values())
+
+            total_energy = sum(energy.values()) - total_deembed_energy
+            if total_energy <= 0.0:
+                print(f'Total energy {total_energy} for simulation "{key}". No EPRs will be written.')
                 continue
+
+            epr_dict[key] = {}
+            epr_dict[key]["E_total"] = total_energy
+            if deembed_energy:
+                epr_dict[key]["E_total_deembed"] = total_deembed_energy
+                epr_dict[key].update({k.replace("E_", "p_", 1): v / total_energy for k, v in deembed_energy.items()})
 
             if not groups:
                 # calculate EPR corresponding to each energy integral
-                epr_dict[key] = {f"p_{k}": v / total_energy for k, v in energy.items()}
+                epr_dict[key].update({f"p_{k}": v / total_energy for k, v in energy.items()})
             elif not region_corrections:
                 # use EPR groups to combine layers
-                epr_dict[key] = {
-                    f"p_{group}": sum(v for k, v in energy.items() if group in k) / total_energy for group in groups
-                }
+                epr_dict[key].update(
+                    {f"p_{group}": sum(v for k, v in energy.items() if group in k) / total_energy for group in groups}
+                )
+
             else:
                 # calculate corrected EPRs and distinguish by partition regions
-                epr_dict[key] = {}
                 for reg, corr in region_corrections.items():
                     reg_energy = {k: v for k, v in energy.items() if k.endswith(reg)}
 
@@ -284,35 +307,12 @@ if result_files:
 
                 # total EPR by groups
                 epr_dict[key].update(
-                    {f"p_{group}": sum(v for k, v in epr_dict[key].items() if group in k) for group in groups}
+                    {
+                        f"p_{group}": sum(
+                            (-v if k.endswith("_deembed") else v) for k, v in epr_dict[key].items() if group in k
+                        )
+                        for group in groups
+                    }
                 )
-            if deembed:
-
-                def is_port_excited(original_key, deembed_cs, excitation):
-                    with open(f"{original_key}_{deembed_cs}.json", "r", encoding="utf-8") as f:
-                        cs_data = json.load(f)
-                    if cs_data.get("voltage_excitations"):
-                        return True
-                    return any(v.get("excitation") == excitation for v in cs_data["layers"].values())
-
-                sim_name = sim_data["simulation_name"]
-                if sim_name not in deembed_lens:
-                    print("`deembed_lens` not found in correction.json, something might not work correctly!")
-                if sim_name not in deembed_cross_sections:
-                    print("`deembed_cross_sections` not found in correction.json, something might not work correctly!")
-                deembed_len_list = deembed_lens[sim_name]
-                deembed_cross_section_list = deembed_cross_sections[sim_name]
-                for deembed_len, deembed_cs in zip(deembed_len_list, deembed_cross_section_list):
-                    deembed_dict = get_deembed_p_dict(original_key, deembed_cs, deembed_len, total_energy, excitation)
-                    port_excited = is_port_excited(original_key, deembed_cs, excitation)
-                    for k, v in deembed_dict.items():
-                        epr_dict[key][f"deembed_{k}_{deembed_cs}"] = v * port_excited
-
-                for group in groups:
-                    epr_dict[key][f"deembed_p_{group}"] = sum(
-                        v for k, v in epr_dict[key].items() if k.startswith(f"deembed_p_{group}")
-                    )
-
-            epr_dict[key]["E_total"] = total_energy
 
     tabulate_into_csv(f"{os.path.basename(os.path.abspath(path))}_epr.csv", epr_dict, parameters, parameter_values)

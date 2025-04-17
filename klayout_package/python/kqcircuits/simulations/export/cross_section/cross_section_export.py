@@ -35,6 +35,7 @@ def create_cross_sections_from_simulations(
     mer_box: pya.DBox | list[pya.DBox] | None = None,
     magnification_order: int = 0,
     layout: pya.Layout | None = None,
+    sim_names: list[str] | None = None,
     sim_class: type[CutSimulation] = CutSimulation,
     **kwargs,
 ) -> list[CutSimulation]:
@@ -61,6 +62,7 @@ def create_cross_sections_from_simulations(
             2 = 100x magnification with 1e-5 dbu etc
             Consider setting non-zero value when using oxide layers with < 1e-3 layer thickness
         layout: predefined layout for the cross-section simulation. If not set, will create new layout.
+        sim_names: Names for the created cross-section simulations. If not given, names of parent simulations are used
         sim_class: CutSimulation or its subclass used for processing the cross-section layers
         kwargs: Additional arguments passed to sim_class
 
@@ -71,9 +73,14 @@ def create_cross_sections_from_simulations(
         cuts = [cuts] * len(simulations)
     cuts = [tuple(c if isinstance(c, pya.DPoint) else c.to_p() for c in cut) for cut in cuts]
     if len(simulations) != len(cuts):
-        raise ValueError("Number of cuts did not match the number of simulations")
+        if len(simulations) != 1:
+            raise ValueError("Number of cuts did not match the number of simulations")
+        simulations = simulations * len(cuts)
+
     if not layout:
         layout = pya.Layout()
+
+    sim_names = (sim_names or []) + [None] * (len(cuts) - len(sim_names or []))
 
     # Increase database unit accuracy in layout if bigger magnification_order set
     if magnification_order > 0:
@@ -83,7 +90,7 @@ def create_cross_sections_from_simulations(
     return [
         sim_class(
             layout,
-            name=simulation.name,
+            name=(name or simulation.name),
             source_sim=simulation,
             cut_start=cut[0],
             cut_end=cut[1],
@@ -99,7 +106,7 @@ def create_cross_sections_from_simulations(
             region_map={} if mer_box is None else {"_mer": mer_box if isinstance(mer_box, list) else [mer_box]},
             **kwargs,
         )
-        for simulation, cut in zip(simulations, cuts)
+        for simulation, cut, name in zip(simulations, cuts, sim_names)
     ]
 
 
@@ -133,7 +140,9 @@ def visualise_cross_section_cut_on_original_layout(
         cuts = [cuts] * len(simulations)
     cuts = [tuple(c if isinstance(c, pya.DPoint) else c.to_p() for c in cut) for cut in cuts]
     if len(simulations) != len(cuts):
-        raise ValueError("Number of cuts did not match the number of simulations")
+        if len(simulations) != 1:
+            raise ValueError("Number of cuts did not match the number of simulations")
+        simulations = simulations * len(cuts)
     for simulation, cut in zip(simulations, cuts):
         cut_length = (cut[1] - cut[0]).length()
         marker_path = pya.DPath(cut, cut_length * width_ratio).to_itype(simulation.layout.dbu)

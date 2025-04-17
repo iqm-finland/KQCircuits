@@ -435,7 +435,7 @@ def set_meshing_options(mesh_field_ids: list[int], max_size: float, n_threads: i
     gmsh.option.setNumber("Mesh.MeshSizeFromCurvature", 0)
     gmsh.option.setNumber("Mesh.Algorithm", 5)
     gmsh.option.setNumber("Mesh.Algorithm3D", 1)  # 1: Delaunay, 10: HXT
-    gmsh.option.setNumber("Mesh.ToleranceInitialDelaunay", 1e-14)
+    gmsh.option.setNumber("Mesh.ToleranceInitialDelaunay", 1e-16)
     gmsh.option.setNumber("General.NumThreads", n_threads)
     gmsh.option.setNumber("Mesh.MaxNumThreads1D", n_threads)
     gmsh.option.setNumber("Mesh.MaxNumThreads2D", n_threads)

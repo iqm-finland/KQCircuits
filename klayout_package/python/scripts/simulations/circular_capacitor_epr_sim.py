@@ -96,8 +96,6 @@ sim_parameters = {
 
 solution = ElmerEPR3DSolution(
     mesh_size={
-        # Note that the signal name in the mesh size definition doesn't match the one in oas/simulation layers
-        # This is intended and applies the mesh refinement on all signals on the face regardless of their layer
         "1t1_gap&1t1_signal_1": [2.0, 2.0, 0.5],
         "1t1_gap&1t1_signal_2": [2.0, 2.0, 0.5],
         "1t1_gap&1t1_ground": [2.0, 2.0, 0.5],

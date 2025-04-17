@@ -19,6 +19,12 @@ import csv
 import json
 
 
+def load_json(filename):
+    """Helper function to load the contents of a json file `filename`"""
+    with open(filename, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
 def find_varied_parameters(json_files):
     """Finds the parameters that vary between the definitions in the json files.
 
@@ -36,8 +42,7 @@ def find_varied_parameters(json_files):
     nominal_parameters = {}
     parameter_dict = {}
     for key, json_file in zip(keys, json_files):
-        with open(json_file, "r", encoding="utf-8") as f:
-            definition = json.load(f)
+        definition = load_json(json_file)
         parameter_dict[key] = definition["parameters"]
         nominal_parameters.update(parameter_dict[key])
 

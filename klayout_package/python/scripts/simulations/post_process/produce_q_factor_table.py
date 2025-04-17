@@ -22,7 +22,6 @@ Args:
     sys.argv[1]: parameter file name, where the file includes loss tangents for different layers
 
 """
-import json
 import os
 import sys
 
@@ -30,10 +29,10 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "util"))
 from post_process_helpers import (  # pylint: disable=wrong-import-position, no-name-in-module
     find_varied_parameters,
     tabulate_into_csv,
+    load_json,
 )
 
-with open(sys.argv[1], "r", encoding="utf-8") as fp:
-    loss_tangents = json.load(fp)
+loss_tangents = load_json(sys.argv[1])
 
 # Find data files
 path = os.path.curdir
@@ -46,8 +45,7 @@ if result_files:
     # Load result data
     q = {}
     for key, result_file in zip(parameter_values.keys(), result_files):
-        with open(result_file, "r", encoding="utf-8") as f:
-            result = json.load(f)
+        result = load_json(result_file)
 
         energy = {k[2:]: v for k, v in result.items() if k.startswith("E_")}
         total_energy = result.get("total_energy", sum(energy.values()))

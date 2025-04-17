@@ -24,7 +24,6 @@ Produces table of runtimes for gmsh and Elmer and the number of mesh tetrahedron
 import re
 import os
 import sys
-import json
 import logging
 from pathlib import Path
 
@@ -32,6 +31,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "util"))
 from post_process_helpers import (  # pylint: disable=wrong-import-position, no-name-in-module
     find_varied_parameters,
     tabulate_into_csv,
+    load_json,
 )
 
 
@@ -101,8 +101,7 @@ def _load_gmsh_data(path: Path, mesh_name: str) -> dict:
 
 def _load_workflow_data(definition_file: Path) -> dict:
     """Load relevant parts of workflow dict"""
-    with open(definition_file, "r", encoding="utf-8") as f:
-        json_data = json.load(f)
+    json_data = load_json(definition_file)
     workflow = json_data.get("workflow", {})
     workflow = workflow["sbatch_parameters"] if "sbatch_parameters" in workflow else workflow
     return {key: workflow[key] for key in ("elmer_n_processes", "elmer_n_threads", "gmsh_n_threads")}
@@ -120,9 +119,8 @@ if names:
     res = {}
     for key, name, definition_file in zip(parameter_values.keys(), names, definition_files):
         workflow_data = _load_workflow_data(definition_file)
-        with open(definition_file, "r", encoding="utf-8") as f:
-            json_data = json.load(f)
-            mesh_name = json_data["mesh_name"]
+        json_data = load_json(definition_file)
+        mesh_name = json_data["mesh_name"]
 
         res[key] = {
             **workflow_data,

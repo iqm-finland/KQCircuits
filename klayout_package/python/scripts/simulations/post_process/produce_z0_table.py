@@ -20,7 +20,6 @@ Produce table containing waveguide parameters Cs, Ls, and Z0 terms from cross se
 """
 
 import os
-import json
 import sys
 from math import sqrt
 
@@ -28,6 +27,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "util"))
 from post_process_helpers import (  # pylint: disable=wrong-import-position, no-name-in-module
     find_varied_parameters,
     tabulate_into_csv,
+    load_json,
 )
 
 # Find data files
@@ -41,8 +41,7 @@ if result_files:
     # Load result data
     matrix = {}
     for key, result_file in zip(parameter_values.keys(), result_files):
-        with open(result_file, "r", encoding="utf-8") as f:
-            result = json.load(f)
+        result = load_json(result_file)
         cs = result.get("Cs")
         ls = result.get("Ls")
         if not (cs and ls):

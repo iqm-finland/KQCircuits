@@ -95,8 +95,6 @@ def get_epr_correction_simulations(
     Returns:
         tuple containing list of correction simulations and list of post_process objects
     """
-    deembed_cross_sections = {}
-    deembed_lens = {}
     correction_simulations = []
     correction_layout = pya.Layout()
     simulations = [sim if isinstance(sim, Sequence) else (sim, None) for sim in simulations]
@@ -170,22 +168,10 @@ def get_epr_correction_simulations(
 
             visualise_cross_section_cut_on_original_layout([source_sim], cords_list, cut_label=key, width_ratio=0.03)
 
-        deembed_cs_cur = [getattr(port, "deembed_cross_section", None) for port in source_sim.ports]
-        deembed_lens_cur = [getattr(port, "deembed_len", None) for port in source_sim.ports]
-
-        deembed_tuples = [(cs, l) for cs, l in zip(deembed_cs_cur, deembed_lens_cur) if (cs and l)]
-
-        if deembed_tuples:
-            deembed_cs_cur, deembed_lens_cur = zip(*deembed_tuples)
-            deembed_cross_sections[source_sim.name] = list(deembed_cs_cur)
-            deembed_lens[source_sim.name] = list(deembed_lens_cur)
-
     post_process = [
         PostProcess(
             "produce_epr_table.py",
             data_file_prefix="correction",
-            deembed_cross_sections=deembed_cross_sections,
-            deembed_lens=deembed_lens,
             sheet_approximations={
                 "MA": {"thickness": ma_thickness * 1e-6, "eps_r": ma_eps_r},
                 "MS": {"thickness": ms_thickness * 1e-6, "eps_r": ms_eps_r},
