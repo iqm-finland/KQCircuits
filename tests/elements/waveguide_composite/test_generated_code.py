@@ -17,17 +17,12 @@
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 import os
 
-import pytest
-
-from kqcircuits.pya_resolver import pya, lay
+from kqcircuits.pya_resolver import pya
 from kqcircuits.util.layout_to_code import convert_cells_to_code
 from kqcircuits.defaults import SCRIPTS_PATH
 
 
 def test_generated_code_of_waveguide_composite():
-    if not hasattr(lay, "LayoutView"):
-        pytest.xfail("Stand-alone mask not supported on klayout < 0.28")
-
     macro = os.path.join(SCRIPTS_PATH, "macros/generate/test_waveguide_composite.lym")
     with open(macro, "r", encoding="utf-8") as fp:
         xml = fp.read()

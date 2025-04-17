@@ -15,7 +15,7 @@ test:
   stage: test
   parallel:
     matrix:
-      - KLAYOUT_VERSION: [klayout27, klayout28, latest]
+      - KLAYOUT_VERSION: [klayout28, klayout29, latest]
   script:
     - if [ $KLAYOUT_VERSION != "latest" ]; then pip install --force-reinstall -r "ci/requirements/${KLAYOUT_VERSION}-requirements.txt"; fi
     - tox -e matrix
@@ -186,8 +186,8 @@ deploy_image:
       --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
       --cache-repo=$CI_REGISTRY_IMAGE/cache
       --cache=true
-      --build-arg KL_FILE=klayout_0.29.0-1_amd64.deb
-      --build-arg KL_HASH=421df42661a3d795b534da5048261044
+      --build-arg KL_FILE=klayout_0.30.0-1_amd64.deb
+      --build-arg KL_HASH=eddc6a1f2a3865e71ed2c56e61c7e96a
       $LATEST
   only:
     - master
@@ -206,8 +206,8 @@ test_image:
       --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
       --cache-repo=$CI_REGISTRY_IMAGE/cache
       --cache=true
-      --build-arg KL_FILE=klayout_0.29.0-1_amd64.deb
-      --build-arg KL_HASH=421df42661a3d795b534da5048261044
+      --build-arg KL_FILE=klayout_0.30.0-1_amd64.deb
+      --build-arg KL_HASH=eddc6a1f2a3865e71ed2c56e61c7e96a
       --no-push
   only:
     refs:

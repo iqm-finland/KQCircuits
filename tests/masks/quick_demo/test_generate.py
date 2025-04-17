@@ -26,9 +26,6 @@ from kqcircuits import defaults
 
 @pytest.mark.slow
 def test_generate_quick_demo(tmp_path):
-    if not hasattr(lay, "LayoutView"):
-        pytest.xfail("Stand-alone mask not supported on klayout < 0.28")
-
     _run_mask("masks/quick_demo.py", tmp_path)
 
     mask_path = tmp_path.joinpath("Quick_v1/Quick_v1-1t1")

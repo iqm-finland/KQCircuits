@@ -42,9 +42,6 @@ def get_layer_color(layout_view, layer_name):
 
 def test_get_pixels_outside_chip_area_is_white(klayout_view_with_chip):
     """Sample an area _outside_ the chip area, so we know there is no geometry. We expect the background color."""
-    if not hasattr(lay, "LayoutView"):
-        pytest.xfail("get_pixels is not supported on klayout < 0.28")
-
     image = klayout_view_with_chip.get_pixels(box=pya.DBox(-100, -100, 0, 0), width=100, height=100)
     assert image.pixel(50, 50) == 0xFFFFFFFF
 
@@ -52,9 +49,6 @@ def test_get_pixels_outside_chip_area_is_white(klayout_view_with_chip):
 def test_get_pixels_single_layer_matches_layer_color(klayout_view_with_chip):
     """Sample an area in the chip border.
     This area contains the chip frame, so we expect the color of base_metal_gap_wo_grid."""
-    if not hasattr(lay, "LayoutView"):
-        pytest.xfail("get_pixels is not supported on klayout < 0.28")
-
     image = klayout_view_with_chip.get_pixels(
         box=pya.DBox(0, 0, 100, 100), width=100, height=100, layers_set=["1t1_base_metal_gap_wo_grid"]
     )
@@ -64,17 +58,11 @@ def test_get_pixels_single_layer_matches_layer_color(klayout_view_with_chip):
 def test_get_pixels_no_layers_is_white(klayout_view_with_chip):
     """Sample an area in the chip border, which contains geometry as proven by the preceding tests.
     We set the layer list to empty, so we expect nothing is drawn and we get the background color."""
-    if not hasattr(lay, "LayoutView"):
-        pytest.xfail("get_pixels is not supported on klayout < 0.28")
-
     image = klayout_view_with_chip.get_pixels(box=pya.DBox(0, 0, 100, 100), width=100, height=100, layers_set=[])
     assert image.pixel(50, 50) == 0xFFFFFFFF
 
 
 def test_get_pixels_restores_visibility_state(klayout_view_with_chip):
-    if not hasattr(lay, "LayoutView"):
-        pytest.xfail("get_pixels is not supported on klayout < 0.28")
-
     view = klayout_view_with_chip
 
     # Set up some unusual view state
@@ -108,9 +96,6 @@ def test_get_pixels_restores_visibility_state(klayout_view_with_chip):
 
 
 def test_get_pixels_is_equal_to_export_bitmap(klayout_view_with_chip, tmp_path):
-    if not hasattr(lay, "LayoutView"):
-        pytest.xfail("get_pixels is not supported on klayout < 0.28")
-
     view = klayout_view_with_chip
 
     w = 100

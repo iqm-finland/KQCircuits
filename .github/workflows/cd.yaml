@@ -13,8 +13,8 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  KL_FILE: klayout_0.29.0-1_amd64.deb
-  KL_HASH: 421df42661a3d795b534da5048261044
+  KL_FILE: klayout_0.30.0-1_amd64.deb
+  KL_HASH: eddc6a1f2a3865e71ed2c56e61c7e96a
 
 jobs:
   build-and-push-docker:
