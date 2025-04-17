@@ -13,12 +13,14 @@ kqcircuits.util
    kqcircuits.util.defaults_helper
    kqcircuits.util.dependencies
    kqcircuits.util.edit_node_plugin
+   kqcircuits.util.error_on_cell
    kqcircuits.util.export_helper
    kqcircuits.util.geometry_helper
    kqcircuits.util.geometry_json_encoder
    kqcircuits.util.groundgrid
    kqcircuits.util.gui_helper
    kqcircuits.util.import_helper
+   kqcircuits.util.instance_hierarchy_helpers
    kqcircuits.util.label
    kqcircuits.util.label_polygons
    kqcircuits.util.layout_to_code

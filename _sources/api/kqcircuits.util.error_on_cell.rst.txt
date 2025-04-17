@@ -1,0 +1,12 @@
+:github_url: hide
+
+kqcircuits.util.error\_on\_cell
+===============================
+
+.. automodule:: kqcircuits.util.error_on_cell
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.util.error_on_cell
+.. image:: ../pcell_images/kqcircuits.util.error_on_cell.png

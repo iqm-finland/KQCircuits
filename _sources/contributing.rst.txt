@@ -8,7 +8,7 @@ Contributing
 
 Contributions to KQC are welcome from the community. Contributors are expected to accept IQM
 Individual Contributor License Agreement by filling `a form at IQM website
-<https://www.meetiqm.com/technology/iqm-kqcircuits#iqm-contributor-license-agreement>`__.
+<https://www.meetiqm.com/technology/iqm-kqcircuits/iqm-individual-contributor-license-agreement/>`__.
 
 IQM developers will carefully review, approve and merge your PR. We use fast-forward merge strategy
 to maintain a linear history. Please organize your code into a small number of commits with
