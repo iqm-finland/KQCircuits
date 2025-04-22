@@ -29,6 +29,7 @@ from kqcircuits.simulations.export.elmer.elmer_solution import (
     ElmerVectorHelmholtzSolution,
     ElmerCapacitanceSolution,
     ElmerCrossSectionSolution,
+    ElmerEPR3DSolution,
 )
 
 
@@ -46,6 +47,8 @@ def validate_simulation(simulation, solution):
     has_edgeport_when_forbidden(simulation, solution)
     flux_integration_layer_exists_if_needed(simulation, solution)
     london_penetration_depth_with_ansys(simulation, solution)
+    check_partition_region_naming(simulation, solution)
+    check_elmer_3d_epr_settings(simulation, solution)
 
 
 def simulation_and_solution_types_match(simulation, solution):
@@ -160,6 +163,58 @@ def flux_integration_layer_exists_if_needed(simulation, solution):
                 f"Simulation '{sim_name}' has 'integrate_magnetic_flux = True' "
                 + "but the integration layer is missing.",
                 validation_type=flux_integration_layer_exists_if_needed.__name__,
+            )
+
+
+def check_partition_region_naming(simulation, solution):
+    """Validation check: Ensures that partition region names do not end with each other.
+
+    Also checks that region names don't contain any of the common EPR groups.
+    """
+
+    is_3d_simulation = isinstance(simulation, Simulation)
+    integrate_energies = isinstance(solution, ElmerEPR3DSolution) or getattr(solution, "integrate_energies", False)
+
+    if is_3d_simulation and integrate_energies:
+        common_groups = ["ma", "ms", "sa", "substrate", "vacuum"]
+        regions = [p.name.lower() for p in simulation.get_partition_regions()]
+        for i, r1 in enumerate(regions):
+            for g in common_groups:
+                if g in r1:
+                    raise ValidateSimError(
+                        f'Partition region names can not contain the common EPR group names ("{g}" in "{r1}")',
+                        validation_type=check_partition_region_naming.__name__,
+                    )
+            for j, r2 in enumerate(regions):
+                if i != j and r1.endswith(r2):
+                    raise ValidateSimError(
+                        f'Partition region names can not be suffixes of each other ("{r1}" ends with "{r2}")',
+                        validation_type=check_partition_region_naming.__name__,
+                    )
+
+
+def check_elmer_3d_epr_settings(simulation, solution):
+    """Validation check: Ensures that non-zero metal thickness and `detach_tls_sheets_from_body=False` are used
+    with `ElmerEPR3DSolution`"""
+    if isinstance(solution, ElmerEPR3DSolution):
+
+        def recursive_all(l, condition):
+            if not isinstance(l, list):
+                return condition(l)
+            else:
+                return all((recursive_all(e, condition) for e in l))
+
+        if simulation.tls_sheet_approximation and simulation.detach_tls_sheets_from_body:
+            raise ValidateSimError(
+                "ElmerEPR3DSolution requires simulation parameter `detach_tls_sheets_from_body` to be set False",
+                validation_type=check_elmer_3d_epr_settings.__name__,
+            )
+
+        m = simulation.metal_height
+        if not recursive_all(m, lambda x: x > 0):
+            raise ValidateSimError(
+                f"ElmerEPR3DSolution requires non-zero `metal_height` to be used (found: {m})",
+                validation_type=check_elmer_3d_epr_settings.__name__,
             )
 
 

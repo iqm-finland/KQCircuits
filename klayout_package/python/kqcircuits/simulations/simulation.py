@@ -895,8 +895,11 @@ class Simulation:
         self.split_metal_layers_by_excitation()
         self.produce_layers(parts)
 
-        # Visualise parititon regions
         for part in parts:
+            # Warn of empty partition regions
+            if not any(name.endswith(part.name) for name in self.layers):
+                logging.warning(f'Partition region "{part.name}" is empty!')
+            # Visualise partition regions
             if part.visualise:
                 self.visualise_region(part.region, part.name, f"part_reg_{part.name}")
 

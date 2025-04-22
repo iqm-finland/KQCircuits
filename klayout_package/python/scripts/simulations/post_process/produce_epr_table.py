@@ -253,7 +253,7 @@ if result_files:
                 # calculate corrected EPRs and distinguish by partition regions
                 epr_dict[key] = {}
                 for reg, corr in region_corrections.items():
-                    reg_energy = {k: v for k, v in energy.items() if reg in k}
+                    reg_energy = {k: v for k, v in energy.items() if k.endswith(reg)}
 
                     coefficients = get_mer_coefficients(original_key, reg, excitation)
                     if coefficients is None:
@@ -272,7 +272,9 @@ if result_files:
                         )
 
                 # distinguish regions not included in region_corrections with 'default' key
-                def_energy = {k: v for k, v in energy.items() if all(reg not in k for reg in region_corrections.keys())}
+                def_energy = {
+                    k: v for k, v in energy.items() if all(not k.endswith(reg) for reg in region_corrections.keys())
+                }
                 epr_dict[key].update(
                     {
                         f"p_{group}_default": sum(v for k, v in def_energy.items() if group in k) / total_energy
