@@ -367,8 +367,10 @@ def set_mesh_size(
             if sampling is None:
                 bbox = gmsh.model.occ.getBoundingBox(*dim_tag)
                 bbox_diam = coord_dist(bbox[0:3], bbox[3:6])  # diameter of bounding box
-                sampling = np.ceil(1.5 * bbox_diam / min_mesh_size)
-            gmsh.model.mesh.field.setNumber(tag_distance_field, "Sampling", max(3, sampling))
+                final_sampling = np.ceil(1.5 * bbox_diam / min_mesh_size)
+            else:
+                final_sampling = sampling
+            gmsh.model.mesh.field.setNumber(tag_distance_field, "Sampling", max(3, final_sampling))
 
         mesh_field_id = gmsh.model.mesh.field.add("Threshold")
         gmsh.model.mesh.field.setNumber(mesh_field_id, "InField", tag_distance_field)
