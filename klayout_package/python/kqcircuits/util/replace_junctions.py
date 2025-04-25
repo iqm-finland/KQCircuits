@@ -25,6 +25,8 @@ See scripts/macros/export/export_tuned_junctions.lym for a use case of these fun
 from os import path
 from typing import Dict, List
 import logging
+from kqcircuits.defaults import default_layers
+from kqcircuits.elements.element import get_refpoints
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.load_save_layout import load_layout, save_layout
 from kqcircuits.junctions import junction_type_choices
@@ -166,6 +168,38 @@ def _halt_if_missing_junction_parameters(junction_schema_errors, is_pcell):
         raise error
 
 
+def _transformation_for_junction_face(top_cell: pya.Cell, junction_face_ids: list[str]) -> pya.DCplxTrans:
+    """Returns chip level transformation to apply to junctions and any other layout
+    exported with the junctions. Relies on orientation of corner markers to determine
+    whether chip geometry should be mirrored or not.
+
+    Args:
+        top_cell: Main chip cell containing the junctions
+        junction_face_ids: ``face_ids`` value of some junction,
+            assumed that all junctions exist on same face
+
+    Returns:
+        pya.DCplxTrans to apply to every shape in the chip
+    """
+    layout = top_cell.layout()
+    bbox = None
+    # Pick largest chip frame
+    for l in layout.layer_infos():
+        if l.name.endswith("_base_metal_gap_wo_grid") or l.name.endswith("*base*metal*gap*wo*grid"):
+            bb = top_cell.dbbox_per_layer(layout.layer(l))
+            if not bbox or bbox.width() < bb.width():
+                bbox = bb
+    refpoints = get_refpoints(layout.layer(default_layers["refpoints"]), top_cell)
+    face = junction_face_ids[0]
+    chip_is_mirrored = refpoints[f"{face}_marker_se"].x < refpoints[f"{face}_marker_sw"].x
+    if chip_is_mirrored:
+        # Mirror by Y-axis = mirror by X-axis * rotate 180 degrees
+        # Then need to shift the chip to the right by chip width
+        return pya.DCplxTrans(pya.DTrans(2, True, bbox.width(), 0))
+    # Chip not mirrored, return identity transformation
+    return pya.DCplxTrans()
+
+
 def extract_junctions(top_cell: pya.Cell, tuned_junction_parameters: Dict) -> List[JunctionEntry]:
     """Extracts all junction elements placed in the `top_cell`.
     Junction parameters are tuned according to `tuned_junction_parameters` dict.
@@ -271,6 +305,12 @@ def extract_junctions(top_cell: pya.Cell, tuned_junction_parameters: Dict) -> Li
 
     for i in top_cell.each_inst():
         recursive_junction_search(i, None, i.dcplx_trans)
+    # Need to know face of junctions before performing chip specific transformation,
+    # because we need to know for which face we need to perform the marker position test
+    if found_junctions:
+        chip_trans = _transformation_for_junction_face(top_cell, found_junctions[0].parameters["face_ids"])
+        for jj in found_junctions:
+            jj.trans = chip_trans * jj.trans
     _check_junction_names_unique(found_junctions)
     _print_surplus_junction_parameters(junction_schema_errors)
     _halt_if_missing_junction_parameters(junction_schema_errors, is_pcell)
@@ -367,7 +407,15 @@ def copy_one_layer_of_cell(
         logging.exception(error_text, exc_info=error)
         raise error
     layer = layers[0]
-    save_layout(write_path, layout, [top_cell], [layer])
+    trans = _transformation_for_junction_face(top_cell, [face])
+    # Copy layout so when we transform, orignal layout is unaffected
+    layout_out = layout.dup()
+    # Remove unneeded layers to save time on transformation
+    for l in layout_out.layer_infos():
+        if l.name != layer.name:
+            layout_out.clear_layer(layout_out.layer(l))
+    layout_out.transform(trans)
+    save_layout(write_path, layout_out, [top_cell], [layer])
 
 
 def replace_squids(cell, junction_type, parameter_name, parameter_start, parameter_step, parameter_end=None):
