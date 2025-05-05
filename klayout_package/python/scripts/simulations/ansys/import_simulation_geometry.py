@@ -142,7 +142,7 @@ for lname, ldata in layers.items():
     thickness = ldata.get("thickness", 0.0)
     if "layer" in ldata:
         # Get imported objects
-        objects[lname] = oEditor.GetMatchedObjectName(lname + "_*")
+        objects[lname] = [n for n in oEditor.GetMatchedObjectName(lname + "_*") if n[len(lname) + 1 :].isdigit()]
         move_vertically(oEditor, objects[lname], z, units)
         thicken_sheet(oEditor, objects[lname], thickness, units)
     else:

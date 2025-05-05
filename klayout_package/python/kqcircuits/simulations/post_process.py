@@ -24,12 +24,12 @@ class PostProcess:
 
     def __init__(
         self,
-        script,
-        command="python",
-        arguments="",
-        folder="scripts",
-        repeat_for_each=False,
-        data_file_prefix=None,
+        script: str,
+        command: str = "python",
+        arguments: str = "",
+        folder: str = "scripts",
+        repeat_for_each: bool = False,
+        data_file_prefix: str | None = None,
         **data,
     ):
         """
@@ -51,12 +51,12 @@ class PostProcess:
         self.data_file_prefix = data_file_prefix
         self.data = data
 
-    def get_command_line(self, path, json_filenames):
-        """Saves the data into file if needed and returns the command line to execute the post-processing script.
+    def get_command_line(self, path: Path, json_filenames: list[str | Path]) -> str:
+        """Saves the data into a file if needed and returns the command line to execute the post-processing script.
 
         Args:
             path: simulation folder path
-            json_filenames: list of paths to simulation json files
+            json_filenames: list of paths to simulation JSON files
         """
         str_args = self.arguments
         if self.data:

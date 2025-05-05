@@ -105,7 +105,7 @@ scale(oEditor, oEditor.GetObjectsInGroup("Sheets"), data["gds_scaling"])
 # Get imported objects
 objects = {}
 for lname, ldata in layers.items():
-    objects[lname] = oEditor.GetMatchedObjectName(lname + "_*")
+    objects[lname] = [n for n in oEditor.GetMatchedObjectName(lname + "_*") if n[len(lname) + 1 :].isdigit()]
     material = ldata["material"]
     set_material(oEditor, objects[lname], material)
     set_color(oEditor, objects[lname], *color_by_material(material, material_dict))

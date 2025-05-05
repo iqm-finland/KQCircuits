@@ -19,50 +19,46 @@
 from kqcircuits.pya_resolver import pya
 
 
-def get_list_of_two(dims):
-    """Returns list of two terms when 'dims' is given as a scalar or list."""
+def get_list_of_two(dims: list[float | None] | float | None) -> list[float | None]:
+    """Returns a list of two terms when 'dims' is given as a scalar or list."""
     if isinstance(dims, list):
         return [dims[0], dims[1]]
     return [dims, dims]
 
 
 class PartitionRegion:
-    """Class to enable partitioning of simulation geometry into sub-regions"""
+    """Class to enable partitioning of simulation geometry into subregions"""
 
     def __init__(
         self,
-        name="part",
-        region=None,
-        z=None,
-        face=None,
-        vertical_dimensions=None,
-        metal_edge_dimensions=None,
-        visualise=False,
+        name: str = "part",
+        region: pya.DBox | pya.DPolygon | list[pya.DBox] | list[pya.DPolygon] | pya.Region | None = None,
+        z: list[float | None] | float | None = None,
+        face: str | None = None,
+        vertical_dimensions: list[float | None] | float | None = None,
+        metal_edge_dimensions: list[float | None] | float | None = None,
+        visualise: bool = False,
     ):
         """
         Args:
-            name: Suffix of the partition layers. Must not end with a number.
-            region: Area to which the partition region is limited. Can be given as pya.DBox, pya.DPolygon, or list of
-                those. Accepts also pya.Region if called from custom Simulation.get_partition_regions function.
-                Use None to cover full domain.
-            z: Lower and upper bound for the partition region as scalar or list. Use None to cover full height.
+            name: Suffix of the partition layers.
+            region: Area to which the partition region is limited. Can be given as pya.DBox, pya.DPolygon, or a list of
+                those. Accepts also pya.Region if called from a custom Simulation.get_partition_regions function.
+                Use None to cover the full domain.
+            z: Lower and upper bound for the partition region as scalar or list. Use None to cover the full height.
             face: The face name to which the partition region is applied. If this is used, the vertical_dimensions
                 and metal_edge_dimensions are applied.
             vertical_dimensions: Vertical dimensions of the partition region on face as scalar or list. The terms in the
                 list correspond to expansion dimensions into directions of substrate and vacuum, respectively. Scalar
-                means the substrate and vacuum expansions are equal. This is applied only if face is given.
+                means the substrate and vacuum expansions are equal. This is applied only if the face is given.
             metal_edge_dimensions: Lateral dimensions to limit the partition region next to the metal edges. If given as
-                list, the terms correspond to expansions into directions of gap and metal, respectively. If given as
-                scalar, the gap and metal expansions are equal. Use None to disable the metal edge limitation. This is
-                applied only if face is given.
+                a list, the terms correspond to expansions into directions of gap and metal, respectively. If given as
+                scalar, the gap and metal expansions are equal. Use None to disable the metal-edge limitation. This is
+                applied only if the face is given.
             visualise: Visualises the partition region in the preview of the simulation geometry.
         """
-        if name[-1] in "0123456789":
-            raise ValueError(f"PartitionRegion name must not end with a number, but {name} is given.")
         if name == "":
             raise ValueError("PartitionRegion name must not be an empty string.")
-        if any(n in name for n in ["layerMA", "layerMS", "layerSA", "substrate", "vacuum"]):
-            raise ValueError(f"PartitionRegion name {name} contains reserved layer name.")
         self.name = name
         self.region = region
         self.z = z
@@ -71,7 +67,7 @@ class PartitionRegion:
         self.metal_edge_dimensions = metal_edge_dimensions
         self.visualise = visualise
 
-    def limit_box(self, bottom, top, box, dbu):
+    def limit_box(self, bottom: float, top: float, box: pya.DBox, dbu: float):
         """Limits the region and z-levels into simulation dimensions.
 
         Args:
@@ -98,11 +94,13 @@ class PartitionRegion:
             for r in self.region:
                 merged_region += pya.Region(r.to_itype(dbu))
             self.region = merged_region & box_region
-        else:
+        elif isinstance(self.region, (pya.DBox, pya.DPolygon)):
             self.region = pya.Region(self.region.to_itype(dbu)) & box_region
+        else:
+            raise ValueError(f"Invalid region type: {type(self.region)}")
 
-    def limit_face(self, z, sign, metal_region, etch_region, dbu):
-        """Limits the region and z-levels on face. Function limit_box should be called once before this.
+    def limit_face(self, z: float, sign: int, metal_region: pya.Region, etch_region: pya.Region, dbu: float):
+        """Limits the region and z-levels on the face. Function limit_box should be called once before this.
 
         Args:
             z: z-level of the face
@@ -111,7 +109,7 @@ class PartitionRegion:
             etch_region: area where metal is etched away as pya.Region
             dbu: layout database unit
         """
-        # Reset face to indicate that face limitation is applied
+        # Reset face to indicate that the face limitation is applied
         self.face = None
 
         # update self.z using self.vertical_dimensions
