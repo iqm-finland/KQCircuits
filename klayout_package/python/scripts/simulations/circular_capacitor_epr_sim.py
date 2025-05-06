@@ -102,8 +102,8 @@ solution = ElmerEPR3DSolution(
         "1t1_gap&1t1_signal_2": [2.0, 2.0, 0.5],
         "1t1_gap&1t1_ground": [2.0, 2.0, 0.5],
         "2b1_gap&2b1_ground": [2.0, 2.0, 0.5],
-        "optimize": {},
     },
+    mesh_optimizer={},
     linear_system_method="mg",
     voltage_excitations=voltage_excitations,
 )

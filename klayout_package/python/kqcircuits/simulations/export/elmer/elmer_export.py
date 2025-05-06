@@ -600,6 +600,7 @@ def export_elmer(
             if (
                 sim_objects[i] == sim_objects[j]
                 and sol_objects[i].mesh_size == sol_objects[j].mesh_size
+                and sol_objects[i].mesh_optimizer == sol_objects[j].mesh_optimizer
                 and sol_objects[i].tool == sol_objects[j].tool
             ):
                 mesh_reuse_name[i] = (

@@ -39,6 +39,7 @@ from gmsh_helpers import (
     set_meshing_options,
     apply_elmer_layer_prefix,
     get_metal_layers,
+    optimize_mesh,
 )
 
 try:
@@ -166,6 +167,8 @@ def produce_cross_section_mesh(json_data: dict[str, Any], msh_file: Path | str) 
 
     # Generate and save mesh
     gmsh.model.mesh.generate(2)
+
+    optimize_mesh(json_data.get("mesh_optimizer"))
     gmsh.write(str(msh_file))
 
     # Open mesh viewer

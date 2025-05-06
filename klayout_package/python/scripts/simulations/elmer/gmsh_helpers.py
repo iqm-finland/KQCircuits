@@ -228,32 +228,7 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
     gmsh.model.mesh.generate(2)
     gmsh.model.mesh.generate(3)
 
-    # Optimize the mesh if the dict exists
-    optimize_params = mesh_size.get("optimize", None)
-
-    if optimize_params is not None:
-        opt_method = optimize_params.get("method", "Netgen")
-        opt_force = optimize_params.get("force", False)
-        opt_niter = optimize_params.get("niter", 1)
-        opt_dimTags = optimize_params.get("dimTags", [])
-        optimizers = [
-            "Netgen",
-            "HighOrder",
-            "HighOrderElastic",
-            "HighOrderFastCurving",
-            "Laplace2D",
-            "Relocate2D",
-            "Relocate3D",
-            "QuadQuasiStructured",
-            "UntangleMeshGeometry",
-        ]
-
-        if opt_method in optimizers:
-            gmsh.model.mesh.optimize(opt_method, opt_force, opt_niter, opt_dimTags)
-        else:
-            print(f"WARNING: Wrong optimizer method: {opt_method} chosen at mesh_size dict.")
-            print(f"WARNING: Curretly available methods: {optimizers}")
-
+    optimize_mesh(json_data.get("mesh_optimizer"))
     gmsh.write(str(msh_file))
 
     # Open mesh viewer
@@ -261,6 +236,17 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
         gmsh.fltk.run()
 
     gmsh.finalize()
+
+
+def optimize_mesh(mesh_optimizer: dict | None) -> None:
+    """Optimize the mesh if the mesh_optimizer is a dictionary. Ignore mesh optimization if mesh_optimizer is None."""
+    if mesh_optimizer is None:
+        return
+    try:
+        # Try optimizing with Netgen as the default method
+        gmsh.model.mesh.optimize(**{"method": "Netgen", **mesh_optimizer})
+    except Exception as error:  # pylint: disable=broad-except
+        print(f"WARNING: Mesh optimization failed: {error}")
 
 
 def coord_dist(coord1: Sequence[float], coord2: Sequence[float]) -> float:

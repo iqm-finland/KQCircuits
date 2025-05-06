@@ -43,10 +43,10 @@ class ElmerSolution(Solution):
             is reserved for setting global maximal element length. For example, if the dictionary is given as
             {'substrate': 10, 'substrate&vacuum': [2, 5], 'global_max': 100}, then the maximal mesh element length is 10
             inside the substrate and 2 on region which is less than 5 units away from the substrate-vacuum interface.
-            Outside these regions, the mesh element size can increase up to 100. mesh_size can contain a sub dict
-            called optimize that contains keys: 'method', 'force', 'niter' and 'dimTags', see Gmsh manual for details,
-            api used is gmsh.model.mesh.optimize. By default there is no optimization, but if "optimize" key exists,
-            then "Netgen" is used by default as method.
+            Outside these regions, the mesh element size can increase up to 100.
+        mesh_optimizer: Dictionary to determine mesh optimization, or None (default) to ignore optimization. The
+            dictionary can contain keywords 'method', 'force', 'niter' and 'dimTags'. See Gmsh manual
+            (gmsh.model.mesh.optimize) for details. The default value for 'method' is 'Netgen'.
         vtu_output: Output vtu files to view fields in Paraview.
                     Turning this off will make the simulations slightly faster
         save_elmer_data: Save the full Elmer model after simulation. This can be used to restart the simulation
@@ -63,6 +63,7 @@ class ElmerSolution(Solution):
     is_axisymmetric: bool = False
     mesh_levels: int = 1
     mesh_size: dict = field(default_factory=dict)
+    mesh_optimizer: dict | None = None
     vtu_output: bool = True
     save_elmer_data: bool = False
 
