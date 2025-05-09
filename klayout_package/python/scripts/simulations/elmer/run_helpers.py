@@ -79,7 +79,7 @@ def write_simulation_machine_versions_file(path: Path) -> None:
 def run_elmer_grid(msh_path: Path | str, n_processes: int, exec_path_override: Path | None = None) -> None:
     """Run ElmerGrid to process meshes from .msh format to Elmer's mesh format. Partitions mesh if n_processes > 1"""
     mesh_dir = Path(msh_path).stem
-    if Path(mesh_dir).is_dir():
+    if Path(mesh_dir).joinpath("mesh.elements").exists():
         print(f"Reusing existing mesh from {str(mesh_dir)}/")
         return
     elmergrid_executable = shutil.which("ElmerGrid")

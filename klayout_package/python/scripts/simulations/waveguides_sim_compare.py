@@ -160,6 +160,7 @@ if use_elmer:
             "linear_system_method": "mg",
             "p_element_order": args.p_element_order,
             "post_process": PostProcess("produce_cmatrix_table.py"),
+            "electric_infinity_bc": True,
         }
         if args.adaptive_remeshing:
             export_parameters_elmer.update(

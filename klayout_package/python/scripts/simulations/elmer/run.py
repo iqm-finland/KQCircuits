@@ -180,7 +180,7 @@ else:
 
     # Write result file
     if args.write_project_results:
-        write_project_results_json(json_data, path, path.joinpath(msh_file))
+        write_project_results_json(json_data, path)
 
 if args.write_versions_file:
     write_simulation_machine_versions_file(path)

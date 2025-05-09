@@ -1010,18 +1010,23 @@ def sif_epr_3d(json_data: dict[str, Any], folder_path: Path, vtu_name: str | Pat
             body_forces += sif_block(f"Body Force {n_body_forces}", [f"{excitation_str} {condition}"])
 
     boundary_conditions = ""
+    n_bcs = 1
+
+    boundary_conditions += sif_boundary_condition(
+        ordinate=n_bcs,
+        target_boundaries=["domain_boundary"],
+        conditions=[
+            "Electric Infinity BC = Logical True" if json_data.get("electric_infinity_bc", False) else "! Placeholder"
+        ],
+    )
+
     # tls bcs
-    for i, s in enumerate(mesh_boundaries, 1):
+    for s in mesh_boundaries:
+        n_bcs += 1
         boundary_conditions += sif_boundary_condition(
-            ordinate=i,
+            ordinate=n_bcs,
             target_boundaries=[s],
             conditions=[f'Boundary Energy Name = String "{s}"'],
-        )
-
-    # If there are no boundary conditions, add one to suppress warnings
-    if not boundary_conditions:
-        boundary_conditions += sif_block(
-            "Boundary Condition 1", ["Target Boundaries(0)", "! Placeholder boundary to suppress warnings"]
         )
 
     return header + constants + solvers + equations + materials + bodies + body_forces + boundary_conditions
@@ -1123,19 +1128,32 @@ def sif_capacitance(
         boundary_conditions += sif_boundary_condition(n_boundaries, [excitation_name], [condition])
 
     outer_bc_names = []
-    bc_dict = json_data.get("boundary_conditions", None)
-    if bc_dict is not None:
+    if dim == 2:
+        bc_dict = json_data.get("boundary_conditions")
         for bc in ["xmin", "xmax", "ymin", "ymax"]:
             bc_name = f"{bc}_boundary"
-            b = bc_dict.get(bc, None)
-            if b is not None:
-                if "potential" in b:
-                    conditions = [f"Potential = {b['potential']}"]
-                    n_boundaries += 1
-                    boundary_conditions += sif_boundary_condition(
-                        ordinate=n_boundaries, target_boundaries=[bc_name], conditions=conditions
-                    )
-                    outer_bc_names.append(bc_name)
+
+            conditions = ["Electric Infinity BC = Logical True"] if json_data["electric_infinity_bc"] else []
+            if bc_dict is not None:
+                potential = bc_dict.get(bc, {}).get("potential")
+                if potential is not None:
+                    conditions += [f"Potential = {potential}"]
+
+            if conditions:
+                n_boundaries += 1
+                boundary_conditions += sif_boundary_condition(
+                    ordinate=n_boundaries, target_boundaries=[bc_name], conditions=conditions
+                )
+                outer_bc_names.append(bc_name)
+    else:
+        if json_data["electric_infinity_bc"]:
+            n_boundaries += 1
+            boundary_conditions += sif_boundary_condition(
+                ordinate=n_boundaries,
+                target_boundaries=["domain_boundary"],
+                conditions=["Electric Infinity BC = Logical True"],
+            )
+            outer_bc_names.append("domain_boundary")
 
     # Add place-holder boundaries (if additional physical groups are given)
     other_groups = [n for n in body_names + boundary_names if n not in body_list + excitation_names + outer_bc_names]
@@ -1864,7 +1882,7 @@ def read_snp_file(filename: str | Path) -> tuple[np.ndarray, np.ndarray, bool, f
     return frequencies, smatrix_arr, polar_form, renormalization, port_data
 
 
-def write_project_results_json(json_data: dict[str, Any], path: Path, msh_filepath, polar_form: bool = True) -> None:
+def write_project_results_json(json_data: dict[str, Any], path: Path, polar_form: bool = True) -> None:
     """
     Writes the solution data in '_project_results.json' format for one Elmer simulation.
 
@@ -1875,14 +1893,12 @@ def write_project_results_json(json_data: dict[str, Any], path: Path, msh_filepa
     Args:
         json_data: Complete parameter json for simulation
         path: Location where to output the simulation model
-        msh_filepath: Location of msh file in `Path` format
         polar_form: Save Smatrix in polar or cartesian form
     """
     tool = json_data["tool"]
-    sif_folder = path.joinpath(msh_filepath.stem)
-    main_sim_folder = sif_folder.parent
-    json_filename = main_sim_folder / (sif_folder.name + "_project_results.json")
     simname = json_data["name"]
+    sif_folder = path / simname
+    result_json_path = path / (simname + "_project_results.json")
 
     if tool in ("capacitance", "epr_3d"):
         results = {}
@@ -1909,7 +1925,7 @@ def write_project_results_json(json_data: dict[str, Any], path: Path, msh_filepa
         if tool == "epr_3d" or json_data["integrate_energies"]:
             results.update(get_energy_integrals(sif_folder))
 
-        with open(json_filename, "w", encoding="utf-8") as outfile:
+        with open(result_json_path, "w", encoding="utf-8") as outfile:
             json.dump(
                 results,
                 outfile,
@@ -1936,7 +1952,6 @@ def write_project_results_json(json_data: dict[str, Any], path: Path, msh_filepa
         for f_ind, f in enumerate(frequencies):
             smatrix_full = read_result_smatrix(
                 sif_folder / _get_smatrix_filename(simname, f),
-                path=path.joinpath(msh_filepath.stem),
                 polar_form=polar_form,
             )
             results_list.append(
@@ -1949,13 +1964,13 @@ def write_project_results_json(json_data: dict[str, Any], path: Path, msh_filepa
             )
             smatrix_arr[f_ind] = smatrix_full
 
-        with open(json_filename, "w", encoding="utf-8") as outfile:
+        with open(result_json_path, "w", encoding="utf-8") as outfile:
             json.dump(results_list, outfile, indent=4)
 
         # move Smatrix dat files to a separate folder
-        data_folder = main_sim_folder.joinpath("elmer_data")
+        data_folder = path.joinpath("elmer_data")
         data_folder.mkdir(parents=True, exist_ok=True)
-        for dfile in main_sim_folder.rglob("*.dat*"):
+        for dfile in path.rglob("*.dat*"):
             shutil.move(dfile, data_folder / dfile.name)
 
         # write touchstone

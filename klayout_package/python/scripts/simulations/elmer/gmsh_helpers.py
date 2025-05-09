@@ -177,9 +177,9 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
                 new_tags[n] = [(d, t) for d, t in new_tags[n] if d == 3]
 
     # Modify new_tags for wave equation simulations
+    edge_ports_dts = set()
     if json_data["tool"] == "wave_equation":
         # Split edge ports into parts by intersecting layers
-        edge_ports_dts = set()
         for port in json_data["ports"]:
             port_name = f'port_{port["number"]}'
             if port_name in new_tags and port["type"] == "EdgePort":
@@ -191,10 +191,10 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
                         new_tags[f"{port_name}_{name}"] = part_dts
                 del new_tags[port_name]
 
-        # Set domain boundary as ground
-        solid_dts = [(d, t) for dts in new_tags.values() for d, t in dts if d == 3]
-        face_dts = [(d, t) for dt in solid_dts for d, t in get_recursive_children([dt]) if d == 2]
-        new_tags["domain_boundary"] = [d for d in face_dts if face_dts.count(d) == 1 and d not in edge_ports_dts]
+    # Set domain boundary as ground
+    solid_dts = [(d, t) for dts in new_tags.values() for d, t in dts if d == 3]
+    face_dts = [(d, t) for dt in solid_dts for d, t in get_recursive_children([dt]) if d == 2]
+    new_tags["domain_boundary"] = [d for d in face_dts if face_dts.count(d) == 1 and d not in edge_ports_dts]
 
     # Create physical groups from each object in new_tags
     for name, dts in new_tags.items():

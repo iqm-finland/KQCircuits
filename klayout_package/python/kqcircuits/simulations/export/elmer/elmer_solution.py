@@ -144,6 +144,7 @@ class ElmerCapacitanceSolution(ElmerSolution):
         convergence_tolerance: Convergence tolerance of the iterative solver.
         max_iterations: Maximum number of iterations for the iterative solver.
         linear_system_preconditioning: Choice of preconditioner before using an iterative linear system solver
+        electric_infinity_bc: effectively extend the model domain to infinity using spherical boundary conditions
     """
 
     tool: ClassVar[str] = "capacitance"
@@ -154,6 +155,7 @@ class ElmerCapacitanceSolution(ElmerSolution):
     convergence_tolerance: float = 1.0e-9
     max_iterations: int = 500
     linear_system_preconditioning: str = "ILU0"
+    electric_infinity_bc: bool = False
 
 
 @dataclass(kw_only=True, frozen=True)
@@ -182,6 +184,7 @@ class ElmerCrossSectionSolution(ElmerSolution):
         linear_system_preconditioning: Choice of preconditioner before using an iterative linear system solver
         voltage_excitations: Can be used to excite signals with arbitrary voltages, instead of 1V. If this parameter is
                              used, no capacitances will be computed.
+        electric_infinity_bc: effectively extend the model domain to infinity using spherical boundary conditions
     """
 
     tool: ClassVar[str] = "cross-section"
@@ -195,6 +198,7 @@ class ElmerCrossSectionSolution(ElmerSolution):
     run_inductance_sim: bool = True
     linear_system_preconditioning: str = "ILU0"
     voltage_excitations: list[float] | None = None
+    electric_infinity_bc: bool = False
 
 
 @dataclass(kw_only=True, frozen=True)
@@ -215,7 +219,7 @@ class ElmerEPR3DSolution(ElmerSolution):
         linear_system_preconditioning: Choice of preconditioner before using an iterative linear system solver
         voltage_excitations: Can be used to excite signals with arbitrary voltages, instead of 1V. If this parameter is
                              used, no capacitances will be computed.
-
+        electric_infinity_bc: effectively extend the model domain to infinity using spherical boundary conditions
     """
 
     tool: ClassVar[str] = "epr_3d"
@@ -226,6 +230,7 @@ class ElmerEPR3DSolution(ElmerSolution):
     max_iterations: int = 1000
     linear_system_preconditioning: str = "ILU0"
     voltage_excitations: list[float] | None = None
+    electric_infinity_bc: bool = False
 
 
 def get_elmer_solution(tool="capacitance", **solution_params):
