@@ -71,7 +71,8 @@ We host trusted dependency versions at :git_url:`klayout_package/python/requirem
 If installed that way, it is also easier to troubleshoot problems since the environment will be identical
 to the one main developers of KQCircuits have.
 
-Install minimum requirements of KQCircuits, subsituting ``<platform>`` with ``win``, ``mac`` or ``linux``:
+Install minimum requirements of KQCircuits, subsituting ``<platform>`` with ``win``, ``mac`` or ``linux``.
+(If run on WSL terminal, use ``linux``):
 
 .. code-block:: console
 

@@ -4,7 +4,7 @@ function create_link () {
 	ln -sfv "$PWD"/libexec/kqclib.sh bin/"$1"
 }
 
-EXECUTABLES=("ElmerSolver" "ElmerSolver_mpi" "ElmerGrid" "klayout" "kqclib" "paraview" "python" "elmerf90")
+EXECUTABLES=("ElmerSolver" "ElmerSolver_mpi" "ElmerGrid" "klayout" "kqclib" "python" "elmerf90")
 
 echo "Creating symbolic links to the singularity image software"
 mkdir -p bin
@@ -18,7 +18,7 @@ mv -v bin/python .
 
 echo
 echo "Among other executables, the image contains the following executables that are needed for the simulation workflow:"
-echo "EXECUTABLES=(\"ElmerSolver\" \"ElmerSolver_mpi\" \"ElmerGrid\" \"klayout\" \"kqclib\" \"paraview\" \"python\")"
+echo "EXECUTABLES=(\"ElmerSolver\" \"ElmerSolver_mpi\" \"ElmerGrid\" \"klayout\" \"kqclib\" \"python\" \"elmerf90\")"
 echo
 echo "You could add your own executable in the list in ./create_links.sh (it is just a symbolic link named like the"
 echo "executable that then needs to be found in the image)."
@@ -50,7 +50,7 @@ echo
 echo "The simulation scripts are then prepared in a subfolder (for example \$KQC_TMP_PATH/waveguides_sim_elmer in the affore mentioned example)."
 echo "\$KQC_TMP_PATH folder is normally in ../tmp/, remember to set it! If you do not, you might get a read-only error when the singularity image tries to write to the image tmp folder that is *read-only*"
 echo
-echo "You will also likely need 'export DISPLAY=:0.0' to run GUI applications like KLayout or paraview"
+echo "You will also likely need 'export DISPLAY=:0.0' to run GUI applications like KLayout"
 echo
 echo "In order to run the actual simulations:"
 echo "Go to the folder and run ./simulation.sh"

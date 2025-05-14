@@ -7,6 +7,28 @@ Usage of Gmsh and Elmer export is similar to Ansys export.
 The ``simulation`` object can be used with function ``export_elmer`` to export all necessary files to produce Gmsh/Elmer
 simulations.
 
+Prerequisites
+*************
+
+Setting up your system to successfully run simulations in Gmsh/Elmer requires following installations:
+
+* Gmsh python API - ``pip install gmsh`` or in secure mode ``pip install -r path/to/sim-requirements.txt``
+* Elmerfem solver,
+  see https://github.com/ElmerCSC/elmerfem or https://www.elmerfem.org/blog/binaries/
+* Paraview
+  https://www.paraview.org/
+
+Gmsh API suffices if one needs to only generate the mesh.
+
+.. note::
+
+        For linux systems (including Windows Subsystem for Linux - WSL), instead of installing Elmer yourself,
+        you can pull a pre-installed `singularity` image we release periodically on GitHub.
+        See :ref:`singularity_image`.
+
+Exported simulation structure
+*****************************
+
 There is an example at :git_url:`klayout_package/python/scripts/simulations/waveguides_sim_compare.py`, which creates a simulation folder
 with simulation scripts. The folder is created to `$TMP` (usually `kqcircuits/tmp`). The contents of the folder is something like::
 
@@ -39,6 +61,9 @@ capacitance matrix), and visualizes the results using Paraview.
 
 `simulation.sh` is a shell script for running all simulations at once.
 The simulations are executed by running the `.sh` file in the output folder (here `waveguides_sim_elmer`).
+
+Parallelization
+***************
 
 Parallelization of the FEM computations has three levels:
   1. independent processes, that are completely self consistent simulation processes that
@@ -156,18 +181,3 @@ Gmsh can also be parallelized using OpenMP:
                                #             -1 uses all the physical cores (based on the machine
                                #             which was used to prepare the simulation)
     }
-
-Please note that running the example requires the installation of
-
-* Gmsh python API ``pip install gmsh`` or in secure mode ``pip install -r path/to/sim-requirements.txt``
-* Elmerfem solver,
-  see https://github.com/ElmerCSC/elmerfem
-* Paraview
-  https://www.paraview.org/
-
-Gmsh API suffices if one needs to only generate the mesh.
-
-.. note::
-
-        If one does not want to install all the software to their computer (for example Gmsh or Elmer),
-        there is a possibility to use the `singularity` image. See :ref:`singularity_image`.
