@@ -9,7 +9,7 @@ The image can be built manually from the root of the repository with ``-f ci/Doc
 Additionally, the KLayout version can be specified with ``--build-arg`` options by
 providing the name of the KLayout package as ``KL_FILE`` and its MD5 hash as ``KL_HASH``::
 
-  docker build -t kqcircuits -f ci/Dockerfile --build-arg KL_FILE=klayout_0.30.0-1_amd64.deb --build-arg KL_HASH=eddc6a1f2a3865e71ed2c56e61c7e96a .
+  docker build -t kqcircuits -f ci/Dockerfile --build-arg KL_FILE=klayout_0.30.1-1_amd64.deb --build-arg KL_HASH=11953ce5009a0e83f9840b506f80df49 .
 
 See possible versions and hashes for Ubuntu 22 in the `KLayout website <https://www.klayout.de/build.html>`_.
 

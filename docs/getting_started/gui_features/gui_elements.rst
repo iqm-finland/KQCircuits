@@ -31,3 +31,12 @@ Note that there are a few situations where the *Object properties* window doesn'
 * Once an ``Element`` is converted to a static cell, the parameters can no longer be changed.
 * Some elements have guiding shapes such as boxes or paths, which take priority in selection. To avoid selecting these
   by accident, one can disable each type under *Edit* -> *Select*.
+
+.. note::
+    For PCell parameters of type list, you might get confused by their format as it looks something like
+    ``(#l1500,#l1000)`` or ``(##1.211,##1.222,##1.233,##1.244,##1.255)``. Starting from KLayout version 0.30.1,
+    list parameter elements are formatted such that the element type is evident. Prefix ``#l`` specifies
+    an integer value, and ``##`` a floating point value. So above examples actually translate to lists
+    ``[1500, 1000]`` and ``[1.211, 1.222, 1.233, 1.244, 1.255]``. When modifying the parameters in newer KLayout,
+    you can either use this formatting, or the old format if you prefer:
+    ``1500,1000`` and ``1.211,1.222,1.233,1.244,1.255``.
