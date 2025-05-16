@@ -37,4 +37,10 @@ epr_gui_visualised_partition_regions = {
         "1cplrbulk",
         "2cplrbulk",
     ],
+    "Double Pads": [
+        "coupler1mer",
+        "coupler2mer",
+        "islandbulk",
+        "leadsbulk",
+    ],
 }

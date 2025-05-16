@@ -205,9 +205,12 @@ class Element(pya.PCellDeclarationHelper):
             k: v for k, v in self._param_value_map.items() if not k.startswith(epr_part_reg_prefix)
         }
         self._param_decls = [x for x in self._param_decls if not x.name.startswith(epr_part_reg_prefix)]
-        for attr in dir(type(self)):
-            if attr.startswith(epr_part_reg_prefix):
-                delattr(type(self), attr)
+        # Clearing class attributes somehow causes elements derived from superclasses that have
+        # EPR partition regions to not load in GUI. Seems that not clearing attributes so far
+        # does not cause bad side-effects
+        # for attr in dir(type(self)):
+        #     if attr.startswith(epr_part_reg_prefix):
+        #         delattr(type(self), attr)
         # Now add the new parameters
         if to_library_name(cls.__name__) in epr_gui_visualised_partition_regions:
             for pr in epr_gui_visualised_partition_regions[to_library_name(cls.__name__)]:
