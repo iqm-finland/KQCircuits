@@ -174,7 +174,12 @@
 <li class="toctree-l4"><a class="reference internal" href="user_guide/simulation/simulation_features.html#cross-section-simulations">Cross-section simulations</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/simulation/gmsh_elmer_export.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/simulation/gmsh_elmer_export.html#exported-simulation-structure">Exported simulation structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/simulation/gmsh_elmer_export.html#parallelization">Parallelization</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/simulation/export_and_run.html">Run and export in one line</a></li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/simulation/elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
 </ul>
@@ -1347,6 +1352,8 @@
 </li>
       <li><a href="api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.cell_view">cell_view (kqcircuits.klayout_view.KLayoutView property)</a>
 </li>
+      <li><a href="api/kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.check_elmer_3d_epr_settings">check_elmer_3d_epr_settings() (in module kqcircuits.simulations.export.simulation_validate)</a>
+</li>
       <li><a href="api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.check_material_dict">check_material_dict() (kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation method)</a>
 
       <ul>
@@ -1354,6 +1361,8 @@
 </li>
       </ul></li>
       <li><a href="api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite.check_node_type">check_node_type() (kqcircuits.elements.waveguide_composite.WaveguideComposite method)</a>
+</li>
+      <li><a href="api/kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.check_partition_region_naming">check_partition_region_naming() (in module kqcircuits.simulations.export.simulation_validate)</a>
 </li>
       <li><a href="api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.check_static_cell_has_junctions">check_static_cell_has_junctions() (in module kqcircuits.util.replace_junctions)</a>
 </li>
@@ -1415,10 +1424,10 @@
         <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution.convergence_tolerance">(kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution attribute)</a>
 </li>
       </ul></li>
-      <li><a href="api/kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.convert_cells_to_code">convert_cells_to_code() (in module kqcircuits.util.layout_to_code)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.convert_cells_to_code">convert_cells_to_code() (in module kqcircuits.util.layout_to_code)</a>
+</li>
       <li><a href="api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.convert_cells_to_static">convert_cells_to_static() (in module kqcircuits.util.replace_junctions)</a>
 </li>
       <li><a href="api/kqcircuits.util.merge.html#kqcircuits.util.merge.convert_child_instances_to_static">convert_child_instances_to_static() (in module kqcircuits.util.merge)</a>
@@ -3648,6 +3657,8 @@
       <li><a href="api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.merge_points_and_match_on_edges">merge_points_and_match_on_edges() (in module kqcircuits.util.geometry_helper)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.mesh_levels">mesh_levels (kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution attribute)</a>
+</li>
+      <li><a href="api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.mesh_optimizer">mesh_optimizer (kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution attribute)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.mesh_size">mesh_size (kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution attribute)</a>
 

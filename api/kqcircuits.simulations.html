@@ -177,7 +177,12 @@
 <li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_features.html#cross-section-simulations">Cross-section simulations</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html#exported-simulation-structure">Exported simulation structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html#parallelization">Parallelization</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/export_and_run.html">Run and export in one line</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
 </ul>
@@ -1159,6 +1164,7 @@
 <li class="toctree-l5"><a class="reference internal" href="kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.is_axisymmetric"><code class="docutils literal notranslate"><span class="pre">ElmerSolution.is_axisymmetric</span></code></a></li>
 <li class="toctree-l5"><a class="reference internal" href="kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.mesh_levels"><code class="docutils literal notranslate"><span class="pre">ElmerSolution.mesh_levels</span></code></a></li>
 <li class="toctree-l5"><a class="reference internal" href="kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.mesh_size"><code class="docutils literal notranslate"><span class="pre">ElmerSolution.mesh_size</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.mesh_optimizer"><code class="docutils literal notranslate"><span class="pre">ElmerSolution.mesh_optimizer</span></code></a></li>
 <li class="toctree-l5"><a class="reference internal" href="kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.vtu_output"><code class="docutils literal notranslate"><span class="pre">ElmerSolution.vtu_output</span></code></a></li>
 <li class="toctree-l5"><a class="reference internal" href="kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.save_elmer_data"><code class="docutils literal notranslate"><span class="pre">ElmerSolution.save_elmer_data</span></code></a></li>
 <li class="toctree-l5"><a class="reference internal" href="kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.get_solution_data"><code class="docutils literal notranslate"><span class="pre">ElmerSolution.get_solution_data()</span></code></a></li>
@@ -1277,6 +1283,8 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.has_edgeport_when_forbidden"><code class="docutils literal notranslate"><span class="pre">has_edgeport_when_forbidden()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.london_penetration_depth_with_ansys"><code class="docutils literal notranslate"><span class="pre">london_penetration_depth_with_ansys()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.flux_integration_layer_exists_if_needed"><code class="docutils literal notranslate"><span class="pre">flux_integration_layer_exists_if_needed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.check_partition_region_naming"><code class="docutils literal notranslate"><span class="pre">check_partition_region_naming()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.check_elmer_3d_epr_settings"><code class="docutils literal notranslate"><span class="pre">check_elmer_3d_epr_settings()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.get_port_names"><code class="docutils literal notranslate"><span class="pre">get_port_names()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.ValidateSimError"><code class="docutils literal notranslate"><span class="pre">ValidateSimError</span></code></a></li>
 </ul>

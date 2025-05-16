@@ -177,7 +177,12 @@
 <li class="toctree-l4"><a class="reference internal" href="../../user_guide/simulation/simulation_features.html#cross-section-simulations">Cross-section simulations</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/simulation/gmsh_elmer_export.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/simulation/gmsh_elmer_export.html#exported-simulation-structure">Exported simulation structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/simulation/gmsh_elmer_export.html#parallelization">Parallelization</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../user_guide/simulation/export_and_run.html">Run and export in one line</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../user_guide/simulation/elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
 </ul>
@@ -1011,6 +1016,16 @@ in the Cells toolbox.</p></li>
 <li><p>Some elements have guiding shapes such as boxes or paths, which take priority in selection. To avoid selecting these
 by accident, one can disable each type under <em>Edit</em> -&gt; <em>Select</em>.</p></li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For PCell parameters of type list, you might get confused by their format as it looks something like
+<code class="docutils literal notranslate"><span class="pre">(#l1500,#l1000)</span></code> or <code class="docutils literal notranslate"><span class="pre">(##1.211,##1.222,##1.233,##1.244,##1.255)</span></code>. Starting from KLayout version 0.30.1,
+list parameter elements are formatted such that the element type is evident. Prefix <code class="docutils literal notranslate"><span class="pre">#l</span></code> specifies
+an integer value, and <code class="docutils literal notranslate"><span class="pre">##</span></code> a floating point value. So above examples actually translate to lists
+<code class="docutils literal notranslate"><span class="pre">[1500,</span> <span class="pre">1000]</span></code> and <code class="docutils literal notranslate"><span class="pre">[1.211,</span> <span class="pre">1.222,</span> <span class="pre">1.233,</span> <span class="pre">1.244,</span> <span class="pre">1.255]</span></code>. When modifying the parameters in newer KLayout,
+you can either use this formatting, or the old format if you prefer:
+<code class="docutils literal notranslate"><span class="pre">1500,1000</span></code> and <code class="docutils literal notranslate"><span class="pre">1.211,1.222,1.233,1.244,1.255</span></code>.</p>
+</div>
 </section>
 </section>
 

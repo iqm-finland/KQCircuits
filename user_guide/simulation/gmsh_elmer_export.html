@@ -177,7 +177,12 @@
 <li class="toctree-l4"><a class="reference internal" href="simulation_features.html#cross-section-simulations">Cross-section simulations</a></li>
 </ul>
 </li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Gmsh/Elmer export</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Gmsh/Elmer export</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#exported-simulation-structure">Exported simulation structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#parallelization">Parallelization</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="export_and_run.html">Run and export in one line</a></li>
 <li class="toctree-l3"><a class="reference internal" href="elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
 </ul>
@@ -990,6 +995,26 @@
 <p>Usage of Gmsh and Elmer export is similar to Ansys export.
 The <code class="docutils literal notranslate"><span class="pre">simulation</span></code> object can be used with function <code class="docutils literal notranslate"><span class="pre">export_elmer</span></code> to export all necessary files to produce Gmsh/Elmer
 simulations.</p>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
+<p>Setting up your system to successfully run simulations in Gmsh/Elmer requires following installations:</p>
+<ul class="simple">
+<li><p>Gmsh python API - <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">gmsh</span></code> or in secure mode <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-r</span> <span class="pre">path/to/sim-requirements.txt</span></code></p></li>
+<li><p>Elmerfem solver,
+see <a class="reference external" href="https://github.com/ElmerCSC/elmerfem">https://github.com/ElmerCSC/elmerfem</a> or <a class="reference external" href="https://www.elmerfem.org/blog/binaries/">https://www.elmerfem.org/blog/binaries/</a></p></li>
+<li><p>Paraview
+<a class="reference external" href="https://www.paraview.org/">https://www.paraview.org/</a></p></li>
+</ul>
+<p>Gmsh API suffices if one needs to only generate the mesh.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For linux systems (including Windows Subsystem for Linux - WSL), instead of installing Elmer yourself,
+you can pull a pre-installed <cite>singularity</cite> image we release periodically on GitHub.
+See <a class="reference internal" href="../../developer/containers.html#singularity-image"><span class="std std-ref">Singularity usage</span></a>.</p>
+</div>
+</section>
+<section id="exported-simulation-structure">
+<h2>Exported simulation structure<a class="headerlink" href="#exported-simulation-structure" title="Link to this heading"></a></h2>
 <p>There is an example at <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations/waveguides_sim_compare.py">klayout_package/python/scripts/simulations/waveguides_sim_compare.py</a>, which creates a simulation folder
 with simulation scripts. The folder is created to <cite>$TMP</cite> (usually <cite>kqcircuits/tmp</cite>). The contents of the folder is something like:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>waveguides_sim_elmer
@@ -1019,6 +1044,9 @@ Each script executes Gmsh (mesh creation), computes the FEM model using Elmer (c
 capacitance matrix), and visualizes the results using Paraview.</p>
 <p><cite>simulation.sh</cite> is a shell script for running all simulations at once.
 The simulations are executed by running the <cite>.sh</cite> file in the output folder (here <cite>waveguides_sim_elmer</cite>).</p>
+</section>
+<section id="parallelization">
+<h2>Parallelization<a class="headerlink" href="#parallelization" title="Link to this heading"></a></h2>
 <dl class="simple">
 <dt>Parallelization of the FEM computations has three levels:</dt><dd><ol class="arabic simple">
 <li><p>independent processes, that are completely self consistent simulation processes that
@@ -1823,20 +1851,7 @@ and Slurm approach for more complicated resource allocations (for example multip
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Please note that running the example requires the installation of</p>
-<ul class="simple">
-<li><p>Gmsh python API <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">gmsh</span></code> or in secure mode <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-r</span> <span class="pre">path/to/sim-requirements.txt</span></code></p></li>
-<li><p>Elmerfem solver,
-see <a class="reference external" href="https://github.com/ElmerCSC/elmerfem">https://github.com/ElmerCSC/elmerfem</a></p></li>
-<li><p>Paraview
-<a class="reference external" href="https://www.paraview.org/">https://www.paraview.org/</a></p></li>
-</ul>
-<p>Gmsh API suffices if one needs to only generate the mesh.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If one does not want to install all the software to their computer (for example Gmsh or Elmer),
-there is a possibility to use the <cite>singularity</cite> image. See <a class="reference internal" href="../../developer/containers.html#singularity-image"><span class="std std-ref">Singularity usage</span></a>.</p>
-</div>
+</section>
 </section>
 
 

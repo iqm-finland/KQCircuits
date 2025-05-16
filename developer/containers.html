@@ -177,7 +177,12 @@
 <li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_features.html#cross-section-simulations">Cross-section simulations</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html#exported-simulation-structure">Exported simulation structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html#parallelization">Parallelization</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/export_and_run.html">Run and export in one line</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
 </ul>
@@ -987,10 +992,10 @@
   <section id="containers">
 <span id="docker-image"></span><h1>Containers<a class="headerlink" href="#containers" title="Link to this heading"></a></h1>
 <p>A Docker image for CLI and CI usage is included in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//ci/Dockerfile">ci/Dockerfile</a>.</p>
-<p>The image can be built manually from the root of the repository with <cite>-f ci/Dockerfile</cite>.
+<p>The image can be built manually from the root of the repository with <code class="docutils literal notranslate"><span class="pre">-f</span> <span class="pre">ci/Dockerfile</span></code>.
 Additionally, the KLayout version can be specified with <code class="docutils literal notranslate"><span class="pre">--build-arg</span></code> options by
 providing the name of the KLayout package as <code class="docutils literal notranslate"><span class="pre">KL_FILE</span></code> and its MD5 hash as <code class="docutils literal notranslate"><span class="pre">KL_HASH</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">build</span> <span class="o">-</span><span class="n">t</span> <span class="n">kqcircuits</span> <span class="o">-</span><span class="n">f</span> <span class="n">ci</span><span class="o">/</span><span class="n">Dockerfile</span> <span class="o">--</span><span class="n">build</span><span class="o">-</span><span class="n">arg</span> <span class="n">KL_FILE</span><span class="o">=</span><span class="n">klayout_0</span><span class="mf">.30.0</span><span class="o">-</span><span class="mi">1</span><span class="n">_amd64</span><span class="o">.</span><span class="n">deb</span> <span class="o">--</span><span class="n">build</span><span class="o">-</span><span class="n">arg</span> <span class="n">KL_HASH</span><span class="o">=</span><span class="n">eddc6a1f2a3865e71ed2c56e61c7e96a</span> <span class="o">.</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">build</span> <span class="o">-</span><span class="n">t</span> <span class="n">kqcircuits</span> <span class="o">-</span><span class="n">f</span> <span class="n">ci</span><span class="o">/</span><span class="n">Dockerfile</span> <span class="o">--</span><span class="n">build</span><span class="o">-</span><span class="n">arg</span> <span class="n">KL_FILE</span><span class="o">=</span><span class="n">klayout_0</span><span class="mf">.30.1</span><span class="o">-</span><span class="mi">1</span><span class="n">_amd64</span><span class="o">.</span><span class="n">deb</span> <span class="o">--</span><span class="n">build</span><span class="o">-</span><span class="n">arg</span> <span class="n">KL_HASH</span><span class="o">=</span><span class="mi">11953</span><span class="n">ce5009a0e83f9840b506f80df49</span> <span class="o">.</span>
 </pre></div>
 </div>
 <p>See possible versions and hashes for Ubuntu 22 in the <a class="reference external" href="https://www.klayout.de/build.html">KLayout website</a>.</p>
@@ -1028,45 +1033,62 @@ whether they break the image.</p>
 </section>
 <section id="singularity-usage">
 <span id="singularity-image"></span><h2>Singularity usage<a class="headerlink" href="#singularity-usage" title="Link to this heading"></a></h2>
-<p>Singularity images are like docker images (<a class="reference external" href="https://sylabs.io/guides/3.0/user-guide/quick_start.html">https://sylabs.io/guides/3.0/user-guide/quick_start.html</a>) that work better
-in HPC environments (<a class="reference external" href="https://singularity-tutorial.github.io/">https://singularity-tutorial.github.io/</a>).
-The latest image can be downloaded from the GitHub Container registry. It should be downloaded to a <cite>libexec</cite> folder
-under <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//singularity">singularity</a> with the name <cite>kqclib</cite>. This is performed as follows at the root of the repo:</p>
+<p>Singularity images are like docker images that work better
+in HPC environments. Singularity images are managed using apptainer (<a class="reference external" href="https://apptainer.org/">https://apptainer.org/</a>).
+The latest image of a KQCircuits compatible Elmer installation can be downloaded from the
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/pkgs/container/kqcircuits/397719722?tag=main-singularity">GitHub Container registry</a>.
+Sinularity images can be pulled to Linux operating systems and also to Windows Subsystem for Linux (WSL).</p>
+<p>Install apptainer (substituting 1.4.0 to whatever version is the most recent):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">apptainer</span><span class="o">/</span><span class="n">apptainer</span><span class="o">/</span><span class="n">releases</span><span class="o">/</span><span class="n">download</span><span class="o">/</span><span class="n">v1</span><span class="mf">.4.0</span><span class="o">/</span><span class="n">apptainer_1</span><span class="mf">.4.0</span><span class="n">_amd64</span><span class="o">.</span><span class="n">deb</span>
+<span class="n">sudo</span> <span class="n">dpkg</span> <span class="o">-</span><span class="n">i</span> <span class="n">apptainer_1</span><span class="mf">.4.0</span><span class="n">_amd64</span><span class="o">.</span><span class="n">deb</span>
+</pre></div>
+</div>
+<p>You might need to install other dependencies, like <code class="docutils literal notranslate"><span class="pre">uidmap</span></code>.</p>
+<p>Singularity image for KQCircuits should be downloaded to a <code class="docutils literal notranslate"><span class="pre">libexec</span></code> folder
+under <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//singularity">singularity</a> with the name <code class="docutils literal notranslate"><span class="pre">kqclib</span></code>. The image size is about 1.4 Gb.
+For WSL users, pay attention whether KQCircuits is cloned to a Windows drive or WSL’s own drive.
+At the root of the KQCircuits repository, pull the image with:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">singularity</span> <span class="n">pull</span> <span class="n">singularity</span><span class="o">/</span><span class="n">libexec</span><span class="o">/</span><span class="n">kqclib</span> <span class="n">oras</span><span class="p">:</span><span class="o">//</span><span class="n">ghcr</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">iqm</span><span class="o">-</span><span class="n">finland</span><span class="o">/</span><span class="n">kqcircuits</span><span class="p">:</span><span class="n">main</span><span class="o">-</span><span class="n">singularity</span>
 </pre></div>
 </div>
-<p>The image can also be built manually in the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//singularity">singularity</a> folder by running:</p>
+<p>To check that the Singularity image was pulled correctly, run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">singularity</span> <span class="n">shell</span> <span class="n">singularity</span><span class="o">/</span><span class="n">libexec</span><span class="o">/</span><span class="n">kqclib</span>
+</pre></div>
+</div>
+<p>It will open a shell: <code class="docutils literal notranslate"><span class="pre">Singularity&gt;</span></code>. In that shell run <code class="docutils literal notranslate"><span class="pre">ElmerSolver</span></code>. It should give you an error,
+but if you see <code class="docutils literal notranslate"><span class="pre">ElmerSolver</span> <span class="pre">finite</span> <span class="pre">element</span> <span class="pre">software,</span> <span class="pre">Welcome!</span></code>, you have the singularity image pulled correctly.
+Type <code class="docutils literal notranslate"><span class="pre">exit</span></code> to exit the singularity shell.</p>
+<p>Next, cd to <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//singularity">singularity</a> folder and run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">create_links</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>This will link the executables from the image rather than using the executables installed in your own system.</p>
+<p>Then you need to add <code class="docutils literal notranslate"><span class="pre">path-to-your-KQCircuits/singularity/bin</span></code> to your <code class="docutils literal notranslate"><span class="pre">$PATH</span></code> environment variable.
+In WSL, for example, this is done by adding to the end of <code class="docutils literal notranslate"><span class="pre">~/.bashrc</span></code> file a line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export PATH=path-to-your-KQCircuits/singularity/bin:$PATH
+</pre></div>
+</div>
+<p>Then (if you haven’t already) follow the Standalone installation guide <a class="reference internal" href="standalone.html#standalone"><span class="std std-ref">Developer Standalone module Setup</span></a>,
+including <code class="docutils literal notranslate"><span class="pre">simulations</span></code> or <code class="docutils literal notranslate"><span class="pre">sim-requirements.txt</span></code> requirements. Notice that for WSL, a separate
+<a class="reference external" href="https://docs.python.org/3/library/venv.html">“venv”</a> virtual environment needs to be created for WSL terminal.</p>
+<p>Thats it! Try running <code class="docutils literal notranslate"><span class="pre">kqc</span> <span class="pre">sim</span> <span class="pre">waveguide_sim_compare.py</span></code> to see that it runs the simulations.</p>
+<p>If you want to build the Singularity image yourself, in the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//singularity">singularity</a> folder run:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">singularity</span><span class="o">.</span><span class="n">sh</span>
+<span class="o">./</span><span class="n">create_links</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If a <cite>singularity.pem</cite> RSA public key is present in the <cite>singularity</cite> folder then the image will be encrypted. To
-successfully use this image the user also needs the corresponding <cite>$HOME/singularity_private.pem</cite> private key. See
+<p>If a <code class="docutils literal notranslate"><span class="pre">singularity.pem</span></code> RSA public key is present in the <code class="docutils literal notranslate"><span class="pre">singularity</span></code> folder then the image will be encrypted. To
+successfully use this image the user also needs the corresponding <code class="docutils literal notranslate"><span class="pre">$HOME/singularity_private.pem</span></code> private key. See
 the <a class="reference external" href="https://docs.sylabs.io/guides/3.4/user-guide/encryption.html">Singularity docs</a> for further details.</p>
 </div>
-<p>After pulling or building, you can now run (again, in the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//singularity">singularity</a> folder):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">create_links</span><span class="o">.</span><span class="n">sh</span>
+<p>Among other executables, the Singularity image contains the following executables that are needed for the simulation workflow:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">EXECUTABLES</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;ElmerSolver&quot;</span> <span class="s2">&quot;ElmerSolver_mpi&quot;</span> <span class="s2">&quot;ElmerGrid&quot;</span> <span class="s2">&quot;klayout&quot;</span> <span class="s2">&quot;kqclib&quot;</span> <span class="s2">&quot;python&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>in order to get the executables for using the software in the image (instead of in your own system).</p>
-<p>Among other executables, the image contains the following executables that are needed for the simulation workflow:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">EXECUTABLES</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;ElmerSolver&quot;</span> <span class="s2">&quot;ElmerSolver_mpi&quot;</span> <span class="s2">&quot;ElmerGrid&quot;</span> <span class="s2">&quot;klayout&quot;</span> <span class="s2">&quot;kqclib&quot;</span> <span class="s2">&quot;paraview&quot;</span> <span class="s2">&quot;python&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>You could add your own executable in the list in <cite>create_links.sh</cite> (it is just a symbolic link
-named like the executable that then needs to be found in the image).
-Remember to add <cite>path-to-your-KQCircuits/singularity/bin</cite> to your <cite>$PATH</cite> environment variable.</p>
-<p>You can now prepare KQC simulations using the image:
-For example go to <cite>path-to-your-KQCircuits/klayout_package/python/scripts/simulations/</cite>
-And run:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">kqclib</span> <span class="n">waveguides_sim_compare</span><span class="o">.</span><span class="n">py</span>
-</pre></div>
-</div>
-<p>or:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>path-to-your-KQCircuits/python waveguides_sim_compare.py (make sure python is run from $PWD)
-</pre></div>
-</div>
+<p>You could add your own executable in the list in <code class="docutils literal notranslate"><span class="pre">create_links.sh</span></code> (it is just a symbolic link
+named like the executable that then needs to be found in the image).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>python is not put in $PWD/bin such that it does not over-ride the system python even if the
@@ -1074,28 +1096,16 @@ folder is added to PATH environment variable”</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>In <cite>waveguides_sim_compare.py</cite>, one has to set <code class="docutils literal notranslate"><span class="pre">workflow['python_executable']='kqclib'</span></code> or
+<p>In <code class="docutils literal notranslate"><span class="pre">waveguides_sim_compare.py</span></code>, one has to set <code class="docutils literal notranslate"><span class="pre">workflow['python_executable']='kqclib'</span></code> or
 <code class="docutils literal notranslate"><span class="pre">workflow['python_executable']='path-to-your-KQCircuits/singularity/python'</span></code> (in order to use
 the singularity image or override the system python with the latter executable, by moving it
 to path-to-your-KQCircuits/singularity/bin).</p>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>The singularity container can be used with Windows Subsystem for Linux (WSL) but problems with simulations
-getting stuck have been encountered while using the simple workload manager in
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/simulations/elmer/scripts/simple_workload_manager.py">klayout_package/python/scripts/simulations/elmer/scripts/simple_workload_manager.py</a>.</p>
-</div>
-<p>The simulation scripts are then prepared in a subfolder (for example <cite>$KQC_TMP_PATH/waveguides_sim_elmer</cite> in the
-affore mentioned example. The <cite>$KQC_TMP_PATH</cite> folder (is normally in <cite>../tmp/</cite>, remember to set it! If you do not,
-you might get a read-only error when the singularity image tries to write to the image tmp folder that is
-<em>read-only</em>)</p>
-<p>In order to run the actual simulations, run:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">simulation</span><span class="o">.</span><span class="n">sh</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Note that now Gmsh and Elmer are run in the container so no need to install the software.</p>
+<p>It is difficult to set up <a class="reference external" href="https://www.paraview.org/">Paraview</a> to work in a WSL environment.
+We recommend not to bother with it, and to view the <code class="docutils literal notranslate"><span class="pre">*.pvtu/*.vtu</span></code> results manually in
+native Windows environment after simulation execution.</p>
 </div>
 </section>
 </section>

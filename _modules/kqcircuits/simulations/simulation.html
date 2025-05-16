@@ -174,7 +174,12 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/simulation_features.html#cross-section-simulations">Cross-section simulations</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/gmsh_elmer_export.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/gmsh_elmer_export.html#exported-simulation-structure">Exported simulation structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/gmsh_elmer_export.html#parallelization">Parallelization</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/export_and_run.html">Run and export in one line</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
 </ul>
@@ -1924,8 +1929,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">split_metal_layers_by_excitation</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">produce_layers</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
 
-        <span class="c1"># Visualise parititon regions</span>
         <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">:</span>
+            <span class="c1"># Warn of empty partition regions</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">):</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Partition region &quot;</span><span class="si">{</span><span class="n">part</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot; is empty!&#39;</span><span class="p">)</span>
+            <span class="c1"># Visualise partition regions</span>
             <span class="k">if</span> <span class="n">part</span><span class="o">.</span><span class="n">visualise</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">visualise_region</span><span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">part</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;part_reg_</span><span class="si">{</span><span class="n">part</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 

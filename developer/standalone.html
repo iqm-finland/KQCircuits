@@ -177,7 +177,12 @@
 <li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_features.html#cross-section-simulations">Cross-section simulations</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html#exported-simulation-structure">Exported simulation structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html#parallelization">Parallelization</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/export_and_run.html">Run and export in one line</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
 </ul>
@@ -1040,7 +1045,8 @@ of every dependency package is controlled and their hashes generated and validat
 We host trusted dependency versions at <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/requirements">klayout_package/python/requirements</a>.
 If installed that way, it is also easier to troubleshoot problems since the environment will be identical
 to the one main developers of KQCircuits have.</p>
-<p>Install minimum requirements of KQCircuits, subsituting <code class="docutils literal notranslate"><span class="pre">&lt;platform&gt;</span></code> with <code class="docutils literal notranslate"><span class="pre">win</span></code>, <code class="docutils literal notranslate"><span class="pre">mac</span></code> or <code class="docutils literal notranslate"><span class="pre">linux</span></code>:</p>
+<p>Install minimum requirements of KQCircuits, subsituting <code class="docutils literal notranslate"><span class="pre">&lt;platform&gt;</span></code> with <code class="docutils literal notranslate"><span class="pre">win</span></code>, <code class="docutils literal notranslate"><span class="pre">mac</span></code> or <code class="docutils literal notranslate"><span class="pre">linux</span></code>.
+(If run on WSL terminal, use <code class="docutils literal notranslate"><span class="pre">linux</span></code>):</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd klayout_package/python</span>
 <span class="go">python -m pip install -r requirements/&lt;platform&gt;/requirements.txt</span>
 <span class="go">python -m pip install --no-deps -e .</span>

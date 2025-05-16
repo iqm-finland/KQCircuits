@@ -174,7 +174,12 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/simulation/simulation_features.html#cross-section-simulations">Cross-section simulations</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/simulation/gmsh_elmer_export.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/simulation/gmsh_elmer_export.html#exported-simulation-structure">Exported simulation structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/simulation/gmsh_elmer_export.html#parallelization">Parallelization</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/simulation/export_and_run.html">Run and export in one line</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/simulation/elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
 </ul>
@@ -1028,10 +1033,10 @@
 <span class="sd">            is reserved for setting global maximal element length. For example, if the dictionary is given as</span>
 <span class="sd">            {&#39;substrate&#39;: 10, &#39;substrate&amp;vacuum&#39;: [2, 5], &#39;global_max&#39;: 100}, then the maximal mesh element length is 10</span>
 <span class="sd">            inside the substrate and 2 on region which is less than 5 units away from the substrate-vacuum interface.</span>
-<span class="sd">            Outside these regions, the mesh element size can increase up to 100. mesh_size can contain a sub dict</span>
-<span class="sd">            called optimize that contains keys: &#39;method&#39;, &#39;force&#39;, &#39;niter&#39; and &#39;dimTags&#39;, see Gmsh manual for details,</span>
-<span class="sd">            api used is gmsh.model.mesh.optimize. By default there is no optimization, but if &quot;optimize&quot; key exists,</span>
-<span class="sd">            then &quot;Netgen&quot; is used by default as method.</span>
+<span class="sd">            Outside these regions, the mesh element size can increase up to 100.</span>
+<span class="sd">        mesh_optimizer: Dictionary to determine mesh optimization, or None (default) to ignore optimization. The</span>
+<span class="sd">            dictionary can contain keywords &#39;method&#39;, &#39;force&#39;, &#39;niter&#39; and &#39;dimTags&#39;. See Gmsh manual</span>
+<span class="sd">            (gmsh.model.mesh.optimize) for details. The default value for &#39;method&#39; is &#39;Netgen&#39;.</span>
 <span class="sd">        vtu_output: Output vtu files to view fields in Paraview.</span>
 <span class="sd">                    Turning this off will make the simulations slightly faster</span>
 <span class="sd">        save_elmer_data: Save the full Elmer model after simulation. This can be used to restart the simulation</span>
@@ -1048,6 +1053,7 @@
     <span class="n">is_axisymmetric</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">mesh_levels</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">mesh_size</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">mesh_optimizer</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">vtu_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">save_elmer_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 

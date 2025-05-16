@@ -177,7 +177,12 @@
 <li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_features.html#cross-section-simulations">Cross-section simulations</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html#exported-simulation-structure">Exported simulation structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html#parallelization">Parallelization</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/export_and_run.html">Run and export in one line</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
 </ul>
@@ -1063,6 +1068,20 @@
 <dd class="field-odd"><p><strong>Errors when validation criteria are not met.</strong> – </p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_validate.check_partition_region_naming">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.simulation_validate.</span></span><span class="sig-name descname"><span class="pre">check_partition_region_naming</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solution</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_validate.html#check_partition_region_naming"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_validate.check_partition_region_naming" title="Link to this definition"></a></dt>
+<dd><p>Validation check: Ensures that partition region names do not end with each other.</p>
+<p>Also checks that region names don’t contain any of the common EPR groups.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_validate.check_elmer_3d_epr_settings">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.simulation_validate.</span></span><span class="sig-name descname"><span class="pre">check_elmer_3d_epr_settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solution</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_validate.html#check_elmer_3d_epr_settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_validate.check_elmer_3d_epr_settings" title="Link to this definition"></a></dt>
+<dd><p>Validation check: Ensures that non-zero metal thickness and <cite>detach_tls_sheets_from_body=False</cite> are used
+with <cite>ElmerEPR3DSolution</cite></p>
 </dd></dl>
 
 <dl class="py function">
