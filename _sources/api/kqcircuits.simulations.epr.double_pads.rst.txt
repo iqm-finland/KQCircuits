@@ -1,0 +1,12 @@
+:github_url: hide
+
+kqcircuits.simulations.epr.double\_pads
+=======================================
+
+.. automodule:: kqcircuits.simulations.epr.double_pads
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.simulations.epr.double_pads
+.. image:: ../pcell_images/kqcircuits.simulations.epr.double_pads.png
