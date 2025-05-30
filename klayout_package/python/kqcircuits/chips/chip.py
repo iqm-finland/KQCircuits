@@ -299,7 +299,6 @@ class Chip(Element):
                 ChipFrame,
                 box=frame_box,
                 face_ids=[self.face_ids[face]],
-                use_face_prefix=len(self.frames_enabled) > 1,
                 dice_width=float(self.frames_dice_width[i]),
                 text_margin=default_mask_parameters[self.face_ids[face]]["text_margin"],
                 marker_dist=float(self.frames_marker_dist[i]),

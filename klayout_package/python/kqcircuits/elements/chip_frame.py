@@ -23,7 +23,7 @@ from kqcircuits.util.label import produce_label, LabelOrigin
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.markers.marker import Marker
-from kqcircuits.defaults import default_brand, default_marker_type, default_chip_label_face_prefixes
+from kqcircuits.defaults import default_brand, default_marker_type
 
 
 class ChipFrame(Element):
@@ -61,7 +61,6 @@ class ChipFrame(Element):
         docstring="Distance of markers from closest edges of the chip face",
     )
     diagonal_squares = Param(pdt.TypeInt, "Number of diagonal squares for the markers", 10)
-    use_face_prefix = Param(pdt.TypeBoolean, "Use face prefix for chip name label", False)
     marker_types = Param(
         pdt.TypeList,
         "Marker type for each chip corner, clockwise starting from lower left",
@@ -71,6 +70,16 @@ class ChipFrame(Element):
     chip_dicing_line_length = Param(pdt.TypeDouble, "Length of the chip dicing reference line", 100.0, unit="µm")
     chip_dicing_gap_length = Param(pdt.TypeDouble, "Gap between two chip dicing reference dashes", 50.0, unit="µm")
     chip_dicing_in_base_metal = Param(pdt.TypeBoolean, "Insert chip dicing lines in base metal addition", False)
+    face_label_show = Param(pdt.TypeBoolean, "Show face label below variant label", True)
+    face_label_size = Param(pdt.TypeDouble, "Vertical size of character in face label", 75, unit="µm")
+    face_label_margin = Param(
+        pdt.TypeDouble,
+        "Margin for face label, fills ground grid avoidance around label",
+        50,
+        docstring="Margin of the ground grid avoidance layer around the text in face label",
+    )
+    face_label_x = Param(pdt.TypeDouble, "X offset of face label, from top right corner of chip", 100, unit="µm")
+    face_label_y = Param(pdt.TypeDouble, "Y offset of face label, from top right corner of chip", 450, unit="µm")
 
     def build(self):
         """Produces dicing edge, markers, labels and ground grid for the chip face."""
@@ -80,45 +89,59 @@ class ChipFrame(Element):
 
     def _produce_labels(self):
         x_min, x_max, y_min, y_max = self._box_points()
-        if self.use_face_prefix:
-            face_id = self.face()["id"]
-            face_prefix = (
-                default_chip_label_face_prefixes[face_id].upper()
-                if default_chip_label_face_prefixes and (face_id in default_chip_label_face_prefixes)
-                else face_id.upper()
-            )
-            chip_name = face_prefix + self.name_chip
-        else:
-            chip_name = self.name_chip
+        chip_name = self.name_chip
         labels = [self.name_mask, chip_name, self.name_copy, self.name_brand]
         self._produce_label(labels[0], pya.DPoint(x_min, y_max), LabelOrigin.TOPLEFT)
         if self.name_chip:
             self._produce_label(labels[1], pya.DPoint(x_max, y_max), LabelOrigin.TOPRIGHT)
+        if self.face_label_show:
+            self._produce_face_label()
         self._produce_label(labels[2], pya.DPoint(x_max, y_min), LabelOrigin.BOTTOMRIGHT)
         self._produce_label(labels[3], pya.DPoint(x_min, y_min), LabelOrigin.BOTTOMLEFT)
 
-    def _produce_label(self, label, location, origin):
+    def _produce_face_label(self):
+        """Face label ('1t1', '2b1', etc) placed below the variant label
+        has separately configured dimensions.
+        """
+        _, x_max, _, y_max = self._box_points()
+        self._produce_label(
+            self.face()["id"],
+            pya.DPoint(x_max - self.face_label_x, y_max - self.face_label_y),
+            LabelOrigin.TOPRIGHT,
+            size=self.face_label_size,
+            margin=self.face_label_margin,
+        )
+
+    def _produce_label(self, label, location, origin, size=None, margin=None):
         """Produces Text PCells with text `label` with `origin` of the text at `location`.
 
         Wrapper for the stand alone function `produce_label`.
-        Text size scales with chip dimension for chips smaller than 7 mm.
+        If size argument not set, will scale text size with chip dimension for chips smaller than 7 mm.
 
         Args:
             label: the produced text
             location: DPoint of the location of the text
             origin: LabelOrigin of the corner of the label to be placed at the location
+            size: Vertical size of label character
+            margin: Margin width within label region
 
         Effect:
             label PCells added to the layout into the parent PCell
+
+        Returns:
+            pya.DBox of the extents of produced label, positioned at chip coordinates.
         """
-        size = 350 * min(1, self.box.width() / 7000, self.box.height() / 7000)
-        produce_label(
+        if margin is None:
+            margin = self.text_margin
+        if size is None:
+            size = 350 * min(1, self.box.width() / 7000, self.box.height() / 7000)
+        return produce_label(
             self.cell,
             label,
             location,
             origin,
             self.dice_width,
-            self.text_margin,
+            margin,
             [self.face()["base_metal_gap_wo_grid"], self.face()["base_metal_gap_for_EBL"]],
             self.face()["ground_grid_avoidance"],
             size,

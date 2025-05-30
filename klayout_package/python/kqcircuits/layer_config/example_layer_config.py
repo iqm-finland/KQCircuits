@@ -103,7 +103,6 @@ default_mask_parameters = {
     },
 }
 default_layer_props = None
-default_chip_label_face_prefixes = None
 default_parameter_values = {
     "Element": {"face_ids": ["1", "2"]},
 }

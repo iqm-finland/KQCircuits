@@ -256,8 +256,6 @@ default_path_length_layers = layer_config_module.default_path_length_layers
 default_mask_parameters = layer_config_module.default_mask_parameters
 # Path to layer properties file
 default_layer_props = layer_config_module.default_layer_props
-# Prefixes to use in chip name labels for different faces (dict with items `face_id: label_prefix`)
-default_chip_label_face_prefixes = layer_config_module.default_chip_label_face_prefixes
 # Update default_parameter_values based on layer config file
 for k, v in layer_config_module.default_parameter_values.items():
     params = default_parameter_values[k] if k in default_parameter_values else {}

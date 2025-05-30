@@ -279,10 +279,3 @@ default_mask_parameters = {
 default_parameter_values = {}
 
 default_layer_props = str(Path(__file__).resolve().parent.parent / "layer_config" / "default_layer_props.lyp")
-
-default_chip_label_face_prefixes = {
-    "1b1": "h",
-    "1t1": "b",
-    "2b1": "t",
-    "2t1": "c",
-}

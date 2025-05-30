@@ -59,6 +59,9 @@ def produce_label(
 
     Effect:
         Shapes added to the corresponding layers
+
+    Returns:
+        pya.DBox of the extents of produced label, positioned at chip coordinates.
     """
 
     layout = cell.layout()
@@ -105,3 +108,4 @@ def produce_label(
         pya.DPoint(polygon_bbox.p2.x + margin, polygon_bbox.p2.y + margin),
     )
     cell.shapes(layout.layer(layer_protection)).insert(trans.trans(protection))
+    return trans.trans(protection)
