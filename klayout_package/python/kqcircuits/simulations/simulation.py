@@ -771,7 +771,7 @@ class Simulation:
                             z[face_id][2],
                             material=self.ith_value(dielectric_material, j),
                         )
-
+                    self.insert_layer(face_id + "_gap", gap_region, z[face_id][0], z[face_id][1])
                 else:
                     # Use stack to produce drop-down stack-up
                     metal_thickness = z[face_id][1] - z[face_id][0]
@@ -786,12 +786,11 @@ class Simulation:
                             )
                         )
 
-                # Insert gap and etch layers only on the first face of the stack-up (no material)
+                # Insert etch layer only on the first face of the stack-up (no material)
                 if j == 0:
                     if self.vertical_over_etching > 0.0:
                         etch_z = z[face_id][0] - sign * self.vertical_over_etching
                         self.insert_layer(face_id + "_etch", etch_region, etch_z, z[face_id][0])
-                    self.insert_layer(face_id + "_gap", gap_region, z[face_id][0], z[face_id][1])
 
                 # Insert airbridges
                 bridge_z = z[face_id][1] + sign * self.airbridge_height

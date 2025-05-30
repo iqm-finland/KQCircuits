@@ -33,6 +33,7 @@ from geometry import (  # pylint: disable=wrong-import-position
     color_by_material,
     set_color,
     scale,
+    match_layer,
 )
 
 # pylint: disable=consider-using-f-string
@@ -146,13 +147,14 @@ if data.get("integrate_energies", False):
 
 
 # Manual mesh refinement
-for mesh_layer, mesh_length in mesh_size.items():
-    mesh_objects = objects.get(mesh_layer, [])
+for mesh_name, mesh_length in mesh_size.items():
+    mesh_layers = [n for n in layers if match_layer(n, mesh_name)]
+    mesh_objects = [o for l in mesh_layers if l in objects for o in objects[l]]
     if mesh_objects:
         oMeshSetup = oDesign.GetModule("MeshSetup")
         oMeshSetup.AssignLengthOp(
             [
-                "NAME:mesh_size_{}".format(mesh_layer),
+                "NAME:mesh_size_{}".format(mesh_name),
                 "RefineInside:=",
                 True,
                 "Enabled:=",

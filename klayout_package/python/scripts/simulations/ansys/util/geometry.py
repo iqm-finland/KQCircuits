@@ -15,6 +15,7 @@
 # (meetiqm.com/iqm-open-source-trademark-policy). IQM welcomes contributions to the code.
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
+import re
 from math import cos, pi
 
 
@@ -308,6 +309,12 @@ def scale(oEditor, objects, factor):
                 str(factor),
             ],
         )
+
+
+def match_layer(layer_name, layer_pattern):
+    """Return True if layer name matches pattern, else return False."""
+    pattern = "^" + str(re.escape(layer_pattern).replace(r"\*", ".*")) + "$"
+    return bool(re.match(pattern, layer_name))
 
 
 # pylint: enable=consider-using-f-string

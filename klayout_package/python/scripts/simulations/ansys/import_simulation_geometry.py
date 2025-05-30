@@ -40,6 +40,7 @@ from geometry import (  # pylint: disable=wrong-import-position
     color_by_material,
     set_color,
     scale,
+    match_layer,
 )
 from field_calculation import (  # pylint: disable=wrong-import-position
     add_squared_electric_field_expression,
@@ -105,8 +106,8 @@ for name, params in material_dict.items():
 
 # Import GDSII geometry
 layers = data.get("layers", {})
-# ignore gap objects if they are not used
-layers = {n: d for n, d in layers.items() if "_gap" not in n or n in mesh_size}
+refine_layers = [n for n in layers if any(match_layer(n, p) for p in mesh_size)]
+layers = {n: d for n, d in layers.items() if not n.endswith("_gap") or n in refine_layers}  # ignore unused gap layers
 metal_layers = {n: d for n, d in layers.items() if "excitation" in d}
 
 order_map = []
@@ -182,7 +183,7 @@ for lname, ldata in layers.items():
         set_material(oEditor, objects[lname], material, solve_inside)
     elif lname in metal_layers:  # is metal
         metal_sheets += objects[lname]
-    elif lname not in mesh_size:
+    elif lname not in refine_layers:
         set_material(oEditor, objects[lname], None, None)  # set sheet as non-model
 
     set_color(oEditor, objects[lname], *color_by_material(material, material_dict, thickness == 0.0))
@@ -516,15 +517,16 @@ if data.get("integrate_magnetic_flux", False) and ansys_tool in hfss_tools:
         add_magnetic_flux_integral_expression(oModule, "flux_{}".format(lname), objects[lname])
 
 # Manual mesh refinement
-for mesh_layer, mesh_length in mesh_size.items():
-    mesh_objects = objects.get(mesh_layer, [])
+for mesh_name, mesh_length in mesh_size.items():
+    mesh_layers = [n for n in layers if match_layer(n, mesh_name)]
+    mesh_objects = [o for l in mesh_layers if l in objects for o in objects[l]]
     if mesh_objects:
         oMeshSetup = oDesign.GetModule("MeshSetup")
         oMeshSetup.AssignLengthOp(
             [
-                "NAME:mesh_size_{}".format(mesh_layer),
+                "NAME:mesh_size_{}".format(mesh_name),
                 "RefineInside:=",
-                layers.get(mesh_layer, {}).get("thickness", 0.0) != 0.0,
+                all(layers[n].get("thickness", 0.0) != 0.0 for n in mesh_layers),
                 "Enabled:=",
                 True,
                 "Objects:=",

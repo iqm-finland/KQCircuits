@@ -34,9 +34,8 @@ from elmer_helpers import (
 from gmsh_helpers import (
     separated_hull_and_holes,
     add_polygon,
-    set_mesh_size_field,
     get_recursive_children,
-    set_meshing_options,
+    set_meshing,
     apply_elmer_layer_prefix,
     get_metal_layers,
     optimize_mesh,
@@ -111,42 +110,10 @@ def produce_cross_section_mesh(json_data: dict[str, Any], msh_file: Path | str) 
     }
     gmsh.model.occ.synchronize()
 
-    # Refine mesh
-    # Here json_data['mesh_size'] is assumed to be dictionary where key denotes material (string) and value (double)
-    # denotes the maximal length of mesh element. Additional terms can be determined, if the value type is list. Then,
-    # - term[0] = the maximal mesh element length inside at the entity and its expansion
-    # - term[1] = expansion distance in which the maximal mesh element length is constant (default=term[0])
-    # - term[2] = the slope of the increase in the maximal mesh element length outside the entity
-    #
-    # To refine material interface the material names by should be separated by '&' in the key. Key 'global_max' is
-    # reserved for setting global maximal element length. For example, if the dictionary is given as
-    # {'substrate': 10, 'substrate&vacuum': [2, 5], 'global_max': 100}, then the maximal mesh element length is 10
-    # inside the substrate and 2 on region which is less than 5 units away from the substrate-vacuum interface. Outside
-    # these regions, the mesh element size can increase up to 100.
+    # Set meshing
     mesh_size = json_data.get("mesh_size", {})
-    mesh_global_max_size = mesh_size.pop("global_max", bbox.perimeter())
-    mesh_field_ids = []
-    for name, size in mesh_size.items():
-        intersection: set[tuple[int, int]] = set()
-        split_names = name.split("&")
-        if all((name in new_tags for name in split_names)):
-            for sname in split_names:
-                family = get_recursive_children(new_tags[sname]).union(new_tags[sname])
-                intersection = intersection.intersection(family) if intersection else family
-
-            mesh_field_ids += set_mesh_size_field(
-                list(intersection - get_recursive_children(intersection)),
-                mesh_global_max_size,
-                *(size if isinstance(size, list) else [size]),
-            )
-        else:
-            print(f'WARNING: No layers corresponding to mesh_size keys "{split_names}" found')
-
-    # Set meshing options
     workflow = json_data.get("workflow", {})
-    n_threads_dict = workflow["sbatch_parameters"] if "sbatch_parameters" in workflow else workflow
-    gmsh_n_threads = int(n_threads_dict.get("gmsh_n_threads", 1))
-    set_meshing_options(mesh_field_ids, mesh_global_max_size, gmsh_n_threads)
+    set_meshing(mesh_size, new_tags, workflow)
 
     # Add excitation boundaries
     metal_layers = get_metal_layers(layers)

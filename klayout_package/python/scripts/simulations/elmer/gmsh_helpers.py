@@ -15,6 +15,7 @@
 # (meetiqm.com/iqm-open-source-trademark-policy). IQM welcomes contributions to the code.
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
+import re
 from pathlib import Path
 from typing import Any, Sequence, Iterable
 import gmsh
@@ -153,31 +154,10 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
     }
     gmsh.model.occ.synchronize()
 
-    # Refine mesh
+    # Set meshing
     mesh_size = json_data.get("mesh_size", {})
-    mesh_global_max_size = mesh_size.pop("global_max", bbox.perimeter())
-    mesh_field_ids = []
-    for name, size in mesh_size.items():
-        intersection: set[tuple[int, int]] = set()
-        split_names = name.split("&")
-        if all(n in new_tags for n in split_names):
-            for sname in split_names:
-                family = get_recursive_children(new_tags[sname]).union(new_tags[sname])
-                intersection = intersection.intersection(family) if intersection else family
-
-            mesh_field_ids += set_mesh_size_field(
-                list(intersection - get_recursive_children(intersection)),
-                mesh_global_max_size,
-                *(size if isinstance(size, list) else [size]),
-            )
-        else:
-            print(f'WARNING: No layers corresponding to mesh_size keys "{split_names}" found')
-
-    # Set meshing options
     workflow = json_data.get("workflow", {})
-    n_threads_dict = workflow["sbatch_parameters"] if "sbatch_parameters" in workflow else workflow
-    gmsh_n_threads = int(n_threads_dict.get("gmsh_n_threads", 1))
-    set_meshing_options(mesh_field_ids, mesh_global_max_size, gmsh_n_threads)
+    set_meshing(mesh_size, new_tags, workflow)
 
     # Remove layers without material
     for name, data in layers.items():
@@ -191,7 +171,7 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
         for excitation in excitations:
             excitation_names = [n for n, d in metal_layers.items() if d["excitation"] == excitation and n in new_tags]
             excitation_dts = [dt for n in excitation_names for dt in new_tags[n]]
-            excitation_with_boundary = get_recursive_children(excitation_dts).union(excitation_dts)
+            excitation_with_boundary = get_recursive_children(excitation_dts, True)
             new_tags[f"excitation_{excitation}_boundary"] = [(d, t) for d, t in excitation_with_boundary if d == 2]
             for n in excitation_names:
                 new_tags[n] = [(d, t) for d, t in new_tags[n] if d == 3]
@@ -402,20 +382,70 @@ def set_mesh_size_field(
     return set_mesh_size(dim_tags, size, global_max, dist, dist + (global_max - size) / slope)
 
 
-def get_recursive_children(dim_tags: Iterable[DimTag]) -> set[DimTag]:
+def get_recursive_children(dim_tags: Iterable[DimTag], include_parent: bool = False) -> set[DimTag]:
     """Returns children and all recursive grand children of given parent entities
 
     Args:
         dim_tags: list of dim tags of parent entities
+        include_parent: whether to include parent entities into the output
 
     Returns:
         set of dim tags of all children and recursive grand children
     """
-    children: set[DimTag] = set()
+    children: set[DimTag] = set(dim_tags) if include_parent else set()
     while dim_tags:
         dim_tags = gmsh.model.getBoundary(list(dim_tags), combined=False, oriented=False, recursive=False)
         children = children.union(dim_tags)
     return children
+
+
+def set_meshing(
+    mesh_size: dict[str, float | list[float]], layer_dts: dict[str, list[DimTag]], workflow: dict[str, Any]
+):
+    """Applies mesh refinement and sets meshing options
+
+    Args:
+        mesh_size: Dictionary to determine mesh refinement
+        layer_dts: dictionary with layer names as keys and lists of dim-tags as values
+        workflow: Parameters for simulation workflow
+    """
+    # Find global maximum mesh element length
+    mesh_global_max_size = mesh_size.pop("global_max", 0)
+    if isinstance(mesh_global_max_size, list) and mesh_global_max_size:
+        mesh_global_max_size = mesh_global_max_size[0]  # this covers the case if global_max is given as a list
+    if not mesh_global_max_size:
+        # this covers the cases if global_max is not given, or is given as empty list or zero
+        all_dts = {dt for dts in layer_dts.values() for dt in dts}
+        bboxes = [gmsh.model.occ.getBoundingBox(d, t) for d, t in all_dts]
+        mesh_global_max_size = max(coord_dist(bbox[0:3], bbox[3:6]) for bbox in bboxes) if bboxes else 1.0
+
+    # Refine mesh
+    mesh_field_ids = []
+    for keys, size in mesh_size.items():
+        size_dts: set[DimTag] = set(gmsh.model.getEntities())
+        for key in keys.split("&"):
+            complement = key.startswith("!")
+            layer_key = key[1:] if complement else key
+            pattern = "^" + str(re.escape(layer_key).replace(r"\*", ".*")) + "$"
+            matches = [n for n in layer_dts if re.match(pattern, n)]
+            if not matches:
+                print(f'WARNING: No layers corresponding to mesh_size layer pattern "{layer_key}" found')
+            family = get_recursive_children([dt for n in matches for dt in layer_dts[n]], True)
+            if complement:
+                size_dts -= family
+            else:
+                size_dts &= family
+
+        mesh_field_ids += set_mesh_size_field(
+            list(size_dts - get_recursive_children(size_dts)),
+            mesh_global_max_size,
+            *(size if isinstance(size, list) else [size]),
+        )
+
+    # Set meshing options
+    n_threads_dict = workflow["sbatch_parameters"] if "sbatch_parameters" in workflow else workflow
+    gmsh_n_threads = int(n_threads_dict.get("gmsh_n_threads", 1))
+    set_meshing_options(mesh_field_ids, mesh_global_max_size, gmsh_n_threads)
 
 
 def set_meshing_options(mesh_field_ids: list[int], max_size: float, n_threads: int) -> None:

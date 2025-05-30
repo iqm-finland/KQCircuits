@@ -34,16 +34,20 @@ class ElmerSolution(Solution):
         is_axisymmetric: Simulate with Axi Symmetric coordinates along :math:`y\\Big|_{x=0}` (Default: False)
         mesh_levels: If set larger than 1 Elmer will make the mesh finer by dividing each element
                      into 2^(dim) elements mesh_levels times. Default 1.
-        mesh_size: Dictionary to determine mesh size where key (string) denotes material and value (double) denotes the
-            maximal length of mesh element. Additional mesh size terms can be determined, if the value type is
-            list. Then, term[0] is the maximal mesh element length inside at the entity and its expansion,
-            term[1] is expansion distance in which the maximal mesh element length is constant (default=term[0]),
-            and term[2] is the slope of the increase in the maximal mesh element length outside the entity.
-            To refine material interface the material names by should be separated by '&' in the key. Key 'global_max'
-            is reserved for setting global maximal element length. For example, if the dictionary is given as
-            {'substrate': 10, 'substrate&vacuum': [2, 5], 'global_max': 100}, then the maximal mesh element length is 10
-            inside the substrate and 2 on region which is less than 5 units away from the substrate-vacuum interface.
-            Outside these regions, the mesh element size can increase up to 100.
+        mesh_size: Dictionary to determine the mesh refinement. The keys (string) denote the entities where to apply the
+            refinement and values (double) denote the maximal length of the mesh elements.
+            Optionally, the values can be set as a lists of doubles. Then, value[0] is the maximal mesh element length
+            inside at the entity and its expansion, value[1] is expansion distance in which the maximal mesh element
+            length is constant (default=value[0]), and value[2] is the slope of the increase in the maximal mesh element
+            length outside the entity.
+            The key can be a single layer name, or it can consist of multiple layer names separated with the & symbol,
+            meaning the entity will be an intersection of listed layers. Optionally, one can use a pattern for layer
+            names with the * symbol representing any string in a layer name. The ! symbol before the layer name or
+            pattern means that the complement of layer(s) is used instead.
+            The key 'global_max' is reserved for setting global maximal element length.
+            For example, if the dictionary is {'substrate*': 10, 'substrate*&vacuum': [2, 5], 'global_max': 100}, then
+            the maximal mesh element length is 10 inside the substrates and 2 on region which is less than 5 units away
+            from any substrate-vacuum interface. Outside these regions, the mesh element size can increase up to 100.
         mesh_optimizer: Dictionary to determine mesh optimization, or None (default) to ignore optimization. The
             dictionary can contain keywords 'method', 'force', 'niter' and 'dimTags'. See Gmsh manual
             (gmsh.model.mesh.optimize) for details. The default value for 'method' is 'Netgen'.
