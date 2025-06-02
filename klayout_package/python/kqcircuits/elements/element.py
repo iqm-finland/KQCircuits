@@ -623,7 +623,6 @@ class Element(pya.PCellDeclarationHelper):
                     for other_face in group:
                         if other_face != face:
                             self.cell.shapes(self.get_layer("ground_grid_avoidance", other_face)).insert(shape)
-                    break
 
     @classmethod
     def get_sim_ports(cls, simulation):  # pylint: disable=unused-argument
