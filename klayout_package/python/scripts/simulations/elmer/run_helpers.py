@@ -329,16 +329,33 @@ def run_elmer_solver(json_data: dict[str, Any], exec_path_override: Path | str |
     )
 
 
-def run_paraview(result_path: Path | str, n_processes: int, exec_path_override: Path | str | None = None):
+def run_paraview(
+    result_path: Path | str, exec_path_override: Path | str | None = None, cross_section: bool = False
+):
     """Open simulation results in paraview"""
+
     paraview_executable = shutil.which("paraview")
-    if paraview_executable is not None:
-        if n_processes > 1:
-            pvtu_files = glob.glob(f"{result_path}*.pvtu")
-            subprocess.check_call([paraview_executable] + pvtu_files, cwd=exec_path_override)
-        else:
-            vtu_files = glob.glob(f"{result_path}*.vtu")
-            subprocess.check_call([paraview_executable] + vtu_files, cwd=exec_path_override)
+    if paraview_executable:
+        pvtu_files = glob.glob(f"{result_path}*.pvtu")
+        vtu_files = glob.glob(f"{result_path}*.vtu")
+        sif_files = glob.glob(f"{result_path}*.sif")
+        data_files = pvtu_files if pvtu_files else vtu_files
+        
+        paraview_macro_path = repr(str(Path(Path(Path.cwd()) / "scripts/paraview_macro.py").parent))
+        try:
+            pv_script_path = f"{result_path.name}_pv.py"
+            with open(pv_script_path, "w", encoding="utf-8") as f:
+                f.write(
+                    f"import sys\n"
+                    f"sys.path.insert(0, {paraview_macro_path})\n"
+                    f"from paraview_macro import run_macro\n"
+                    f"run_macro({data_files}, {sif_files}, {cross_section})\n"
+                )
+                f.close()
+                subprocess.check_call([paraview_executable] + data_files + [pv_script_path])
+        except (ValueError, NameError, TypeError, SyntaxError) as e:
+            print(f"Paraview automated visualisation failed. Attempting to open ParaView with data only.\nError: {e}")
+            subprocess.check_call([paraview_executable] + data_files, cwd=exec_path_override)
     else:
         logging.warning("Paraview was not found! Make sure you have it installed: https://www.paraview.org/")
         sys.exit()
