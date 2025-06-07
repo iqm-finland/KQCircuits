@@ -51,6 +51,7 @@ def export_elmer_json(
     path: Path,
     workflow: dict,
     mesh_reuse_name: str | None = None,
+    pv_py_file:bool=False,
 ):
     """
     Export Elmer simulation into json and gds files.
@@ -109,6 +110,44 @@ def export_elmer_json(
     # write .json file
     json_file_path = str(path.joinpath(full_name + ".json"))
     export_simulation_json(json_data, json_file_path)
+
+    # write pv_py_file 
+    if pv_py_file:
+        def write_pv_file(simulation, solution):
+            full_name = simulation.name + solution.name
+            pv_script_path = path / (full_name + "_pv.py")
+            scripts_dir_path = path / "scripts" / "paraview"
+
+            # Get correct JSON path for this simulation
+            json_file_path = path / (full_name + ".json")
+
+            with open(json_file_path, "r") as f:
+                data = json.load(f)
+
+            parameters = data.get("parameters", {})
+            source_name = parameters.get("source_name")
+            if source_name:
+                sif_path = path / source_name / f"{source_name}.sif"
+                vtu_dir = path / source_name
+            else:
+                sif_path = path / simulation.name / f"{simulation.name}.sif"
+                vtu_dir = path / simulation.name
+
+            with open(pv_script_path, "w") as f:
+                f.write(
+                    f'import sys\n'
+                    f'sys.path.insert(0, r"{scripts_dir_path}")\n'
+                    f'from center_3d import run\n'
+                    f'from pathlib import Path\n'
+                    f'vtu_dir = Path(r"{vtu_dir}")\n'
+                    f'vtu_files = [str(f) for f in vtu_dir.glob("*.vtu")]\n'
+                    f'if vtu_files:\n'
+                    f'    run(vtu_files, r"{sif_path}", True)\n'
+                    f'else:\n'
+                    f'    print("No .vtu files found.")\n'
+                )
+
+        write_pv_file(simulation, solution)
 
     return json_file_path
 
