@@ -176,7 +176,7 @@ else:
             run_elmer_solver(json_data, path)
 
     if workflow.get("run_paraview", False):
-        run_paraview(path / name / name, elmer_n_processes, path)
+        run_paraview(path / f"{name}_pv.py", elmer_n_processes, path)
 
     # Write result file
     if args.write_project_results:

@@ -329,16 +329,15 @@ def run_elmer_solver(json_data: dict[str, Any], exec_path_override: Path | str |
     )
 
 
-def run_paraview(result_path: Path | str, n_processes: int, exec_path_override: Path | str | None = None):
-    """Open simulation results in paraview"""
-    paraview_executable = shutil.which("paraview")
-    if paraview_executable is not None:
+def run_paraview(temp_script_path: Path | str, n_processes: int, exec_path_override: Path | str | None = None):
+    """Run a ParaView Python script using pvpython."""
+    pvpython_executable = shutil.which("pvpython")
+    if pvpython_executable is not None:
         if n_processes > 1:
-            pvtu_files = glob.glob(f"{result_path}*.pvtu")
-            subprocess.check_call([paraview_executable] + pvtu_files, cwd=exec_path_override)
+            command = [pvpython_executable, str(temp_script_path)]
+            subprocess.check_call(command, cwd=exec_path_override)
         else:
-            vtu_files = glob.glob(f"{result_path}*.vtu")
-            subprocess.check_call([paraview_executable] + vtu_files, cwd=exec_path_override)
+            print(n_processes)
     else:
-        logging.warning("Paraview was not found! Make sure you have it installed: https://www.paraview.org/")
+        logging.warning("pvpython was not found! Make sure ParaView is installed and in PATH.")
         sys.exit()
