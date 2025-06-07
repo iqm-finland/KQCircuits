@@ -35,7 +35,10 @@ from kqcircuits.util.export_helper import (
     get_active_or_new_layout,
     open_with_klayout_or_default_application,
 )
+
 from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
+from kqcircuits.util.export_helper import setup_paraview_macro
+
 
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
@@ -73,7 +76,7 @@ elmer_export_parameters = {
         "run_gmsh_gui": False,  # open gmsh gui after meshing
         "run_elmergrid": True,
         "run_elmer": True,
-        "run_paraview": False,  # opens results in ParaView after finishing
+        "run_paraview": True,  # opens results in ParaView after finishing
         "n_workers": 1,  # workers for first-level parallelisation
         "gmsh_n_threads": 4,  # -1 means all the physical cores
         "elmer_n_processes": 4,  # processes for second-level parallelisation
@@ -89,6 +92,9 @@ elmer_export_parameters = {
         "1t1_gap&1t1_signal_3": [4.0, 8.0],
         "1t1_gap&1t1_ground": [4.0, 8.0],
     },
+    # "paraview_automation": {
+    #    "enable": False,
+    # }
 }
 
 # Get layout
@@ -119,8 +125,20 @@ simulations += cross_sweep_simulation(
     },
 )
 
+# Automation parameters for ParaView visualisation
+paraview_settings = {
+    "enable": True,
+    "threshold": [1, 1],
+    "threshold_scalars": ["CELLS", "GeometryIds"],
+}
+
+if paraview_settings["enable"] == True:
+    setup_paraview_macro(**paraview_settings)
+
+
 # Export simulation files
 export_elmer(simulations, **elmer_export_parameters)
 
 # Write and open OAS file
-open_with_klayout_or_default_application(export_simulation_oas(simulations, dir_path))
+# open_with_klayout_or_default_application(export_simulation_oas(simulations, dir_path))
+export_simulation_oas(simulations, dir_path)
