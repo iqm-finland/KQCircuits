@@ -49,6 +49,12 @@ class SuperInductor(Junction):
         0.1,
         unit="μm",
     )
+    shadow_width = Param(
+        pdt.TypeDouble, "Width of the shadow layer.", 0.125, unit="μm"
+    )
+    shadow_min_height = Param(
+        pdt.TypeDouble, "Minimum height of the shadow layer.", 0.04, unit="μm"
+    )
     finger_overshoot = Param(pdt.TypeDouble, "Length of fingers after the junction.", 1.0, unit="μm")
     include_base_metal_gap = Param(pdt.TypeBoolean, "Include base metal gap layer.", True)
     include_base_metal_addition = Param(pdt.TypeBoolean, "Include base metal addition layer.", True)
@@ -119,11 +125,24 @@ class SuperInductor(Junction):
         self._add_refpoints()
 
     def _make_super_inductor_junctions(self, offset):
-        """Create junction fingers and add them to some SIS layer.
-        Choose 'SIS_junction' layer by default but 'SIS_junction_2' if ``separate_junctions`` is True.
-        """
         layer_name = "SIS_junction_2" if self.separate_junctions else "SIS_junction"
         shape_into = self.cell.shapes(self.get_layer(layer_name))
+        shadow = self.cell.shapes(self.get_layer("SIS_shadow"))
+
+        def wire_shadow(height, i, x, y):
+            shadow_shape = pya.DBox(0, 0, self.shadow_width, height)
+            side = (self.wire_width) if i % 2 == 0 else -self.shadow_width
+            shadow_transform = pya.DTrans(0, False, (x + side), y)
+            return shadow_shape * shadow_transform
+        
+        def junction_shadow(width, height):
+            shadow_shape = pya.DBox(0, -self.shadow_min_height/2, self.shadow_width, self.shadow_min_height/2)
+            left_transform = pya.DTrans(0, False, -self.shadow_width, height/2)
+            right_transform = pya.DTrans(0, False, width, height/2)
+            return [
+                left_transform * shadow_shape,
+                right_transform * shadow_shape,
+            ]
 
         # SQUID ARRAY - Corrected version
         squid_width = self.squid_area_width
@@ -135,34 +154,29 @@ class SuperInductor(Junction):
         available_space_for_boxes = self.squid_area_height - total_gap_space
         squid_height = available_space_for_boxes / squid_count
 
-        squid_offset_x = -squid_width / 2
+        squid_offset_x = (-squid_width / 2) + self.squid_x_connector_offset - (self.wire_width / 2)
         squid_offset_y = self.height / 2 - self.squid_area_height / 2
 
-        enclosing_box = pya.DBox(0, 0, self.squid_area_width, self.squid_area_height)
         squid_transform = pya.DTrans(0, False, squid_offset_x, squid_offset_y)
-        # shape_into.insert(squid_transform * enclosing_box)
-
-        # SQUID Debug Boxes
-        for i in range(int(squid_count)):
-            shape = pya.DBox(0, 0, squid_width, squid_height)
-            y_position = i * (squid_height + gap_size)
-            moved = pya.DTrans(0, False, 0, y_position) * shape * squid_transform
-            #shape_into.insert(moved)
         
         # Squid Junctions
         for i in range(int(squid_count)):
             shape_lower = pya.DBox(0, 0, squid_width, self.junction_width)
-            shape_upper = pya.DBox(
-                0, squid_height - self.junction_width, 
-                squid_width, squid_height
-            )
             y_position = i * (squid_height + gap_size)
+            squid_lower_transform = pya.DTrans(0, False, 0, y_position)
+            squid_upper_transform = pya.DTrans(0, False, 0, (squid_height - self.junction_width)+y_position)
             shape_into.insert(
-                pya.DTrans(0, False, 0, y_position) * shape_lower * squid_transform
+                squid_lower_transform * shape_lower * squid_transform
             )
             shape_into.insert(
-                pya.DTrans(0, False, 0, y_position) * shape_upper * squid_transform
+                squid_upper_transform * shape_lower * squid_transform
             )
+            [left, right] = junction_shadow(squid_width, self.junction_width)
+            shadow.insert(squid_lower_transform * left * squid_transform)
+            shadow.insert(squid_lower_transform * right * squid_transform)
+            shadow.insert(squid_upper_transform * left * squid_transform)
+            shadow.insert(squid_upper_transform * right * squid_transform)
+
 
         # Squid Pylon Wires
         for i in range(int(squid_count)):
@@ -182,6 +196,10 @@ class SuperInductor(Junction):
             shape_into.insert(
                 pya.DTrans(0, False, 0, y_position) * shape_right * squid_transform
             )
+            ws_left = wire_shadow(squid_height-(self.junction_width*2), 1, x_offset, y_position+self.junction_width)
+            shadow.insert(ws_left * squid_transform)
+            ws_right = wire_shadow(squid_height-(self.junction_width*2), 2, squid_width - x_offset - self.wire_width, y_position+self.junction_width)
+            shadow.insert(ws_right * squid_transform)
 
         # SQUID Debug Gap Boxes
         for i in range(int(squid_count - 1)):
@@ -196,6 +214,13 @@ class SuperInductor(Junction):
             y_position = (i + 1) * squid_height + i * gap_size
             moved = pya.DTrans(0, False, 0, y_position) * shape * squid_transform
             shape_into.insert(moved)
+            ws = wire_shadow(gap_size, i, starting_x, y_position)
+            shadow.insert(ws * squid_transform)
+            # shadow_shape = pya.DBox(0, 0, self.shadow_width, gap_size)
+            # side = (self.wire_width) if i % 2 == 0 else -self.shadow_width
+            # shadow_transform = pya.DTrans(0, False, (starting_x + side), y_position)
+            # shadow.insert(shadow_shape * shadow_transform * squid_transform)
+        
 
         # CONNECTORS
         x_offset = self.squid_x_connector_offset - (self.wire_width / 2)
@@ -598,7 +623,7 @@ class SuperInductor(Junction):
         ]
         if self.include_base_metal_addition:
             shape = polygon_with_vsym(bottom_pts)
-            self.cell.shapes(self.get_layer("base_metal_addition")).insert(shape)
+            #self.cell.shapes(self.get_layer("base_metal_addition")).insert(shape)
             # metal additions top
             top_pts = [
                 pya.DPoint(x0 + 2, y0 + 7),
@@ -610,7 +635,7 @@ class SuperInductor(Junction):
             ]
 
             shape = polygon_with_vsym(top_pts)
-            self.cell.shapes(self.get_layer("base_metal_addition")).insert(shape)
+            #self.cell.shapes(self.get_layer("base_metal_addition")).insert(shape)
         # metal gap
         if self.include_base_metal_gap:
             if self.include_base_metal_addition:
