@@ -92,9 +92,6 @@ elmer_export_parameters = {
         "1t1_gap&1t1_signal_3": [4.0, 8.0],
         "1t1_gap&1t1_ground": [4.0, 8.0],
     },
-    # "paraview_automation": {
-    #    "enable": False,
-    # }
 }
 
 # Get layout
@@ -125,20 +122,8 @@ simulations += cross_sweep_simulation(
     },
 )
 
-# Automation parameters for ParaView visualisation
-paraview_settings = {
-    "enable": True,
-    "threshold": [1, 1],
-    "threshold_scalars": ["CELLS", "GeometryIds"],
-}
-
-if paraview_settings["enable"] == True:
-    setup_paraview_macro(**paraview_settings)
-
-
 # Export simulation files
 export_elmer(simulations, **elmer_export_parameters)
 
 # Write and open OAS file
-# open_with_klayout_or_default_application(export_simulation_oas(simulations, dir_path))
-export_simulation_oas(simulations, dir_path)
+open_with_klayout_or_default_application(export_simulation_oas(simulations, dir_path))
