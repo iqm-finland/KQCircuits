@@ -30,8 +30,8 @@ class SuperInductor(Junction):
     junction_length = Param(pdt.TypeDouble, "Junction length", 5, unit="μm")
     wire_width = Param(pdt.TypeDouble, "Wire width", 0.02, unit="μm")
     phase_slip_junction_length = Param(pdt.TypeDouble, "Phase slip junction length", 0.5, unit="μm")
-    squid_area_width = Param(pdt.TypeDouble, "Width of Squids Area.", 0.5, unit="μm")
-    squid_area_height = Param(pdt.TypeDouble, "Height of Squids Area.", 1.0, unit="μm")
+    squid_area_width = Param(pdt.TypeDouble, "Width of Squids Area.", 2, unit="μm")
+    squid_area_height = Param(pdt.TypeDouble, "Height of Squids Area.", 5, unit="μm")
     squid_count = Param(pdt.TypeInt, "Number of Squids in the Super Inductor.", 8)
     squid_junction_length = Param(pdt.TypeDouble, "Length of the SQUID junctions.", 0.25, unit="μm")
     squid_x_connector_offset = Param(
@@ -40,13 +40,13 @@ class SuperInductor(Junction):
     tapper_horizontal_displacement = Param(
         pdt.TypeDouble,
         "Horizontal displacement of the tapper from the junction.",
-        0.5,
+        1,
         unit="μm",
     )
     tapper_horizontal_displacement_step = Param(
         pdt.TypeDouble,
         "Horizontal displacement step of the tapper from the junction.",
-        0.1,
+        0.25,
         unit="μm",
     )
     shadow_width = Param(
@@ -265,12 +265,11 @@ class SuperInductor(Junction):
         )
         tapper_steps = int(self.tapper_horizontal_displacement / self.tapper_horizontal_displacement_step)
         adjusted_tapper_horizontal_displacement = tapper_steps * self.tapper_horizontal_displacement_step
-        #tapper_height = tapper_unit_height * tapper_steps
         last_tapper_north_transform = None
         for i in range(tapper_steps):
             tapper_step_transform = pya.DTrans(
                 0, False, 
-                i * adjusted_tapper_horizontal_displacement,
+                i * self.tapper_horizontal_displacement_step,
                 i * tapper_unit_height
             )
             # pylon
@@ -293,6 +292,7 @@ class SuperInductor(Junction):
             shape_into.insert(
                 tapper_step_transform * junction * tapper_north_transform
             )
+            #last_tapper_north_transform =  tapper_step_transform * tapper_north_transform
             # shadow
             ws = wire_shadow(tapper_unit_height - self.junction_width, i-1, x_offset, 0)
             shadow.insert(ws * tapper_north_transform * tapper_step_transform)
@@ -301,11 +301,13 @@ class SuperInductor(Junction):
             shadow.insert(jsl  * tapper_north_transform * tapper_step_transform * shadow_transform)
             shadow.insert(jsr * tapper_north_transform * tapper_step_transform * shadow_transform)
         
+        last_tapper_north_step_count = tapper_steps # <- export
         last_tapper_north_transform = tapper_north_transform * pya.DTrans(
             0, False, 
-            0, (tapper_steps) * tapper_unit_height
+            adjusted_tapper_horizontal_displacement - tapper_unit_width, 
+            last_tapper_north_step_count * tapper_unit_height
         ) # <- export
-        last_tapper_north_step_count = tapper_steps # <- export
+        
 
         # TAPPER South
         tapper_unit_width = self.squid_area_width
@@ -323,7 +325,7 @@ class SuperInductor(Junction):
         for i in range(tapper_steps):
             tapper_step_transform = pya.DTrans(
                 0, False, 
-                i * adjusted_tapper_horizontal_displacement,
+                i * self.tapper_horizontal_displacement_step,
                 -i * tapper_unit_height
             )
             # pyllon
@@ -353,12 +355,14 @@ class SuperInductor(Junction):
             shadow.insert(jsl  * tapper_south_transform * tapper_step_transform)
             shadow.insert(jsr * tapper_south_transform * tapper_step_transform)
 
+        last_tapper_south_step_count = tapper_steps # <- export
         last_tapper_south_transform = tapper_south_transform * pya.DTrans(
             0, False, 
-            0, -(tapper_steps - 1) * tapper_unit_height
+            adjusted_tapper_horizontal_displacement - tapper_unit_width, 
+            -(last_tapper_north_step_count-1) * tapper_unit_height
         ) # <- export
-        last_tapper_south_step_count = tapper_steps # <- export
 
+        
         bend_height = self.squid_junction_length
 
         # Tower NordWest
@@ -553,8 +557,8 @@ class SuperInductor(Junction):
             shadow_transform = pya.DTrans(0, False, 0, -tower_unit_height)
             shadow.insert(ws * tower_south_transform * tower_step_transform * shadow_transform)
             [jsl, jsr] = junction_shadow(tower_unit_width, self.junction_width)
-            shadow.insert(jsl  * tower_south_transform * tower_step_transform)
-            shadow.insert(jsr * tower_south_transform * tower_step_transform)
+            shadow.insert(jsl  * tower_south_transform * tower_step_transform * shadow_transform)
+            shadow.insert(jsr * tower_south_transform * tower_step_transform * shadow_transform)
 
         # South Bend (Inverted version of North Bend)
         bend_width_multiplier = 1.5
