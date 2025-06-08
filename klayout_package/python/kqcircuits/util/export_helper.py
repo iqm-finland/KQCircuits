@@ -490,26 +490,3 @@ def export_drc_report(name, path, drc_script):
         )
     except subprocess.CalledProcessError as e:
         logging.error(e.output)
-
-
-def setup_paraview_macro(**kwargs):
-    """Undertakes the foundational set up of paraview's macro, essentially writing all kwargs to the file."""
-
-    # Key paths
-    paraview_macro_path = Path("klayout_package/python/scripts/simulations/post_process/paraview_macro.py")
-
-    # Write kwargs to macro
-    with open(paraview_macro_path, "r") as f:
-        lines = f.readlines()
-        f.close
-
-    new_lines = []
-    for line in lines:
-        if line.strip().startswith("kwargs ="):
-            new_lines.append("".join(["kwargs = ", str(kwargs), "\n"]))
-        else:
-            new_lines.append(line)
-
-    with open(paraview_macro_path, "w") as f:
-        f.writelines(new_lines)
-        f.close
