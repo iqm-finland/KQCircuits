@@ -60,22 +60,21 @@ class SuperInductor(Junction):
     include_base_metal_addition = Param(pdt.TypeBoolean, "Include base metal addition layer.", True)
     shadow_margin = Param(pdt.TypeDouble, "Shadow layer margin near the the pads.", 0.5, unit="μm")
     separate_junctions = Param(pdt.TypeBoolean, "Junctions to separate layer.", False)
-    offset_compensation = Param(pdt.TypeDouble, "Junction lead offset from junction width", 0, unit="μm")
-    mirror_offset = Param(pdt.TypeBoolean, "Move the junction lead offset to the other lead", False)
     finger_overlap = Param(pdt.TypeDouble, "Length of fingers inside the pads.", 1.0, unit="μm")
     height = Param(pdt.TypeDouble, "Height of the junction element.", 22.0, unit="μm")
     width = Param(pdt.TypeDouble, "Width of the junction element.", 22.0, unit="μm")
     pad_height = Param(pdt.TypeDouble, "Height of the junction pad.", 6.0, unit="μm")
     pad_width = Param(pdt.TypeDouble, "Width of the junction pad.", 12.0, unit="μm")
     pad_to_pad_separation = Param(pdt.TypeDouble, "Pad separation.", 6.0, unit="μm")
-    x_offset = Param(pdt.TypeDouble, "Horizontal junction offset.", 0, unit="μm")
     pad_rounding_radius = Param(pdt.TypeDouble, "Rounding radius of the junction pad.", 0.5, unit="μm")
+    #x_offset = Param(pdt.TypeDouble, "Horizontal junction offset.", 0, unit="μm")
+    #offset_compensation = Param(pdt.TypeDouble, "Junction lead offset from junction width", 0, unit="μm")
+    #mirror_offset = Param(pdt.TypeBoolean, "Move the junction lead offset to the other lead", False)
 
     def build(self):
         self.produce_super_inductor()
 
     def produce_super_inductor(self):
-
         # corner rounding parameters
         rounding_params = {
             "rinner": self.pad_rounding_radius,  # inner corner rounding radius
@@ -108,12 +107,12 @@ class SuperInductor(Junction):
         tp_shape = pya.DTrans(0, False, 0, self.pad_height / 2 + self.pad_to_pad_separation / 2) * polygon_with_vsym(
             bp_pts_left
         )
-        self._round_corners_and_append(tp_shape, junction_shapes_top, rounding_params)
+        #self._round_corners_and_append(tp_shape, junction_shapes_top, rounding_params)
 
         tp_shadow_shape = pya.DTrans(
             0, False, 0, self.pad_height / 2 + self.pad_to_pad_separation / 2
         ) * polygon_with_vsym(bp_shadow_pts_left)
-        self._round_corners_and_append(tp_shadow_shape, shadow_shapes, rounding_params)
+        #self._round_corners_and_append(tp_shadow_shape, shadow_shapes, rounding_params)
 
         # create rectangular junction-support structures and junctions
         self._make_super_inductor_junctions(offset = pya.DPoint(0, 0))
@@ -721,7 +720,7 @@ class SuperInductor(Junction):
             ]
 
             shape = polygon_with_vsym(top_pts)
-            #self.cell.shapes(self.get_layer("base_metal_addition")).insert(shape)
+            self.cell.shapes(self.get_layer("base_metal_addition")).insert(shape)
         # metal gap
         if self.include_base_metal_gap:
             if self.include_base_metal_addition:
