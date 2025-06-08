@@ -153,10 +153,8 @@ class SuperInductor(Junction):
         total_gap_space = gap_size * (squid_count - 1)
         available_space_for_boxes = self.squid_area_height - total_gap_space
         squid_height = available_space_for_boxes / squid_count
-
         squid_offset_x = (-squid_width / 2) + self.squid_x_connector_offset - (self.wire_width / 2)
         squid_offset_y = self.height / 2 - self.squid_area_height / 2
-
         squid_transform = pya.DTrans(0, False, squid_offset_x, squid_offset_y)
         
         # Squid Junctions
@@ -196,9 +194,19 @@ class SuperInductor(Junction):
             shape_into.insert(
                 pya.DTrans(0, False, 0, y_position) * shape_right * squid_transform
             )
-            ws_left = wire_shadow(squid_height-(self.junction_width*2), 1, x_offset, y_position+self.junction_width)
+            ws_left = wire_shadow(
+                height=squid_height-(self.junction_width*2), 
+                i=1, 
+                x=x_offset, 
+                y=y_position+self.junction_width
+            )
             shadow.insert(ws_left * squid_transform)
-            ws_right = wire_shadow(squid_height-(self.junction_width*2), 2, squid_width - x_offset - self.wire_width, y_position+self.junction_width)
+            ws_right = wire_shadow(
+                height=squid_height-(self.junction_width*2), 
+                i=2, 
+                x=squid_width - x_offset - self.wire_width, 
+                y=y_position+self.junction_width
+            )
             shadow.insert(ws_right * squid_transform)
 
         # SQUID Debug Gap Boxes
@@ -212,22 +220,19 @@ class SuperInductor(Junction):
                 ending_x, gap_size
             )
             y_position = (i + 1) * squid_height + i * gap_size
-            moved = pya.DTrans(0, False, 0, y_position) * shape * squid_transform
-            shape_into.insert(moved)
+            gap_transform = pya.DTrans(0, False, 0, y_position)
+            shape_into.insert(gap_transform * shape * squid_transform)
             ws = wire_shadow(gap_size, i, starting_x, y_position)
             shadow.insert(ws * squid_transform)
-            # shadow_shape = pya.DBox(0, 0, self.shadow_width, gap_size)
-            # side = (self.wire_width) if i % 2 == 0 else -self.shadow_width
-            # shadow_transform = pya.DTrans(0, False, (starting_x + side), y_position)
-            # shadow.insert(shadow_shape * shadow_transform * squid_transform)
         
 
         # CONNECTORS
         x_offset = self.squid_x_connector_offset - (self.wire_width / 2)
-        conector_length = (self.height - self.squid_area_height) / 2
+        raw_conector_length = (self.height - self.squid_area_height) / 2
+        connector_length = raw_conector_length + self.finger_overlap
         wire_top = pya.DBox(
             x_offset, 0, 
-            x_offset + self.wire_width, conector_length
+            x_offset + self.wire_width, connector_length
         )
         wire_top_transform = pya.DTrans(
             0, False,
@@ -235,7 +240,7 @@ class SuperInductor(Junction):
         )
         shape_into.insert(squid_transform * wire_top * wire_top_transform)
         wire_bottom = pya.DBox(
-            x_offset, -conector_length,
+            x_offset, -connector_length,
             x_offset + self.wire_width, 0
         )
         wire_bottom_transform = pya.DTrans(
@@ -243,6 +248,10 @@ class SuperInductor(Junction):
             0, 0,
         )
         shape_into.insert(squid_transform * wire_bottom * wire_bottom_transform)
+        ws_top = wire_shadow(raw_conector_length, 2, x_offset, 0)
+        shadow.insert(ws_top * squid_transform * wire_top_transform)
+        ws_bottom = wire_shadow(raw_conector_length, 2, x_offset, -raw_conector_length)
+        shadow.insert(ws_bottom * squid_transform * wire_bottom_transform)
 
         # TAPPER North
         tapper_unit_width = self.squid_area_width
@@ -256,7 +265,7 @@ class SuperInductor(Junction):
         )
         tapper_steps = int(self.tapper_horizontal_displacement / self.tapper_horizontal_displacement_step)
         adjusted_tapper_horizontal_displacement = tapper_steps * self.tapper_horizontal_displacement_step
-        tapper_height = tapper_unit_height * tapper_steps
+        #tapper_height = tapper_unit_height * tapper_steps
         last_tapper_north_transform = None
         for i in range(tapper_steps):
             tapper_step_transform = pya.DTrans(
@@ -284,17 +293,19 @@ class SuperInductor(Junction):
             shape_into.insert(
                 tapper_step_transform * junction * tapper_north_transform
             )
+            # shadow
+            ws = wire_shadow(tapper_unit_height - self.junction_width, i-1, x_offset, 0)
+            shadow.insert(ws * tapper_north_transform * tapper_step_transform)
+            [jsl, jsr] = junction_shadow(tapper_unit_width, self.junction_width)
+            shadow_transform = pya.DTrans(0, False, 0, tapper_unit_height - self.junction_width)
+            shadow.insert(jsl  * tapper_north_transform * tapper_step_transform * shadow_transform)
+            shadow.insert(jsr * tapper_north_transform * tapper_step_transform * shadow_transform)
+        
         last_tapper_north_transform = tapper_north_transform * pya.DTrans(
             0, False, 
             0, (tapper_steps) * tapper_unit_height
-        )
-            # debug box
-            # tapper_step_box = pya.DBox(0, 0, tapper_unit_width, tapper_unit_height)
-            # shape_into.insert(
-            #     tapper_step_transform * tapper_step_box * tapper_north_transform
-            # )
-        #tapper_north_box = pya.DBox(0, 0, tapper_unit_width, tapper_height)
-        #shape_into.insert(tapper_north_transform * tapper_north_box)
+        ) # <- export
+        last_tapper_north_step_count = tapper_steps # <- export
 
         # TAPPER South
         tapper_unit_width = self.squid_area_width
@@ -308,14 +319,14 @@ class SuperInductor(Junction):
         )
         tapper_steps = int(self.tapper_horizontal_displacement / self.tapper_horizontal_displacement_step)
         adjusted_tapper_horizontal_displacement = tapper_steps * self.tapper_horizontal_displacement_step
-        tapper_height = tapper_unit_height * tapper_steps
+        #tapper_height = tapper_unit_height * tapper_steps
         for i in range(tapper_steps):
             tapper_step_transform = pya.DTrans(
                 0, False, 
                 i * adjusted_tapper_horizontal_displacement,
                 -i * tapper_unit_height
             )
-            # pylon
+            # pyllon
             if i == 0:
                 x_offset = self.squid_x_connector_offset - (self.wire_width / 2)
             else:
@@ -335,17 +346,18 @@ class SuperInductor(Junction):
             shape_into.insert(
                 tapper_step_transform * junction * tapper_south_transform
             )
-            # debug box
-            # tapper_step_box = pya.DBox(0, -tapper_unit_height, tapper_unit_width, 0)
-            # shape_into.insert(
-            #     tapper_step_transform * tapper_step_box * tapper_south_transform
-            # )
-        #tapper_south_box = pya.DBox(0, -tapper_height, tapper_unit_width, 0)
-        #shape_into.insert(tapper_south_transform * tapper_south_box)
+            # shadow
+            ws = wire_shadow(tapper_unit_height - self.junction_width, i-1, x_offset, self.junction_width)
+            shadow.insert(ws * tapper_south_transform * tapper_step_transform)
+            [jsl, jsr] = junction_shadow(tapper_unit_width, self.junction_width)
+            shadow.insert(jsl  * tapper_south_transform * tapper_step_transform)
+            shadow.insert(jsr * tapper_south_transform * tapper_step_transform)
+
         last_tapper_south_transform = tapper_south_transform * pya.DTrans(
             0, False, 
             0, -(tapper_steps - 1) * tapper_unit_height
-        )
+        ) # <- export
+        last_tapper_south_step_count = tapper_steps # <- export
 
         bend_height = self.squid_junction_length
 
@@ -368,7 +380,7 @@ class SuperInductor(Junction):
                 i * tower_unit_height
             )
             x_offset = (tower_unit_width / 2) - (self.wire_width / 2)
-            # wire
+            # pyllon
             pylon = pya.DBox(
                 x_offset, 0, 
                 x_offset + self.wire_width, tower_unit_height
@@ -384,6 +396,16 @@ class SuperInductor(Junction):
             shape_into.insert(
                 tower_step_transform * junction * tower_north_transform
             )
+            # shadow
+            ws = wire_shadow(tower_unit_height - self.junction_width, i+last_tapper_north_step_count-1, x_offset, 0)
+            shadow.insert(ws * tower_north_transform * tower_step_transform)
+            [jsl, jsr] = junction_shadow(tower_unit_width, self.junction_width)
+            shadow_transform = pya.DTrans(
+                0, False,
+                0, tower_unit_height - (self.junction_width)
+            )
+            shadow.insert(jsl  * tower_north_transform * tower_step_transform * shadow_transform)
+            shadow.insert(jsr * tower_north_transform * tower_step_transform * shadow_transform)
 
         # North Bend
         bend_width_multiplier = 1.5
@@ -419,6 +441,22 @@ class SuperInductor(Junction):
         shape_into.insert(
             bend_transform * bend_junction * last_tower_north_transform
         )
+        # shadow
+        wsl = wire_shadow(bend_unit_height - self.junction_width, 0, x_offset, 0)
+        shadow.insert(wsl * last_tower_north_transform * bend_transform)
+        wsr = wire_shadow(bend_unit_height - self.junction_width, 1, x_offset, 0)
+        wsr_transform = pya.DTrans(
+            0, False,
+            bend_unit_width - (x_offset * 2), 0
+        )
+        shadow.insert(wsr * last_tower_north_transform * bend_transform * wsr_transform)
+        [jsl, jsr] = junction_shadow(bend_unit_width, self.junction_width)
+        js_transform = pya.DTrans(
+            0, False,
+            0, bend_unit_height - self.junction_width
+        )
+        shadow.insert(jsl * last_tower_north_transform * bend_transform * js_transform)
+        shadow.insert(jsr * last_tower_north_transform * bend_transform * js_transform)
 
 
         # Tower NordEast
@@ -432,7 +470,7 @@ class SuperInductor(Junction):
         tower_north_bend_transform = last_tower_north_transform * last_bend_transform
         last_point = pya.DPoint(0,0) * tower_north_bend_transform
         available_height = ((self.height / 2) - (inductor_padding + bend_height))
-        tower_west_transform = pya.DTrans(
+        tower_north_east_transform = pya.DTrans(
             0, False, 
             last_point.x - (x_offset * 2), last_point.y - available_height
         )
@@ -453,7 +491,7 @@ class SuperInductor(Junction):
                 x_offset + self.wire_width, tower_unit_height
             )
             shape_into.insert(
-                tower_step_transform * pylon * tower_west_transform
+                tower_step_transform * pylon * tower_north_east_transform
             )
             # junction
             junction = pya.DBox(
@@ -461,8 +499,19 @@ class SuperInductor(Junction):
                 tower_unit_width, tower_unit_height
             )
             shape_into.insert(
-                tower_step_transform * junction * tower_west_transform
+                tower_step_transform * junction * tower_north_east_transform
             )
+            # shadow
+            ws = wire_shadow(tower_unit_height - self.junction_width, i+last_tapper_north_step_count-1, x_offset, 0)
+            shadow.insert(ws * tower_north_east_transform * tower_step_transform)
+            [jsl, jsr] = junction_shadow(tower_unit_width, self.junction_width)
+            shadow_transform = pya.DTrans(
+                0, False,
+                0, tower_unit_height - (self.junction_width)
+            )
+            shadow.insert(jsl  * tower_north_east_transform * tower_step_transform * shadow_transform)
+            shadow.insert(jsr * tower_north_east_transform * tower_step_transform * shadow_transform)
+
 
         # ----
         # Tower SouthWest (Inverted version of Tower NordWest)
@@ -499,6 +548,13 @@ class SuperInductor(Junction):
             shape_into.insert(
                 tower_step_transform * junction * tower_south_transform
             )
+            # shadow
+            ws = wire_shadow(tower_unit_height - self.junction_width, i+last_tapper_south_step_count-1, x_offset, self.junction_width)
+            shadow_transform = pya.DTrans(0, False, 0, -tower_unit_height)
+            shadow.insert(ws * tower_south_transform * tower_step_transform * shadow_transform)
+            [jsl, jsr] = junction_shadow(tower_unit_width, self.junction_width)
+            shadow.insert(jsl  * tower_south_transform * tower_step_transform)
+            shadow.insert(jsr * tower_south_transform * tower_step_transform)
 
         # South Bend (Inverted version of North Bend)
         bend_width_multiplier = 1.5
@@ -534,6 +590,22 @@ class SuperInductor(Junction):
         shape_into.insert(
             bend_transform * bend_junction * last_tower_south_transform
         )
+        # shadow
+        shadow_bend_transform = pya.DTrans(
+            0, False,
+            0, -bend_unit_height
+        )
+        wsl = wire_shadow(bend_unit_height - self.junction_width, 0, x_offset, self.junction_width)
+        shadow.insert(wsl * last_tower_south_transform * bend_transform * shadow_bend_transform)
+        wsr = wire_shadow(bend_unit_height - self.junction_width, 1, x_offset, self.junction_width)
+        wsr_transform = pya.DTrans(
+            0, False,
+            bend_unit_width - (x_offset * 2), 0
+        )
+        shadow.insert(wsr * last_tower_south_transform * bend_transform * wsr_transform * shadow_bend_transform)
+        [jsl, jsr] = junction_shadow(bend_unit_width, self.junction_width)
+        shadow.insert(jsl * last_tower_south_transform * bend_transform * shadow_bend_transform)
+        shadow.insert(jsr * last_tower_south_transform * bend_transform * shadow_bend_transform)
 
         # Tower SouthEast (Inverted version of Tower NordEast)
         #tower_unit_width = self.squid_area_width
@@ -546,7 +618,7 @@ class SuperInductor(Junction):
         tower_south_bend_transform = last_tower_south_transform * last_bend_transform
         last_point = pya.DPoint(0,0) * tower_south_bend_transform
         available_height = ((self.height / 2) - (inductor_padding + bend_height))
-        tower_east_transform = pya.DTrans(
+        tower_south_east_transform = pya.DTrans(
             0, False, 
             last_point.x - (x_offset * 2), last_point.y + available_height
         )
@@ -568,17 +640,27 @@ class SuperInductor(Junction):
                 x_offset + self.wire_width, 0
             )
             shape_into.insert(
-                tower_step_transform * pylon * tower_east_transform
+                tower_step_transform * pylon * tower_south_east_transform
             )
-            last_mid_point = tower_step_transform * tower_east_transform
+            last_mid_point = tower_step_transform * tower_south_east_transform
             # junction
             junction = pya.DBox(
                 0, -tower_unit_height, 
                 tower_unit_width, -tower_unit_height + self.junction_width
             )
             shape_into.insert(
-                tower_step_transform * junction * tower_east_transform
+                tower_step_transform * junction * tower_south_east_transform
             )
+            # shadow
+            shadow_transform = pya.DTrans(
+                0, False,
+                0, -tower_unit_height
+            )
+            ws = wire_shadow(tower_unit_height - self.junction_width, i+last_tapper_north_step_count-1, x_offset, self.junction_width)
+            shadow.insert(ws * tower_south_east_transform * tower_step_transform * shadow_transform)
+            [jsl, jsr] = junction_shadow(tower_unit_width, self.junction_width)
+            shadow.insert(jsl  * tower_south_east_transform * tower_step_transform * shadow_transform)
+            shadow.insert(jsr * tower_south_east_transform * tower_step_transform * shadow_transform)
         # ----
 
         # Phase Slip Junction
