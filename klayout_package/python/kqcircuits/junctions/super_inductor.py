@@ -28,19 +28,11 @@ class SuperInductor(Junction):
     """The PCell declaration for a Manhattan style single junction."""
 
     junction_length = Param(pdt.TypeDouble, "Junction length", 5, unit="μm")
-
-    # wire_length < junction_length
-    # wire_width = ??
-    # junction_count = exclude squid count; resize all
-    # bend_length
-    # connection_wires_length =
-    # junction_base_tappering = 
-
     wire_width = Param(pdt.TypeDouble, "Wire width", 0.02, unit="μm")
     phase_slip_junction_length = Param(pdt.TypeDouble, "Phase slip junction length", 0.5, unit="μm")
     squid_area_width = Param(pdt.TypeDouble, "Width of Squids Area.", 0.5, unit="μm")
     squid_area_height = Param(pdt.TypeDouble, "Height of Squids Area.", 1.0, unit="μm")
-    squid_count = Param(pdt.TypeInt, "Number of Squids in the Super Inductor.", 4)
+    squid_count = Param(pdt.TypeInt, "Number of Squids in the Super Inductor.", 8)
     squid_junction_length = Param(pdt.TypeDouble, "Length of the SQUID junctions.", 0.25, unit="μm")
     squid_x_connector_offset = Param(
         pdt.TypeDouble, "Length of the horizontal connector between the corner of the junction to the wire of the squid.", 0.5, unit="μm"
@@ -172,7 +164,7 @@ class SuperInductor(Junction):
                 pya.DTrans(0, False, 0, y_position) * shape_upper * squid_transform
             )
 
-        # Squid Pillar Wires
+        # Squid Pylon Wires
         for i in range(int(squid_count)):
             x_offset = self.squid_x_connector_offset - (self.wire_width / 2)
             shape_left = pya.DBox(
@@ -205,6 +197,27 @@ class SuperInductor(Junction):
             moved = pya.DTrans(0, False, 0, y_position) * shape * squid_transform
             shape_into.insert(moved)
 
+        # CONNECTORS
+        x_offset = self.squid_x_connector_offset - (self.wire_width / 2)
+        conector_length = (self.height - self.squid_area_height) / 2
+        wire_top = pya.DBox(
+            x_offset, 0, 
+            x_offset + self.wire_width, conector_length
+        )
+        wire_top_transform = pya.DTrans(
+            0, False,
+            0, self.squid_area_height,
+        )
+        shape_into.insert(squid_transform * wire_top * wire_top_transform)
+        wire_bottom = pya.DBox(
+            x_offset, -conector_length,
+            x_offset + self.wire_width, 0
+        )
+        wire_bottom_transform = pya.DTrans(
+            0, False,
+            0, 0,
+        )
+        shape_into.insert(squid_transform * wire_bottom * wire_bottom_transform)
 
         # TAPPER North
         tapper_unit_width = self.squid_area_width
@@ -304,17 +317,22 @@ class SuperInductor(Junction):
             # )
         #tapper_south_box = pya.DBox(0, -tapper_height, tapper_unit_width, 0)
         #shape_into.insert(tapper_south_transform * tapper_south_box)
+        last_tapper_south_transform = tapper_south_transform * pya.DTrans(
+            0, False, 
+            0, -(tapper_steps - 1) * tapper_unit_height
+        )
 
-        # Tower NordEast
-        last_tapper_north_x = (adjusted_tapper_horizontal_displacement * tapper_steps)
-        last_tapper_north_y = (tapper_unit_height * tapper_steps)
+        bend_height = self.squid_junction_length
 
+        # Tower NordWest
         tower_unit_width = self.squid_area_width
         tower_unit_height = self.squid_junction_length
-        tower_north_offset_x = squid_offset_x + last_tapper_north_x
-        tower_north_offset_y = squid_offset_y + last_tapper_north_y
         tower_north_transform = last_tapper_north_transform
-        tower_desired_height = 2.0
+        last_point = pya.DPoint(0,0) * tower_north_transform
+        inductor_padding = 1
+        available_height = (self.height - (inductor_padding + bend_height)) - last_point.y
+        stored_available_height = available_height
+        tower_desired_height = available_height
         tower_steps = int(tower_desired_height / tower_unit_height)
         adjusted_tower_height = tower_steps * tower_unit_height
         tower_unit_height = adjusted_tower_height / tower_steps
@@ -342,43 +360,218 @@ class SuperInductor(Junction):
                 tower_step_transform * junction * tower_north_transform
             )
 
+        # North Bend
+        bend_width_multiplier = 1.5
+        last_tower_north_transform = pya.DTrans(
+            0, False, 
+            tower_unit_width, tower_steps * tower_unit_height
+        ) * tower_north_transform
+        bend_unit_width = self.squid_area_width * bend_width_multiplier
+        bend_unit_height = self.squid_junction_length
+        x_offset = self.squid_x_connector_offset - (self.wire_width / 2)
+        bend_transform = pya.DTrans(
+            0, False, 
+            tower_unit_width - (x_offset * 2), 0
+        )
+        pylon_left = pya.DBox(
+            x_offset, 0, 
+            x_offset + self.wire_width, bend_unit_height
+        )
+        shape_into.insert(
+            bend_transform * pylon_left * last_tower_north_transform
+        )
+        pylon_right = pya.DBox(
+            bend_unit_width - x_offset, 0,
+            bend_unit_width - x_offset + self.wire_width, bend_unit_height
+        )
+        shape_into.insert(
+            bend_transform * pylon_right * last_tower_north_transform
+        )
+        bend_junction = pya.DBox(
+            0, bend_unit_height - self.junction_width, 
+            bend_unit_width, bend_unit_height
+        )
+        shape_into.insert(
+            bend_transform * bend_junction * last_tower_north_transform
+        )
 
-        
-        # jx = top_corner.x - (top_corner.y - b_corner_y) / 2
-        # jy = (top_corner.y + b_corner_y) / 2
-        # ddb = self.junction_width * sqrt(0.5)
-        # ddt = self.junction_width * sqrt(0.5)
-        # if self.mirror_offset:
-        #     ddt += self.offset_compensation * sqrt(0.5)
-        # else:
-        #     ddb += self.offset_compensation * sqrt(0.5)
-        # fo = self.finger_overshoot * sqrt(0.5) - 1.1
-        # pl = self.finger_overlap * sqrt(0.5) + 0.2  # plus length to connect despite of rounding
 
-        # def finger_points(size):
-        #     return [
-        #         pya.DPoint(top_corner.x + pl, top_corner.y + size + pl),
-        #         pya.DPoint(top_corner.x + size + pl, top_corner.y + pl),
-        #         pya.DPoint(jx - fo, jy - fo - size),
-        #         pya.DPoint(jx - fo - size, jy - fo),
-        #     ]
+        # Tower NordEast
+        #tower_unit_width = self.squid_area_width
+        #tower_unit_height = self.squid_junction_length
+        x_offset = self.squid_x_connector_offset - (self.wire_width / 2)
+        last_bend_transform = pya.DTrans(
+            0, False,
+            bend_unit_width - (x_offset * 2), 0
+        )
+        tower_north_bend_transform = last_tower_north_transform * last_bend_transform
+        last_point = pya.DPoint(0,0) * tower_north_bend_transform
+        available_height = ((self.height / 2) - (inductor_padding + bend_height))
+        tower_west_transform = pya.DTrans(
+            0, False, 
+            last_point.x - (x_offset * 2), last_point.y - available_height
+        )
+        tower_desired_height = available_height
+        tower_steps = int(tower_desired_height / tower_unit_height)
+        adjusted_tower_height = tower_steps * tower_unit_height
+        tower_unit_height = adjusted_tower_height / tower_steps
+        for i in range(tower_steps):
+            x_offset = (tower_unit_width / 2) - (self.wire_width / 2)
+            tower_step_transform = pya.DTrans(
+                0, False, 
+                tower_unit_width,
+                i * tower_unit_height
+            )
+            # wire
+            pylon = pya.DBox(
+                x_offset, 0, 
+                x_offset + self.wire_width, tower_unit_height
+            )
+            shape_into.insert(
+                tower_step_transform * pylon * tower_west_transform
+            )
+            # junction
+            junction = pya.DBox(
+                0, tower_unit_height - self.junction_width, 
+                tower_unit_width, tower_unit_height
+            )
+            shape_into.insert(
+                tower_step_transform * junction * tower_west_transform
+            )
 
-        # finger_bottom = pya.DTrans(-jx, -jy + self.x_offset) * pya.DPolygon(finger_points(ddb))
-        # finger_top = pya.DTrans(-jx + self.x_offset, -jy) * pya.DPolygon(finger_points(ddt))
+        # ----
+        # Tower SouthWest (Inverted version of Tower NordWest)
+        tower_unit_width = self.squid_area_width
+        tower_unit_height = self.squid_junction_length
+        tower_south_transform = last_tapper_south_transform
+        last_point = pya.DPoint(0,0) * tower_south_transform
+        inductor_padding = 1
+        available_height = stored_available_height#((self.height) - (inductor_padding + bend_height)) - last_point.y
+        tower_desired_height = available_height
+        tower_steps = int(tower_desired_height / tower_unit_height)
+        adjusted_tower_height = tower_steps * tower_unit_height
+        tower_unit_height = adjusted_tower_height / tower_steps
+        for i in range(tower_steps):
+            tower_step_transform = pya.DTrans(
+                0, False, 
+                tower_unit_width,
+                -i * tower_unit_height
+            )
+            x_offset = (tower_unit_width / 2) - (self.wire_width / 2)
+            # wire
+            pylon = pya.DBox(
+                x_offset, -tower_unit_height, 
+                x_offset + self.wire_width, 0
+            )
+            shape_into.insert(
+                tower_step_transform * pylon * tower_south_transform
+            )
+            # junction
+            junction = pya.DBox(
+                0, -tower_unit_height, 
+                tower_unit_width, -tower_unit_height + self.junction_width
+            )
+            shape_into.insert(
+                tower_step_transform * junction * tower_south_transform
+            )
 
-        # junction_shapes = [
-        #     (pya.DTrans(jx - finger_margin, jy) * finger_top).to_itype(self.layout.dbu),
-        #     (pya.DTrans(0, False, jx - 2 * top_corner.x, jy) * finger_top).to_itype(self.layout.dbu),
-        #     (pya.DTrans(3, False, jx - finger_margin, jy + 2.2) * finger_bottom).to_itype(self.layout.dbu),
-        #     (pya.DTrans(3, False, jx - 2 * top_corner.x, jy + 2.2) * finger_bottom).to_itype(self.layout.dbu),
-        # ]
+        # South Bend (Inverted version of North Bend)
+        bend_width_multiplier = 1.5
+        last_tower_south_transform = pya.DTrans(
+            0, False, 
+            tower_unit_width, -tower_steps * tower_unit_height
+        ) * tower_south_transform
+        bend_unit_width = self.squid_area_width * bend_width_multiplier
+        bend_unit_height = self.squid_junction_length
+        x_offset = self.squid_x_connector_offset - (self.wire_width / 2)
+        bend_transform = pya.DTrans(
+            0, False, 
+            tower_unit_width - (x_offset * 2), 0
+        )
+        pylon_left = pya.DBox(
+            x_offset, -bend_unit_height, 
+            x_offset + self.wire_width, 0
+        )
+        shape_into.insert(
+            bend_transform * pylon_left * last_tower_south_transform
+        )
+        pylon_right = pya.DBox(
+            bend_unit_width - x_offset, -bend_unit_height,
+            bend_unit_width - x_offset + self.wire_width, 0
+        )
+        shape_into.insert(
+            bend_transform * pylon_right * last_tower_south_transform
+        )
+        bend_junction = pya.DBox(
+            0, -bend_unit_height, 
+            bend_unit_width, -bend_unit_height + self.junction_width
+        )
+        shape_into.insert(
+            bend_transform * bend_junction * last_tower_south_transform
+        )
 
-        # junction_region = pya.Region(junction_shapes).merged()
-        # layer_name = "SIS_junction_2" if self.separate_junctions else "SIS_junction"
-        # self.cell.shapes(self.get_layer(layer_name)).insert(junction_region)
+        # Tower SouthEast (Inverted version of Tower NordEast)
+        #tower_unit_width = self.squid_area_width
+        #tower_unit_height = self.squid_junction_length
+        x_offset = self.squid_x_connector_offset - (self.wire_width / 2)
+        last_bend_transform = pya.DTrans(
+            0, False,
+            bend_unit_width - (x_offset * 2), 0
+        )
+        tower_south_bend_transform = last_tower_south_transform * last_bend_transform
+        last_point = pya.DPoint(0,0) * tower_south_bend_transform
+        available_height = ((self.height / 2) - (inductor_padding + bend_height))
+        tower_east_transform = pya.DTrans(
+            0, False, 
+            last_point.x - (x_offset * 2), last_point.y + available_height
+        )
+        tower_desired_height = available_height
+        tower_steps = int(tower_desired_height / tower_unit_height)
+        adjusted_tower_height = tower_steps * tower_unit_height
+        tower_unit_height = adjusted_tower_height / tower_steps
+        last_mid_point = None
+        for i in range(tower_steps):
+            x_offset = (tower_unit_width / 2) - (self.wire_width / 2)
+            tower_step_transform = pya.DTrans(
+                0, False, 
+                tower_unit_width,
+                -i * tower_unit_height
+            )
+            # wire
+            pylon = pya.DBox(
+                x_offset, -tower_unit_height, 
+                x_offset + self.wire_width, 0
+            )
+            shape_into.insert(
+                tower_step_transform * pylon * tower_east_transform
+            )
+            last_mid_point = tower_step_transform * tower_east_transform
+            # junction
+            junction = pya.DBox(
+                0, -tower_unit_height, 
+                tower_unit_width, -tower_unit_height + self.junction_width
+            )
+            shape_into.insert(
+                tower_step_transform * junction * tower_east_transform
+            )
+        # ----
 
-        # # place refpoint at the middle of the junctions
-        # self.refpoints["c"] = pya.DPoint(jx + 1.1 - finger_margin, jy + 1.1)
+        # Phase Slip Junction
+        slip_unit_width = self.phase_slip_junction_length
+        slip_unit_height = self.junction_width
+        last_tower_point = pya.DPoint(0,0) * last_mid_point
+        phase_junction = pya.DBox(
+            -slip_unit_width / 2, -slip_unit_height / 2, 
+            slip_unit_width / 2, slip_unit_height / 2
+        )
+        phase_junction_transform = pya.DTrans(
+            0, False,
+            last_tower_point.x + (tower_unit_width / 2), self.height / 2
+        )
+        shape_into.insert(
+            phase_junction * phase_junction_transform
+        )
+
 
     def _add_shapes(self, shapes, layer):
         """Merge shapes into a region and add it to layer."""
