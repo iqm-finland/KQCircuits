@@ -497,7 +497,10 @@ class SuperInductor(Junction):
                 tower_step_transform * junction * tower_north_east_transform
             )
             # shadow
-            ws = wire_shadow(tower_unit_height - self.junction_width, i+last_tapper_north_step_count-1, x_offset, 0)
+            last_shadow_offset = 0
+            if (i == 0):
+                last_shadow_offset = -self.junction_width / 2
+            ws = wire_shadow(tower_unit_height - self.junction_width + last_shadow_offset , i+last_tapper_north_step_count-1, x_offset, -last_shadow_offset)
             shadow.insert(ws * tower_north_east_transform * tower_step_transform)
             [jsl, jsr] = junction_shadow(tower_unit_width, self.junction_width)
             shadow_transform = pya.DTrans(
@@ -647,16 +650,18 @@ class SuperInductor(Junction):
                 tower_step_transform * junction * tower_south_east_transform
             )
             # shadow
+            last_shadow_offset = 0
+            if (i == 0):
+                last_shadow_offset = -self.junction_width / 2
             shadow_transform = pya.DTrans(
                 0, False,
                 0, -tower_unit_height
             )
-            ws = wire_shadow(tower_unit_height - self.junction_width, i+last_tapper_north_step_count-1, x_offset, self.junction_width)
+            ws = wire_shadow(tower_unit_height - self.junction_width + last_shadow_offset, i+last_tapper_north_step_count-1, x_offset, self.junction_width)
             shadow.insert(ws * tower_south_east_transform * tower_step_transform * shadow_transform)
             [jsl, jsr] = junction_shadow(tower_unit_width, self.junction_width)
             shadow.insert(jsl  * tower_south_east_transform * tower_step_transform * shadow_transform)
             shadow.insert(jsr * tower_south_east_transform * tower_step_transform * shadow_transform)
-        # ----
 
         # Phase Slip Junction
         slip_unit_width = self.phase_slip_junction_length
@@ -673,6 +678,14 @@ class SuperInductor(Junction):
         shape_into.insert(
             phase_junction * phase_junction_transform
         )
+        phase_junction_shadow_transform = pya.DTrans(
+            0, False,
+            last_tower_point.x + ((tower_unit_width - slip_unit_width)/2), 
+            (self.height / 2) - (self.junction_width / 2)
+        )
+        [jsl, jsr] = junction_shadow(slip_unit_width, self.junction_width)
+        shadow.insert(jsl * phase_junction_shadow_transform)
+        shadow.insert(jsr * phase_junction_shadow_transform)
 
 
     def _add_shapes(self, shapes, layer):
