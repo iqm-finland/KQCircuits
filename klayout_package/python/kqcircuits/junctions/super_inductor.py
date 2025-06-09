@@ -26,7 +26,7 @@ from kqcircuits.util.symmetric_polygons import polygon_with_vsym
 class SuperInductor(Junction):
     """The PCell declaration for a Manhattan style single junction."""
 
-    junction_length = Param(pdt.TypeDouble, "Junction length", 5, unit="μm")
+    junction_length = Param(pdt.TypeDouble, "Junction length", 2, unit="μm")
     wire_width = Param(pdt.TypeDouble, "Wire width", 0.02, unit="μm")
     phase_slip_junction_length = Param(pdt.TypeDouble, "Phase slip junction length", 0.5, unit="μm")
     squid_area_width = Param(pdt.TypeDouble, "Width of Squids Area.", 2, unit="μm")
@@ -245,7 +245,7 @@ class SuperInductor(Junction):
         shadow.insert(ws_bottom * squid_transform * wire_bottom_transform)
 
         # TAPPER North
-        tapper_unit_width = self.squid_area_width
+        tapper_unit_width = self.junction_length
         tapper_unit_height = self.squid_junction_length
         double_connect_offset = self.squid_x_connector_offset * 2
         tapper_north_offset_x = squid_offset_x + tapper_unit_width - double_connect_offset
@@ -301,7 +301,7 @@ class SuperInductor(Junction):
         
 
         # TAPPER South
-        tapper_unit_width = self.squid_area_width
+        tapper_unit_width = self.junction_length
         tapper_unit_height = self.squid_junction_length
         double_connect_offset = self.squid_x_connector_offset * 2
         tapper_south_offset_x = squid_offset_x + tapper_unit_width - double_connect_offset
@@ -357,7 +357,7 @@ class SuperInductor(Junction):
         bend_height = self.squid_junction_length
 
         # Tower NordWest
-        tower_unit_width = self.squid_area_width
+        tower_unit_width = self.junction_length
         tower_unit_height = self.squid_junction_length
         tower_north_transform = last_tapper_north_transform
         last_point = pya.DPoint(0,0) * tower_north_transform
@@ -408,7 +408,7 @@ class SuperInductor(Junction):
             0, False, 
             tower_unit_width, tower_steps * tower_unit_height
         ) * tower_north_transform
-        bend_unit_width = self.squid_area_width * bend_width_multiplier
+        bend_unit_width = self.junction_length * bend_width_multiplier
         bend_unit_height = self.squid_junction_length
         x_offset = self.squid_x_connector_offset - (self.wire_width / 2)
         bend_transform = pya.DTrans(
@@ -455,8 +455,8 @@ class SuperInductor(Junction):
 
 
         # Tower NordEast
-        #tower_unit_width = self.squid_area_width
-        #tower_unit_height = self.squid_junction_length
+        tower_unit_width = self.junction_length
+        tower_unit_height = self.squid_junction_length
         x_offset = self.squid_x_connector_offset - (self.wire_width / 2)
         last_bend_transform = pya.DTrans(
             0, False,
@@ -510,10 +510,8 @@ class SuperInductor(Junction):
             shadow.insert(jsl  * tower_north_east_transform * tower_step_transform * shadow_transform)
             shadow.insert(jsr * tower_north_east_transform * tower_step_transform * shadow_transform)
 
-
-        # ----
         # Tower SouthWest (Inverted version of Tower NordWest)
-        tower_unit_width = self.squid_area_width
+        tower_unit_width = self.junction_length
         tower_unit_height = self.squid_junction_length
         tower_south_transform = last_tapper_south_transform
         last_point = pya.DPoint(0,0) * tower_south_transform
@@ -560,7 +558,7 @@ class SuperInductor(Junction):
             0, False, 
             tower_unit_width, -tower_steps * tower_unit_height
         ) * tower_south_transform
-        bend_unit_width = self.squid_area_width * bend_width_multiplier
+        bend_unit_width = self.junction_length * bend_width_multiplier
         bend_unit_height = self.squid_junction_length
         x_offset = self.squid_x_connector_offset - (self.wire_width / 2)
         bend_transform = pya.DTrans(
@@ -606,8 +604,8 @@ class SuperInductor(Junction):
         shadow.insert(jsr * last_tower_south_transform * bend_transform * shadow_bend_transform)
 
         # Tower SouthEast (Inverted version of Tower NordEast)
-        #tower_unit_width = self.squid_area_width
-        #tower_unit_height = self.squid_junction_length
+        tower_unit_width = self.junction_length
+        tower_unit_height = self.squid_junction_length
         x_offset = self.squid_x_connector_offset - (self.wire_width / 2)
         last_bend_transform = pya.DTrans(
             0, False,
