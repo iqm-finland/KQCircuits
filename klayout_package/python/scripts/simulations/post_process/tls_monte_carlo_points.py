@@ -44,6 +44,7 @@ import json
 import random
 import sys
 import klayout.db
+import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "util"))
 
@@ -121,6 +122,59 @@ def get_z(
     else:
         print(f"Unexpected character '{face[1]}' at face {face}")
         return None
+
+
+def _sample_from_triangle(tri: np.ndarray) -> np.ndarray:
+    """
+    Uniformly samples a point from a triangle
+
+    Source for the formula:
+    https://math.stackexchange.com/questions/18686/uniform-random-point-in-triangle-in-3d
+
+    Args:
+        tri: points defining the triangle (array of shape 3x2)
+
+    Returns:
+        sampled point (array of shape 1x2)
+    """
+    r1, r2 = np.random.rand(2)
+    sqrt_r1 = np.sqrt(r1)
+    point = (1 - sqrt_r1) * tri[0] + sqrt_r1 * (1 - r2) * tri[1] + sqrt_r1 * r2 * tri[2]
+    return point
+
+
+def _sample_from_region(region: klayout.db.Region, n_samples: int, zlims: list[float], dbu: float) -> list[dict]:
+    """Samples points uniformly from an arbitrary 2D region using triangulation. Additionally samples
+    z-coordinates for each point which is done uniformly and independent of the xy-sampling from `region`.
+
+    Args:
+        region: 2D region to sample from
+        n_samples: Number of samples to be returned
+        zlims: list defining the range for sampling z-coordinates. Should have 2 elements in the order [min, max]
+        dbu: Database units used in region
+
+    Returns:
+        list of sampled points in dictionary format
+    """
+    triangles = []
+    areas = []
+    # Triangulate each polygon in the region
+    for poly in region.each():
+        for tri in poly.delaunay():
+            pts = np.array([[pt.x, pt.y] for pt in tri.each_point_hull()])
+            triangles.append(pts)
+            areas.append(tri.area())
+    areas = np.array(areas)
+    probs = areas / areas.sum()
+    # sample z independently
+    z_sampled = np.random.uniform(low=zlims[0], high=zlims[1], size=n_samples)
+    sampled_points = []
+    for z in z_sampled:
+        # randomly choose a triangle and then point inside the triangle
+        tri = triangles[np.random.choice(len(triangles), p=probs)]
+        pt = _sample_from_triangle(tri)
+        sampled_points.append({"x": pt[0] * dbu, "y": pt[1] * dbu, "z": z})
+    return sampled_points
 
 
 parser = argparse.ArgumentParser(description="Monte carlo point sampler for TLS")
@@ -276,6 +330,41 @@ for file_name, parameters in sim_parameters.items():
                         continue
             points.append({"x": dpoint.x, "y": dpoint.y, "z": float(f"{z:.5f}")})
         result[face]["substrate"] = points
+
+        # Sample from gap walls
+        gap_region = regions.get(f"{face}_gap")
+        if gap_region:
+            metal_region = sum(
+                (r for l, r in regions.items() if (l.startswith(f"{face}_signal") or l.startswith(f"{face}_ground"))),
+                start=klayout.db.Region(),
+            )
+            # MA wall
+            ma_th = extra_json_data["ma_thickness"]
+            gap_props = parameters["layers"][f"{face}_gap"]
+            ma_wall_region = (metal_region.sized(round(ma_th / layout.dbu)) & gap_region).merged()
+            ma_wall_height = ma_th + gap_props["thickness"]
+            ma_wall_n_points = round(args.density_ma * ma_wall_region.area() * layout.dbu**2 * ma_wall_height)
+            if ma_wall_n_points > 0:
+                zlims = [gap_props["z"], gap_props["z"] + gap_props["thickness"]]
+                if face[1] == "t":
+                    zlims[1] += ma_th
+                else:
+                    zlims[0] -= ma_th
+                print(f"Sampling {file_name} ma wall on face {face} using {ma_wall_n_points} points")
+                result[face]["ma_wall"] = _sample_from_region(ma_wall_region, ma_wall_n_points, zlims, layout.dbu)
+            # SA wall
+            trench_props = parameters["layers"].get(f"{face}_etch")
+            if trench_props:
+                sa_wall_region = (
+                    metal_region.sized(round(extra_json_data["sa_thickness"] / layout.dbu)) & gap_region
+                ).merged()
+                sa_wall_n_points = round(
+                    args.density_sa * sa_wall_region.area() * layout.dbu**2 * trench_props["thickness"]
+                )
+                if sa_wall_n_points > 0:
+                    zlims = [trench_props["z"], trench_props["z"] + trench_props["thickness"]]
+                    print(f"Sampling {file_name} sa wall on face {face} using {sa_wall_n_points} points")
+                    result[face]["sa_wall"] = _sample_from_region(sa_wall_region, sa_wall_n_points, zlims, layout.dbu)
 
     with open(f"{parameters['name']}_tls_mc.json", "w", encoding="utf-8") as file:
         json.dump(result, file, indent=4)
