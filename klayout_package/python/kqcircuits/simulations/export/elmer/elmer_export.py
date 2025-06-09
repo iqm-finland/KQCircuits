@@ -35,6 +35,7 @@ from kqcircuits.simulations.export.simulation_export import (
     get_combined_parameters,
     export_simulation_json,
 )
+
 from kqcircuits.simulations.export.simulation_validate import validate_simulation
 from kqcircuits.util.load_save_layout import save_layout
 from kqcircuits.util.export_helper import write_commit_reference_file
@@ -51,10 +52,9 @@ def export_elmer_json(
     path: Path,
     workflow: dict,
     mesh_reuse_name: str | None = None,
-    pv_py_file:bool=False,
 ):
     """
-    Export Elmer simulation into json and gds files.
+    Export Elmer simulation into json and gds files.    
 
     Args:
         simulation: The simulation to be exported.
@@ -111,46 +111,70 @@ def export_elmer_json(
     json_file_path = str(path.joinpath(full_name + ".json"))
     export_simulation_json(json_data, json_file_path)
 
-    # write pv_py_file 
-    if pv_py_file:
-        def write_pv_file(simulation, solution):
-            full_name = simulation.name + solution.name
-            pv_script_path = path / (full_name + "_pv.py")
-            scripts_dir_path = path / "scripts" / "paraview"
-
-            # Get correct JSON path for this simulation
-            json_file_path = path / (full_name + ".json")
-
-            with open(json_file_path, "r") as f:
-                data = json.load(f)
-
-            parameters = data.get("parameters", {})
-            source_name = parameters.get("source_name")
-            if source_name:
-                sif_path = path / source_name / f"{source_name}.sif"
-                vtu_dir = path / source_name
-            else:
-                sif_path = path / simulation.name / f"{simulation.name}.sif"
-                vtu_dir = path / simulation.name
-
-            with open(pv_script_path, "w") as f:
-                f.write(
-                    f'import sys\n'
-                    f'sys.path.insert(0, r"{scripts_dir_path}")\n'
-                    f'from center_3d import run\n'
-                    f'from pathlib import Path\n'
-                    f'vtu_dir = Path(r"{vtu_dir}")\n'
-                    f'vtu_files = [str(f) for f in vtu_dir.glob("*.vtu")]\n'
-                    f'if vtu_files:\n'
-                    f'    run(vtu_files, r"{sif_path}", True)\n'
-                    f'else:\n'
-                    f'    print("No .vtu files found.")\n'
-                )
-
-        write_pv_file(simulation, solution)
-
     return json_file_path
 
+def write_paraview_script(
+    simulation: Union[Simulation, CrossSectionSimulation],
+    solution: ElmerSolution,
+    path: Path,
+):
+    """
+    Write a Python script to run the ParaView post-processing for a given simulation and solution.
+    Args:
+        simulation: The simulation object.
+        solution: The Elmer solution object.
+        path: The base output path (Path object).
+    """
+    if simulation is None or not isinstance(simulation, (Simulation, CrossSectionSimulation)):
+        raise ValueError("Cannot export without simulation")
+
+    # get data for naming logic
+    sim_data = simulation.get_simulation_data()
+    sol_data = solution.get_solution_data()
+    full_name = simulation.name + solution.name
+    is_cross_section = isinstance(simulation, CrossSectionSimulation)
+
+    # Determine correct SIF file name(s)
+    if is_cross_section:
+        sif_names = [f"{full_name}_C"]
+        if sol_data.get("run_inductance_sim", False):
+            if any(m.get("london_penetration_depth", 0) > 0 for m in sim_data["material_dict"].values()):
+                sif_names += [f"{full_name}_L"]
+            else:
+                sif_names += [f"{full_name}_C0"]
+    elif solution.tool == "wave_equation":
+        if solution.sweep_type == "interpolating":
+            sif_names = []
+        else:
+            sif_names = [full_name + "_f" + str(f).replace(".", "_") for f in sol_data["frequency"]]
+    else:
+        sif_names = [full_name]
+
+    # Use the first sif name for visualization
+    sif_path = path / simulation.name / f"{sif_names[0]}.sif"
+    vtu_dir = path / simulation.name
+    scripts_dir_path = path / "scripts" / "paraview"
+    pv_script_path = path / (full_name + "_pv.py")
+
+    # Use 3D or 2D visualization module
+    run_module = "center_2d" if is_cross_section else "center_3d"
+
+    script_content = (
+        f'import sys\n'
+        f'sys.path.insert(0, r"{scripts_dir_path}")\n'
+        f'from {run_module} import run\n'
+        f'from pathlib import Path\n'
+        f'vtu_dir = Path(r"{vtu_dir}")\n'
+        f'vtu_files = [str(f) for f in vtu_dir.glob("*.pvtu")]\n'
+        f'if not vtu_files:\n'
+        f'    vtu_files = [str(f) for f in vtu_dir.glob("*.vtu")]\n'
+        f'if vtu_files:\n'
+        f'    run(vtu_files, r"{sif_path}", {not is_cross_section})\n'
+        f'else:\n'
+        f'    print("No .vtu or .pvtu files found.")\n'
+    )
+
+    pv_script_path.write_text(script_content)
 
 def export_elmer_script(
     json_filenames,
@@ -653,6 +677,7 @@ def export_elmer(
 
         try:
             json_filenames.append(export_elmer_json(simulation, solution, path, workflow, mesh_reuse))
+            write_paraview_script(simulation,solution,path)
         except (IndexError, ValueError, Exception) as e:  # pylint: disable=broad-except
             if skip_errors:
                 logging.warning(
@@ -666,7 +691,6 @@ def export_elmer(
                     "Moreover, `skip_errors` enables visual inspection of failed and successful simulation "
                     "geometry files."
                 ) from e
-
     return export_elmer_script(
         json_filenames,
         path,
