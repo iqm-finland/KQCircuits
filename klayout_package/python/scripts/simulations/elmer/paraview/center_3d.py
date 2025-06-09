@@ -1,19 +1,48 @@
 import os
 import re
 from paraview.simple import *
+from collections import Counter
+from pathlib import Path
 
 # Disable auto camera reset on first render
 paraview.simple._DisableFirstRenderCameraReset()
 
-def get_substrate_threshold(sif_path, prefix="substrate_1"):
-    with open(sif_path, 'r') as f:
+# more robust function to extract the threshold limits from substrate_epsilon (for silicon case it is 11.45)
+def get_substrate_threshold(sif_path, substrate_eps=11.45, tol=1e-2):
+    # Accept either string or Path
+    sif_path = Path(sif_path)
+    with sif_path.open('r') as f:
         content = f.read()
-    pattern = rf'\b{prefix}[a-zA-Z0-9_]*\s*=\s*Logical\s+True'
-    matches = re.findall(pattern, content, re.IGNORECASE)
-    count = len(matches)
-    print(f"[DEBUG] Found {count} substrate volumes.")
-    return (1, count) if count > 0 else (0, 0)
 
+    # Find materials with matching permittivity
+    material_pattern = re.compile(
+        r'Material\s+(\d+).*?Relative Permittivity\s*=\s*([\d.eE+-]+)', re.DOTALL | re.IGNORECASE
+    )
+    substrate_material_ids = {
+        int(mid) for mid, eps in material_pattern.findall(content)
+        if abs(float(eps) - substrate_eps) < tol
+    }
+    #print(f"[DEBUG] Substrate material IDs: {substrate_material_ids}")
+    # Find body blocks with those materials
+    body_pattern = re.compile(r'Body\s+(\d+)(.*?)\bEnd', re.DOTALL | re.IGNORECASE)
+    substrate_body_ids = []
+    for match in body_pattern.finditer(content):
+        body_id = int(match.group(1))
+        body_block = match.group(2)
+        mat_match = re.search(r'Material\s*=\s*(\d+)', body_block)
+        if mat_match and int(mat_match.group(1)) in substrate_material_ids:
+            substrate_body_ids.append(body_id)
+    if substrate_body_ids:
+        substrate_body_ids.sort()
+        lower = substrate_body_ids[0]
+        upper = substrate_body_ids[-1]
+        #print(f"[DEBUG] Substrate body IDs: {substrate_body_ids}")
+        return lower, upper
+    else:
+        #print("[DEBUG] No substrate body IDs found.")
+        return 0, 0
+    
+    
 def run(vtu_files: list, sif_path: str, is_3d=True):
     for file in vtu_files:
         if not os.path.isfile(file):
@@ -50,7 +79,7 @@ def run(vtu_files: list, sif_path: str, is_3d=True):
     renderView.Update()
 
     # Switch threshold to GeometryIds
-    lower, upper = get_substrate_threshold(sif_path)
+    lower, upper = get_substrate_threshold(sif_path, 11.45, 1e-2)
     threshold.Scalars = ['CELLS', 'GeometryIds']
     threshold.LowerThreshold = lower
     threshold.UpperThreshold = upper
