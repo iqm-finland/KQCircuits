@@ -37,8 +37,6 @@ from kqcircuits.util.export_helper import (
 )
 
 from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
-from kqcircuits.util.export_helper import setup_paraview_macro
-
 
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")

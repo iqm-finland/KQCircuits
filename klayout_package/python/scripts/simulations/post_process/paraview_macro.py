@@ -76,7 +76,7 @@ if data_files:
 # Other (as applicable)
 if vtu_pvtu:
     # Thresholds
-    if vtu_pvtu == "pvtu" and thresholds:
+    if (vtu_pvtu == "pvtu" and thresholds) or not (cross_section and thresholds):
         for i in range(len(registration_names)):
             parent = FindSource(registration_names[i])
             threshold = Threshold(registrationName=f"{registration_names[i]}-threshold", Input=parent)
@@ -90,12 +90,6 @@ if vtu_pvtu:
 
             if i + 1 < len(registration_names):
                 Hide(threshold, render_view)
-
-    # Misc
-    # potentialLUT = GetColorTransferFunction("potential")
-    # potentialPWF = GetOpacityTransferFunction("potential")
-    # potentialTF2D = GetTransferFunction2D("potential")
-
 
 # UPDATE LAYOUT
 layout = GetLayout()
