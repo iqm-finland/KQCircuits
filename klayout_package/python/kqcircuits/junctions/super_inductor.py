@@ -17,7 +17,6 @@
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
 
-from math import sqrt
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.junctions.junction import Junction
@@ -59,7 +58,6 @@ class SuperInductor(Junction):
     include_base_metal_gap = Param(pdt.TypeBoolean, "Include base metal gap layer.", True)
     include_base_metal_addition = Param(pdt.TypeBoolean, "Include base metal addition layer.", True)
     shadow_margin = Param(pdt.TypeDouble, "Shadow layer margin near the the pads.", 0.5, unit="μm")
-    separate_junctions = Param(pdt.TypeBoolean, "Junctions to separate layer.", False)
     finger_overlap = Param(pdt.TypeDouble, "Length of fingers inside the pads.", 1.0, unit="μm")
     height = Param(pdt.TypeDouble, "Height of the junction element.", 22.0, unit="μm")
     width = Param(pdt.TypeDouble, "Width of the junction element.", 22.0, unit="μm")
@@ -67,10 +65,7 @@ class SuperInductor(Junction):
     pad_width = Param(pdt.TypeDouble, "Width of the junction pad.", 12.0, unit="μm")
     pad_to_pad_separation = Param(pdt.TypeDouble, "Pad separation.", 6.0, unit="μm")
     pad_rounding_radius = Param(pdt.TypeDouble, "Rounding radius of the junction pad.", 0.5, unit="μm")
-    #x_offset = Param(pdt.TypeDouble, "Horizontal junction offset.", 0, unit="μm")
-    #offset_compensation = Param(pdt.TypeDouble, "Junction lead offset from junction width", 0, unit="μm")
-    #mirror_offset = Param(pdt.TypeBoolean, "Move the junction lead offset to the other lead", False)
-
+    
     def build(self):
         self.produce_super_inductor()
 
@@ -115,16 +110,13 @@ class SuperInductor(Junction):
         #self._round_corners_and_append(tp_shadow_shape, shadow_shapes, rounding_params)
 
         # create rectangular junction-support structures and junctions
-        self._make_super_inductor_junctions(offset = pya.DPoint(0, 0))
-        #self._add_shapes(junction_shapes_bottom, "SIS_junction")
-        #self._add_shapes(junction_shapes_top, "SIS_junction")
-        #self._add_shapes(shadow_shapes, "SIS_shadow")
+        self._make_super_inductor_junctions()
         self._produce_ground_metal_shapes()
         self._produce_ground_grid_avoidance()
         self._add_refpoints()
 
-    def _make_super_inductor_junctions(self, offset):
-        layer_name = "SIS_junction_2" if self.separate_junctions else "SIS_junction"
+    def _make_super_inductor_junctions(self):
+        layer_name = "SIS_junction"
         shape_into = self.cell.shapes(self.get_layer(layer_name))
         shadow = self.cell.shapes(self.get_layer("SIS_shadow"))
 
@@ -696,29 +688,14 @@ class SuperInductor(Junction):
     def _produce_ground_metal_shapes(self):
         """Produces hardcoded shapes in metal gap and metal addition layers."""
         # metal additions bottom
-        x0 = -self.a / 2
-        y0 = self.height / 2
-        bottom_pts = [
-            pya.DPoint(x0 + 2, y0 - 7),
-            pya.DPoint(x0 + 2, y0 - 5),
-            pya.DPoint(x0 + 3, y0 - 5),
-            pya.DPoint(x0 + 3, y0 - 4),
-            pya.DPoint(x0, y0 - 4),
-            pya.DPoint(x0, 0),
-        ]
+        #x0 = -self.a / 2
+        #y0 = self.height / 2
+        bottom_pts = []
         if self.include_base_metal_addition:
             shape = polygon_with_vsym(bottom_pts)
             #self.cell.shapes(self.get_layer("base_metal_addition")).insert(shape)
             # metal additions top
-            top_pts = [
-                pya.DPoint(x0 + 2, y0 + 7),
-                pya.DPoint(x0 + 2, y0 + 5),
-                pya.DPoint(x0 + 3, y0 + 5),
-                pya.DPoint(x0 + 3, y0 + 4),
-                pya.DPoint(x0, y0 + 4),
-                pya.DPoint(x0, self.height),
-            ]
-
+            top_pts = []
             shape = polygon_with_vsym(top_pts)
             self.cell.shapes(self.get_layer("base_metal_addition")).insert(shape)
         # metal gap
