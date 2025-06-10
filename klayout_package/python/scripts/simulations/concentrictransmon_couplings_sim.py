@@ -35,7 +35,6 @@ from kqcircuits.util.export_helper import (
     get_active_or_new_layout,
     open_with_klayout_or_default_application,
 )
-
 from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
 
 # Prepare output directory
@@ -74,7 +73,7 @@ elmer_export_parameters = {
         "run_gmsh_gui": False,  # open gmsh gui after meshing
         "run_elmergrid": True,
         "run_elmer": True,
-        "run_paraview": True,  # opens results in ParaView after finishing
+        "run_paraview": False,  # opens results in ParaView after finishing
         "n_workers": 1,  # workers for first-level parallelisation
         "gmsh_n_threads": 4,  # -1 means all the physical cores
         "elmer_n_processes": 4,  # processes for second-level parallelisation

@@ -21,7 +21,6 @@ import logging
 import shutil
 import subprocess
 import os
-import re
 import sys
 import platform
 import json
@@ -335,82 +334,28 @@ def run_paraview(
 ):
     """Open simulation results in paraview"""
 
+    pvpython_executable = shutil.which("pvpython")
     paraview_executable = shutil.which("paraview")
-    if paraview_executable is not None:
-        if n_processes > 1:
-            pvtu_files = glob.glob(f"{result_path}*.pvtu")
-            vtu_files = glob.glob(f"{result_path}*.vtu")
-            sif_files = glob.glob(f"{result_path}*.sif")
-            try:
-                paraview_macro_path = adapt_paraview_macro_to_sweep(pvtu_files, sif_files, cross_section)
-                subprocess.check_call([paraview_executable] + [str(paraview_macro_path)])
-            except (ValueError, NameError, TypeError, SyntaxError) as e:
-                print(
-                    "Automated ParaView pipeline failed:",
-                    e,
-                    "\nParaView will still open. You will need to adjust settings manually.",
-                )
-                subprocess.check_call([paraview_executable] + pvtu_files, cwd=exec_path_override)
-        else:
-            vtu_files = glob.glob(f"{result_path}*.vtu")
-            sif_files = glob.glob(f"{result_path}*.sif")
-            try:
-                paraview_macro_path = adapt_paraview_macro_to_sweep(vtu_files, sif_files, cross_section)
-                subprocess.check_call([paraview_executable] + [str(paraview_macro_path)])
-            except (ValueError, NameError, TypeError, SyntaxError, FileNotFoundError) as e:
-                print(
-                    "Automated ParaView pipeline failed:",
-                    e,
-                    "\nParaView will still open. You will need to adjust settings manually.",
-                )
-                subprocess.check_call([paraview_executable] + vtu_files, cwd=exec_path_override)
+    if pvpython_executable or paraview_executable:
+        pvtu_files = glob.glob(f"{result_path}*.pvtu")
+        vtu_files = glob.glob(f"{result_path}*.vtu")
+        sif_files = glob.glob(f"{result_path}*.sif")
+        data_files = pvtu_files if pvtu_files else vtu_files
+        try:
+            paraview_macro_path = Path(Path(Path.cwd()) / "scripts/paraview_macro.py")
+            paraview_command = [
+                pvpython_executable,
+                str(paraview_macro_path),
+                json.dumps(data_files),
+                json.dumps(sif_files),
+                json.dumps(cross_section),
+            ]
+            subprocess.check_call(paraview_command)
+        except (ValueError, NameError, TypeError, SyntaxError) as e:
+            print(
+                "Automated ParaView visualisation failed. Attempting to open standard ParaView so you can adjust settings manually."
+            )
+            subprocess.check_call([paraview_executable] + data_files, cwd=exec_path_override)
     else:
         logging.warning("Paraview was not found! Make sure you have it installed: https://www.paraview.org/")
         sys.exit()
-
-
-def adapt_paraview_macro_to_sweep(data_files: list[str], sif_files: list[str], cross_section: bool = False):
-    """
-    Adapts paraview's foundational macro file to the specific data files in current simulation,
-    mainly by writting paths and name of data_files to the macro document.
-
-    """
-
-    # Key paths
-    root_folder_path = Path(Path.cwd())
-    paraview_macro_path = Path(root_folder_path / "scripts/paraview_macro.py")
-
-    # Get thresholds from sif file
-    if sif_files:
-        sif_file_path = Path(root_folder_path / sif_files[0])
-        with open(sif_file_path, "r") as f:
-            sif_contents = f.read()
-            f.close
-        pattern = r"(?<=Body\s)\d*\n\s*Target\sBodies\(\d*\).*(?=substrate_1.*\n)"
-        matches = re.findall(pattern, sif_contents)
-        threshold_low = int(matches[0][0])
-        threshold_up = threshold_low + len(matches) - 1
-
-    # Adapt macro the specifics of this sweep
-    with open(paraview_macro_path, "r") as f:
-        lines = f.readlines()
-        f.close
-
-    new_lines = []
-    for line in lines:
-        if line.strip().startswith("data_folder ="):
-            new_lines.append("".join(["data_folder = ", '"', str(root_folder_path), '"', "\n"]))
-        elif line.strip().startswith("data_files ="):
-            new_lines.append("".join(["data_files = ", str(data_files), "\n"]))
-        elif line.strip().startswith("cross_section =") and cross_section:
-            new_lines.append("".join(["cross_section = ", str(True), "\n"]))
-        elif line.strip().startswith("thresholds =") and sif_files:
-            new_lines.append("".join(["thresholds = ", str([threshold_low, threshold_up]), "\n"]))
-        else:
-            new_lines.append(line)
-
-    with open(paraview_macro_path, "w") as f:
-        f.writelines(new_lines)
-        f.close
-
-    return paraview_macro_path
