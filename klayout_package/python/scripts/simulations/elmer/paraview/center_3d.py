@@ -35,12 +35,23 @@ def get_substrate_threshold(sif_path, substrate_eps=11.45, tol=1e-2):
         return 0, 0
     
     
-def run(vtu_files: list, sif_path: str, is_3d=True):
+def run(vtu_files: list, sif_path: str = None, is_3d=True):
     for file in vtu_files:
         if not os.path.isfile(file):
             raise FileNotFoundError(f"VTU file not found: {file}")
-    if not os.path.isfile(sif_path):
-        raise FileNotFoundError(f"SIF file not found: {sif_path}")
+
+    if sif_path is None:
+        vtu_dir = Path(vtu_files[0]).parent
+        # Extract full_name prefix from the VTU filename
+        full_name = Path(vtu_files[0]).stem.split("_")[0]
+        for f in os.listdir(vtu_dir):
+            if f.startswith(full_name) and f.endswith(".sif"):
+                sif_path = vtu_dir / f
+                break
+        else:
+            raise FileNotFoundError(f"No .sif file starting with '{full_name}' found in {vtu_dir}")
+
+    sif_path = str(sif_path)
     
     reader = XMLUnstructuredGridReader(FileName=vtu_files)
     reader.TimeArray = 'None'
