@@ -12,33 +12,6 @@ from pathlib import Path
 from paraview.simple import *
 
 
-def load_data(data_files: list[str]):
-    """Loads the foundational data from .pvtu or .vtu files, and returns parameters useful for other functions."""
-
-    simulation_folder_path = str(Path.cwd())
-    registration_names = []
-    simulation_name = vtu_pvtu = new_box = None
-
-    if data_files:
-        simulation_name = "" if not data_files else data_files[0].split("/")[0]
-        registration_names = [f.rsplit("/")[1].split(".")[0] for f in data_files]
-        vtu_pvtu = data_files[0].rsplit(".")[1]
-
-        if vtu_pvtu == "pvtu":
-            for i in range(len(registration_names)):
-                reader = XMLPartitionedUnstructuredGridReader(
-                    FileName=[simulation_folder_path + "/" + data_files[i]], registrationName=registration_names[i]
-                )
-        elif vtu_pvtu == "vtu":
-            for i in range(len(registration_names)):
-                reader = XMLUnstructuredGridReader(
-                    FileName=[simulation_folder_path + "/" + data_files[i]], registrationName=registration_names[i]
-                )
-        reader.TimeArray = "None"
-
-    return simulation_folder_path, simulation_name, registration_names, vtu_pvtu
-
-
 def format_data(registration_names: list[str], vtu_pvtu: str, cross_section: bool, render_view: object):
     """Formats the foundational data layers."""
 
@@ -70,7 +43,7 @@ def get_thresholds(sif_files: list[str]) -> list[int]:
             sif_file_path = Path(Path(Path.cwd()) / sif_files[0])
             with open(sif_file_path, "r") as f:
                 sif_contents = f.read()
-            pattern = r"(?<=Body\s)\d*\n\s*Target\sBodies\(\d*\).*(?=substrate_1.*\n)"
+            pattern = r"(?<=Body\s)(\d*\n*)(.*\s){0,4}Target\sBodies\(\d*\).*(?=substrate_1.*\n)"
             matches = re.findall(pattern, sif_contents)
             thresholds = [int(matches[0][0]), int(matches[0][0]) + len(matches) - 1]
         except (ValueError, NameError, TypeError, FileNotFoundError) as e:
@@ -159,11 +132,17 @@ def run_macro(data_files: list[str], sif_files: list[str], cross_section: bool):
     paraview.simple._DisableFirstRenderCameraReset()
     render_view = GetActiveViewOrCreate("RenderView")
 
+    simulation_folder_path = str(Path.cwd())
+    registration_names = []
+    simulation_name = vtu_pvtu = new_box = None
+
     if data_files:
-        simulation_folder_path, simulation_name, registration_names, vtu_pvtu = load_data(data_files)
+        simulation_name = Path(data_files[0]).parent
+        registration_names = [Path(data_files[0]).name for f in data_files]
+        vtu_pvtu = "pvtu" if ".pvtu" in data_files[0] else "vtu"
         format_data(registration_names, vtu_pvtu, cross_section, render_view)
     else:
-        raise FileNotFoundError("Error with ParaView pipeline. No data files to visualise.")
+        raise FileNotFoundError("Error with ParaView automation. No data files passed to macro.")
 
     if data_files:
         if not cross_section:
@@ -172,7 +151,3 @@ def run_macro(data_files: list[str], sif_files: list[str], cross_section: bool):
         render_data(simulation_folder_path, simulation_name, cross_section, render_view)
 
     Render()
-    Interact()
-
-
-run_macro(json.loads(sys.argv[1]), json.loads(sys.argv[2]), json.loads(sys.argv[3]))

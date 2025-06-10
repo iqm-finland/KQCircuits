@@ -20,6 +20,7 @@
 import logging
 import shutil
 import subprocess
+import tempfile
 import os
 import sys
 import platform
@@ -341,20 +342,20 @@ def run_paraview(
         vtu_files = glob.glob(f"{result_path}*.vtu")
         sif_files = glob.glob(f"{result_path}*.sif")
         data_files = pvtu_files if pvtu_files else vtu_files
+        paraview_macro_path = Path(Path(Path.cwd()) / "scripts/paraview_macro.py")
+
         try:
-            paraview_macro_path = Path(Path(Path.cwd()) / "scripts/paraview_macro.py")
-            paraview_command = [
-                pvpython_executable,
-                str(paraview_macro_path),
-                json.dumps(data_files),
-                json.dumps(sif_files),
-                json.dumps(cross_section),
-            ]
-            subprocess.check_call(paraview_command)
+            with tempfile.NamedTemporaryFile(mode="w", suffix=".py", encoding="utf-8") as f:
+                f.write(
+                    f"import sys\n"
+                    f"sys.path.insert(0, '{paraview_macro_path.parent}')\n"
+                    f"from paraview_macro import run_macro\n"
+                    f"run_macro({data_files}, {sif_files}, {cross_section})"
+                )
+                f.flush()
+                subprocess.check_call([paraview_executable] + data_files + [str(f.name)])
         except (ValueError, NameError, TypeError, SyntaxError) as e:
-            print(
-                "Automated ParaView visualisation failed. Attempting to open standard ParaView so you can adjust settings manually."
-            )
+            print(f"Paraview automated visualisation failed. Attempting to open ParaView with data only.\nError: {e}")
             subprocess.check_call([paraview_executable] + data_files, cwd=exec_path_override)
     else:
         logging.warning("Paraview was not found! Make sure you have it installed: https://www.paraview.org/")
