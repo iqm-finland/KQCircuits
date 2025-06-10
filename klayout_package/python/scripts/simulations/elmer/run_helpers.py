@@ -332,12 +332,11 @@ def run_elmer_solver(json_data: dict[str, Any], exec_path_override: Path | str |
 def run_paraview(temp_script_path: Path | str, n_processes: int, exec_path_override: Path | str | None = None):
     """Run a ParaView Python script using pvpython."""
     pvpython_executable = shutil.which("pvpython")
-    if pvpython_executable is not None:
-        if n_processes > 1:
+    if pvpython_executable is None:
+        logging.warning("pvpython was not found! Make sure ParaView is installed and in PATH.")
+        sys.exit()    
+    if n_processes >= 1:
+            print(f"n_processes are :{n_processes}")
             command = [pvpython_executable, str(temp_script_path)]
             subprocess.check_call(command, cwd=exec_path_override)
-        else:
-            print(n_processes)
-    else:
-        logging.warning("pvpython was not found! Make sure ParaView is installed and in PATH.")
-        sys.exit()
+
