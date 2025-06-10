@@ -112,6 +112,7 @@ def export_elmer_json(
     export_simulation_json(json_data, json_file_path)
 
     return json_file_path
+    
 
 def write_paraview_script(
     simulation: Union[Simulation, CrossSectionSimulation],
@@ -120,43 +121,22 @@ def write_paraview_script(
 ):
     """
     Write a Python script to run the ParaView post-processing for a given simulation and solution.
+
     Args:
-        simulation: The simulation object.
-        solution: The Elmer solution object.
-        path: The base output path (Path object).
+        simulation: The simulation to be exported.
+        solution: The solution to be exported.
+        path: Location where to write *_pv.py
     """
     if simulation is None or not isinstance(simulation, (Simulation, CrossSectionSimulation)):
         raise ValueError("Cannot export without simulation")
 
-    # get data for naming logic
-    sim_data = simulation.get_simulation_data()
-    sol_data = solution.get_solution_data()
     full_name = simulation.name + solution.name
-    is_cross_section = isinstance(simulation, CrossSectionSimulation)
+    is_cross_section = (solution.tool == "cross-section")
 
-    # Determine correct SIF file name(s)
-    if is_cross_section:
-        sif_names = [f"{full_name}_C"]
-        if sol_data.get("run_inductance_sim", False):
-            if any(m.get("london_penetration_depth", 0) > 0 for m in sim_data["material_dict"].values()):
-                sif_names += [f"{full_name}_L"]
-            else:
-                sif_names += [f"{full_name}_C0"]
-    elif solution.tool == "wave_equation":
-        if solution.sweep_type == "interpolating":
-            sif_names = []
-        else:
-            sif_names = [full_name + "_f" + str(f).replace(".", "_") for f in sol_data["frequency"]]
-    else:
-        sif_names = [full_name]
-
-    # Use the first sif name for visualization
-    sif_path = path / simulation.name / f"{sif_names[0]}.sif"
     vtu_dir = path / simulation.name
     scripts_dir_path = path / "scripts" / "paraview"
     pv_script_path = path / (full_name + "_pv.py")
 
-    # Use 3D or 2D visualization module
     run_module = "center_2d" if is_cross_section else "center_3d"
 
     script_content = (
@@ -169,12 +149,13 @@ def write_paraview_script(
         f'if not vtu_files:\n'
         f'    vtu_files = [str(f) for f in vtu_dir.glob("*.vtu")]\n'
         f'if vtu_files:\n'
-        f'    run(vtu_files, r"{sif_path}", {not is_cross_section})\n'
+        f'    run(vtu_files, None, is_3d={not is_cross_section})\n'
         f'else:\n'
         f'    print("No .vtu or .pvtu files found.")\n'
     )
 
     pv_script_path.write_text(script_content)
+    
 
 def export_elmer_script(
     json_filenames,
@@ -677,7 +658,8 @@ def export_elmer(
 
         try:
             json_filenames.append(export_elmer_json(simulation, solution, path, workflow, mesh_reuse))
-            write_paraview_script(simulation,solution,path)
+            "call write_paraview_script() for generating *_pv.py files in path directory"
+            write_paraview_script(simulation, solution, path)
         except (IndexError, ValueError, Exception) as e:  # pylint: disable=broad-except
             if skip_errors:
                 logging.warning(
