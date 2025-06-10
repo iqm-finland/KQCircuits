@@ -658,7 +658,7 @@ def export_elmer(
 
         try:
             json_filenames.append(export_elmer_json(simulation, solution, path, workflow, mesh_reuse))
-            "call write_paraview_script() for generating *_pv.py files in path directory"
+            # call write_paraview_script() for generating *_pv.py files in path directory
             write_paraview_script(simulation, solution, path)
         except (IndexError, ValueError, Exception) as e:  # pylint: disable=broad-except
             if skip_errors:
