@@ -336,7 +336,6 @@ def run_paraview(temp_script_path: Path | str, n_processes: int, exec_path_overr
         logging.warning("pvpython was not found! Make sure ParaView is installed and in PATH.")
         sys.exit()    
     if n_processes >= 1:
-            print(f"n_processes are :{n_processes}")
-            command = [pvpython_executable, str(temp_script_path)]
-            subprocess.check_call(command, cwd=exec_path_override)
+        command = [pvpython_executable, str(temp_script_path)]
+        subprocess.check_call(command, cwd=exec_path_override)
 
