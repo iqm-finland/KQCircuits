@@ -140,3 +140,12 @@ def test_close_hole_grid():
     assert region.count() == 1
     assert region.edges().count() == 8
     assert region.area() == 16005999
+
+
+def test_hole_detection():
+    region = pya.Region(pya.Box(0, 0, 2000, 1000))
+    region -= pya.Region(pya.Box(100, 0, 500, 500))
+    region -= pya.Region(pya.Box(1000, 100, 1500, 500))
+    assert region.area() == 1600000
+    merge_points_and_match_on_edges([region])
+    assert region.area() == 1600000

@@ -259,8 +259,8 @@ def merge_points_and_match_on_edges(regions, tolerance=2):
                 p1 = pts[(i1 + 1) % size]
                 if p0 == p1:
                     continue  # detect equal points at i0-1 and i1+1
-                p2 = pts[i1 - 1]
-                if pya.Edge(p0, p).side_of(p2) + pya.Edge(p, p1).side_of(p2) < pya.Edge(p0, p).side_of(p1):
+                e0, e1 = pya.Edge(p0, p), pya.Edge(p, p1)
+                if any(e0.side_of(p2) + e1.side_of(p2) <= e0.side_of(p1) for p2 in (pts[i1 - 1], pts[(i0 + 1) % size])):
                     continue  # detected a hole connection at p
                 return fixed_polygon([pts[(i0 + k) % size] for k in range((i1 - i0) % size)]) + fixed_polygon(
                     [pts[(i1 + k) % size] for k in range((i0 - i1) % size)]
