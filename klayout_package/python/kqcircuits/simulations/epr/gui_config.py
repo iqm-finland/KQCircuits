@@ -15,7 +15,6 @@
 # (meetiqm.com/iqm-open-source-trademark-policy). IQM welcomes contributions to the code.
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
-
 epr_gui_visualised_partition_regions = {
     "Circular Capacitor": [
         "cplrbulk",
@@ -42,5 +41,11 @@ epr_gui_visualised_partition_regions = {
         "coupler2mer",
         "islandbulk",
         "leadsbulk",
+    ],
+    "Circular Transmon Single Island": [
+        "0cplrmer",
+        "1cplrmer",
+        "2cplrmer",
+        "leadsmer"
     ],
 }
