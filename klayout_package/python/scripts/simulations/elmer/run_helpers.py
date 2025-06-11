@@ -343,7 +343,7 @@ def run_paraview(
         
         paraview_macro_path = Path(Path(Path.cwd()) / "scripts/paraview_macro.py")
         try:
-            temp_filename = f"{result_path.name}_pv.py"
+            pv_file = f"{str(result_path.absolute())}_pv.py"
             with open(temp_filename, "w", encoding="utf-8") as f:
                 f.write(
                     f"import sys\n"
