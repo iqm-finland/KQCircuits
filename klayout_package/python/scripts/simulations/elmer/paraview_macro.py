@@ -57,9 +57,9 @@ def apply_thresholds(
     """Formats thresholds with information from get_thresholds."""
 
     if (vtu_pvtu == "pvtu" and thresholds) or not (cross_section and thresholds):
-        for i in range(len(registration_names)):
-            parent = FindSource(registration_names[i])
-            threshold = Threshold(registrationName=f"{registration_names[i]}-threshold", Input=parent)
+        for i, registration_name in enumerate(registration_names):
+            parent = FindSource(registration_name)
+            threshold = Threshold(registrationName=f"{registration_name}-threshold", Input=parent)
             threshold.ThresholdMethod = "Between"
             threshold.LowerThreshold = thresholds[0]
             threshold.UpperThreshold = thresholds[1]
