@@ -147,7 +147,7 @@ if tool == "cross-section":
         run_elmer_solver(json_data, path)
 
     if workflow.get("run_paraview", False):
-        run_paraview(path / name / name, elmer_n_processes, path, cross_section=True)
+        run_paraview(path / name / name, path, cross_section=True)
 
     if args.write_project_results:
         res = get_cross_section_capacitance_and_inductance(json_data, path.joinpath(name))
