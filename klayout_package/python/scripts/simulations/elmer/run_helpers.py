@@ -331,7 +331,7 @@ def run_elmer_solver(json_data: dict[str, Any], exec_path_override: Path | str |
 
 
 def run_paraview(
-    result_path: Path | str, n_processes: int, exec_path_override: Path | str | None = None, cross_section: bool = False
+    result_path: Path | str, exec_path_override: Path | str | None = None, cross_section: bool = False
 ):
     """Open simulation results in paraview"""
 
