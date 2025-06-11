@@ -20,7 +20,6 @@
 import logging
 import shutil
 import subprocess
-import tempfile
 import os
 import sys
 import platform
@@ -335,25 +334,25 @@ def run_paraview(
 ):
     """Open simulation results in paraview"""
 
-    pvpython_executable = shutil.which("pvpython")
     paraview_executable = shutil.which("paraview")
-    if pvpython_executable or paraview_executable:
+    if paraview_executable:
         pvtu_files = glob.glob(f"{result_path}*.pvtu")
         vtu_files = glob.glob(f"{result_path}*.vtu")
         sif_files = glob.glob(f"{result_path}*.sif")
         data_files = pvtu_files if pvtu_files else vtu_files
+        
         paraview_macro_path = Path(Path(Path.cwd()) / "scripts/paraview_macro.py")
-
         try:
-            with tempfile.NamedTemporaryFile(mode="w", suffix=".py", encoding="utf-8") as f:
+            temp_filename = f"{result_path.name}_pv.py"
+            with open(temp_filename, "w", encoding="utf-8") as f:
                 f.write(
                     f"import sys\n"
                     f"sys.path.insert(0, '{paraview_macro_path.parent}')\n"
                     f"from paraview_macro import run_macro\n"
-                    f"run_macro({data_files}, {sif_files}, {cross_section})"
+                    f"run_macro({data_files}, {sif_files}, {cross_section})\n"
                 )
-                f.flush()
-                subprocess.check_call([paraview_executable] + data_files + [str(f.name)])
+                f.close()
+                subprocess.check_call([paraview_executable] + data_files + [temp_filename])
         except (ValueError, NameError, TypeError, SyntaxError) as e:
             print(f"Paraview automated visualisation failed. Attempting to open ParaView with data only.\nError: {e}")
             subprocess.check_call([paraview_executable] + data_files, cwd=exec_path_override)

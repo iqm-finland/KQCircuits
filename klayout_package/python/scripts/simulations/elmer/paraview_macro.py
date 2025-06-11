@@ -6,7 +6,6 @@
 #   ```
 
 import re
-import sys
 import json
 from pathlib import Path
 from paraview.simple import *
@@ -48,7 +47,7 @@ def get_thresholds(sif_files: list[str]) -> list[int]:
             thresholds = [int(matches[0][0]), int(matches[0][0]) + len(matches) - 1]
         except (ValueError, NameError, TypeError, FileNotFoundError) as e:
             thresholds = []
-    return thresholds
+        return thresholds
 
 
 def apply_thresholds(
@@ -134,11 +133,10 @@ def run_macro(data_files: list[str], sif_files: list[str], cross_section: bool):
 
     simulation_folder_path = str(Path.cwd())
     registration_names = []
-    simulation_name = vtu_pvtu = new_box = None
-
+    simulation_name, vtu_pvtu = None, None
     if data_files:
         simulation_name = Path(data_files[0]).parent
-        registration_names = [Path(data_files[0]).name for f in data_files]
+        registration_names = [Path(f).name for f in data_files]
         vtu_pvtu = "pvtu" if ".pvtu" in data_files[0] else "vtu"
         format_data(registration_names, vtu_pvtu, cross_section, render_view)
     else:
