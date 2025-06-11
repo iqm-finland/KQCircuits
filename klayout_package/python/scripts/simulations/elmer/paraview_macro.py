@@ -15,8 +15,8 @@ from paraview.simple import *
 def format_data(registration_names: list[str], vtu_pvtu: str, cross_section: bool, render_view: object):
     """Formats the foundational data layers."""
 
-    for i in range(len(registration_names)):
-        parent = FindSource(registration_names[i])
+    for i, registration_name in enumerate(registration_names):
+        parent = FindSource(registration_name)
 
         if vtu_pvtu == "pvtu":
             parent.TimeArray = "None"
