@@ -21,6 +21,7 @@ from pathlib import Path
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
+from kqcircuits.simulations.export.elmer.mesh_size_helpers import refine_metal_edges
 from kqcircuits.simulations.export.simulation_export import export_simulation_oas
 from kqcircuits.simulations.single_xmons_full_chip_sim import SingleXmonsFullChipSim
 from kqcircuits.util.export_helper import create_or_empty_tmp_directory, open_with_klayout_or_default_application
@@ -52,13 +53,8 @@ sim_parameters = {
 if use_elmer:
     mesh_size = {
         "global_max": 200.0,
-        "1t1_gap": 50.0,
-        "1t1_airbridge_flyover": 50.0,
-        "1t1_airbridge_pads": 50.0,
-        **{f"1t1_signal_{i}": 50.0 for i in range(1, 15)},
-        "1t1_ground": 200.0,
-        "substrate": 200.0,
-        "vacuum": 200.0,
+        **refine_metal_edges(50.0),
+        "1t1_airbridge_*": 50.0,
     }
 
     export_parameters_elmer = {

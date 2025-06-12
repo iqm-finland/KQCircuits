@@ -22,6 +22,7 @@ from pathlib import Path
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
+from kqcircuits.simulations.export.elmer.mesh_size_helpers import refine_metal_edges
 from kqcircuits.simulations.export.simulation_export import sweep_simulation, export_simulation_oas
 
 from kqcircuits.simulations.xmons_direct_coupling_sim import XMonsDirectCouplingSim
@@ -49,11 +50,7 @@ export_parameters = {
 }
 
 # Gmsh meshing parameters
-mesh_size = {
-    "global_max": 400.0,
-    "1t1_gap": 16.0,
-    **{f"1t1_signal_{i}&1t1_gap": 8 for i in range(1, 10)},
-}
+mesh_size = refine_metal_edges(8)
 
 # Here we select to use up to 4*2=8 cores with two levels of parallelisation
 # That is, we have 4 simulations running at the same time, each using 2 cores.

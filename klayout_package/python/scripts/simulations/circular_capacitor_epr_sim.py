@@ -22,6 +22,7 @@ from pathlib import Path
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.elements.circular_capacitor import CircularCapacitor
+from kqcircuits.simulations.export.elmer.mesh_size_helpers import refine_metal_edges
 from kqcircuits.simulations.post_process import PostProcess
 from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
 from kqcircuits.simulations.export.simulation_export import cross_sweep_simulation, export_simulation_oas, cross_combine
@@ -95,12 +96,7 @@ sim_parameters = {
 
 
 solution = ElmerEPR3DSolution(
-    mesh_size={
-        "1t1_gap&1t1_signal_1": [2.0, 2.0, 0.5],
-        "1t1_gap&1t1_signal_2": [2.0, 2.0, 0.5],
-        "1t1_gap&1t1_ground": [2.0, 2.0, 0.5],
-        "2b1_gap&2b1_ground": [2.0, 2.0, 0.5],
-    },
+    mesh_size=refine_metal_edges(2.0, 0.5),
     mesh_optimizer={},
     linear_system_method="mg",
     voltage_excitations=voltage_excitations,

@@ -177,8 +177,7 @@ sim_parameters = {
 mesh_size = {
     "vacuum": 10,
     "substrate": 5,
-    "signal_0": 0.1,
-    "signal_1": 0.1,
+    "signal_*": 0.1,
     "ground": 0.1,
     "ma_layer": 0.1,
     "ms_layer": 0.1,

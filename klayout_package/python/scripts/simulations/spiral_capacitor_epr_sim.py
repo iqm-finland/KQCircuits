@@ -26,6 +26,7 @@ from kqcircuits.simulations.export.cross_section.epr_correction_export import ge
 
 from kqcircuits.simulations.epr.spiral_capacitor import partition_regions, correction_cuts
 from kqcircuits.simulations.export.elmer.elmer_solution import ElmerEPR3DSolution
+from kqcircuits.simulations.export.elmer.mesh_size_helpers import refine_metal_edges
 from kqcircuits.simulations.post_process import PostProcess
 from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
 
@@ -84,10 +85,7 @@ layout = get_active_or_new_layout()
 simulations = cross_combine(
     [sim_class(layout, **sim_parameters, **s, name=f"spiral_capacitor_{i}") for i, s in enumerate(sweep)],
     ElmerEPR3DSolution(
-        mesh_size={
-            "1t1_layerMSfingergmer&1t1_layerSAfingergmer": 2.0,
-            "1t1_layerMSgroundgmer&1t1_layerSAgroundgmer": 2.0,
-        },
+        mesh_size=refine_metal_edges(2.0, ignore_region="waveguides"),
         linear_system_method="mg",
     ),
 )

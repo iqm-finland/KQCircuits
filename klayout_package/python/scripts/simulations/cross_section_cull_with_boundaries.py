@@ -95,16 +95,9 @@ workflow = {
 
 mesh_size = {
     "vacuum": 100,
-    "substrate_1": 100,
-    # '1t1_signal_1': 1,
-    # '1t1_signal_2': 1,
-    # '1t1_signal_3': 1,
-    "1t1_ground": 4,
-    "ma_layer": 0.02,
-    "ms_layer": 0.02,
-    "sa_layer": 0.02,
-    "substrate_2": 100,
-    "2b1_ground": 4,
+    "substrate*": 100,
+    "*_ground": 4,
+    "*_layer": 0.02,
 }
 
 # Get layout

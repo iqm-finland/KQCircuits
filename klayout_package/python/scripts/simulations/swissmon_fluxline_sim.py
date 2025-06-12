@@ -86,7 +86,7 @@ simulations = [
             frequency=0.1,
             maximum_passes=20,
             integrate_magnetic_flux=True,
-            mesh_size={"squid": 2, "vacuumrefine": 4, "substraterefine": 4},
+            mesh_size={"squid": 2, "*refine": 4},
         ),
     ),
     (

@@ -23,6 +23,7 @@ from pathlib import Path
 
 from kqcircuits.elements.hanger_resonator import HangerResonator
 from kqcircuits.pya_resolver import pya
+from kqcircuits.simulations.export.elmer.mesh_size_helpers import refine_metal_edges
 from kqcircuits.simulations.export.simulation_export import export_simulation_oas
 from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
@@ -95,12 +96,7 @@ else:
 
 
 if use_elmer:
-    mesh_size = {
-        "global_max": 100.0,
-        "1t1_gap": 5.0,
-        **{f"port_{i}": 5 for i in [1, 2]},  # edge ports
-        **{f"port_{i}": 5 for i in [3, 4]},  # internal ports
-    }
+    mesh_size = refine_metal_edges(5.0)
 
     if wave_equation:
         if interpolating_sweep:

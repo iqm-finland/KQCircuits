@@ -23,6 +23,7 @@ from pathlib import Path
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
+from kqcircuits.simulations.export.elmer.mesh_size_helpers import refine_metal_edges
 from kqcircuits.simulations.export.simulation_export import export_simulation_oas
 
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
@@ -74,12 +75,7 @@ sim_parameters = {
 }
 
 if use_elmer:
-    mesh_size = {
-        "global_max": 100.0,
-        "2b1_gap&2b1_signal_1": 1,
-        "2b1_gap&2b1_signal_2": 1,
-        "2b1_gap&2b1_ground": 1,
-    }
+    mesh_size = refine_metal_edges(2.0)
 
     export_parameters_elmer = {
         "path": path,

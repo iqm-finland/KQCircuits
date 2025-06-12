@@ -26,6 +26,7 @@ from kqcircuits.simulations.export.cross_section.epr_correction_export import ge
 from kqcircuits.elements.smooth_capacitor import SmoothCapacitor
 from kqcircuits.simulations.epr.smooth_capacitor import partition_regions, correction_cuts
 from kqcircuits.simulations.export.elmer.elmer_solution import ElmerEPR3DSolution
+from kqcircuits.simulations.export.elmer.mesh_size_helpers import refine_metal_edges
 from kqcircuits.simulations.post_process import PostProcess
 from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
 
@@ -77,10 +78,7 @@ simulations = [
     (
         sim_class(layout, **sim_parameters),
         ElmerEPR3DSolution(
-            mesh_size={
-                "1t1_layerMSfingersmer&1t1_layerSAfingersmer": 2.0,
-                "1t1_layerMSbcomplementmer&1t1_layerSAbcomplementmer": 2.0,
-            },
+            mesh_size=refine_metal_edges(2.0),
             linear_system_method="mg",
         ),
     )

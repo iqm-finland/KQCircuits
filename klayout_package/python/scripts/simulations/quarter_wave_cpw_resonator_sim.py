@@ -23,6 +23,7 @@ from pathlib import Path
 
 from kqcircuits.elements.quarter_wave_cpw_resonator import QuarterWaveCpwResonator
 from kqcircuits.pya_resolver import pya
+from kqcircuits.simulations.export.elmer.mesh_size_helpers import refine_metal_edges
 from kqcircuits.simulations.export.simulation_export import export_simulation_oas
 from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
@@ -94,10 +95,7 @@ else:
 
 
 if use_elmer:
-    mesh_size = {
-        "global_max": 1000.0,
-        "1t1_gap": [5.0, 5.0, 0.8],
-    }
+    mesh_size = refine_metal_edges(5.0)
 
     if wave_equation:
         if interpolating_sweep:

@@ -25,6 +25,7 @@ import numpy as np
 from kqcircuits.qubits.concentric_transmon import ConcentricTransmon
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
+from kqcircuits.simulations.export.elmer.mesh_size_helpers import refine_metal_edges
 from kqcircuits.simulations.export.simulation_export import (
     cross_sweep_simulation,
     export_simulation_oas,
@@ -82,13 +83,7 @@ elmer_export_parameters = {
     },
     "linear_system_method": "mg",  # Multigrid solver in Elmer, details in Elmer docs
     "p_element_order": 2,  # Polynomial order of FEM basis functions, computationally more expensive but more accurate.
-    "mesh_size": {  # check implementation of `export_gmsh_msh` for detais. Employs 'mesh size fields'.
-        "global_max": 80.0,
-        "1t1_gap&1t1_signal_1": [4.0, 8.0],
-        "1t1_gap&1t1_signal_2": [4.0, 8.0],
-        "1t1_gap&1t1_signal_3": [4.0, 8.0],
-        "1t1_gap&1t1_ground": [4.0, 8.0],
-    },
+    "mesh_size": refine_metal_edges(4.0),
 }
 
 # Get layout

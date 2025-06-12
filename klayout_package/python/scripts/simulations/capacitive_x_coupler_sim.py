@@ -23,6 +23,7 @@ from pathlib import Path
 
 from kqcircuits.elements.capacitive_x_coupler import CapacitiveXCoupler
 from kqcircuits.pya_resolver import pya
+from kqcircuits.simulations.export.elmer.mesh_size_helpers import refine_metal_edges
 from kqcircuits.simulations.export.simulation_export import export_simulation_oas
 from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
@@ -73,14 +74,6 @@ sim_parameters = {
 }
 
 if use_elmer:
-    mesh_size = {
-        "global_max": 50.0,
-        "1t1_gap": 2.0,
-        "1t1_gap&1t1_ground": [0.5, 0.5, 2],
-        "1t1_gap&1t1_signal_1": [0.5, 0.5, 2],
-        **{f"port_{i}": 20.0 for i in range(1, 5)},
-    }
-
     if wave_equation:
         export_parameters_elmer = {
             "path": path,
@@ -182,6 +175,6 @@ simulations = [sim_class(layout, **sim_parameters)]
 open_with_klayout_or_default_application(export_simulation_oas(simulations, path))
 
 if use_elmer:
-    export_elmer(simulations, **export_parameters_elmer, mesh_size=mesh_size, workflow=workflow)
+    export_elmer(simulations, **export_parameters_elmer, mesh_size=refine_metal_edges(2.0), workflow=workflow)
 else:
     export_ansys(simulations, **export_parameters_ansys)

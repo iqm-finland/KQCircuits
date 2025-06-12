@@ -26,6 +26,7 @@ from kqcircuits.elements.waveguide_coplanar_curved import WaveguideCoplanarCurve
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
+from kqcircuits.simulations.export.elmer.mesh_size_helpers import refine_metal_edges
 from kqcircuits.simulations.export.simulation_export import export_simulation_oas
 from kqcircuits.simulations.port import InternalPort
 from kqcircuits.simulations.post_process import PostProcess
@@ -86,11 +87,7 @@ if use_elmer:
         "tool": "capacitance",
         "linear_system_method": "mg",
     }
-    mesh_size = {
-        "global_max": 200.0,
-        "1t1_gap&1t1_signal_1": 2.0,
-        "1t1_gap&1t1_ground": 2.0,
-    }
+    mesh_size = refine_metal_edges(2.0)
     workflow = {
         "run_gmsh_gui": True,  # For GMSH: if true, the mesh is shown after it is done
         "run_elmergrid": True,

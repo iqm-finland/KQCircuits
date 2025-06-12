@@ -28,6 +28,7 @@ from kqcircuits.elements.tsvs.tsv_standard import TsvStandard
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
+from kqcircuits.simulations.export.elmer.mesh_size_helpers import refine_metal_edges
 from kqcircuits.simulations.export.simulation_export import export_simulation_oas
 
 from kqcircuits.simulations.simulation import Simulation
@@ -246,7 +247,7 @@ elif export_tool == "elmer":
         simulations,
         path=dir_path,
         workflow={"run_gmsh_gui": True},
-        mesh_size={"global_max": 100, **{f"{f}_gap": 10 for f in ["1b1", "1t1", "2b1", "2t1"]}},
+        mesh_size=refine_metal_edges(10.0),
     )
 
 # Write and open oas file
