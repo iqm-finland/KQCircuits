@@ -594,6 +594,7 @@
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.html">kqcircuits.simulations</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.epr.html">kqcircuits.simulations.epr</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.circular_capacitor.html">kqcircuits.simulations.epr.circular_capacitor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.circular_transmon_single_island.html">kqcircuits.simulations.epr.circular_transmon_single_island</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.double_pads.html">kqcircuits.simulations.epr.double_pads</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.example.html">kqcircuits.simulations.epr.example</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.epr.gui_config.html">kqcircuits.simulations.epr.gui_config</a></li>
@@ -1043,6 +1044,10 @@ for RefpointToSimPort objects based on simulation’s parameters</p></li>
 <li><p><strong>drive_angle</strong><em> (Double)</em><span> - Angle of the drive port, where 0deg corresponds to positive x-axis</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">300</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">degrees</span></code></p></li>
 <li><p><strong>drive_distance</strong><em> (Double)</em><span> - Distance of the driveline, measured from qubit centre</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">400</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
 <li><p><strong>n</strong><em> (Int)</em><span> - Number of points on turns</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">128</span></code></p></li>
+<li><p><strong>_epr_part_reg_0cplrmer_layer</strong><em> (Layer)</em><span> - Layer where EPR partition region ‘0cplrmer’ is placed</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>_epr_part_reg_1cplrmer_layer</strong><em> (Layer)</em><span> - Layer where EPR partition region ‘1cplrmer’ is placed</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>_epr_part_reg_2cplrmer_layer</strong><em> (Layer)</em><span> - Layer where EPR partition region ‘2cplrmer’ is placed</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>_epr_part_reg_leadsmer_layer</strong><em> (Layer)</em><span> - Layer where EPR partition region ‘leadsmer’ is placed</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.qubits.circular_transmon_single_island.png" src="../_images/kqcircuits.qubits.circular_transmon_single_island.png" />
 </section>

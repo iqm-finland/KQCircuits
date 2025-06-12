@@ -1,0 +1,12 @@
+:github_url: hide
+
+kqcircuits.simulations.epr.circular\_transmon\_single\_island
+=============================================================
+
+.. automodule:: kqcircuits.simulations.epr.circular_transmon_single_island
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.simulations.epr.circular_transmon_single_island
+.. image:: ../pcell_images/kqcircuits.simulations.epr.circular_transmon_single_island.png

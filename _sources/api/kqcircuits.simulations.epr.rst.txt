@@ -7,6 +7,7 @@ kqcircuits.simulations.epr
 .. toctree::
 
    kqcircuits.simulations.epr.circular_capacitor
+   kqcircuits.simulations.epr.circular_transmon_single_island
    kqcircuits.simulations.epr.double_pads
    kqcircuits.simulations.epr.example
    kqcircuits.simulations.epr.gui_config
