@@ -51,7 +51,7 @@ def partition_regions(simulation):
             angle = c_angle_rad - half_angle + (2 * half_angle * j) / n_points
             x = inner_radius * math.cos(angle)
             y = inner_radius * math.sin(angle)
-            points.append(pya.DPoint(x, y))
+            points.append(pya.DPoint(x, y) + simulation.refpoints["base"])
         
         coupler_region = pya.DPolygon(points)
         
