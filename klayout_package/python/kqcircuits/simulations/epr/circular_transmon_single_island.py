@@ -86,16 +86,20 @@ def partition_regions(simulation):
     
     regions.append(PartitionRegion(
         name="leadsmer",
+        face=simulation.face_ids[0],
         region=hall_region,
         metal_edge_dimensions=2.0,
+        vertical_dimensions=3.0,
         visualise=True
     ))
     
     # Main island complement region (covers everything not covered by above regions)
     regions.append(PartitionRegion(
         name="bcomplementmer",
+        face=simulation.face_ids[0],
         region=None,  # Entire element extent
         metal_edge_dimensions=2.0,
+        vertical_dimensions=3.0,
         visualise=True
     ))
     
