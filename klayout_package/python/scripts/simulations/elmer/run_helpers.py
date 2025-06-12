@@ -329,9 +329,7 @@ def run_elmer_solver(json_data: dict[str, Any], exec_path_override: Path | str |
     )
 
 
-def run_paraview(
-    result_path: Path | str, exec_path_override: Path | str | None = None, cross_section: bool = False
-):
+def run_paraview(result_path: Path | str, exec_path_override: Path | str | None = None, cross_section: bool = False):
     """Open simulation results in paraview"""
 
     paraview_executable = shutil.which("paraview")
@@ -340,7 +338,7 @@ def run_paraview(
         vtu_files = glob.glob(f"{result_path}*.vtu")
         sif_files = glob.glob(f"{result_path}*.sif")
         data_files = pvtu_files if pvtu_files else vtu_files
-        
+
         paraview_macro_path = repr(str(Path(Path(Path.cwd()) / "scripts/paraview_macro.py").parent))
         try:
             pv_script_path = f"{result_path.name}_pv.py"
