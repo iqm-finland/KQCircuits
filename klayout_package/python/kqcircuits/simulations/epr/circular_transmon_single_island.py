@@ -20,8 +20,8 @@ def partition_regions(simulation):
     regions = []
     
     # Coupler partition regions - one for each coupler
-    for i, (c_angle, c_width, c_arc_ampl) in enumerate(
-        zip(simulation.couplers_angle, simulation.couplers_width, simulation.couplers_arc_amplitude)
+    for i, (c_angle, c_arc_ampl) in enumerate(
+        zip(simulation.couplers_angle, simulation.couplers_arc_amplitude)
     ):
         # Create pizza slice shape for each coupler
         c_angle_rad = math.radians(float(c_angle))
