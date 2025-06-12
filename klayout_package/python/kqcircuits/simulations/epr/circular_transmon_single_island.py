@@ -57,8 +57,10 @@ def partition_regions(simulation):
         
         regions.append(PartitionRegion(
             name=f"{i}cplrmer",
+            face=simulation.face_ids[0],
             region=coupler_region,
             metal_edge_dimensions=2.0,
+            vertical_dimensions=3.0,
             visualise=True
         ))
     
