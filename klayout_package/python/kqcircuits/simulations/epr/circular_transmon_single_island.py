@@ -11,7 +11,6 @@
 import math
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.partition_region import PartitionRegion
-from kqcircuits.util.geometry_helper import arc_points
 
 
 def partition_regions(simulation):
@@ -35,8 +34,8 @@ def partition_regions(simulation):
         # Angular extent with extra margin
         half_angle = c_arc_ampl_rad / 2 + math.radians(10)  # Extra 10 degrees on each side
         
-        # Create pizza slice polygon
-        points = [pya.DPoint(0, 0)]  # Center point
+        # Create pizza slice polygon without center point to avoid zero width lines
+        points = []
         
         # Add arc points for outer edge
         n_points = 32
@@ -95,11 +94,11 @@ def partition_regions(simulation):
         visualise=True
     ))
     
-    # Main island complement region (covers everything not covered by above regions)
+    # Main island complement region 
     regions.append(PartitionRegion(
         name="bcomplementmer",
         face=simulation.face_ids[0],
-        region=None,  # Entire element extent
+        region=None,  
         metal_edge_dimensions=2.0,
         vertical_dimensions=3.0,
         visualise=True
@@ -118,18 +117,25 @@ def correction_cuts(simulation):
         zip(simulation.couplers_angle, simulation.couplers_arc_amplitude)
     ):
         c_angle_rad = math.radians(float(c_angle))
+        c_arc_ampl_rad = math.radians(float(c_arc_ampl))
+        
+        # Cut  outside the hall and cross the coupler slightly on the side
+        # mid angle between current cut position and coupler arc amplitude
+        half_arc = c_arc_ampl_rad / 2
+        cut_angle_offset = half_arc / 2  # Halfway between center and arc edge
+        cut_angle = c_angle_rad + cut_angle_offset  # Offset to the side
         
         # Cut from outside qubit through coupler to island center
         # Start outside the qubit
         outer_point = pya.DPoint(
-            (simulation.r_island + simulation.ground_gap + 15) * math.cos(c_angle_rad),
-            (simulation.r_island + simulation.ground_gap + 15) * math.sin(c_angle_rad)
+            (simulation.r_island + simulation.ground_gap + 15) * math.cos(cut_angle),
+            (simulation.r_island + simulation.ground_gap + 15) * math.sin(cut_angle)
         )
         
         # End at island edge
         inner_point = pya.DPoint(
-            (simulation.r_island - 10) * math.cos(c_angle_rad),
-            (simulation.r_island - 10) * math.sin(c_angle_rad)
+            (simulation.r_island - 10) * math.cos(cut_angle),
+            (simulation.r_island - 10) * math.sin(cut_angle)
         )
         
         cuts[f"{i}cplrmer"] = {
@@ -148,7 +154,7 @@ def correction_cuts(simulation):
     
     # Perpendicular direction to junction hall
     perp_angle = squid_angle_rad + math.pi/2
-    cut_length = 15  # Extend beyond hall width
+    cut_length = 15  
     
     p1 = pya.DPoint(
         hall_center.x + cut_length * math.cos(perp_angle),
@@ -166,8 +172,8 @@ def correction_cuts(simulation):
     }
     
     # Main island complement correction cut
-    # Find a direction that avoids couplers and junction
-    # Use angle opposite to junction
+    # direction that avoids couplers and junction
+    # angle opposite to junction
     complement_angle = math.radians(simulation.squid_angle + 180)
     
     # Check if this angle conflicts with any coupler
@@ -178,18 +184,21 @@ def correction_cuts(simulation):
             angular_dist = 360 - angular_dist
         min_angular_distance = min(min_angular_distance, angular_dist)
     
-    # If too close to a coupler, adjust angle
+    # Close to the coupler
     if min_angular_distance < 30:  # Less than 30 degrees separation
         complement_angle = math.radians(simulation.squid_angle + 150)
     
     # Cut from island to outside qubit
+    # points equidistant from the gap region
+    gap_distance = 10  # Same distance from gap as outer point
+    
     inner_point = pya.DPoint(
-        simulation.r_island * math.cos(complement_angle),
-        simulation.r_island * math.sin(complement_angle)
+        (simulation.r_island - gap_distance) * math.cos(complement_angle),
+        (simulation.r_island - gap_distance) * math.sin(complement_angle)
     )
     outer_point = pya.DPoint(
-        (simulation.r_island + simulation.ground_gap + 10) * math.cos(complement_angle),
-        (simulation.r_island + simulation.ground_gap + 10) * math.sin(complement_angle)
+        (simulation.r_island + simulation.ground_gap + gap_distance) * math.cos(complement_angle),
+        (simulation.r_island + simulation.ground_gap + gap_distance) * math.sin(complement_angle)
     )
     
     cuts["bcomplementmer"] = {
