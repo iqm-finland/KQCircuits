@@ -158,8 +158,8 @@ def correction_cuts(simulation):
     )
     
     cuts["leadsmer"] = {
-        "p1": p1,
-        "p2": p2,
+        "p1": p1 + simulation.refpoints["base"],
+        "p2": p2 + simulation.refpoints["base"],
         "boundary_conditions": {'xmin': {'potential': 0}, 'xmax': {'potential': 0}}
     }
     
