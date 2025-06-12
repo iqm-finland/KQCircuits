@@ -131,8 +131,8 @@ def correction_cuts(simulation):
         )
         
         cuts[f"{i}cplrmer"] = {
-            "p1": outer_point,
-            "p2": inner_point
+            "p1": outer_point + simulation.refpoints["base"],
+            "p2": inner_point + simulation.refpoints["base"]
         }
     
     # Junction hall correction cut
