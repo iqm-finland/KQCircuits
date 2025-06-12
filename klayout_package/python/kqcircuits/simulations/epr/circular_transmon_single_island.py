@@ -44,7 +44,7 @@ def partition_regions(simulation):
             angle = c_angle_rad - half_angle + (2 * half_angle * j) / n_points
             x = outer_radius * math.cos(angle)
             y = outer_radius * math.sin(angle)
-            points.append(pya.DPoint(x, y))
+            points.append(pya.DPoint(x, y) + simulation.refpoints["base"])
         
         # Add arc points for inner edge (reverse direction)
         for j in range(n_points, -1, -1):
