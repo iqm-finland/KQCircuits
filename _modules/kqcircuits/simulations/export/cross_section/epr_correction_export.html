@@ -1089,8 +1089,6 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        tuple containing list of correction simulations and list of post_process objects</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">deembed_cross_sections</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">deembed_lens</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">correction_simulations</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">correction_layout</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Layout</span><span class="p">()</span>
     <span class="n">simulations</span> <span class="o">=</span> <span class="p">[</span><span class="n">sim</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">sim</span> <span class="ow">in</span> <span class="n">simulations</span><span class="p">]</span>
@@ -1164,22 +1162,10 @@
 
             <span class="n">visualise_cross_section_cut_on_original_layout</span><span class="p">([</span><span class="n">source_sim</span><span class="p">],</span> <span class="n">cords_list</span><span class="p">,</span> <span class="n">cut_label</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">width_ratio</span><span class="o">=</span><span class="mf">0.03</span><span class="p">)</span>
 
-        <span class="n">deembed_cs_cur</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="s2">&quot;deembed_cross_section&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">source_sim</span><span class="o">.</span><span class="n">ports</span><span class="p">]</span>
-        <span class="n">deembed_lens_cur</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="s2">&quot;deembed_len&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">source_sim</span><span class="o">.</span><span class="n">ports</span><span class="p">]</span>
-
-        <span class="n">deembed_tuples</span> <span class="o">=</span> <span class="p">[(</span><span class="n">cs</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">cs</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">deembed_cs_cur</span><span class="p">,</span> <span class="n">deembed_lens_cur</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">cs</span> <span class="ow">and</span> <span class="n">l</span><span class="p">)]</span>
-
-        <span class="k">if</span> <span class="n">deembed_tuples</span><span class="p">:</span>
-            <span class="n">deembed_cs_cur</span><span class="p">,</span> <span class="n">deembed_lens_cur</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">deembed_tuples</span><span class="p">)</span>
-            <span class="n">deembed_cross_sections</span><span class="p">[</span><span class="n">source_sim</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">deembed_cs_cur</span><span class="p">)</span>
-            <span class="n">deembed_lens</span><span class="p">[</span><span class="n">source_sim</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">deembed_lens_cur</span><span class="p">)</span>
-
     <span class="n">post_process</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">PostProcess</span><span class="p">(</span>
             <span class="s2">&quot;produce_epr_table.py&quot;</span><span class="p">,</span>
             <span class="n">data_file_prefix</span><span class="o">=</span><span class="s2">&quot;correction&quot;</span><span class="p">,</span>
-            <span class="n">deembed_cross_sections</span><span class="o">=</span><span class="n">deembed_cross_sections</span><span class="p">,</span>
-            <span class="n">deembed_lens</span><span class="o">=</span><span class="n">deembed_lens</span><span class="p">,</span>
             <span class="n">sheet_approximations</span><span class="o">=</span><span class="p">{</span>
                 <span class="s2">&quot;MA&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thickness&quot;</span><span class="p">:</span> <span class="n">ma_thickness</span> <span class="o">*</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="s2">&quot;eps_r&quot;</span><span class="p">:</span> <span class="n">ma_eps_r</span><span class="p">},</span>
                 <span class="s2">&quot;MS&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thickness&quot;</span><span class="p">:</span> <span class="n">ms_thickness</span> <span class="o">*</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="s2">&quot;eps_r&quot;</span><span class="p">:</span> <span class="n">ms_eps_r</span><span class="p">},</span>
