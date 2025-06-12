@@ -81,7 +81,7 @@ def partition_regions(simulation):
         simulation.r_island * math.sin(squid_angle_rad)
     )
     
-    hall_transform = pya.DCplxTrans(1, simulation.squid_angle - 90, False, junction_pos)
+    hall_transform = pya.DCplxTrans(1, simulation.squid_angle - 90, False, junction_pos + simulation.refpoints["base"])
     hall_region = hall_transform * hall_rect
     
     regions.append(PartitionRegion(
