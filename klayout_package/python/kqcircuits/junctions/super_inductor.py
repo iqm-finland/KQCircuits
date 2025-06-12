@@ -32,7 +32,7 @@ class SuperInductor(Junction):
     squid_area_width = Param(pdt.TypeDouble, "Width of Squids Area.", 2, unit="μm")
     squid_area_height = Param(pdt.TypeDouble, "Height of Squids Area.", 5, unit="μm")
     squid_count = Param(pdt.TypeInt, "Number of Squids in the Super Inductor.", 8)
-    squid_wire_length = Param(pdt.TypeDouble, "Length of the SQUID junctions.", 0.25, unit="μm")
+    squid_wire_length = Param(pdt.TypeDouble, "Length of the wire between SQUIDs.", 0.25, unit="μm")
     squid_x_connector_offset = Param(
         pdt.TypeDouble, "Length of the horizontal connector between the corner of the junction to the wire of the squid.", 0.5, unit="μm"
     )
