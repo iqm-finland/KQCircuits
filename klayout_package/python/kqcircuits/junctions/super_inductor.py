@@ -66,54 +66,11 @@ class SuperInductor(Junction):
     finger_overlap = Param(pdt.TypeDouble, "Length of fingers inside the pads.", 1.0, unit="μm")
     inductor_height = Param(pdt.TypeDouble, "Height of the junction element.", 22.0, unit="μm")
     inductor_width = Param(pdt.TypeDouble, "Width of the junction element.", 22.0, unit="μm")
-    pad_height = Param(pdt.TypeDouble, "Height of the junction pad.", 6.0, unit="μm")
-    pad_width = Param(pdt.TypeDouble, "Width of the junction pad.", 12.0, unit="μm")
-    pad_to_pad_separation = Param(pdt.TypeDouble, "Pad separation.", 6.0, unit="μm")
-    pad_rounding_radius = Param(pdt.TypeDouble, "Rounding radius of the junction pad.", 0.5, unit="μm")
     
     def build(self):
         self.produce_super_inductor()
 
     def produce_super_inductor(self):
-        # corner rounding parameters
-        rounding_params = {
-            "rinner": self.pad_rounding_radius,  # inner corner rounding radius
-            "router": self.pad_rounding_radius,  # outer corner rounding radius
-            "n": 64,  # number of point per rounded corner
-        }
-
-        junction_shapes_top = []
-        junction_shapes_bottom = []
-        shadow_shapes = []
-
-        # create rounded bottom part
-        y0 = (self.inductor_height / 2) - self.pad_height / 2
-        bp_pts_left = [pya.DPoint(-self.pad_width / 2, y0), pya.DPoint(-self.pad_width / 2, y0 + self.pad_height)]
-        bp_shape = pya.DTrans(0, False, 0, -self.pad_height / 2 - self.pad_to_pad_separation / 2) * polygon_with_vsym(
-            bp_pts_left
-        )
-        self._round_corners_and_append(bp_shape, junction_shapes_bottom, rounding_params)
-
-        bp_shadow_pts_left = [
-            bp_pts_left[0] + pya.DPoint(-self.shadow_margin, -self.shadow_margin),
-            bp_pts_left[1] + pya.DPoint(-self.shadow_margin, self.shadow_margin),
-        ]
-        bp_shadow_shape = pya.DTrans(
-            0, False, 0, -self.pad_height / 2 - self.pad_to_pad_separation / 2
-        ) * polygon_with_vsym(bp_shadow_pts_left)
-        self._round_corners_and_append(bp_shadow_shape, shadow_shapes, rounding_params)
-
-        # create rounded top part
-        tp_shape = pya.DTrans(0, False, 0, self.pad_height / 2 + self.pad_to_pad_separation / 2) * polygon_with_vsym(
-            bp_pts_left
-        )
-        #self._round_corners_and_append(tp_shape, junction_shapes_top, rounding_params)
-
-        tp_shadow_shape = pya.DTrans(
-            0, False, 0, self.pad_height / 2 + self.pad_to_pad_separation / 2
-        ) * polygon_with_vsym(bp_shadow_pts_left)
-        #self._round_corners_and_append(tp_shadow_shape, shadow_shapes, rounding_params)
-
         # create rectangular junction-support structures and junctions
         self._make_super_inductor_junctions()
         self._produce_ground_metal_shapes()
