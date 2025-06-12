@@ -191,8 +191,8 @@ def correction_cuts(simulation):
     )
     
     cuts["bcomplementmer"] = {
-        "p1": inner_point,
-        "p2": outer_point
+        "p1": inner_point + simulation.refpoints["base"],
+        "p2": outer_point + simulation.refpoints["base"]
     }
     
     return cuts
