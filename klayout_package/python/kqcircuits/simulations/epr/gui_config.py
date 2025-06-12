@@ -42,10 +42,5 @@ epr_gui_visualised_partition_regions = {
         "islandbulk",
         "leadsbulk",
     ],
-    "Circular Transmon Single Island": [
-        "0cplrmer",
-        "1cplrmer",
-        "2cplrmer",
-        "leadsmer"
-    ],
+    "Circular Transmon Single Island": ["0cplrmer", "1cplrmer", "2cplrmer", "leadsmer"],
 }

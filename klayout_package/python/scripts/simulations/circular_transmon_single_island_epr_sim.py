@@ -24,7 +24,7 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.qubits.circular_transmon_single_island import CircularTransmonSingleIsland
 from kqcircuits.simulations.post_process import PostProcess
 from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
-from kqcircuits.simulations.export.simulation_export import cross_sweep_simulation, export_simulation_oas, cross_combine
+from kqcircuits.simulations.export.simulation_export import export_simulation_oas, cross_combine
 from kqcircuits.util.export_helper import (
     create_or_empty_tmp_directory,
     get_active_or_new_layout,
