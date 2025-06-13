@@ -1,0 +1,12 @@
+:github_url: hide
+
+kqcircuits.junctions.super\_inductor
+====================================
+
+.. automodule:: kqcircuits.junctions.super_inductor
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.junctions.super_inductor
+.. image:: ../pcell_images/kqcircuits.junctions.super_inductor.png

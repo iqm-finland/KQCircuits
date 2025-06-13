@@ -12,6 +12,7 @@ kqcircuits.junctions
    kqcircuits.junctions.no_squid
    kqcircuits.junctions.sim
    kqcircuits.junctions.squid
+   kqcircuits.junctions.super_inductor
 
 Module contents
 ---------------
