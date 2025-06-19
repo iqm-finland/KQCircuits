@@ -198,7 +198,6 @@ class Node:
 @add_parameters_from(WaveguideCoplanarTaper, taper_length=100)
 @add_parameters_from(Airbridge, "airbridge_type")
 @add_parameters_from(WaveguideCoplanar, "term1", "term2", "add_metal", "ground_grid_in_trace")
-@add_parameters_from(FlipChipConnectorRf)
 class WaveguideComposite(Element):
     """A composite waveguide made of waveguides and other elements.
 
@@ -561,7 +560,8 @@ class WaveguideComposite(Element):
     def _add_layer_changing_element(self, ind, element=FlipChipConnectorRf):
         """Add element which changes face_id and change default face_id."""
         node = self._nodes[ind]
-        params = {**self.pcell_params_by_name(element), **node.params}
+        defaults = {k: v.default for k, v in element.get_schema().items()}
+        params = {**defaults, **node.params}
 
         if self.new_id == self.old_id:  # no change, just a Node
             return
