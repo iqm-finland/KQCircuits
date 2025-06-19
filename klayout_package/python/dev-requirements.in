@@ -1,9 +1,9 @@
-networkx
 pytest
-pytest-cov~=2.11.1
+pytest-cov
 pytest-xdist
 tox
 pylint==2.14.0
-matplotlib
 black
 pytest-mock
+sphinx
+sphinx-rtd-theme

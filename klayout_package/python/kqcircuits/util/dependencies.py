@@ -125,7 +125,7 @@ def install_kqc_gui_dependencies():
         pya.MessageBox.Yes + pya.MessageBox.No,
     )
     if ask == pya.MessageBox.Yes:
-        main(["install", "-r", requirements_file, "--upgrade", f"--target={target_dir}"])
+        main(["install", "-r", requirements_file, "--upgrade", f"--target={target_dir}", "--break-system-packages"])
         error_msg = ""
         for package, (expected_version, _) in mismatch.items():
             try:

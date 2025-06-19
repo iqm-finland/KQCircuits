@@ -2,8 +2,7 @@
 mkdir -p "$HOME"/.klayout/python .pip-cache
 python -m pip install -r klayout_package/python/requirements/linux/pip-requirements.txt
 pip-sync klayout_package/python/requirements/linux/requirements.txt \
-    klayout_package/python/requirements/linux/doc-requirements.txt \
-    klayout_package/python/requirements/linux/test-requirements.txt --pip-args "--cache-dir=.pip-cache"
+    klayout_package/python/requirements/linux/dev-requirements.txt --pip-args "--cache-dir=.pip-cache"
 ret=$?
 if [ $ret -ne 0 ]; then
     echo "Can't install KQCircuits: pip-sync failed"

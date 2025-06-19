@@ -101,7 +101,7 @@ For standalone installation run command
 
 .. code-block:: console
 
-   python -m pip install -e "klayout_package/python[docs,tests,sim]"
+   python -m pip install -e "klayout_package/python[dev,sim]"
 
 Further details available in the `documentation <https://iqm-finland.github.io/KQCircuits/developer/standalone.html>`__.
 
@@ -129,7 +129,7 @@ Simulations
    :alt: Animation of simulations
    :width: 350
 
-KQC currently supports exporting to **Ansys HFSS/Q3D (also with pyEPR)**, **Sonnet**, and **Elmer**.
+KQC currently supports exporting to **Ansys HFSS/Q3D (also with pyEPR)**, **Elmer**, and **Sonnet**.
 
 Parameter sweeps are easy to implement, for example
 

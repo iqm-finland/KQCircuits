@@ -16,18 +16,21 @@ jobs:
       fail-fast: false
       matrix:
         klayout_version: [klayout28, klayout29, latest]
+        python-version: ["3.10.x", "3.11.x", "3.12.x", "3.13.x"]
+        exclude:
+          - klayout_version: klayout28
+            python-version: "3.13.x"
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10.x'
+          python-version: ${{ matrix.python-version }}
       - name: Init KQCircuits
         # Was previously run: ci/init_kqc.sh
         run: |
-          python -m pip install -r ci/requirements/tomli-requirements.txt
           python -m pip install -r klayout_package/python/requirements/linux/pip-requirements.txt
-          pip-sync klayout_package/python/requirements/linux/requirements.txt klayout_package/python/requirements/linux/test-requirements.txt
+          pip-sync klayout_package/python/requirements/linux/requirements.txt klayout_package/python/requirements/linux/dev-requirements.txt
           pip install --no-deps -e "klayout_package/python/"
       - name: Select KLayout version
         run: pip install --force-reinstall -r "ci/requirements/${{ matrix.klayout_version }}-requirements.txt"
@@ -38,7 +41,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: Test results (KLayout=${{ matrix.klayout_version }})
+          name: Test results (KLayout=${{ matrix.klayout_version }} python=${{ matrix.python-version }})
           path: test_report.xml
 
   test_non_linux:
@@ -49,6 +52,10 @@ jobs:
       matrix:
         os: [windows-latest, macos-latest]
         klayout_version: [klayout28, klayout29, latest]
+        python-version: ["3.10.x", "3.11.x", "3.12.x", "3.13.x"]
+        exclude:
+          - klayout_version: klayout28
+            python-version: "3.13.x"
         include:
           - os-folder: win
             os: windows-latest
@@ -57,20 +64,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10.x'
-      - name: macOS setup
-        run: |
-          brew install python
-          ln -s -f /usr/local/bin/python3.10 /usr/local/bin/python
-        if: ${{ matrix.os == 'macos-latest' }}
+          python-version: ${{ matrix.python-version }}
       - name: Init KQCircuits
         run: |
-          python -m pip install -r ci/requirements/tomli-requirements.txt
           python -m pip install -r klayout_package/python/requirements/${{ matrix.os-folder }}/pip-requirements.txt
-          pip-sync klayout_package/python/requirements/${{ matrix.os-folder }}/requirements.txt klayout_package/python/requirements/linux/test-requirements.txt
+          pip-sync klayout_package/python/requirements/${{ matrix.os-folder }}/requirements.txt klayout_package/python/requirements/${{ matrix.os-folder }}/dev-requirements.txt
           pip3 install --no-deps -e "klayout_package/python/"
       - name: Select KLayout version
         run: pip3 install --force-reinstall -r "ci/requirements/${{ matrix.klayout_version }}-requirements.txt"
@@ -81,7 +82,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: Test results (${{ matrix.os }} KLayout=${{ matrix.klayout_version }})
+          name: Test results (${{ matrix.os }} KLayout=${{ matrix.klayout_version }} python=${{ matrix.python-version }})
           path: test_report.xml
 
   publish_test_results:
@@ -112,9 +113,8 @@ jobs:
       - name: Init KQCircuits
         # Was previously run: ci/init_kqc.sh
         run: |
-          python -m pip install -r ci/requirements/tomli-requirements.txt
           python -m pip install -r klayout_package/python/requirements/linux/pip-requirements.txt
-          pip-sync klayout_package/python/requirements/linux/requirements.txt klayout_package/python/requirements/linux/test-requirements.txt
+          pip-sync klayout_package/python/requirements/linux/requirements.txt klayout_package/python/requirements/linux/dev-requirements.txt
           pip install --no-deps -e "klayout_package/python/"
       - name: Run static code analysis
         run: tox -e static_analysis
@@ -130,22 +130,25 @@ jobs:
   verify_documentation:
     name: Verify documentation
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10.x", "3.11.x", "3.12.x", "3.13.x"]
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0  # fetch tags as well
-      - name: Set up Python
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10.x'
+          python-version: ${{ matrix.python-version }}
       - name: Install graphviz
         run: sudo apt-get update && sudo apt-get install -y graphviz
       - name: Init KQCircuits
         # Was previously run: ci/init_kqc.sh
         run: |
-          python -m pip install -r ci/requirements/tomli-requirements.txt
           python -m pip install -r klayout_package/python/requirements/linux/pip-requirements.txt
-          pip-sync klayout_package/python/requirements/linux/requirements.txt klayout_package/python/requirements/linux/test-requirements.txt klayout_package/python/requirements/linux/doc-requirements.txt
+          pip-sync klayout_package/python/requirements/linux/requirements.txt klayout_package/python/requirements/linux/dev-requirements.txt
           pip install --no-deps -e "klayout_package/python/"
       - name: Make docs
         run: |
@@ -153,7 +156,7 @@ jobs:
           make html SPHINXOPTS="-W --keep-going"
       - name: Docs to artifact
         uses: actions/upload-artifact@v4
-        if: always()
+        if: ${{ matrix.python-version == '3.10.x' }}
         with:
           name: docs
           path: docs/_build/html/
@@ -197,9 +200,8 @@ jobs:
       - name: Init KQCircuits
         # Was previously run: ci/init_kqc.sh
         run: |
-          python -m pip install -r ci/requirements/tomli-requirements.txt
           python -m pip install -r klayout_package/python/requirements/linux/pip-requirements.txt
-          pip-sync klayout_package/python/requirements/linux/requirements.txt klayout_package/python/requirements/linux/test-requirements.txt
+          pip-sync klayout_package/python/requirements/linux/requirements.txt klayout_package/python/requirements/linux/dev-requirements.txt
           pip install --no-deps -e "klayout_package/python/"
       - name: Run check_layer_props.py
         run:  python util/check_layer_props.py

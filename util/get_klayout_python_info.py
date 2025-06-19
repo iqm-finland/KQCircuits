@@ -19,23 +19,28 @@
 import logging
 import os
 import sys
-import setuptools
-from pip._internal.utils.compatibility_tags import get_supported
+import importlib.util
 
 # This script is intended to be run by a KLayout instance in batch mode to retrieve
 # information on KLayout's packaged Python instance, to guide setup_within_klayout.py wizard.
 
 logging.basicConfig(filename=".klayout-python.info", encoding="utf-8", level=logging.DEBUG)
 result = "\n"
-found_platforms = set()
-for platform in get_supported():
-    platform = str(platform).rsplit("-", maxsplit=1)[-1]
-    if platform in found_platforms:
-        continue
-    result += f"KLayout python platform: {platform}\n"
-    found_platforms.add(platform)
-result += f"KLayout python version: {'.'.join([str(n) for n in sys.version_info[0:3]])}\n"
-result += f"KLayout site-packages: {os.path.split(setuptools.__path__[0])[0]}"
+if importlib.util.find_spec("pip") is None:
+    result += "KLayout environment pip not found"
+else:
+    import pip
+    from pip._internal.utils.compatibility_tags import get_supported
+
+    found_platforms = set()
+    for platform in get_supported():
+        platform = str(platform).rsplit("-", maxsplit=1)[-1]
+        if platform in found_platforms:
+            continue
+        result += f"KLayout python platform: {platform}\n"
+        found_platforms.add(platform)
+    result += f"KLayout python version: {'.'.join([str(n) for n in sys.version_info[0:3]])}\n"
+    result += f"KLayout site-packages: {os.path.split(pip.__path__[0])[0]}"
 logging.info(result)
 # There was an attempt to update needed requirements in this code using KLayout's active python enironment,
 # similar to how we do it in klayout_package/python/kqcircuits/util/dependencies.py

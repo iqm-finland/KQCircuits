@@ -97,7 +97,7 @@ def export_sonnet_son(
             p.isVia = True
 
         level_iter = iter(
-            len(simpolygons) * [(2 if material_type == "Si+Al" else 0)]
+            len(simpolygons) * [2 if material_type == "Si+Al" else 0]
             + len(airbridge_polygons) * [1]
             + len(airpads_polygons) * [2]
         )

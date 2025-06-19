@@ -17,14 +17,14 @@
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
 """
-    Helper module for building KLayout libraries.
+Helper module for building KLayout libraries.
 
-    Typical usage example::
+Typical usage example::
 
-        from kqcircuits.elements.airbridges import Airbridge
-        from kqcircuits.util.library_helper import load_libraries
-        load_libraries(path=Airbridge.LIBRARY_PATH)
-        cell = Airbridge.create(layout, **kwargs)
+    from kqcircuits.elements.airbridges import Airbridge
+    from kqcircuits.util.library_helper import load_libraries
+    load_libraries(path=Airbridge.LIBRARY_PATH)
+    cell = Airbridge.create(layout, **kwargs)
 """
 
 import os

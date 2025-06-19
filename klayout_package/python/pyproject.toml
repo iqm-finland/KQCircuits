@@ -30,15 +30,12 @@ include = ["kqcircuits*"]
 
 [tool.setuptools.dynamic]
 dependencies = { file = ["requirements.in"] }
-optional-dependencies.docs = { file = ["doc-requirements.in"] }
-optional-dependencies.tests = { file = ["test-requirements.in"] }
-optional-dependencies.notebooks = { file = ["notebook-requirements.in"] }
-optional-dependencies.graphs = { file = ["graph-requirements.in"] }
-optional-dependencies.simulations = { file = ["sim-requirements.in"] }
+optional-dependencies.dev = { file = ["dev-requirements.in"] }
+optional-dependencies.sim = { file = ["sim-requirements.in"] }
 
 [tool.setuptools-git-versioning]
 enabled = true
 
 [tool.black]
 line-length = 120
-target-version = ["py38", "py39", "py310", "py311"]
+target-version = ["py310", "py311", "py312", "py313"]

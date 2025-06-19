@@ -18,7 +18,9 @@
 
 import os
 import platform
+import site
 import subprocess
+import sys
 from shutil import which
 
 
@@ -113,13 +115,26 @@ def get_klayout_python_info():
     klayout_py_version, klayout_py_platforms, klayout_site_packages = None, [], None
     for _ in range(10):
         with open(".klayout-python.info", encoding="utf-8") as f:
-            for line in f:
-                if line.startswith("KLayout python platform: "):
-                    klayout_py_platforms.append(line.split("KLayout python platform: ")[1].strip())
-                elif line.startswith("KLayout python version: "):
-                    klayout_py_version = line.split("KLayout python version: ")[1].strip()
-                elif line.startswith("KLayout site-packages: "):
-                    klayout_site_packages = line.split("KLayout site-packages: ")[1].strip()
+            lines = f.readlines()
+        if all("KLayout environment pip not found" in l for l in lines):
+            print("KLayout python found to not have pip installed.")
+            print(
+                "Most likely your KLayout installation is linked to system python, "
+                "which does not have pip installed."
+            )
+            print("Fix this by installing python3-pip using system's package manager.")
+            print("")
+            print("If you know for sure that KLayout should use its own environment (HW KLayout installation),")
+            print("let us know which exact installation file you used.")
+            print("We assume that python packaged with KLayout installations also includes pip.")
+            raise ValueError("KLayout python found to not have pip installed")
+        for line in lines:
+            if line.startswith("KLayout python platform: "):
+                klayout_py_platforms.append(line.split("KLayout python platform: ")[1].strip())
+            elif line.startswith("KLayout python version: "):
+                klayout_py_version = line.split("KLayout python version: ")[1].strip()
+            elif line.startswith("KLayout site-packages: "):
+                klayout_site_packages = line.split("KLayout site-packages: ")[1].strip()
         if klayout_py_platforms and klayout_py_version and klayout_site_packages:
             break
     if os.path.exists(".klayout-python.info"):

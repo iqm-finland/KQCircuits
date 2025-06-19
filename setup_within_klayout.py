@@ -111,7 +111,7 @@ if __name__ == "__main__":
         os.system(
             f"{executable} -m pip install -r klayout_package/python/requirements/{detected_os}/gui-requirements.txt "
             + f"--python-version {klayout_py_version} {platform_args} --only-binary=:all: "
-            + f"--upgrade --target={target_dir}"
+            + f"--upgrade --target={target_dir} --break-system-packages"
         )
         print("Finished setting up KQC.")
     else:

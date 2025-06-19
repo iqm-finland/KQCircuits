@@ -56,7 +56,7 @@ see :ref:`dependency_extensions`. A command that installs every dependency is:
 
 .. code-block:: console
 
-    python -m pip install -e "klayout_package/python[docs,tests,notebooks,simulations,graphs]"
+    python -m pip install -e "klayout_package/python[dev,sim]"
 
 You can choose for which purposes you want to install the requirements by
 modifying the text in the square brackets. Note that there should not be any
@@ -80,13 +80,15 @@ Install minimum requirements of KQCircuits, subsituting ``<platform>`` with ``wi
     python -m pip install -r requirements/<platform>/requirements.txt
     python -m pip install --no-deps -e .
 
-You can afterwards install other requirements needed for specific purposes (in this case doc and test):
+You can afterwards install additional requirements:
 
 .. code-block:: console
 
-    python -m pip install -r requirements/<platform>/doc-requirements.txt -r requirements/<platform>/test-requirements.txt
+    python -m pip install -r requirements/<platform>/dev-requirements.txt -r requirements/<platform>/sim-requirements.txt
 
 See :git_url:`klayout_package/python/requirements` and :ref:`dependency_extensions` for full list of requirements files.
+
+.. _exclusive_python_environment:
 
 3. KQCircuits exclusive python environment
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -99,12 +101,12 @@ Only do this kind of installation on a virtual environment specifically created 
 
     cd klayout_package/python
     python -m pip install -r requirements/<platform>/pip-requirements.txt
-    pip-sync requirements/<platform>/requirements.txt requirements/<platform>/test-requirements.txt
+    pip-sync requirements/<platform>/requirements.txt requirements/<platform>/dev-requirements.txt
     python -m pip install --no-deps -e .
 
 We first install requirements needed for ``pip-sync`` command compiled in the ``pip-requirements.txt`` file,
 then we run the actual ``pip-sync`` command. Since ``pip-sync`` will completely wipe out your virtual environment,
-you will need to know in advance which dependency extensions you will need and list them within the single ``pip-sync``
+you will need to know in advance which requirements you will need and list them within the single ``pip-sync``
 command.
 
 .. _dependency_extensions:
@@ -114,15 +116,11 @@ Dependency extensions
 
 We divided dependencies used by KQCircuits into following categories:
 
-- ``requirements.txt``: Dependencies needed to use core KQCircuits API
-- ``tests``, ``test-requirements.txt``: Dependencies needed to run unit tests (see :ref:`testing`) and linter. Recommended for developers of KQCircuits code.
-- ``docs``, ``doc-requirements.txt``: Dependencies needed to generate KQCircuits documentation, see :ref:`documentation`.
-- ``simulations``, ``sim-requirements.txt``: Dependencies needed to export and run simulations, see :ref:`export_and_run`.
-- ``notebooks``, ``notebook-requirements.txt``: Dependencies needed to run Jupyter notebooks for demonstrations or for calculating needed designs.
-- ``graphs``, ``graph-requirements.txt``: Dependencies needed to visualise graphs, for example :git_url:`util/netlist_as_graph.py`.
-- ``pip-requirements.txt``: Dependencies needed for ``pip-tools``.
-- ``gui-requirements.txt``: Dependencies needed for KQCircuits GUI installation, used by :git_url:`setup_within_klayout.py` and on KLayout startup.
-  Should be targeted to the ``site-packages`` directory that the KLayout installation uses.
+- ``requirements.txt``: Minimal dependencies needed to use core KQCircuits API
+- ``dev``, ``dev-requirements.txt``: Dependencies needed to develop and contribute to KQCircuits, including running unit tests (see :ref:`testing`), linter, generating documentation (see :ref:`documentation`) etc
+- ``sim``, ``sim-requirements.txt``: Dependencies needed to export and run simulations, see :ref:`export_and_run`
+- ``pip-requirements.txt``: Dependencies needed for installing ``pip-tools``, see :ref:`exclusive_python_environment`
+- ``gui-requirements.txt``: Dependencies needed for KQCircuits GUI installation. Do not use manually, this is used by :git_url:`setup_within_klayout.py` and on KLayout startup.
 
 PyPI Installation
 ^^^^^^^^^^^^^^^^^
@@ -134,7 +132,7 @@ KQCircuits is also publicly available in the PyPI index and can be installed usi
     pip install kqcircuits
 
 You won't be able to easily modify KQCircuits code and you won't have access to many features such as
-scripts, masks, documentation and notebooks.
+simulation scripts and masks.
 A new Python package is automatically uploaded to PyPI for every tagged commit in GitHub.
 
 Usage
@@ -174,7 +172,7 @@ Jupyter notebook usage
 
 There is an example Jupyter notebook `KQCircuits-Examples/notebooks/viewer.ipynb <https://github.com/iqm-finland/KQCircuits-Examples/blob/main/notebooks/viewer.ipynb>`__ in the notebooks
 folder, which shows how to create and visualize KQCircuits elements with the
-standalone KLayout module. Run it like:
+standalone KLayout module. With `jupyter <https://pypi.org/project/jupyter/>`__ installed in your environment, run it with:
 
 .. code-block:: console
 
@@ -188,7 +186,7 @@ Don't do it unless absolutely necessary! The security model (TOFU) works best if
 dependencies are rarely changed. When updating dependencies try to verify that
 the new versions are legitimate.
 
-Edit the ``*requirements.in`` files according to your needs. Try to keep >=, <=
+Edit the ``*requirements.in`` files according to your needs. Try to keep <=
 and == version constraints to a minimum. Try to improve other dependencies too,
 not only the ones your need.
 
@@ -199,12 +197,14 @@ every source ``*requirements.in`` file you changed (make sure you have ``pip-too
 
     cd klayout_package/python
     pip-compile --allow-unsafe --generate-hashes --upgrade --output-file=requirements/<platform>/requirements.txt requirements.in
-    pip-compile --allow-unsafe --generate-hashes --upgrade --output-file=requirements/<platform>/doc-requirements.txt doc-requirements.in
+    pip-compile --allow-unsafe --generate-hashes --upgrade --output-file=requirements/<platform>/dev-requirements.txt dev-requirements.in
     [...]
 
 Substitute ``<platform>`` with ``win``, ``mac`` or ``linux``, and please make sure that
 the files will get compiled for other platforms too, not just the one you are using.
-
-Some requirements files don't have their corresponding ``*requirements.in`` source file.
-One such file is ``requirements/<platform>/pip-requirements.txt``, which compiles requirements of ``pip-tool``
-for each platform. Other requirements files are only used for CI operations.
+It would be also nice if the requirements files are usable on python versions ``3.10.x``, ``3.11.x``, ``3.12.x`` and ``3.13.x``.
+The set of compiled requirements might differ between different python environments - our current policy is to compile a union
+set of python environments ``3.10.x`` and ``3.13.x``.
+Gitlab actions will test that installation works on all such configurations.
+If for your contribution adding requirements causes problems for some target environment,
+we will help consult you on the best course of action during the GitHub pull request review.
