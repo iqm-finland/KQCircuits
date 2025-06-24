@@ -16,6 +16,8 @@
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 import json
+import logging
+import sys
 from pathlib import Path
 import argparse
 
@@ -28,6 +30,17 @@ from cross_section_helpers import (
     produce_cross_section_sif_files,
     get_cross_section_capacitance_and_inductance,
 )
+
+# Configure logging to
+# - print everything from level INFO to stdout (showing in the log files)
+# - print everything from level WARNING to stderr (showing in the console)
+root = logging.getLogger()
+root.setLevel(logging.INFO)
+root.addHandler(logging.StreamHandler(sys.stdout))
+handler = logging.StreamHandler(sys.stderr)
+handler.setLevel(logging.WARNING)
+root.addHandler(handler)
+
 
 parser = argparse.ArgumentParser(description="Run script for Gmsh-Elmer workflow")
 parser.add_argument("json_filename", type=str, help="KQC simulation data")

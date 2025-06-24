@@ -80,7 +80,7 @@ def run_elmer_grid(msh_path: Path | str, n_processes: int, exec_path_override: P
     """Run ElmerGrid to process meshes from .msh format to Elmer's mesh format. Partitions mesh if n_processes > 1"""
     mesh_dir = Path(msh_path).stem
     if Path(mesh_dir).joinpath("mesh.elements").exists():
-        print(f"Reusing existing mesh from {str(mesh_dir)}/")
+        logging.info(f"Reusing existing mesh from {str(mesh_dir)}/")
         return
     elmergrid_executable = shutil.which("ElmerGrid")
     if elmergrid_executable is not None:
@@ -192,11 +192,11 @@ def pool_run_cmds(
         if has_tqdm:
             progress_bar.update()
         else:
-            print(process.stdout, "done!")
+            logging.info(f"{process.stdout} done!")
 
     if output_files is None:
         output_files = len(cmds) * [None]
-    print("Starting simulations:\n")
+    logging.info("Starting simulations:\n")
     for sim, f in zip(cmds, output_files):
         pool.apply_async(
             worker,
@@ -351,8 +351,10 @@ def run_paraview(result_path: Path | str, exec_path_override: Path | str | None 
                 )
                 f.close()
                 subprocess.check_call([paraview_executable] + data_files + [pv_script_path])
-        except (ValueError, NameError, TypeError, SyntaxError) as e:
-            print(f"Paraview automated visualisation failed. Attempting to open ParaView with data only.\nError: {e}")
+        except (ValueError, NameError, TypeError, SyntaxError, subprocess.CalledProcessError) as e:
+            logging.warning(
+                f"Paraview automated visualisation failed. Attempting to open ParaView with data only.\nError: {e}"
+            )
             subprocess.check_call([paraview_executable] + data_files, cwd=exec_path_override)
     else:
         logging.warning("Paraview was not found! Make sure you have it installed: https://www.paraview.org/")

@@ -476,9 +476,11 @@ def interpolating_frequency_sweep(
                 old_s = prev_func_im(eval_freqs)
                 s_error_im = np.mean(np.abs(new_s - old_s) / np.abs(new_s))
                 s_error = (s_error + s_error_im) / 2
-                print(f"iteration: {iteration_count}, delta_s_re/im: {s_error}, orders: re {orders_re} im {orders_im}")
+                logging.info(
+                    f"iteration: {iteration_count}, delta_s_re/im: {s_error}, orders: re {orders_re} im {orders_im}"
+                )
             else:
-                print(f"iteration: {iteration_count}, delta_s_mag: {s_error}, orders: mag {orders_re}")
+                logging.info(f"iteration: {iteration_count}, delta_s_mag: {s_error}, orders: mag {orders_re}")
 
         if fit_magnitude:
             s_mag_plot = min_func_re(eval_freqs)
@@ -504,4 +506,4 @@ def interpolating_frequency_sweep(
     if iteration_count == max_iter:
         logging.warning(f"Failed to converge in {max_iter} iterations")
     else:
-        print("Convergence found!")
+        logging.info("Convergence found!")

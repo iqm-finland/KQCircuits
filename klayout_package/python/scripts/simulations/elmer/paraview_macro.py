@@ -23,6 +23,7 @@
 #   { "python.analysis.ignore": [ "**/paraview_macro.py"] }
 #   ```
 
+import logging
 import re
 import json
 from pathlib import Path
@@ -123,7 +124,7 @@ def render_data(simulation_folder_path: str, simulation_name: str, cross_section
                     "z_max": current_box[5],
                 }
         except (FileNotFoundError, ValueError, KeyError):
-            print("Failed to zoom automatically. Not a critical error.")
+            logging.warning("Failed to zoom automatically. Not a critical error.")
 
     render_view.ResetActiveCameraToNegativeZ()
     if new_box:

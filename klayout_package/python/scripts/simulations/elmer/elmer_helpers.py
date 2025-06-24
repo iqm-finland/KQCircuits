@@ -1353,7 +1353,7 @@ def sif_circuit_definitions(json_data: dict[str, Any]) -> str:
 def get_port_from_boundary_physical_names(ports, name):
     # TODO remove deprecated
     for port in ports:
-        print(name, port["physical_names"])
+        logging.info(f"{name} {port['physical_names']}")
         if name in [t[1] for t in port["physical_names"]]:
             return port
     return None

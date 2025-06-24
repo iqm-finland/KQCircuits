@@ -15,7 +15,7 @@
 # (meetiqm.com/iqm-open-source-trademark-policy). IQM welcomes contributions to the code.
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
-
+import logging
 from pathlib import Path
 from typing import Any
 
@@ -61,7 +61,7 @@ def produce_cross_section_mesh(json_data: dict[str, Any], msh_file: Path | str) 
     """
 
     if Path(msh_file).exists():
-        print(f"Reusing existing mesh from {str(msh_file)}")
+        logging.info(f"Reusing existing mesh from {str(msh_file)}")
         return
 
     # Initialize gmsh

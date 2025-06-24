@@ -15,6 +15,7 @@
 # (meetiqm.com/iqm-open-source-trademark-policy). IQM welcomes contributions to the code.
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
+import logging
 import re
 from pathlib import Path
 from typing import Any, Sequence, Iterable
@@ -55,7 +56,7 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
         msh_file: mesh file name
     """
     if Path(msh_file).exists():
-        print(f"Reusing existing mesh from {str(msh_file)}")
+        logging.info(f"Reusing existing mesh from {str(msh_file)}")
         return
 
     # Initialize gmsh
@@ -87,7 +88,7 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
             layer_num = data["layer"]
             reg = pya.Region(cell.shapes(layout.layer(layer_num, 0))) & bbox
             if reg.is_empty():
-                print(f"WARNING: encountered empty layer in Gmsh: {name}")
+                logging.warning(f"Encountered empty layer in Gmsh: {name}")
         else:
             reg = pya.Region(bbox)
 
@@ -226,7 +227,7 @@ def optimize_mesh(mesh_optimizer: dict | None) -> None:
         # Try optimizing with Netgen as the default method
         gmsh.model.mesh.optimize(**{"method": "Netgen", **mesh_optimizer})
     except Exception as error:  # pylint: disable=broad-except
-        print(f"WARNING: Mesh optimization failed: {error}")
+        logging.warning(f"Mesh optimization failed: {error}")
 
 
 def coord_dist(coord1: Sequence[float], coord2: Sequence[float]) -> float:
@@ -429,7 +430,7 @@ def set_meshing(
             pattern = "^" + str(re.escape(layer_key).replace(r"\*", ".*")) + "$"
             matches = [n for n in layer_dts if re.match(pattern, n)]
             if not matches:
-                print(f'WARNING: No layers corresponding to mesh_size layer pattern "{layer_key}" found')
+                logging.warning(f'No layers corresponding to mesh_size layer pattern "{layer_key}" found')
             family = get_recursive_children([dt for n in matches for dt in layer_dts[n]], True)
             if complement:
                 size_dts -= family
