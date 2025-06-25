@@ -298,7 +298,7 @@ def export_docs(mask_set, filename="Mask_Documentation.md"):
 
             # flip-chip bump count
             bump_count = chip_json["Bump count"]
-            if bump_count > 0:
+            if bump_count is not None and bump_count > 0:
                 f.write(f"| **Total bump count** | {bump_count} |\n")
             f.write("\n")
 
