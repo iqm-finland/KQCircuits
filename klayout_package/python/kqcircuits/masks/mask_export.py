@@ -19,7 +19,6 @@
 """Functions for exporting mask sets."""
 import json
 import os
-from importlib import import_module
 from math import pi
 
 import logging
@@ -92,28 +91,17 @@ def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc, alt_netlists
     # save the chip .oas file with all layers and only containing static cells
     save_layout(chip_dir / f"{chip_name}.oas", layout, [static_cell])
 
+    bump_count = None
+    layer_areas_and_densities = {}
     if not skip_extras:
         # export netlist
         export_cell_netlist(static_cell, chip_dir / f"{chip_name}-netlist.json", chip_cell, alt_netlists)
         # calculate flip-chip bump count
         bump_count = count_instances_in_cell(chip_cell, FlipChipConnectorDc)
         # find layer areas and densities
-        layer_areas_and_densities = {}
         for layer, area, density in zip(*get_area_and_density(static_cell)):
             if area != 0.0:
                 layer_areas_and_densities[layer] = {"area": f"{area:.2f}", "density": f"{density * 100:.2f}"}
-
-        # save auxiliary chip data into json-file
-        chip_json = {
-            "Chip class module": chip_class.__module__ if is_pcell else None,
-            "Chip class name": chip_class.__name__ if is_pcell else None,
-            "Chip parameters": chip_params if is_pcell else None,
-            "Bump count": bump_count,
-            "Layer areas and densities": layer_areas_and_densities,
-        }
-
-        with open(chip_dir / (chip_name + ".json"), "w", encoding="utf-8") as f:
-            json.dump(chip_json, f, cls=GeometryJsonEncoder, sort_keys=True, indent=4)
 
         # export .gds files for EBL or laser writer
         for cluster_name, layer_cluster in chip_export_layer_clusters.items():
@@ -143,6 +131,18 @@ def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc, alt_netlists
         # export drc report for the chip
         if export_drc:
             export_drc_report(chip_name, chip_dir, export_drc)
+
+    # save auxiliary chip data into json-file
+    chip_json = {
+        "Chip class module": chip_class.__module__ if is_pcell else None,
+        "Chip class name": chip_class.__name__ if is_pcell else None,
+        "Chip parameters": chip_params if is_pcell else None,
+        "Bump count": bump_count,
+        "Layer areas and densities": layer_areas_and_densities,
+    }
+
+    with open(chip_dir / (chip_name + ".json"), "w", encoding="utf-8") as f:
+        json.dump(chip_json, f, cls=GeometryJsonEncoder, sort_keys=True, indent=4)
 
     # delete the static cell which was only needed for export
     if static_cell.cell_index() != chip_cell.cell_index():
@@ -278,20 +278,10 @@ def export_docs(mask_set, filename="Mask_Documentation.md"):
             f.write("### Chip Parameters\n")
             f.write("| **Parameter** | **Value** |\n")
             f.write("| :--- | :--- |\n")
-
-            cls_name = chip_json["Chip class name"]
-            if cls_name is not None:  # otherwise it is a manually designed chip without class name or pcell parameters
-                cls_mod = chip_json["Chip class module"]
-                params_input = chip_json["Chip parameters"]
-                cls = getattr(import_module(cls_mod), cls_name)
-                # get defaults and update ones with input
-                params = cls().pcell_params_by_name()
-                params.update(params_input)
-                params_schema = cls.get_schema()
-                for param_name, param_declaration in params_schema.items():
-                    f.write(
-                        f"| **{param_declaration.description.replace('|', '&#124;')}** | {str(params[param_name])} |\n"
-                    )
+            chip_parameters = chip_json.get("Chip parameters", None)
+            if chip_parameters is not None:
+                for param_name, param_value in chip_parameters.items():
+                    f.write(f"| {param_name} | {str(param_value)} |\n")
             f.write("\n")
 
             f.write("### Other Chip Information\n")
