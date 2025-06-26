@@ -227,7 +227,7 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
             face=simulation.face_ids[0],
             region=sector_region,
             vertical_dimensions=vertical_dimension,
-            metal_edge_dimensions=metal_edge_dimensions,
+            metal_edge_dimensions=[6.0, metal_edge_dimensions[1]],
             visualise=True,
         ),
         PartitionRegion(
@@ -268,6 +268,21 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
             vertical_dimensions=vertical_dimension,
             visualise=True,
         ),
+        PartitionRegion(
+            name=f"{prefix}bcomplementmer",
+            face=simulation.face_ids[1],
+            metal_edge_dimensions=metal_edge_dimensions,
+            region=None,
+            vertical_dimensions=vertical_dimension,
+            visualise=True,
+        ),
+        PartitionRegion(
+            name=f"{prefix}bcomplementbulk",
+            face=simulation.face_ids[1],
+            region=None,
+            vertical_dimensions=vertical_dimension,
+            visualise=True,
+        ),
     ]
     return result
 
@@ -291,11 +306,6 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
     )
 
     result = {
-        f"{prefix}tcomplementmer": {
-            "p1": ground_gap + pya.DPoint(-half_cut_length, 0),
-            "p2": ground_gap + pya.DPoint(half_cut_length, 0),
-            "boundary_conditions": {"xmin": {"potential": 1}, "ymax": {"potential": 0}},
-        },
         f"{prefix}islandmer": {
             "p1": island1_edge + pya.DPoint(0, -half_cut_length),
             "p2": island1_edge + pya.DPoint(0, half_cut_length),
@@ -315,6 +325,16 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
             "p1": coupler1_center + pya.DPoint(-half_cut_length, 0),
             "p2": coupler1_center + pya.DPoint(half_cut_length, 0),
             "boundary_conditions": {"xmax": {"potential": 0}, "xmin": {"potential": 0}},
+        },
+        f"{prefix}tcomplementmer": {
+            "p1": ground_gap + pya.DPoint(-half_cut_length, 0),
+            "p2": ground_gap + pya.DPoint(half_cut_length, 0),
+            "boundary_conditions": {"xmin": {"potential": 1}, "ymax": {"potential": 0}},
+        },
+        f"{prefix}bcomplementmer": {
+            "p1": ground_gap + pya.DPoint(-half_cut_length, 0),
+            "p2": ground_gap + pya.DPoint(half_cut_length, 0),
+            "boundary_conditions": {"xmin": {"potential": 1}, "ymax": {"potential": 0}},
         },
     }
     return result
