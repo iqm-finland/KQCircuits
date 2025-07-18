@@ -5,7 +5,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Simulation objects &mdash; KQCircuits  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d10597a4" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=eeab0646" />
@@ -1123,9 +1123,9 @@ that the element class to be simulated has the <a class="reference internal" hre
 implemented.</p>
 <p>For example, suppose we want to simulate a <a class="reference internal" href="../../api/kqcircuits.qubits.swissmon.html#kqcircuits.qubits.swissmon.Swissmon" title="kqcircuits.qubits.swissmon.Swissmon"><code class="xref py py-class docutils literal notranslate"><span class="pre">Swissmon</span></code></a> qubit.
 The simplest way to do it is to use the class builder to build a single element simulation:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kqcircuits.qubits.swissmon</span> <span class="kn">import</span> <span class="n">Swissmon</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.single_element_simulation</span> <span class="kn">import</span> <span class="n">get_single_element_sim_class</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.export_helper</span> <span class="kn">import</span> <span class="n">get_active_or_new_layout</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.qubits.swissmon</span><span class="w"> </span><span class="kn">import</span> <span class="n">Swissmon</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.single_element_simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_single_element_sim_class</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.export_helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_active_or_new_layout</span>
 
 <span class="n">sim_class</span> <span class="o">=</span> <span class="n">get_single_element_sim_class</span><span class="p">(</span><span class="n">Swissmon</span><span class="p">)</span>  <span class="c1"># Builds a simulation class for Swissmon</span>
 
@@ -1148,7 +1148,7 @@ by simply adapting the function <a class="reference internal" href="../../api/kq
 <code class="docutils literal notranslate"><span class="pre">&quot;port_cplr1&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;port_cplr2&quot;</span></code> to refpoint specified by the <code class="docutils literal notranslate"><span class="pre">towards</span></code> keyword argument of
 <a class="reference internal" href="../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.WaveguideToSimPort" title="kqcircuits.util.refpoints.WaveguideToSimPort"><code class="xref py py-class docutils literal notranslate"><span class="pre">WaveguideToSimPort</span></code></a>. That is:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">get_sim_ports</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">simulation</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_sim_ports</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">simulation</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">JunctionSimPort</span><span class="p">(),</span> <span class="n">WaveguideToSimPort</span><span class="p">(</span><span class="s1">&#39;port_cplr0&#39;</span><span class="p">),</span>
             <span class="n">WaveguideToSimPort</span><span class="p">(</span><span class="s1">&#39;port_cplr1&#39;</span><span class="p">),</span> <span class="n">WaveguideToSimPort</span><span class="p">(</span><span class="s1">&#39;port_cplr2&#39;</span><span class="p">)]</span>
 </pre></div>
@@ -1167,17 +1167,17 @@ as well as the API docs for different implementations of the <a class="reference
 <p>Instead of using the class builder we can also create the simulation subclass manually. The following code snippet
 implements essentially the same simulation class as was returned by the
 <a class="reference internal" href="../../api/kqcircuits.simulations.single_element_simulation.html#kqcircuits.simulations.single_element_simulation.get_single_element_sim_class" title="kqcircuits.simulations.single_element_simulation.get_single_element_sim_class"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_single_element_sim_class()</span></code></a> class builder:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.qubits.swissmon</span> <span class="kn">import</span> <span class="n">Swissmon</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.port</span> <span class="kn">import</span> <span class="n">InternalPort</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.export_helper</span> <span class="kn">import</span> <span class="n">get_active_or_new_layout</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">add_parameters_from</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.pya_resolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.qubits.swissmon</span><span class="w"> </span><span class="kn">import</span> <span class="n">Swissmon</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.port</span><span class="w"> </span><span class="kn">import</span> <span class="n">InternalPort</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Simulation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.export_helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_active_or_new_layout</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.parameters</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_parameters_from</span>
 
 
 <span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Swissmon</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">junction_type</span><span class="o">=</span><span class="s2">&quot;Sim&quot;</span><span class="p">,</span> <span class="n">fluxline_type</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">SwissmonSimulation</span><span class="p">(</span><span class="n">Simulation</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SwissmonSimulation</span><span class="p">(</span><span class="n">Simulation</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Place a Swissmon qubit in the center of the simulation</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">refpoints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">Swissmon</span><span class="p">,</span> <span class="n">trans</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">center</span><span class="p">()))</span>
 
@@ -1210,10 +1210,10 @@ of geometry sweeps. The difference of these functions is that the <a class="refe
 at time as the <a class="reference internal" href="../../api/kqcircuits.simulations.export.simulation_export.html#kqcircuits.simulations.export.simulation_export.cross_sweep_simulation" title="kqcircuits.simulations.export.simulation_export.cross_sweep_simulation"><code class="xref py py-func docutils literal notranslate"><span class="pre">cross_sweep_simulation()</span></code></a> cross-varies the parameters to go through all parameter combinations.</p>
 <p>The following script shows how to generate some instances of the simulation subclass and create sweep over the
 <cite>gap_width</cite> parameter:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kqcircuits.qubits.swissmon</span> <span class="kn">import</span> <span class="n">Swissmon</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.simulation_export</span> <span class="kn">import</span> <span class="n">sweep_simulation</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.single_element_simulation</span> <span class="kn">import</span> <span class="n">get_single_element_sim_class</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.export_helper</span> <span class="kn">import</span> <span class="n">get_active_or_new_layout</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.qubits.swissmon</span><span class="w"> </span><span class="kn">import</span> <span class="n">Swissmon</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.export.simulation_export</span><span class="w"> </span><span class="kn">import</span> <span class="n">sweep_simulation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.single_element_simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_single_element_sim_class</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.export_helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_active_or_new_layout</span>
 
 <span class="n">sim_class</span> <span class="o">=</span> <span class="n">get_single_element_sim_class</span><span class="p">(</span><span class="n">Swissmon</span><span class="p">)</span>  <span class="c1"># Builds a simulation class for Swissmon</span>
 

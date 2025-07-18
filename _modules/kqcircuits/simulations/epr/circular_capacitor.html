@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>kqcircuits.simulations.epr.circular_capacitor &mdash; KQCircuits  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d10597a4" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom.css?v=eeab0646" />
@@ -1010,33 +1010,33 @@
 <span class="c1"># Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)</span>
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
 
-<span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.epr.util</span> <span class="kn">import</span> <span class="n">extract_child_simulation</span><span class="p">,</span> <span class="n">in_gui</span><span class="p">,</span> <span class="n">EPRTarget</span><span class="p">,</span> <span class="n">get_mer_z</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.partition_region</span> <span class="kn">import</span> <span class="n">PartitionRegion</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_helper</span> <span class="kn">import</span> <span class="n">arc_points</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.finger_capacitor_square</span> <span class="kn">import</span> <span class="n">eval_a2</span><span class="p">,</span> <span class="n">eval_b2</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.pya_resolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.epr.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">extract_child_simulation</span><span class="p">,</span> <span class="n">in_gui</span><span class="p">,</span> <span class="n">EPRTarget</span><span class="p">,</span> <span class="n">get_mer_z</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.partition_region</span><span class="w"> </span><span class="kn">import</span> <span class="n">PartitionRegion</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Simulation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.geometry_helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">arc_points</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.finger_capacitor_square</span><span class="w"> </span><span class="kn">import</span> <span class="n">eval_a2</span><span class="p">,</span> <span class="n">eval_b2</span>
 
 <span class="c1"># Partition region and correction cuts definitions for CircularCapacitor element</span>
 
 
-<span class="k">def</span> <span class="nf">_has_waveguides</span><span class="p">(</span><span class="n">simulation</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_has_waveguides</span><span class="p">(</span><span class="n">simulation</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Determines if waveguide regions and cuts are added used&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">in_gui</span><span class="p">(</span><span class="n">simulation</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">False</span>
     <span class="k">return</span> <span class="n">simulation</span><span class="o">.</span><span class="n">fixed_length</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">simulation</span><span class="o">.</span><span class="n">waveguide_length</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">simulation</span><span class="o">.</span><span class="n">use_internal_ports</span>
 
 
-<span class="k">def</span> <span class="nf">_is_flip_chip</span><span class="p">(</span><span class="n">simulation</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_flip_chip</span><span class="p">(</span><span class="n">simulation</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Determines if the geometry consists of multiple substrate layers&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">in_gui</span><span class="p">(</span><span class="n">simulation</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_stack</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">int</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">lower_box_height</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
 
 
-<span class="k">def</span> <span class="nf">_waveguide_end_dist</span><span class="p">(</span><span class="n">simulation</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_waveguide_end_dist</span><span class="p">(</span><span class="n">simulation</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Distance from the center to the end of the waveguide&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">simulation</span><span class="o">.</span><span class="n">use_internal_ports</span><span class="p">:</span>
         <span class="n">x_guide</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">waveguide_length</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">a</span> <span class="o">+</span> <span class="mi">1</span>
@@ -1050,7 +1050,7 @@
 
 <div class="viewcode-block" id="partition_regions">
 <a class="viewcode-back" href="../../../../api/kqcircuits.simulations.epr.circular_capacitor.html#kqcircuits.simulations.epr.circular_capacitor.partition_regions">[docs]</a>
-<span class="k">def</span> <span class="nf">partition_regions</span><span class="p">(</span><span class="n">simulation</span><span class="p">:</span> <span class="n">EPRTarget</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">PartitionRegion</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">partition_regions</span><span class="p">(</span><span class="n">simulation</span><span class="p">:</span> <span class="n">EPRTarget</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">PartitionRegion</span><span class="p">]:</span>
 
     <span class="n">mer_x_dim</span> <span class="o">=</span> <span class="mf">2.0</span>
     <span class="n">mer_y_dim</span> <span class="o">=</span> <span class="mf">1.0</span>
@@ -1060,7 +1060,7 @@
 
     <span class="n">center</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_init_part_reg</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">mer</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">override_y_dim</span><span class="o">=</span><span class="n">mer_y_dim</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_init_part_reg</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">mer</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">override_y_dim</span><span class="o">=</span><span class="n">mer_y_dim</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">in_gui</span><span class="p">(</span><span class="n">simulation</span><span class="p">):</span>
             <span class="n">face_id</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="n">face</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1074,11 +1074,11 @@
             <span class="n">visualise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_symmetric_sector</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">r_out</span><span class="p">,</span> <span class="n">angle_in</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">r_in</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="n">center</span><span class="p">,</span> <span class="n">mirror</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_symmetric_sector</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">r_out</span><span class="p">,</span> <span class="n">angle_in</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">r_in</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="n">center</span><span class="p">,</span> <span class="n">mirror</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">angle_in</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">angle_in</span> <span class="o">=</span> <span class="n">angle</span>
 
-        <span class="k">def</span> <span class="nf">_arc</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">mirror</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_arc</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">mirror</span><span class="p">):</span>
             <span class="n">half_angle</span> <span class="o">=</span> <span class="n">angle</span> <span class="o">/</span> <span class="mi">2</span>
             <span class="n">start</span> <span class="o">=</span> <span class="o">-</span><span class="n">half_angle</span> <span class="o">+</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="k">if</span> <span class="n">mirror</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
             <span class="n">stop</span> <span class="o">=</span> <span class="n">half_angle</span> <span class="o">+</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="k">if</span> <span class="n">mirror</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
@@ -1093,7 +1093,7 @@
 
         <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span><span class="n">inner_arc</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">outer_arc</span><span class="p">)))</span>
 
-    <span class="k">def</span> <span class="nf">_angle_from_x</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">center</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_angle_from_x</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">center</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">origin</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">origin</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
 
     <span class="n">r_coupler_out</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">r_outer</span>
@@ -1218,7 +1218,7 @@
 
 <div class="viewcode-block" id="correction_cuts">
 <a class="viewcode-back" href="../../../../api/kqcircuits.simulations.epr.circular_capacitor.html#kqcircuits.simulations.epr.circular_capacitor.correction_cuts">[docs]</a>
-<span class="k">def</span> <span class="nf">correction_cuts</span><span class="p">(</span><span class="n">simulation</span><span class="p">:</span> <span class="n">EPRTarget</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">correction_cuts</span><span class="p">(</span><span class="n">simulation</span><span class="p">:</span> <span class="n">EPRTarget</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
 
     <span class="c1"># def _init_cut(center, width, edges):</span>
     <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1233,7 +1233,7 @@
 
     <span class="n">a2</span><span class="p">,</span> <span class="n">b2</span> <span class="o">=</span> <span class="n">eval_a2</span><span class="p">(</span><span class="n">simulation</span><span class="p">),</span> <span class="n">eval_b2</span><span class="p">(</span><span class="n">simulation</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_coupler_cut_lim</span><span class="p">(</span><span class="n">unit_vec</span><span class="p">,</span> <span class="n">start_p</span><span class="p">,</span> <span class="n">origin_p</span><span class="p">,</span> <span class="n">rlim</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_coupler_cut_lim</span><span class="p">(</span><span class="n">unit_vec</span><span class="p">,</span> <span class="n">start_p</span><span class="p">,</span> <span class="n">origin_p</span><span class="p">,</span> <span class="n">rlim</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Find how long a line can be extended from `start_p` towards `unit vec` before being over</span>
 <span class="sd">        `rlim` away from `origin_p`. Returns the solution with smallest absolute value</span>
@@ -1456,7 +1456,7 @@
 
 <div class="viewcode-block" id="extract_circular_capacitor_from">
 <a class="viewcode-back" href="../../../../api/kqcircuits.simulations.epr.circular_capacitor.html#kqcircuits.simulations.epr.circular_capacitor.extract_circular_capacitor_from">[docs]</a>
-<span class="k">def</span> <span class="nf">extract_circular_capacitor_from</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_circular_capacitor_from</span><span class="p">(</span>
     <span class="n">simulation</span><span class="p">:</span> <span class="n">EPRTarget</span><span class="p">,</span> <span class="n">refpoint_prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">parameter_remap_function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">EPRTarget</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="nb">any</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Simulation</span><span class="p">:</span>
     <span class="c1"># fmt: off</span>

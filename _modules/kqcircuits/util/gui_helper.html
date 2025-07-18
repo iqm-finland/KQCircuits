@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>kqcircuits.util.gui_helper &mdash; KQCircuits  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=eeab0646" />
@@ -1011,17 +1011,17 @@
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
 
 
-<span class="kn">import</span> <span class="nn">ast</span>
-<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 
-<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_composite</span> <span class="kn">import</span> <span class="n">Node</span><span class="p">,</span> <span class="n">WaveguideComposite</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.library_helper</span> <span class="kn">import</span> <span class="n">load_libraries</span><span class="p">,</span> <span class="n">element_by_class_name</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.pya_resolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.waveguide_composite</span><span class="w"> </span><span class="kn">import</span> <span class="n">Node</span><span class="p">,</span> <span class="n">WaveguideComposite</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.library_helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_libraries</span><span class="p">,</span> <span class="n">element_by_class_name</span>
 
 
 <div class="viewcode-block" id="get_nodes_near_position">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.gui_helper.html#kqcircuits.util.gui_helper.get_nodes_near_position">[docs]</a>
-<span class="k">def</span> <span class="nf">get_nodes_near_position</span><span class="p">(</span><span class="n">top_cell</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">box_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">require_gui_editing_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_nodes_near_position</span><span class="p">(</span><span class="n">top_cell</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">box_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">require_gui_editing_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Find all WaveguideComposite nodes near a specified position.</span>
 
 <span class="sd">    Considers only waveguides that are a direct child of the specified ``top_cell``.</span>
@@ -1057,7 +1057,7 @@
 
 <div class="viewcode-block" id="node_to_text">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.gui_helper.html#kqcircuits.util.gui_helper.node_to_text">[docs]</a>
-<span class="k">def</span> <span class="nf">node_to_text</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">node_to_text</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert ``Node`` object to text fields that can be used for GUI editing.</span>
 
 <span class="sd">    The inverse of this function is ``node_from_text``.</span>
@@ -1085,7 +1085,7 @@
 
 <div class="viewcode-block" id="node_from_text">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.gui_helper.html#kqcircuits.util.gui_helper.node_from_text">[docs]</a>
-<span class="k">def</span> <span class="nf">node_from_text</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">element</span><span class="p">,</span> <span class="n">inst_name</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">length_before</span><span class="p">,</span> <span class="n">length_increment</span><span class="p">,</span> <span class="n">align</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">node_from_text</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">element</span><span class="p">,</span> <span class="n">inst_name</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">length_before</span><span class="p">,</span> <span class="n">length_increment</span><span class="p">,</span> <span class="n">align</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create Node from text inputs.</span>
 
 <span class="sd">    This is the inverse of ``node_to_text``.</span>
@@ -1145,7 +1145,7 @@
 
 <div class="viewcode-block" id="replace_node">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.gui_helper.html#kqcircuits.util.gui_helper.replace_node">[docs]</a>
-<span class="k">def</span> <span class="nf">replace_node</span><span class="p">(</span><span class="n">waveguide_instance</span><span class="p">,</span> <span class="n">node_index</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">replace_node</span><span class="p">(</span><span class="n">waveguide_instance</span><span class="p">,</span> <span class="n">node_index</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Replace a Node in a WaveguideComposite by index.</span>
 
 <span class="sd">    Args:</span>
@@ -1170,7 +1170,7 @@
 
 <div class="viewcode-block" id="get_all_node_elements">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.gui_helper.html#kqcircuits.util.gui_helper.get_all_node_elements">[docs]</a>
-<span class="k">def</span> <span class="nf">get_all_node_elements</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_all_node_elements</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns all class names from PCells in the Element library which can be used in WaveguideComposite nodes</span>
 
 <span class="sd">    Returns:</span>
@@ -1189,7 +1189,7 @@
 
 <div class="viewcode-block" id="get_valid_node_elements">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.gui_helper.html#kqcircuits.util.gui_helper.get_valid_node_elements">[docs]</a>
-<span class="k">def</span> <span class="nf">get_valid_node_elements</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_valid_node_elements</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a list of all element class names which would be, at least in principle, usable as ```Node.element```.</span>
 
 <span class="sd">    An element is considered valid if it has at least two refpoint pairs ```X``` and ```X_corner```, for any value of</span>

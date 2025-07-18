@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>kqcircuits.util.library_helper &mdash; KQCircuits  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=eeab0646" />
@@ -1011,26 +1011,26 @@
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Helper module for building KLayout libraries.</span>
+<span class="sd">Helper module for building KLayout libraries.</span>
 
-<span class="sd">    Typical usage example::</span>
+<span class="sd">Typical usage example::</span>
 
-<span class="sd">        from kqcircuits.elements.airbridges import Airbridge</span>
-<span class="sd">        from kqcircuits.util.library_helper import load_libraries</span>
-<span class="sd">        load_libraries(path=Airbridge.LIBRARY_PATH)</span>
-<span class="sd">        cell = Airbridge.create(layout, **kwargs)</span>
+<span class="sd">    from kqcircuits.elements.airbridges import Airbridge</span>
+<span class="sd">    from kqcircuits.util.library_helper import load_libraries</span>
+<span class="sd">    load_libraries(path=Airbridge.LIBRARY_PATH)</span>
+<span class="sd">    cell = Airbridge.create(layout, **kwargs)</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">types</span>
-<span class="kn">import</span> <span class="nn">inspect</span>
-<span class="kn">import</span> <span class="nn">importlib</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">types</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">importlib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">SRC_PATHS</span><span class="p">,</span> <span class="n">kqc_library_names</span><span class="p">,</span> <span class="n">excluded_module_names</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.defaults</span><span class="w"> </span><span class="kn">import</span> <span class="n">SRC_PATHS</span><span class="p">,</span> <span class="n">kqc_library_names</span><span class="p">,</span> <span class="n">excluded_module_names</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.pya_resolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">pya</span>
 
 
 <span class="n">_kqc_libraries</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># dictionary {library name: (library, library path relative to kqcircuits)}</span>
@@ -1069,7 +1069,7 @@
 
 <div class="viewcode-block" id="load_libraries">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.load_libraries">[docs]</a>
-<span class="k">def</span> <span class="nf">load_libraries</span><span class="p">(</span><span class="n">flush</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_libraries</span><span class="p">(</span><span class="n">flush</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Load all KQCircuits libraries from the given path.</span>
 
 <span class="sd">    Args:</span>
@@ -1126,7 +1126,7 @@
 
 <div class="viewcode-block" id="get_library_paths">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.get_library_paths">[docs]</a>
-<span class="k">def</span> <span class="nf">get_library_paths</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_library_paths</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a list of library paths under kqcircuits.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">path</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">_kqc_libraries</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
 
@@ -1134,7 +1134,7 @@
 
 <div class="viewcode-block" id="delete_all_libraries">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.delete_all_libraries">[docs]</a>
-<span class="k">def</span> <span class="nf">delete_all_libraries</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">delete_all_libraries</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Delete all KQCircuits libraries from KLayout memory.&quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">kqc_library_names</span><span class="p">):</span>
         <span class="n">delete_library</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
@@ -1143,7 +1143,7 @@
 
 <div class="viewcode-block" id="delete_library">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.delete_library">[docs]</a>
-<span class="k">def</span> <span class="nf">delete_library</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">delete_library</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Delete a KQCircuits library.</span>
 
 <span class="sd">    Calls library.delete() and removes the library from _kqc_libraries dict. Also deletes any libraries which have this</span>
@@ -1171,7 +1171,7 @@
 
 <div class="viewcode-block" id="element_by_class_name">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.element_by_class_name">[docs]</a>
-<span class="k">def</span> <span class="nf">element_by_class_name</span><span class="p">(</span><span class="n">class_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">library_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;elements&quot;</span><span class="p">,</span> <span class="n">library_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Element Library&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">element_by_class_name</span><span class="p">(</span><span class="n">class_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">library_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;elements&quot;</span><span class="p">,</span> <span class="n">library_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Element Library&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Find Element class by class name from a library</span>
 
@@ -1194,7 +1194,7 @@
 
 <div class="viewcode-block" id="to_module_name">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.to_module_name">[docs]</a>
-<span class="k">def</span> <span class="nf">to_module_name</span><span class="p">(</span><span class="n">class_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">to_module_name</span><span class="p">(</span><span class="n">class_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts class name to module name.</span>
 
 <span class="sd">    Converts PascalCase class name to module name</span>
@@ -1223,7 +1223,7 @@
 
 <div class="viewcode-block" id="to_library_name">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.to_library_name">[docs]</a>
-<span class="k">def</span> <span class="nf">to_library_name</span><span class="p">(</span><span class="n">class_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">to_library_name</span><span class="p">(</span><span class="n">class_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts class name to library name.</span>
 
 <span class="sd">    Converts PascalCase class name to library name</span>
@@ -1256,7 +1256,7 @@
 <span class="c1"># ********************************************************************************</span>
 
 
-<span class="k">def</span> <span class="nf">_register_pcell</span><span class="p">(</span><span class="n">pcell_class</span><span class="p">,</span> <span class="n">library</span><span class="p">,</span> <span class="n">library_name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_register_pcell</span><span class="p">(</span><span class="n">pcell_class</span><span class="p">,</span> <span class="n">library</span><span class="p">,</span> <span class="n">library_name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Registers the PCell to the library.</span>
 
 <span class="sd">    Args:</span>
@@ -1272,7 +1272,7 @@
         <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to register pcell in class </span><span class="si">{</span><span class="n">pcell_class</span><span class="si">}</span><span class="s2"> to library </span><span class="si">{</span><span class="n">library_name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_load_manual_designs</span><span class="p">(</span><span class="n">library_name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_load_manual_designs</span><span class="p">(</span><span class="n">library_name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Loads .oas files to the library</span>
 
 <span class="sd">    Args:</span>
@@ -1285,7 +1285,7 @@
             <span class="n">library</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">absolute</span><span class="p">()))</span>
 
 
-<span class="k">def</span> <span class="nf">_get_all_pcell_classes</span><span class="p">(</span><span class="n">reload</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">skip_modules</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_all_pcell_classes</span><span class="p">(</span><span class="n">reload</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">skip_modules</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns all PCell classes in the given path.</span>
 
 <span class="sd">    Args:</span>
@@ -1330,7 +1330,7 @@
     <span class="k">return</span> <span class="n">pcell_classes</span>
 
 
-<span class="k">def</span> <span class="nf">_get_pcell_classes</span><span class="p">(</span><span class="n">module</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_pcell_classes</span><span class="p">(</span><span class="n">module</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns all PCell classes found in the module.</span>
 
 <span class="sd">    Args:</span>
@@ -1350,7 +1350,7 @@
     <span class="k">return</span> <span class="n">class_list</span>
 
 
-<span class="k">def</span> <span class="nf">_get_pcell_class</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">module</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_pcell_class</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">module</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns class found for specified path and circuit type.</span>
 
 <span class="sd">    Args:</span>
@@ -1371,7 +1371,7 @@
         <span class="k">return</span> <span class="kc">None</span>
 
 
-<span class="k">def</span> <span class="nf">_is_valid_class_name</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_valid_class_name</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if string value is valid PEP-8 compliant Python class name.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot convert nil or non-string class name &#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&#39; to library name.&quot;</span><span class="p">)</span>
@@ -1381,7 +1381,7 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PEP8 compliant class name &#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&#39; must be PascalCase without underscores.&quot;</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_join_module_words</span><span class="p">(</span><span class="n">words</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_join_module_words</span><span class="p">(</span><span class="n">words</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Join words to build module name.</span>
 
 <span class="sd">    Joins words such that each word is lowercase and separated by underscore.</span>
@@ -1409,7 +1409,7 @@
     <span class="k">return</span> <span class="n">name</span>
 
 
-<span class="k">def</span> <span class="nf">_join_library_words</span><span class="p">(</span><span class="n">words</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_join_library_words</span><span class="p">(</span><span class="n">words</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Join words to build library name.</span>
 
 <span class="sd">    Joins words such that each word is titled and separated by space.</span>
@@ -1436,7 +1436,7 @@
     <span class="k">return</span> <span class="n">name</span>
 
 
-<span class="k">def</span> <span class="nf">_clean_words</span><span class="p">(</span><span class="n">words</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_clean_words</span><span class="p">(</span><span class="n">words</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Clean word list by removing None values, empty strings, and non-string values.</span>
 
 <span class="sd">    Returns:</span>

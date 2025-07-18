@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>kqcircuits.simulations.export.elmer.elmer_export &mdash; KQCircuits  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=d10597a4" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/custom.css?v=eeab0646" />
@@ -1011,37 +1011,37 @@
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
 
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">stat</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">argparse</span>
-<span class="kn">import</span> <span class="nn">platform</span>
-<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">stat</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">platform</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
 
-<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">replace</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">replace</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
 
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.simulation_export</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.export.simulation_export</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">copy_content_into_directory</span><span class="p">,</span>
     <span class="n">get_post_process_command_lines</span><span class="p">,</span>
     <span class="n">get_combined_parameters</span><span class="p">,</span>
     <span class="n">export_simulation_json</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.simulation_validate</span> <span class="kn">import</span> <span class="n">validate_simulation</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.load_save_layout</span> <span class="kn">import</span> <span class="n">save_layout</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.export_helper</span> <span class="kn">import</span> <span class="n">write_commit_reference_file</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">ELMER_SCRIPT_PATHS</span><span class="p">,</span> <span class="n">KQC_REMOTE_ACCOUNT</span><span class="p">,</span> <span class="n">SIM_SCRIPT_PATH</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.cross_section_simulation</span> <span class="kn">import</span> <span class="n">CrossSectionSimulation</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.elmer.elmer_solution</span> <span class="kn">import</span> <span class="n">ElmerEPR3DSolution</span><span class="p">,</span> <span class="n">ElmerSolution</span><span class="p">,</span> <span class="n">get_elmer_solution</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.post_process</span> <span class="kn">import</span> <span class="n">PostProcess</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.export.simulation_validate</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_simulation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.load_save_layout</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_layout</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.export_helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_commit_reference_file</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.defaults</span><span class="w"> </span><span class="kn">import</span> <span class="n">ELMER_SCRIPT_PATHS</span><span class="p">,</span> <span class="n">KQC_REMOTE_ACCOUNT</span><span class="p">,</span> <span class="n">SIM_SCRIPT_PATH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Simulation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.cross_section_simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">CrossSectionSimulation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.export.elmer.elmer_solution</span><span class="w"> </span><span class="kn">import</span> <span class="n">ElmerEPR3DSolution</span><span class="p">,</span> <span class="n">ElmerSolution</span><span class="p">,</span> <span class="n">get_elmer_solution</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.post_process</span><span class="w"> </span><span class="kn">import</span> <span class="n">PostProcess</span>
 
 
 <div class="viewcode-block" id="export_elmer_json">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer_json">[docs]</a>
-<span class="k">def</span> <span class="nf">export_elmer_json</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">export_elmer_json</span><span class="p">(</span>
     <span class="n">simulation</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Simulation</span><span class="p">,</span> <span class="n">CrossSectionSimulation</span><span class="p">],</span>
     <span class="n">solution</span><span class="p">:</span> <span class="n">ElmerSolution</span><span class="p">,</span>
     <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
@@ -1112,7 +1112,7 @@
 
 <div class="viewcode-block" id="export_elmer_script">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer_script">[docs]</a>
-<span class="k">def</span> <span class="nf">export_elmer_script</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">export_elmer_script</span><span class="p">(</span>
     <span class="n">json_filenames</span><span class="p">,</span>
     <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
     <span class="n">workflow</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1164,7 +1164,7 @@
 
     <span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;log_files&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_write_script</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span> <span class="n">interp_line</span><span class="o">=</span><span class="s2">&quot;#!/bin/bash</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_write_script</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span> <span class="n">interp_line</span><span class="o">=</span><span class="s2">&quot;#!/bin/bash</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes a script and makes it executable.</span>
 <span class="sd">        `lines` is a string or list of strings that will be written into `filename`&quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
@@ -1174,18 +1174,18 @@
         <span class="c1"># change permissions</span>
         <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">st_mode</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IEXEC</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_from_json</span><span class="p">(</span><span class="n">json_filename</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_from_json</span><span class="p">(</span><span class="n">json_filename</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_filename</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">json_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
             <span class="c1"># return as a tuple</span>
             <span class="k">return</span> <span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">json_data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">],)</span>
 
-    <span class="k">def</span> <span class="nf">_sim_part_echo</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">part</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_sim_part_echo</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">part</span><span class="p">):</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;echo &quot;Simulation </span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">n_jsons</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">part</span><span class="si">}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
 
     <span class="k">if</span> <span class="n">sbatch</span><span class="p">:</span>
 
-        <span class="k">def</span> <span class="nf">_multiply_time</span><span class="p">(</span><span class="n">time_str</span><span class="p">,</span> <span class="n">multiplier</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_multiply_time</span><span class="p">(</span><span class="n">time_str</span><span class="p">,</span> <span class="n">multiplier</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Helper function to multiply a time of format &quot;HH:MM:SS&quot; with a constant. In</span>
 <span class="sd">            this case, we multiply timeout per simulation by the number of simulations</span>
@@ -1211,7 +1211,7 @@
                 <span class="n">minutes</span> <span class="o">=</span> <span class="n">minutes</span> <span class="o">%</span> <span class="mi">60</span>
             <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">hours</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">minutes</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">seconds</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span>
 
-        <span class="k">def</span> <span class="nf">_multiply_mem</span><span class="p">(</span><span class="n">mem_str</span><span class="p">,</span> <span class="n">multiplier</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_multiply_mem</span><span class="p">(</span><span class="n">mem_str</span><span class="p">,</span> <span class="n">multiplier</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Helper function to multiply a memory specification with a constant. If multiplier &lt; 1,</span>
 <span class="sd">            will convert to using smaller units if possible</span>
@@ -1240,13 +1240,13 @@
                 <span class="n">elmer_mem_per_f</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">elmer_mem_per_f</span><span class="p">)</span> <span class="o">+</span> <span class="n">unit</span>
             <span class="k">return</span> <span class="n">elmer_mem_per_f</span>
 
-        <span class="k">def</span> <span class="nf">_divup</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_divup</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
             <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="n">a</span> <span class="o">//</span> <span class="o">-</span><span class="n">b</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">_get_srun_command</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">cores</span><span class="p">,</span> <span class="n">memory</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_get_srun_command</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">cores</span><span class="p">,</span> <span class="n">memory</span><span class="p">):</span>
             <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;srun -N </span><span class="si">{</span><span class="n">nodes</span><span class="si">}</span><span class="s2"> -n </span><span class="si">{</span><span class="n">tasks</span><span class="si">}</span><span class="s2"> -c </span><span class="si">{</span><span class="n">cores</span><span class="si">}</span><span class="s2"> --cpu-bind none --exact --mem=</span><span class="si">{</span><span class="n">memory</span><span class="si">}</span><span class="s2">&quot;</span>
 
-        <span class="k">def</span> <span class="nf">_get_sbatch_lines</span><span class="p">(</span><span class="n">sbatch_settings</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_get_sbatch_lines</span><span class="p">(</span><span class="n">sbatch_settings</span><span class="p">):</span>
             <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">s_key</span><span class="p">,</span> <span class="n">s_value</span> <span class="ow">in</span> <span class="n">sbatch_settings</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;#SBATCH </span><span class="si">{</span><span class="n">s_key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">s_value</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -1359,7 +1359,7 @@
             <span class="p">(</span><span class="n">simulation_name</span><span class="p">,</span> <span class="n">mesh_name</span><span class="p">)</span> <span class="o">=</span> <span class="n">_get_from_json</span><span class="p">(</span><span class="n">json_filename</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;mesh_name&quot;</span><span class="p">])</span>
             <span class="n">python_run_cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">python_executable</span><span class="si">}</span><span class="s1"> -u &quot;</span><span class="si">{</span><span class="n">execution_script</span><span class="si">}</span><span class="s1">&quot; &quot;</span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
 
-            <span class="k">def</span> <span class="nf">get_log_cmd</span><span class="p">(</span><span class="n">logfile_suffix</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">simulation_name</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">get_log_cmd</span><span class="p">(</span><span class="n">logfile_suffix</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">simulation_name</span><span class="p">):</span>
                 <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;2&gt;&amp;1 &gt;&gt; &quot;log_files/</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">logfile_suffix</span><span class="si">}</span><span class="s1">.log&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
 
             <span class="n">script_lines</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;set -e</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">]</span>
@@ -1418,7 +1418,7 @@
 
             <span class="n">python_run_cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">python_executable</span><span class="si">}</span><span class="s1"> -u &quot;</span><span class="si">{</span><span class="n">execution_script</span><span class="si">}</span><span class="s1">&quot; &quot;</span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
 
-            <span class="k">def</span> <span class="nf">get_log_cmd</span><span class="p">(</span><span class="n">logfile_suffix</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">simulation_name</span><span class="p">):</span>  <span class="c1"># pylint: disable=function-redefined</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">get_log_cmd</span><span class="p">(</span><span class="n">logfile_suffix</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">simulation_name</span><span class="p">):</span>  <span class="c1"># pylint: disable=function-redefined</span>
                 <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;2&gt;&amp;1 &gt;&gt; &quot;log_files/</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">logfile_suffix</span><span class="si">}</span><span class="s1">.log&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
 
             <span class="n">script_lines</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;set -e</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">_sim_part_echo</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;Elmer&quot;</span><span class="p">)]</span>
@@ -1470,7 +1470,7 @@
             <span class="p">(</span><span class="n">simulation_name</span><span class="p">,</span> <span class="n">mesh_name</span><span class="p">)</span> <span class="o">=</span> <span class="n">_get_from_json</span><span class="p">(</span><span class="n">json_filename</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;mesh_name&quot;</span><span class="p">])</span>
             <span class="n">python_run_cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">python_executable</span><span class="si">}</span><span class="s1"> &quot;</span><span class="si">{</span><span class="n">execution_script</span><span class="si">}</span><span class="s1">&quot; &quot;</span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
 
-            <span class="k">def</span> <span class="nf">get_log_cmd</span><span class="p">(</span><span class="n">logfile_suffix</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">simulation_name</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">get_log_cmd</span><span class="p">(</span><span class="n">logfile_suffix</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">simulation_name</span><span class="p">):</span>
                 <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;2&gt;&amp;1 &gt;&gt; &quot;log_files/</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">logfile_suffix</span><span class="si">}</span><span class="s1">.log&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
 
             <span class="n">script_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">simulation_name</span> <span class="o">+</span> <span class="s2">&quot;.sh&quot;</span><span class="p">))</span>
@@ -1525,7 +1525,7 @@
 
 <div class="viewcode-block" id="export_elmer">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer">[docs]</a>
-<span class="k">def</span> <span class="nf">export_elmer</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">export_elmer</span><span class="p">(</span>
     <span class="n">simulations</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span>
         <span class="n">Union</span><span class="p">[</span>
             <span class="n">Simulation</span><span class="p">,</span>
@@ -1577,7 +1577,7 @@
     <span class="n">write_commit_reference_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="n">copy_content_into_directory</span><span class="p">(</span><span class="n">script_paths</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">script_folder</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">make_names_elmer_compatible</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">sol</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">make_names_elmer_compatible</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">sol</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Replace dots with dashes and make lowercase&quot;&quot;&quot;</span>
         <span class="n">sim</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="n">sol_name</span> <span class="o">=</span> <span class="n">sol</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
@@ -1628,7 +1628,7 @@
                     <span class="s2">&quot;Generating simulation failed. You can discard the errors using `skip_errors` in `export_elmer`. &quot;</span>
                     <span class="s2">&quot;Moreover, `skip_errors` enables visual inspection of failed and successful simulation &quot;</span>
                     <span class="s2">&quot;geometry files.&quot;</span>
-                <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+                <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
 
     <span class="k">return</span> <span class="n">export_elmer_script</span><span class="p">(</span>
         <span class="n">json_filenames</span><span class="p">,</span>
@@ -1643,7 +1643,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">_is_epr_sim</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="n">common_sol</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_epr_sim</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="n">common_sol</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper to check if doing 3D epr simulation&quot;&quot;&quot;</span>
     <span class="n">epr_sim</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">if</span> <span class="n">common_sol</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1655,7 +1655,7 @@
     <span class="k">return</span> <span class="n">epr_sim</span>
 
 
-<span class="k">def</span> <span class="nf">_update_elmer_workflow</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="n">common_solution</span><span class="p">,</span> <span class="n">workflow</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_update_elmer_workflow</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="n">common_solution</span><span class="p">,</span> <span class="n">workflow</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Modify workflow based on number of simulations and available computing resources</span>
 

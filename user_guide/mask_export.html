@@ -5,7 +5,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mask export &mdash; KQCircuits  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=eeab0646" />
@@ -1026,9 +1026,9 @@ run them directly from the terminal with <code class="docutils literal notransla
 <li><p>Add the following script to the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/scripts/masks">kqcircuits_scripts/masks</a> folder in
 the <code class="docutils literal notranslate"><span class="pre">Python</span></code> tab of the Macro IDE:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Imports required for any mask</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.masks.mask_set</span> <span class="kn">import</span> <span class="n">MaskSet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.masks.mask_set</span><span class="w"> </span><span class="kn">import</span> <span class="n">MaskSet</span>
 <span class="c1"># Import chips required for this mask</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.chips.demo</span> <span class="kn">import</span> <span class="n">Demo</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.chips.demo</span><span class="w"> </span><span class="kn">import</span> <span class="n">Demo</span>
 
 
 <span class="c1"># Initialize mask object.</span>
@@ -1101,8 +1101,8 @@ masks that are really produced.</p>
 <h3>Adding and modifying chips<a class="headerlink" href="#adding-and-modifying-chips" title="Link to this heading"></a></h3>
 <ol class="arabic">
 <li><p>Add the following lines to the imports section of the script:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kqcircuits.chips.demo_twoface</span> <span class="kn">import</span> <span class="n">DemoTwoface</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.chips.quality_factor</span> <span class="kn">import</span> <span class="n">QualityFactor</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.chips.demo_twoface</span><span class="w"> </span><span class="kn">import</span> <span class="n">DemoTwoface</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.chips.quality_factor</span><span class="w"> </span><span class="kn">import</span> <span class="n">QualityFactor</span>
 </pre></div>
 </div>
 </li>

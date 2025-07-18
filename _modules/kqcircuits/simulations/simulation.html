@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>kqcircuits.simulations.simulation &mdash; KQCircuits  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=eeab0646" />
@@ -1011,29 +1011,29 @@
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
 
 
-<span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">import</span> <span class="nn">ast</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">abc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
 
-<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_faces</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.airbridges.airbridge</span> <span class="kn">import</span> <span class="n">Airbridge</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span><span class="p">,</span> <span class="n">resolve_face</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_composite</span> <span class="kn">import</span> <span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">Node</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.partition_region</span> <span class="kn">import</span> <span class="n">PartitionRegion</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.port</span> <span class="kn">import</span> <span class="n">Port</span><span class="p">,</span> <span class="n">InternalPort</span><span class="p">,</span> <span class="n">EdgePort</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_helper</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.defaults</span><span class="w"> </span><span class="kn">import</span> <span class="n">default_faces</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.airbridges.airbridge</span><span class="w"> </span><span class="kn">import</span> <span class="n">Airbridge</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.element</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span><span class="p">,</span> <span class="n">resolve_face</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.waveguide_composite</span><span class="w"> </span><span class="kn">import</span> <span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">Node</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.pya_resolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.partition_region</span><span class="w"> </span><span class="kn">import</span> <span class="n">PartitionRegion</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.port</span><span class="w"> </span><span class="kn">import</span> <span class="n">Port</span><span class="p">,</span> <span class="n">InternalPort</span><span class="p">,</span> <span class="n">EdgePort</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.geometry_helper</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">region_with_merged_polygons</span><span class="p">,</span>
     <span class="n">region_with_merged_points</span><span class="p">,</span>
     <span class="n">merge_points_and_match_on_edges</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span><span class="p">,</span> <span class="n">add_parameters_from</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.util</span> <span class="kn">import</span> <span class="n">find_edge_from_point_in_polygons</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.util</span> <span class="kn">import</span> <span class="n">get_enclosing_polygon</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.groundgrid</span> <span class="kn">import</span> <span class="n">make_grid</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.junctions.sim</span> <span class="kn">import</span> <span class="n">Sim</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.library_helper</span> <span class="kn">import</span> <span class="n">load_libraries</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.parameters</span><span class="w"> </span><span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span><span class="p">,</span> <span class="n">add_parameters_from</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.export.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_edge_from_point_in_polygons</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.export.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_enclosing_polygon</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.groundgrid</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_grid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.junctions.sim</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sim</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.library_helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_libraries</span>
 
 
 <span class="n">simulation_layer_dict</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1043,7 +1043,7 @@
 
 <div class="viewcode-block" id="get_simulation_layer_by_name">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.get_simulation_layer_by_name">[docs]</a>
-<span class="k">def</span> <span class="nf">get_simulation_layer_by_name</span><span class="p">(</span><span class="n">layer_name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_simulation_layer_by_name</span><span class="p">(</span><span class="n">layer_name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns layer info of given name. If layer doesn&#39;t exist, a new layer is created.</span>
 <span class="sd">    New layers are created with data type = 0 and layer numbering starts from 1000.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">layer_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">simulation_layer_dict</span><span class="p">:</span>
@@ -1054,10 +1054,10 @@
 
 <div class="viewcode-block" id="to_1d_list">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.to_1d_list">[docs]</a>
-<span class="k">def</span> <span class="nf">to_1d_list</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">to_1d_list</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function to cast a scalar or a nested list into a one dimensional list&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">_scalar_to_list</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_scalar_to_list</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">data</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">data</span><span class="p">]</span>
 
     <span class="n">data</span> <span class="o">=</span> <span class="n">_scalar_to_list</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -1081,7 +1081,7 @@
     <span class="s2">&quot;junction_lower_pad_length&quot;</span><span class="p">,</span>
     <span class="s2">&quot;include_background_gap&quot;</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="k">class</span> <span class="nc">Simulation</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Simulation</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for simulation geometries.</span>
 
 <span class="sd">    Generally, this class is intended to be subclassed by a specific simulation implementation; the</span>
@@ -1276,7 +1276,7 @@
         <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;This field may be used to store &#39;virtual&#39; parameters useful for your simulations&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a Simulation.</span>
 
 <span class="sd">        The initializer parses parameters, creates a top cell, and then calls `self.build` to create</span>
@@ -1328,7 +1328,7 @@
 <div class="viewcode-block" id="Simulation.from_cell">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.from_cell">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_cell</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">margin</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">grid_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_cell</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">margin</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">grid_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a Simulation from an existing cell.</span>
 
 <span class="sd">        Arguments:</span>
@@ -1359,7 +1359,7 @@
 <div class="viewcode-block" id="Simulation.build">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.build">[docs]</a>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Build simulation geometry.</span>
 
 <span class="sd">        This method is to be overridden, and the overriding method should create the geometry to be</span>
@@ -1379,12 +1379,12 @@
 
 <div class="viewcode-block" id="Simulation.face_stack_list_of_lists">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.face_stack_list_of_lists">[docs]</a>
-    <span class="k">def</span> <span class="nf">face_stack_list_of_lists</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">face_stack_list_of_lists</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return self.face_stack forced to be list of lists&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">f</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_stack</span><span class="p">]</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_face_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_face_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the boundary box for given face number.</span>
 <span class="sd">        Boundary box is the intersection of the global boundary box and the substrate x-y-dimension box.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1394,7 +1394,7 @@
 <div class="viewcode-block" id="Simulation.ith_value">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.ith_value">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">ith_value</span><span class="p">(</span><span class="n">list_or_constant</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ith_value</span><span class="p">(</span><span class="n">list_or_constant</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Helper function to return value from list or constant corresponding to the ordinal number i.</span>
 <span class="sd">        Too short lists are extended by duplicating the last value of the list.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1407,7 +1407,7 @@
 
 <div class="viewcode-block" id="Simulation.face_z_levels">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.face_z_levels">[docs]</a>
-    <span class="k">def</span> <span class="nf">face_z_levels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">face_z_levels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns dictionary of z-levels. The dictionary can be used either with integer or string key values: Integer</span>
 <span class="sd">        keys return surface z-levels in ascending order (including domain boundary bottom and top). String keys</span>
 <span class="sd">        (key = face_id) return the three z-levels of the face (metal bottom, metal-dielectric interface, dielectric top)</span>
@@ -1455,7 +1455,7 @@
 
 <div class="viewcode-block" id="Simulation.region_from_layer">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.region_from_layer">[docs]</a>
-    <span class="k">def</span> <span class="nf">region_from_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face_id</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">region_from_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face_id</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a `Region` containing all geometry from a specified layer&quot;&quot;&quot;</span>
         <span class="n">face_layers</span> <span class="o">=</span> <span class="n">default_faces</span><span class="p">[</span><span class="n">face_id</span><span class="p">]</span> <span class="k">if</span> <span class="n">face_id</span> <span class="ow">in</span> <span class="n">default_faces</span> <span class="k">else</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">face_layers</span><span class="p">:</span>
@@ -1465,7 +1465,7 @@
 
 <div class="viewcode-block" id="Simulation.simplified_region">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.simplified_region">[docs]</a>
-    <span class="k">def</span> <span class="nf">simplified_region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">expansion</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">simplified_region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">expansion</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a region that is simplified by functions region_with_merged_polygons and region_with_merged_points.</span>
 <span class="sd">        More precisely:</span>
 <span class="sd">        - Merges polygons ignoring gaps that are smaller than self.polygon_tolerance</span>
@@ -1482,7 +1482,7 @@
 
 <div class="viewcode-block" id="Simulation.insert_layer">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.insert_layer">[docs]</a>
-    <span class="k">def</span> <span class="nf">insert_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">z0</span><span class="p">,</span> <span class="n">z1</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">insert_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">z0</span><span class="p">,</span> <span class="n">z1</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds layer parameters into &#39;self.layers&#39; if region is non-empty.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">region</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
@@ -1495,7 +1495,7 @@
 
 <div class="viewcode-block" id="Simulation.insert_stacked_up_layers">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.insert_stacked_up_layers">[docs]</a>
-    <span class="k">def</span> <span class="nf">insert_stacked_up_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack</span><span class="p">,</span> <span class="n">z0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">insert_stacked_up_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack</span><span class="p">,</span> <span class="n">z0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Produces the layer stack-up and adds the layers into &#39;self.layers&#39;.</span>
 <span class="sd">        Each layer is split into sub-layers by their z-level.</span>
 
@@ -1551,7 +1551,7 @@
 
 <div class="viewcode-block" id="Simulation.insert_layers_between_faces">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.insert_layers_between_faces">[docs]</a>
-    <span class="k">def</span> <span class="nf">insert_layers_between_faces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">opp_i</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">insert_layers_between_faces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">opp_i</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Helper function to be used to produce indium bumps and TSVs&quot;&quot;&quot;</span>
         <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_z_levels</span><span class="p">()</span>
         <span class="n">face_stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_stack_list_of_lists</span><span class="p">()</span>
@@ -1596,7 +1596,7 @@
 
 <div class="viewcode-block" id="Simulation.is_metal">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.is_metal">[docs]</a>
-    <span class="k">def</span> <span class="nf">is_metal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">material</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_metal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">material</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if material is metal and False otherwise&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">material</span> <span class="o">==</span> <span class="s2">&quot;pec&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span>
@@ -1606,7 +1606,7 @@
 
 <div class="viewcode-block" id="Simulation.split_metal_layers_by_excitation">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.split_metal_layers_by_excitation">[docs]</a>
-    <span class="k">def</span> <span class="nf">split_metal_layers_by_excitation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">split_metal_layers_by_excitation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Split metal layers in self.layers such that ground and signal metals are separated.</span>
 
 <span class="sd">        Adds &#39;excitation&#39; keyword to metal layers. Excitation 0 means ground and other excitations are signals.</span>
@@ -1619,7 +1619,7 @@
 <span class="sd">        This function should be called before `produce_layers`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">def</span> <span class="nf">are_connected</span><span class="p">(</span><span class="n">part1</span><span class="p">,</span> <span class="n">part2</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">are_connected</span><span class="p">(</span><span class="n">part1</span><span class="p">,</span> <span class="n">part2</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Return True only if part1 and part2 are connected.&quot;&quot;&quot;</span>
             <span class="k">for</span> <span class="n">n1</span><span class="p">,</span> <span class="n">r1</span> <span class="ow">in</span> <span class="n">part1</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">l1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="n">n1</span><span class="p">]</span>
@@ -1631,7 +1631,7 @@
                         <span class="k">return</span> <span class="kc">True</span>
             <span class="k">return</span> <span class="kc">False</span>
 
-        <span class="k">def</span> <span class="nf">merge_parts</span><span class="p">(</span><span class="n">part1</span><span class="p">,</span> <span class="n">part2</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">merge_parts</span><span class="p">(</span><span class="n">part1</span><span class="p">,</span> <span class="n">part2</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Merge part1 into part2 and clear part1.&quot;&quot;&quot;</span>
             <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">part1</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">part2</span><span class="p">:</span>
@@ -1640,7 +1640,7 @@
                     <span class="n">part2</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
             <span class="n">part1</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
-        <span class="k">def</span> <span class="nf">get_connected_part</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">get_connected_part</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Return the first part from parts that covers the point of pos and height. Return empty dictionary if</span>
 <span class="sd">            such part does not exist.</span>
 <span class="sd">            &quot;&quot;&quot;</span>
@@ -1728,7 +1728,7 @@
 
 <div class="viewcode-block" id="Simulation.create_simulation_layers">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.create_simulation_layers">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_simulation_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_simulation_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the layers used for simulation export.</span>
 
 <span class="sd">        Based on any geometry defined on the relevant lithography layers.</span>
@@ -1811,7 +1811,7 @@
                             <span class="n">z</span><span class="p">[</span><span class="n">face_id</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span>
                             <span class="n">material</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ith_value</span><span class="p">(</span><span class="n">dielectric_material</span><span class="p">,</span> <span class="n">j</span><span class="p">),</span>
                         <span class="p">)</span>
-
+                    <span class="bp">self</span><span class="o">.</span><span class="n">insert_layer</span><span class="p">(</span><span class="n">face_id</span> <span class="o">+</span> <span class="s2">&quot;_gap&quot;</span><span class="p">,</span> <span class="n">gap_region</span><span class="p">,</span> <span class="n">z</span><span class="p">[</span><span class="n">face_id</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="n">face_id</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># Use stack to produce drop-down stack-up</span>
                     <span class="n">metal_thickness</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">face_id</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">z</span><span class="p">[</span><span class="n">face_id</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
@@ -1826,12 +1826,11 @@
                             <span class="p">)</span>
                         <span class="p">)</span>
 
-                <span class="c1"># Insert gap and etch layers only on the first face of the stack-up (no material)</span>
+                <span class="c1"># Insert etch layer only on the first face of the stack-up (no material)</span>
                 <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertical_over_etching</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
                         <span class="n">etch_z</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">face_id</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">sign</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertical_over_etching</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">insert_layer</span><span class="p">(</span><span class="n">face_id</span> <span class="o">+</span> <span class="s2">&quot;_etch&quot;</span><span class="p">,</span> <span class="n">etch_region</span><span class="p">,</span> <span class="n">etch_z</span><span class="p">,</span> <span class="n">z</span><span class="p">[</span><span class="n">face_id</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">insert_layer</span><span class="p">(</span><span class="n">face_id</span> <span class="o">+</span> <span class="s2">&quot;_gap&quot;</span><span class="p">,</span> <span class="n">gap_region</span><span class="p">,</span> <span class="n">z</span><span class="p">[</span><span class="n">face_id</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="n">face_id</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
 
                 <span class="c1"># Insert airbridges</span>
                 <span class="n">bridge_z</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">face_id</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">sign</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">airbridge_height</span>
@@ -1946,7 +1945,7 @@
 
 <div class="viewcode-block" id="Simulation.produce_layers">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.produce_layers">[docs]</a>
-    <span class="k">def</span> <span class="nf">produce_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parts</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">produce_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parts</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Finalizes and partitions self.layers.</span>
 
 <span class="sd">        Metals and non-model objects are left without partitioning. We assume that these do not overlap.</span>
@@ -1959,10 +1958,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">def</span> <span class="nf">can_modify</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">can_modify</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;material&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_metal</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s2">&quot;material&quot;</span><span class="p">])</span>
 
-        <span class="k">def</span> <span class="nf">are_separate</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">tool</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">are_separate</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">tool</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Returns True if obj and tool do not overlap&quot;&quot;&quot;</span>
             <span class="k">if</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;bottom&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;top&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">tool</span><span class="p">[</span><span class="s2">&quot;bottom&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">tool</span><span class="p">[</span><span class="s2">&quot;top&quot;</span><span class="p">]:</span>
                 <span class="k">if</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;bottom&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">tool</span><span class="p">[</span><span class="s2">&quot;bottom&quot;</span><span class="p">]:</span>
@@ -1971,7 +1970,7 @@
                 <span class="k">return</span> <span class="kc">True</span>
             <span class="k">return</span> <span class="n">tool</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">overlapping</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()</span>
 
-        <span class="k">def</span> <span class="nf">subtract</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">lay</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">subtract</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">lay</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Subtracts layers[lay] from obj.&quot;&quot;&quot;</span>
             <span class="k">if</span> <span class="n">lay</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;subtract&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">()):</span>
                 <span class="k">return</span>  <span class="c1"># already subtracted</span>
@@ -1984,7 +1983,7 @@
                 <span class="k">return</span>  <span class="c1"># ignore separate objects</span>
             <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;subtract&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;subtract&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span> <span class="o">|</span> <span class="p">{</span><span class="n">lay</span><span class="p">}</span>
 
-        <span class="k">def</span> <span class="nf">subtract_hard</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">tool</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">subtract_hard</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">tool</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Subtracts tool from obj by modifying dimensions of obj. Returns True if successful.&quot;&quot;&quot;</span>
             <span class="k">if</span> <span class="n">are_separate</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">tool</span><span class="p">):</span>
                 <span class="k">return</span> <span class="kc">True</span>
@@ -2022,7 +2021,7 @@
             <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span> <span class="o">-=</span> <span class="n">tool</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span>
             <span class="k">return</span> <span class="kc">True</span>
 
-        <span class="k">def</span> <span class="nf">exists</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">exists</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Hardens subtractions and returns True if geometry exists.&quot;&quot;&quot;</span>
             <span class="k">if</span> <span class="s2">&quot;subtract&quot;</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
                 <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
@@ -2035,7 +2034,7 @@
 
             <span class="k">return</span> <span class="ow">not</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()</span>
 
-        <span class="k">def</span> <span class="nf">covering_regions</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">tool</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">covering_regions</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">tool</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Returns tuple of regions where tool covers obj from above and below, respectively.&quot;&quot;&quot;</span>
             <span class="k">if</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;top&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">tool</span><span class="p">[</span><span class="s2">&quot;bottom&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="n">tool</span><span class="p">[</span><span class="s2">&quot;top&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;bottom&quot;</span><span class="p">]:</span>
                 <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(),</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">()</span>
@@ -2136,7 +2135,7 @@
 
 <div class="viewcode-block" id="Simulation.warn_of_small_shapes">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.warn_of_small_shapes">[docs]</a>
-    <span class="k">def</span> <span class="nf">warn_of_small_shapes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">warn_of_small_shapes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Warns of small shapes in simulation layers.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">small_shape_area</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
             <span class="k">return</span>
@@ -2155,7 +2154,7 @@
 
 <div class="viewcode-block" id="Simulation.ground_grid_region">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.ground_grid_region">[docs]</a>
-    <span class="k">def</span> <span class="nf">ground_grid_region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face_id</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ground_grid_region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face_id</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns region of ground grid for the given face id.&quot;&quot;&quot;</span>
         <span class="n">grid_area</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ground_grid_box</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
         <span class="n">protection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simplified_region</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">region_from_layer</span><span class="p">(</span><span class="n">face_id</span><span class="p">,</span> <span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">))</span>
@@ -2170,7 +2169,7 @@
 
 <div class="viewcode-block" id="Simulation.produce_waveguide_to_port">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.produce_waveguide_to_port">[docs]</a>
-    <span class="k">def</span> <span class="nf">produce_waveguide_to_port</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">produce_waveguide_to_port</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">location</span><span class="p">,</span>
         <span class="n">towards</span><span class="p">,</span>
@@ -2301,7 +2300,7 @@
 
 <div class="viewcode-block" id="Simulation.get_parameters">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.get_parameters">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return dictionary with all parameters and their values.&quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="p">{</span><span class="n">param</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()}</span></div>
@@ -2309,7 +2308,7 @@
 
 <div class="viewcode-block" id="Simulation.etched_line">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.etched_line">[docs]</a>
-    <span class="k">def</span> <span class="nf">etched_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p1</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">,</span> <span class="n">p2</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">etched_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p1</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">,</span> <span class="n">p2</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the end points of line segment after extending it at both ends by amount of over_etching.</span>
 <span class="sd">        This function must be used when initializing InternalPort.</span>
@@ -2327,7 +2326,7 @@
 
 <div class="viewcode-block" id="Simulation.get_port_data">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.get_port_data">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_port_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_port_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the port data in dictionary form and add the information of port polygon. Includes following:</span>
 
 <span class="sd">        * Items from `Port` instance</span>
@@ -2433,14 +2432,14 @@
 
 <div class="viewcode-block" id="Simulation.get_material_dict">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.get_material_dict">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_material_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_material_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return material_dict as dictionary.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">material_dict</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">material_dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">material_dict</span></div>
 
 
 <div class="viewcode-block" id="Simulation.check_material_dict">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.check_material_dict">[docs]</a>
-    <span class="k">def</span> <span class="nf">check_material_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_material_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check that used materials are defined in material_dict and return material_dict as dictionary.&quot;&quot;&quot;</span>
         <span class="n">materials</span> <span class="o">=</span> <span class="p">{</span><span class="n">layer</span><span class="p">[</span><span class="s2">&quot;material&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="s2">&quot;material&quot;</span> <span class="ow">in</span> <span class="n">layer</span><span class="p">}</span>
         <span class="n">mater_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_material_dict</span><span class="p">()</span>
@@ -2452,7 +2451,7 @@
 
 <div class="viewcode-block" id="Simulation.get_simulation_data">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.get_simulation_data">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_simulation_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_simulation_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the simulation data in dictionary form. Contains following:</span>
 
 <span class="sd">        * units: length unit in simulations, &#39;um&#39;,</span>
@@ -2473,14 +2472,14 @@
 
 <div class="viewcode-block" id="Simulation.get_layers">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.get_layers">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns simulation layer numbers in list. Only return layers that are in use.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">LayerInfo</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;layer&quot;</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="s2">&quot;layer&quot;</span> <span class="ow">in</span> <span class="n">d</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="Simulation.get_partition_regions">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.get_partition_regions">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_partition_regions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_partition_regions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns partition regions for the simulation instance.</span>
 
 <span class="sd">        If member function not overriden, will simply return whatever was passed as ``partition_regions``, if any.</span>
@@ -2492,7 +2491,7 @@
 <div class="viewcode-block" id="Simulation.delete_instances">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.delete_instances">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">delete_instances</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_instances</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Allows for deleting a sub-cell of the top &#39;cell&#39; with a specific &#39;name&#39;. The &#39;index&#39; argument can be used to</span>
 <span class="sd">        access more than one sub-cell sharing the same &#39;name&#39;, but with different appended &#39;index&#39; to the &#39;name&#39;.</span>
@@ -2510,7 +2509,7 @@
 
 <div class="viewcode-block" id="Simulation.visualise_region">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.visualise_region">[docs]</a>
-    <span class="k">def</span> <span class="nf">visualise_region</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">visualise_region</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">region</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">,</span>
         <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>

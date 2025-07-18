@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>kqcircuits.qubits.concentric_transmon &mdash; KQCircuits  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=eeab0646" />
@@ -1010,20 +1010,20 @@
 <span class="c1"># Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)</span>
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
 
-<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.qubits.qubit</span> <span class="kn">import</span> <span class="n">Qubit</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_helper</span> <span class="kn">import</span> <span class="n">circle_polygon</span><span class="p">,</span> <span class="n">arc_points</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span><span class="p">,</span> <span class="n">add_parameters_from</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.refpoints</span> <span class="kn">import</span> <span class="n">WaveguideToSimPort</span><span class="p">,</span> <span class="n">JunctionSimPort</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.element</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.pya_resolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.qubits.qubit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Qubit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.geometry_helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">circle_polygon</span><span class="p">,</span> <span class="n">arc_points</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.parameters</span><span class="w"> </span><span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span><span class="p">,</span> <span class="n">add_parameters_from</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.refpoints</span><span class="w"> </span><span class="kn">import</span> <span class="n">WaveguideToSimPort</span><span class="p">,</span> <span class="n">JunctionSimPort</span>
 
 
 <div class="viewcode-block" id="ConcentricTransmon">
 <a class="viewcode-back" href="../../../api/kqcircuits.qubits.concentric_transmon.html#kqcircuits.qubits.concentric_transmon.ConcentricTransmon">[docs]</a>
 <span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Element</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">180</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">ConcentricTransmon</span><span class="p">(</span><span class="n">Qubit</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ConcentricTransmon</span><span class="p">(</span><span class="n">Qubit</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The PCell declaration for a concentric transmon.</span>
 <span class="sd">    A concentric transmon consists of two islands, one inner and one outer, connected by a Josephson Junction/s.</span>
 <span class="sd">    Multiple couplers can be defined. They can have custom waveguide impedance, size and shape.</span>
@@ -1075,7 +1075,7 @@
 
 <div class="viewcode-block" id="ConcentricTransmon.build">
 <a class="viewcode-back" href="../../../api/kqcircuits.qubits.concentric_transmon.html#kqcircuits.qubits.concentric_transmon.ConcentricTransmon.build">[docs]</a>
-    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">x_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">r_outer</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ground_gap</span>  <span class="c1"># Define the outermost qubit coordinate</span>
 
         <span class="c1"># Generate the qubit islands (they are the negative shape of the final geometry)</span>
@@ -1105,7 +1105,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_ports</span><span class="p">()</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_make_arc_island</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">island_outer_radius</span><span class="p">,</span> <span class="n">island_width</span><span class="p">,</span> <span class="n">swept_angle</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_make_arc_island</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">island_outer_radius</span><span class="p">,</span> <span class="n">island_width</span><span class="p">,</span> <span class="n">swept_angle</span><span class="p">):</span>
         <span class="c1"># Generate a polygon arc of any size and angle</span>
         <span class="n">angle_rad</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">swept_angle</span><span class="p">)</span>
         <span class="n">points_outside</span> <span class="o">=</span> <span class="n">arc_points</span><span class="p">(</span><span class="n">island_outer_radius</span><span class="p">,</span> <span class="o">-</span><span class="n">angle_rad</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">angle_rad</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
@@ -1114,7 +1114,7 @@
         <span class="n">arc_island</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">arc_island</span>
 
-    <span class="k">def</span> <span class="nf">_make_qubit_islands</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_make_qubit_islands</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Generate a region of the qubit shunting capacitor</span>
         <span class="n">capacitor_islands</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="c1"># Inner circular island</span>
@@ -1125,7 +1125,7 @@
         <span class="n">capacitor_islands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outer_island</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">([</span><span class="n">poly</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span> <span class="k">for</span> <span class="n">poly</span> <span class="ow">in</span> <span class="n">capacitor_islands</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="nf">_make_coupler_island</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_make_coupler_island</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Generate the regions of the coupler islands.</span>
         <span class="n">round_corner</span> <span class="o">=</span> <span class="mi">5</span>
         <span class="n">coupler_islands_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">()</span>
@@ -1142,7 +1142,7 @@
             <span class="n">coupler_islands_region</span> <span class="o">+=</span> <span class="n">coupler_island_region</span>
         <span class="k">return</span> <span class="n">coupler_islands_region</span>
 
-    <span class="k">def</span> <span class="nf">_make_waveguides</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_make_waveguides</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Make the waveguides for each coupler with custom impedance and return the region</span>
         <span class="n">waveguides_signal_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">()</span>
         <span class="n">waveguides_gap_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">()</span>
@@ -1173,7 +1173,7 @@
             <span class="n">waveguides_gap_region</span> <span class="o">+=</span> <span class="n">waveguide_gap</span>
         <span class="k">return</span> <span class="n">waveguides_signal_region</span><span class="p">,</span> <span class="n">waveguides_gap_region</span>
 
-    <span class="k">def</span> <span class="nf">_add_junction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_junction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">):</span>
         <span class="c1"># Add the junction to the qubit islands</span>
         <span class="n">squid_origin</span> <span class="o">=</span> <span class="n">arc_points</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">r_outer</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">outer_island_width</span><span class="p">,</span>
@@ -1199,11 +1199,11 @@
         <span class="p">)</span>
         <span class="n">region</span> <span class="o">+=</span> <span class="n">squid_connection</span>
 
-    <span class="k">def</span> <span class="nf">_make_ground_region</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_make_ground_region</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Generate the ground region as a filled circle of the maximum size</span>
         <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">circle_polygon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_end</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_add_ports</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_ports</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Add couplers ports</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c_angle</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">couplers_angle</span><span class="p">)):</span>
             <span class="n">coupler_origin</span> <span class="o">=</span> <span class="n">arc_points</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_end</span><span class="p">,</span> <span class="n">c_angle</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
@@ -1220,7 +1220,7 @@
         <span class="n">drive_transf</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">90</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">drive_angle</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">drive_origin</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_port</span><span class="p">(</span><span class="s2">&quot;drive&quot;</span><span class="p">,</span> <span class="n">drive_transf</span> <span class="o">*</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">direction</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="n">drive_transf</span> <span class="o">*</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span>
 
-    <span class="k">def</span> <span class="nf">_get_protection_region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_protection_region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">):</span>
         <span class="c1"># Region which we don&#39;t want to cover with the automatically generated ground grid</span>
         <span class="n">protection_region</span> <span class="o">=</span> <span class="n">region</span><span class="o">.</span><span class="n">sized</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">margin</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">protection_region</span>
@@ -1228,7 +1228,7 @@
 <div class="viewcode-block" id="ConcentricTransmon.get_sim_ports">
 <a class="viewcode-back" href="../../../api/kqcircuits.qubits.concentric_transmon.html#kqcircuits.qubits.concentric_transmon.ConcentricTransmon.get_sim_ports">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get_sim_ports</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">simulation</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_sim_ports</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">simulation</span><span class="p">):</span>
         <span class="n">ports</span> <span class="o">=</span> <span class="p">[</span><span class="n">JunctionSimPort</span><span class="p">()]</span>
         <span class="k">return</span> <span class="n">ports</span> <span class="o">+</span> <span class="p">[</span>
             <span class="n">WaveguideToSimPort</span><span class="p">(</span>

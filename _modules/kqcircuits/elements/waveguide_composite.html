@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>kqcircuits.elements.waveguide_composite &mdash; KQCircuits  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=eeab0646" />
@@ -1011,38 +1011,38 @@
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
 
 
-<span class="kn">import</span> <span class="nn">ast</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">zip_longest</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
-<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span><span class="p">,</span> <span class="n">tan</span><span class="p">,</span> <span class="n">floor</span>
-<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">zip_longest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tuple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">pi</span><span class="p">,</span> <span class="n">tan</span><span class="p">,</span> <span class="n">floor</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 
-<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">root_scalar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">root_scalar</span>
 
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">node_editor_layer_changing_elements</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span><span class="p">,</span> <span class="n">add_parameters_from</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.library_helper</span> <span class="kn">import</span> <span class="n">element_by_class_name</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_helper</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.defaults</span><span class="w"> </span><span class="kn">import</span> <span class="n">node_editor_layer_changing_elements</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.pya_resolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.parameters</span><span class="w"> </span><span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span><span class="p">,</span> <span class="n">add_parameters_from</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.library_helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">element_by_class_name</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.geometry_helper</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">vector_length_and_direction</span><span class="p">,</span>
     <span class="n">point_shift_along_vector</span><span class="p">,</span>
     <span class="n">get_cell_path_length</span><span class="p">,</span>
     <span class="n">get_angle</span><span class="p">,</span>
     <span class="n">get_direction</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.airbridges.airbridge</span> <span class="kn">import</span> <span class="n">Airbridge</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.airbridge_connection</span> <span class="kn">import</span> <span class="n">AirbridgeConnection</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.meander</span> <span class="kn">import</span> <span class="n">Meander</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar</span> <span class="kn">import</span> <span class="n">WaveguideCoplanar</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar_taper</span> <span class="kn">import</span> <span class="n">WaveguideCoplanarTaper</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf</span> <span class="kn">import</span> <span class="n">FlipChipConnectorRf</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar_splitter</span> <span class="kn">import</span> <span class="n">WaveguideCoplanarSplitter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.element</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.airbridges.airbridge</span><span class="w"> </span><span class="kn">import</span> <span class="n">Airbridge</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.airbridge_connection</span><span class="w"> </span><span class="kn">import</span> <span class="n">AirbridgeConnection</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.meander</span><span class="w"> </span><span class="kn">import</span> <span class="n">Meander</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.waveguide_coplanar</span><span class="w"> </span><span class="kn">import</span> <span class="n">WaveguideCoplanar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.waveguide_coplanar_taper</span><span class="w"> </span><span class="kn">import</span> <span class="n">WaveguideCoplanarTaper</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf</span><span class="w"> </span><span class="kn">import</span> <span class="n">FlipChipConnectorRf</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.waveguide_coplanar_splitter</span><span class="w"> </span><span class="kn">import</span> <span class="n">WaveguideCoplanarSplitter</span>
 
 
 <div class="viewcode-block" id="Node">
 <a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node">[docs]</a>
-<span class="k">class</span> <span class="nc">Node</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Node</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Specifies a single node of a composite waveguide.</span>
 
 <span class="sd">    Node is as a ``position`` and optionally other parameters. The ``element`` argument sets an Element</span>
@@ -1075,7 +1075,7 @@
     <span class="n">length_increment</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">meander_direction</span><span class="p">:</span> <span class="nb">int</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">position</span><span class="p">,</span>
         <span class="n">element</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1100,7 +1100,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">meander_direction</span> <span class="o">=</span> <span class="n">meander_direction</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        String representation of a Node, used for serialization and needed for storage in KLayout parameters.</span>
 
@@ -1136,7 +1136,7 @@
 <div class="viewcode-block" id="Node.deserialize">
 <a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node.deserialize">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">deserialize</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">deserialize</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a Node object from a serialized form, such that ``from_serialized(ast.literal_eval(str(node_object)))``</span>
 <span class="sd">        returns an equivalent copy of ``node_obj``.</span>
@@ -1179,7 +1179,7 @@
 <div class="viewcode-block" id="Node.nodes_from_string">
 <a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node.nodes_from_string">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">nodes_from_string</span><span class="p">(</span><span class="n">nodes</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">nodes_from_string</span><span class="p">(</span><span class="n">nodes</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts the human readable text representation of Nodes to an actual Node object list.</span>
 
 <span class="sd">        Needed for storage in KLayout parameters. The string has to conform to a specific format:</span>
@@ -1204,7 +1204,7 @@
 <span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Airbridge</span><span class="p">,</span> <span class="s2">&quot;airbridge_type&quot;</span><span class="p">)</span>
 <span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span> <span class="s2">&quot;term1&quot;</span><span class="p">,</span> <span class="s2">&quot;term2&quot;</span><span class="p">,</span> <span class="s2">&quot;add_metal&quot;</span><span class="p">,</span> <span class="s2">&quot;ground_grid_in_trace&quot;</span><span class="p">)</span>
 <span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">FlipChipConnectorRf</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">WaveguideComposite</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">WaveguideComposite</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A composite waveguide made of waveguides and other elements.</span>
 
 <span class="sd">    From the user&#39;s perspective this is a WaveguideCoplanar that is extended with Airbridge,</span>
@@ -1267,7 +1267,7 @@
 <div class="viewcode-block" id="WaveguideComposite.create">
 <a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite.create">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
         <span class="c1"># For code-generated cells, make sure the gui path matches te node definition.</span>
         <span class="k">if</span> <span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;enable_gui_editing&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
             <span class="k">if</span> <span class="s2">&quot;nodes&quot;</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
@@ -1289,7 +1289,7 @@
 <div class="viewcode-block" id="WaveguideComposite.get_segment_cells">
 <a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite.get_segment_cells">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_segment_cells</span><span class="p">(</span><span class="n">cell</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_segment_cells</span><span class="p">(</span><span class="n">cell</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the subcells of a ``WaveguideComposite`` cell, ordered by node index.</span>
 
 <span class="sd">        The subcells include ``WaveguideCoplanar``, ``WaveguideCoplanarTaper`` and ``Meander`` cells for straight,</span>
@@ -1328,7 +1328,7 @@
 <div class="viewcode-block" id="WaveguideComposite.get_segment_lengths">
 <a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite.get_segment_lengths">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_segment_lengths</span><span class="p">(</span><span class="n">cell</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_segment_lengths</span><span class="p">(</span><span class="n">cell</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieves the segment lengths of each waveguide segment in a WaveguideComposite cell.</span>
 
 <span class="sd">        Waveguide segments are ``WaveguideCoplanar``, ``WaveguideCoplanarTaper`` and ``Meander`` subcells.</span>
@@ -1364,7 +1364,7 @@
 <div class="viewcode-block" id="WaveguideComposite.produce_fixed_length_waveguide">
 <a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite.produce_fixed_length_waveguide">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">produce_fixed_length_waveguide</span><span class="p">(</span><span class="n">chip</span><span class="p">,</span> <span class="n">route_function</span><span class="p">,</span> <span class="n">initial_guess</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">**</span><span class="n">waveguide_params</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">produce_fixed_length_waveguide</span><span class="p">(</span><span class="n">chip</span><span class="p">,</span> <span class="n">route_function</span><span class="p">,</span> <span class="n">initial_guess</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">**</span><span class="n">waveguide_params</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Produce a waveguide composite with fixed length. `route_function` should be a single-argument function that</span>
 <span class="sd">        returns route, and its argument is an adjustable length in µm.</span>
@@ -1405,7 +1405,7 @@
 
 <div class="viewcode-block" id="WaveguideComposite.snap_point">
 <a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite.snap_point">[docs]</a>
-    <span class="k">def</span> <span class="nf">snap_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">snap_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Interface to define snap behavior for GUI editing in derived classes.</span>
 
@@ -1422,7 +1422,7 @@
 
 <div class="viewcode-block" id="WaveguideComposite.coerce_parameters_impl">
 <a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite.coerce_parameters_impl">[docs]</a>
-    <span class="k">def</span> <span class="nf">coerce_parameters_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">coerce_parameters_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_gui_editing</span><span class="p">:</span>
             <span class="n">nodes</span> <span class="o">=</span> <span class="n">Node</span><span class="o">.</span><span class="n">nodes_from_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
 
@@ -1486,7 +1486,7 @@
 
 <div class="viewcode-block" id="WaveguideComposite.build">
 <a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite.build">[docs]</a>
-    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Produce the composite waveguide.</span>
 
 <span class="sd">        In practice this becomes an alternating chain of WaveguideCoplanar and some other Element</span>
@@ -1551,7 +1551,7 @@
 
 <div class="viewcode-block" id="WaveguideComposite.check_node_type">
 <a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite.check_node_type">[docs]</a>
-    <span class="k">def</span> <span class="nf">check_node_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_node_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterate over supported Node types and run approriate function&quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">element</span> <span class="ow">is</span> <span class="n">AirbridgeConnection</span><span class="p">:</span>
@@ -1568,7 +1568,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_add_simple_element</span><span class="p">(</span><span class="n">i</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_add_taper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_taper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a WaveguideCoplanarTaper and change default a/b.&quot;&quot;&quot;</span>
 
         <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
@@ -1587,7 +1587,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">a</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">b</span>
 
-    <span class="k">def</span> <span class="nf">_add_layer_changing_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">element</span><span class="o">=</span><span class="n">FlipChipConnectorRf</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_layer_changing_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">element</span><span class="o">=</span><span class="n">FlipChipConnectorRf</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add element which changes face_id and change default face_id.&quot;&quot;&quot;</span>
         <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">pcell_params_by_name</span><span class="p">(</span><span class="n">element</span><span class="p">),</span> <span class="o">**</span><span class="n">node</span><span class="o">.</span><span class="n">params</span><span class="p">}</span>
@@ -1613,7 +1613,7 @@
         <span class="k">if</span> <span class="s2">&quot;r&quot;</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;r&quot;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_add_airbridge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_airbridge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add an airbridge with tapers at both sides and change default a/b if required.&quot;&quot;&quot;</span>
 
         <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
@@ -1646,7 +1646,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span>
 
-    <span class="k">def</span> <span class="nf">_add_simple_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_simple_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add any other simple Element, that has port_a and port_b.&quot;&quot;&quot;</span>
 
         <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
@@ -1658,7 +1658,7 @@
         <span class="k">if</span> <span class="s2">&quot;r&quot;</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">params</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">element</span> <span class="ow">is</span> <span class="n">WaveguideCoplanarSplitter</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;r&quot;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_insert_cell_and_waveguide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">inst_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="s2">&quot;port_a&quot;</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="s2">&quot;port_b&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_insert_cell_and_waveguide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">inst_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="s2">&quot;port_a&quot;</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="s2">&quot;port_b&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Place a cell and create the preceding waveguide.</span>
 
 <span class="sd">        Normally the element is oriented from the previous node towards this one. Except the first</span>
@@ -1701,7 +1701,7 @@
             <span class="n">_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wg_start_dir</span> <span class="o">=</span> <span class="n">vector_length_and_direction</span><span class="p">(</span><span class="n">ref</span><span class="p">[</span><span class="n">after_corner</span><span class="p">]</span> <span class="o">-</span> <span class="n">ref</span><span class="p">[</span><span class="n">after</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_wg_start_idx</span> <span class="o">=</span> <span class="n">ind</span>
 
-    <span class="k">def</span> <span class="nf">_node_entrance_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_node_entrance_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns element entrance direction at node index `ind`.&quot;&quot;&quot;</span>
         <span class="n">fixed_angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span><span class="o">.</span><span class="n">angle</span>
         <span class="k">if</span> <span class="n">fixed_angle</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1709,7 +1709,7 @@
             <span class="k">return</span> <span class="n">vector_length_and_direction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">prev</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">prev</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">get_direction</span><span class="p">(</span><span class="n">fixed_angle</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_insert_wg_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">start_index</span><span class="p">,</span> <span class="n">end_index</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_insert_wg_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">start_index</span><span class="p">,</span> <span class="n">end_index</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create and insert waveguide cell.</span>
 <span class="sd">        Avoid termination if in the middle or if the ends are actual elements.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1724,7 +1724,7 @@
         <span class="n">cell_inst</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">wg_cell</span><span class="p">)</span>
         <span class="n">cell_inst</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s2">&quot;waveguide_composite_node_index&quot;</span><span class="p">,</span> <span class="n">end_index</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_add_waveguide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">end_index</span><span class="p">,</span> <span class="n">end_pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_waveguide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">end_index</span><span class="p">,</span> <span class="n">end_pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates waveguide from `self._wg_start_idx` until `end_index`.</span>
 
 <span class="sd">        Args:</span>
@@ -1733,7 +1733,7 @@
 <span class="sd">            end_dir: endpoint direction of the waveguide (optional)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">def</span> <span class="nf">get_corner_lengths</span><span class="p">(</span><span class="n">segment_vector</span><span class="p">,</span> <span class="n">dir_start</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(),</span> <span class="n">dir_end</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">()):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">get_corner_lengths</span><span class="p">(</span><span class="n">segment_vector</span><span class="p">,</span> <span class="n">dir_start</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(),</span> <span class="n">dir_end</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">()):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Returns distances from segment end points to corner points depending on value of self.tight_routing.</span>
 <span class="sd">            Returns zero length, if the corner point is not necessary.</span>
 
@@ -1780,7 +1780,7 @@
         <span class="k">if</span> <span class="n">end_index</span> <span class="o">&lt;=</span> <span class="n">start_index</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="k">def</span> <span class="nf">curve_length_and_end_points</span><span class="p">(</span><span class="n">pnts</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">curve_length_and_end_points</span><span class="p">(</span><span class="n">pnts</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Returns curve length, curve start point, and curve end point, for given point pnts[p] in list pnts.&quot;&quot;&quot;</span>
             <span class="k">if</span> <span class="n">p</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">p</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pnts</span><span class="p">):</span>
                 <span class="k">return</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">pnts</span><span class="p">[</span><span class="n">p</span><span class="p">],</span> <span class="n">pnts</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
@@ -1880,7 +1880,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_wg_start_dir</span> <span class="o">=</span> <span class="n">get_direction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">end_index</span><span class="p">]</span><span class="o">.</span><span class="n">angle</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_wg_start_idx</span> <span class="o">=</span> <span class="n">end_index</span>
 
-    <span class="k">def</span> <span class="nf">_ab_across</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">ab_len</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_ab_across</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">ab_len</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates airbridges between ``start`` and ``end``.</span>
 <span class="sd">        If num &gt; 0, num is the number of airbridges equally distributed between ``start`` and ``end``.</span>
 <span class="sd">        If num == 0, then one airbridge is created at the end node.</span>
@@ -1912,7 +1912,7 @@
         <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">ab_cell</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">get_angle</span><span class="p">(</span><span class="n">v_dir</span><span class="p">),</span> <span class="kc">False</span><span class="p">,</span> <span class="n">start</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="n">v_dir</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_terminator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_terminator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Terminate the waveguide ending with an Element.&quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">ind</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">term1</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -1938,7 +1938,7 @@
 
 <div class="viewcode-block" id="produce_fixed_length_bend">
 <a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.produce_fixed_length_bend">[docs]</a>
-<span class="k">def</span> <span class="nf">produce_fixed_length_bend</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">target_len</span><span class="p">,</span> <span class="n">point_a</span><span class="p">,</span> <span class="n">point_a_corner</span><span class="p">,</span> <span class="n">point_b</span><span class="p">,</span> <span class="n">point_b_corner</span><span class="p">,</span> <span class="n">bridges</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">produce_fixed_length_bend</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">target_len</span><span class="p">,</span> <span class="n">point_a</span><span class="p">,</span> <span class="n">point_a_corner</span><span class="p">,</span> <span class="n">point_b</span><span class="p">,</span> <span class="n">point_b_corner</span><span class="p">,</span> <span class="n">bridges</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Inserts a waveguide bend with the given length to the chip.</span>
 
 <span class="sd">    Args:</span>
@@ -1958,7 +1958,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">objective</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="n">_length_of_var_length_bend</span><span class="p">(</span>
                 <span class="n">element</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span>
@@ -1984,13 +1984,13 @@
     <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Cannot create a waveguide bend with length </span><span class="si">{</span><span class="n">target_len</span><span class="si">}</span><span class="s2"> between points </span><span class="si">{</span><span class="n">point_a</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">point_b</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
 
     <span class="k">return</span> <span class="n">inst</span></div>
 
 
 
-<span class="k">def</span> <span class="nf">_length_of_var_length_bend</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_length_of_var_length_bend</span><span class="p">(</span>
     <span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="p">,</span> <span class="n">corner_dist</span><span class="p">,</span> <span class="n">point_a</span><span class="p">,</span> <span class="n">point_a_corner</span><span class="p">,</span> <span class="n">point_b</span><span class="p">,</span> <span class="n">point_b_corner</span><span class="p">,</span> <span class="n">bridges</span><span class="p">,</span> <span class="n">r</span>
 <span class="p">):</span>
     <span class="c1"># This function shouldn&#39;t raise exception, so we have to manually test if waveguide doesn&#39;t fit.</span>
@@ -2015,7 +2015,7 @@
     <span class="k">return</span> <span class="n">get_cell_path_length</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_var_length_bend</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="p">,</span> <span class="n">corner_dist</span><span class="p">,</span> <span class="n">point_a</span><span class="p">,</span> <span class="n">point_a_corner</span><span class="p">,</span> <span class="n">point_b</span><span class="p">,</span> <span class="n">point_b_corner</span><span class="p">,</span> <span class="n">bridges</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_var_length_bend</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="p">,</span> <span class="n">corner_dist</span><span class="p">,</span> <span class="n">point_a</span><span class="p">,</span> <span class="n">point_a_corner</span><span class="p">,</span> <span class="n">point_b</span><span class="p">,</span> <span class="n">point_b_corner</span><span class="p">,</span> <span class="n">bridges</span><span class="p">):</span>
     <span class="n">cell</span> <span class="o">=</span> <span class="n">WaveguideComposite</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
         <span class="n">layout</span><span class="p">,</span>
         <span class="n">library</span><span class="p">,</span>

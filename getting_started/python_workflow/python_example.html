@@ -5,7 +5,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Detailed examples &mdash; KQCircuits  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d10597a4" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=eeab0646" />
@@ -1005,14 +1005,14 @@
 shapes (such as <code class="docutils literal notranslate"><span class="pre">DBox</span></code> and <code class="docutils literal notranslate"><span class="pre">DPolygon</span></code>), and insert the shapes into the appropriate KQCircuits layers.</p>
 <p>Here is an example of defining a new element, with code comments explaining the different parts:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import any modules, classes or functions used in our code.</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.symmetric_polygons</span> <span class="kn">import</span> <span class="n">polygon_with_vsym</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.element</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.pya_resolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.parameters</span><span class="w"> </span><span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.symmetric_polygons</span><span class="w"> </span><span class="kn">import</span> <span class="n">polygon_with_vsym</span>
 
 
 <span class="c1"># Any KQCircuits element must inherit from Element.</span>
-<span class="k">class</span> <span class="nc">SimpleCross</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SimpleCross</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 
     <span class="c1"># Define parameters for this class here.</span>
     <span class="c1"># Each parameter definition contains the parameter type, description and default value.</span>
@@ -1020,7 +1020,7 @@ shapes (such as <code class="docutils literal notranslate"><span class="pre">DBo
     <span class="n">arm_length</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Cross arm length&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
 
     <span class="c1"># The build() function is where the element geometry is built.</span>
-    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># We define a hardcoded value for arm_width, so it cannot be changed from outside like arm_length.</span>
         <span class="n">arm_width</span> <span class="o">=</span> <span class="mi">30</span>
         <span class="c1"># Define some variables to hold values used commonly in this function.</span>
@@ -1058,17 +1058,17 @@ include other elements as subcells. This is especially true for chips, which
 typically use existing elements as building blocks instead of producing shapes
 directly. In this example we show how to place instances of the <code class="docutils literal notranslate"><span class="pre">SimpleCross</span></code>
 element created in the previous section into a new chip:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kqcircuits.chips.chip</span> <span class="kn">import</span> <span class="n">Chip</span>
-<span class="kn">from</span> <span class="nn">my_package.elements.simple_cross</span> <span class="kn">import</span> <span class="n">SimpleCross</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.chips.chip</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chip</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">my_package.elements.simple_cross</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimpleCross</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.pya_resolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">pya</span>
 
 
 <span class="c1"># New chip implementation must use the Chip element as a base class.</span>
 <span class="c1"># As chips are also elements, all the previous explanations about</span>
 <span class="c1"># parameters, build-method etc. hold also for them.</span>
-<span class="k">class</span> <span class="nc">NewChip1</span><span class="p">(</span><span class="n">Chip</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NewChip1</span><span class="p">(</span><span class="n">Chip</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="c1"># The produce_launchers function creates launchers fitting a certain</span>
         <span class="c1"># sampleholder and sets the chip size accordingly. The available</span>

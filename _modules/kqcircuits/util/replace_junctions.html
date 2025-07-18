@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>kqcircuits.util.replace_junctions &mdash; KQCircuits  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=eeab0646" />
@@ -1016,32 +1016,32 @@
 <span class="sd">See scripts/macros/export/export_tuned_junctions.lym for a use case of these functions</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">get_refpoints</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.load_save_layout</span> <span class="kn">import</span> <span class="n">load_layout</span><span class="p">,</span> <span class="n">save_layout</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.junctions</span> <span class="kn">import</span> <span class="n">junction_type_choices</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.junctions.junction</span> <span class="kn">import</span> <span class="n">Junction</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.chips.chip</span> <span class="kn">import</span> <span class="n">Chip</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.library_helper</span> <span class="kn">import</span> <span class="n">load_libraries</span><span class="p">,</span> <span class="n">to_library_name</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">os</span><span class="w"> </span><span class="kn">import</span> <span class="n">path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.defaults</span><span class="w"> </span><span class="kn">import</span> <span class="n">default_layers</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.element</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_refpoints</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.pya_resolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.load_save_layout</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_layout</span><span class="p">,</span> <span class="n">save_layout</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.junctions</span><span class="w"> </span><span class="kn">import</span> <span class="n">junction_type_choices</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.junctions.junction</span><span class="w"> </span><span class="kn">import</span> <span class="n">Junction</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.chips.chip</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chip</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.library_helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_libraries</span><span class="p">,</span> <span class="n">to_library_name</span>
 
 
 <div class="viewcode-block" id="JunctionEntry">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.JunctionEntry">[docs]</a>
-<span class="k">class</span> <span class="nc">JunctionEntry</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">JunctionEntry</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;All junction properties we want to store when extracting junctions&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">trans</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">,</span> <span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">parent_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">trans</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">,</span> <span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">parent_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">class_type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="n">trans</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">parameters</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent_name</span> <span class="o">=</span> <span class="n">parent_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__value</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__value</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">__value</span><span class="o">.</span><span class="n">type</span>
             <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">trans</span> <span class="o">==</span> <span class="n">__value</span><span class="o">.</span><span class="n">trans</span>
@@ -1052,7 +1052,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">_check_junction_names_unique</span><span class="p">(</span><span class="n">junctions</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_check_junction_names_unique</span><span class="p">(</span><span class="n">junctions</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Raises exception if ``junctions`` contains a non-unique (parent_name, name) key-pair&quot;&quot;&quot;</span>
     <span class="n">unique_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">junction</span> <span class="ow">in</span> <span class="n">junctions</span><span class="p">:</span>
@@ -1068,7 +1068,7 @@
         <span class="n">unique_names</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">junction</span><span class="o">.</span><span class="n">parent_name</span><span class="p">,</span> <span class="n">junction</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
 
 
-<span class="k">def</span> <span class="nf">_check_missing_junction_parameters</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_check_missing_junction_parameters</span><span class="p">(</span>
     <span class="n">junction_class_name</span><span class="p">,</span> <span class="n">junction_schema_errors</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">tuned_params</span><span class="p">,</span> <span class="n">parent_name</span><span class="p">,</span> <span class="n">name</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Run for every found junction to compare junction library schema (`params`)</span>
@@ -1096,7 +1096,7 @@
         <span class="n">junction_schema_errors</span><span class="p">[</span><span class="n">junction_class_name</span><span class="p">][</span><span class="s2">&quot;missing_fields&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">parent_name</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
 
 
-<span class="k">def</span> <span class="nf">_check_surplus_junction_parameters</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_check_surplus_junction_parameters</span><span class="p">(</span>
     <span class="n">junction_class_name</span><span class="p">,</span> <span class="n">junction_schema_errors</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">tuned_params</span><span class="p">,</span> <span class="n">parent_name</span><span class="p">,</span> <span class="n">name</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Run for every found junction to compare junction library schema (`params`)</span>
@@ -1115,7 +1115,7 @@
         <span class="n">junction_schema_errors</span><span class="p">[</span><span class="n">junction_class_name</span><span class="p">][</span><span class="s2">&quot;surplus_fields&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">parent_name</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
 
 
-<span class="k">def</span> <span class="nf">_print_surplus_junction_parameters</span><span class="p">(</span><span class="n">junction_schema_errors</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_print_surplus_junction_parameters</span><span class="p">(</span><span class="n">junction_schema_errors</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Logs as warning the content of &quot;surplus_fields&quot; in `junction_schema_errors`</span>
 <span class="sd">    junction parameters that were attempted to be tuned,</span>
 <span class="sd">    yet were not defined for the given junction types.</span>
@@ -1132,7 +1132,7 @@
             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;for </span><span class="si">{</span><span class="n">junctions</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_halt_if_missing_junction_parameters</span><span class="p">(</span><span class="n">junction_schema_errors</span><span class="p">,</span> <span class="n">is_pcell</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_halt_if_missing_junction_parameters</span><span class="p">(</span><span class="n">junction_schema_errors</span><span class="p">,</span> <span class="n">is_pcell</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Raises exception if &quot;missing_fields&quot; for some entry in `junction_schema_errors` is not empty,</span>
 <span class="sd">    formats an error message to show all missing parameter keys detected for each junction type</span>
 <span class="sd">    and names the affected junctions.</span>
@@ -1165,7 +1165,7 @@
         <span class="k">raise</span> <span class="n">error</span>
 
 
-<span class="k">def</span> <span class="nf">_transformation_for_junction_face</span><span class="p">(</span><span class="n">top_cell</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">,</span> <span class="n">junction_face_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_transformation_for_junction_face</span><span class="p">(</span><span class="n">top_cell</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">,</span> <span class="n">junction_face_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns chip level transformation to apply to junctions and any other layout</span>
 <span class="sd">    exported with the junctions. Relies on orientation of corner markers to determine</span>
 <span class="sd">    whether chip geometry should be mirrored or not.</span>
@@ -1199,7 +1199,7 @@
 
 <div class="viewcode-block" id="extract_junctions">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.extract_junctions">[docs]</a>
-<span class="k">def</span> <span class="nf">extract_junctions</span><span class="p">(</span><span class="n">top_cell</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">,</span> <span class="n">tuned_junction_parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">JunctionEntry</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_junctions</span><span class="p">(</span><span class="n">top_cell</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">,</span> <span class="n">tuned_junction_parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">JunctionEntry</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extracts all junction elements placed in the `top_cell`.</span>
 <span class="sd">    Junction parameters are tuned according to `tuned_junction_parameters` dict.</span>
 
@@ -1238,7 +1238,7 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">is_pcell</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Top cell doesn&#39;t contain PCell parameter data&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">recursive_junction_search</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">parent_name</span><span class="p">,</span> <span class="n">prev_trans</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">recursive_junction_search</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">parent_name</span><span class="p">,</span> <span class="n">prev_trans</span><span class="p">):</span>
         <span class="n">cell</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">cell_index</span><span class="p">)</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">property</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
         <span class="n">trans</span> <span class="o">=</span> <span class="n">prev_trans</span> <span class="o">*</span> <span class="n">inst</span><span class="o">.</span><span class="n">dcplx_trans</span>
@@ -1319,7 +1319,7 @@
 
 <div class="viewcode-block" id="check_static_cell_has_junctions">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.check_static_cell_has_junctions">[docs]</a>
-<span class="k">def</span> <span class="nf">check_static_cell_has_junctions</span><span class="p">(</span><span class="n">top_cell</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_static_cell_has_junctions</span><span class="p">(</span><span class="n">top_cell</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Perform quick check on a static chip cell if it contains a junction.</span>
 
 <span class="sd">    Args: top_cell - top cell of the chip</span>
@@ -1328,7 +1328,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">layout</span> <span class="o">=</span> <span class="n">top_cell</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">recursive_junction_search</span><span class="p">(</span><span class="n">inst</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">recursive_junction_search</span><span class="p">(</span><span class="n">inst</span><span class="p">):</span>
         <span class="n">cell</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">cell_index</span><span class="p">)</span>
         <span class="n">cell_class_from_name</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;$&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
         <span class="n">is_junction</span> <span class="o">=</span> <span class="n">cell_class_from_name</span> <span class="ow">in</span> <span class="n">junction_type_choices</span>
@@ -1348,7 +1348,7 @@
 
 <div class="viewcode-block" id="place_junctions">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.place_junctions">[docs]</a>
-<span class="k">def</span> <span class="nf">place_junctions</span><span class="p">(</span><span class="n">top_cell</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">,</span> <span class="n">junctions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">JunctionEntry</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">place_junctions</span><span class="p">(</span><span class="n">top_cell</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">,</span> <span class="n">junctions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">JunctionEntry</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Places `junctions` to `top_cell` in the same location and orientation as in</span>
 <span class="sd">    the cell they were extracted from, but with possibly tuned parameters.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1371,7 +1371,7 @@
 
 <div class="viewcode-block" id="get_tuned_junction_json">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.get_tuned_junction_json">[docs]</a>
-<span class="k">def</span> <span class="nf">get_tuned_junction_json</span><span class="p">(</span><span class="n">junctions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">JunctionEntry</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_tuned_junction_json</span><span class="p">(</span><span class="n">junctions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">JunctionEntry</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a jsonable dict of all junction parameters for each junction entry in `junctions`.</span>
 
 <span class="sd">    If junctions were extracted from a cell with pcell data, the json can be extracted to</span>
@@ -1389,7 +1389,7 @@
 
 <div class="viewcode-block" id="copy_one_layer_of_cell">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.copy_one_layer_of_cell">[docs]</a>
-<span class="k">def</span> <span class="nf">copy_one_layer_of_cell</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">copy_one_layer_of_cell</span><span class="p">(</span>
     <span class="n">write_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">top_cell</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">,</span> <span class="n">junctions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">JunctionEntry</span><span class="p">],</span> <span class="n">layer_string</span><span class="p">:</span> <span class="nb">str</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extracts all geometry in `top_cell` at layer `layer_string`</span>
@@ -1432,7 +1432,7 @@
 
 <div class="viewcode-block" id="replace_squids">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.replace_squids">[docs]</a>
-<span class="k">def</span> <span class="nf">replace_squids</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">junction_type</span><span class="p">,</span> <span class="n">parameter_name</span><span class="p">,</span> <span class="n">parameter_start</span><span class="p">,</span> <span class="n">parameter_step</span><span class="p">,</span> <span class="n">parameter_end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">replace_squids</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">junction_type</span><span class="p">,</span> <span class="n">parameter_name</span><span class="p">,</span> <span class="n">parameter_start</span><span class="p">,</span> <span class="n">parameter_step</span><span class="p">,</span> <span class="n">parameter_end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;DEPRECATED! Replaces squids by code generated squids with the given parameter sweep.</span>
 
 <span class="sd">    All squids below top_cell in the cell hierarchy are removed. The number of code</span>
@@ -1454,7 +1454,7 @@
 
     <span class="n">old_squids</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># list of tuples (squid instance, squid dtrans with respect to cell, old name)</span>
 
-    <span class="k">def</span> <span class="nf">recursive_replace_squids</span><span class="p">(</span><span class="n">top_cell_inst</span><span class="p">,</span> <span class="n">combined_dtrans</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">recursive_replace_squids</span><span class="p">(</span><span class="n">top_cell_inst</span><span class="p">,</span> <span class="n">combined_dtrans</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Appends to old_squids all squids in top_cell_inst or any instance below it in hierarchy.&quot;&quot;&quot;</span>
         <span class="c1"># cannot use just top_cell_inst.cell due to klayout bug, see</span>
         <span class="c1"># https://www.klayout.de/forum/discussion/1191/cell-shapes-cannot-call-non-const-method-on-a-const-reference</span>
@@ -1498,7 +1498,7 @@
 
 <div class="viewcode-block" id="replace_squid">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.replace_squid">[docs]</a>
-<span class="k">def</span> <span class="nf">replace_squid</span><span class="p">(</span><span class="n">top_cell</span><span class="p">,</span> <span class="n">inst_name</span><span class="p">,</span> <span class="n">junction_type</span><span class="p">,</span> <span class="n">mirror</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">squid_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">replace_squid</span><span class="p">(</span><span class="n">top_cell</span><span class="p">,</span> <span class="n">inst_name</span><span class="p">,</span> <span class="n">junction_type</span><span class="p">,</span> <span class="n">mirror</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">squid_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;DEPRECATED! Replaces a SQUID by the requested alternative in the named instance.</span>
 
 <span class="sd">    Replaces the SQUID(s) in the sub-element(s) named ``inst_name`` with other SQUID(s) of</span>
@@ -1514,7 +1514,7 @@
 <span class="sd">        **params: Extra parameters for the new SQUID</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">find_cells_with_squids</span><span class="p">(</span><span class="n">chip</span><span class="p">,</span> <span class="n">inst_name</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_cells_with_squids</span><span class="p">(</span><span class="n">chip</span><span class="p">,</span> <span class="n">inst_name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the container cells in `chip` called `inst_name`&quot;&quot;&quot;</span>
         <span class="n">cells</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">layout</span> <span class="o">=</span> <span class="n">chip</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
@@ -1573,7 +1573,7 @@
 
 <div class="viewcode-block" id="convert_cells_to_static">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.convert_cells_to_static">[docs]</a>
-<span class="k">def</span> <span class="nf">convert_cells_to_static</span><span class="p">(</span><span class="n">layout</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">convert_cells_to_static</span><span class="p">(</span><span class="n">layout</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;DEPRECATED! Converts all cells in the layout to static.&quot;&quot;&quot;</span>
 
     <span class="n">converted_cells</span> <span class="o">=</span> <span class="p">{}</span>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>kqcircuits.util.defaults_helper &mdash; KQCircuits  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=eeab0646" />
@@ -1010,13 +1010,13 @@
 <span class="c1"># Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)</span>
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
 
 <div class="viewcode-block" id="find_ansys_executable">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.defaults_helper.html#kqcircuits.util.defaults_helper.find_ansys_executable">[docs]</a>
-<span class="k">def</span> <span class="nf">find_ansys_executable</span><span class="p">(</span><span class="n">default</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_ansys_executable</span><span class="p">(</span><span class="n">default</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Finds latest Ansys Electronics executable from default installation locations. Returns &#39;default&#39; if not found.&quot;&quot;&quot;</span>
     <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ProgramFiles&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;C:\Program Files&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;AnsysEM&quot;</span><span class="p">),</span> <span class="sa">r</span><span class="s2">&quot;Win64\ansysedt.exe&quot;</span><span class="p">),</span>

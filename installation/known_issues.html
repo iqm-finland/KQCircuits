@@ -5,7 +5,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Known installation issues &mdash; KQCircuits  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=eeab0646" />
@@ -1000,14 +1000,17 @@
 <p>For some specific KLayout builds there can be problems with KQCircuits
 installation that require some extra steps:</p>
 <ul class="simple">
+<li><p>Standalone KLayout 0.28 package installed with <code class="docutils literal notranslate"><span class="pre">pip</span></code> is not available
+for Python version 3.13. There is probably a way to compile such package
+yourself if you really need this configuration.</p></li>
 <li><p>Standard KLayout installation package for MacOS (<code class="docutils literal notranslate"><span class="pre">ST-klayout-*</span></code>)
 is compiled to use the system Python dynamic library, which for
-Sonoma version still has Python version 3.9. <code class="docutils literal notranslate"><span class="pre">networkx</span></code> dependency is only supported
-on Python version 3.10 and higher. We recommend using heavyweight KLayout
-package (<code class="docutils literal notranslate"><span class="pre">HW-klayout-*</span></code>) that uses compatible Python, but if that is not an option, you can comment
-out the <code class="docutils literal notranslate"><span class="pre">networkx</span></code> entry in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/requirements/mac/gui-requirements.txt">gui-requirements.txt</a>
-to proceed with installation.
-Currently this only prevents using the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//util/netlist_as_graph.py">netlist_as_graph.py</a> script.</p></li>
+Sonoma version still has Python version 3.9. We officially only support
+python versions starting from 3.10. We recommend using heavyweight KLayout
+package (<code class="docutils literal notranslate"><span class="pre">HW-klayout-*</span></code>) that uses compatible Python.</p></li>
+<li><p>Since non-HW KLayout installation package for MacOS and linux KLayout
+packages link to system Python, to install KQCircuits the package <code class="docutils literal notranslate"><span class="pre">python3-pip</span></code>
+needs to be installed in the system.</p></li>
 <li><p>For some macOS BigSur KLayout builds (at least for KLayout v0.27.x), KQC
 might not work due to a problem with the KLayout included <code class="docutils literal notranslate"><span class="pre">setuptools</span></code>
 package. The KQC libraries will not be visible and one might see the error

@@ -1,0 +1,12 @@
+:github_url: hide
+
+kqcircuits.simulations.export.elmer.mesh\_size\_helpers
+=======================================================
+
+.. automodule:: kqcircuits.simulations.export.elmer.mesh_size_helpers
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.simulations.export.elmer.mesh_size_helpers
+.. image:: ../pcell_images/kqcircuits.simulations.export.elmer.mesh_size_helpers.png

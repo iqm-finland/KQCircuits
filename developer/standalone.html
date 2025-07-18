@@ -5,7 +5,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Developer Standalone module Setup &mdash; KQCircuits  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d10597a4" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=eeab0646" />
@@ -1037,7 +1037,7 @@ terminal:</p>
 <p>The previous command installs only the packages which are always required
 when using KQC. Other packages may be required for specific purposes,
 see <a class="reference internal" href="#dependency-extensions"><span class="std std-ref">Dependency extensions</span></a>. A command that installs every dependency is:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pip install -e &quot;klayout_package/python[docs,tests,notebooks,simulations,graphs]&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pip install -e &quot;klayout_package/python[dev,sim]&quot;</span>
 </pre></div>
 </div>
 <p>You can choose for which purposes you want to install the requirements by
@@ -1058,41 +1058,37 @@ to the one main developers of KQCircuits have.</p>
 <span class="go">python -m pip install --no-deps -e .</span>
 </pre></div>
 </div>
-<p>You can afterwards install other requirements needed for specific purposes (in this case doc and test):</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pip install -r requirements/&lt;platform&gt;/doc-requirements.txt -r requirements/&lt;platform&gt;/test-requirements.txt</span>
+<p>You can afterwards install additional requirements:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pip install -r requirements/&lt;platform&gt;/dev-requirements.txt -r requirements/&lt;platform&gt;/sim-requirements.txt</span>
 </pre></div>
 </div>
 <p>See <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/requirements">klayout_package/python/requirements</a> and <a class="reference internal" href="#dependency-extensions"><span class="std std-ref">Dependency extensions</span></a> for full list of requirements files.</p>
 </section>
 <section id="kqcircuits-exclusive-python-environment">
-<h3>3. KQCircuits exclusive python environment<a class="headerlink" href="#kqcircuits-exclusive-python-environment" title="Link to this heading"></a></h3>
+<span id="exclusive-python-environment"></span><h3>3. KQCircuits exclusive python environment<a class="headerlink" href="#kqcircuits-exclusive-python-environment" title="Link to this heading"></a></h3>
 <p>If you have <code class="docutils literal notranslate"><span class="pre">pip-tools</span></code> installed, you can use the <code class="docutils literal notranslate"><span class="pre">pip-sync</span></code> command to completely rewrite you python environment
 to only use the pinned KQCircuits requirements, removing other packages.
 Only do this kind of installation on a virtual environment specifically created for using KQCircuits.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd klayout_package/python</span>
 <span class="go">python -m pip install -r requirements/&lt;platform&gt;/pip-requirements.txt</span>
-<span class="go">pip-sync requirements/&lt;platform&gt;/requirements.txt requirements/&lt;platform&gt;/test-requirements.txt</span>
+<span class="go">pip-sync requirements/&lt;platform&gt;/requirements.txt requirements/&lt;platform&gt;/dev-requirements.txt</span>
 <span class="go">python -m pip install --no-deps -e .</span>
 </pre></div>
 </div>
 <p>We first install requirements needed for <code class="docutils literal notranslate"><span class="pre">pip-sync</span></code> command compiled in the <code class="docutils literal notranslate"><span class="pre">pip-requirements.txt</span></code> file,
 then we run the actual <code class="docutils literal notranslate"><span class="pre">pip-sync</span></code> command. Since <code class="docutils literal notranslate"><span class="pre">pip-sync</span></code> will completely wipe out your virtual environment,
-you will need to know in advance which dependency extensions you will need and list them within the single <code class="docutils literal notranslate"><span class="pre">pip-sync</span></code>
+you will need to know in advance which requirements you will need and list them within the single <code class="docutils literal notranslate"><span class="pre">pip-sync</span></code>
 command.</p>
 </section>
 <section id="dependency-extensions">
 <span id="id1"></span><h3>Dependency extensions<a class="headerlink" href="#dependency-extensions" title="Link to this heading"></a></h3>
 <p>We divided dependencies used by KQCircuits into following categories:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code>: Dependencies needed to use core KQCircuits API</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">tests</span></code>, <code class="docutils literal notranslate"><span class="pre">test-requirements.txt</span></code>: Dependencies needed to run unit tests (see <a class="reference internal" href="testing.html#testing"><span class="std std-ref">Testing</span></a>) and linter. Recommended for developers of KQCircuits code.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">docs</span></code>, <code class="docutils literal notranslate"><span class="pre">doc-requirements.txt</span></code>: Dependencies needed to generate KQCircuits documentation, see <a class="reference internal" href="documentation.html#documentation"><span class="std std-ref">Documentation</span></a>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">simulations</span></code>, <code class="docutils literal notranslate"><span class="pre">sim-requirements.txt</span></code>: Dependencies needed to export and run simulations, see <a class="reference internal" href="../user_guide/simulation/export_and_run.html#export-and-run"><span class="std std-ref">Run and export in one line</span></a>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">notebooks</span></code>, <code class="docutils literal notranslate"><span class="pre">notebook-requirements.txt</span></code>: Dependencies needed to run Jupyter notebooks for demonstrations or for calculating needed designs.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">graphs</span></code>, <code class="docutils literal notranslate"><span class="pre">graph-requirements.txt</span></code>: Dependencies needed to visualise graphs, for example <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//util/netlist_as_graph.py">util/netlist_as_graph.py</a>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pip-requirements.txt</span></code>: Dependencies needed for <code class="docutils literal notranslate"><span class="pre">pip-tools</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">gui-requirements.txt</span></code>: Dependencies needed for KQCircuits GUI installation, used by <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//setup_within_klayout.py">setup_within_klayout.py</a> and on KLayout startup.
-Should be targeted to the <code class="docutils literal notranslate"><span class="pre">site-packages</span></code> directory that the KLayout installation uses.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code>: Minimal dependencies needed to use core KQCircuits API</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>, <code class="docutils literal notranslate"><span class="pre">dev-requirements.txt</span></code>: Dependencies needed to develop and contribute to KQCircuits, including running unit tests (see <a class="reference internal" href="testing.html#testing"><span class="std std-ref">Testing</span></a>), linter, generating documentation (see <a class="reference internal" href="documentation.html#documentation"><span class="std std-ref">Documentation</span></a>) etc</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sim</span></code>, <code class="docutils literal notranslate"><span class="pre">sim-requirements.txt</span></code>: Dependencies needed to export and run simulations, see <a class="reference internal" href="../user_guide/simulation/export_and_run.html#export-and-run"><span class="std std-ref">Run and export in one line</span></a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pip-requirements.txt</span></code>: Dependencies needed for installing <code class="docutils literal notranslate"><span class="pre">pip-tools</span></code>, see <a class="reference internal" href="#exclusive-python-environment"><span class="std std-ref">3. KQCircuits exclusive python environment</span></a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gui-requirements.txt</span></code>: Dependencies needed for KQCircuits GUI installation. Do not use manually, this is used by <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//setup_within_klayout.py">setup_within_klayout.py</a> and on KLayout startup.</p></li>
 </ul>
 </section>
 <section id="pypi-installation">
@@ -1102,7 +1098,7 @@ Should be targeted to the <code class="docutils literal notranslate"><span class
 </pre></div>
 </div>
 <p>You won’t be able to easily modify KQCircuits code and you won’t have access to many features such as
-scripts, masks, documentation and notebooks.
+simulation scripts and masks.
 A new Python package is automatically uploaded to PyPI for every tagged commit in GitHub.</p>
 </section>
 </section>
@@ -1122,7 +1118,7 @@ command line:</p>
 <p>The output of the above commands will be in the automatically created <code class="docutils literal notranslate"><span class="pre">tmp</span></code> directory. If you
 desire the outputs elsewhere set the <code class="docutils literal notranslate"><span class="pre">KQC_TMP_PATH</span></code> environment variable to some other path.</p>
 <p>The preferred way to instantiate a drawing environment in standalone mode is with the <a class="reference internal" href="../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView" title="kqcircuits.klayout_view.KLayoutView"><code class="xref py py-class docutils literal notranslate"><span class="pre">KLayoutView</span></code></a> object:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kqcircuits.klayout_view</span> <span class="kn">import</span> <span class="n">KLayoutView</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.klayout_view</span><span class="w"> </span><span class="kn">import</span> <span class="n">KLayoutView</span>
 <span class="n">view</span> <span class="o">=</span> <span class="n">KLayoutView</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1140,7 +1136,7 @@ individual cells are used.</p>
 <h2>Jupyter notebook usage<a class="headerlink" href="#jupyter-notebook-usage" title="Link to this heading"></a></h2>
 <p>There is an example Jupyter notebook <a class="reference external" href="https://github.com/iqm-finland/KQCircuits-Examples/blob/main/notebooks/viewer.ipynb">KQCircuits-Examples/notebooks/viewer.ipynb</a> in the notebooks
 folder, which shows how to create and visualize KQCircuits elements with the
-standalone KLayout module. Run it like:</p>
+standalone KLayout module. With <a class="reference external" href="https://pypi.org/project/jupyter/">jupyter</a> installed in your environment, run it with:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">jupyter-notebook notebooks/viewer.ipynb</span>
 </pre></div>
 </div>
@@ -1150,22 +1146,25 @@ standalone KLayout module. Run it like:</p>
 <p>Don’t do it unless absolutely necessary! The security model (TOFU) works best if
 dependencies are rarely changed. When updating dependencies try to verify that
 the new versions are legitimate.</p>
-<p>Edit the <code class="docutils literal notranslate"><span class="pre">*requirements.in</span></code> files according to your needs. Try to keep &gt;=, &lt;=
+<p>Edit the <code class="docutils literal notranslate"><span class="pre">*requirements.in</span></code> files according to your needs. Try to keep &lt;=
 and == version constraints to a minimum. Try to improve other dependencies too,
 not only the ones your need.</p>
 <p>Compile the new <code class="docutils literal notranslate"><span class="pre">requirements/&lt;platform&gt;/*requirements.txt</span></code> files for
 every source <code class="docutils literal notranslate"><span class="pre">*requirements.in</span></code> file you changed (make sure you have <code class="docutils literal notranslate"><span class="pre">pip-tools</span></code> installed):</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd klayout_package/python</span>
 <span class="go">pip-compile --allow-unsafe --generate-hashes --upgrade --output-file=requirements/&lt;platform&gt;/requirements.txt requirements.in</span>
-<span class="go">pip-compile --allow-unsafe --generate-hashes --upgrade --output-file=requirements/&lt;platform&gt;/doc-requirements.txt doc-requirements.in</span>
+<span class="go">pip-compile --allow-unsafe --generate-hashes --upgrade --output-file=requirements/&lt;platform&gt;/dev-requirements.txt dev-requirements.in</span>
 <span class="go">[...]</span>
 </pre></div>
 </div>
 <p>Substitute <code class="docutils literal notranslate"><span class="pre">&lt;platform&gt;</span></code> with <code class="docutils literal notranslate"><span class="pre">win</span></code>, <code class="docutils literal notranslate"><span class="pre">mac</span></code> or <code class="docutils literal notranslate"><span class="pre">linux</span></code>, and please make sure that
-the files will get compiled for other platforms too, not just the one you are using.</p>
-<p>Some requirements files don’t have their corresponding <code class="docutils literal notranslate"><span class="pre">*requirements.in</span></code> source file.
-One such file is <code class="docutils literal notranslate"><span class="pre">requirements/&lt;platform&gt;/pip-requirements.txt</span></code>, which compiles requirements of <code class="docutils literal notranslate"><span class="pre">pip-tool</span></code>
-for each platform. Other requirements files are only used for CI operations.</p>
+the files will get compiled for other platforms too, not just the one you are using.
+It would be also nice if the requirements files are usable on python versions <code class="docutils literal notranslate"><span class="pre">3.10.x</span></code>, <code class="docutils literal notranslate"><span class="pre">3.11.x</span></code>, <code class="docutils literal notranslate"><span class="pre">3.12.x</span></code> and <code class="docutils literal notranslate"><span class="pre">3.13.x</span></code>.
+The set of compiled requirements might differ between different python environments - our current policy is to compile a union
+set of python environments <code class="docutils literal notranslate"><span class="pre">3.10.x</span></code> and <code class="docutils literal notranslate"><span class="pre">3.13.x</span></code>.
+Gitlab actions will test that installation works on all such configurations.
+If for your contribution adding requirements causes problems for some target environment,
+we will help consult you on the best course of action during the GitHub pull request review.</p>
 </section>
 </section>
 

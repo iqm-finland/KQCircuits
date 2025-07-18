@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>kqcircuits.chips.chip &mdash; KQCircuits  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=eeab0646" />
@@ -1012,10 +1012,10 @@
 <span class="c1"># pylint: disable=R0904</span>
 <span class="c1"># TODO: Consider refactoring to reduce number of public methods</span>
 
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
 
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.defaults</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">default_layers</span><span class="p">,</span>
     <span class="n">default_junction_type</span><span class="p">,</span>
     <span class="n">default_sampleholders</span><span class="p">,</span>
@@ -1023,18 +1023,18 @@
     <span class="n">default_bump_parameters</span><span class="p">,</span>
     <span class="n">default_marker_type</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.chip_frame</span> <span class="kn">import</span> <span class="n">ChipFrame</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.launcher</span> <span class="kn">import</span> <span class="n">Launcher</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.launcher_dc</span> <span class="kn">import</span> <span class="n">LauncherDC</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.merge</span> <span class="kn">import</span> <span class="n">merge_layout_layers_on_face</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span><span class="p">,</span> <span class="n">add_parameters_from</span><span class="p">,</span> <span class="n">add_parameter</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.test_structures.junction_test_pads.junction_test_pads</span> <span class="kn">import</span> <span class="n">JunctionTestPads</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.test_structures.stripes_test</span> <span class="kn">import</span> <span class="n">StripesTest</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.groundgrid</span> <span class="kn">import</span> <span class="n">make_grid</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.tsvs.tsv</span> <span class="kn">import</span> <span class="n">Tsv</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.flip_chip_connectors.flip_chip_connector</span> <span class="kn">import</span> <span class="n">FlipChipConnector</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.chip_frame</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChipFrame</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.element</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.launcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Launcher</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.launcher_dc</span><span class="w"> </span><span class="kn">import</span> <span class="n">LauncherDC</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.pya_resolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.merge</span><span class="w"> </span><span class="kn">import</span> <span class="n">merge_layout_layers_on_face</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.parameters</span><span class="w"> </span><span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span><span class="p">,</span> <span class="n">add_parameters_from</span><span class="p">,</span> <span class="n">add_parameter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.test_structures.junction_test_pads.junction_test_pads</span><span class="w"> </span><span class="kn">import</span> <span class="n">JunctionTestPads</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.test_structures.stripes_test</span><span class="w"> </span><span class="kn">import</span> <span class="n">StripesTest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.groundgrid</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_grid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.tsvs.tsv</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tsv</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.flip_chip_connectors.flip_chip_connector</span><span class="w"> </span><span class="kn">import</span> <span class="n">FlipChipConnector</span>
 
 
 <div class="viewcode-block" id="Chip">
@@ -1052,7 +1052,7 @@
     <span class="s2">&quot;dice_grid_margin&quot;</span><span class="p">,</span>
     <span class="n">marker_types</span><span class="o">=</span><span class="p">[</span><span class="n">default_marker_type</span><span class="p">]</span> <span class="o">*</span> <span class="mi">8</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="k">class</span> <span class="nc">Chip</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Chip</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base PCell declaration for chips.</span>
 
 <span class="sd">    Produces labels in pixel corners, dicing edge, markers and optionally grid for all chip faces.</span>
@@ -1120,33 +1120,33 @@
 
 <div class="viewcode-block" id="Chip.display_text_impl">
 <a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.display_text_impl">[docs]</a>
-    <span class="k">def</span> <span class="nf">display_text_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">display_text_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Provide a descriptive text for the cell</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name_chip</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Chip.can_create_from_shape_impl">
 <a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.can_create_from_shape_impl">[docs]</a>
-    <span class="k">def</span> <span class="nf">can_create_from_shape_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">can_create_from_shape_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">is_box</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="Chip.parameters_from_shape_impl">
 <a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.parameters_from_shape_impl">[docs]</a>
-    <span class="k">def</span> <span class="nf">parameters_from_shape_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parameters_from_shape_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">box_dwidth</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">box_dheight</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Chip.transformation_from_shape_impl">
 <a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.transformation_from_shape_impl">[docs]</a>
-    <span class="k">def</span> <span class="nf">transformation_from_shape_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">transformation_from_shape_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">Trans</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">box_p1</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Chip.get_launcher_assignments">
 <a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.get_launcher_assignments">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_launcher_assignments</span><span class="p">(</span><span class="n">chip_cell</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_launcher_assignments</span><span class="p">(</span><span class="n">chip_cell</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a dictionary of launcher assignments (port_id: launcher_id) for the chip.</span>
 
 <span class="sd">        Args:</span>
@@ -1165,7 +1165,7 @@
 
 <div class="viewcode-block" id="Chip.produce_junction_tests">
 <a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.produce_junction_tests">[docs]</a>
-    <span class="k">def</span> <span class="nf">produce_junction_tests</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">junction_type</span><span class="o">=</span><span class="n">default_junction_type</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">produce_junction_tests</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">junction_type</span><span class="o">=</span><span class="n">default_junction_type</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Produces junction test pads in the chip.</span>
 
 <span class="sd">        Args:</span>
@@ -1198,7 +1198,7 @@
 
 <div class="viewcode-block" id="Chip.produce_opt_lit_tests">
 <a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.produce_opt_lit_tests">[docs]</a>
-    <span class="k">def</span> <span class="nf">produce_opt_lit_tests</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">produce_opt_lit_tests</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Produces optical lithography test stripes at chip corners.&quot;&quot;&quot;</span>
 
         <span class="n">num_stripes</span> <span class="o">=</span> <span class="mi">20</span>
@@ -1244,7 +1244,7 @@
 
 <div class="viewcode-block" id="Chip.produce_ground_grid">
 <a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.produce_ground_grid">[docs]</a>
-    <span class="k">def</span> <span class="nf">produce_ground_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">produce_ground_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Produces ground grid on all faces with ChipFrames.</span>
 
 <span class="sd">        This method is called in build(). Override this method to produce a different set of chip frames.</span>
@@ -1255,7 +1255,7 @@
 
 <div class="viewcode-block" id="Chip.produce_ground_on_face_grid">
 <a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.produce_ground_on_face_grid">[docs]</a>
-    <span class="k">def</span> <span class="nf">produce_ground_on_face_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">face_id</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">produce_ground_on_face_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">face_id</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Produces ground grid in the given face of the chip.</span>
 
 <span class="sd">        Args:</span>
@@ -1277,7 +1277,7 @@
 
 <div class="viewcode-block" id="Chip.produce_frame">
 <a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.produce_frame">[docs]</a>
-    <span class="k">def</span> <span class="nf">produce_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_parameters</span><span class="p">,</span> <span class="n">trans</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">()):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">produce_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_parameters</span><span class="p">,</span> <span class="n">trans</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">()):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Produces a chip frame and markers for the given face.</span>
 
 <span class="sd">        Args:</span>
@@ -1289,7 +1289,7 @@
 
 <div class="viewcode-block" id="Chip.merge_layout_layers_on_face">
 <a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.merge_layout_layers_on_face">[docs]</a>
-    <span class="k">def</span> <span class="nf">merge_layout_layers_on_face</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.004</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">merge_layout_layers_on_face</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.004</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates &quot;base_metal_gap&quot; layer on given face.</span>
 
 <span class="sd">        The layer shape is combination of three layers using subtract (-) and insert (+) operations:</span>
@@ -1305,7 +1305,7 @@
 
 <div class="viewcode-block" id="Chip.merge_layout_layers">
 <a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.merge_layout_layers">[docs]</a>
-    <span class="k">def</span> <span class="nf">merge_layout_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">merge_layout_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates &quot;base_metal_gap&quot; layers on all faces.</span>
 
 <span class="sd">         The layer shape is combination of three layers using subtract (-) and insert (+) operations:</span>
@@ -1320,7 +1320,7 @@
 
 <div class="viewcode-block" id="Chip.produce_structures">
 <a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.produce_structures">[docs]</a>
-    <span class="k">def</span> <span class="nf">produce_structures</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">produce_structures</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Produces chip frame and possibly other structures before the ground grid.</span>
 
 <span class="sd">        This method is called in post_build(). Override this method to produce a different set of chip frames.</span>
@@ -1352,7 +1352,7 @@
 
 <div class="viewcode-block" id="Chip.get_box">
 <a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.get_box">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the chip frame box for the specified face, correctly resolving defaults.</span>
 
@@ -1367,7 +1367,7 @@
 
 <div class="viewcode-block" id="Chip.get_filter_regions">
 <a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.get_filter_regions">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_filter_regions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_layer_list</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_filter_regions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_layer_list</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Transforms the filter_layer_list into filter_regions dictionary.</span>
 
 <span class="sd">        Args:</span>
@@ -1385,7 +1385,7 @@
 
 <div class="viewcode-block" id="Chip.insert_filtered_elements">
 <a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.insert_filtered_elements">[docs]</a>
-    <span class="k">def</span> <span class="nf">insert_filtered_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_cell</span><span class="p">,</span> <span class="n">shape_layers</span><span class="p">,</span> <span class="n">filter_regions</span><span class="p">,</span> <span class="n">locations</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">insert_filtered_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_cell</span><span class="p">,</span> <span class="n">shape_layers</span><span class="p">,</span> <span class="n">filter_regions</span><span class="p">,</span> <span class="n">locations</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Inserts elements into given locations filtered by filter_regions.</span>
 
 <span class="sd">        Args:</span>
@@ -1432,7 +1432,7 @@
 
 <div class="viewcode-block" id="Chip.get_ground_bump_locations">
 <a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.get_ground_bump_locations">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_ground_bump_locations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bump_box</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_ground_bump_locations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bump_box</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Define the locations for a grid. This method returns the full grid.</span>
 
@@ -1445,11 +1445,11 @@
 
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_get_ground_bump_element</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_ground_bump_element</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the element which will be used for the ground bumps&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">FlipChipConnector</span>
 
-    <span class="k">def</span> <span class="nf">_produce_ground_bumps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">faces</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]):</span>  <span class="c1"># pylint: disable=dangerous-default-value</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_produce_ground_bumps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">faces</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]):</span>  <span class="c1"># pylint: disable=dangerous-default-value</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Produces a grid of indium bumps between given faces.</span>
 
 <span class="sd">        The bumps avoid ground grid avoidance on both faces, and keep a minimum distance to existing bumps.</span>
@@ -1491,7 +1491,7 @@
 
 <div class="viewcode-block" id="Chip.post_build">
 <a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.post_build">[docs]</a>
-    <span class="k">def</span> <span class="nf">post_build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">produce_structures</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_gnd_bumps</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_produce_ground_bumps</span><span class="p">()</span>
@@ -1502,7 +1502,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_produce_instance_name_labels</span><span class="p">()</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_produce_instance_name_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_produce_instance_name_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">each_inst</span><span class="p">():</span>
             <span class="n">inst_id</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">property</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
@@ -1524,7 +1524,7 @@
 
 <div class="viewcode-block" id="Chip.produce_launchers">
 <a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.produce_launchers">[docs]</a>
-    <span class="k">def</span> <span class="nf">produce_launchers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sampleholder_type</span><span class="p">,</span> <span class="n">launcher_assignments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">produce_launchers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sampleholder_type</span><span class="p">,</span> <span class="n">launcher_assignments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Produces launchers for typical sample holders and sets chip size (``self.box``) accordingly.</span>
 
 <span class="sd">        This is a wrapper around ``produce_n_launchers()`` to generate typical launcher configurations.</span>
@@ -1556,7 +1556,7 @@
 
 <div class="viewcode-block" id="Chip.produce_n_launchers">
 <a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.produce_n_launchers">[docs]</a>
-    <span class="k">def</span> <span class="nf">produce_n_launchers</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">produce_n_launchers</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">n</span><span class="p">,</span>
         <span class="n">launcher_type</span><span class="p">,</span>
@@ -1654,7 +1654,7 @@
         <span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_insert_launchers</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_insert_launchers</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">dirs</span><span class="p">,</span>
         <span class="n">enabled</span><span class="p">,</span>
@@ -1701,7 +1701,7 @@
 
 <div class="viewcode-block" id="Chip.make_grid_locations">
 <a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.make_grid_locations">[docs]</a>
-    <span class="k">def</span> <span class="nf">make_grid_locations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">delta_x</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">delta_y</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y0</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">make_grid_locations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">delta_x</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">delta_y</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y0</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Define the locations for a grid. This method returns the full grid.</span>
 
@@ -1730,7 +1730,7 @@
 
 <div class="viewcode-block" id="Chip.get_ground_tsv_locations">
 <a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.get_ground_tsv_locations">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_ground_tsv_locations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsv_box</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_ground_tsv_locations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsv_box</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Define the locations for a grid. This method returns the full grid.</span>
 
@@ -1742,7 +1742,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_grid_locations</span><span class="p">(</span><span class="n">tsv_box</span><span class="p">,</span> <span class="n">delta_x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tsv_grid_spacing</span><span class="p">,</span> <span class="n">delta_y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tsv_grid_spacing</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_produce_ground_tsvs</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_produce_ground_tsvs</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">tsv_box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">faces</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>

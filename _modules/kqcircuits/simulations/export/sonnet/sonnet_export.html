@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>kqcircuits.simulations.export.sonnet.sonnet_export &mdash; KQCircuits  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=d10597a4" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/custom.css?v=eeab0646" />
@@ -1011,21 +1011,21 @@
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
 
 
-<span class="kn">import</span> <span class="nn">os.path</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os.path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.sonnet</span> <span class="kn">import</span> <span class="n">parser</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.util</span> <span class="kn">import</span> <span class="n">find_edge_from_point_in_polygons</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.port</span> <span class="kn">import</span> <span class="n">InternalPort</span><span class="p">,</span> <span class="n">EdgePort</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.export_helper</span> <span class="kn">import</span> <span class="n">write_commit_reference_file</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.pya_resolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.defaults</span><span class="w"> </span><span class="kn">import</span> <span class="n">default_layers</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.export.sonnet</span><span class="w"> </span><span class="kn">import</span> <span class="n">parser</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.export.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_edge_from_point_in_polygons</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.port</span><span class="w"> </span><span class="kn">import</span> <span class="n">InternalPort</span><span class="p">,</span> <span class="n">EdgePort</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Simulation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.export_helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_commit_reference_file</span>
 
 
 <div class="viewcode-block" id="poly_and_edge_indices">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.sonnet_export.html#kqcircuits.simulations.export.sonnet.sonnet_export.poly_and_edge_indices">[docs]</a>
-<span class="k">def</span> <span class="nf">poly_and_edge_indices</span><span class="p">(</span><span class="n">polygons</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">poly_and_edge_indices</span><span class="p">(</span><span class="n">polygons</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
     <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">find_edge_from_point_in_polygons</span><span class="p">(</span><span class="n">polygons</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>  <span class="c1"># hardcoded, feel free to change</span>
 
     <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="n">port</span><span class="p">(</span>
@@ -1044,7 +1044,7 @@
 
 <div class="viewcode-block" id="export_sonnet_son">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.sonnet_export.html#kqcircuits.simulations.export.sonnet.sonnet_export.export_sonnet_son">[docs]</a>
-<span class="k">def</span> <span class="nf">export_sonnet_son</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">export_sonnet_son</span><span class="p">(</span>
     <span class="n">simulation</span><span class="p">:</span> <span class="n">Simulation</span><span class="p">,</span>
     <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
     <span class="n">detailed_resonance</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -1078,7 +1078,7 @@
     <span class="k">if</span> <span class="n">simulation</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">Simulation</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot export without simulation&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">get_layer_polygons</span><span class="p">(</span><span class="n">layer_name_starts_with</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_layer_polygons</span><span class="p">(</span><span class="n">layer_name_starts_with</span><span class="p">):</span>
         <span class="n">layout</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
         <span class="n">polygons</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">layer_info</span> <span class="ow">in</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">():</span>
@@ -1086,7 +1086,7 @@
                 <span class="n">polygons</span> <span class="o">+=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">polygon</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">layer_info</span><span class="p">))</span><span class="o">.</span><span class="n">each</span><span class="p">()]</span>
         <span class="k">return</span> <span class="n">polygons</span>
 
-    <span class="k">def</span> <span class="nf">get_sonnet_strings</span><span class="p">(</span><span class="n">material_type</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">,</span> <span class="n">symmetry</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_sonnet_strings</span><span class="p">(</span><span class="n">material_type</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">,</span> <span class="n">symmetry</span><span class="p">):</span>
         <span class="n">dbu</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">dbu</span>
 
         <span class="n">simpolygons</span> <span class="o">=</span> <span class="n">get_layer_polygons</span><span class="p">(</span><span class="s2">&quot;1t1_signal&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">get_layer_polygons</span><span class="p">(</span><span class="s2">&quot;1t1_ground&quot;</span><span class="p">)</span>
@@ -1096,7 +1096,7 @@
             <span class="n">p</span><span class="o">.</span><span class="n">isVia</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="n">level_iter</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span>
-            <span class="nb">len</span><span class="p">(</span><span class="n">simpolygons</span><span class="p">)</span> <span class="o">*</span> <span class="p">[(</span><span class="mi">2</span> <span class="k">if</span> <span class="n">material_type</span> <span class="o">==</span> <span class="s2">&quot;Si+Al&quot;</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)]</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">simpolygons</span><span class="p">)</span> <span class="o">*</span> <span class="p">[</span><span class="mi">2</span> <span class="k">if</span> <span class="n">material_type</span> <span class="o">==</span> <span class="s2">&quot;Si+Al&quot;</span> <span class="k">else</span> <span class="mi">0</span><span class="p">]</span>
             <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">airbridge_polygons</span><span class="p">)</span> <span class="o">*</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">airpads_polygons</span><span class="p">)</span> <span class="o">*</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span>
         <span class="p">)</span>
@@ -1184,7 +1184,7 @@
 
 <div class="viewcode-block" id="export_sonnet">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.sonnet_export.html#kqcircuits.simulations.export.sonnet.sonnet_export.export_sonnet">[docs]</a>
-<span class="k">def</span> <span class="nf">export_sonnet</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">export_sonnet</span><span class="p">(</span>
     <span class="n">simulations</span><span class="p">,</span>
     <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
     <span class="n">detailed_resonance</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>

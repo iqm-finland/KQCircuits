@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc &mdash; KQCircuits  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d10597a4" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom.css?v=eeab0646" />
@@ -1011,13 +1011,13 @@
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
 
 
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.flip_chip_connectors.flip_chip_connector</span> <span class="kn">import</span> <span class="n">FlipChipConnector</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_helper</span> <span class="kn">import</span> <span class="n">circle_polygon</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.flip_chip_connectors.flip_chip_connector</span><span class="w"> </span><span class="kn">import</span> <span class="n">FlipChipConnector</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.geometry_helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">circle_polygon</span>
 
 
 <div class="viewcode-block" id="FlipChipConnectorDc">
 <a class="viewcode-back" href="../../../../api/kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc.html#kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc.FlipChipConnectorDc">[docs]</a>
-<span class="k">class</span> <span class="nc">FlipChipConnectorDc</span><span class="p">(</span><span class="n">FlipChipConnector</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FlipChipConnectorDc</span><span class="p">(</span><span class="n">FlipChipConnector</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;PCell declaration for an inter-chip dc connector.</span>
 
 <span class="sd">    .. MARKERS_FOR_PNG 0,0 0,15</span>
@@ -1025,7 +1025,7 @@
 
 <div class="viewcode-block" id="FlipChipConnectorDc.build">
 <a class="viewcode-back" href="../../../../api/kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc.html#kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc.FlipChipConnectorDc.build">[docs]</a>
-    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="n">ubm_shape</span> <span class="o">=</span> <span class="n">circle_polygon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ubm_diameter</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;underbump_metallization&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">ubm_shape</span><span class="p">)</span>

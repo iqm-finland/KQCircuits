@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>kqcircuits.simulations.export.remote_export_and_run &mdash; KQCircuits  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d10597a4" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom.css?v=eeab0646" />
@@ -1011,21 +1011,21 @@
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
 
 
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="kn">import</span> <span class="nn">platform</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">stat</span>
-<span class="kn">import</span> <span class="nn">uuid</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">TMP_PATH</span><span class="p">,</span> <span class="n">SCRIPTS_PATH</span><span class="p">,</span> <span class="n">KQC_REMOTE_TMP_PATH</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.export_and_run</span> <span class="kn">import</span> <span class="n">run_export_script</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">platform</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">stat</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.defaults</span><span class="w"> </span><span class="kn">import</span> <span class="n">TMP_PATH</span><span class="p">,</span> <span class="n">SCRIPTS_PATH</span><span class="p">,</span> <span class="n">KQC_REMOTE_TMP_PATH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.export.export_and_run</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_export_script</span>
 
 <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">WARN</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_prepare_remote_tmp</span><span class="p">(</span><span class="n">ssh_login</span><span class="p">,</span> <span class="n">kqc_remote_tmp_path</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_prepare_remote_tmp</span><span class="p">(</span><span class="n">ssh_login</span><span class="p">,</span> <span class="n">kqc_remote_tmp_path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Internal helper function to create remote tmp directory if it doesnt exist and raise error if its not empty</span>
 
@@ -1041,7 +1041,7 @@
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
 
-<span class="k">def</span> <span class="nf">_get_sbatch_time</span><span class="p">(</span><span class="n">export_tmp_paths</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_sbatch_time</span><span class="p">(</span><span class="n">export_tmp_paths</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Internal helper function to extract sbatch time limit from simulation.sh files</span>
 
@@ -1053,7 +1053,7 @@
 <span class="sd">                          This is equal to total amount of time reserved for all batch jobs sent to remote</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">_get_single_sbatch_time</span><span class="p">(</span><span class="n">simulation_script</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_single_sbatch_time</span><span class="p">(</span><span class="n">simulation_script</span><span class="p">):</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">simulation_script</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">res</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">&quot;#SBATCH --time=&quot;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
@@ -1077,7 +1077,7 @@
     <span class="k">return</span> <span class="n">sbatch_time</span>
 
 
-<span class="k">def</span> <span class="nf">_remote_run</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_remote_run</span><span class="p">(</span>
     <span class="n">ssh_login</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">export_tmp_paths</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">kqc_remote_tmp_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">detach_simulation</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">poll_interval</span><span class="p">:</span> <span class="nb">int</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1232,10 +1232,10 @@
             <span class="p">)</span>
 
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Remote run failed. Please manually fetch and delete data from remote&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Remote run failed. Please manually fetch and delete data from remote&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
 
 
-<span class="k">def</span> <span class="nf">_allowed_simulations</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_allowed_simulations</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Helper to list allowed simulations, simulations scripts and tmp directory.</span>
 
@@ -1276,7 +1276,7 @@
 
 <div class="viewcode-block" id="remote_export_and_run">
 <a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.remote_export_and_run.html#kqcircuits.simulations.export.remote_export_and_run.remote_export_and_run">[docs]</a>
-<span class="k">def</span> <span class="nf">remote_export_and_run</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">remote_export_and_run</span><span class="p">(</span>
     <span class="n">ssh_login</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">kqc_remote_tmp_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">detach_simulation</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -1346,7 +1346,7 @@
 
 <div class="viewcode-block" id="remote_run_only">
 <a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.remote_export_and_run.html#kqcircuits.simulations.export.remote_export_and_run.remote_run_only">[docs]</a>
-<span class="k">def</span> <span class="nf">remote_run_only</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">remote_run_only</span><span class="p">(</span>
     <span class="n">ssh_login</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">kqc_remote_tmp_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">detach_simulation</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>

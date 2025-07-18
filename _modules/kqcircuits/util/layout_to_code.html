@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>kqcircuits.util.layout_to_code &mdash; KQCircuits  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d10597a4" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=eeab0646" />
@@ -1010,21 +1010,21 @@
 <span class="c1"># Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)</span>
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
 
-<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">float_info</span>
-<span class="kn">import</span> <span class="nn">textwrap</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sys</span><span class="w"> </span><span class="kn">import</span> <span class="n">float_info</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">textwrap</span>
 
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.chip_frame</span> <span class="kn">import</span> <span class="n">ChipFrame</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span><span class="p">,</span> <span class="n">get_refpoints</span><span class="p">,</span> <span class="n">insert_cell_into</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar</span> <span class="kn">import</span> <span class="n">WaveguideCoplanar</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_composite</span> <span class="kn">import</span> <span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">Node</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">pdt</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.defaults</span><span class="w"> </span><span class="kn">import</span> <span class="n">default_layers</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.chip_frame</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChipFrame</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.element</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span><span class="p">,</span> <span class="n">get_refpoints</span><span class="p">,</span> <span class="n">insert_cell_into</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.waveguide_coplanar</span><span class="w"> </span><span class="kn">import</span> <span class="n">WaveguideCoplanar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.waveguide_composite</span><span class="w"> </span><span class="kn">import</span> <span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">Node</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.parameters</span><span class="w"> </span><span class="kn">import</span> <span class="n">pdt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.pya_resolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">pya</span>
 
 
 <div class="viewcode-block" id="convert_cells_to_code">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.convert_cells_to_code">[docs]</a>
-<span class="k">def</span> <span class="nf">convert_cells_to_code</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">convert_cells_to_code</span><span class="p">(</span>
     <span class="n">top_cell</span><span class="p">,</span>
     <span class="n">print_waveguides_as_composite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">add_instance_names</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -1088,7 +1088,7 @@
         <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">top_cell</span><span class="o">.</span><span class="n">each_inst</span><span class="p">():</span>
             <span class="n">_add_instance</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">instances</span><span class="p">,</span> <span class="n">inst_names</span><span class="p">,</span> <span class="n">pcell_classes</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">sort_order</span><span class="p">(</span><span class="n">inst</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sort_order</span><span class="p">(</span><span class="n">inst</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Move waveguide instances to the end without reordering, and sort all other elements by name and position.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">(),</span> <span class="p">(</span><span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">WaveguideCoplanar</span><span class="p">)):</span>
             <span class="k">return</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)</span>
@@ -1127,7 +1127,7 @@
         <span class="k">if</span> <span class="n">print_waveguides_as_composite</span> <span class="ow">or</span> <span class="n">WaveguideComposite</span> <span class="ow">in</span> <span class="n">pcell_classes</span><span class="p">:</span>
             <span class="n">element_imports</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;from </span><span class="si">{</span><span class="n">WaveguideComposite</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2"> import </span><span class="si">{</span><span class="n">Node</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
 
-    <span class="k">def</span> <span class="nf">format_element_code</span><span class="p">(</span><span class="n">pcell_type</span><span class="p">,</span> <span class="n">inst_name</span><span class="p">,</span> <span class="n">transform_string</span><span class="p">,</span> <span class="n">parameter_string</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">format_element_code</span><span class="p">(</span><span class="n">pcell_type</span><span class="p">,</span> <span class="n">inst_name</span><span class="p">,</span> <span class="n">transform_string</span><span class="p">,</span> <span class="n">parameter_string</span><span class="p">):</span>
         <span class="n">var_name</span> <span class="o">=</span> <span class="n">inst_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
         <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">pcell_type</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">transform_string</span><span class="p">:</span>
@@ -1141,7 +1141,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s2">_refpoints = </span><span class="si">{</span><span class="n">parent_object</span><span class="si">}</span><span class="s2">.insert_cell(</span><span class="si">{</span><span class="n">arg_string</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span>
 
-    <span class="k">def</span> <span class="nf">get_waveguide_code</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">pcell_type</span><span class="p">,</span> <span class="n">instance_names_defined_so_far</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_waveguide_code</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">pcell_type</span><span class="p">,</span> <span class="n">instance_names_defined_so_far</span><span class="p">):</span>
         <span class="n">point_prefix</span> <span class="o">=</span> <span class="s2">&quot;pya.DPoint&quot;</span>
         <span class="n">point_postfix</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="n">refpoint_prefix</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
@@ -1255,7 +1255,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">_transform_as_string</span><span class="p">(</span><span class="n">inst</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_transform_as_string</span><span class="p">(</span><span class="n">inst</span><span class="p">):</span>
     <span class="n">trans</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">dcplx_trans</span>
     <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">trans</span><span class="o">.</span><span class="n">disp</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">trans</span><span class="o">.</span><span class="n">disp</span><span class="o">.</span><span class="n">y</span>
     <span class="k">if</span> <span class="n">trans</span><span class="o">.</span><span class="n">mag</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">trans</span><span class="o">.</span><span class="n">angle</span> <span class="o">%</span> <span class="mi">90</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -1270,7 +1270,7 @@
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;pya.DCplxTrans(</span><span class="si">{</span><span class="n">trans</span><span class="o">.</span><span class="n">mag</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">trans</span><span class="o">.</span><span class="n">angle</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">trans</span><span class="o">.</span><span class="n">is_mirror</span><span class="p">()</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">y</span><span class="si">}</span><span class="s2">)&quot;</span>
 
 
-<span class="k">def</span> <span class="nf">_add_instance</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">instances</span><span class="p">,</span> <span class="n">inst_names</span><span class="p">,</span> <span class="n">pcell_classes</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_add_instance</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">instances</span><span class="p">,</span> <span class="n">inst_names</span><span class="p">,</span> <span class="n">pcell_classes</span><span class="p">):</span>
     <span class="n">inst_name</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">property</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
     <span class="n">pcell_decl</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">()</span>
     <span class="c1"># ChipFrame is always constructed by Chip, so we don&#39;t want to generate code for it</span>
@@ -1286,14 +1286,14 @@
         <span class="n">pcell_classes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pcell_decl</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_get_cell</span><span class="p">(</span><span class="n">inst</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_cell</span><span class="p">(</span><span class="n">inst</span><span class="p">):</span>
     <span class="c1"># workaround for getting the cell due to KLayout bug, see</span>
     <span class="c1"># https://www.klayout.de/forum/discussion/1191/cell-shapes-cannot-call-non-const-method-on-a-const-reference</span>
     <span class="c1"># TODO: replace by `inst.cell` once KLayout bug is fixed</span>
     <span class="k">return</span> <span class="n">inst</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">cell_index</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_get_unique_inst_name</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">inst_names</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_unique_inst_name</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">inst_names</span><span class="p">):</span>
     <span class="n">idx</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">inst_name</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">())</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
     <span class="k">while</span> <span class="n">inst_name</span> <span class="ow">in</span> <span class="n">inst_names</span><span class="p">:</span>
@@ -1302,7 +1302,7 @@
     <span class="k">return</span> <span class="n">inst_name</span>
 
 
-<span class="k">def</span> <span class="nf">_pcell_params_as_string</span><span class="p">(</span><span class="n">cell</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_pcell_params_as_string</span><span class="p">(</span><span class="n">cell</span><span class="p">):</span>
     <span class="n">params</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">pcell_parameters_by_name</span><span class="p">()</span>
     <span class="n">params_schema</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">())</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()</span>
     <span class="n">params_list</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1325,7 +1325,7 @@
 
 <div class="viewcode-block" id="get_node_params">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.get_node_params">[docs]</a>
-<span class="k">def</span> <span class="nf">get_node_params</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">Node</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_node_params</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">Node</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate a list of parameters for Node in string form</span>
 
@@ -1362,7 +1362,7 @@
 
 <div class="viewcode-block" id="extract_pcell_data_from_views">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.extract_pcell_data_from_views">[docs]</a>
-<span class="k">def</span> <span class="nf">extract_pcell_data_from_views</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_pcell_data_from_views</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Iterate over all KQCircuits PCells and return their data and instances.</span>
 
 <span class="sd">    Returns: a tuple (views, instances) where</span>
@@ -1397,7 +1397,7 @@
 
 <div class="viewcode-block" id="restore_pcells_to_views">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.restore_pcells_to_views">[docs]</a>
-<span class="k">def</span> <span class="nf">restore_pcells_to_views</span><span class="p">(</span><span class="n">views</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">restore_pcells_to_views</span><span class="p">(</span><span class="n">views</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Re-populate each view&#39;s Top Cell with PCells as extracted by ``extract_pcell_data_from_views``.</span>
 
 <span class="sd">    Args:</span>
@@ -1419,7 +1419,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">_snap_waveguide_to_refpoints</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">refpoints</span><span class="p">,</span> <span class="n">refpoint_snap</span><span class="p">,</span> <span class="n">grid_snap</span><span class="p">,</span> <span class="n">instance_names_defined_so_far</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_snap_waveguide_to_refpoints</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">refpoints</span><span class="p">,</span> <span class="n">refpoint_snap</span><span class="p">,</span> <span class="n">grid_snap</span><span class="p">,</span> <span class="n">instance_names_defined_so_far</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function to do only refpoint and grid snapping.&quot;&quot;&quot;</span>
     <span class="n">wg_points</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">_params</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">pcell_parameters_by_name</span><span class="p">()</span>
@@ -1455,7 +1455,7 @@
         <span class="n">inst</span><span class="o">.</span><span class="n">change_pcell_parameter</span><span class="p">(</span><span class="s2">&quot;gui_path&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">(</span><span class="n">new_points</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 
 
-<span class="k">def</span> <span class="nf">_get_closest_refpoint</span><span class="p">(</span><span class="n">refpoints</span><span class="p">,</span> <span class="n">path_point</span><span class="p">,</span> <span class="n">refpoint_snap</span><span class="p">,</span> <span class="n">allowed_instance_names</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_closest_refpoint</span><span class="p">(</span><span class="n">refpoints</span><span class="p">,</span> <span class="n">path_point</span><span class="p">,</span> <span class="n">refpoint_snap</span><span class="p">,</span> <span class="n">allowed_instance_names</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">closest_dist</span> <span class="o">=</span> <span class="n">float_info</span><span class="o">.</span><span class="n">max</span>
     <span class="n">closest_refpoint_name</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">refpoints</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>

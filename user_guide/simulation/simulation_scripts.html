@@ -5,7 +5,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Export functions &mdash; KQCircuits  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d10597a4" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=eeab0646" />
@@ -1019,12 +1019,12 @@ The Ansys simulations are developed and tested with both Windows and Linux insta
 <a class="reference internal" href="../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys" title="kqcircuits.simulations.export.ansys.ansys_export.export_ansys"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_ansys()</span></code></a> function.
 The script generates simulation subclass, creates a simulation object, exports Ansys scripts into a directory, and
 finally shows the simulation geometries in Klayout viewer.:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kqcircuits.qubits.swissmon</span> <span class="kn">import</span> <span class="n">Swissmon</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.single_element_simulation</span> <span class="kn">import</span> <span class="n">get_single_element_sim_class</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.export_helper</span> <span class="kn">import</span> <span class="n">get_active_or_new_layout</span><span class="p">,</span> <span class="n">create_or_empty_tmp_directory</span><span class="p">,</span> \
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.qubits.swissmon</span><span class="w"> </span><span class="kn">import</span> <span class="n">Swissmon</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.single_element_simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_single_element_sim_class</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.export_helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_active_or_new_layout</span><span class="p">,</span> <span class="n">create_or_empty_tmp_directory</span><span class="p">,</span> \
     <span class="n">open_with_klayout_or_default_application</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.simulation_export</span> <span class="kn">import</span> <span class="n">export_simulation_oas</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.ansys.ansys_export</span> <span class="kn">import</span> <span class="n">export_ansys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.export.simulation_export</span><span class="w"> </span><span class="kn">import</span> <span class="n">export_simulation_oas</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.export.ansys.ansys_export</span><span class="w"> </span><span class="kn">import</span> <span class="n">export_ansys</span>
 
 <span class="n">sim_class</span> <span class="o">=</span> <span class="n">get_single_element_sim_class</span><span class="p">(</span><span class="n">Swissmon</span><span class="p">)</span>  <span class="c1"># Builds a simulation class for Swissmon</span>
 
@@ -1069,7 +1069,7 @@ Running the simulations requires installation of</p>
 <p>The usage of Elmer simulation export is very similar to Ansys export.
 In the above export script, the only change is to replace “ansys” with “elmer” in all occurrence, that is, in these
 two lines:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.elmer.elmer_export</span> <span class="kn">import</span> <span class="n">export_elmer</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.export.elmer.elmer_export</span><span class="w"> </span><span class="kn">import</span> <span class="n">export_elmer</span>
 <span class="n">export_elmer</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="o">**</span><span class="n">export_parameters</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1094,7 +1094,7 @@ Once the simulation objects are created, the function <code class="docutils lite
 the other export functions.</p>
 <p>For example in the above Ansys export script, replace “ansys” with “sonnet” in all occurrence, which is these two
 lines:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.sonnet.sonnet_export</span> <span class="kn">import</span> <span class="n">export_sonnet</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.export.sonnet.sonnet_export</span><span class="w"> </span><span class="kn">import</span> <span class="n">export_sonnet</span>
 <span class="n">export_sonnet</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="o">**</span><span class="n">export_parameters</span><span class="p">)</span>
 </pre></div>
 </div>

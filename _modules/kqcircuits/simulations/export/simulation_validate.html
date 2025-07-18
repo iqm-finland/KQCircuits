@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>kqcircuits.simulations.export.simulation_validate &mdash; KQCircuits  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d10597a4" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom.css?v=eeab0646" />
@@ -1009,9 +1009,9 @@
 <span class="c1"># (meetiqm.com/iqm-open-source-trademark-policy). IQM welcomes contributions to the code.</span>
 <span class="c1"># Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)</span>
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.cross_section_simulation</span> <span class="kn">import</span> <span class="n">CrossSectionSimulation</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.ansys.ansys_solution</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Simulation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.cross_section_simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">CrossSectionSimulation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.export.ansys.ansys_solution</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">AnsysEigenmodeSolution</span><span class="p">,</span>
     <span class="n">AnsysCurrentSolution</span><span class="p">,</span>
     <span class="n">AnsysVoltageSolution</span><span class="p">,</span>
@@ -1019,7 +1019,7 @@
     <span class="n">AnsysCrossSectionSolution</span><span class="p">,</span>
     <span class="n">AnsysSolution</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.elmer.elmer_solution</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.export.elmer.elmer_solution</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">ElmerVectorHelmholtzSolution</span><span class="p">,</span>
     <span class="n">ElmerCapacitanceSolution</span><span class="p">,</span>
     <span class="n">ElmerCrossSectionSolution</span><span class="p">,</span>
@@ -1029,7 +1029,7 @@
 
 <div class="viewcode-block" id="validate_simulation">
 <a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.validate_simulation">[docs]</a>
-<span class="k">def</span> <span class="nf">validate_simulation</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_simulation</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Analyses Simulation and Solution objects and raises an error if inconsistencies in configuration are found.</span>
 
 <span class="sd">    Args:</span>
@@ -1050,7 +1050,7 @@
 
 <div class="viewcode-block" id="simulation_and_solution_types_match">
 <a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.simulation_and_solution_types_match">[docs]</a>
-<span class="k">def</span> <span class="nf">simulation_and_solution_types_match</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">simulation_and_solution_types_match</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Validation check: ensures that a simulation and solution types match.</span>
 <span class="sd">    Args:</span>
 <span class="sd">        simulation: A Simulation object.</span>
@@ -1070,7 +1070,7 @@
 
 <div class="viewcode-block" id="has_no_ports_when_required">
 <a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.has_no_ports_when_required">[docs]</a>
-<span class="k">def</span> <span class="nf">has_no_ports_when_required</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">has_no_ports_when_required</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Validation check: ensures that a simulation object has ports when the solution type requires it.</span>
 <span class="sd">    Args:</span>
 <span class="sd">        simulation: A Simulation object.</span>
@@ -1099,7 +1099,7 @@
 
 <div class="viewcode-block" id="has_edgeport_when_forbidden">
 <a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.has_edgeport_when_forbidden">[docs]</a>
-<span class="k">def</span> <span class="nf">has_edgeport_when_forbidden</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">has_edgeport_when_forbidden</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Validation check: ensure that if at least one &quot;EdgePort&quot; is present, some solution types can&#39;t be chosen.</span>
 <span class="sd">    Args:</span>
 <span class="sd">        simulation: A Simulation object.</span>
@@ -1126,7 +1126,7 @@
 
 <div class="viewcode-block" id="london_penetration_depth_with_ansys">
 <a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.london_penetration_depth_with_ansys">[docs]</a>
-<span class="k">def</span> <span class="nf">london_penetration_depth_with_ansys</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">london_penetration_depth_with_ansys</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Validation check: ensure that london penetration depth is not used with AnsysSolutions.</span>
 <span class="sd">    Args:</span>
 <span class="sd">        simulation: A Simulation object.</span>
@@ -1149,7 +1149,7 @@
 
 <div class="viewcode-block" id="flux_integration_layer_exists_if_needed">
 <a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.flux_integration_layer_exists_if_needed">[docs]</a>
-<span class="k">def</span> <span class="nf">flux_integration_layer_exists_if_needed</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">flux_integration_layer_exists_if_needed</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Validation check related to the presence of layers and magnetic flux integration.</span>
 <span class="sd">    Args:</span>
 <span class="sd">        simulation: A Simulation object.</span>
@@ -1180,7 +1180,7 @@
 
 <div class="viewcode-block" id="check_partition_region_naming">
 <a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.check_partition_region_naming">[docs]</a>
-<span class="k">def</span> <span class="nf">check_partition_region_naming</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_partition_region_naming</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Validation check: Ensures that partition region names do not end with each other.</span>
 
 <span class="sd">    Also checks that region names don&#39;t contain any of the common EPR groups.</span>
@@ -1210,12 +1210,12 @@
 
 <div class="viewcode-block" id="check_elmer_3d_epr_settings">
 <a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.check_elmer_3d_epr_settings">[docs]</a>
-<span class="k">def</span> <span class="nf">check_elmer_3d_epr_settings</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_elmer_3d_epr_settings</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Validation check: Ensures that non-zero metal thickness and `detach_tls_sheets_from_body=False` are used</span>
 <span class="sd">    with `ElmerEPR3DSolution`&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">solution</span><span class="p">,</span> <span class="n">ElmerEPR3DSolution</span><span class="p">):</span>
 
-        <span class="k">def</span> <span class="nf">recursive_all</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">recursive_all</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">condition</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -1241,7 +1241,7 @@
 
 <div class="viewcode-block" id="get_port_names">
 <a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.get_port_names">[docs]</a>
-<span class="k">def</span> <span class="nf">get_port_names</span><span class="p">(</span><span class="n">simulation</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_port_names</span><span class="p">(</span><span class="n">simulation</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function that returns a list of port names in a Simulation object.</span>
 <span class="sd">    Args:</span>
 <span class="sd">        simulation: A Simulation object.</span>
@@ -1258,10 +1258,10 @@
 
 <div class="viewcode-block" id="ValidateSimError">
 <a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.ValidateSimError">[docs]</a>
-<span class="k">class</span> <span class="nc">ValidateSimError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ValidateSimError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom exception class for specific error handling.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">validation_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">validation_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">validation_type</span> <span class="o">=</span> <span class="n">validation_type</span></div>
 

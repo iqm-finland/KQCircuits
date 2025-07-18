@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>kqcircuits.simulations.export.elmer.elmer_solution &mdash; KQCircuits  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=d10597a4" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/custom.css?v=eeab0646" />
@@ -1009,15 +1009,15 @@
 <span class="c1"># (meetiqm.com/iqm-open-source-trademark-policy). IQM welcomes contributions to the code.</span>
 <span class="c1"># Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)</span>
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
-<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.solution</span> <span class="kn">import</span> <span class="n">Solution</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClassVar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.export.solution</span><span class="w"> </span><span class="kn">import</span> <span class="n">Solution</span>
 
 
 <div class="viewcode-block" id="ElmerSolution">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">ElmerSolution</span><span class="p">(</span><span class="n">Solution</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ElmerSolution</span><span class="p">(</span><span class="n">Solution</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A Base class for Elmer Solution parameters</span>
 
@@ -1030,16 +1030,20 @@
 <span class="sd">        is_axisymmetric: Simulate with Axi Symmetric coordinates along :math:`y\\Big|_{x=0}` (Default: False)</span>
 <span class="sd">        mesh_levels: If set larger than 1 Elmer will make the mesh finer by dividing each element</span>
 <span class="sd">                     into 2^(dim) elements mesh_levels times. Default 1.</span>
-<span class="sd">        mesh_size: Dictionary to determine mesh size where key (string) denotes material and value (double) denotes the</span>
-<span class="sd">            maximal length of mesh element. Additional mesh size terms can be determined, if the value type is</span>
-<span class="sd">            list. Then, term[0] is the maximal mesh element length inside at the entity and its expansion,</span>
-<span class="sd">            term[1] is expansion distance in which the maximal mesh element length is constant (default=term[0]),</span>
-<span class="sd">            and term[2] is the slope of the increase in the maximal mesh element length outside the entity.</span>
-<span class="sd">            To refine material interface the material names by should be separated by &#39;&amp;&#39; in the key. Key &#39;global_max&#39;</span>
-<span class="sd">            is reserved for setting global maximal element length. For example, if the dictionary is given as</span>
-<span class="sd">            {&#39;substrate&#39;: 10, &#39;substrate&amp;vacuum&#39;: [2, 5], &#39;global_max&#39;: 100}, then the maximal mesh element length is 10</span>
-<span class="sd">            inside the substrate and 2 on region which is less than 5 units away from the substrate-vacuum interface.</span>
-<span class="sd">            Outside these regions, the mesh element size can increase up to 100.</span>
+<span class="sd">        mesh_size: Dictionary to determine the mesh refinement. The keys (string) denote the entities where to apply the</span>
+<span class="sd">            refinement and values (double) denote the maximal length of the mesh elements.</span>
+<span class="sd">            Optionally, the values can be set as a lists of doubles. Then, value[0] is the maximal mesh element length</span>
+<span class="sd">            inside at the entity and its expansion, value[1] is expansion distance in which the maximal mesh element</span>
+<span class="sd">            length is constant (default=value[0]), and value[2] is the slope of the increase in the maximal mesh element</span>
+<span class="sd">            length outside the entity.</span>
+<span class="sd">            The key can be a single layer name, or it can consist of multiple layer names separated with the &amp; symbol,</span>
+<span class="sd">            meaning the entity will be an intersection of listed layers. Optionally, one can use a pattern for layer</span>
+<span class="sd">            names with the * symbol representing any string in a layer name. The ! symbol before the layer name or</span>
+<span class="sd">            pattern means that the complement of layer(s) is used instead.</span>
+<span class="sd">            The key &#39;global_max&#39; is reserved for setting global maximal element length.</span>
+<span class="sd">            For example, if the dictionary is {&#39;substrate*&#39;: 10, &#39;substrate*&amp;vacuum&#39;: [2, 5], &#39;global_max&#39;: 100}, then</span>
+<span class="sd">            the maximal mesh element length is 10 inside the substrates and 2 on region which is less than 5 units away</span>
+<span class="sd">            from any substrate-vacuum interface. Outside these regions, the mesh element size can increase up to 100.</span>
 <span class="sd">        mesh_optimizer: Dictionary to determine mesh optimization, or None (default) to ignore optimization. The</span>
 <span class="sd">            dictionary can contain keywords &#39;method&#39;, &#39;force&#39;, &#39;niter&#39; and &#39;dimTags&#39;. See Gmsh manual</span>
 <span class="sd">            (gmsh.model.mesh.optimize) for details. The default value for &#39;method&#39; is &#39;Netgen&#39;.</span>
@@ -1065,7 +1069,7 @@
 
 <div class="viewcode-block" id="ElmerSolution.get_solution_data">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.get_solution_data">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_solution_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_solution_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the solution data in dictionary form.&quot;&quot;&quot;</span>
         <span class="n">sol_dict</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">,</span> <span class="s2">&quot;tool&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tool</span><span class="p">}</span>
         <span class="n">sol_dict</span><span class="p">[</span><span class="s2">&quot;solution_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sol_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
@@ -1077,7 +1081,7 @@
 <div class="viewcode-block" id="ElmerVectorHelmholtzSolution">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerVectorHelmholtzSolution">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">ElmerVectorHelmholtzSolution</span><span class="p">(</span><span class="n">ElmerSolution</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ElmerVectorHelmholtzSolution</span><span class="p">(</span><span class="n">ElmerSolution</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class for Elmer wave-equation solution parameters</span>
 
@@ -1117,7 +1121,7 @@
     <span class="n">convergence_tolerance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0e-10</span>
     <span class="n">max_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2000</span>
 
-    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Cast frequency to list. Automatically called after init&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frequency</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">)):</span>
             <span class="c1"># hack to modify the attributes of frozen dataclass</span>
@@ -1130,7 +1134,7 @@
 <div class="viewcode-block" id="ElmerCapacitanceSolution">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerCapacitanceSolution">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">ElmerCapacitanceSolution</span><span class="p">(</span><span class="n">ElmerSolution</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ElmerCapacitanceSolution</span><span class="p">(</span><span class="n">ElmerSolution</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class for Elmer capacitance solution parameters</span>
 
@@ -1145,6 +1149,7 @@
 <span class="sd">        convergence_tolerance: Convergence tolerance of the iterative solver.</span>
 <span class="sd">        max_iterations: Maximum number of iterations for the iterative solver.</span>
 <span class="sd">        linear_system_preconditioning: Choice of preconditioner before using an iterative linear system solver</span>
+<span class="sd">        electric_infinity_bc: effectively extend the model domain to infinity using spherical boundary conditions</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">tool</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;capacitance&quot;</span>
@@ -1154,14 +1159,15 @@
     <span class="n">integrate_energies</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">convergence_tolerance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0e-9</span>
     <span class="n">max_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span>
-    <span class="n">linear_system_preconditioning</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ILU0&quot;</span></div>
+    <span class="n">linear_system_preconditioning</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ILU0&quot;</span>
+    <span class="n">electric_infinity_bc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
 
 <div class="viewcode-block" id="ElmerCrossSectionSolution">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerCrossSectionSolution">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">ElmerCrossSectionSolution</span><span class="p">(</span><span class="n">ElmerSolution</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ElmerCrossSectionSolution</span><span class="p">(</span><span class="n">ElmerSolution</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class for Elmer cross-section solution parameters.</span>
 <span class="sd">    By default both 2D Capacitance and 2D Inductance simulation will be run when using this</span>
@@ -1186,6 +1192,7 @@
 <span class="sd">        linear_system_preconditioning: Choice of preconditioner before using an iterative linear system solver</span>
 <span class="sd">        voltage_excitations: Can be used to excite signals with arbitrary voltages, instead of 1V. If this parameter is</span>
 <span class="sd">                             used, no capacitances will be computed.</span>
+<span class="sd">        electric_infinity_bc: effectively extend the model domain to infinity using spherical boundary conditions</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">tool</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;cross-section&quot;</span>
@@ -1198,14 +1205,15 @@
     <span class="n">max_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span>
     <span class="n">run_inductance_sim</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">linear_system_preconditioning</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ILU0&quot;</span>
-    <span class="n">voltage_excitations</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
+    <span class="n">voltage_excitations</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">electric_infinity_bc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
 
 <div class="viewcode-block" id="ElmerEPR3DSolution">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerEPR3DSolution">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">ElmerEPR3DSolution</span><span class="p">(</span><span class="n">ElmerSolution</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ElmerEPR3DSolution</span><span class="p">(</span><span class="n">ElmerSolution</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class for Elmer 3D EPR simulations. Similar to electrostatics simulations done with ElmerCapacitanceSolution,</span>
 <span class="sd">    but supports separating energies by PartitionRegions. Always reports energies for each layer.</span>
@@ -1222,7 +1230,7 @@
 <span class="sd">        linear_system_preconditioning: Choice of preconditioner before using an iterative linear system solver</span>
 <span class="sd">        voltage_excitations: Can be used to excite signals with arbitrary voltages, instead of 1V. If this parameter is</span>
 <span class="sd">                             used, no capacitances will be computed.</span>
-
+<span class="sd">        electric_infinity_bc: effectively extend the model domain to infinity using spherical boundary conditions</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">tool</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;epr_3d&quot;</span>
@@ -1232,13 +1240,14 @@
     <span class="n">convergence_tolerance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0e-9</span>
     <span class="n">max_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span>
     <span class="n">linear_system_preconditioning</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ILU0&quot;</span>
-    <span class="n">voltage_excitations</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
+    <span class="n">voltage_excitations</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">electric_infinity_bc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
 
 <div class="viewcode-block" id="get_elmer_solution">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.get_elmer_solution">[docs]</a>
-<span class="k">def</span> <span class="nf">get_elmer_solution</span><span class="p">(</span><span class="n">tool</span><span class="o">=</span><span class="s2">&quot;capacitance&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">solution_params</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_elmer_solution</span><span class="p">(</span><span class="n">tool</span><span class="o">=</span><span class="s2">&quot;capacitance&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">solution_params</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns an instance of ElmerSolution subclass.</span>
 
 <span class="sd">    Args:</span>

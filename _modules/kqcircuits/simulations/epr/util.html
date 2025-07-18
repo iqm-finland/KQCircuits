@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>kqcircuits.simulations.epr.util &mdash; KQCircuits  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d10597a4" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom.css?v=eeab0646" />
@@ -1010,10 +1010,10 @@
 <span class="c1"># Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)</span>
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
 
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.element</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Simulation</span>
 
 
 <span class="n">EPRTarget</span> <span class="o">=</span> <span class="n">Simulation</span> <span class="o">|</span> <span class="n">Element</span>
@@ -1021,7 +1021,7 @@
 
 <div class="viewcode-block" id="in_gui">
 <a class="viewcode-back" href="../../../../api/kqcircuits.simulations.epr.util.html#kqcircuits.simulations.epr.util.in_gui">[docs]</a>
-<span class="k">def</span> <span class="nf">in_gui</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">EPRTarget</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">in_gui</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">EPRTarget</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;``partition_regions`` and ``correction_cuts`` can be called for elements</span>
 <span class="sd">    when KLayout is in GUI mode, in which case element is not of type Simulation.</span>
 <span class="sd">    This check can be used if ``partition_regions`` and ``correction_cuts``</span>
@@ -1035,7 +1035,7 @@
 
 <div class="viewcode-block" id="get_mer_z">
 <a class="viewcode-back" href="../../../../api/kqcircuits.simulations.epr.util.html#kqcircuits.simulations.epr.util.get_mer_z">[docs]</a>
-<span class="k">def</span> <span class="nf">get_mer_z</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">EPRTarget</span><span class="p">,</span> <span class="n">face_base</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_mer_z</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">EPRTarget</span><span class="p">,</span> <span class="n">face_base</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Determines z position of a MER box postitioned at the base of the face</span>
 <span class="sd">    given ``face_base`` as face id string.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">in_gui</span><span class="p">(</span><span class="n">element</span><span class="p">):</span>
@@ -1053,7 +1053,7 @@
 
 <div class="viewcode-block" id="extract_child_simulation">
 <a class="viewcode-back" href="../../../../api/kqcircuits.simulations.epr.util.html#kqcircuits.simulations.epr.util.extract_child_simulation">[docs]</a>
-<span class="k">def</span> <span class="nf">extract_child_simulation</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_child_simulation</span><span class="p">(</span>
     <span class="n">simulation</span><span class="p">:</span> <span class="n">EPRTarget</span><span class="p">,</span>
     <span class="n">refpoint_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">parameter_remap_function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">EPRTarget</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="nb">any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>

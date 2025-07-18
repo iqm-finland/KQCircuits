@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>kqcircuits.simulations.epr.double_pads &mdash; KQCircuits  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d10597a4" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom.css?v=eeab0646" />
@@ -1010,9 +1010,9 @@
 <span class="c1"># Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)</span>
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
 
-<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.epr.util</span> <span class="kn">import</span> <span class="n">EPRTarget</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.partition_region</span> <span class="kn">import</span> <span class="n">PartitionRegion</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.pya_resolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.epr.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">EPRTarget</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.partition_region</span><span class="w"> </span><span class="kn">import</span> <span class="n">PartitionRegion</span>
 
 <span class="c1"># Partition region and correction cuts definitions for double_pads qubit</span>
 
@@ -1027,7 +1027,7 @@
 
 <div class="viewcode-block" id="partition_regions">
 <a class="viewcode-back" href="../../../../api/kqcircuits.simulations.epr.double_pads.html#kqcircuits.simulations.epr.double_pads.partition_regions">[docs]</a>
-<span class="k">def</span> <span class="nf">partition_regions</span><span class="p">(</span><span class="n">simulation</span><span class="p">:</span> <span class="n">EPRTarget</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">PartitionRegion</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">partition_regions</span><span class="p">(</span><span class="n">simulation</span><span class="p">:</span> <span class="n">EPRTarget</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">PartitionRegion</span><span class="p">]:</span>
     <span class="n">squid_height_</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;junction1&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]</span>
     <span class="n">squid_height</span> <span class="o">=</span> <span class="n">squid_height_</span><span class="o">.</span><span class="n">y</span>
     <span class="n">island1_bottom</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">squid_offset</span> <span class="o">+</span> <span class="n">squid_height</span> <span class="o">/</span> <span class="mi">2</span>
@@ -1223,7 +1223,7 @@
             <span class="n">face</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
             <span class="n">region</span><span class="o">=</span><span class="n">sector_region</span><span class="p">,</span>
             <span class="n">vertical_dimensions</span><span class="o">=</span><span class="n">vertical_dimension</span><span class="p">,</span>
-            <span class="n">metal_edge_dimensions</span><span class="o">=</span><span class="n">metal_edge_dimensions</span><span class="p">,</span>
+            <span class="n">metal_edge_dimensions</span><span class="o">=</span><span class="p">[</span><span class="mf">6.0</span><span class="p">,</span> <span class="n">metal_edge_dimensions</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
             <span class="n">visualise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">),</span>
         <span class="n">PartitionRegion</span><span class="p">(</span>
@@ -1264,6 +1264,21 @@
             <span class="n">vertical_dimensions</span><span class="o">=</span><span class="n">vertical_dimension</span><span class="p">,</span>
             <span class="n">visualise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">),</span>
+        <span class="n">PartitionRegion</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">bcomplementmer&quot;</span><span class="p">,</span>
+            <span class="n">face</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">metal_edge_dimensions</span><span class="o">=</span><span class="n">metal_edge_dimensions</span><span class="p">,</span>
+            <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">vertical_dimensions</span><span class="o">=</span><span class="n">vertical_dimension</span><span class="p">,</span>
+            <span class="n">visualise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="n">PartitionRegion</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">bcomplementbulk&quot;</span><span class="p">,</span>
+            <span class="n">face</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">vertical_dimensions</span><span class="o">=</span><span class="n">vertical_dimension</span><span class="p">,</span>
+            <span class="n">visualise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">),</span>
     <span class="p">]</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
@@ -1271,7 +1286,7 @@
 
 <div class="viewcode-block" id="correction_cuts">
 <a class="viewcode-back" href="../../../../api/kqcircuits.simulations.epr.double_pads.html#kqcircuits.simulations.epr.double_pads.correction_cuts">[docs]</a>
-<span class="k">def</span> <span class="nf">correction_cuts</span><span class="p">(</span><span class="n">simulation</span><span class="p">:</span> <span class="n">EPRTarget</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">correction_cuts</span><span class="p">(</span><span class="n">simulation</span><span class="p">:</span> <span class="n">EPRTarget</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
     <span class="n">half_cut_length</span> <span class="o">=</span> <span class="mf">30.0</span>
 
     <span class="n">leads_center</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;junction1&quot;</span><span class="p">]</span>
@@ -1290,11 +1305,6 @@
     <span class="p">)</span>
 
     <span class="n">result</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">tcomplementmer&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;p1&quot;</span><span class="p">:</span> <span class="n">ground_gap</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">half_cut_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-            <span class="s2">&quot;p2&quot;</span><span class="p">:</span> <span class="n">ground_gap</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">half_cut_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-            <span class="s2">&quot;boundary_conditions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;xmin&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;potential&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="s2">&quot;ymax&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;potential&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}},</span>
-        <span class="p">},</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">islandmer&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">&quot;p1&quot;</span><span class="p">:</span> <span class="n">island1_edge</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">half_cut_length</span><span class="p">),</span>
             <span class="s2">&quot;p2&quot;</span><span class="p">:</span> <span class="n">island1_edge</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">half_cut_length</span><span class="p">),</span>
@@ -1314,6 +1324,16 @@
             <span class="s2">&quot;p1&quot;</span><span class="p">:</span> <span class="n">coupler1_center</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">half_cut_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
             <span class="s2">&quot;p2&quot;</span><span class="p">:</span> <span class="n">coupler1_center</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">half_cut_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
             <span class="s2">&quot;boundary_conditions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;xmax&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;potential&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="s2">&quot;xmin&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;potential&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}},</span>
+        <span class="p">},</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">tcomplementmer&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;p1&quot;</span><span class="p">:</span> <span class="n">ground_gap</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">half_cut_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="s2">&quot;p2&quot;</span><span class="p">:</span> <span class="n">ground_gap</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">half_cut_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="s2">&quot;boundary_conditions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;xmin&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;potential&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="s2">&quot;ymax&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;potential&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}},</span>
+        <span class="p">},</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">bcomplementmer&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;p1&quot;</span><span class="p">:</span> <span class="n">ground_gap</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">half_cut_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="s2">&quot;p2&quot;</span><span class="p">:</span> <span class="n">ground_gap</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">half_cut_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="s2">&quot;boundary_conditions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;xmin&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;potential&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="s2">&quot;ymax&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;potential&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}},</span>
         <span class="p">},</span>
     <span class="p">}</span>
     <span class="k">return</span> <span class="n">result</span></div>

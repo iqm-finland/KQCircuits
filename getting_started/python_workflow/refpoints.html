@@ -5,7 +5,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Refpoints &mdash; KQCircuits  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d10597a4" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=eeab0646" />
@@ -1019,13 +1019,13 @@ hierarchy the refpoints are added.</p></li>
 previous section. Here we add a waveguide from a launcher to a capacitor
 using refpoints:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># In addition to the imports from previous example, import these:</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar</span> <span class="kn">import</span> <span class="n">WaveguideCoplanar</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.finger_capacitor_square</span> <span class="kn">import</span> <span class="n">FingerCapacitorSquare</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.waveguide_coplanar</span><span class="w"> </span><span class="kn">import</span> <span class="n">WaveguideCoplanar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.finger_capacitor_square</span><span class="w"> </span><span class="kn">import</span> <span class="n">FingerCapacitorSquare</span>
 
 
-<span class="k">class</span> <span class="nc">NewChip1</span><span class="p">(</span><span class="n">Chip</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NewChip1</span><span class="p">(</span><span class="n">Chip</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="c1"># After produce_launchers call, there will be &quot;chip-level&quot; refpoints in self.refpoints.</span>
         <span class="c1"># These refpoints have prefixes corresponding to launcher names, such as &quot;WN&quot; for one</span>

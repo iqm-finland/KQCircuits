@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>kqcircuits.simulations.export.sonnet.parser &mdash; KQCircuits  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=d10597a4" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/custom.css?v=eeab0646" />
@@ -1011,13 +1011,13 @@
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
 
 
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">string</span> <span class="kn">import</span> <span class="n">Template</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">string</span><span class="w"> </span><span class="kn">import</span> <span class="n">Template</span>
 
 
 <div class="viewcode-block" id="apply_template">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.apply_template">[docs]</a>
-<span class="k">def</span> <span class="nf">apply_template</span><span class="p">(</span><span class="n">filename_template</span><span class="p">,</span> <span class="n">filename_output</span><span class="p">,</span> <span class="n">rules</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">apply_template</span><span class="p">(</span><span class="n">filename_template</span><span class="p">,</span> <span class="n">filename_output</span><span class="p">,</span> <span class="n">rules</span><span class="p">):</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename_template</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">filein</span><span class="p">:</span>
         <span class="n">src</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="n">filein</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
     <span class="n">results</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span>
@@ -1034,7 +1034,7 @@
 
 <div class="viewcode-block" id="polygon_head">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.polygon_head">[docs]</a>
-<span class="k">def</span> <span class="nf">polygon_head</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">polygon_head</span><span class="p">(</span>
     <span class="n">nvertices</span><span class="p">,</span>  <span class="c1"># number of vertices of the polygon</span>
     <span class="n">debugid</span><span class="p">,</span>  <span class="c1"># unique number for sonnet internal debugging</span>
     <span class="n">ilevel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># sonnet layer number</span>
@@ -1057,7 +1057,7 @@
 
 <div class="viewcode-block" id="symmetry">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.symmetry">[docs]</a>
-<span class="k">def</span> <span class="nf">symmetry</span><span class="p">(</span><span class="n">sym</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">symmetry</span><span class="p">(</span><span class="n">sym</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="n">sonnet_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="k">if</span> <span class="n">sym</span><span class="p">:</span>
         <span class="n">sonnet_str</span> <span class="o">=</span> <span class="s2">&quot;SYM&quot;</span>
@@ -1067,7 +1067,7 @@
 
 <div class="viewcode-block" id="box">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.box">[docs]</a>
-<span class="k">def</span> <span class="nf">box</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">box</span><span class="p">(</span>
     <span class="n">xwidth</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">8000.0</span><span class="p">,</span>
     <span class="n">ywidth</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">8000.0</span><span class="p">,</span>
     <span class="n">xcells</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8000</span><span class="p">,</span>
@@ -1096,7 +1096,7 @@
 
 <div class="viewcode-block" id="refplane">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.refplane">[docs]</a>
-<span class="k">def</span> <span class="nf">refplane</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">refplane</span><span class="p">(</span>
     <span class="n">position</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">port_ipoly</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>  <span class="c1"># &quot;LEFT&quot; | &quot;RIGHT&quot; | &quot;TOP&quot; | &quot;BOTTOM&quot;,  # &quot;LINK&quot; or &quot;FIX&quot;</span>
 <span class="p">):</span>
     <span class="k">if</span> <span class="n">port_ipoly</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
@@ -1112,7 +1112,7 @@
 
 <div class="viewcode-block" id="refplanes">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.refplanes">[docs]</a>
-<span class="k">def</span> <span class="nf">refplanes</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">port_ipolys</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">refplanes</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">port_ipolys</span><span class="p">):</span>
     <span class="n">sonnet_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pos</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">positions</span><span class="p">):</span>
         <span class="n">sonnet_str</span> <span class="o">+=</span> <span class="n">refplane</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">port_ipolys</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
@@ -1122,7 +1122,7 @@
 
 <div class="viewcode-block" id="port">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.port">[docs]</a>
-<span class="k">def</span> <span class="nf">port</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">port</span><span class="p">(</span>
     <span class="n">portnum</span><span class="p">,</span>
     <span class="n">ipolygon</span><span class="p">,</span>
     <span class="n">ivertex</span><span class="p">,</span>
@@ -1161,7 +1161,7 @@
 
 <div class="viewcode-block" id="control">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.control">[docs]</a>
-<span class="k">def</span> <span class="nf">control</span><span class="p">(</span><span class="n">control_type</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">control</span><span class="p">(</span><span class="n">control_type</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">{</span>
         <span class="s2">&quot;Simple&quot;</span><span class="p">:</span> <span class="s2">&quot;SIMPLE&quot;</span><span class="p">,</span>  <span class="c1"># Linear frequency sweep</span>
         <span class="s2">&quot;ABS&quot;</span><span class="p">:</span> <span class="s2">&quot;ABS&quot;</span><span class="p">,</span>  <span class="c1"># Sonnet guesses the resonances, simulates about 5 points around the resonance and interpolates</span>
@@ -1173,7 +1173,7 @@
 
 <div class="viewcode-block" id="polygons">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.polygons">[docs]</a>
-<span class="k">def</span> <span class="nf">polygons</span><span class="p">(</span><span class="n">polygons</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span> <span class="n">ilevel</span><span class="p">,</span> <span class="n">fill_type</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">polygons</span><span class="p">(</span><span class="n">polygons</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span> <span class="n">ilevel</span><span class="p">,</span> <span class="n">fill_type</span><span class="p">):</span>
     <span class="n">sonnet_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;NUM </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">polygons</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">hole_poly</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">polygons</span><span class="p">):</span>
         <span class="n">poly</span> <span class="o">=</span> <span class="n">hole_poly</span><span class="o">.</span><span class="n">resolved_holes</span><span class="p">()</span>
@@ -1198,7 +1198,7 @@
 
 <div class="viewcode-block" id="via">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.via">[docs]</a>
-<span class="k">def</span> <span class="nf">via</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="n">debugid</span><span class="p">,</span> <span class="n">ilevel</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">via</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="n">debugid</span><span class="p">,</span> <span class="n">ilevel</span><span class="p">):</span>
     <span class="n">via_head</span> <span class="o">=</span> <span class="n">polygon_head</span><span class="p">(</span><span class="n">nvertices</span><span class="o">=</span><span class="n">poly</span><span class="o">.</span><span class="n">num_points_hull</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">debugid</span><span class="o">=</span><span class="n">debugid</span><span class="p">,</span> <span class="n">ilevel</span><span class="o">=</span><span class="n">ilevel</span><span class="p">,</span> <span class="n">mtype</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="s2">&quot;VIA POLYGON</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">via_head</span> <span class="o">+</span> <span class="s2">&quot;TOLEVEL 1 RING COVERS</span><span class="se">\n</span><span class="s2">&quot;</span></div>
 

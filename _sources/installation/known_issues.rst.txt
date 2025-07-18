@@ -7,14 +7,17 @@ Known installation issues
 For some specific KLayout builds there can be problems with KQCircuits
 installation that require some extra steps:
 
+* Standalone KLayout 0.28 package installed with ``pip`` is not available
+  for Python version 3.13. There is probably a way to compile such package
+  yourself if you really need this configuration.
 * Standard KLayout installation package for MacOS (``ST-klayout-*``)
   is compiled to use the system Python dynamic library, which for
-  Sonoma version still has Python version 3.9. ``networkx`` dependency is only supported
-  on Python version 3.10 and higher. We recommend using heavyweight KLayout
-  package (``HW-klayout-*``) that uses compatible Python, but if that is not an option, you can comment
-  out the ``networkx`` entry in :git_url:`gui-requirements.txt <klayout_package/python/requirements/mac/gui-requirements.txt>`
-  to proceed with installation.
-  Currently this only prevents using the :git_url:`netlist_as_graph.py <util/netlist_as_graph.py>` script.
+  Sonoma version still has Python version 3.9. We officially only support
+  python versions starting from 3.10. We recommend using heavyweight KLayout
+  package (``HW-klayout-*``) that uses compatible Python.
+* Since non-HW KLayout installation package for MacOS and linux KLayout
+  packages link to system Python, to install KQCircuits the package ``python3-pip``
+  needs to be installed in the system.
 * For some macOS BigSur KLayout builds (at least for KLayout v0.27.x), KQC
   might not work due to a problem with the KLayout included ``setuptools``
   package. The KQC libraries will not be visible and one might see the error
