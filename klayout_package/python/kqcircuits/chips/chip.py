@@ -68,6 +68,9 @@ class Chip(Element):
     LIBRARY_PATH = "chips"
 
     with_grid = Param(pdt.TypeBoolean, "Make ground plane grid", False)
+    gnd_grid_faces = Param(
+        pdt.TypeList, "Faces on which the grid is generated, [-1] is all, [] is None", [-1], hidden=True
+    )
     merge_base_metal_gap = Param(pdt.TypeBoolean, "Merge grid and other gaps into base_metal_gap layer", False)
     a_capped = Param(
         pdt.TypeDouble,
@@ -230,8 +233,10 @@ class Chip(Element):
 
         This method is called in build(). Override this method to produce a different set of chip frames.
         """
+        all_faces = self.gnd_grid_faces and all(int(f) < 0 for f in self.gnd_grid_faces)
         for face in self.frames_enabled:
-            self.produce_ground_on_face_grid(self.get_box(int(face)), int(face))
+            if all_faces or face in self.gnd_grid_faces:
+                self.produce_ground_on_face_grid(self.get_box(int(face)), int(face))
 
     def produce_ground_on_face_grid(self, box, face_id):
         """Produces ground grid in the given face of the chip.
