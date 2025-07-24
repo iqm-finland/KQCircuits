@@ -31,6 +31,21 @@ from kqcircuits.simulations.export.export_and_run import run_export_script
 logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 
 
+def _check_ssh_connection(ssh_login):
+    try:
+        subprocess.run(
+            ["ssh", "-o", "BatchMode=yes", ssh_login, ":"],
+            capture_output=True,
+            text=True,
+            check=True,
+            timeout=10,
+        )
+    except subprocess.CalledProcessError as e:
+        logging.error(f"Ssh connection failed with code {e.returncode}")
+        logging.error(e.stderr)
+        sys.exit()
+
+
 def _prepare_remote_tmp(ssh_login, kqc_remote_tmp_path):
     """
     Internal helper function to create remote tmp directory if it doesnt exist and raise error if its not empty
@@ -39,11 +54,25 @@ def _prepare_remote_tmp(ssh_login, kqc_remote_tmp_path):
         ssh_login              (str): ssh login info "user@hostname"
         kqc_remote_tmp_path    (str): current run tmp directory on remote
     """
-    ssh_cmd = f"ssh {ssh_login} 'mkdir -p {kqc_remote_tmp_path} && ! {{ ls -1qA {kqc_remote_tmp_path} | grep -q . ; }}'"
-    is_empty = subprocess.call(ssh_cmd, shell=True)
-    if is_empty:
-        logging.error(f"Your remote tmp folder {kqc_remote_tmp_path} is not empty!")
-        logging.error("Either delete its contents manually or use another directory")
+
+    ssh_cmd = ["ssh", ssh_login]
+    try:
+        mkdir_cmd = ssh_cmd + [f"mkdir -p {kqc_remote_tmp_path}"]
+        subprocess.run(mkdir_cmd, capture_output=True, check=True, text=True)
+    except subprocess.CalledProcessError:
+        logging.error(f"Remote tmp dir {kqc_remote_tmp_path} could not be created.")
+        logging.error("Check that KQC_REMOTE_TMP_PATH is set correctly")
+        sys.exit()
+
+    try:
+        check_empty_cmd = ssh_cmd + [f"! {{ ls -1qA {kqc_remote_tmp_path} | grep -q . ; }}"]
+        subprocess.run(check_empty_cmd, capture_output=True, check=True, text=True)
+    except subprocess.CalledProcessError as e:
+        if e.returncode == 1:
+            logging.error(f"Your remote tmp folder {kqc_remote_tmp_path} is not empty!")
+            logging.error("Either delete its contents manually or use another directory")
+        else:
+            logging.error(f"Encountered error in ssh call (code {e.returncode})\n {e.stderr}")
         sys.exit()
 
 
@@ -97,8 +126,7 @@ def _remote_run(
         poll_interval           (int): Polling interval in seconds when waiting for the remote simulation to finish
     """
     if platform.system() == "Windows":  # Windows
-        logging.error("Connecting to remote host not supported on Windows")
-        sys.exit()
+        logging.warning("Connecting to remote host not supported on Windows")
 
     # set defaults
     if kqc_remote_tmp_path is None:
@@ -117,6 +145,7 @@ def _remote_run(
     run_uuid = str(uuid.uuid4())
     kqc_remote_tmp_path = str(Path(kqc_remote_tmp_path) / ("run_" + run_uuid))
     # Create remote tmp if it doesnt exist, and check that its empty
+    _check_ssh_connection(ssh_login)
     _prepare_remote_tmp(ssh_login, kqc_remote_tmp_path)
 
     dirs_remote = [str(Path(kqc_remote_tmp_path) / str(Path(d).name)) for d in export_tmp_paths]
@@ -201,6 +230,10 @@ def _remote_run(
     echo "\nSimulations finished at:"
     date +"%d-%m-%y %T"
     echo "---------STOP-WAIT-SCRIPT---------"
+    echo "Output:"
+    for dir in {" ".join(map(str, export_tmp_paths))}; do
+        cat "$dir"/slurm-*.out || true
+    done
     rm -- "$0"
     """
 
@@ -214,11 +247,11 @@ def _remote_run(
         )
         run_cmd = f"""ssh {ssh_login} -tt -q 'bash -l -c "cd {kqc_remote_tmp_path} && ./{remote_script_name}"'"""
         # COPY (dirs_local) -> (dirs_remote)
-        subprocess.check_call(copy_cmd)
+        subprocess.check_call(copy_cmd, timeout=60)
         # Remove remote simulation script from local tmp folder
         subprocess.check_call(["rm", remote_simulation_script])
         # Force to use login shell on remote to get correct env variables
-        subprocess.check_call(run_cmd, shell=True)
+        subprocess.check_call(run_cmd, shell=True, timeout=20)
 
         print(
             f"Simulations started and connection to remote closed.\n"
@@ -239,7 +272,7 @@ def _remote_run(
                 flush=True,
             )
 
-    except Exception as exc:
+    except subprocess.CalledProcessError as exc:
         raise RuntimeError("Remote run failed. Please manually fetch and delete data from remote") from exc
 
 

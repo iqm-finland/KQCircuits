@@ -16,7 +16,6 @@
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
-
 import logging
 import shutil
 import subprocess
@@ -29,6 +28,7 @@ from pathlib import Path
 from typing import Any
 from multiprocessing import Pool
 import importlib.util
+import gmsh
 
 has_tqdm = importlib.util.find_spec("tqdm") is not None
 if has_tqdm:
@@ -43,17 +43,12 @@ def write_simulation_machine_versions_file(path: Path) -> None:
     versions["platform"] = platform.platform()
     versions["python"] = sys.version_info
 
-    gmsh_versions_list = []
-    with open(next(path.joinpath("log_files").glob("*.Gmsh.log")), encoding="utf-8") as f:
-        gmsh_log = f.readlines()
-        gmsh_versions_list = [line.replace("\n", "") for line in gmsh_log if "ersion" in line]
-
     elmer_versions_list = []
     with open(next(path.joinpath("log_files").glob("*Elmer.log")), encoding="utf-8") as f:
         elmer_log = f.readlines()
         elmer_versions_list = [line.replace("\n", "") for line in elmer_log if "ersion" in line]
 
-    versions["gmsh"] = gmsh_versions_list
+    versions["gmsh"] = gmsh.__version__
     versions["elmer"] = elmer_versions_list
 
     mpi_command = "mpirun" if shutil.which("mpirun") is not None else "mpiexec"

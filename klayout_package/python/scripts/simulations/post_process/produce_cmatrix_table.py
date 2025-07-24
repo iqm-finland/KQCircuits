@@ -59,7 +59,7 @@ if result_files:
 
         for key, def_data in def_data_3d.items():
             for port in def_data.get("ports", []):
-                d_len, d_cross_section = 1e-6 * port.get("deembed_len", 0), port.get("deembed_cross_section")
+                d_len, d_cross_section = port.get("deembed_len", 0), port.get("deembed_cross_section")
                 if d_len and d_cross_section:
                     cs_key = f"{key}_{d_cross_section}"
                     if cs_key not in def_data_cs:
@@ -71,7 +71,7 @@ if result_files:
                         continue
                     exc = exc_set.pop()
                     deembed_key = f"C{exc}{exc}_deembed"
-                    deembed_c = d_len * cmatrix[cs_key]["C11"]
+                    deembed_c = 1e-6 * d_len * cmatrix[cs_key]["C11"]
                     cmatrix[key][deembed_key] = cmatrix[key].get(deembed_key, 0) + deembed_c
                     cmatrix[key][f"C{exc}{exc}"] -= deembed_c
 

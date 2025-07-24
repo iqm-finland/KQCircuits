@@ -144,7 +144,6 @@ if use_elmer:
     mesh_size = {
         "global_max": args.global_mesh_size,
         "1t1_gap": args.gap_mesh_size,
-        "port_*": args.port_mesh_size,
     }
 
     if wave_equation:
@@ -153,6 +152,7 @@ if use_elmer:
             "tool": "wave_equation",
             "frequency": 10,
         }
+        mesh_size["port_*"] = args.port_mesh_size
     else:
         export_parameters_elmer = {
             "path": path,

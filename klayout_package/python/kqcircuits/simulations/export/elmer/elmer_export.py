@@ -262,6 +262,19 @@ def export_elmer_script(
             ]
             return lines
 
+        # Write python script used to automatically check for warnings in remote simulations
+        with open(path.joinpath("check_warnings.py"), "w", encoding="utf-8") as file:
+            file.write(
+                "\n".join(
+                    [
+                        "# This script is run automatically after remote simulations",
+                        "# Manual usage: python check_warnings.py [simulation_name]",
+                        "import sys",
+                        "from scripts.run_helpers import elmer_check_warnings",
+                        r"elmer_check_warnings(f'log_files/{sys.argv[1]}.Elmer.log')",
+                    ]
+                )
+            )
         sbatch_parameters = workflow["sbatch_parameters"]
 
         parallelization_level = workflow["_parallelization_level"]
@@ -366,7 +379,7 @@ def export_elmer_script(
             python_run_cmd = f'{python_executable} -u "{execution_script}" "{Path(json_filename).relative_to(path)}"'
 
             def get_log_cmd(logfile_suffix, filename=simulation_name):
-                return f'2>&1 >> "log_files/{filename}.{logfile_suffix}.log"\n'
+                return f'>> "log_files/{filename}.{logfile_suffix}.log"\n'
 
             script_lines = ["set -e\n"]
 
@@ -425,7 +438,7 @@ def export_elmer_script(
             python_run_cmd = f'{python_executable} -u "{execution_script}" "{Path(json_filename).relative_to(path)}"'
 
             def get_log_cmd(logfile_suffix, filename=simulation_name):  # pylint: disable=function-redefined
-                return f'2>&1 >> "log_files/{filename}.{logfile_suffix}.log"\n'
+                return f'>> "log_files/{filename}.{logfile_suffix}.log"\n'
 
             script_lines = ["set -e\n", _sim_part_echo(i, "Elmer")]
 
@@ -433,9 +446,11 @@ def export_elmer_script(
                 for sif in sif_list:
                     sif_path = f"{simulation_name}/{sif}.sif"
                     script_lines.append(
-                        f'{srun_cmd_elmer} ElmerSolver_mpi "{sif_path}" 2>&1 >> "log_files/{sif}.Elmer.log" & \n'
+                        f'{srun_cmd_elmer} ElmerSolver_mpi "{sif_path}" >> "log_files/{sif}.Elmer.log" & \n'
                     )
                 script_lines.append("wait\n")
+                for sif in sif_list:
+                    script_lines.append(f"python check_warnings.py {sif} 1>/dev/null\n")
 
             script_lines += [
                 _sim_part_echo(i, "write results json"),
@@ -481,7 +496,7 @@ def export_elmer_script(
 
             def get_log_cmd(logfile_suffix, filename=simulation_name):
                 log_file = Path("log_files") / f"{filename}.{logfile_suffix}.log"
-                return f'2>&1 >> "{log_file}"\n'
+                return f'>> "{log_file}"\n'
 
             script_filename = str(path.joinpath(simulation_name + extension))
 
@@ -527,7 +542,7 @@ def export_elmer_script(
         main_script_lines += [
             '\necho "--------------------------------------------"\n',
             'echo "Write versions file"\n',
-            f"{python_run_cmd} --write-versions-file\n",
+            f"{python_run_cmd} --write-versions-file 1>/dev/null\n",
         ]
 
     main_script_lines.append("\n" + get_post_process_command_lines(post_process, path, json_filenames))
