@@ -34,7 +34,7 @@ class Manhattan(Squid):
     include_base_metal_gap = Param(pdt.TypeBoolean, "Include base metal gap layer", True)
     shadow_margin = Param(pdt.TypeDouble, "Shadow layer margin near the the pads", 1.0, unit="μm")
     compact_geometry = Param(pdt.TypeBoolean, "Compact geometry for metal addition.", False)
-    separate_junctions = Param(pdt.TypeBoolean, "Junctions to separate layer", False)
+    separate_junctions = Param(pdt.TypeBoolean, "Junctions to separate layer", True)
     offset_compensation = Param(pdt.TypeDouble, "Junction lead offset from junction width", 0, unit="μm")
     mirror_offset = Param(pdt.TypeBoolean, "Move the junction lead offset to the other lead", False)
     finger_overlap = Param(pdt.TypeDouble, "Length of fingers inside the pads", 0.2, unit="μm")

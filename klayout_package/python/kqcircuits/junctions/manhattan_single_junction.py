@@ -31,7 +31,7 @@ class ManhattanSingleJunction(Junction):
     include_base_metal_gap = Param(pdt.TypeBoolean, "Include base metal gap layer.", True)
     include_base_metal_addition = Param(pdt.TypeBoolean, "Include base metal addition layer.", True)
     shadow_margin = Param(pdt.TypeDouble, "Shadow layer margin near the the pads.", 0.5, unit="μm")
-    separate_junctions = Param(pdt.TypeBoolean, "Junctions to separate layer.", False)
+    separate_junctions = Param(pdt.TypeBoolean, "Junctions to separate layer.", True)
     offset_compensation = Param(pdt.TypeDouble, "Junction lead offset from junction width", 0, unit="μm")
     mirror_offset = Param(pdt.TypeBoolean, "Move the junction lead offset to the other lead", False)
     finger_overlap = Param(pdt.TypeDouble, "Length of fingers inside the pads.", 1.0, unit="μm")
