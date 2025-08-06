@@ -16,6 +16,7 @@
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 import logging
+import itertools
 import re
 from pathlib import Path
 from typing import Any, Sequence, Iterable
@@ -165,15 +166,17 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
         if name in new_tags and data.get("material") is None:
             del new_tags[name]
 
-    # Add excitation boundaries and remove those from original metal layers
-    if json_data["tool"] != "epr_3d":
-        metal_layers = get_metal_layers(layers)
-        excitations = {d["excitation"] for d in metal_layers.values()}
-        for excitation in excitations:
-            excitation_names = [n for n, d in metal_layers.items() if d["excitation"] == excitation and n in new_tags]
-            excitation_dts = [dt for n in excitation_names for dt in new_tags[n]]
-            excitation_with_boundary = get_recursive_children(excitation_dts, True)
-            new_tags[f"excitation_{excitation}_boundary"] = [(d, t) for d, t in excitation_with_boundary if d == 2]
+    metal_layers = get_metal_layers(layers)
+    excitations = {d["excitation"] for d in metal_layers.values()}
+    metal_boundary_dts = set()
+    for excitation in excitations:
+        excitation_names = [n for n, d in metal_layers.items() if d["excitation"] == excitation and n in new_tags]
+        excitation_dts = [dt for n in excitation_names for dt in new_tags[n]]
+        excitation_boundary = [(d, t) for d, t in get_recursive_children(excitation_dts, True) if d == 2]
+        metal_boundary_dts.update(excitation_boundary)
+        # Add excitation boundaries and remove those from original metal layers
+        if json_data["tool"] != "epr_3d":
+            new_tags[f"excitation_{excitation}_boundary"] = excitation_boundary
             for n in excitation_names:
                 new_tags[n] = [(d, t) for d, t in new_tags[n] if d == 3]
 
@@ -195,7 +198,9 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
     # Set domain boundary as ground
     solid_dts = [(d, t) for dts in new_tags.values() for d, t in dts if d == 3]
     face_dts = [(d, t) for dt in solid_dts for d, t in get_recursive_children([dt]) if d == 2]
-    new_tags["domain_boundary"] = [d for d in face_dts if face_dts.count(d) == 1 and d not in edge_ports_dts]
+    new_tags["domain_boundary"] = [
+        d for d in face_dts if face_dts.count(d) == 1 and d not in edge_ports_dts.union(metal_boundary_dts)
+    ]
 
     # Create physical groups from each object in new_tags
     for name, dts in new_tags.items():
@@ -203,6 +208,12 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
             gmsh.model.addPhysicalGroup(
                 max(d for d, _ in dts), [t for _, t in dts], name=apply_elmer_layer_prefix(name)
             )
+
+    # Warn about overlapping boundaries
+    boundary_tags = {k: {dt for dt in dts if dt[0] == 2} for k, dts in new_tags.items()}
+    for n1, n2 in itertools.combinations([k for k, dts in boundary_tags.items() if dts], 2):
+        if boundary_tags[n1].intersection(boundary_tags[n2]):
+            logging.warning(f"Detected overlapping mesh boundaries: {n1} and {n2}")
 
     # Generate and save mesh
     gmsh.model.mesh.generate(1)

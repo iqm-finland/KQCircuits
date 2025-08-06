@@ -15,6 +15,8 @@
 # (meetiqm.com/iqm-open-source-trademark-policy). IQM welcomes contributions to the code.
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
+import logging
+
 from kqcircuits.simulations.simulation import Simulation
 from kqcircuits.simulations.cross_section_simulation import CrossSectionSimulation
 from kqcircuits.simulations.export.ansys.ansys_solution import (
@@ -43,12 +45,16 @@ def validate_simulation(simulation, solution):
         Errors when validation criteria are not met.
     """
     simulation_and_solution_types_match(simulation, solution)
-    has_no_ports_when_required(simulation, solution)
-    has_edgeport_when_forbidden(simulation, solution)
     flux_integration_layer_exists_if_needed(simulation, solution)
     london_penetration_depth_with_ansys(simulation, solution)
-    check_partition_region_naming(simulation, solution)
-    check_elmer_3d_epr_settings(simulation, solution)
+
+    # Run these checks only for 3D simulations
+    if isinstance(simulation, Simulation):
+        has_no_ports_when_required(simulation, solution)
+        has_edgeport_when_forbidden(simulation, solution)
+        check_partition_region_naming(simulation, solution)
+        check_tls_sheet_generation(simulation)
+        check_tls_sheets_by_solution(simulation, solution)
 
 
 def simulation_and_solution_types_match(simulation, solution):
@@ -172,10 +178,9 @@ def check_partition_region_naming(simulation, solution):
     Also checks that region names don't contain any of the common EPR groups.
     """
 
-    is_3d_simulation = isinstance(simulation, Simulation)
     integrate_energies = isinstance(solution, ElmerEPR3DSolution) or getattr(solution, "integrate_energies", False)
 
-    if is_3d_simulation and integrate_energies:
+    if integrate_energies:
         common_groups = ["ma", "ms", "sa", "substrate", "vacuum"]
         regions = [p.name.lower() for p in simulation.get_partition_regions()]
         for i, r1 in enumerate(regions):
@@ -193,32 +198,61 @@ def check_partition_region_naming(simulation, solution):
                     )
 
 
-def check_elmer_3d_epr_settings(simulation, solution):
-    """Validation check: Ensures that non-zero metal thickness and `detach_tls_sheets_from_body=False` are used
-    with `ElmerEPR3DSolution`"""
+def check_tls_sheet_generation(simulation):
+    """Validation check: Ensures that TLS sheets are correctly generated and not overlapping with sheet metals"""
+    if simulation.tls_sheet_approximation:
+        if simulation.detach_tls_sheets_from_body:
+            if not recursive_all(simulation.tls_layer_thickness, lambda x: x > 0):
+                raise ValidateSimError(
+                    "Can't detach tls sheets from body if no positive `tls_layer_thickness` is given",
+                    validation_type=check_tls_sheet_generation.__name__,
+                )
+        elif not recursive_all(simulation.metal_height, lambda x: x > 0):  # not detach_tls_sheets_from_body
+            raise ValidateSimError(
+                "TLS sheets can't be generated to overlap with sheet metals. Either use `metal_height > 0` "
+                + "or `detach_tls_sheets_from_body=True`",
+                validation_type=check_tls_sheet_generation.__name__,
+            )
+
+
+def check_tls_sheets_by_solution(simulation, solution):
+    """Validation check: enforces solution type specific restrictions on TLS sheets"""
     if isinstance(solution, ElmerEPR3DSolution):
-
-        def recursive_all(l, condition):
-            if not isinstance(l, list):
-                return condition(l)
-            else:
-                return all((recursive_all(e, condition) for e in l))
-
+        # non-zero metal thickness and TLS sheets on metal boundary
         if simulation.tls_sheet_approximation and simulation.detach_tls_sheets_from_body:
             raise ValidateSimError(
                 "ElmerEPR3DSolution requires simulation parameter `detach_tls_sheets_from_body` to be set False",
-                validation_type=check_elmer_3d_epr_settings.__name__,
+                validation_type=check_tls_sheets_by_solution.__name__,
             )
 
         m = simulation.metal_height
         if not recursive_all(m, lambda x: x > 0):
             raise ValidateSimError(
                 f"ElmerEPR3DSolution requires non-zero `metal_height` to be used (found: {m})",
-                validation_type=check_elmer_3d_epr_settings.__name__,
+                validation_type=check_tls_sheets_by_solution.__name__,
             )
+    elif isinstance(solution, (ElmerCapacitanceSolution, ElmerVectorHelmholtzSolution)):
+        # TLS sheets detached from metal
+        if simulation.tls_sheet_approximation and not simulation.detach_tls_sheets_from_body:
+            raise ValidateSimError(
+                "ElmerCapacitanceSolution and ElmerVectorHelmholtzSolution require simulation parameter "
+                + "`detach_tls_sheets_from_body` to be set True",
+                validation_type=check_tls_sheets_by_solution.__name__,
+            )
+    elif isinstance(solution, AnsysSolution):
+        # TLS sheets detached from metal
+        if simulation.tls_sheet_approximation and not simulation.detach_tls_sheets_from_body:
+            logging.warning("By convention `detach_tls_sheets_from_body` should be True in Ansys simulations")
 
 
 # Following code is not validation checks but utilities used by validity checks
+
+
+def recursive_all(l, condition):
+    if not isinstance(l, list):
+        return condition(l)
+    else:
+        return all((recursive_all(e, condition) for e in l))
 
 
 def get_port_names(simulation):
