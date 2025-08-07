@@ -16,7 +16,7 @@
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 from dataclasses import dataclass
-from typing import ClassVar
+from typing import ClassVar, Literal
 from kqcircuits.simulations.export.solution import Solution
 
 
@@ -66,12 +66,48 @@ class AnsysSolution(Solution):
 
 
 @dataclass(kw_only=True, frozen=True)
-class AnsysHfssSolution(AnsysSolution):
+class AnsysHfssTerminalSolution(AnsysSolution):
+    """
+    Base class for driven simulations using HFSS software
+
+    Args:
+        basis_order: FEM element polynomial basis order.
+        use_iterative_solver: Use iterative solution methods for solving the FEM linear system.
+        iterative_residual: Convergence tolerance of the iterative solver.
+        integrate_energies: Calculate energy integrals over each layer and save them into a file
+        integrate_magnetic_flux: Integrate magnetic fluxes through each non-pec sheet and save them into a file
+
+    """
+
+    basis_order: int = 1
+    use_iterative_solver: bool = False
+    iterative_residual: float = 1e-6
+    integrate_energies: bool = False
+    integrate_magnetic_flux: bool = False
+
+    def get_solution_data(self):
+        data = super().get_solution_data()
+        return {
+            **data,
+            "analysis_setup": {
+                **data["analysis_setup"],
+                "basis_order": self.basis_order,
+                "use_iterative_solver": self.use_iterative_solver,
+                "iterative_residual": self.iterative_residual,
+            },
+            "integrate_energies": self.integrate_energies,
+            "integrate_magnetic_flux": self.integrate_magnetic_flux,
+        }
+
+
+@dataclass(kw_only=True, frozen=True)
+class AnsysHfssSolution(AnsysHfssTerminalSolution):
     """
     Class for Ansys S-parameter (HFSS) solution parameters
 
     Args:
         frequency: Frequency for mesh refinement. To set up multifrequency analysis in HFSS use list of numbers.
+                   To run a broadband sweep between sweep_start and sweep_end use the string "broadband"
         max_delta_s: Stopping criterion in HFSS simulation.
         sweep_enabled: Determines if HFSS frequency sweep is enabled.
         sweep_start: The lowest frequency in the sweep.
@@ -79,12 +115,10 @@ class AnsysHfssSolution(AnsysSolution):
         sweep_count: Number of frequencies in the sweep.
         sweep_type: choices are "interpolating", "discrete" or "fast"
         capacitance_export: If True, the capacitance matrices are exported from S-parameter simulation
-        integrate_energies: Calculate energy integrals over each layer and save them into a file
-        integrate_magnetic_flux: Integrate magnetic fluxes through each non-pec sheet and save them into a file
     """
 
     ansys_tool: ClassVar[str] = "hfss"
-    frequency: float | list[float] = 5
+    frequency: float | list[float] | Literal["broadband"] = 5
     max_delta_s: float = 0.1
     sweep_enabled: bool = True
     sweep_start: float = 0
@@ -92,8 +126,6 @@ class AnsysHfssSolution(AnsysSolution):
     sweep_count: int = 101
     sweep_type: str = "interpolating"
     capacitance_export: bool = False
-    integrate_energies: bool = False
-    integrate_magnetic_flux: bool = False
 
     def get_solution_data(self):
         """Return the solution data in dictionary form."""
@@ -111,8 +143,6 @@ class AnsysHfssSolution(AnsysSolution):
                 "sweep_type": self.sweep_type,
             },
             "capacitance_export": self.capacitance_export,
-            "integrate_energies": self.integrate_energies,
-            "integrate_magnetic_flux": self.integrate_magnetic_flux,
         }
 
 
@@ -154,6 +184,7 @@ class AnsysEigenmodeSolution(AnsysSolution):
         n_modes: Number of eigenmodes to solve.
         integrate_energies: Calculate energy integrals over each layer and save them into a file
         integrate_magnetic_flux: Integrate magnetic fluxes through each non-pec sheet and save them into a file
+        basis_order: FEM element polynomial basis order.
     """
 
     ansys_tool: ClassVar[str] = "eigenmode"
@@ -162,6 +193,7 @@ class AnsysEigenmodeSolution(AnsysSolution):
     n_modes: int = 2
     integrate_energies: bool = False
     integrate_magnetic_flux: bool = False
+    basis_order: int = 1
 
     def get_solution_data(self):
         """Return the solution data in dictionary form."""
@@ -173,6 +205,7 @@ class AnsysEigenmodeSolution(AnsysSolution):
                 "min_frequency": self.min_frequency,
                 "max_delta_f": self.max_delta_f,
                 "n_modes": self.n_modes,
+                "basis_order": self.basis_order,
             },
             "integrate_energies": self.integrate_energies,
             "integrate_magnetic_flux": self.integrate_magnetic_flux,
@@ -180,22 +213,18 @@ class AnsysEigenmodeSolution(AnsysSolution):
 
 
 @dataclass(kw_only=True, frozen=True)
-class AnsysCurrentSolution(AnsysSolution):
+class AnsysCurrentSolution(AnsysHfssTerminalSolution):
     """
     Class for Ansys current excitation solution parameters
 
     Args:
         frequency: Frequency of alternating current excitation.
         max_delta_e: Stopping criterion in current excitation simulation.
-        integrate_energies: Calculate energy integrals over each layer and save them into a file
-        integrate_magnetic_flux: Integrate magnetic fluxes through each non-pec sheet and save them into a file
     """
 
     ansys_tool: ClassVar[str] = "current"
     frequency: float = 0.1
     max_delta_e: float = 0.1
-    integrate_energies: bool = False
-    integrate_magnetic_flux: bool = False
 
     def get_solution_data(self):
         """Return the solution data in dictionary form."""
@@ -207,28 +236,22 @@ class AnsysCurrentSolution(AnsysSolution):
                 "frequency": self.frequency,
                 "max_delta_e": self.max_delta_e,
             },
-            "integrate_energies": self.integrate_energies,
-            "integrate_magnetic_flux": self.integrate_magnetic_flux,
         }
 
 
 @dataclass(kw_only=True, frozen=True)
-class AnsysVoltageSolution(AnsysSolution):
+class AnsysVoltageSolution(AnsysHfssTerminalSolution):
     """
     Class for Ansys voltage excitation solution parameters
 
     Args:
         frequency: Frequency of alternating voltage excitation.
         max_delta_e: Stopping criterion in voltage excitation simulation.
-        integrate_energies: Calculate energy integrals over each layer and save them into a file
-        integrate_magnetic_flux: Integrate magnetic fluxes through each non-pec sheet and save them into a file
     """
 
     ansys_tool: ClassVar[str] = "voltage"
     frequency: float = 5
     max_delta_e: float = 0.1
-    integrate_energies: bool = False
-    integrate_magnetic_flux: bool = False
 
     def get_solution_data(self):
         """Return the solution data in dictionary form."""
@@ -240,8 +263,6 @@ class AnsysVoltageSolution(AnsysSolution):
                 "frequency": self.frequency,
                 "max_delta_e": self.max_delta_e,
             },
-            "integrate_energies": self.integrate_energies,
-            "integrate_magnetic_flux": self.integrate_magnetic_flux,
         }
 
 

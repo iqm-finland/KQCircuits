@@ -545,10 +545,11 @@ if not ansys_project_template:
     setup = data["analysis_setup"]
 
     if ansys_tool == "hfss":
-        # create setup_list for analysis setup with TWO OPTIONS: multiple frequency or single frequency
+        # create setup_list for analysis setup (adaptive meshing) with 3 options:
+        # single frequency, multiple frequencies, and broadband between sweep_start and sweep_end
+        is_broadband = setup["frequency"] == "broadband"
         multiple_frequency = isinstance(setup["frequency"], list)
-        setup_list = ["NAME:Setup1", "AdaptMultipleFreqs:=", multiple_frequency]
-
+        setup_list = ["NAME:Setup1", "AdaptMultipleFreqs:=", multiple_frequency or is_broadband]
         if multiple_frequency:
             max_delta_s = setup["max_delta_s"]
             if not isinstance(type(max_delta_s), list):
@@ -557,6 +558,22 @@ if not ansys_project_template:
             for f, s in zip(setup["frequency"], max_delta_s):
                 maf_setup_list += [str(f) + setup["frequency_units"] + ":=", [s]]
             setup_list += [maf_setup_list]
+        elif is_broadband:
+            maf_setup_list = [
+                "NAME:MultipleAdaptiveFreqsSetup",
+                [
+                    "NAME:Broadband",
+                    "Low:=",
+                    str(setup["sweep_start"]) + setup["frequency_units"],
+                    "High:=",
+                    str(setup["sweep_end"]) + setup["frequency_units"],
+                ],
+            ]
+            setup_list += [
+                maf_setup_list,
+                "MaxDeltaS:=",
+                setup["max_delta_s"],
+            ]
         else:
             setup_list += [
                 "Frequency:=",
@@ -578,7 +595,7 @@ if not ansys_project_template:
             True,
             ["NAME:MeshLink", "ImportMesh:=", False],
             "BasisOrder:=",
-            1,
+            setup["basis_order"],
             "DoLambdaRefine:=",
             True,
             "DoMaterialLambda:=",
@@ -598,7 +615,9 @@ if not ansys_project_template:
             "UseDomains:=",
             False,
             "UseIterativeSolver:=",
-            False,
+            setup["use_iterative_solver"],
+            "IterativeResidual:=",
+            setup["iterative_residual"],
             "SaveRadFieldsOnly:=",
             False,
             "SaveAnyFields:=",
@@ -687,7 +706,11 @@ if not ansys_project_template:
                 True,
                 ["NAME:MeshLink", "ImportMesh:=", False],
                 "BasisOrder:=",
-                1,
+                setup["basis_order"],
+                "UseIterativeSolver:=",
+                setup["use_iterative_solver"],
+                "IterativeResidual:=",
+                setup["iterative_residual"],
                 "DoLambdaRefine:=",
                 True,
                 "DoMaterialLambda:=",
@@ -773,7 +796,7 @@ if not ansys_project_template:
             "IsEnabled:=",
             True,
             "BasisOrder:=",
-            1,
+            setup["basis_order"],
         ]
         oAnalysisSetup.InsertSetup("HfssEigen", setup_list)
 

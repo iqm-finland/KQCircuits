@@ -177,6 +177,9 @@ def export_ansys(
     Returns:
         Path to exported bat file.
     """
+    if len(simulations) > 1 and not exit_after_run:
+        logging.warning("Exporting a sweep of multiple Ansys simulations with `exit_after_run=False`.")
+
     write_commit_reference_file(path)
     copy_content_into_directory(ANSYS_SCRIPT_PATHS, path, script_folder)
     json_filenames = []
