@@ -17,7 +17,7 @@
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
 from kqcircuits.pya_resolver import pya
-from kqcircuits.simulations.epr.util import EPRTarget
+from kqcircuits.simulations.epr.util import EPRTarget, create_bulk_and_mer_partition_regions
 from kqcircuits.simulations.partition_region import PartitionRegion
 
 # Partition region and correction cuts definitions for double_pads qubit
@@ -205,85 +205,56 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
         simulation.coupler_r / simulation.layout.dbu, simulation.coupler_r / simulation.layout.dbu, simulation.n
     )
 
-    result = [
-        PartitionRegion(
-            name=f"{prefix}coupler1mer",
-            face=simulation.face_ids[0],
-            region=coupler1_region,
-            vertical_dimensions=vertical_dimension,
-            metal_edge_dimensions=metal_edge_dimension,
-            visualise=True,
-        ),
-        PartitionRegion(
-            name=f"{prefix}coupler2mer",
-            face=simulation.face_ids[0],
-            region=coupler2_region,
-            vertical_dimensions=vertical_dimension,
-            metal_edge_dimensions=metal_edge_dimension,
-            visualise=True,
-        ),
-        PartitionRegion(
-            name=f"{prefix}islandmer",
-            face=simulation.face_ids[0],
-            region=sector_region,
-            vertical_dimensions=vertical_dimension,
-            metal_edge_dimensions=[6.0, metal_edge_dimensions[1]],
-            visualise=True,
-        ),
-        PartitionRegion(
-            name=f"{prefix}islandbulk",
-            face=simulation.face_ids[0],
-            region=sector_region,
-            vertical_dimensions=vertical_dimension,
-            metal_edge_dimensions=None,
-            visualise=True,
-        ),
-        PartitionRegion(
-            name=f"{prefix}leadsmer",
-            face=simulation.face_ids[0],
-            metal_edge_dimensions=metal_edge_dimensions,
-            region=pya.DBox(leads_p1, leads_p2),
-            vertical_dimensions=vertical_dimension,
-            visualise=True,
-        ),
-        PartitionRegion(
-            name=f"{prefix}leadsbulk",
-            face=simulation.face_ids[0],
-            region=pya.DBox(leads_p1, leads_p2),
-            vertical_dimensions=vertical_dimension,
-            visualise=True,
-        ),
-        PartitionRegion(
-            name=f"{prefix}tcomplementmer",
-            face=simulation.face_ids[0],
-            metal_edge_dimensions=metal_edge_dimensions,
-            region=None,
-            vertical_dimensions=vertical_dimension,
-            visualise=True,
-        ),
-        PartitionRegion(
-            name=f"{prefix}tcomplementbulk",
-            face=simulation.face_ids[0],
-            region=None,
-            vertical_dimensions=vertical_dimension,
-            visualise=True,
-        ),
-        PartitionRegion(
-            name=f"{prefix}bcomplementmer",
-            face=simulation.face_ids[1],
-            metal_edge_dimensions=metal_edge_dimensions,
-            region=None,
-            vertical_dimensions=vertical_dimension,
-            visualise=True,
-        ),
-        PartitionRegion(
-            name=f"{prefix}bcomplementbulk",
-            face=simulation.face_ids[1],
-            region=None,
-            vertical_dimensions=vertical_dimension,
-            visualise=True,
-        ),
-    ]
+    result = create_bulk_and_mer_partition_regions(
+        name=f"{prefix}coupler1",
+        face=simulation.face_ids[0],
+        region=coupler1_region,
+        vertical_dimensions=vertical_dimension,
+        metal_edge_dimensions=metal_edge_dimension,
+        bulk=False,
+        visualise=True,
+    )
+    result += create_bulk_and_mer_partition_regions(
+        name=f"{prefix}coupler2",
+        face=simulation.face_ids[0],
+        region=coupler2_region,
+        vertical_dimensions=vertical_dimension,
+        metal_edge_dimensions=metal_edge_dimension,
+        bulk=False,
+        visualise=True,
+    )
+    result += create_bulk_and_mer_partition_regions(
+        name=f"{prefix}island",
+        face=simulation.face_ids[0],
+        region=sector_region,
+        vertical_dimensions=vertical_dimension,
+        metal_edge_dimensions=[6.0, metal_edge_dimensions[1]],
+        visualise=True,
+    )
+    result += create_bulk_and_mer_partition_regions(
+        name=f"{prefix}leads",
+        face=simulation.face_ids[0],
+        metal_edge_dimensions=metal_edge_dimensions,
+        region=pya.DBox(leads_p1, leads_p2),
+        vertical_dimensions=vertical_dimension,
+        visualise=True,
+    )
+    result += create_bulk_and_mer_partition_regions(
+        name=f"{prefix}tcomplement",
+        face=simulation.face_ids[0],
+        metal_edge_dimensions=metal_edge_dimensions,
+        region=None,
+        vertical_dimensions=vertical_dimension,
+        visualise=True,
+    )
+    result += create_bulk_and_mer_partition_regions(
+        name=f"{prefix}bcomplement",
+        face=simulation.face_ids[1],
+        metal_edge_dimensions=metal_edge_dimensions,
+        region=None,
+        vertical_dimensions=vertical_dimension,
+        visualise=True,
+    )
     return result
 
 

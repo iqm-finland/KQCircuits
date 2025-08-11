@@ -20,6 +20,8 @@ import logging
 from typing import Callable
 from kqcircuits.elements.element import Element
 from kqcircuits.simulations.simulation import Simulation
+from kqcircuits.simulations.partition_region import PartitionRegion
+from kqcircuits.pya_resolver import pya
 
 
 EPRTarget = Simulation | Element
@@ -121,3 +123,42 @@ def extract_child_simulation(
             value = getattr(simulation, parameter)
         setattr(child_simulation, parameter, value)
     return child_simulation
+
+
+def create_bulk_and_mer_partition_regions(
+    name: str = "part",
+    face: str | None = None,
+    metal_edge_dimensions: list[float | None] | float | None = None,
+    region: pya.DBox | pya.DPolygon | list[pya.DBox] | list[pya.DPolygon] | pya.Region | None = None,
+    vertical_dimensions: list[float | None] | float | None = None,
+    visualise: bool = True,
+    mer: bool = True,
+    bulk: bool = True,
+) -> list[PartitionRegion]:
+    """
+    Creates both bulk and mer partition regions for element.
+    """
+    result = []
+    if mer:
+        result.append(
+            PartitionRegion(
+                name=f"{name}mer",
+                face=face,
+                metal_edge_dimensions=metal_edge_dimensions,
+                region=region,
+                vertical_dimensions=vertical_dimensions,
+                visualise=visualise,
+            )
+        )
+    if bulk:
+        result.append(
+            PartitionRegion(
+                name=f"{name}bulk",
+                face=face,
+                metal_edge_dimensions=None,
+                region=region,
+                vertical_dimensions=vertical_dimensions,
+                visualise=visualise,
+            )
+        )
+    return result

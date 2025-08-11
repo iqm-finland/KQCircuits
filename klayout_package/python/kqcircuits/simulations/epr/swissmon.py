@@ -19,7 +19,7 @@
 import logging
 from typing import Callable
 from kqcircuits.pya_resolver import pya
-from kqcircuits.simulations.epr.util import extract_child_simulation, EPRTarget
+from kqcircuits.simulations.epr.util import extract_child_simulation, EPRTarget, create_bulk_and_mer_partition_regions
 from kqcircuits.simulations.partition_region import PartitionRegion
 
 
@@ -32,25 +32,14 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
     cross_poly = pya.DPolygon([simulation.refpoints[f"epr_cross_{idx:02d}"] for idx in range(12)]).sized(
         metal_edge_dimension + simulation.island_r
     )
-
-    result = [
-        PartitionRegion(
-            name=f"{prefix}crossmer",
-            face=simulation.face_ids[0],
-            metal_edge_dimensions=metal_edge_dimension,
-            region=cross_poly,
-            vertical_dimensions=3.0,
-            visualise=True,
-        ),
-        PartitionRegion(
-            name=f"{prefix}crossbulk",
-            face=simulation.face_ids[0],
-            metal_edge_dimensions=None,
-            region=cross_poly,
-            vertical_dimensions=3.0,
-            visualise=True,
-        ),
-    ]
+    result = create_bulk_and_mer_partition_regions(
+        name=f"{prefix}cross",
+        face=simulation.face_ids[0],
+        metal_edge_dimensions=metal_edge_dimension,
+        region=cross_poly,
+        vertical_dimensions=3.0,
+        visualise=True,
+    )
 
     # These are added to include the waveguides attached to couplers in the coupler region
     def _get_coupler_wg_offset(i, s):
@@ -64,24 +53,14 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
                 simulation.refpoints[f"epr_cplr{idx}_min"] - metal_edge_margin + _get_coupler_wg_offset(idx, "min"),
                 simulation.refpoints[f"epr_cplr{idx}_max"] + metal_edge_margin + _get_coupler_wg_offset(idx, "max"),
             )
-            result += [
-                PartitionRegion(
-                    name=f"{prefix}{idx}cplrmer",
-                    face=simulation.face_ids[0],
-                    metal_edge_dimensions=metal_edge_dimension,
-                    region=cplr_region,
-                    vertical_dimensions=3.0,
-                    visualise=True,
-                ),
-                PartitionRegion(
-                    name=f"{prefix}{idx}cplrbulk",
-                    face=simulation.face_ids[0],
-                    metal_edge_dimensions=None,
-                    region=cplr_region,
-                    vertical_dimensions=3.0,
-                    visualise=True,
-                ),
-            ]
+            result += create_bulk_and_mer_partition_regions(
+                name=f"{prefix}{idx}cplr",
+                face=simulation.face_ids[0],
+                metal_edge_dimensions=metal_edge_dimension,
+                region=cplr_region,
+                vertical_dimensions=3.0,
+                visualise=True,
+            )
     return result
 
 

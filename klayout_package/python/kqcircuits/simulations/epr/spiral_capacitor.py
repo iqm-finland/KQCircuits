@@ -18,7 +18,7 @@
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.elements.finger_capacitor_square import eval_a2, eval_b2
-from kqcircuits.simulations.epr.util import EPRTarget
+from kqcircuits.simulations.epr.util import EPRTarget, create_bulk_and_mer_partition_regions
 from kqcircuits.simulations.partition_region import PartitionRegion
 
 vertical_dimension = 1.0
@@ -68,29 +68,32 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
         ).to_itype(simulation.layout.dbu)
     )
 
-    result = [
-        PartitionRegion(
-            name=f"{prefix}fingergmer",
-            face=simulation.face_ids[0],
-            metal_edge_dimensions=metal_edge_dimension,
-            region=finger_gaps,
-            vertical_dimensions=vertical_dimension,
-            visualise=True,
-        ),
+    result = create_bulk_and_mer_partition_regions(
+        name=f"{prefix}fingerg",
+        face=simulation.face_ids[0],
+        metal_edge_dimensions=metal_edge_dimension,
+        region=finger_gaps,
+        vertical_dimensions=vertical_dimension,
+        bulk=False,
+        visualise=True,
+    )
+
+    result += [
         PartitionRegion(
             name=f"{prefix}waveguides",
             face=simulation.face_ids[0],
             region=wg_region,
             visualise=True,
-        ),
-        PartitionRegion(
-            name=f"{prefix}groundgmer",
-            face=simulation.face_ids[0],
-            metal_edge_dimensions=metal_edge_dimension,
-            vertical_dimensions=vertical_dimension,
-            visualise=True,
-        ),
+        )
     ]
+    result += create_bulk_and_mer_partition_regions(
+        name=f"{prefix}groundg",
+        face=simulation.face_ids[0],
+        metal_edge_dimensions=metal_edge_dimension,
+        vertical_dimensions=vertical_dimension,
+        bulk=False,
+        visualise=True,
+    )
 
     return result
 

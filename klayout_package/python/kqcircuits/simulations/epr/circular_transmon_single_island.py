@@ -18,7 +18,7 @@
 
 import math
 from kqcircuits.pya_resolver import pya
-from kqcircuits.simulations.partition_region import PartitionRegion
+from kqcircuits.simulations.epr.util import create_bulk_and_mer_partition_regions
 
 
 def partition_regions(simulation):
@@ -60,15 +60,14 @@ def partition_regions(simulation):
 
         coupler_region = pya.DPolygon(points)
 
-        regions.append(
-            PartitionRegion(
-                name=f"{i}cplrmer",
-                face=simulation.face_ids[0],
-                region=coupler_region,
-                metal_edge_dimensions=2.0,
-                vertical_dimensions=3.0,
-                visualise=True,
-            )
+        regions += create_bulk_and_mer_partition_regions(
+            name=f"{i}cplr",
+            face=simulation.face_ids[0],
+            metal_edge_dimensions=2.0,
+            region=coupler_region,
+            vertical_dimensions=3.0,
+            bulk=False,
+            visualise=True,
         )
 
     # Junction hall partition region
@@ -94,27 +93,25 @@ def partition_regions(simulation):
     hall_transform = pya.DCplxTrans(1, simulation.squid_angle - 90, False, junction_pos + simulation.refpoints["base"])
     hall_region = hall_transform * hall_rect
 
-    regions.append(
-        PartitionRegion(
-            name="leadsmer",
-            face=simulation.face_ids[0],
-            region=hall_region,
-            metal_edge_dimensions=2.0,
-            vertical_dimensions=3.0,
-            visualise=True,
-        )
+    regions += create_bulk_and_mer_partition_regions(
+        name="leads",
+        face=simulation.face_ids[0],
+        metal_edge_dimensions=2.0,
+        region=hall_region,
+        vertical_dimensions=3.0,
+        bulk=False,
+        visualise=True,
     )
 
     # Main island complement region
-    regions.append(
-        PartitionRegion(
-            name="bcomplementmer",
-            face=simulation.face_ids[0],
-            region=None,
-            metal_edge_dimensions=2.0,
-            vertical_dimensions=3.0,
-            visualise=True,
-        )
+    regions += create_bulk_and_mer_partition_regions(
+        name="bcomplement",
+        face=simulation.face_ids[0],
+        metal_edge_dimensions=2.0,
+        region=None,
+        vertical_dimensions=3.0,
+        bulk=False,
+        visualise=True,
     )
 
     return regions

@@ -19,7 +19,13 @@
 import math
 from typing import Callable
 from kqcircuits.pya_resolver import pya
-from kqcircuits.simulations.epr.util import extract_child_simulation, in_gui, EPRTarget, get_mer_z
+from kqcircuits.simulations.epr.util import (
+    extract_child_simulation,
+    in_gui,
+    EPRTarget,
+    get_mer_z,
+    create_bulk_and_mer_partition_regions,
+)
 from kqcircuits.simulations.partition_region import PartitionRegion
 from kqcircuits.simulations.simulation import Simulation
 from kqcircuits.util.geometry_helper import arc_points
@@ -64,17 +70,19 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
 
     center = simulation.refpoints["base"]
 
-    def _init_part_reg(name, region, mer=True, face=0, override_y_dim=mer_y_dim):
+    def _init_part_reg(name, region, mer=True, bulk=True, face=0, override_y_dim=mer_y_dim):
         if in_gui(simulation):
             face_id = simulation.face_ids[face]
         else:
             face_id = simulation.face_stack[face]
-        return PartitionRegion(
-            name=f"{prefix}{name}" + ("mer" if mer else "bulk"),
+        return create_bulk_and_mer_partition_regions(
+            name=f"{prefix}{name}",
             face=face_id,
-            metal_edge_dimensions=mer_x_dim if mer else None,
+            metal_edge_dimensions=mer_x_dim,
             region=region,
             vertical_dimensions=override_y_dim,
+            mer=mer,
+            bulk=bulk,
             visualise=True,
         )
 
@@ -169,15 +177,12 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
         center + pya.DPoint(r_coupler_out - 1.5 * metal_edge_margin, -a2 / 2 - metal_edge_margin),
         center + pya.DPoint(r_tot + metal_edge_margin, a2 / 2 + metal_edge_margin),
     )
+
     # Some of the regions overlap so the order of definition is important
-    result = [
-        _init_part_reg("cplr", coupler_gap_region),
-        _init_part_reg("cplr", coupler_gap_region, mer=False),
-        _init_part_reg("1lead", lead_region),
-        _init_part_reg("1lead", lead_region, mer=False),
-        _init_part_reg("2lead", lead2_region),
-        _init_part_reg("2lead", lead2_region, mer=False),
-    ]
+    result = []
+    result += _init_part_reg("cplr", coupler_gap_region)
+    result += _init_part_reg("1lead", lead_region)
+    result += _init_part_reg("2lead", lead2_region)
 
     if _has_waveguides(simulation):
         x_guide = _waveguide_end_dist(simulation)
@@ -194,27 +199,21 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
             center + pya.DPoint(r_tot + metal_edge_margin / 2, -y2),
             center + pya.DPoint(x_guide + metal_edge_margin, y2),
         )
-        result += [
-            _init_part_reg("port_a", wg1_region),
-            _init_part_reg("port_b", wg2_region),
-            # Making the wg bulk regions very large to contain all wg energy
-            _init_part_reg("port_a", wg1_region, mer=False, override_y_dim=100),
-            _init_part_reg("port_b", wg2_region, mer=False, override_y_dim=100),
-        ]
 
-    result += [
-        _init_part_reg("1gap", inner_gap_region),
-        _init_part_reg("2gap", outer_gap_region),
-        _init_part_reg("1gap", inner_gap_region, mer=False),
-        _init_part_reg("2gap", outer_gap_region, mer=False),
-        _init_part_reg("bcomplement", None),
-        _init_part_reg("bcomplement", None, mer=False),
-    ]
+        result += _init_part_reg("port_a", wg1_region, bulk=False)
+        result += _init_part_reg("port_b", wg2_region, bulk=False)
+        # Making the wg bulk regions very large to contain all wg energy
+        result += _init_part_reg("port_a", wg1_region, mer=False, override_y_dim=100)
+        result += _init_part_reg("port_b", wg2_region, mer=False, override_y_dim=100)
+
+    result += _init_part_reg("1gap", inner_gap_region)
+    result += _init_part_reg("2gap", outer_gap_region)
+    result += _init_part_reg("bcomplement", None)
 
     if _is_flip_chip(simulation):
         if simulation.etch_opposite_face:
-            result.append(_init_part_reg("tcomplement", None, face=1))
-        result.append(_init_part_reg("tcomplement", None, mer=False, face=1))
+            result += _init_part_reg("tcomplement", None, bulk=False, face=1)
+        result += _init_part_reg("tcomplement", None, mer=False, face=1)
 
     return result
 

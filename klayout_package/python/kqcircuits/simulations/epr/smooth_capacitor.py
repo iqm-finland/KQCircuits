@@ -19,7 +19,7 @@
 from kqcircuits.pya_resolver import pya
 from kqcircuits.elements.smooth_capacitor import SmoothCapacitor
 from kqcircuits.elements.finger_capacitor_square import eval_a2, eval_b2
-from kqcircuits.simulations.epr.util import in_gui, EPRTarget, get_mer_z
+from kqcircuits.simulations.epr.util import in_gui, EPRTarget, get_mer_z, create_bulk_and_mer_partition_regions
 from kqcircuits.simulations.partition_region import PartitionRegion
 
 
@@ -80,97 +80,52 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
             port_b_middley = pya.DPoint(0, port_b_middle.y)
             port_b_region = pya.DBox(port_b_middle - port_b_dp, port_b_dpx_edge + port_b_middley + port_b_dpy)
 
-        result += [
-            PartitionRegion(
-                name=f"{prefix}port_bmer",
-                face=simulation.face_ids[0],
-                metal_edge_dimensions=metal_edge_dimension,
-                region=port_b_region,
-                vertical_dimensions=vertical_dimension,
-                visualise=True,
-            ),
-            PartitionRegion(
-                name=f"{prefix}port_bbulk",
-                face=simulation.face_ids[0],
-                metal_edge_dimensions=None,
-                region=port_b_region,
-                vertical_dimensions=vertical_dimension,
-                visualise=True,
-            ),
-            PartitionRegion(
-                name=f"{prefix}port_amer",
-                face=simulation.face_ids[0],
-                metal_edge_dimensions=metal_edge_dimension,
-                region=port_a_region,
-                vertical_dimensions=vertical_dimension,
-                visualise=True,
-            ),
-            PartitionRegion(
-                name=f"{prefix}port_abulk",
-                face=simulation.face_ids[0],
-                metal_edge_dimensions=None,
-                region=port_a_region,
-                vertical_dimensions=vertical_dimension,
-                visualise=True,
-            ),
-        ]
-
-    result += [
-        PartitionRegion(
-            name=f"{prefix}fingersmer",
+        result += create_bulk_and_mer_partition_regions(
+            name=f"{prefix}port_b",
             face=simulation.face_ids[0],
             metal_edge_dimensions=metal_edge_dimension,
-            region=fingers,
+            region=port_b_region,
             vertical_dimensions=vertical_dimension,
             visualise=True,
-        ),
-        PartitionRegion(
-            name=f"{prefix}fingersbulk",
-            face=simulation.face_ids[0],
-            metal_edge_dimensions=None,
-            region=fingers,
-            vertical_dimensions=vertical_dimension,
-            visualise=True,
-        ),
-        PartitionRegion(
-            name=f"{prefix}bcomplementmer",
+        )
+
+        result += create_bulk_and_mer_partition_regions(
+            name=f"{prefix}port_a",
             face=simulation.face_ids[0],
             metal_edge_dimensions=metal_edge_dimension,
-            region=None,
+            region=port_a_region,
             vertical_dimensions=vertical_dimension,
             visualise=True,
-        ),
-        PartitionRegion(
-            name=f"{prefix}bcomplementbulk",
-            face=simulation.face_ids[0],
-            region=None,
-            vertical_dimensions=vertical_dimension,
-            visualise=True,
-        ),
-    ]
-
+        )
+    result += create_bulk_and_mer_partition_regions(
+        name=f"{prefix}fingers",
+        face=simulation.face_ids[0],
+        metal_edge_dimensions=metal_edge_dimension,
+        region=fingers,
+        vertical_dimensions=vertical_dimension,
+        visualise=True,
+    )
+    result += create_bulk_and_mer_partition_regions(
+        name=f"{prefix}bcomplement",
+        face=simulation.face_ids[0],
+        metal_edge_dimensions=metal_edge_dimension,
+        region=None,
+        vertical_dimensions=vertical_dimension,
+        visualise=True,
+    )
     if in_gui(simulation):
         make_t_regions = True
     else:
         make_t_regions = len(simulation.face_stack) > 1
     if make_t_regions:
-        result += [
-            PartitionRegion(
-                name=f"{prefix}tcomplementmer",
-                face=simulation.face_ids[1],
-                metal_edge_dimensions=metal_edge_dimension,
-                region=None,
-                vertical_dimensions=vertical_dimension,
-                visualise=True,
-            ),
-            PartitionRegion(
-                name=f"{prefix}tcomplementbulk",
-                face=simulation.face_ids[1],
-                region=None,
-                vertical_dimensions=vertical_dimension,
-                visualise=True,
-            ),
-        ]
+        result += create_bulk_and_mer_partition_regions(
+            name=f"{prefix}tcomplement",
+            face=simulation.face_ids[1],
+            metal_edge_dimensions=metal_edge_dimension,
+            region=None,
+            vertical_dimensions=vertical_dimension,
+            visualise=True,
+        )
 
     return result
 
