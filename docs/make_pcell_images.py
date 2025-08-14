@@ -47,9 +47,13 @@ if __name__ == "__main__":
     err = pool.map(to_png, pcells)
 
     ret = 0
-    for e in err:
+    for idx, e in enumerate(err):
         if e:
-            print(e, file=sys.stderr)
+            print(
+                f"PCell {pcells[idx].__name__} couldn't be generated with default parameters, see error below:",
+                file=sys.stderr,
+            )
+            print(f"{e}\n", file=sys.stderr)
             ret = -1
     print("Finished creating PCell images.")
     exit(ret)
