@@ -162,12 +162,16 @@ def _export_netlist(circuit, filename, internal_layout, original_layout, cell_ma
     # retrieve all instances in last_cell hierarchy
     # instances in original layout are identified by cell index and transformation
     # the concatenated transformation of instance's predecessors is stored as tuple's second element
-    original_instances = []
+    original_instances_by_cell_index = {}
     instance_queue = list(last_cell.each_inst())
     instance_queue = [(instance, pya.DCplxTrans.R0) for instance in instance_queue]
     while len(instance_queue) > 0:
         instance, instance_trans = instance_queue.pop(0)
-        original_instances.append((instance, instance_trans))
+        cell_index = instance.cell.cell_index()
+        if cell_index in original_instances_by_cell_index:
+            original_instances_by_cell_index[cell_index].append((instance, instance_trans))
+        else:
+            original_instances_by_cell_index[cell_index] = [(instance, instance_trans)]
         for child in instance.cell.each_inst():
             instance_queue.append((child, instance_trans * instance.dcplx_trans))
 
@@ -180,9 +184,7 @@ def _export_netlist(circuit, filename, internal_layout, original_layout, cell_ma
         internal_cell = internal_layout.cell(subcircuit.circuit_ref().cell_index)
         if cell_mapping.has_mapping(internal_cell.cell_index()):
             original_cell_index = cell_mapping.cell_mapping(internal_cell.cell_index())
-            possible_instances = [
-                (i, i_trans) for i, i_trans in original_instances if i.cell.cell_index() == original_cell_index
-            ]
+            possible_instances = original_instances_by_cell_index[original_cell_index]
         else:
             original_cell = original_layout.cell(internal_cell.name)
             if not original_cell:
@@ -204,9 +206,7 @@ def _export_netlist(circuit, filename, internal_layout, original_layout, cell_ma
                     )
                 )
                 original_cell_index = original_cell.cell_index()
-                possible_instances = [
-                    (i, i_trans) for i, i_trans in original_instances if i.cell.cell_index() == original_cell_index
-                ]
+                possible_instances = original_instances_by_cell_index[original_cell_index]
 
         used_internal_cells.add(internal_cell)
 
