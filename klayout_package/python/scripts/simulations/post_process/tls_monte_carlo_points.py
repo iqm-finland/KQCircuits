@@ -50,6 +50,7 @@ import random
 import sys
 import klayout.db
 import numpy as np
+from packaging.version import Version
 
 # Find data files
 path = os.path.curdir
@@ -62,6 +63,10 @@ if not files:
         print("No suitable simulation files detected.")
         sys.exit()
     print("No '_project_results.json' files detected. Will sample MC points for each .gds file")
+
+sample_from_walls = Version(klayout.__version__) >= Version("0.30.0")
+if not sample_from_walls:
+    print("WARNING: Sampling from MA and SA walls is only supported with KLayout version 0.30.0 or higher")
 
 
 def get_random_point_from_box(
@@ -343,7 +348,7 @@ for file_name, parameters in sim_parameters.items():
 
         # Sample from gap walls
         gap_region = regions.get(f"{face}_gap")
-        if gap_region:
+        if gap_region and sample_from_walls:
             metal_region = sum(
                 (r for l, r in regions.items() if (l.startswith(f"{face}_signal") or l.startswith(f"{face}_ground"))),
                 start=klayout.db.Region(),

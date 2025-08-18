@@ -312,6 +312,10 @@ class Simulation:
 
         self.name = self.name.replace(" ", "").replace(",", "__")  # no spaces or commas in filenames
 
+        unused_kwargs = set(kwargs.keys()) - set(schema.keys())
+        if unused_kwargs:
+            logging.warning(f"Trying to set parameters which do not exist: {unused_kwargs} for {self.name}")
+
         self.ports = []
         if "cell" in kwargs:
             self.cell = kwargs["cell"]

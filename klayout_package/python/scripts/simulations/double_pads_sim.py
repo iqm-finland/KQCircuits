@@ -122,8 +122,8 @@ for sim_tool in sim_tools:
         "workflow": {
             "python_executable": "python",
             "n_workers": 4,
-            "elmer_n_processes": 4,
-            "gmsh_n_threads": 4,
+            "elmer_n_processes": -1,
+            "gmsh_n_threads": -1,
             "elmer_n_threads": 1,
         },
         "mesh_size": {

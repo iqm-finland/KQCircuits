@@ -98,7 +98,7 @@ workflow = {
     "elmer_n_processes": 1,
     "elmer_n_threads": 1,
     "gmsh_n_threads": 1,
-    "n_workers": 10,  # Run maximum of 10 parallel simulations, each with 1 core/thread
+    "n_workers": -1,  # Run as many parallel simulations as there are cores available
 }
 
 mesh_size = {"global_max": 100, "ma_layer": 1, "ms_layer": 1, "sa_layer": 1, "ma_layer&ms_layer": [0.5e-3, 0.5e-3, 0.2]}

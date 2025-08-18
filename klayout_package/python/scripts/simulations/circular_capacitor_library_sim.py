@@ -45,7 +45,6 @@ sim_parameters = {
     "box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(1000, 1000)),
     "port_size": 200,
     "face_stack": ["1t1"],
-    "corner_r": 2,
     "chip_distance": 8,
     "ground_gap": 20,
     "fixed_length": 0,

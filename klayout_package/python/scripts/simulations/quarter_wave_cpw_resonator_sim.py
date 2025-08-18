@@ -68,10 +68,8 @@ sim_parameters = {
     "res_b": 6,
     "a": 10,
     "b": 6,
-    "turn_radius": 1.0,
     "n_fingers": 2.0,
     "l_fingers": 5.0,
-    "finger_gap": 1.0,
     "type_coupler": "smooth",
     "tl_airbridges": False,
 }
@@ -137,7 +135,7 @@ if use_elmer:
                                #             second level of parallelization. -1 uses all
                                #             the physical cores (based on the machine which
                                #             was used to prepare the simulation).
-        'elmer_n_processes': 8,  # <------ This defines the number of
+        'elmer_n_processes': -1,  # <------ This defines the number of
                                                  #         processes in the second level
                                                  #         of parallelization. -1 uses all
                                                  #         the physical cores (based on

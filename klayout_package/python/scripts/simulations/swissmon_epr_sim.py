@@ -51,6 +51,7 @@ sim_parameters = {
     "tls_sheet_approximation": True,
     "tls_layer_thickness": 0.01,
     "n": 24,
+    "small_shape_area": 0.5,  # Suppress warnings about small shapes (default 1.0)
 }
 
 # Get layout
