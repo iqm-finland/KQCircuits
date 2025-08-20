@@ -1064,6 +1064,9 @@
     <span class="n">LIBRARY_PATH</span> <span class="o">=</span> <span class="s2">&quot;chips&quot;</span>
 
     <span class="n">with_grid</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Make ground plane grid&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">gnd_grid_faces</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span>
+        <span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Faces on which the grid is generated, [-1] is all, [] is None&quot;</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
     <span class="n">merge_base_metal_gap</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Merge grid and other gaps into base_metal_gap layer&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
     <span class="n">a_capped</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span>
         <span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span>
@@ -1249,8 +1252,10 @@
 
 <span class="sd">        This method is called in build(). Override this method to produce a different set of chip frames.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">all_faces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gnd_grid_faces</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gnd_grid_faces</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames_enabled</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">produce_ground_on_face_grid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_box</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">face</span><span class="p">)),</span> <span class="nb">int</span><span class="p">(</span><span class="n">face</span><span class="p">))</span></div>
+            <span class="k">if</span> <span class="n">all_faces</span> <span class="ow">or</span> <span class="n">face</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gnd_grid_faces</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">produce_ground_on_face_grid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_box</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">face</span><span class="p">)),</span> <span class="nb">int</span><span class="p">(</span><span class="n">face</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="Chip.produce_ground_on_face_grid">
