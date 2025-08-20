@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.epr.circular_transmon_single_island &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.simulations.epr.circular_transmon_single_island &mdash; KQCircuits 4.9.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../../_static/documentation_options.js?v=e919e384"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/js/theme.js"></script>
@@ -1012,7 +1012,7 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.pya_resolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.partition_region</span><span class="w"> </span><span class="kn">import</span> <span class="n">PartitionRegion</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.epr.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_bulk_and_mer_partition_regions</span>
 
 
 <div class="viewcode-block" id="partition_regions">
@@ -1056,15 +1056,14 @@
 
         <span class="n">coupler_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
 
-        <span class="n">regions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="n">PartitionRegion</span><span class="p">(</span>
-                <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">cplrmer&quot;</span><span class="p">,</span>
-                <span class="n">face</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                <span class="n">region</span><span class="o">=</span><span class="n">coupler_region</span><span class="p">,</span>
-                <span class="n">metal_edge_dimensions</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
-                <span class="n">vertical_dimensions</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
-                <span class="n">visualise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="p">)</span>
+        <span class="n">regions</span> <span class="o">+=</span> <span class="n">create_bulk_and_mer_partition_regions</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">cplr&quot;</span><span class="p">,</span>
+            <span class="n">face</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">metal_edge_dimensions</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+            <span class="n">region</span><span class="o">=</span><span class="n">coupler_region</span><span class="p">,</span>
+            <span class="n">vertical_dimensions</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
+            <span class="n">bulk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">visualise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="c1"># Junction hall partition region</span>
@@ -1090,27 +1089,25 @@
     <span class="n">hall_transform</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">squid_angle</span> <span class="o">-</span> <span class="mi">90</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">junction_pos</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">])</span>
     <span class="n">hall_region</span> <span class="o">=</span> <span class="n">hall_transform</span> <span class="o">*</span> <span class="n">hall_rect</span>
 
-    <span class="n">regions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-        <span class="n">PartitionRegion</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;leadsmer&quot;</span><span class="p">,</span>
-            <span class="n">face</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-            <span class="n">region</span><span class="o">=</span><span class="n">hall_region</span><span class="p">,</span>
-            <span class="n">metal_edge_dimensions</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
-            <span class="n">vertical_dimensions</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
-            <span class="n">visualise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="p">)</span>
+    <span class="n">regions</span> <span class="o">+=</span> <span class="n">create_bulk_and_mer_partition_regions</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;leads&quot;</span><span class="p">,</span>
+        <span class="n">face</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">metal_edge_dimensions</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+        <span class="n">region</span><span class="o">=</span><span class="n">hall_region</span><span class="p">,</span>
+        <span class="n">vertical_dimensions</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
+        <span class="n">bulk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">visualise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c1"># Main island complement region</span>
-    <span class="n">regions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-        <span class="n">PartitionRegion</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;bcomplementmer&quot;</span><span class="p">,</span>
-            <span class="n">face</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-            <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">metal_edge_dimensions</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
-            <span class="n">vertical_dimensions</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
-            <span class="n">visualise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="p">)</span>
+    <span class="n">regions</span> <span class="o">+=</span> <span class="n">create_bulk_and_mer_partition_regions</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;bcomplement&quot;</span><span class="p">,</span>
+        <span class="n">face</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">metal_edge_dimensions</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+        <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">vertical_dimensions</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
+        <span class="n">bulk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">visualise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">regions</span></div>

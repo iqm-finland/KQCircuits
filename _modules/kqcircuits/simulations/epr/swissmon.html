@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.epr.swissmon &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.simulations.epr.swissmon &mdash; KQCircuits 4.9.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../../_static/documentation_options.js?v=e919e384"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/js/theme.js"></script>
@@ -1013,7 +1013,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.pya_resolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.epr.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">extract_child_simulation</span><span class="p">,</span> <span class="n">EPRTarget</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.epr.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">extract_child_simulation</span><span class="p">,</span> <span class="n">EPRTarget</span><span class="p">,</span> <span class="n">create_bulk_and_mer_partition_regions</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.partition_region</span><span class="w"> </span><span class="kn">import</span> <span class="n">PartitionRegion</span>
 
 
@@ -1028,25 +1028,14 @@
     <span class="n">cross_poly</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">([</span><span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;epr_cross_</span><span class="si">{</span><span class="n">idx</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">12</span><span class="p">)])</span><span class="o">.</span><span class="n">sized</span><span class="p">(</span>
         <span class="n">metal_edge_dimension</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">island_r</span>
     <span class="p">)</span>
-
-    <span class="n">result</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">PartitionRegion</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">crossmer&quot;</span><span class="p">,</span>
-            <span class="n">face</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-            <span class="n">metal_edge_dimensions</span><span class="o">=</span><span class="n">metal_edge_dimension</span><span class="p">,</span>
-            <span class="n">region</span><span class="o">=</span><span class="n">cross_poly</span><span class="p">,</span>
-            <span class="n">vertical_dimensions</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
-            <span class="n">visualise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="p">),</span>
-        <span class="n">PartitionRegion</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">crossbulk&quot;</span><span class="p">,</span>
-            <span class="n">face</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-            <span class="n">metal_edge_dimensions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">region</span><span class="o">=</span><span class="n">cross_poly</span><span class="p">,</span>
-            <span class="n">vertical_dimensions</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
-            <span class="n">visualise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="p">),</span>
-    <span class="p">]</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">create_bulk_and_mer_partition_regions</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">cross&quot;</span><span class="p">,</span>
+        <span class="n">face</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">metal_edge_dimensions</span><span class="o">=</span><span class="n">metal_edge_dimension</span><span class="p">,</span>
+        <span class="n">region</span><span class="o">=</span><span class="n">cross_poly</span><span class="p">,</span>
+        <span class="n">vertical_dimensions</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
+        <span class="n">visualise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="c1"># These are added to include the waveguides attached to couplers in the coupler region</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_coupler_wg_offset</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
@@ -1060,24 +1049,14 @@
                 <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;epr_cplr</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">_min&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">metal_edge_margin</span> <span class="o">+</span> <span class="n">_get_coupler_wg_offset</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="s2">&quot;min&quot;</span><span class="p">),</span>
                 <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;epr_cplr</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">_max&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">metal_edge_margin</span> <span class="o">+</span> <span class="n">_get_coupler_wg_offset</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">),</span>
             <span class="p">)</span>
-            <span class="n">result</span> <span class="o">+=</span> <span class="p">[</span>
-                <span class="n">PartitionRegion</span><span class="p">(</span>
-                    <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">idx</span><span class="si">}</span><span class="s2">cplrmer&quot;</span><span class="p">,</span>
-                    <span class="n">face</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                    <span class="n">metal_edge_dimensions</span><span class="o">=</span><span class="n">metal_edge_dimension</span><span class="p">,</span>
-                    <span class="n">region</span><span class="o">=</span><span class="n">cplr_region</span><span class="p">,</span>
-                    <span class="n">vertical_dimensions</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
-                    <span class="n">visualise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="p">),</span>
-                <span class="n">PartitionRegion</span><span class="p">(</span>
-                    <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">idx</span><span class="si">}</span><span class="s2">cplrbulk&quot;</span><span class="p">,</span>
-                    <span class="n">face</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                    <span class="n">metal_edge_dimensions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">region</span><span class="o">=</span><span class="n">cplr_region</span><span class="p">,</span>
-                    <span class="n">vertical_dimensions</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
-                    <span class="n">visualise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="p">),</span>
-            <span class="p">]</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="n">create_bulk_and_mer_partition_regions</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">idx</span><span class="si">}</span><span class="s2">cplr&quot;</span><span class="p">,</span>
+                <span class="n">face</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">metal_edge_dimensions</span><span class="o">=</span><span class="n">metal_edge_dimension</span><span class="p">,</span>
+                <span class="n">region</span><span class="o">=</span><span class="n">cplr_region</span><span class="p">,</span>
+                <span class="n">vertical_dimensions</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
+                <span class="n">visualise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
 

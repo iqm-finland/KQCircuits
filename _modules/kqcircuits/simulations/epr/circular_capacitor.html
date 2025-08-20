@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.epr.circular_capacitor &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.simulations.epr.circular_capacitor &mdash; KQCircuits 4.9.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../../_static/documentation_options.js?v=e919e384"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/js/theme.js"></script>
@@ -1013,7 +1013,13 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.pya_resolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.epr.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">extract_child_simulation</span><span class="p">,</span> <span class="n">in_gui</span><span class="p">,</span> <span class="n">EPRTarget</span><span class="p">,</span> <span class="n">get_mer_z</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.epr.util</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">extract_child_simulation</span><span class="p">,</span>
+    <span class="n">in_gui</span><span class="p">,</span>
+    <span class="n">EPRTarget</span><span class="p">,</span>
+    <span class="n">get_mer_z</span><span class="p">,</span>
+    <span class="n">create_bulk_and_mer_partition_regions</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.partition_region</span><span class="w"> </span><span class="kn">import</span> <span class="n">PartitionRegion</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Simulation</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.geometry_helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">arc_points</span>
@@ -1060,17 +1066,19 @@
 
     <span class="n">center</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_init_part_reg</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">mer</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">override_y_dim</span><span class="o">=</span><span class="n">mer_y_dim</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_init_part_reg</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">mer</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bulk</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">override_y_dim</span><span class="o">=</span><span class="n">mer_y_dim</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">in_gui</span><span class="p">(</span><span class="n">simulation</span><span class="p">):</span>
             <span class="n">face_id</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="n">face</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">face_id</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">face_stack</span><span class="p">[</span><span class="n">face</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">PartitionRegion</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;mer&quot;</span> <span class="k">if</span> <span class="n">mer</span> <span class="k">else</span> <span class="s2">&quot;bulk&quot;</span><span class="p">),</span>
+        <span class="k">return</span> <span class="n">create_bulk_and_mer_partition_regions</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">face</span><span class="o">=</span><span class="n">face_id</span><span class="p">,</span>
-            <span class="n">metal_edge_dimensions</span><span class="o">=</span><span class="n">mer_x_dim</span> <span class="k">if</span> <span class="n">mer</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">metal_edge_dimensions</span><span class="o">=</span><span class="n">mer_x_dim</span><span class="p">,</span>
             <span class="n">region</span><span class="o">=</span><span class="n">region</span><span class="p">,</span>
             <span class="n">vertical_dimensions</span><span class="o">=</span><span class="n">override_y_dim</span><span class="p">,</span>
+            <span class="n">mer</span><span class="o">=</span><span class="n">mer</span><span class="p">,</span>
+            <span class="n">bulk</span><span class="o">=</span><span class="n">bulk</span><span class="p">,</span>
             <span class="n">visualise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
 
@@ -1165,15 +1173,12 @@
         <span class="n">center</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">r_coupler_out</span> <span class="o">-</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">metal_edge_margin</span><span class="p">,</span> <span class="o">-</span><span class="n">a2</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">metal_edge_margin</span><span class="p">),</span>
         <span class="n">center</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">r_tot</span> <span class="o">+</span> <span class="n">metal_edge_margin</span><span class="p">,</span> <span class="n">a2</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">metal_edge_margin</span><span class="p">),</span>
     <span class="p">)</span>
+
     <span class="c1"># Some of the regions overlap so the order of definition is important</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;cplr&quot;</span><span class="p">,</span> <span class="n">coupler_gap_region</span><span class="p">),</span>
-        <span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;cplr&quot;</span><span class="p">,</span> <span class="n">coupler_gap_region</span><span class="p">,</span> <span class="n">mer</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
-        <span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;1lead&quot;</span><span class="p">,</span> <span class="n">lead_region</span><span class="p">),</span>
-        <span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;1lead&quot;</span><span class="p">,</span> <span class="n">lead_region</span><span class="p">,</span> <span class="n">mer</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
-        <span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;2lead&quot;</span><span class="p">,</span> <span class="n">lead2_region</span><span class="p">),</span>
-        <span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;2lead&quot;</span><span class="p">,</span> <span class="n">lead2_region</span><span class="p">,</span> <span class="n">mer</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
-    <span class="p">]</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">result</span> <span class="o">+=</span> <span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;cplr&quot;</span><span class="p">,</span> <span class="n">coupler_gap_region</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">+=</span> <span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;1lead&quot;</span><span class="p">,</span> <span class="n">lead_region</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">+=</span> <span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;2lead&quot;</span><span class="p">,</span> <span class="n">lead2_region</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">_has_waveguides</span><span class="p">(</span><span class="n">simulation</span><span class="p">):</span>
         <span class="n">x_guide</span> <span class="o">=</span> <span class="n">_waveguide_end_dist</span><span class="p">(</span><span class="n">simulation</span><span class="p">)</span>
@@ -1190,27 +1195,21 @@
             <span class="n">center</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">r_tot</span> <span class="o">+</span> <span class="n">metal_edge_margin</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="n">y2</span><span class="p">),</span>
             <span class="n">center</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x_guide</span> <span class="o">+</span> <span class="n">metal_edge_margin</span><span class="p">,</span> <span class="n">y2</span><span class="p">),</span>
         <span class="p">)</span>
-        <span class="n">result</span> <span class="o">+=</span> <span class="p">[</span>
-            <span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;port_a&quot;</span><span class="p">,</span> <span class="n">wg1_region</span><span class="p">),</span>
-            <span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;port_b&quot;</span><span class="p">,</span> <span class="n">wg2_region</span><span class="p">),</span>
-            <span class="c1"># Making the wg bulk regions very large to contain all wg energy</span>
-            <span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;port_a&quot;</span><span class="p">,</span> <span class="n">wg1_region</span><span class="p">,</span> <span class="n">mer</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">override_y_dim</span><span class="o">=</span><span class="mi">100</span><span class="p">),</span>
-            <span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;port_b&quot;</span><span class="p">,</span> <span class="n">wg2_region</span><span class="p">,</span> <span class="n">mer</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">override_y_dim</span><span class="o">=</span><span class="mi">100</span><span class="p">),</span>
-        <span class="p">]</span>
 
-    <span class="n">result</span> <span class="o">+=</span> <span class="p">[</span>
-        <span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;1gap&quot;</span><span class="p">,</span> <span class="n">inner_gap_region</span><span class="p">),</span>
-        <span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;2gap&quot;</span><span class="p">,</span> <span class="n">outer_gap_region</span><span class="p">),</span>
-        <span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;1gap&quot;</span><span class="p">,</span> <span class="n">inner_gap_region</span><span class="p">,</span> <span class="n">mer</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
-        <span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;2gap&quot;</span><span class="p">,</span> <span class="n">outer_gap_region</span><span class="p">,</span> <span class="n">mer</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
-        <span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;bcomplement&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
-        <span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;bcomplement&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">mer</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
-    <span class="p">]</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;port_a&quot;</span><span class="p">,</span> <span class="n">wg1_region</span><span class="p">,</span> <span class="n">bulk</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;port_b&quot;</span><span class="p">,</span> <span class="n">wg2_region</span><span class="p">,</span> <span class="n">bulk</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="c1"># Making the wg bulk regions very large to contain all wg energy</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;port_a&quot;</span><span class="p">,</span> <span class="n">wg1_region</span><span class="p">,</span> <span class="n">mer</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">override_y_dim</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;port_b&quot;</span><span class="p">,</span> <span class="n">wg2_region</span><span class="p">,</span> <span class="n">mer</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">override_y_dim</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+    <span class="n">result</span> <span class="o">+=</span> <span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;1gap&quot;</span><span class="p">,</span> <span class="n">inner_gap_region</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">+=</span> <span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;2gap&quot;</span><span class="p">,</span> <span class="n">outer_gap_region</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">+=</span> <span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;bcomplement&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">_is_flip_chip</span><span class="p">(</span><span class="n">simulation</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">simulation</span><span class="o">.</span><span class="n">etch_opposite_face</span><span class="p">:</span>
-            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;tcomplement&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;tcomplement&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">mer</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;tcomplement&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">bulk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;tcomplement&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">mer</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">result</span></div>
 

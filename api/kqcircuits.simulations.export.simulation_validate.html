@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.export.simulation_validate &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.simulations.export.simulation_validate &mdash; KQCircuits 4.9.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
@@ -18,7 +18,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/documentation_options.js?v=e919e384"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -1084,11 +1084,21 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_validate.check_elmer_3d_epr_settings">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.simulation_validate.</span></span><span class="sig-name descname"><span class="pre">check_elmer_3d_epr_settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solution</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_validate.html#check_elmer_3d_epr_settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_validate.check_elmer_3d_epr_settings" title="Link to this definition"></a></dt>
-<dd><p>Validation check: Ensures that non-zero metal thickness and <cite>detach_tls_sheets_from_body=False</cite> are used
-with <cite>ElmerEPR3DSolution</cite></p>
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_validate.check_tls_sheet_generation">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.simulation_validate.</span></span><span class="sig-name descname"><span class="pre">check_tls_sheet_generation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulation</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_validate.html#check_tls_sheet_generation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_validate.check_tls_sheet_generation" title="Link to this definition"></a></dt>
+<dd><p>Validation check: Ensures that TLS sheets are correctly generated and not overlapping with sheet metals</p>
 </dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_validate.check_tls_sheets_by_solution">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.simulation_validate.</span></span><span class="sig-name descname"><span class="pre">check_tls_sheets_by_solution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solution</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_validate.html#check_tls_sheets_by_solution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_validate.check_tls_sheets_by_solution" title="Link to this definition"></a></dt>
+<dd><p>Validation check: enforces solution type specific restrictions on TLS sheets</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_validate.recursive_all">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.simulation_validate.</span></span><span class="sig-name descname"><span class="pre">recursive_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_validate.html#recursive_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_validate.recursive_all" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_validate.get_port_names">

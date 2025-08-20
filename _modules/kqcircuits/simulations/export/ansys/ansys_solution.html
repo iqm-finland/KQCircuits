@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.export.ansys.ansys_solution &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.simulations.export.ansys.ansys_solution &mdash; KQCircuits 4.9.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../../../_static/documentation_options.js?v=e919e384"></script>
         <script src="../../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/js/theme.js"></script>
@@ -1010,7 +1010,7 @@
 <span class="c1"># Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)</span>
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClassVar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Literal</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.export.solution</span><span class="w"> </span><span class="kn">import</span> <span class="n">Solution</span>
 
 
@@ -1065,15 +1065,57 @@
 
 
 
+<div class="viewcode-block" id="AnsysHfssTerminalSolution">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysHfssTerminalSolution">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AnsysHfssTerminalSolution</span><span class="p">(</span><span class="n">AnsysSolution</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for driven simulations using HFSS software</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        basis_order: FEM element polynomial basis order.</span>
+<span class="sd">        use_iterative_solver: Use iterative solution methods for solving the FEM linear system.</span>
+<span class="sd">        iterative_residual: Convergence tolerance of the iterative solver.</span>
+<span class="sd">        integrate_energies: Calculate energy integrals over each layer and save them into a file</span>
+<span class="sd">        integrate_magnetic_flux: Integrate magnetic fluxes through each non-pec sheet and save them into a file</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">basis_order</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">use_iterative_solver</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">iterative_residual</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-6</span>
+    <span class="n">integrate_energies</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">integrate_magnetic_flux</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="AnsysHfssTerminalSolution.get_solution_data">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysHfssTerminalSolution.get_solution_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_solution_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_solution_data</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="o">**</span><span class="n">data</span><span class="p">,</span>
+            <span class="s2">&quot;analysis_setup&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="o">**</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;analysis_setup&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;basis_order&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_order</span><span class="p">,</span>
+                <span class="s2">&quot;use_iterative_solver&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_iterative_solver</span><span class="p">,</span>
+                <span class="s2">&quot;iterative_residual&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterative_residual</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;integrate_energies&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrate_energies</span><span class="p">,</span>
+            <span class="s2">&quot;integrate_magnetic_flux&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrate_magnetic_flux</span><span class="p">,</span>
+        <span class="p">}</span></div>
+</div>
+
+
+
 <div class="viewcode-block" id="AnsysHfssSolution">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysHfssSolution">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">AnsysHfssSolution</span><span class="p">(</span><span class="n">AnsysSolution</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AnsysHfssSolution</span><span class="p">(</span><span class="n">AnsysHfssTerminalSolution</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class for Ansys S-parameter (HFSS) solution parameters</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        frequency: Frequency for mesh refinement. To set up multifrequency analysis in HFSS use list of numbers.</span>
+<span class="sd">                   To run a broadband sweep between sweep_start and sweep_end use the string &quot;broadband&quot;</span>
 <span class="sd">        max_delta_s: Stopping criterion in HFSS simulation.</span>
 <span class="sd">        sweep_enabled: Determines if HFSS frequency sweep is enabled.</span>
 <span class="sd">        sweep_start: The lowest frequency in the sweep.</span>
@@ -1081,12 +1123,10 @@
 <span class="sd">        sweep_count: Number of frequencies in the sweep.</span>
 <span class="sd">        sweep_type: choices are &quot;interpolating&quot;, &quot;discrete&quot; or &quot;fast&quot;</span>
 <span class="sd">        capacitance_export: If True, the capacitance matrices are exported from S-parameter simulation</span>
-<span class="sd">        integrate_energies: Calculate energy integrals over each layer and save them into a file</span>
-<span class="sd">        integrate_magnetic_flux: Integrate magnetic fluxes through each non-pec sheet and save them into a file</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">ansys_tool</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;hfss&quot;</span>
-    <span class="n">frequency</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">frequency</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;broadband&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span>
     <span class="n">max_delta_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span>
     <span class="n">sweep_enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">sweep_start</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1094,8 +1134,6 @@
     <span class="n">sweep_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">101</span>
     <span class="n">sweep_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;interpolating&quot;</span>
     <span class="n">capacitance_export</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">integrate_energies</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">integrate_magnetic_flux</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 
 <div class="viewcode-block" id="AnsysHfssSolution.get_solution_data">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysHfssSolution.get_solution_data">[docs]</a>
@@ -1115,8 +1153,6 @@
                 <span class="s2">&quot;sweep_type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sweep_type</span><span class="p">,</span>
             <span class="p">},</span>
             <span class="s2">&quot;capacitance_export&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">capacitance_export</span><span class="p">,</span>
-            <span class="s2">&quot;integrate_energies&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrate_energies</span><span class="p">,</span>
-            <span class="s2">&quot;integrate_magnetic_flux&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrate_magnetic_flux</span><span class="p">,</span>
         <span class="p">}</span></div>
 </div>
 
@@ -1168,6 +1204,7 @@
 <span class="sd">        n_modes: Number of eigenmodes to solve.</span>
 <span class="sd">        integrate_energies: Calculate energy integrals over each layer and save them into a file</span>
 <span class="sd">        integrate_magnetic_flux: Integrate magnetic fluxes through each non-pec sheet and save them into a file</span>
+<span class="sd">        basis_order: FEM element polynomial basis order.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">ansys_tool</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;eigenmode&quot;</span>
@@ -1176,6 +1213,7 @@
     <span class="n">n_modes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>
     <span class="n">integrate_energies</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">integrate_magnetic_flux</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">basis_order</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
 
 <div class="viewcode-block" id="AnsysEigenmodeSolution.get_solution_data">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysEigenmodeSolution.get_solution_data">[docs]</a>
@@ -1189,6 +1227,7 @@
                 <span class="s2">&quot;min_frequency&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_frequency</span><span class="p">,</span>
                 <span class="s2">&quot;max_delta_f&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_delta_f</span><span class="p">,</span>
                 <span class="s2">&quot;n_modes&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_modes</span><span class="p">,</span>
+                <span class="s2">&quot;basis_order&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_order</span><span class="p">,</span>
             <span class="p">},</span>
             <span class="s2">&quot;integrate_energies&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrate_energies</span><span class="p">,</span>
             <span class="s2">&quot;integrate_magnetic_flux&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrate_magnetic_flux</span><span class="p">,</span>
@@ -1200,22 +1239,18 @@
 <div class="viewcode-block" id="AnsysCurrentSolution">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysCurrentSolution">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">AnsysCurrentSolution</span><span class="p">(</span><span class="n">AnsysSolution</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AnsysCurrentSolution</span><span class="p">(</span><span class="n">AnsysHfssTerminalSolution</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class for Ansys current excitation solution parameters</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        frequency: Frequency of alternating current excitation.</span>
 <span class="sd">        max_delta_e: Stopping criterion in current excitation simulation.</span>
-<span class="sd">        integrate_energies: Calculate energy integrals over each layer and save them into a file</span>
-<span class="sd">        integrate_magnetic_flux: Integrate magnetic fluxes through each non-pec sheet and save them into a file</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">ansys_tool</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;current&quot;</span>
     <span class="n">frequency</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span>
     <span class="n">max_delta_e</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span>
-    <span class="n">integrate_energies</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">integrate_magnetic_flux</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 
 <div class="viewcode-block" id="AnsysCurrentSolution.get_solution_data">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysCurrentSolution.get_solution_data">[docs]</a>
@@ -1229,8 +1264,6 @@
                 <span class="s2">&quot;frequency&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span><span class="p">,</span>
                 <span class="s2">&quot;max_delta_e&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_delta_e</span><span class="p">,</span>
             <span class="p">},</span>
-            <span class="s2">&quot;integrate_energies&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrate_energies</span><span class="p">,</span>
-            <span class="s2">&quot;integrate_magnetic_flux&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrate_magnetic_flux</span><span class="p">,</span>
         <span class="p">}</span></div>
 </div>
 
@@ -1239,22 +1272,18 @@
 <div class="viewcode-block" id="AnsysVoltageSolution">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysVoltageSolution">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">AnsysVoltageSolution</span><span class="p">(</span><span class="n">AnsysSolution</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AnsysVoltageSolution</span><span class="p">(</span><span class="n">AnsysHfssTerminalSolution</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class for Ansys voltage excitation solution parameters</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        frequency: Frequency of alternating voltage excitation.</span>
 <span class="sd">        max_delta_e: Stopping criterion in voltage excitation simulation.</span>
-<span class="sd">        integrate_energies: Calculate energy integrals over each layer and save them into a file</span>
-<span class="sd">        integrate_magnetic_flux: Integrate magnetic fluxes through each non-pec sheet and save them into a file</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">ansys_tool</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;voltage&quot;</span>
     <span class="n">frequency</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">5</span>
     <span class="n">max_delta_e</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span>
-    <span class="n">integrate_energies</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">integrate_magnetic_flux</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 
 <div class="viewcode-block" id="AnsysVoltageSolution.get_solution_data">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysVoltageSolution.get_solution_data">[docs]</a>
@@ -1268,8 +1297,6 @@
                 <span class="s2">&quot;frequency&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span><span class="p">,</span>
                 <span class="s2">&quot;max_delta_e&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_delta_e</span><span class="p">,</span>
             <span class="p">},</span>
-            <span class="s2">&quot;integrate_energies&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrate_energies</span><span class="p">,</span>
-            <span class="s2">&quot;integrate_magnetic_flux&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrate_magnetic_flux</span><span class="p">,</span>
         <span class="p">}</span></div>
 </div>
 
