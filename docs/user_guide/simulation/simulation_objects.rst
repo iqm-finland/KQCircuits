@@ -274,3 +274,9 @@ The following script shows how to generate some instances of the simulation subc
             'gap_width': [[x, x, x, x] for x in [10, 15, 20, 25]],
         }
     )
+
+.. note::
+    If some of the simulations in a sweep fail for some reason, they can be manually rerun from the terminal by running
+    the post-processing script ``python scripts/rerun_failed_simulations.py <main_script> <rerun_script>`` in the tmp
+    folder (``KQCircuits/tmp/<sim_name>``). Here ``<main_script>`` is the main ``sh`` or ``bat`` file used to launch
+    the simulations and ``<rerun_script>`` is a modified version of that file written by this script.
