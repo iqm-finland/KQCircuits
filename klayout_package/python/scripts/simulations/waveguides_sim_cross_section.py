@@ -124,12 +124,7 @@ cross_sections = create_cross_sections_from_simulations(
     sa_thickness=0.0024,
     magnification_order=3,  # Zoom to nanometers due to thin oxide layers
 )
-loss_tangents = {
-    "substrate_1": 5e-7,
-    "ma_layer": 9.9e-3,
-    "ms_layer": 2.6e-3,
-    "sa_layer": 2.1e-3,
-}
+
 open_with_klayout_or_default_application(export_simulation_oas(cross_sections, path))
 visualise_cross_section_cut_on_original_layout(simulations, cuts)
 open_with_klayout_or_default_application(export_simulation_oas(simulations, path, file_prefix="cut_preview"))
@@ -146,9 +141,15 @@ sol_parameters = {
     "run_inductance_sim": True,
     "vtu_output": True,
 }
+loss_tangents = {
+    "substrate": 5e-7,
+    "ma": 9.9e-3,
+    "ms": 2.6e-3,
+    "sa": 2.1e-3,
+}
 post_process = [
-    PostProcess("produce_q_factor_table.py", **loss_tangents),
     PostProcess("produce_epr_table.py", groups=["ma", "ms", "sa", "substrate", "vacuum"]),
+    PostProcess("produce_q_factor_table.py", **loss_tangents),
     PostProcess("elmer_profiler.py"),
     PostProcess("produce_cmatrix_table.py"),
 ]

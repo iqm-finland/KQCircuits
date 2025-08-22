@@ -239,10 +239,7 @@ if result_files:
                             _sum_value(energy, bg_key[z_k], -z_v * d["thickness"] * bg_eps_r[z_k])
 
             elif any(k.startswith("Exy_") or k.startswith("Ez_") for k in result.keys()):
-                print(
-                    'Results contain boundary energies, but no "sheet_approximation" is defined. ',
-                    "Boundary energies will be ignored in EPR",
-                )
+                raise ValueError('Results contain boundary energies, but no "sheet_approximation" is defined.')
 
             deembed_energy = get_all_deembed_energies(sim_data)
             total_deembed_energy = sum(deembed_energy.values())
