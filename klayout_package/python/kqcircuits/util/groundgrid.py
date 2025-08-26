@@ -17,51 +17,101 @@
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
 
-import numpy
-
 from kqcircuits.pya_resolver import pya
 
 
-def make_grid(boundbox, avoid_region, grid_step=10, grid_size=5, group_n=10):
-    """Generates ground grid covering `boundbox` with holes not overlapping with the `avoid_region`.
+def insert_ground_grid(
+    target_cell: pya.Cell,
+    target_layer: pya.LayerInfo,
+    grid_area: pya.Box,
+    protection: pya.Region | pya.RecursiveShapeIterator,
+    grid_step: int,
+    grid_size: int,
+):
+    """Generates ground grid as shapes in a target cell, without cell hierarchy.
+    This function uses integer database units for all inputs.
 
     Args:
-        boundbox: bounding box of grid in database unit
-        avoid_region: area on which grid is avoided
-        grid_step: step between consecutive holes in database unit
-        grid_size: hole edge length in database unit
-        group_n: number of adjacent holes in a group (is used to speed up grid generation)
-
-    Returns:
-        grid region
+        target_cell: Cell to place the grid into
+        target_layer: Layer to place the grid into
+        grid_area: Area to fill with grid
+        protection: Region to avoid when filling grid
+        grid_step: distance between grid rectangles
+        grid_size: size of grid rectangles
     """
+    _, grid_cell = _make_ground_grid_cell(target_layer, grid_area, protection, grid_step, grid_size)
 
-    def grid_region(box, step, size):
-        square = pya.Box(0, 0, size, size)
-        x_region = pya.Region()
-        for x in numpy.arange(box.p1.x, box.p2.x, step):
-            x_region.insert(square.transformed(pya.Trans(pya.Vector(x, 0))))
-        xy_region = pya.Region()
-        for y in numpy.arange(box.p1.y, box.p2.y, step):
-            xy_region.insert(x_region.transformed(pya.Trans(pya.Vector(0, y))))
-        return xy_region
+    # Copy shapes from temporary layout to the target cell. This flattens the instances of ``grid_element_cell``.
+    cm = pya.CellMapping()
+    cm.for_single_cell(target_cell, grid_cell)
+    target_cell.copy_tree_shapes(grid_cell, cm)
 
-    # Create box grid, where each box can include group_n x group_n holes.
-    box_step = group_n * grid_step
-    box_size = box_step - grid_step + grid_size
-    boxes_region = grid_region(boundbox, box_step, box_size)
-    # Filter boxes that do not overlap with avoid_region. These will be used to speed up filtering of holes.
-    masked_boxes_region = ((boxes_region & pya.Region(boundbox)) - avoid_region).with_area(box_size**2, None, False)
 
-    # Create grid of holes and duplicate it on boxes that overlap with avoid_region.
-    holes_region = grid_region(pya.Box(0, 0, box_step, box_step), grid_step, grid_size)
-    overlap_region = pya.Region()
-    for poly in (boxes_region - masked_boxes_region).each():
-        overlap_region.insert(holes_region.transformed(pya.Trans(pya.Vector(poly.bbox().p1))))
+def make_ground_grid_region(
+    grid_area: pya.Box, protection: pya.Region | pya.RecursiveShapeIterator, grid_step: int, grid_size: int
+) -> pya.Region:
+    """Returns ground grid as a ``Region``. This function uses integer database units for all inputs.
 
-    # Create grid of holes that do not overlap with avoid region.
-    masked_holes_region = ((overlap_region & pya.Region(boundbox)) - avoid_region).with_area(grid_size**2, None, False)
-    for poly in masked_boxes_region.each():
-        masked_holes_region.insert(holes_region.transformed(pya.Trans(pya.Vector(poly.bbox().p1))))
+    Note: ``insert_ground_grid`` is more efficient if the grid will be inserted into a cell.
 
-    return masked_holes_region
+    Args:
+        target_layer: Layer definition to place the grid into
+        grid_area: Area to fill with grid
+        protection: Region to avoid when filling grid
+        grid_step: distance between grid rectangles
+        grid_size: size of grid rectangles
+
+    Returns: a Region containing the ground grid
+    """
+    dummy_layer = pya.LayerInfo(1, 0)
+    layout, grid_cell = _make_ground_grid_cell(dummy_layer, grid_area, protection, grid_step, grid_size)
+    grid_region = pya.Region(grid_cell.begin_shapes_rec(layout.layer(dummy_layer)))
+    grid_region.merge()  # Ensure the RecursiveShapeIterator is fully iterated over before we discard ``layout``
+    return grid_region
+
+
+def _make_ground_grid_cell(
+    target_layer: pya.LayerInfo,
+    grid_area: pya.Box,
+    protection: pya.Region | pya.RecursiveShapeIterator,
+    grid_step: int,
+    grid_size: int,
+) -> tuple[pya.Layout, pya.Cell]:
+    """Generates ground grid as cell instances in a new cell in a new layout. The returned ``cell`` contains a child
+    cell instance for each grid cell element, and should generally be flattened to avoid having too many cell instances.
+
+    A reference to ``layout`` must be kept as long as ``cell`` is used.
+
+    This function uses integer database units for all inputs.
+
+    Args:
+        target_layer: Layer definition to place the grid into
+        grid_area: Area to fill with grid
+        protection: Region to avoid when filling grid
+        grid_step: distance between grid rectangles
+        grid_size: size of grid rectangles
+
+    Returns: tuple ``(layout, cell)`` containing a new ``Layout`` and ``Cell``.
+    """
+    region_with_ground_grid = pya.Region(grid_area) - protection
+
+    # Create temporary layout for ground grid operations
+    layout = pya.Layout()
+    layout.insert_layer(target_layer)
+
+    # Create a cell with a single ground grid square
+    grid_element_cell = layout.create_cell("grid_element")
+    grid_element_cell.shapes(layout.layer(target_layer)).insert(pya.Box(0, 0, grid_size, grid_size))
+
+    # Generate the full ground grid as instances of ``grid_element_cell`` in a new cell
+    grid_cell = layout.create_cell("grid")
+    grid_cell.fill_region(
+        region_with_ground_grid,
+        grid_element_cell.cell_index(),
+        pya.Box(0, 0, grid_size, grid_size),
+        pya.Vector(grid_step, 0),
+        pya.Vector(0, grid_step),
+        pya.Point(0, 0),
+    )
+
+    return layout, grid_cell

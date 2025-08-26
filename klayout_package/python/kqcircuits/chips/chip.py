@@ -38,7 +38,7 @@ from kqcircuits.util.merge import merge_layout_layers_on_face
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from, add_parameter
 from kqcircuits.test_structures.junction_test_pads.junction_test_pads import JunctionTestPads
 from kqcircuits.test_structures.stripes_test import StripesTest
-from kqcircuits.util.groundgrid import make_grid
+from kqcircuits.util.groundgrid import insert_ground_grid
 from kqcircuits.elements.tsvs.tsv import Tsv
 from kqcircuits.elements.flip_chip_connectors.flip_chip_connector import FlipChipConnector
 
@@ -246,16 +246,14 @@ class Chip(Element):
             face_id (int): ID of the face where the grid is created
 
         """
-        grid_area = box * (1 / self.layout.dbu)
-        protection = pya.Region(self.cell.begin_shapes_rec(self.get_layer("ground_grid_avoidance", face_id))).merged()
-        grid_mag_factor = 1
-        region_ground_grid = make_grid(
-            grid_area,
-            protection,
-            grid_step=10 * (1 / self.layout.dbu) * grid_mag_factor,
-            grid_size=5 * (1 / self.layout.dbu) * grid_mag_factor,
+        insert_ground_grid(
+            target_cell=self.cell,
+            target_layer=self.face(face_id)["ground_grid"],
+            grid_area=box.to_itype(self.layout.dbu),
+            protection=self.cell.begin_shapes_rec(self.get_layer("ground_grid_avoidance", face_id)),
+            grid_step=10 * (1 / self.layout.dbu),
+            grid_size=5 * (1 / self.layout.dbu),
         )
-        self.cell.shapes(self.get_layer("ground_grid", face_id)).insert(region_ground_grid)
 
     def produce_frame(self, frame_parameters, trans=pya.DTrans()):
         """Produces a chip frame and markers for the given face.

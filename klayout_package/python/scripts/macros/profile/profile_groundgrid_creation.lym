@@ -8,6 +8,7 @@
  <doc/>
  <autorun>false</autorun>
  <autorun-early>false</autorun-early>
+ <priority>0</priority>
  <shortcut/>
  <show-in-menu>false</show-in-menu>
  <group-name>misc</group-name>
@@ -39,7 +40,7 @@ import time
 from kqcircuits.pya_resolver import pya
 from kqcircuits.defaults import default_layers
 from kqcircuits.chips.demo import Demo
-from kqcircuits.util.groundgrid import make_grid
+from kqcircuits.util.groundgrid import make_ground_grid_region
 from kqcircuits.klayout_view import KLayoutView
 
 view = KLayoutView()
@@ -100,7 +101,7 @@ if True:
   grid_area = pya.Box(cell.bbox().p1, cell.bbox().p2)
   protection = pya.Region(cell.begin_shapes_rec(layout.layer(default_layers["1t1_ground_grid_avoidance"]))).merged()
 
-  region_ground_grid = make_grid(grid_area, protection, grid_step = 10*(1/layout.dbu)*grid_mag_factor, grid_size = 5*(1/layout.dbu)*grid_mag_factor )
+  region_ground_grid = make_ground_grid_region(grid_area, protection, grid_step = 10*(1/layout.dbu)*grid_mag_factor, grid_size = 5*(1/layout.dbu)*grid_mag_factor )
 
   cell.shapes(layout.layer(default_layers["annotations"])).insert(protection)
   cell.shapes(layout.layer(default_layers["1t1_ground_grid"])).insert(region_ground_grid)

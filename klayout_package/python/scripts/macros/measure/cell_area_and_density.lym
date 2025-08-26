@@ -44,8 +44,8 @@ from kqcircuits.util.area import get_area_and_density
 
 cell = KLayoutView(current=True).active_cell
 
-layer_names, areas, densities = get_area_and_density(cell)
-for name, area, density in zip(layer_names, areas, densities):
-    print(f"{name}: {area}, {density*100}%")
+results = get_area_and_density(cell)
+for name, values in results.items():
+    print(f"{name}: {values['area']}, {values['density']*100}%")
 </text>
 </klayout-macro>

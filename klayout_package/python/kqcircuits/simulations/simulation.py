@@ -37,7 +37,7 @@ from kqcircuits.util.geometry_helper import (
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.simulations.export.util import find_edge_from_point_in_polygons
 from kqcircuits.simulations.export.util import get_enclosing_polygon
-from kqcircuits.util.groundgrid import make_grid
+from kqcircuits.util.groundgrid import make_ground_grid_region
 from kqcircuits.junctions.sim import Sim
 from kqcircuits.util.library_helper import load_libraries
 
@@ -1107,10 +1107,10 @@ class Simulation:
 
     def ground_grid_region(self, face_id):
         """Returns region of ground grid for the given face id."""
-        grid_area = self.ground_grid_box * (1 / self.layout.dbu)
+        grid_area = self.ground_grid_box.to_itype(self.layout.dbu)
         protection = self.simplified_region(self.region_from_layer(face_id, "ground_grid_avoidance"))
         grid_mag_factor = 1
-        return make_grid(
+        return make_ground_grid_region(
             grid_area,
             protection,
             grid_step=10 * (1 / self.layout.dbu) * grid_mag_factor,

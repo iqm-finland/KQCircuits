@@ -99,9 +99,12 @@ def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc, alt_netlists
         # calculate flip-chip bump count
         bump_count = count_instances_in_cell(chip_cell, FlipChipConnectorDc)
         # find layer areas and densities
-        for layer, area, density in zip(*get_area_and_density(static_cell)):
-            if area != 0.0:
-                layer_areas_and_densities[layer] = {"area": f"{area:.2f}", "density": f"{density * 100:.2f}"}
+        for layer, values in get_area_and_density(static_cell, None, True).items():
+            if values["area"] != 0.0:
+                layer_areas_and_densities[layer] = {
+                    "area": f"{values['area']:.2f}",
+                    "density": f"{values['density'] * 100:.2f}",
+                }
 
         # export .gds files for EBL or laser writer
         for cluster_name, layer_cluster in chip_export_layer_clusters.items():
@@ -175,8 +178,8 @@ def export_masks_of_face(export_dir, mask_layout, mask_set):
 
     wafer_area = pi * mask_layout.wafer_rad**2  # Use circular wafer area instead of rectangular bounding boxes
     layer_areas_and_densities = {
-        name: {"area": round(area, 2), "density": round(area / wafer_area * 100, 2)}
-        for name, area, _ in zip(*area_data)
+        layer: {"area": round(values["area"], 2), "density": round(values["area"] / wafer_area * 100, 2)}
+        for layer, values in area_data.items()
     }
 
     mask_json = {
