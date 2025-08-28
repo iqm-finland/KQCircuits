@@ -228,3 +228,28 @@ copy_github_issues:
   except:
     - tags
     - merge_requests
+
+get_internal_jobs:
+  stage: build
+  before_script:
+    - echo "Skip default before_script"
+  script:
+    - bash -c "${INTERNAL_JOB_COMMAND}"
+  artifacts:
+    paths:
+      - internal-jobs.yml
+  only:
+    - merge_requests
+  except:
+    - tags
+    - schedules
+    - master
+
+run_internal_jobs:
+  trigger:
+    include:
+      - artifact: internal-jobs.yml
+        job: get_internal_jobs
+    strategy: depend
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
