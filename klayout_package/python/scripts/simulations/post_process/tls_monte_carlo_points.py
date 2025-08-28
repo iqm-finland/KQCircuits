@@ -46,8 +46,6 @@ import sys
 import klayout.db
 import numpy as np
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "util"))
-
 # Find data files
 path = os.path.curdir
 files = [f for f in os.listdir(path) if f.endswith("_project_results.json")]

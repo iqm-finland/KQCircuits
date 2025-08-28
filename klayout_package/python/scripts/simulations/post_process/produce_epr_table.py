@@ -29,13 +29,7 @@ Args:
 """
 import os
 import sys
-
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "util"))
-from post_process_helpers import (  # pylint: disable=wrong-import-position, no-name-in-module
-    find_varied_parameters,
-    tabulate_into_csv,
-    load_json,
-)
+from post_process_helpers import find_varied_parameters, tabulate_into_csv, load_json
 
 pp_data = {}
 if len(sys.argv) > 1:
