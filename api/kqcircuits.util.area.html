@@ -791,7 +791,8 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.groundgrid.html">kqcircuits.util.groundgrid</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.groundgrid.html#kqcircuits.util.groundgrid.make_grid"><code class="docutils literal notranslate"><span class="pre">make_grid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.groundgrid.html#kqcircuits.util.groundgrid.insert_ground_grid"><code class="docutils literal notranslate"><span class="pre">insert_ground_grid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.groundgrid.html#kqcircuits.util.groundgrid.make_ground_grid_region"><code class="docutils literal notranslate"><span class="pre">make_ground_grid_region()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.gui_helper.html">kqcircuits.util.gui_helper</a><ul>
@@ -1010,28 +1011,24 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.util.area.get_area_and_density">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.area.</span></span><span class="sig-name descname"><span class="pre">get_area_and_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_infos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/area.html#get_area_and_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.area.get_area_and_density" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.area.</span></span><span class="sig-name descname"><span class="pre">get_area_and_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_infos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimize_ground_grid_calculations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/area.html#get_area_and_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.area.get_area_and_density" title="Link to this definition"></a></dt>
 <dd><p>Get total area and density <span class="math notranslate nohighlight">\(\rho=\frac{area}{bbox.area}\)</span> of all layers.</p>
+<p>This calculation is slow for geometries with many polygons, and in practice the layers containing ground grid
+take the majority of time. When <code class="docutils literal notranslate"><span class="pre">optimize_ground_grid_calculations</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, the <code class="docutils literal notranslate"><span class="pre">ground_grid</span></code>
+layer area is calculated by assuming all polygons in this layer are identical and don’t overlap each other
+(which they should be by definition). Further, the area of <code class="docutils literal notranslate"><span class="pre">base_metal_gap</span></code> is calculated by combining the areas
+of <code class="docutils literal notranslate"><span class="pre">base_metal_gap_wo_grid</span></code> and <code class="docutils literal notranslate"><span class="pre">ground_grid</span></code> areas.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cell</strong> – target cell to get area from</p></li>
 <li><p><strong>layer_infos</strong> – list of <code class="docutils literal notranslate"><span class="pre">LayerInfo</span></code> to get area for, or None to get area for all layers.</p></li>
+<li><p><strong>optimize_ground_grid_calculations</strong> – <code class="docutils literal notranslate"><span class="pre">True</span></code> (default) to optimize ground grid area calculations.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><p>tuple containing lists of</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>layer names as str</p></li>
-<li><p>total area as float</p></li>
-<li><p>density between 0 and 1 as float</p></li>
-</ul>
-</div></blockquote>
-</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple</p>
+</dl>
+<dl class="simple">
+<dt>Returns: dictionary <code class="docutils literal notranslate"><span class="pre">{layer_name:</span> <span class="pre">{'area':</span> <span class="pre">area,</span> <span class="pre">'density':</span> <span class="pre">density}}</span></code>, where <code class="docutils literal notranslate"><span class="pre">area</span></code> is in um^2 and <code class="docutils literal notranslate"><span class="pre">density</span></code></dt><dd><p>is a fraction &lt; 1.</p>
 </dd>
 </dl>
 </dd></dl>

@@ -787,7 +787,8 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.groundgrid.html">kqcircuits.util.groundgrid</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.groundgrid.html#kqcircuits.util.groundgrid.make_grid"><code class="docutils literal notranslate"><span class="pre">make_grid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.groundgrid.html#kqcircuits.util.groundgrid.insert_ground_grid"><code class="docutils literal notranslate"><span class="pre">insert_ground_grid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.groundgrid.html#kqcircuits.util.groundgrid.make_ground_grid_region"><code class="docutils literal notranslate"><span class="pre">make_ground_grid_region()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.gui_helper.html">kqcircuits.util.gui_helper</a><ul>
@@ -1031,7 +1032,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.parameters</span><span class="w"> </span><span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span><span class="p">,</span> <span class="n">add_parameters_from</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.export.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_edge_from_point_in_polygons</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.export.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_enclosing_polygon</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.groundgrid</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_grid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.groundgrid</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_ground_grid_region</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.junctions.sim</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sim</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.library_helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_libraries</span>
 
@@ -2156,10 +2157,10 @@
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.ground_grid_region">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">ground_grid_region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face_id</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns region of ground grid for the given face id.&quot;&quot;&quot;</span>
-        <span class="n">grid_area</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ground_grid_box</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
+        <span class="n">grid_area</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ground_grid_box</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
         <span class="n">protection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simplified_region</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">region_from_layer</span><span class="p">(</span><span class="n">face_id</span><span class="p">,</span> <span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">))</span>
         <span class="n">grid_mag_factor</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="k">return</span> <span class="n">make_grid</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">make_ground_grid_region</span><span class="p">(</span>
             <span class="n">grid_area</span><span class="p">,</span>
             <span class="n">protection</span><span class="p">,</span>
             <span class="n">grid_step</span><span class="o">=</span><span class="mi">10</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span> <span class="o">*</span> <span class="n">grid_mag_factor</span><span class="p">,</span>

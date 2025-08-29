@@ -787,7 +787,8 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.groundgrid.html">kqcircuits.util.groundgrid</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.groundgrid.html#kqcircuits.util.groundgrid.make_grid"><code class="docutils literal notranslate"><span class="pre">make_grid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.groundgrid.html#kqcircuits.util.groundgrid.insert_ground_grid"><code class="docutils literal notranslate"><span class="pre">insert_ground_grid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.groundgrid.html#kqcircuits.util.groundgrid.make_ground_grid_region"><code class="docutils literal notranslate"><span class="pre">make_ground_grid_region()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.gui_helper.html">kqcircuits.util.gui_helper</a><ul>
@@ -1011,57 +1012,110 @@
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
 
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
-
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.pya_resolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">pya</span>
 
 
-<div class="viewcode-block" id="make_grid">
-<a class="viewcode-back" href="../../../api/kqcircuits.util.groundgrid.html#kqcircuits.util.groundgrid.make_grid">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">make_grid</span><span class="p">(</span><span class="n">boundbox</span><span class="p">,</span> <span class="n">avoid_region</span><span class="p">,</span> <span class="n">grid_step</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">grid_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">group_n</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates ground grid covering `boundbox` with holes not overlapping with the `avoid_region`.</span>
+<div class="viewcode-block" id="insert_ground_grid">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.groundgrid.html#kqcircuits.util.groundgrid.insert_ground_grid">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">insert_ground_grid</span><span class="p">(</span>
+    <span class="n">target_cell</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">,</span>
+    <span class="n">target_layer</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayerInfo</span><span class="p">,</span>
+    <span class="n">grid_area</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Box</span><span class="p">,</span>
+    <span class="n">protection</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span> <span class="o">|</span> <span class="n">pya</span><span class="o">.</span><span class="n">RecursiveShapeIterator</span><span class="p">,</span>
+    <span class="n">grid_step</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">grid_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates ground grid as shapes in a target cell, without cell hierarchy.</span>
+<span class="sd">    This function uses integer database units for all inputs.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        boundbox: bounding box of grid in database unit</span>
-<span class="sd">        avoid_region: area on which grid is avoided</span>
-<span class="sd">        grid_step: step between consecutive holes in database unit</span>
-<span class="sd">        grid_size: hole edge length in database unit</span>
-<span class="sd">        group_n: number of adjacent holes in a group (is used to speed up grid generation)</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        grid region</span>
+<span class="sd">        target_cell: Cell to place the grid into</span>
+<span class="sd">        target_layer: Layer to place the grid into</span>
+<span class="sd">        grid_area: Area to fill with grid</span>
+<span class="sd">        protection: Region to avoid when filling grid</span>
+<span class="sd">        grid_step: distance between grid rectangles</span>
+<span class="sd">        grid_size: size of grid rectangles</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">grid_cell</span> <span class="o">=</span> <span class="n">_make_ground_grid_cell</span><span class="p">(</span><span class="n">target_layer</span><span class="p">,</span> <span class="n">grid_area</span><span class="p">,</span> <span class="n">protection</span><span class="p">,</span> <span class="n">grid_step</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">grid_region</span><span class="p">(</span><span class="n">box</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
-        <span class="n">square</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
-        <span class="n">x_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">p1</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">box</span><span class="o">.</span><span class="n">p2</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
-            <span class="n">x_region</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">square</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Trans</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">))))</span>
-        <span class="n">xy_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">p1</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">box</span><span class="o">.</span><span class="n">p2</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
-            <span class="n">xy_region</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">x_region</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Trans</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="p">))))</span>
-        <span class="k">return</span> <span class="n">xy_region</span>
+    <span class="c1"># Copy shapes from temporary layout to the target cell. This flattens the instances of ``grid_element_cell``.</span>
+    <span class="n">cm</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">CellMapping</span><span class="p">()</span>
+    <span class="n">cm</span><span class="o">.</span><span class="n">for_single_cell</span><span class="p">(</span><span class="n">target_cell</span><span class="p">,</span> <span class="n">grid_cell</span><span class="p">)</span>
+    <span class="n">target_cell</span><span class="o">.</span><span class="n">copy_tree_shapes</span><span class="p">(</span><span class="n">grid_cell</span><span class="p">,</span> <span class="n">cm</span><span class="p">)</span></div>
 
-    <span class="c1"># Create box grid, where each box can include group_n x group_n holes.</span>
-    <span class="n">box_step</span> <span class="o">=</span> <span class="n">group_n</span> <span class="o">*</span> <span class="n">grid_step</span>
-    <span class="n">box_size</span> <span class="o">=</span> <span class="n">box_step</span> <span class="o">-</span> <span class="n">grid_step</span> <span class="o">+</span> <span class="n">grid_size</span>
-    <span class="n">boxes_region</span> <span class="o">=</span> <span class="n">grid_region</span><span class="p">(</span><span class="n">boundbox</span><span class="p">,</span> <span class="n">box_step</span><span class="p">,</span> <span class="n">box_size</span><span class="p">)</span>
-    <span class="c1"># Filter boxes that do not overlap with avoid_region. These will be used to speed up filtering of holes.</span>
-    <span class="n">masked_boxes_region</span> <span class="o">=</span> <span class="p">((</span><span class="n">boxes_region</span> <span class="o">&amp;</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">boundbox</span><span class="p">))</span> <span class="o">-</span> <span class="n">avoid_region</span><span class="p">)</span><span class="o">.</span><span class="n">with_area</span><span class="p">(</span><span class="n">box_size</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
-    <span class="c1"># Create grid of holes and duplicate it on boxes that overlap with avoid_region.</span>
-    <span class="n">holes_region</span> <span class="o">=</span> <span class="n">grid_region</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">box_step</span><span class="p">,</span> <span class="n">box_step</span><span class="p">),</span> <span class="n">grid_step</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">)</span>
-    <span class="n">overlap_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">poly</span> <span class="ow">in</span> <span class="p">(</span><span class="n">boxes_region</span> <span class="o">-</span> <span class="n">masked_boxes_region</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">():</span>
-        <span class="n">overlap_region</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">holes_region</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Trans</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="n">poly</span><span class="o">.</span><span class="n">bbox</span><span class="p">()</span><span class="o">.</span><span class="n">p1</span><span class="p">))))</span>
 
-    <span class="c1"># Create grid of holes that do not overlap with avoid region.</span>
-    <span class="n">masked_holes_region</span> <span class="o">=</span> <span class="p">((</span><span class="n">overlap_region</span> <span class="o">&amp;</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">boundbox</span><span class="p">))</span> <span class="o">-</span> <span class="n">avoid_region</span><span class="p">)</span><span class="o">.</span><span class="n">with_area</span><span class="p">(</span><span class="n">grid_size</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">poly</span> <span class="ow">in</span> <span class="n">masked_boxes_region</span><span class="o">.</span><span class="n">each</span><span class="p">():</span>
-        <span class="n">masked_holes_region</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">holes_region</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Trans</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="n">poly</span><span class="o">.</span><span class="n">bbox</span><span class="p">()</span><span class="o">.</span><span class="n">p1</span><span class="p">))))</span>
+<div class="viewcode-block" id="make_ground_grid_region">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.groundgrid.html#kqcircuits.util.groundgrid.make_ground_grid_region">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_ground_grid_region</span><span class="p">(</span>
+    <span class="n">grid_area</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Box</span><span class="p">,</span> <span class="n">protection</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span> <span class="o">|</span> <span class="n">pya</span><span class="o">.</span><span class="n">RecursiveShapeIterator</span><span class="p">,</span> <span class="n">grid_step</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns ground grid as a ``Region``. This function uses integer database units for all inputs.</span>
 
-    <span class="k">return</span> <span class="n">masked_holes_region</span></div>
+<span class="sd">    Note: ``insert_ground_grid`` is more efficient if the grid will be inserted into a cell.</span>
 
+<span class="sd">    Args:</span>
+<span class="sd">        target_layer: Layer definition to place the grid into</span>
+<span class="sd">        grid_area: Area to fill with grid</span>
+<span class="sd">        protection: Region to avoid when filling grid</span>
+<span class="sd">        grid_step: distance between grid rectangles</span>
+<span class="sd">        grid_size: size of grid rectangles</span>
+
+<span class="sd">    Returns: a Region containing the ground grid</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dummy_layer</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayerInfo</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">layout</span><span class="p">,</span> <span class="n">grid_cell</span> <span class="o">=</span> <span class="n">_make_ground_grid_cell</span><span class="p">(</span><span class="n">dummy_layer</span><span class="p">,</span> <span class="n">grid_area</span><span class="p">,</span> <span class="n">protection</span><span class="p">,</span> <span class="n">grid_step</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">)</span>
+    <span class="n">grid_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">grid_cell</span><span class="o">.</span><span class="n">begin_shapes_rec</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">dummy_layer</span><span class="p">)))</span>
+    <span class="n">grid_region</span><span class="o">.</span><span class="n">merge</span><span class="p">()</span>  <span class="c1"># Ensure the RecursiveShapeIterator is fully iterated over before we discard ``layout``</span>
+    <span class="k">return</span> <span class="n">grid_region</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_make_ground_grid_cell</span><span class="p">(</span>
+    <span class="n">target_layer</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayerInfo</span><span class="p">,</span>
+    <span class="n">grid_area</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Box</span><span class="p">,</span>
+    <span class="n">protection</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span> <span class="o">|</span> <span class="n">pya</span><span class="o">.</span><span class="n">RecursiveShapeIterator</span><span class="p">,</span>
+    <span class="n">grid_step</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">grid_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">Layout</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates ground grid as cell instances in a new cell in a new layout. The returned ``cell`` contains a child</span>
+<span class="sd">    cell instance for each grid cell element, and should generally be flattened to avoid having too many cell instances.</span>
+
+<span class="sd">    A reference to ``layout`` must be kept as long as ``cell`` is used.</span>
+
+<span class="sd">    This function uses integer database units for all inputs.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        target_layer: Layer definition to place the grid into</span>
+<span class="sd">        grid_area: Area to fill with grid</span>
+<span class="sd">        protection: Region to avoid when filling grid</span>
+<span class="sd">        grid_step: distance between grid rectangles</span>
+<span class="sd">        grid_size: size of grid rectangles</span>
+
+<span class="sd">    Returns: tuple ``(layout, cell)`` containing a new ``Layout`` and ``Cell``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">region_with_ground_grid</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">grid_area</span><span class="p">)</span> <span class="o">-</span> <span class="n">protection</span>
+
+    <span class="c1"># Create temporary layout for ground grid operations</span>
+    <span class="n">layout</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Layout</span><span class="p">()</span>
+    <span class="n">layout</span><span class="o">.</span><span class="n">insert_layer</span><span class="p">(</span><span class="n">target_layer</span><span class="p">)</span>
+
+    <span class="c1"># Create a cell with a single ground grid square</span>
+    <span class="n">grid_element_cell</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">create_cell</span><span class="p">(</span><span class="s2">&quot;grid_element&quot;</span><span class="p">)</span>
+    <span class="n">grid_element_cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">target_layer</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">))</span>
+
+    <span class="c1"># Generate the full ground grid as instances of ``grid_element_cell`` in a new cell</span>
+    <span class="n">grid_cell</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">create_cell</span><span class="p">(</span><span class="s2">&quot;grid&quot;</span><span class="p">)</span>
+    <span class="n">grid_cell</span><span class="o">.</span><span class="n">fill_region</span><span class="p">(</span>
+        <span class="n">region_with_ground_grid</span><span class="p">,</span>
+        <span class="n">grid_element_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span>
+        <span class="n">pya</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">),</span>
+        <span class="n">pya</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="n">grid_step</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">pya</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">grid_step</span><span class="p">),</span>
+        <span class="n">pya</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">layout</span><span class="p">,</span> <span class="n">grid_cell</span>
 </pre></div>
 
            </div>

@@ -787,7 +787,8 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.groundgrid.html">kqcircuits.util.groundgrid</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.groundgrid.html#kqcircuits.util.groundgrid.make_grid"><code class="docutils literal notranslate"><span class="pre">make_grid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.groundgrid.html#kqcircuits.util.groundgrid.insert_ground_grid"><code class="docutils literal notranslate"><span class="pre">insert_ground_grid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.groundgrid.html#kqcircuits.util.groundgrid.make_ground_grid_region"><code class="docutils literal notranslate"><span class="pre">make_ground_grid_region()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.gui_helper.html">kqcircuits.util.gui_helper</a><ul>
@@ -1014,6 +1015,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <span class="n">perf_counter</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.pya_resolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.defaults</span><span class="w"> </span><span class="kn">import</span> <span class="n">default_faces</span>
 
 
 <div class="viewcode-block" id="AreaReceiver">
@@ -1038,32 +1040,68 @@
 
 <div class="viewcode-block" id="get_area_and_density">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.area.html#kqcircuits.util.area.get_area_and_density">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_area_and_density</span><span class="p">(</span><span class="n">cell</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">,</span> <span class="n">layer_infos</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_area_and_density</span><span class="p">(</span><span class="n">cell</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">,</span> <span class="n">layer_infos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">optimize_ground_grid_calculations</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get total area and density :math:`\\rho=\\frac{area}{bbox.area}` of all layers.</span>
+
+<span class="sd">    This calculation is slow for geometries with many polygons, and in practice the layers containing ground grid</span>
+<span class="sd">    take the majority of time. When ``optimize_ground_grid_calculations`` is set to ``True``, the ``ground_grid``</span>
+<span class="sd">    layer area is calculated by assuming all polygons in this layer are identical and don&#39;t overlap each other</span>
+<span class="sd">    (which they should be by definition). Further, the area of ``base_metal_gap`` is calculated by combining the areas</span>
+<span class="sd">    of ``base_metal_gap_wo_grid`` and ``ground_grid`` areas.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        cell: target cell to get area from</span>
 <span class="sd">        layer_infos: list of ``LayerInfo`` to get area for, or None to get area for all layers.</span>
+<span class="sd">        optimize_ground_grid_calculations:  ``True`` (default) to optimize ground grid area calculations.</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        tuple: tuple containing lists of</span>
-
-<span class="sd">          * layer names as str</span>
-<span class="sd">          * total area as float</span>
-<span class="sd">          * density between 0 and 1 as float</span>
-
+<span class="sd">    Returns: dictionary ``{layer_name: {&#39;area&#39;: area, &#39;density&#39;: density}}``, where ``area`` is in um^2 and ``density``</span>
+<span class="sd">       is a fraction &lt; 1.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">start_time</span> <span class="o">=</span> <span class="n">perf_counter</span><span class="p">()</span>
     <span class="n">layout</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
 
+    <span class="n">all_layer_infos</span> <span class="o">=</span> <span class="p">{</span><span class="n">layer_info</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">layer_info</span> <span class="k">for</span> <span class="n">layer_info</span> <span class="ow">in</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">()}</span>
+    <span class="k">if</span> <span class="n">layer_infos</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">layer_infos</span> <span class="o">=</span> <span class="n">all_layer_infos</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+    <span class="n">layer_infos</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">layer_infos</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_grid_area_and_density</span><span class="p">(</span><span class="n">layer_info</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the area and density for a layer where all shapes are known to be identical&quot;&quot;&quot;</span>
+        <span class="n">shapes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">begin_shapes_rec</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">layer_info</span><span class="p">))</span><span class="o">.</span><span class="n">each</span><span class="p">())</span>
+        <span class="n">shape_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">shapes</span><span class="p">)</span>
+        <span class="n">shape_area</span> <span class="o">=</span> <span class="n">shapes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">()</span><span class="o">.</span><span class="n">area</span><span class="p">()</span> <span class="k">if</span> <span class="n">shape_count</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="n">area</span> <span class="o">=</span> <span class="n">shape_count</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">shape_area</span><span class="p">)</span>
+        <span class="n">bbox_area</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">bbox_per_layer</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">layer_info</span><span class="p">))</span><span class="o">.</span><span class="n">area</span><span class="p">()</span>
+        <span class="n">density</span> <span class="o">=</span> <span class="n">area</span> <span class="o">/</span> <span class="n">bbox_area</span> <span class="k">if</span> <span class="n">bbox_area</span> <span class="o">!=</span> <span class="mf">0.0</span> <span class="k">else</span> <span class="mf">0.0</span>
+        <span class="k">return</span> <span class="n">area</span> <span class="o">*</span> <span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">density</span>
+
+    <span class="c1"># Separate out `ground_grid` and `base_metal_gap` layers in `layer_infos` for optimization</span>
+    <span class="n">ground_grid_faces</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">optimize_ground_grid_calculations</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">face</span><span class="p">,</span> <span class="n">layers</span> <span class="ow">in</span> <span class="n">default_faces</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="s2">&quot;ground_grid&quot;</span> <span class="ow">in</span> <span class="n">layers</span>
+                <span class="ow">and</span> <span class="s2">&quot;base_metal_gap&quot;</span> <span class="ow">in</span> <span class="n">layers</span>
+                <span class="ow">and</span> <span class="s2">&quot;base_metal_gap_wo_grid&quot;</span> <span class="ow">in</span> <span class="n">layers</span>
+                <span class="ow">and</span> <span class="p">(</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;ground_grid&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">layer_infos</span> <span class="ow">or</span> <span class="n">layers</span><span class="p">[</span><span class="s2">&quot;base_metal_gap&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">layer_infos</span><span class="p">)</span>
+            <span class="p">):</span>
+                <span class="n">ground_grid_faces</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">ground_grid_faces</span><span class="p">:</span>
+            <span class="n">ground_grid_layer</span> <span class="o">=</span> <span class="n">default_faces</span><span class="p">[</span><span class="n">face</span><span class="p">][</span><span class="s2">&quot;ground_grid&quot;</span><span class="p">]</span>
+            <span class="n">base_metal_gap_wo_grid_layer</span> <span class="o">=</span> <span class="n">default_faces</span><span class="p">[</span><span class="n">face</span><span class="p">][</span><span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">]</span>
+            <span class="n">base_metal_gap_layer</span> <span class="o">=</span> <span class="n">default_faces</span><span class="p">[</span><span class="n">face</span><span class="p">][</span><span class="s2">&quot;base_metal_gap&quot;</span><span class="p">]</span>
+
+            <span class="n">layer_infos</span> <span class="o">-=</span> <span class="p">{</span><span class="n">ground_grid_layer</span><span class="p">,</span> <span class="n">base_metal_gap_layer</span><span class="p">}</span>  <span class="c1"># Skip brute force calculation for these layers</span>
+            <span class="n">layer_infos</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+                <span class="n">base_metal_gap_wo_grid_layer</span>
+            <span class="p">)</span>  <span class="c1"># Ensure base_metal_gap_wo_grid is included in the calculation</span>
+
+    <span class="c1"># Perform tiled area calculation for all other layers</span>
     <span class="n">tp</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">TilingProcessor</span><span class="p">()</span>
     <span class="n">tp</span><span class="o">.</span><span class="n">threads</span> <span class="o">=</span> <span class="n">cpu_count</span><span class="p">()</span>
     <span class="n">tp</span><span class="o">.</span><span class="n">tile_size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">)</span>  <span class="c1"># microns</span>
-    <span class="k">if</span> <span class="n">layer_infos</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">layer_infos</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">())</span>
     <span class="n">layer_areas</span> <span class="o">=</span> <span class="p">[</span><span class="n">AreaReceiver</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">layer_infos</span><span class="p">]</span>
     <span class="n">layer_bboxes</span> <span class="o">=</span> <span class="p">[</span><span class="n">AreaReceiver</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">layer_infos</span><span class="p">]</span>
-
     <span class="k">for</span> <span class="n">layer_info</span><span class="p">,</span> <span class="n">area_receiver</span><span class="p">,</span> <span class="n">bbox_receiver</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">layer_infos</span><span class="p">,</span> <span class="n">layer_areas</span><span class="p">,</span> <span class="n">layer_bboxes</span><span class="p">):</span>
         <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">layer_info</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>  <span class="c1"># if `name` starts with a number, tp.execute() fails, so we add an underscore</span>
         <span class="n">area</span><span class="p">,</span> <span class="n">bbox</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_area&quot;</span><span class="p">,</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_bbox&quot;</span>
@@ -1076,13 +1114,31 @@
 
     <span class="n">areas</span> <span class="o">=</span> <span class="p">[</span><span class="n">area</span><span class="o">.</span><span class="n">area</span> <span class="k">for</span> <span class="n">area</span> <span class="ow">in</span> <span class="n">layer_areas</span><span class="p">]</span>
     <span class="n">bboxes</span> <span class="o">=</span> <span class="p">[</span><span class="n">bbox</span><span class="o">.</span><span class="n">area</span> <span class="k">for</span> <span class="n">bbox</span> <span class="ow">in</span> <span class="n">layer_bboxes</span><span class="p">]</span>
-    <span class="n">layer_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">layer_info</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">layer_info</span> <span class="ow">in</span> <span class="n">layer_infos</span><span class="p">]</span>
-    <span class="n">densities</span> <span class="o">=</span> <span class="p">[</span><span class="n">area</span> <span class="o">/</span> <span class="n">bbox</span> <span class="k">if</span> <span class="n">bbox</span> <span class="o">!=</span> <span class="mf">0.0</span> <span class="k">else</span> <span class="mf">0.0</span> <span class="k">for</span> <span class="n">area</span><span class="p">,</span> <span class="n">bbox</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">areas</span><span class="p">,</span> <span class="n">bboxes</span><span class="p">)]</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">areas</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;For cell </span><span class="si">{</span><span class="n">cell</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> got layer areas: </span><span class="si">{</span><span class="n">areas</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">layer_info</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;area&quot;</span><span class="p">:</span> <span class="n">area</span><span class="p">,</span> <span class="s2">&quot;density&quot;</span><span class="p">:</span> <span class="n">area</span> <span class="o">/</span> <span class="n">bbox</span> <span class="k">if</span> <span class="n">bbox</span> <span class="o">!=</span> <span class="mf">0.0</span> <span class="k">else</span> <span class="mf">0.0</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">layer_info</span><span class="p">,</span> <span class="n">area</span><span class="p">,</span> <span class="n">bbox</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">layer_infos</span><span class="p">,</span> <span class="n">areas</span><span class="p">,</span> <span class="n">bboxes</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Add optimized ground grid calculation results</span>
+    <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">ground_grid_faces</span><span class="p">:</span>
+        <span class="n">ground_grid_layer</span> <span class="o">=</span> <span class="n">default_faces</span><span class="p">[</span><span class="n">face</span><span class="p">][</span><span class="s2">&quot;ground_grid&quot;</span><span class="p">]</span>
+        <span class="n">base_metal_gap_wo_grid_layer</span> <span class="o">=</span> <span class="n">default_faces</span><span class="p">[</span><span class="n">face</span><span class="p">][</span><span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">]</span>
+        <span class="n">base_metal_gap_layer</span> <span class="o">=</span> <span class="n">default_faces</span><span class="p">[</span><span class="n">face</span><span class="p">][</span><span class="s2">&quot;base_metal_gap&quot;</span><span class="p">]</span>
+
+        <span class="c1"># Calculate ground grid area assuming all shapes in ``ground_grid`` are identical</span>
+        <span class="n">ground_grid_area</span><span class="p">,</span> <span class="n">ground_grid_density</span> <span class="o">=</span> <span class="n">_grid_area_and_density</span><span class="p">(</span><span class="n">ground_grid_layer</span><span class="p">)</span>
+        <span class="n">results</span><span class="p">[</span><span class="n">ground_grid_layer</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;area&quot;</span><span class="p">:</span> <span class="n">ground_grid_area</span><span class="p">,</span> <span class="s2">&quot;density&quot;</span><span class="p">:</span> <span class="n">ground_grid_density</span><span class="p">}</span>
+
+        <span class="c1"># Calcualte base_metal_gap area assuming the ground grid does not overlap with base_metal_gap_wo_grid</span>
+        <span class="n">gap_area</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">base_metal_gap_wo_grid_layer</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;area&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">ground_grid_area</span>
+        <span class="n">gap_bbox</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">bbox_per_layer</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">base_metal_gap_layer</span><span class="p">))</span><span class="o">.</span><span class="n">area</span><span class="p">()</span> <span class="o">*</span> <span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">gap_density</span> <span class="o">=</span> <span class="n">gap_area</span> <span class="o">/</span> <span class="n">gap_bbox</span> <span class="k">if</span> <span class="n">gap_bbox</span> <span class="o">!=</span> <span class="mf">0.0</span> <span class="k">else</span> <span class="mf">0.0</span>
+        <span class="n">results</span><span class="p">[</span><span class="n">base_metal_gap_layer</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;area&quot;</span><span class="p">:</span> <span class="n">gap_area</span><span class="p">,</span> <span class="s2">&quot;density&quot;</span><span class="p">:</span> <span class="n">gap_density</span><span class="p">}</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Area calculation took </span><span class="si">{</span><span class="n">perf_counter</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_time</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">layer_names</span><span class="p">,</span> <span class="n">areas</span><span class="p">,</span> <span class="n">densities</span></div>
+    <span class="k">return</span> <span class="n">results</span></div>
 
 </pre></div>
 
