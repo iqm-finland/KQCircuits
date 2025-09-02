@@ -77,8 +77,10 @@ def get_data_extraction_sif(
 
     # We do not run this solver, but need it for Elmer to correctly load the elemental field data
     solver = get_electrostatics_solver(json_data, 1, "f.dat", c_matrix_output=False, exec_solver="Never")
-
-    solver += get_save_data_solver(2, result_file=results_file, save_coordinates=points_list)
+    coords_file = Path(json_data["name"]) / results_file.replace("fields_", "coords_")
+    solver += get_save_data_solver(
+        2, result_file=results_file, save_coordinates=points_list, coordinate_file=coords_file
+    )
 
     placeholders = sif_block("Equation 1", ["Active Solvers(1) = 1"])
     placeholders += sif_block("Boundary Condition 1", [" Target Boundaries(0) = "])
