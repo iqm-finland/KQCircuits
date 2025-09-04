@@ -55,22 +55,19 @@ def get_ind_by_exc(simulation: str, excitation: int):
     return excitations.index(excitation) if excitation in excitations else 0
 
 
-def get_mer_coefficients(simulation: str, region: str, excitation: int):
+def get_mer_coefficients(simulation: str, correction_key: str, excitation: int):
     """
     Returns the MER correction coefficients, i.e., EPRs from the 2D cross-section simulation normalized within MER.
     Groups the EPRs according to the global variable `groups`
 
     Args:
         simulation: Simulation name
-        region:     Name of the partition region
+        correction_key: Name of the correction cut
         excitation: signal excitation for the 3D result
 
     Returns:
         Dictionary containing EPRs in metal-edge-region for each group
     """
-    correction_key = region_corrections.get(region)
-    if correction_key is None:
-        return None
 
     cs_name = simulation + "_" + correction_key
     res = load_json(f"{cs_name}_project_results.json")
@@ -81,7 +78,7 @@ def get_mer_coefficients(simulation: str, region: str, excitation: int):
 
     mer_total = sum(_get_ith(res[k], result_ind) for k in mer_keys)
     if mer_total == 0:
-        print(f'Total energy 0 for correction of region "{region}" in "{simulation}"')
+        print(f'Total energy 0 for correction "{correction_key}" in "{simulation}"')
         mer_total = float("inf")
 
     coefficient = {
@@ -267,11 +264,14 @@ if result_files:
 
             else:
                 # calculate corrected EPRs and distinguish by partition regions
-                for reg, corr in region_corrections.items():
+                for reg, correction_key in region_corrections.items():
                     reg_energy = {k: v for k, v in energy.items() if k.endswith(reg)}
 
-                    coefficients = get_mer_coefficients(original_key, reg, excitation)
-                    if coefficients is None:
+                    if not reg_energy:
+                        # region doesnt exist in current simulation
+                        continue
+
+                    if correction_key is None:
                         epr_dict[key].update(
                             {
                                 f"p_{group}_{reg}": sum(v for k, v in reg_energy.items() if group in k) / total_energy
@@ -279,6 +279,7 @@ if result_files:
                             }
                         )
                     else:
+                        coefficients = get_mer_coefficients(original_key, correction_key, excitation)
                         epr_dict[key].update(
                             {
                                 f"p_{group}_{reg}": coefficients[group] * sum(reg_energy.values()) / total_energy

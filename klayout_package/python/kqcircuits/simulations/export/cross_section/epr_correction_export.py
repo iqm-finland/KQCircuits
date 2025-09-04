@@ -100,6 +100,8 @@ def get_epr_correction_simulations(
     simulations = [sim if isinstance(sim, Sequence) else (sim, None) for sim in simulations]
     source_sims, source_sols = list(zip(*simulations))
 
+    region_corrections = {p.name: None for s in source_sims for p in s.get_partition_regions()}
+
     for source_sim, source_sol in zip(source_sims, source_sols):
         cuts = correction_cuts(source_sim) if callable(correction_cuts) else correction_cuts
 
@@ -114,6 +116,8 @@ def get_epr_correction_simulations(
             parts = [p for p in source_sim.get_partition_regions() if p.name in part_names]
             if not parts:
                 continue
+
+            region_corrections.update({p: key for p in part_names})
 
             v_dims = get_list_of_two(parts[0].vertical_dimensions)
             h_dims = get_list_of_two(parts[0].metal_edge_dimensions)
@@ -178,10 +182,7 @@ def get_epr_correction_simulations(
                 "SA": {"thickness": sa_thickness * 1e-6, "eps_r": sa_eps_r},
             },
             groups=["MA", "MS", "SA", "substrate", "vacuum"],
-            region_corrections={
-                **{p.name: None for s in source_sims for p in s.get_partition_regions()},
-                **{p: k for k, v in cuts.items() for p in v.get("partition_regions", [k])},
-            },
+            region_corrections=region_corrections,
         ),
     ]
     return correction_simulations, post_process
