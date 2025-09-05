@@ -26,41 +26,6 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.util.instance_hierarchy_helpers import get_cell_instance_hierarchy
 
 
-@pytest.fixture
-def layout_with_cell_hierarchy():
-    """Generates a KLayoutView with a hierarchy of three static cell instances with transformations::
-
-              top_cell
-              /      \
-          cell_1    cell_3
-             |
-          cell_2
-
-    Here, ``cell_1`` and ``cell_2`` have simple transformations (translation only), and ``cell_3`` has a complex
-    transformation (transformation and rotation by 30 degrees).
-
-    Returns: ``view, [top_cell, cell_1, cell_2, cell_3]``, where the latter are ``pya.Cell`` objects.
-    """
-    layout = pya.Layout()
-    top_cell = layout.create_cell("Top Cell")
-    cell_1 = layout.create_cell("cell_1")
-    cell_2 = layout.create_cell("cell_2")
-    cell_3 = layout.create_cell("cell_3")
-    cell_4 = layout.create_cell("cell_4")
-
-    # Simply translated cell
-    insert_cell_into(top_cell, cell_1, trans=pya.DTrans(200.0, 300.0), inst_name="cell_1_instance")
-
-    # Nested cells
-    insert_cell_into(cell_1, cell_2, trans=pya.DTrans(50.0, 60.0), inst_name="cell_2_instance")
-    insert_cell_into(cell_2, cell_4, trans=pya.DTrans(100.0, 12.0), inst_name="cell_4_instance")
-
-    # Complex translated cell
-    insert_cell_into(top_cell, cell_3, trans=pya.DCplxTrans(1, 30, False, 100.0, 200.0), inst_name="cell_3_instance")
-
-    return layout, [top_cell, cell_1, cell_2, cell_3, cell_4]
-
-
 @pytest.mark.parametrize(
     "into_cell,transform,expected",
     [

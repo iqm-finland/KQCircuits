@@ -194,8 +194,15 @@ def _transformation_for_junction_face(top_cell: pya.Cell, junction_face_ids: lis
     chip_is_mirrored = refpoints[f"{face}_marker_se"].x < refpoints[f"{face}_marker_sw"].x
     if chip_is_mirrored:
         # Mirror by Y-axis = mirror by X-axis * rotate 180 degrees
-        # Then need to shift the chip to the right by chip width
-        return pya.DCplxTrans(pya.DTrans(2, True, bbox.width(), 0))
+        # Then need to shift the chip back so left and right edges of mirrored chip
+        # is same as edges of original chip. Why bbox.p1.x + bbox.p2.x?
+        # Mirror by Y-axis (without translation) means bbox_1.p1.x = -bbox_0.p1.x
+        # For final translated bbox_2 we want
+        # bbox_2.p1.x = bbox_0.p2.x and bbox_2.p2.x = bbox_0.p1.x
+        # Solve for y in bbox_2.p1.x = bbox_1.p1.x + y = -bbox_0.p1.x + y = bbox_0.p2.x
+        # and bbox_2.p2.x = ... = -bbox_0.p2.x + y = bbox_0.p1.x
+        # to get y = bbox_0.p1.x + bbox_0.p2.x
+        return pya.DCplxTrans(pya.DTrans(2, True, bbox.p1.x + bbox.p2.x, 0))
     # Chip not mirrored, return identity transformation
     return pya.DCplxTrans()
 

@@ -98,3 +98,30 @@ def formatted_cell_instance_hierarchy(inst_data: InstanceHierarchy) -> str:
         res += _spacing(i) + _format_inst(child) + "\n"
     res += _spacing(len(inst_data.parent_instances)) + _format_inst(inst_data.instance, inst_data.trans) + "\n"
     return res
+
+
+def transform_top_cell(
+    transform: pya.DCplxTrans | pya.DTrans, layout: pya.Layout, cell: None | pya.Cell = None
+) -> None:
+    """Apply transformation to a top cell. Useful for chips.
+
+    An alternative to layout.transform, but it preserves transformation hierarchy of instances.
+    KLayout's layout.transform function tends to make transformation displacement to be arbitrary,
+    and compensate for it by shifting polygons within instances.
+    ``transform_top_cell`` will make sure that polygons won't shift in relation to its instance's
+    origin within instance hierarchy.
+
+    Args:
+        transform: Transformation to apply
+        layout: Layout where the top cell is. Will contain changed geometry after this call.
+        cell: Optional, to specify which top cell to transform within layout.
+    """
+    # Just pick first top cell in layout if not specified
+    if cell is None:
+        cell = layout.top_cells()[0]
+    # Transform immediate child instances
+    for i in cell.each_inst():
+        i.transform(transform)
+    # Transform polygons owned by the top cell. In KQC those tend to be ground grid etc.
+    for layer in layout.layer_infos():
+        cell.shapes(layout.layer(layer)).transform(transform)
