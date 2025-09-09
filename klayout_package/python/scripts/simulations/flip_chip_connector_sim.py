@@ -35,7 +35,7 @@ from kqcircuits.util.export_helper import (
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
 # Simulation parameters
-sim_class = get_single_element_sim_class(FlipChipConnectorRf)  # pylint: disable=invalid-name
+sim_class = get_single_element_sim_class(FlipChipConnectorRf)
 sim_parameters = {
     "name": "flip_chip",
     "use_internal_ports": False,

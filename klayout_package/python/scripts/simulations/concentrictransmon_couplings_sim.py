@@ -42,7 +42,7 @@ from kqcircuits.simulations.single_element_simulation import get_single_element_
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
 # Simulation parameters
-sim_class = get_single_element_sim_class(ConcentricTransmon)  # pylint: disable=invalid-name
+sim_class = get_single_element_sim_class(ConcentricTransmon)
 sim_parameters = {
     # Arguments for the base Simulation class
     "name": "concentrictransmon",

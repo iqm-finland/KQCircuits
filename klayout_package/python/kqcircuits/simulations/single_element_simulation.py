@@ -49,6 +49,8 @@ def _get_build_function(
 
         if deembed_cross_sections is not None:
             deembed_cs_names = deembed_cross_sections.keys()
+        else:
+            deembed_cs_names = set()
 
         # Add ports
         port_i = 0
@@ -56,7 +58,7 @@ def _get_build_function(
             if ignore_ports is not None and port.refpoint in ignore_ports:
                 continue
 
-            if deembed_cross_sections is not None and port.refpoint in deembed_cs_names:
+            if port.refpoint in deembed_cs_names:
                 port.deembed_cross_section = deembed_cross_sections[port.refpoint]
 
             if isinstance(port, RefpointToInternalPort):

@@ -40,7 +40,7 @@ sim_class = get_single_element_sim_class(
     CircularCapacitor,
     partition_region_function=partition_regions,
     deembed_cross_sections={"port_a": "port_amer", "port_b": "port_bmer"},
-)  # pylint: disable=invalid-name
+)
 
 # Export for running on HPC cluster with SLURM
 use_sbatch = False

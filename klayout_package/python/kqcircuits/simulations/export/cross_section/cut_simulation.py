@@ -260,6 +260,7 @@ class CutSimulation(CrossSectionSimulation):
         for layer in layers:
             self.layers[layer]["region"] -= region
 
+    # pylint: disable=no-value-for-parameter
     def get_material_dict(self):
         """Override CrossSectionSimulation method to combine source simulation and self materials"""
         return {**self.source_sim.get_material_dict(), **super().get_material_dict()}
@@ -271,3 +272,5 @@ class CutSimulation(CrossSectionSimulation):
             "source_sim": self.source_sim.__class__.__name__,
             **{f"source_{k}": v for k, v in self.source_sim.get_parameters().items()},
         }
+
+    # pylint: enable=no-value-for-parameter

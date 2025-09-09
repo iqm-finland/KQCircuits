@@ -47,7 +47,7 @@ class InternalPortCalibration(Simulation):
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
 # Simulation parameters
-sim_class = InternalPortCalibration  # pylint: disable=invalid-name
+sim_class = InternalPortCalibration
 sim_parameters = {
     "name": "port_sim",
     "use_internal_ports": True,

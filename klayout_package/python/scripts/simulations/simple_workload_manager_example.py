@@ -37,7 +37,7 @@ dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
 # Simulation parameters
 # This is the same as `xmons_direct_coupling` but computes the capacitance matrix using Elmer
-sim_class = XMonsDirectCouplingSim  # pylint: disable=invalid-name
+sim_class = XMonsDirectCouplingSim
 sim_parameters = {
     "name": "three_coupled_xmons",
     "use_internal_ports": True,

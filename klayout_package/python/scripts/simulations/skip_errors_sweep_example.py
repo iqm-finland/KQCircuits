@@ -35,7 +35,7 @@ from kqcircuits.util.export_helper import (
 
 
 # Simulation parameters
-sim_class = get_single_element_sim_class(Swissmon)  # pylint: disable=invalid-name
+sim_class = get_single_element_sim_class(Swissmon)
 sim_parameters = {
     "name": "single_xmon_sim",
     "use_internal_ports": True,

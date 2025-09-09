@@ -64,8 +64,8 @@ for epr_file in epr_files:
     else:
         loss_df = pd.DataFrame({k: _sum_losses(epr_df, epr_keys, k, v) for k, v in loss_tangents.items()})
 
-    for k in loss_df.keys():
-        epr_df[f"Q_{k}"] = 1 / loss_df[k]
+    for k, v in loss_df.items():
+        epr_df[f"Q_{k}"] = 1 / v
 
     epr_df["Q_total"] = 1 / loss_df.sum(axis=1)
 

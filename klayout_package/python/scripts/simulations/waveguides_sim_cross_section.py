@@ -63,7 +63,7 @@ args, unknown = parser.parse_known_args()
 # provides an example of producing cross section simulations.
 #
 # Simulation parameters
-sim_class = WaveGuidesSim  # pylint: disable=invalid-name
+sim_class = WaveGuidesSim
 
 multiface = args.flip_chip
 

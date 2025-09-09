@@ -78,6 +78,18 @@ class Stripes(Chip):
         step = self.edge_len + self.inter_space
         stripe_step = step * 2
 
+        (
+            stripe_start,
+            stripe_reach,
+            stripe_bottom_left_x,
+            stripe_bottom_left_y,
+            stripe_top_right_x,
+            stripe_top_right_y,
+            square_y_start,
+            square_x_step,
+            square_y_step,
+        ) = (0, 0, 0, 0, 0, 0, 0, 0, 0)
+
         if self.axis == "Vertical":
             stripe_start = left + dice_width + self.inter_space
             stripe_reach = left + width
@@ -101,6 +113,9 @@ class Stripes(Chip):
 
             square_y_step = step * 2
             square_x_step = step
+
+        else:
+            raise ValueError(f"Unsupported axis value: {self.axis}")
 
         # creating the stripes for all of the ground grid
         for c in numpy.arange(stripe_start, stripe_reach, stripe_step):

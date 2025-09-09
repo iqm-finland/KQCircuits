@@ -8,9 +8,9 @@ alabaster==0.7.16 \
     --hash=sha256:75a8b99c28a5dad50dd7f8ccdd447a121ddb3892da9e53d1ca5cca3106d58d65 \
     --hash=sha256:b46733c07dce03ae4e150330b975c75737fa60f0a7c591b6c8bf4928a28e2c92
     # via sphinx
-astroid==2.11.7 \
-    --hash=sha256:86b0a340a512c65abf4368b80252754cda17c02cdbbd3f587dddf98112233e7b \
-    --hash=sha256:bb24615c77f4837c707669d16907331374ae8a964650a66999da3f5ca68dc946
+astroid==3.3.11 \
+    --hash=sha256:1e5a5011af2920c7c67a53f65d536d65bfa7116feeaf2354d8b94f29573bb0ce \
+    --hash=sha256:54c760ae8322ece1abd213057c4b5bba7c49818853fc901ef09719a60dbf9dec
     # via pylint
 babel==2.14.0 \
     --hash=sha256:6919867db036398ba21eb5c7a0f6b28ab8cbc3ae7a73a44ebe34ae74a4e7d363 \
@@ -263,9 +263,9 @@ iniconfig==2.1.0 \
     --hash=sha256:3abbd2e30b36733fee78f9c7f7308f2d0050e88f0087fd25c2645f63c773e1c7 \
     --hash=sha256:9deba5723312380e77435581c6bf4935c94cbfab9b1ed33ef8d238ea168eb760
     # via pytest
-isort==5.13.2 \
-    --hash=sha256:48fdfcb9face5d58a4f6dde2e72a1fb8dcaf8ab26f95ab49fab84c2ddefb0109 \
-    --hash=sha256:8ca5e72a8d85860d5a3fa69b8745237f2939afe12dbf656afbcb47fe72d947a6
+isort==6.0.1 \
+    --hash=sha256:1cb5df28dfbc742e490c5e41bad6da41b805b0a8be7bc93cd0fb2a8a890ac450 \
+    --hash=sha256:2dc5d7f65c9678d94c88dfc29161a320eec67328bc97aad576874cb4be1e9615
     # via pylint
 jinja2==3.1.6 \
     --hash=sha256:0137fb05990d35f1275a587e9aee6d56da821fc83491a0fb838183be43f66d6d \
@@ -371,9 +371,9 @@ pathspec==0.12.1 \
     --hash=sha256:a0d503e138a4c123b27490a4f7beda6a01c6f288df0e4a8b79c7eb0dc7b4cc08 \
     --hash=sha256:a482d51503a1ab33b1c67a6c3813a26953dbdc71c31dacaef9a838c4e29f5712
     # via black
-platformdirs==4.3.8 \
-    --hash=sha256:3d512d96e16bcb959a814c9f348431070822a6496326a4be0911c40b5a74c2bc \
-    --hash=sha256:ff7059bb7eb1179e2685604f4aaf157cfd9535242bd23742eadc3c13542139b4
+platformdirs==4.4.0 \
+    --hash=sha256:abd01743f24e5287cd7a5db3752faf1a2d65353f38ec26d98e25a6db65958c85 \
+    --hash=sha256:ca753cf4d81dc309bc67b0ea38fd15dc97bc30ce419a7f58d13eb3bf14c4febf
     # via
     #   black
     #   pylint
@@ -392,9 +392,9 @@ pygments==2.19.1 \
     # via
     #   pytest
     #   sphinx
-pylint==2.14.0 \
-    --hash=sha256:10d291ea5133645f73fc1b51ca137ad6531223c1461a5632a1db029a9bc033b5 \
-    --hash=sha256:ef64ce5d4c17b8906caeaf2c2914ef3036a3a1b7f4a86f5fbf6caff9067c5f63
+pylint==3.3.8 \
+    --hash=sha256:26698de19941363037e2937d3db9ed94fb3303fdadf7d98847875345a8bb6b05 \
+    --hash=sha256:7ef94aa692a600e82fabdd17102b73fc226758218c97473c7ad67bd4cb905d83
     # via -r dev-requirements.in
 pyproject-api==1.9.1 \
     --hash=sha256:43c9918f49daab37e302038fc1aed54a8c7a91a9fa935d00b9a485f37e0f5335 \

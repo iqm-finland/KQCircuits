@@ -166,7 +166,7 @@ for tls_file in tls_files:
 
     apply_sheet_correction = json_params["tls_sheet_approximation"] or not any(json_params["tls_layer_thickness"])
     sheet_interfaces = ["ma", "ms", "sa"]
-    if_eps_dict = {}
+    if_eps_dict, bg_eps_dict = {}, {}
     if apply_sheet_correction:
         if_eps_args = [getattr(args, f"eps_{l}") for l in sheet_interfaces]
         substrate_material = json_params["substrate_material"]

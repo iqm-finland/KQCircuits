@@ -144,7 +144,7 @@ class TutorialSim(Simulation):
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
-sim_class = TutorialSim  # pylint: disable=invalid-name
+sim_class = TutorialSim
 
 # Simulation parameters
 sim_parameters = {"box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(1000, 1000)), "face_ids": ["1b1", "1t1", "2b1", "2t1"]}

@@ -31,7 +31,7 @@ from kqcircuits.util.export_helper import (
 
 # This is a test case for initial mesh refinement in Ansys
 
-sim_class = WaveGuidesSim  # pylint: disable=invalid-name
+sim_class = WaveGuidesSim
 path = create_or_empty_tmp_directory("waveguide_eig_mesh_test")
 
 box_size_x = 6000

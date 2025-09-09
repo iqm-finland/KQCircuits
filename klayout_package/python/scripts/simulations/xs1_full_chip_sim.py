@@ -39,7 +39,7 @@ else:
     dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_hfss")
 
 # Simulation parameters
-sim_class = SingleXmonsFullChipSim  # pylint: disable=invalid-name
+sim_class = SingleXmonsFullChipSim
 
 sim_parameters = {
     "name": "xs1_full_chip_sim",

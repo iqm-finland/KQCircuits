@@ -276,7 +276,7 @@ def export_elmer_script(
             n_workers_elmer_only = 1
             n_simulations_gmsh = 1
         else:
-            logging.warning(f"Unknown parallelization level {parallelization_level}")
+            raise ValueError(f"Unknown parallelization level {parallelization_level}")
 
         if sbatch_parameters.get("--account", "project_0") == "project_0":
             sbatch_parameters["--account"] = KQC_REMOTE_ACCOUNT

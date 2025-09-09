@@ -58,7 +58,7 @@ class TlsWaveguideSim(Simulation):
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
 # Simulation parameters
-sim_class = TlsWaveguideSim  # pylint: disable=invalid-name
+sim_class = TlsWaveguideSim
 sim_parameters = {
     "name": "tls_waveguide_sim",
     "face_stack": ["1t1"],  # single chip

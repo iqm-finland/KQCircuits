@@ -90,7 +90,7 @@ parser.add_argument("--gap-mesh-size", default=2.0, type=float, help="Element si
 parser.add_argument("--global-mesh-size", default=100.0, type=float, help="Global element size")
 args, unknown = parser.parse_known_args()
 
-sim_class = WaveGuidesSim  # pylint: disable=invalid-name
+sim_class = WaveGuidesSim
 
 edge_ports = not args.no_edge_ports
 use_elmer = not args.ansys

@@ -68,7 +68,7 @@ class SwissmonFluxlineSim(Simulation):
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
 # Simulation parameters
-sim_class = SwissmonFluxlineSim  # pylint: disable=invalid-name
+sim_class = SwissmonFluxlineSim
 sim_parameters = {
     "box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(2000, 2000)),
 }

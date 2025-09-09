@@ -59,7 +59,7 @@ class CpwCircleSim(Simulation):
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
-sim_class = CpwCircleSim  # pylint: disable=invalid-name
+sim_class = CpwCircleSim
 
 # Simulation parameters, using multiface interdigital as starting point
 sim_parameters = {

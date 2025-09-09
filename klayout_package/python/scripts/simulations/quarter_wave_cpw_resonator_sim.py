@@ -55,7 +55,7 @@ sim_class = get_single_element_sim_class(
     # To make the simulation faster the resonator ports are ignored.
     # Remove to get the full 4x4 S-matrix
     ignore_ports=["port_resonator_b"],
-)  # pylint: disable=invalid-name
+)
 
 sim_parameters = {
     "name": "cpw_resonator_sim",

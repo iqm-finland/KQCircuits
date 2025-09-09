@@ -86,7 +86,7 @@ dielectric_surfaces = {
 tls_layer_thickness = [dielectric_surfaces[layer]["thickness"] * 1e6 for layer in ("MA", "MS", "SA")]
 
 # Simulation parameters
-sim_class = TlsWaveguideSim2  # pylint: disable=invalid-name
+sim_class = TlsWaveguideSim2
 sim_parameters = {
     "name": "tls_waveguide_sim",
     "face_stack": ["1t1"],  # single chip

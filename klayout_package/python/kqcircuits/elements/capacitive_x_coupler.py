@@ -94,6 +94,8 @@ class CapacitiveXCoupler(Element):
 
             p02 = (self.a / 2 + self.b, 0.0)
             p04 = (-self.a / 2 - self.b, 0.0)
+        else:
+            raise ValueError(f"Unknown x_coupler_variant {self.x_coupler_variant}")
 
         self.refpoints["p11"] = pya.DPoint(*p11)
         self.refpoints["p21"] = pya.DPoint(*p21)

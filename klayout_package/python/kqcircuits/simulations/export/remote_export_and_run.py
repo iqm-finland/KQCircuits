@@ -134,6 +134,7 @@ def _remote_run(
     remote_simulation_script = str(TMP_PATH / remote_script_name)
     simlist = " ".join(dirs_remote)
 
+    # pylint: disable=line-too-long
     remote_simulation = f"""#!/bin/bash
     sim_list=({simlist})
 
@@ -142,6 +143,7 @@ def _remote_run(
         RES=$(sbatch -J "{run_uuid}" ./simulation_meshes.sh) && sbatch -d afterok:${{RES##* }} -J "{run_uuid}" ./simulation.sh
     done;
     """
+    # pylint: enable=line-too-long
     with open(remote_simulation_script, "w", encoding="utf-8") as file:
         file.write(remote_simulation)
 

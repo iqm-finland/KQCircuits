@@ -37,7 +37,7 @@ from kqcircuits.util.export_helper import (
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
-sim_class = get_single_element_sim_class(FingerCapacitorSquare)  # pylint: disable=invalid-name
+sim_class = get_single_element_sim_class(FingerCapacitorSquare)
 
 # Simulation parameters, using multiface interdigital as starting point
 sim_parameters = {

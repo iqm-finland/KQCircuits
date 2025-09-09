@@ -40,7 +40,7 @@ sim_tools = ["elmer", "eigenmode", "q3d"]
 
 for sim_tool in sim_tools:
     # Simulation parameters
-    sim_class = get_single_element_sim_class(DoublePads)  # pylint: disable=invalid-name
+    sim_class = get_single_element_sim_class(DoublePads)
     sim_parameters = {
         "name": "double_pads",
         "use_internal_ports": True,

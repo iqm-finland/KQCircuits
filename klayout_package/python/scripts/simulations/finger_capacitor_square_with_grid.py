@@ -35,7 +35,7 @@ from kqcircuits.util.export_helper import (
     open_with_klayout_or_default_application,
 )
 
-sim_class = get_single_element_sim_class(FingerCapacitorSquare)  # pylint: disable=invalid-name
+sim_class = get_single_element_sim_class(FingerCapacitorSquare)
 
 use_elmer = True
 with_grid = True

@@ -35,7 +35,7 @@ from kqcircuits.util.export_helper import (
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
-sim_class = get_single_element_sim_class(CircularCapacitor)  # pylint: disable=invalid-name
+sim_class = get_single_element_sim_class(CircularCapacitor)
 
 # Simulation parameters
 sim_parameters = {

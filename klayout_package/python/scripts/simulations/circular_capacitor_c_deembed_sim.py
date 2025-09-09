@@ -44,7 +44,7 @@ sim_class = get_single_element_sim_class(
     # Mapping from port refpoint names to the cross-section simulation names (suffixes) used to deembed the waveguides
     # related to the ports
     deembed_cross_sections={"port_a": "port_a", "port_b": "port_b"},
-)  # pylint: disable=invalid-name
+)
 
 
 flip_chip = False

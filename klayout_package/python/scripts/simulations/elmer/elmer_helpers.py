@@ -157,10 +157,7 @@ def sif_matc_block(data: list[str]) -> str:
           .
       $ data[n]
     """
-    res = ""
-    for line in data:
-        res += f"$  {line}\n"
-    return res
+    return "".join(f"$  {line}\n" for line in data)
 
 
 def sif_linsys(json_data: dict) -> list[str]:

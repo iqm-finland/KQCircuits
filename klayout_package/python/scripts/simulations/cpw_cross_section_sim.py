@@ -161,7 +161,7 @@ args.is_axisymmetric = args.axisymmetric_test or args.is_axisymmetric
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(f"{Path(__file__).stem}_output")
 
-sim_class = CpwCrossSectionSim  # pylint: disable=invalid-name
+sim_class = CpwCrossSectionSim
 
 # Simulate Axi-symmetric case with toroidal revolution symmetry
 is_axisymmetric = args.is_axisymmetric

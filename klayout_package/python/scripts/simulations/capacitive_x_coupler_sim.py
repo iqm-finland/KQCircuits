@@ -41,7 +41,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--use-sbatch", action="store_true", help="Use sbatch (Slurm)")
 args, unknown = parser.parse_known_args()
 
-sim_class = get_single_element_sim_class(CapacitiveXCoupler)  # pylint: disable=invalid-name
+sim_class = get_single_element_sim_class(CapacitiveXCoupler)
 
 height = 500.0
 length = 500.0

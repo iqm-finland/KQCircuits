@@ -592,8 +592,7 @@ class MaskLayout:
         labels = []
         for layer, postfix in layers_dict.items():
             label_cell, label_trans = self._create_mask_name_label(self.face()[layer], postfix)
-            if label_trans.disp.x < leftmost_label_x:
-                leftmost_label_x = label_trans.disp.x
+            leftmost_label_x = min(label_trans.disp.x, leftmost_label_x)
             labels.append((label_cell, label_trans))
         # align left edges of mask name labels in different layers
         for label_cell, label_trans in labels:

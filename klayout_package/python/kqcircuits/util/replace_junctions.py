@@ -259,6 +259,7 @@ def extract_junctions(top_cell: pya.Cell, tuned_junction_parameters: Dict) -> Li
             pcell = library_layout.pcell_declaration(cell_class_from_name)
             is_junction = cell_class_from_name in junction_type_choices
         if is_junction:
+            pcell_param_values = {}
             if is_pcell:
                 # Parameter values present in PCell data can be reused
                 pcell_param_values = inst.pcell_parameters_by_name()
