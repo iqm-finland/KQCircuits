@@ -106,7 +106,7 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
         visualise=True,
     )
     result += create_bulk_and_mer_partition_regions(
-        name=f"{prefix}bcomplement",
+        name=f"{prefix}{simulation.face_ids[0]}complement",
         face=simulation.face_ids[0],
         metal_edge_dimensions=metal_edge_dimension,
         region=None,
@@ -119,7 +119,7 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
         make_t_regions = len(simulation.face_stack) > 1
     if make_t_regions:
         result += create_bulk_and_mer_partition_regions(
-            name=f"{prefix}tcomplement",
+            name=f"{prefix}{simulation.face_ids[1]}complement",
             face=simulation.face_ids[1],
             metal_edge_dimensions=metal_edge_dimension,
             region=None,
@@ -174,7 +174,7 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
                 {"x": 2 * fingersmer_end.abs() - simulation.finger_width * 0.9, "z": z_me},
             ],
         },
-        f"{prefix}bcomplementmer": {
+        f"{prefix}{simulation.face_ids[0]}complementmer": {
             "p1": finger_top + pya.DVector(0, simulation.ground_gap + half_cut_len),
             "p2": finger_top - pya.DVector(0, simulation.finger_width * 0.9),
             "metal_edges": [

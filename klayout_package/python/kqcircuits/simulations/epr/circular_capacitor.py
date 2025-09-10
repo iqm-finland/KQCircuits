@@ -208,12 +208,12 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
 
     result += _init_part_reg("1gap", inner_gap_region)
     result += _init_part_reg("2gap", outer_gap_region)
-    result += _init_part_reg("bcomplement", None)
+    result += _init_part_reg(f"{simulation.face_ids[0]}complement", None)
 
     if _is_flip_chip(simulation):
         if simulation.etch_opposite_face:
-            result += _init_part_reg("tcomplement", None, bulk=False, face=1)
-        result += _init_part_reg("tcomplement", None, mer=False, face=1)
+            result += _init_part_reg(f"{simulation.face_ids[1]}complement", None, bulk=False, face=1)
+        result += _init_part_reg(f"{simulation.face_ids[1]}complement", None, mer=False, face=1)
 
     return result
 
@@ -410,9 +410,9 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
             "boundary_conditions": {"xmax": {"potential": 0}},
         }
 
-    # bcomplement cut
+    # complement cut on face 0
     # This might contain one or 2 metal edges with maybe non-optimal placement with some parameters
-    # However, in the edge cases the bcomplement region is almost empty so it doesnt have much effect
+    # However, in the edge cases the corresponding region is almost empty so it doesnt have much effect
     wg1_angle = (
         math.atan(
             (simulation.b + simulation.a / 2 + simulation.etch_opposite_face_margin)
@@ -423,7 +423,7 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
     cut_unit_vector = pya.DVector(math.cos(math.pi - wg1_angle), math.sin(math.pi - wg1_angle))
     cut_center = center + (simulation.r_outer + simulation.ground_gap) * cut_unit_vector
     half_cut_length = 30
-    result[f"{prefix}bcomplementmer"] = {
+    result[f"{prefix}{simulation.face_ids[0]}complementmer"] = {
         "p1": cut_center + half_cut_length * cut_unit_vector,
         "p2": cut_center - half_cut_length * cut_unit_vector,
         "metal_edges": [
@@ -432,8 +432,6 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
         "boundary_conditions": {"xmax": {"potential": 1}},
     }
 
-    # tcomplement cut
-    # almost same as bcomplement cut but different mer box
     if is_flip_chip and simulation.etch_opposite_face:
         cut_center = (
             center
@@ -441,7 +439,7 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
         )
         half_cut_length = 30
         z_me_t = get_mer_z(simulation, simulation.face_ids[1])
-        result[f"{prefix}tcomplementmer"] = {
+        result[f"{prefix}{simulation.face_ids[1]}complementmer"] = {
             "p1": cut_center + half_cut_length * cut_unit_vector,
             "p2": cut_center - half_cut_length * cut_unit_vector,
             "metal_edges": [

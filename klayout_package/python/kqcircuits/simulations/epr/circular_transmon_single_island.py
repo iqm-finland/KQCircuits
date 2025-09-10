@@ -105,7 +105,7 @@ def partition_regions(simulation):
 
     # Main island complement region
     regions += create_bulk_and_mer_partition_regions(
-        name="bcomplement",
+        name=f"{simulation.face_ids[0]}complement",
         face=simulation.face_ids[0],
         metal_edge_dimensions=2.0,
         region=None,
@@ -206,7 +206,7 @@ def correction_cuts(simulation):
         (simulation.r_island + simulation.ground_gap + gap_distance) * math.sin(complement_angle),
     )
 
-    cuts["bcomplementmer"] = {
+    cuts[f"{simulation.face_ids[0]}complementmer"] = {
         "p1": inner_point + simulation.refpoints["base"],
         "p2": outer_point + simulation.refpoints["base"],
     }

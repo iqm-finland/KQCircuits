@@ -240,7 +240,7 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
         visualise=True,
     )
     result += create_bulk_and_mer_partition_regions(
-        name=f"{prefix}tcomplement",
+        name=f"{prefix}{simulation.face_ids[0]}complement",
         face=simulation.face_ids[0],
         metal_edge_dimensions=metal_edge_dimensions,
         region=None,
@@ -248,7 +248,7 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
         visualise=True,
     )
     result += create_bulk_and_mer_partition_regions(
-        name=f"{prefix}bcomplement",
+        name=f"{prefix}{simulation.face_ids[1]}complement",
         face=simulation.face_ids[1],
         metal_edge_dimensions=metal_edge_dimensions,
         region=None,
@@ -297,12 +297,12 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
             "p2": coupler1_center + pya.DPoint(half_cut_length, 0),
             "boundary_conditions": {"xmax": {"potential": 0}, "xmin": {"potential": 0}},
         },
-        f"{prefix}tcomplementmer": {
+        f"{prefix}{simulation.face_ids[0]}complementmer": {
             "p1": ground_gap + pya.DPoint(-half_cut_length, 0),
             "p2": ground_gap + pya.DPoint(half_cut_length, 0),
             "boundary_conditions": {"xmin": {"potential": 1}, "ymax": {"potential": 0}},
         },
-        f"{prefix}bcomplementmer": {
+        f"{prefix}{simulation.face_ids[1]}complementmer": {
             "p1": ground_gap + pya.DPoint(-half_cut_length, 0),
             "p2": ground_gap + pya.DPoint(half_cut_length, 0),
             "boundary_conditions": {"xmin": {"potential": 1}, "ymax": {"potential": 0}},
