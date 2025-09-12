@@ -285,12 +285,11 @@ def _export_netlist(circuit, filename, internal_layout, original_layout, cell_ma
     chip_for_export = {}
     if pcell.pcell_declaration() is not None:
         chip_params = pcell.pcell_parameters_by_name()
-        if {"frames_enabled", "face_boxes", "face_ids", "box"} <= set(chip_params.keys()):
-            for face in chip_params["frames_enabled"]:
-                face_box = chip_params["face_boxes"][int(face)]
+        chip_for_export["face_ids"] = chip_params.get("face_ids", [])
+        if {"face_boxes", "face_ids", "box"} <= set(chip_params.keys()):
+            for face_id, face_box in zip(chip_params["face_ids"], chip_params["face_boxes"]):
                 if face_box is None:
                     face_box = chip_params["box"]
-                face_id = chip_params["face_ids"][int(face)]
                 chip_for_export[f"{face_id}_face_dimensions"] = face_box
 
     with open(str(filename), "w", encoding="utf-8") as fp:
