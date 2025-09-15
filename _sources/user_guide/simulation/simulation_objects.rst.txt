@@ -158,15 +158,15 @@ The simplest way to do it is to use the class builder to build a single element 
     from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
     from kqcircuits.util.export_helper import get_active_or_new_layout
 
-    sim_class = get_single_element_sim_class(Swissmon)  # Builds a simulation class for Swissmon
+    SimClass = get_single_element_sim_class(Swissmon)  # Builds a simulation class for Swissmon
 
     layout = get_active_or_new_layout()
     sim_parameters = {}  # Dictionary of Swissmon parameters
-    simulation = sim_class(layout, **sim_parameters)  # Builds an instance of the simulation class
+    simulation = SimClass(layout, **sim_parameters)  # Builds an instance of the simulation class
 
-Returned ``sim_class`` is a dynamically built subclass of :class:`.Simulation` that contains a cell of
+Returned ``SimClass`` is a dynamically built subclass of :class:`.Simulation` that contains a cell of
 the Swissmon qubit placed at the center of the simulation box.
-``sim_class`` can be instantiated with a parameters dict that sets the parameter values to the internal Swissmon PCell.
+``SimClass`` can be instantiated with a parameters dict that sets the parameter values to the internal Swissmon PCell.
 
 You can see that currently
 the :git_url:`Swissmon code <klayout_package/python/kqcircuits/qubits/swissmon.py>`
@@ -188,7 +188,7 @@ by simply adapting the function :py:meth:`~kqcircuits.qubits.swissmon.Swissmon.g
 If we then decide to not produce the waveguides for the next simulation, instead of reverting the change we just made
 to :class:`.Swissmon` we can specify which refpoints should not generate ports in the simulation object::
 
-    sim_class = get_single_element_sim_class(Swissmon, ignore_ports=['port_cplr0', 'port_cplr1', 'port_cplr2'])
+    SimClass = get_single_element_sim_class(Swissmon, ignore_ports=['port_cplr0', 'port_cplr1', 'port_cplr2'])
 
 For more information on how to use the :py:meth:`~kqcircuits.simulations.single_element_simulation.get_single_element_sim_class`
 simulation class builder, please consult the API docs for the method
@@ -251,21 +251,21 @@ The following script shows how to generate some instances of the simulation subc
     from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
     from kqcircuits.util.export_helper import get_active_or_new_layout
 
-    sim_class = get_single_element_sim_class(Swissmon)  # Builds a simulation class for Swissmon
+    SimClass = get_single_element_sim_class(Swissmon)  # Builds a simulation class for Swissmon
 
     layout = get_active_or_new_layout()
     simulations = []
 
     # Generate the simulation with default parameters
-    simulations.append(sim_class(layout))
+    simulations.append(SimClass(layout))
 
     # Generate the simulation for some other parameter
-    simulations.append(sim_class(layout, arm_length=[500, 500, 500, 500], name='arm_length_500'))
+    simulations.append(SimClass(layout, arm_length=[500, 500, 500, 500], name='arm_length_500'))
 
     # Make a 4-point sweep of gap width
     simulations += sweep_simulation(
         layout,
-        sim_class,
+        SimClass,
         sim_parameters={
             'name': 'gap_sweep',
             'arm_length': [500, 500, 500, 500],
@@ -274,3 +274,9 @@ The following script shows how to generate some instances of the simulation subc
             'gap_width': [[x, x, x, x] for x in [10, 15, 20, 25]],
         }
     )
+
+.. note::
+    If some of the simulations in a sweep fail for some reason, they can be manually rerun from the terminal by running
+    the post-processing script ``python scripts/rerun_failed_simulations.py <main_script> <rerun_script>`` in the tmp
+    folder (``KQCircuits/tmp/<sim_name>``). Here ``<main_script>`` is the main ``sh`` or ``bat`` file used to launch
+    the simulations and ``<rerun_script>`` is a modified version of that file written by this script.

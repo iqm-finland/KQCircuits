@@ -31,10 +31,10 @@ finally shows the simulation geometries in Klayout viewer.::
     from kqcircuits.simulations.export.simulation_export import export_simulation_oas
     from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 
-    sim_class = get_single_element_sim_class(Swissmon)  # Builds a simulation class for Swissmon
+    SimClass = get_single_element_sim_class(Swissmon)  # Builds a simulation class for Swissmon
 
     layout = get_active_or_new_layout()
-    simulations = [sim_class(layout)]  # Generate the simulation with default parameters
+    simulations = [SimClass(layout)]  # Generate the simulation with default parameters
 
     # Create an empty folder for simulations in KQCircuits/tmp/swissmon_simulation_output
     dir_path = create_or_empty_tmp_directory("swissmon_simulation_output")

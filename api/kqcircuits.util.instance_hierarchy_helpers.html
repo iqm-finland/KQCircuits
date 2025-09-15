@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.util.instance_hierarchy_helpers &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.util.instance_hierarchy_helpers &mdash; KQCircuits 4.9.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
@@ -18,7 +18,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/documentation_options.js?v=86e8f750"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -811,6 +811,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#kqcircuits.util.instance_hierarchy_helpers.InstanceHierarchy"><code class="docutils literal notranslate"><span class="pre">InstanceHierarchy</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#kqcircuits.util.instance_hierarchy_helpers.get_cell_instance_hierarchy"><code class="docutils literal notranslate"><span class="pre">get_cell_instance_hierarchy()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#kqcircuits.util.instance_hierarchy_helpers.formatted_cell_instance_hierarchy"><code class="docutils literal notranslate"><span class="pre">formatted_cell_instance_hierarchy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#kqcircuits.util.instance_hierarchy_helpers.transform_top_cell"><code class="docutils literal notranslate"><span class="pre">transform_top_cell()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.label.html">kqcircuits.util.label</a><ul>
@@ -1051,6 +1052,26 @@ transformation of the instance and the instance names along the hierarchy if the
 </dd>
 </dl>
 <p>Returns: formatted string (multiple lines)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.util.instance_hierarchy_helpers.transform_top_cell">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.instance_hierarchy_helpers.</span></span><span class="sig-name descname"><span class="pre">transform_top_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DCplxTrans</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">DTrans</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Cell</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/kqcircuits/util/instance_hierarchy_helpers.html#transform_top_cell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.instance_hierarchy_helpers.transform_top_cell" title="Link to this definition"></a></dt>
+<dd><p>Apply transformation to a top cell. Useful for chips.</p>
+<p>An alternative to layout.transform, but it preserves transformation hierarchy of instances.
+KLayout’s layout.transform function tends to make transformation displacement to be arbitrary,
+and compensate for it by shifting polygons within instances.
+<code class="docutils literal notranslate"><span class="pre">transform_top_cell</span></code> will make sure that polygons won’t shift in relation to its instance’s
+origin within instance hierarchy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transform</strong> – Transformation to apply</p></li>
+<li><p><strong>layout</strong> – Layout where the top cell is. Will contain changed geometry after this call.</p></li>
+<li><p><strong>cell</strong> – Optional, to specify which top cell to transform within layout.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <img alt="../_images/kqcircuits.util.instance_hierarchy_helpers.png" src="../_images/kqcircuits.util.instance_hierarchy_helpers.png" />

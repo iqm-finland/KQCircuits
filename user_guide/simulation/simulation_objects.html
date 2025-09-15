@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Simulation objects &mdash; KQCircuits  documentation</title>
+  <title>Simulation objects &mdash; KQCircuits 4.9.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
@@ -18,7 +18,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../_static/documentation_options.js?v=86e8f750"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -811,6 +811,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../api/kqcircuits.util.instance_hierarchy_helpers.html#kqcircuits.util.instance_hierarchy_helpers.InstanceHierarchy"><code class="docutils literal notranslate"><span class="pre">InstanceHierarchy</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/kqcircuits.util.instance_hierarchy_helpers.html#kqcircuits.util.instance_hierarchy_helpers.get_cell_instance_hierarchy"><code class="docutils literal notranslate"><span class="pre">get_cell_instance_hierarchy()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/kqcircuits.util.instance_hierarchy_helpers.html#kqcircuits.util.instance_hierarchy_helpers.formatted_cell_instance_hierarchy"><code class="docutils literal notranslate"><span class="pre">formatted_cell_instance_hierarchy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/kqcircuits.util.instance_hierarchy_helpers.html#kqcircuits.util.instance_hierarchy_helpers.transform_top_cell"><code class="docutils literal notranslate"><span class="pre">transform_top_cell()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.label.html">kqcircuits.util.label</a><ul>
@@ -1128,16 +1129,16 @@ The simplest way to do it is to use the class builder to build a single element 
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.single_element_simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_single_element_sim_class</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.export_helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_active_or_new_layout</span>
 
-<span class="n">sim_class</span> <span class="o">=</span> <span class="n">get_single_element_sim_class</span><span class="p">(</span><span class="n">Swissmon</span><span class="p">)</span>  <span class="c1"># Builds a simulation class for Swissmon</span>
+<span class="n">SimClass</span> <span class="o">=</span> <span class="n">get_single_element_sim_class</span><span class="p">(</span><span class="n">Swissmon</span><span class="p">)</span>  <span class="c1"># Builds a simulation class for Swissmon</span>
 
 <span class="n">layout</span> <span class="o">=</span> <span class="n">get_active_or_new_layout</span><span class="p">()</span>
 <span class="n">sim_parameters</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># Dictionary of Swissmon parameters</span>
-<span class="n">simulation</span> <span class="o">=</span> <span class="n">sim_class</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="o">**</span><span class="n">sim_parameters</span><span class="p">)</span>  <span class="c1"># Builds an instance of the simulation class</span>
+<span class="n">simulation</span> <span class="o">=</span> <span class="n">SimClass</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="o">**</span><span class="n">sim_parameters</span><span class="p">)</span>  <span class="c1"># Builds an instance of the simulation class</span>
 </pre></div>
 </div>
-<p>Returned <code class="docutils literal notranslate"><span class="pre">sim_class</span></code> is a dynamically built subclass of <a class="reference internal" href="../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Simulation</span></code></a> that contains a cell of
+<p>Returned <code class="docutils literal notranslate"><span class="pre">SimClass</span></code> is a dynamically built subclass of <a class="reference internal" href="../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Simulation</span></code></a> that contains a cell of
 the Swissmon qubit placed at the center of the simulation box.
-<code class="docutils literal notranslate"><span class="pre">sim_class</span></code> can be instantiated with a parameters dict that sets the parameter values to the internal Swissmon PCell.</p>
+<code class="docutils literal notranslate"><span class="pre">SimClass</span></code> can be instantiated with a parameters dict that sets the parameter values to the internal Swissmon PCell.</p>
 <p>You can see that currently
 the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits/qubits/swissmon.py">Swissmon code</a>
 defines one <a class="reference internal" href="../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.RefpointToSimPort" title="kqcircuits.util.refpoints.RefpointToSimPort"><code class="xref py py-class docutils literal notranslate"><span class="pre">RefpointToSimPort</span></code></a> object to return in the
@@ -1156,7 +1157,7 @@ by simply adapting the function <a class="reference internal" href="../../api/kq
 </div>
 <p>If we then decide to not produce the waveguides for the next simulation, instead of reverting the change we just made
 to <a class="reference internal" href="../../api/kqcircuits.qubits.swissmon.html#kqcircuits.qubits.swissmon.Swissmon" title="kqcircuits.qubits.swissmon.Swissmon"><code class="xref py py-class docutils literal notranslate"><span class="pre">Swissmon</span></code></a> we can specify which refpoints should not generate ports in the simulation object:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sim_class</span> <span class="o">=</span> <span class="n">get_single_element_sim_class</span><span class="p">(</span><span class="n">Swissmon</span><span class="p">,</span> <span class="n">ignore_ports</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;port_cplr0&#39;</span><span class="p">,</span> <span class="s1">&#39;port_cplr1&#39;</span><span class="p">,</span> <span class="s1">&#39;port_cplr2&#39;</span><span class="p">])</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SimClass</span> <span class="o">=</span> <span class="n">get_single_element_sim_class</span><span class="p">(</span><span class="n">Swissmon</span><span class="p">,</span> <span class="n">ignore_ports</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;port_cplr0&#39;</span><span class="p">,</span> <span class="s1">&#39;port_cplr1&#39;</span><span class="p">,</span> <span class="s1">&#39;port_cplr2&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>For more information on how to use the <a class="reference internal" href="../../api/kqcircuits.simulations.single_element_simulation.html#kqcircuits.simulations.single_element_simulation.get_single_element_sim_class" title="kqcircuits.simulations.single_element_simulation.get_single_element_sim_class"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_single_element_sim_class()</span></code></a>
@@ -1216,21 +1217,21 @@ at time as the <a class="reference internal" href="../../api/kqcircuits.simulati
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.single_element_simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_single_element_sim_class</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.export_helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_active_or_new_layout</span>
 
-<span class="n">sim_class</span> <span class="o">=</span> <span class="n">get_single_element_sim_class</span><span class="p">(</span><span class="n">Swissmon</span><span class="p">)</span>  <span class="c1"># Builds a simulation class for Swissmon</span>
+<span class="n">SimClass</span> <span class="o">=</span> <span class="n">get_single_element_sim_class</span><span class="p">(</span><span class="n">Swissmon</span><span class="p">)</span>  <span class="c1"># Builds a simulation class for Swissmon</span>
 
 <span class="n">layout</span> <span class="o">=</span> <span class="n">get_active_or_new_layout</span><span class="p">()</span>
 <span class="n">simulations</span> <span class="o">=</span> <span class="p">[]</span>
 
 <span class="c1"># Generate the simulation with default parameters</span>
-<span class="n">simulations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sim_class</span><span class="p">(</span><span class="n">layout</span><span class="p">))</span>
+<span class="n">simulations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimClass</span><span class="p">(</span><span class="n">layout</span><span class="p">))</span>
 
 <span class="c1"># Generate the simulation for some other parameter</span>
-<span class="n">simulations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sim_class</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">arm_length</span><span class="o">=</span><span class="p">[</span><span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;arm_length_500&#39;</span><span class="p">))</span>
+<span class="n">simulations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimClass</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">arm_length</span><span class="o">=</span><span class="p">[</span><span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;arm_length_500&#39;</span><span class="p">))</span>
 
 <span class="c1"># Make a 4-point sweep of gap width</span>
 <span class="n">simulations</span> <span class="o">+=</span> <span class="n">sweep_simulation</span><span class="p">(</span>
     <span class="n">layout</span><span class="p">,</span>
-    <span class="n">sim_class</span><span class="p">,</span>
+    <span class="n">SimClass</span><span class="p">,</span>
     <span class="n">sim_parameters</span><span class="o">=</span><span class="p">{</span>
         <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;gap_sweep&#39;</span><span class="p">,</span>
         <span class="s1">&#39;arm_length&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">],</span>
@@ -1240,6 +1241,13 @@ at time as the <a class="reference internal" href="../../api/kqcircuits.simulati
     <span class="p">}</span>
 <span class="p">)</span>
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If some of the simulations in a sweep fail for some reason, they can be manually rerun from the terminal by running
+the post-processing script <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">scripts/rerun_failed_simulations.py</span> <span class="pre">&lt;main_script&gt;</span> <span class="pre">&lt;rerun_script&gt;</span></code> in the tmp
+folder (<code class="docutils literal notranslate"><span class="pre">KQCircuits/tmp/&lt;sim_name&gt;</span></code>). Here <code class="docutils literal notranslate"><span class="pre">&lt;main_script&gt;</span></code> is the main <code class="docutils literal notranslate"><span class="pre">sh</span></code> or <code class="docutils literal notranslate"><span class="pre">bat</span></code> file used to launch
+the simulations and <code class="docutils literal notranslate"><span class="pre">&lt;rerun_script&gt;</span></code> is a modified version of that file written by this script.</p>
 </div>
 </section>
 </section>
