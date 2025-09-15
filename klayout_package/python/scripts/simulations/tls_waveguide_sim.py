@@ -58,7 +58,7 @@ class TlsWaveguideSim(Simulation):
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
 # Simulation parameters
-sim_class = TlsWaveguideSim
+SimClass = TlsWaveguideSim
 sim_parameters = {
     "name": "tls_waveguide_sim",
     "face_stack": ["1t1"],  # single chip
@@ -101,13 +101,13 @@ layout = get_active_or_new_layout()
 
 # Cross sweep simulation and solution parameters using product
 simulations = cross_combine(
-    sweep_simulation(layout, sim_class, sim_parameters, {"a": [2, 10]}),
+    sweep_simulation(layout, SimClass, sim_parameters, {"a": [2, 10]}),
     sweep_solution(AnsysHfssSolution, sol_parameters, {"frequency": [2, 10]}),
 )
 export_ansys(simulations, **export_parameters)
 
 # Alternatively, sweep only simulation parameters
-# simulations = sweep_simulation(layout, sim_class, sim_parameters, {"a": [2, 10]})
+# simulations = sweep_simulation(layout, SimClass, sim_parameters, {"a": [2, 10]})
 # export_ansys(simulations, **sol_parameters, **export_parameters)
 
 # Write and open oas file

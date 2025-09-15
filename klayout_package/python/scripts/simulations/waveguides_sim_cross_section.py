@@ -63,7 +63,7 @@ args, unknown = parser.parse_known_args()
 # provides an example of producing cross section simulations.
 #
 # Simulation parameters
-sim_class = WaveGuidesSim
+SimClass = WaveGuidesSim
 
 multiface = args.flip_chip
 
@@ -108,7 +108,7 @@ logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 layout = get_active_or_new_layout()
 
 sweep_parameters = {"n_guides": args.n_guides}
-simulations = sweep_simulation(layout, sim_class, sim_parameters, sweep_parameters)
+simulations = sweep_simulation(layout, SimClass, sim_parameters, sweep_parameters)
 
 # Take cross sections from sweeped simulations
 # Oxide layer permittivity and thickness values same as in double_pads_sim.py simulation

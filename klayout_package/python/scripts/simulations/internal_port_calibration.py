@@ -47,7 +47,7 @@ class InternalPortCalibration(Simulation):
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
 # Simulation parameters
-sim_class = InternalPortCalibration
+SimClass = InternalPortCalibration
 sim_parameters = {
     "name": "port_sim",
     "use_internal_ports": True,
@@ -74,14 +74,14 @@ logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 layout = get_active_or_new_layout()
 
 # # Sweep simulations for variable geometry
-# simulations = cross_sweep_simulation(layout, sim_class, sim_parameters, {
+# simulations = cross_sweep_simulation(layout, SimClass, sim_parameters, {
 #     'a': [2, 4, 6, 8, 10, 12, 16, 20],
 #     'b': [2, 4, 6, 10, 14, 18, 22, 30],
 #     'waveguide_length': [1, 10, 20, 50, 100]
 # })
 
 # Fixed geometry simulation
-simulations = sweep_simulation(layout, sim_class, sim_parameters, {"waveguide_length": [1, 10, 20, 50, 100]})
+simulations = sweep_simulation(layout, SimClass, sim_parameters, {"waveguide_length": [1, 10, 20, 50, 100]})
 
 # Export Ansys files
 export_ansys(simulations, **export_parameters)

@@ -35,7 +35,7 @@ from kqcircuits.util.export_helper import (
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
 # Simulation parameters
-sim_class = XMonsDirectCouplingSim
+SimClass = XMonsDirectCouplingSim
 sim_parameters = {
     "name": "three_coupled_xmons",
     "use_internal_ports": True,
@@ -61,10 +61,10 @@ logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 layout = get_active_or_new_layout()
 
 # Nominal simulation
-simulations = [sim_class(layout, **sim_parameters)]
+simulations = [SimClass(layout, **sim_parameters)]
 
 # Sweep geometry for simulations
-simulations += sweep_simulation(layout, sim_class, sim_parameters, {"qubit_spacing": [5, 15], "cpl_width": [12]})
+simulations += sweep_simulation(layout, SimClass, sim_parameters, {"qubit_spacing": [5, 15], "cpl_width": [12]})
 
 # Export Ansys files
 export_ansys(simulations, **export_parameters)

@@ -41,7 +41,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--use-sbatch", action="store_true", help="Use sbatch (Slurm)")
 args, unknown = parser.parse_known_args()
 
-sim_class = get_single_element_sim_class(CapacitiveXCoupler)
+SimClass = get_single_element_sim_class(CapacitiveXCoupler)
 
 height = 500.0
 length = 500.0
@@ -168,8 +168,8 @@ else:
 logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 layout = get_active_or_new_layout()
 
-# simulations = sweep_simulation(layout, sim_class, sim_parameters, sweep_parameters)
-simulations = [sim_class(layout, **sim_parameters)]
+# simulations = sweep_simulation(layout, SimClass, sim_parameters, sweep_parameters)
+simulations = [SimClass(layout, **sim_parameters)]
 
 # Create simulation
 open_with_klayout_or_default_application(export_simulation_oas(simulations, path))

@@ -39,7 +39,7 @@ from kqcircuits.util.export_helper import (
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
-sim_class = get_single_element_sim_class(SmoothCapacitor)
+SimClass = get_single_element_sim_class(SmoothCapacitor)
 
 # Simulation parameters, using multiface interdigital as starting point
 sim_parameters = {
@@ -87,7 +87,7 @@ simulations = []
 # Default sweep
 simulations += cross_sweep_simulation(
     layout,
-    sim_class,
+    SimClass,
     {**sim_parameters, "face_stack": ["1t1", "2b1"]},
     {
         "finger_control": finger_numbers,
@@ -101,7 +101,7 @@ simulations += cross_sweep_simulation(
 if infinite in chip_distances:
     simulations += cross_sweep_simulation(
         layout,
-        sim_class,
+        SimClass,
         {**sim_parameters, "face_stack": ["1t1"], "chip_distance": infinite},
         {"finger_control": finger_numbers, "a": a_def, "b": b_def, "a2": a_def, "b2": b_def},
     )
@@ -120,7 +120,7 @@ for n in finger_numbers_comp:
                             continue  # due to symmetry, we can skip almost half of the simulations
                         simulations += cross_sweep_simulation(
                             layout,
-                            sim_class,
+                            SimClass,
                             sim_params,
                             {"finger_control": [n], "chip_distance": [d], "a": [a], "b": [b], "a2": [a2], "b2": [b2]},
                         )

@@ -39,7 +39,7 @@ from kqcircuits.simulations.export.cross_section.cross_section_export import (
 from kqcircuits.simulations.export.elmer.elmer_solution import ElmerCapacitanceSolution, ElmerCrossSectionSolution
 
 
-sim_class = get_single_element_sim_class(
+SimClass = get_single_element_sim_class(
     CircularCapacitor,
     # Mapping from port refpoint names to the cross-section simulation names (suffixes) used to deembed the waveguides
     # related to the ports
@@ -87,7 +87,7 @@ dir_path = create_or_empty_tmp_directory(Path(__file__).stem + var_str + "_outpu
 logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 layout = get_active_or_new_layout()
 
-simulations = [sim_class(layout, **sim_parameters)]
+simulations = [SimClass(layout, **sim_parameters)]
 
 workflow = {
     "run_gmsh_gui": False,

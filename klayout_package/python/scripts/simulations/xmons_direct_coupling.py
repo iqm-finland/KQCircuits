@@ -35,7 +35,7 @@ from kqcircuits.util.export_helper import (
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
 # Simulation parameters
-sim_class = XMonsDirectCouplingSim
+SimClass = XMonsDirectCouplingSim
 sim_parameters = {
     "name": "three_coupled_xmons",
     "use_internal_ports": True,
@@ -50,7 +50,7 @@ layout = get_active_or_new_layout()
 # Sweep simulations
 simulations = sweep_simulation(
     layout,
-    sim_class,
+    SimClass,
     sim_parameters,
     {
         #'waveguide_length': range(10, 510, 50),

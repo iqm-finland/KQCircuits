@@ -32,7 +32,7 @@ from kqcircuits.util.export_helper import (
 )
 
 # Simulation parameters
-sim_class = AirbridgesSim
+SimClass = AirbridgesSim
 
 dir_path = Path(Path(__file__).stem + "_output")
 created_dir = create_or_empty_tmp_directory(dir_path)
@@ -72,7 +72,7 @@ simulations = []
 for wg_params in waveguide_parameters:
     simulations += cross_sweep_simulation(
         layout,
-        sim_class,
+        SimClass,
         {
             **sim_parameters,
             **wg_params,

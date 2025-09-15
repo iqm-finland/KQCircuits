@@ -37,7 +37,7 @@ dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
 # Simulation parameters
 # This is the same as `xmons_direct_coupling` but computes the capacitance matrix using Elmer
-sim_class = XMonsDirectCouplingSim
+SimClass = XMonsDirectCouplingSim
 sim_parameters = {
     "name": "three_coupled_xmons",
     "use_internal_ports": True,
@@ -72,7 +72,7 @@ logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 layout = get_active_or_new_layout()
 
 # Sweep simulations
-simulations = sweep_simulation(layout, sim_class, sim_parameters, {"cpl_width": [5, 10, 15, 20]})
+simulations = sweep_simulation(layout, SimClass, sim_parameters, {"cpl_width": [5, 10, 15, 20]})
 
 # Export Elmer files
 export_elmer(simulations, **export_parameters, mesh_size=mesh_size, workflow=workflow)

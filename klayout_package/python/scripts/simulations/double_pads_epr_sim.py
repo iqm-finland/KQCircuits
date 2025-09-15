@@ -44,7 +44,7 @@ use_xsection = True
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
 # Simulation parameters
-sim_class = get_single_element_sim_class(
+SimClass = get_single_element_sim_class(
     DoublePads, partition_region_function=partition_regions, ignore_ports=["port_drive"]
 )
 
@@ -81,7 +81,7 @@ logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 layout = get_active_or_new_layout()
 
 # Sweep solution type
-simulations = [(sim_class(layout, **sim_parameters), solution)]
+simulations = [(SimClass(layout, **sim_parameters), solution)]
 
 # Export simulation files
 export_ansys(

@@ -37,7 +37,7 @@ from kqcircuits.util.export_helper import (
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
-sim_class = get_single_element_sim_class(FingerCapacitorSquare)
+SimClass = get_single_element_sim_class(FingerCapacitorSquare)
 
 # Simulation parameters, using multiface interdigital as starting point
 sim_parameters = {
@@ -91,7 +91,7 @@ simulations = []
 # Multi face finger (interdigital) capacitor sweeps
 simulations += cross_sweep_simulation(
     layout,
-    sim_class,
+    SimClass,
     sim_parameters,
     {
         "chip_distance": chip_distances,
@@ -103,7 +103,7 @@ simulations += cross_sweep_simulation(
 # Multi face gap capacitor sweeps
 simulations += cross_sweep_simulation(
     layout,
-    sim_class,
+    SimClass,
     {
         **sim_parameters,
         "name": sim_parameters["name"] + "_gap",
@@ -119,7 +119,7 @@ simulations += cross_sweep_simulation(
 # Single face finger (interdigital) capacitor sweeps
 simulations += cross_sweep_simulation(
     layout,
-    sim_class,
+    SimClass,
     {
         **sim_parameters,
         "name": sim_parameters["name"] + "_singleface",
@@ -134,7 +134,7 @@ simulations += cross_sweep_simulation(
 # Single face gap capacitor sweeps
 simulations += cross_sweep_simulation(
     layout,
-    sim_class,
+    SimClass,
     {
         **sim_parameters,
         "name": sim_parameters["name"] + "_singleface_gap",

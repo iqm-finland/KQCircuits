@@ -44,7 +44,7 @@ use_xsection = True
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
 # Simulation parameters
-sim_class = get_single_element_sim_class(
+SimClass = get_single_element_sim_class(
     SmoothCapacitor,
     partition_region_function=partition_regions,
     deembed_cross_sections={"port_a": "port_amer", "port_b": "port_bmer"},
@@ -76,7 +76,7 @@ layout = get_active_or_new_layout()
 # Sweep solution type
 simulations = [
     (
-        sim_class(layout, **sim_parameters),
+        SimClass(layout, **sim_parameters),
         ElmerEPR3DSolution(
             mesh_size=refine_metal_edges(2.0),
             linear_system_method="mg",

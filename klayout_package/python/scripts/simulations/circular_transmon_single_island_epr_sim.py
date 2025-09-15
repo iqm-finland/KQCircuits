@@ -35,7 +35,7 @@ from kqcircuits.simulations.export.cross_section.epr_correction_export import ge
 from kqcircuits.simulations.export.elmer.elmer_solution import ElmerEPR3DSolution
 from kqcircuits.simulations.epr.circular_transmon_single_island import partition_regions, correction_cuts
 
-sim_class = get_single_element_sim_class(
+SimClass = get_single_element_sim_class(
     CircularTransmonSingleIsland,
     partition_region_function=partition_regions,
     # Ignoring coupler ports, which means they cannot be excited for these simulations, and they don't get waveguides
@@ -69,7 +69,7 @@ dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 layout = get_active_or_new_layout()
 
-simulations = [sim_class(layout, **sim_parameters)]
+simulations = [SimClass(layout, **sim_parameters)]
 
 # Uncomment below if you want to try sweeping qubit geometry.
 # Cross-varies three ground gap widths and three coupler arc lengths.
@@ -77,7 +77,7 @@ simulations = [sim_class(layout, **sim_parameters)]
 
 # simulations = cross_sweep_simulation(
 #     layout,
-#     sim_class,
+#     SimClass,
 #     sim_parameters,
 #     {"ground_gap": [80, 120, 160], "couplers_arc_amplitude": [[15, 45, 15], [35, 45, 15], [45, 45, 15]]},
 # )

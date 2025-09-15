@@ -90,7 +90,7 @@ parser.add_argument("--gap-mesh-size", default=2.0, type=float, help="Element si
 parser.add_argument("--global-mesh-size", default=100.0, type=float, help="Global element size")
 args, unknown = parser.parse_known_args()
 
-sim_class = WaveGuidesSim
+SimClass = WaveGuidesSim
 
 edge_ports = not args.no_edge_ports
 use_elmer = not args.ansys
@@ -253,7 +253,7 @@ else:
 logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 layout = get_active_or_new_layout()
 
-simulations = sweep_simulation(layout, sim_class, sim_parameters, sweep_parameters)
+simulations = sweep_simulation(layout, SimClass, sim_parameters, sweep_parameters)
 
 # Create simulation
 open_with_klayout_or_default_application(export_simulation_oas(simulations, path))

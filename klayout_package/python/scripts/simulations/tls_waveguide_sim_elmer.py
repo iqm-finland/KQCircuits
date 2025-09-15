@@ -86,7 +86,7 @@ dielectric_surfaces = {
 tls_layer_thickness = [dielectric_surfaces[layer]["thickness"] * 1e6 for layer in ("MA", "MS", "SA")]
 
 # Simulation parameters
-sim_class = TlsWaveguideSim2
+SimClass = TlsWaveguideSim2
 sim_parameters = {
     "name": "tls_waveguide_sim",
     "face_stack": ["1t1"],  # single chip
@@ -157,7 +157,7 @@ logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 layout = get_active_or_new_layout()
 layout.dbu = 1e-4
 
-simulations = sweep_simulation(layout, sim_class, sim_parameters, {"a": [2, 10]})
+simulations = sweep_simulation(layout, SimClass, sim_parameters, {"a": [2, 10]})
 
 export_elmer(simulations, path=dir_path, workflow=workflow, post_process=post_process, **sol_parameters)
 

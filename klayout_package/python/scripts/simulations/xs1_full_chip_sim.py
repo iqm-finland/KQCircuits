@@ -39,7 +39,7 @@ else:
     dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_hfss")
 
 # Simulation parameters
-sim_class = SingleXmonsFullChipSim
+SimClass = SingleXmonsFullChipSim
 
 sim_parameters = {
     "name": "xs1_full_chip_sim",
@@ -104,7 +104,7 @@ else:
 
 
 # Create simulation
-simulations = [sim_class(pya.Layout(), **sim_parameters)]
+simulations = [SimClass(pya.Layout(), **sim_parameters)]
 
 # Write and open oas file
 open_with_klayout_or_default_application(export_simulation_oas(simulations, dir_path))

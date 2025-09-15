@@ -36,7 +36,7 @@ from kqcircuits.simulations.export.cross_section.epr_correction_export import ge
 from kqcircuits.simulations.export.elmer.elmer_solution import ElmerEPR3DSolution
 from kqcircuits.simulations.epr.circular_capacitor import partition_regions, correction_cuts
 
-sim_class = get_single_element_sim_class(
+SimClass = get_single_element_sim_class(
     CircularCapacitor,
     partition_region_function=partition_regions,
     deembed_cross_sections={"port_a": "port_amer", "port_b": "port_bmer"},
@@ -113,7 +113,7 @@ layout = get_active_or_new_layout()
 simulations = []
 simulations += cross_sweep_simulation(
     layout,
-    sim_class,
+    SimClass,
     sim_parameters,
     {
         "swept_angle": [30, 180, 300, 340, 350],

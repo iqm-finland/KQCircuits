@@ -35,7 +35,7 @@ from kqcircuits.util.export_helper import (
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
-sim_class = get_single_element_sim_class(CircularCapacitor)
+SimClass = get_single_element_sim_class(CircularCapacitor)
 
 # Simulation parameters
 sim_parameters = {
@@ -84,7 +84,7 @@ simulations = []
 for ab in ab_single:
     simulations += cross_sweep_simulation(
         layout,
-        sim_class,
+        SimClass,
         sim_parameters,
         {
             "r_inner": [10],
@@ -102,7 +102,7 @@ for ab in ab_single:
 for ab in ab_single:
     simulations += cross_sweep_simulation(
         layout,
-        sim_class,
+        SimClass,
         sim_parameters,
         {
             "r_inner": r_inner,
@@ -117,7 +117,7 @@ for ab in ab_single:
 for ab in ab_multi:
     simulations += cross_sweep_simulation(
         layout,
-        sim_class,
+        SimClass,
         {**sim_parameters, "face_stack": ["1t1", "2b1"]},
         {
             "chip_distance": chip_distances,
@@ -132,7 +132,7 @@ for ab in ab_multi:
 
 
 # simulations for getting the ballpark
-# simulations += cross_sweep_simulation(layout, sim_class, sim_parameters, {
+# simulations += cross_sweep_simulation(layout, SimClass, sim_parameters, {
 #     'r_inner': np.arange(10, 40+31, 5, dtype=int).tolist(),
 #     'r_outer': np.arange(100-10, 100+11, 5, dtype=int).tolist(),
 #     'swept_angle': [10, 180, 340],
