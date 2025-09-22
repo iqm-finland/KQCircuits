@@ -1455,7 +1455,7 @@ class Simulation:
         else:
             for i, p in enumerate(points):
                 self.cell.shapes(visualisation_layer).insert(pya.DText(f"{label}_{i+1}", p.x, p.y))
-   def visualise_ports(self):
+   def visualise_ports(self, thickness=50):
     """Visualise all ports in a dedicated 'simulation_ports' layer."""
     dbu = self.layout.dbu
     for port in self.ports:
