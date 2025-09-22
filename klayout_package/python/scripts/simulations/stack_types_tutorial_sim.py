@@ -144,7 +144,7 @@ class TutorialSim(Simulation):
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
-sim_class = TutorialSim  # pylint: disable=invalid-name
+SimClass = TutorialSim
 
 # Simulation parameters
 sim_parameters = {"box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(1000, 1000)), "face_ids": ["1b1", "1t1", "2b1", "2t1"]}
@@ -164,7 +164,7 @@ layout = get_active_or_new_layout()
 # Create simulations with different features
 simulations = [
     # simple single-face simulation (old wafer_stack_type='planar')
-    sim_class(
+    SimClass(
         layout,
         **sim_parameters,
         name="01-single_face",
@@ -173,7 +173,7 @@ simulations = [
         vertical_over_etching=10,
     ),
     # a flip-chip simulation (old wafer_stack_type='multiface'), using wave ports and custom substrate materials
-    sim_class(
+    SimClass(
         layout,
         **sim_parameters,
         name="02-two_face",
@@ -188,7 +188,7 @@ simulations = [
         },
     ),
     # a flip-chip simulation taking into account the vacuum box above the top wafer
-    sim_class(
+    SimClass(
         layout,
         **sim_parameters,
         name="03-three_face",
@@ -199,7 +199,7 @@ simulations = [
         dielectric_height=[0, 0, 1.0],
     ),
     # a flip-chip simulation taking into account the vacuum boxes above and below wafers
-    sim_class(
+    SimClass(
         layout,
         **sim_parameters,
         name="04-four_face",
@@ -213,7 +213,7 @@ simulations = [
         metal_height=[0.0, 1.0, 0.0, 1.0],
     ),
     # a three-wafer simulation with alternative face order, also emphasize individual chip distance and substrate height
-    sim_class(
+    SimClass(
         layout,
         **sim_parameters,
         name="05-four_face_inverse",
@@ -227,7 +227,7 @@ simulations = [
         metal_height=[0.0, 1.0, 0.0, 1.0],
     ),
     # a simulation with two wafers pressed together without a gap between them
-    sim_class(
+    SimClass(
         layout,
         **sim_parameters,
         name="06-zero_chip_distance",

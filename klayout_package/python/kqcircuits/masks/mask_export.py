@@ -72,6 +72,8 @@ def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc, alt_netlists
     if is_pcell:
         chip_class = type(chip_cell.pcell_declaration())
         chip_params = chip_cell.pcell_parameters_by_name()
+    else:
+        chip_class, chip_params = None, None
 
     # export .oas file with pcells (requires exporting a cell one hierarchy level above chip pcell)
     dummy_cell = layout.create_cell(chip_name)

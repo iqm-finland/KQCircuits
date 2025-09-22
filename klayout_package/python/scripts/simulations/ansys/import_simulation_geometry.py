@@ -82,14 +82,14 @@ hfss_tools = {"hfss", "current", "voltage", "eigenmode"}
 design_name = ansys_tool.capitalize() + "Design"
 if ansys_tool == "eigenmode":
     oProject.InsertDesign("HFSS", design_name, "Eigenmode", "")
-    oDesign = oProject.SetActiveDesign(design_name)
 elif ansys_tool in hfss_tools:
     oProject.InsertDesign("HFSS", design_name, "HFSS Terminal Network", "")
-    oDesign = oProject.SetActiveDesign(design_name)
 elif ansys_tool == "q3d":
     oProject.InsertDesign("Q3D Extractor", design_name, "", "")
-    oDesign = oProject.SetActiveDesign(design_name)
+else:
+    raise ValueError("Unkown ansys_tool: {}".format(ansys_tool))
 
+oDesign = oProject.SetActiveDesign(design_name)
 oEditor = oDesign.SetActiveEditor("3D Modeler")
 oBoundarySetup = oDesign.GetModule("BoundarySetup")
 oAnalysisSetup = oDesign.GetModule("AnalysisSetup")

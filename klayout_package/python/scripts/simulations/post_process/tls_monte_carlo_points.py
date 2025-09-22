@@ -29,8 +29,13 @@ sample uniform 2D point and project to the middle height of SA layer, reject poi
 
 - substrate: sample uniform 3D point according to substrate thickness
 
-Exported simulation needs to have a non-zero ``metal_height`` parameter value and three parameters in
-``extra_json_data`` for TLS layer thicknesses in microns: ``ma_thickness``, ``ms_thickness``, ``sa_thickness``.
+Exported simulation needs to have a non-zero ``metal_height`` parameter value.
+
+The interface layer thicknesses can be set in the simulation script using parameter
+``tls_layer_thickness=[ma_thickness, ms_thickness, sa_thickness]``. Alternatively, the thicknesses can be
+provided as an argument for this script: ``--thickness-if``, where ``if`` in ``{ma, ms, sa}``.
+Note that setting non-zero ``tls_layer_thickness`` causes realistic interface layers to generate which hinders the
+simulation performance unless the parameter ``tls_sheet_approximation=True`` is also used.
 
 Use -h argument to read about available arguments for the script. Number of samples, sampling box boundaries and
 seed number of the sampler can be configured using arguments.
@@ -45,8 +50,6 @@ import random
 import sys
 import klayout.db
 import numpy as np
-
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "util"))
 
 # Find data files
 path = os.path.curdir
@@ -195,6 +198,10 @@ parser.add_argument("--x1", type=int, default=None, help="X position of sample b
 parser.add_argument("--x2", type=int, default=None, help="X position of sample box right boundary in microns")
 parser.add_argument("--y1", type=int, default=None, help="Y position of sample box bottom boundary in microns")
 parser.add_argument("--y2", type=int, default=None, help="Y position of sample box top boundary in microns")
+parser.add_argument("--thickness-ma", type=float, default=None, help="Optional: MA layer thickness, unit: µm")
+parser.add_argument("--thickness-ms", type=float, default=None, help="Optional: MS layer thickness, unit: µm")
+parser.add_argument("--thickness-sa", type=float, default=None, help="Optional: SA layer thickness, unit: µm")
+
 args = parser.parse_args()
 
 # If seed not specified, make "undeterministic" sampling but log the seed so same sampling can be done deterministically
@@ -251,14 +258,17 @@ for file_name, parameters in sim_parameters.items():
     }
 
     sheet_distributions = ["ma", "ms", "sa"]
-    extra_json_data = parameters.get("parameters", {}).get("extra_json_data", {})
-
-    if not extra_json_data or any((f"{dist}_thickness" not in extra_json_data for dist in sheet_distributions)):
-        print(
-            f"some of interface thicknesses {sheet_distributions} missing from extra_json_data, "
-            f"can't extract monte carlo points from {file_name}"
-        )
-        continue
+    args_th_l = [getattr(args, f"thickness_{l}") for l in sheet_distributions]
+    if not all(args_th_l):
+        params_th_l = parameters["parameters"].get("tls_layer_thickness", [])
+        if len(params_th_l) != 3 or any(p == 0 for p in params_th_l):
+            print(
+                f"Some of interface thicknesses {sheet_distributions} not found in simulation parameters"
+                f" or given as script arguments. Can't extract monte carlo points from {file_name}"
+            )
+            continue
+        args_th_l = [(th_args if th_args else th_params) for th_args, th_params in zip(args_th_l, params_th_l)]
+    layer_thickness = dict(zip(sheet_distributions, args_th_l))
 
     # Use same seed for all sweeps
     rng = random.Random(seed)
@@ -266,7 +276,7 @@ for file_name, parameters in sim_parameters.items():
     sampling_box_area = (box_x2 - box_x1) * (box_y2 - box_y1)
 
     tls_n_points = {
-        dist: int(getattr(args, f"density_{dist}") * extra_json_data[f"{dist}_thickness"] * sampling_box_area)
+        dist: int(getattr(args, f"density_{dist}") * layer_thickness[dist] * sampling_box_area)
         for dist in sheet_distributions
     }
 
@@ -303,7 +313,7 @@ for file_name, parameters in sim_parameters.items():
                     distribution in ["ma", "ms"],
                     distribution == "ma",
                     face,
-                    extra_json_data[f"{distribution}_thickness"],
+                    layer_thickness[distribution],
                 )
                 # Reject point if sampled outside of region
                 if z is not None:
@@ -339,7 +349,7 @@ for file_name, parameters in sim_parameters.items():
                 start=klayout.db.Region(),
             )
             # MA wall
-            ma_th = extra_json_data["ma_thickness"]
+            ma_th = layer_thickness["ma"]
             gap_props = parameters["layers"][f"{face}_gap"]
             ma_wall_region = (metal_region.sized(round(ma_th / layout.dbu)) & gap_region).merged()
             ma_wall_height = ma_th + gap_props["thickness"]
@@ -355,9 +365,7 @@ for file_name, parameters in sim_parameters.items():
             # SA wall
             trench_props = parameters["layers"].get(f"{face}_etch")
             if trench_props:
-                sa_wall_region = (
-                    metal_region.sized(round(extra_json_data["sa_thickness"] / layout.dbu)) & gap_region
-                ).merged()
+                sa_wall_region = (metal_region.sized(round(layer_thickness["sa"] / layout.dbu)) & gap_region).merged()
                 sa_wall_n_points = round(
                     args.density_sa * sa_wall_region.area() * layout.dbu**2 * trench_props["thickness"]
                 )

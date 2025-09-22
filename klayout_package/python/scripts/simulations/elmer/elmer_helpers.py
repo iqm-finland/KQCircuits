@@ -157,10 +157,7 @@ def sif_matc_block(data: list[str]) -> str:
           .
       $ data[n]
     """
-    res = ""
-    for line in data:
-        res += f"$  {line}\n"
-    return res
+    return "".join(f"$  {line}\n" for line in data)
 
 
 def sif_linsys(json_data: dict) -> list[str]:
@@ -637,7 +634,10 @@ def get_result_output_solver(ordinate: str | int, output_file_name: str | Path, 
 
 
 def get_save_data_solver(
-    ordinate: str | int, result_file: str = "results.dat", save_coordinates: list[list] | None = None
+    ordinate: str | int,
+    result_file: str = "results.dat",
+    save_coordinates: list[list] | None = None,
+    coordinate_file: str | None = None,
 ) -> str:
     """
     Returns save data solver in sif file format.
@@ -646,6 +646,8 @@ def get_save_data_solver(
         ordinate: solver ordinate
         result_file: data file name for results
         save_coordinates: list of coordinates to extract the field values at
+        coordinate_file: If provided, writes the coordinates in an additional file instead of
+                          the sif file.
 
     Returns:
         save data solver in sif file format
@@ -657,7 +659,12 @@ def get_save_data_solver(
         f"Filename = {result_file}",
     ]
     if save_coordinates:
-        coords_str = " ".join([str(c) for clist in save_coordinates for c in clist])
+        if coordinate_file:
+            np.savetxt(coordinate_file, np.array(save_coordinates))
+            coords_str = f'Real \n   include "{coordinate_file}"'
+        else:
+            coords_str = " ".join([str(c) for clist in save_coordinates for c in clist])
+
         solver_lines += [
             f"Save Coordinates({len(save_coordinates)}, {len(save_coordinates[0])}) = {coords_str}",
             "Exact Coordinates = Logical True",

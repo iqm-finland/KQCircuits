@@ -53,7 +53,7 @@ args, unknown = parser.parse_known_args()
 # provides an example of producing cross section simulations.
 #
 # Simulation parameters
-sim_class = WaveGuidesSim  # pylint: disable=invalid-name
+SimClass = WaveGuidesSim
 
 multiface = args.flip_chip
 
@@ -104,7 +104,7 @@ mesh_size = {
 logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 layout = get_active_or_new_layout()
 
-simulations = [sim_class(layout, **sim_parameters)]
+simulations = [SimClass(layout, **sim_parameters)]
 
 # Take cross sections from sweeped simulations
 # Oxide layer permittivity and thickness values same as in double_pads_sim.py simulation

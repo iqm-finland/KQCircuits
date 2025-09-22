@@ -35,7 +35,7 @@ from kqcircuits.util.export_helper import (
 
 
 # Simulation parameters
-sim_class = get_single_element_sim_class(Swissmon)  # pylint: disable=invalid-name
+SimClass = get_single_element_sim_class(Swissmon)
 sim_parameters = {
     "name": "single_xmon_sim",
     "use_internal_ports": True,
@@ -67,13 +67,13 @@ logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 layout = get_active_or_new_layout()
 
 # Sweep simulations
-simulations = [sim_class(layout, **sim_parameters)]
+simulations = [SimClass(layout, **sim_parameters)]
 
 # No need to filter simulations according to ones that can be generated,
 # as in the end we will use `skip_errors=True` to skip these in `export_ansys`.
 # Here, the negative radii don't make sense, but we can still export the rest
 # of the simulations.
-simulations += cross_sweep_simulation(layout, sim_class, sim_parameters, {"island_r": np.linspace(-100, 100, 6)})
+simulations += cross_sweep_simulation(layout, SimClass, sim_parameters, {"island_r": np.linspace(-100, 100, 6)})
 
 
 export_ansys(simulations, **export_parameters, skip_errors=True)

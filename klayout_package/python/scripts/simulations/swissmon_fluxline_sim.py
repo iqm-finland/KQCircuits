@@ -68,7 +68,7 @@ class SwissmonFluxlineSim(Simulation):
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
 # Simulation parameters
-sim_class = SwissmonFluxlineSim  # pylint: disable=invalid-name
+SimClass = SwissmonFluxlineSim
 sim_parameters = {
     "box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(2000, 2000)),
 }
@@ -80,7 +80,7 @@ layout = get_active_or_new_layout()
 # Sweep simulation and solution type
 simulations = [
     (
-        sim_class(layout, **sim_parameters, name="fluxline_mut_ind", flux_simulation=True),
+        SimClass(layout, **sim_parameters, name="fluxline_mut_ind", flux_simulation=True),
         AnsysCurrentSolution(
             max_delta_e=0.01,
             frequency=0.1,
@@ -90,7 +90,7 @@ simulations = [
         ),
     ),
     (
-        sim_class(layout, **sim_parameters, name="fluxline_decay", flux_simulation=False),
+        SimClass(layout, **sim_parameters, name="fluxline_decay", flux_simulation=False),
         AnsysHfssSolution(max_delta_s=0.005, frequency=4.5, maximum_passes=20, sweep_enabled=False),
     ),
 ]

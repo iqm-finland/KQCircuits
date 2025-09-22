@@ -135,7 +135,7 @@ Parameter sweeps are easy to implement, for example
 
 .. code-block:: python
 
-   simulations = sweep_simulation(layout, sim_class, sim_parameters, {
+   simulations = sweep_simulation(layout, SimClass, sim_parameters, {
        'cpl_length': [160, 180, 200],
        'arm_width': [24, 28, 32, 36],
    })

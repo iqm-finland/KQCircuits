@@ -20,11 +20,6 @@ import importlib.util
 import networkx as nx
 from kqcircuits.defaults import default_netlist_ignore_connections
 
-spec = importlib.util.find_spec("matplotlib")
-matplotlib_exists = spec is not None
-if matplotlib_exists:
-    from matplotlib import pyplot as plt
-
 
 def network_as_graph(network):
     """
@@ -113,8 +108,11 @@ def draw_graph(graph, with_labels=True, with_position=True, figsize=(8, 8), expo
         export_path: Path to export image to, or None to show interactive plot
 
     """
-    if not matplotlib_exists:
+    spec = importlib.util.find_spec("matplotlib")
+    if spec is None:
         return
+    from matplotlib import pyplot as plt  # pylint: disable=import-outside-toplevel
+
     plt.figure(figsize=figsize)
     if with_position:
         pos = {node: data["location"] for node, data in graph.nodes(data=True)}

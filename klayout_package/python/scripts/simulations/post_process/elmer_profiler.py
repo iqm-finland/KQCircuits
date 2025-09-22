@@ -23,16 +23,9 @@ Produces table of runtimes for gmsh and Elmer and the number of mesh tetrahedron
 
 import re
 import os
-import sys
 import logging
 from pathlib import Path
-
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "util"))
-from post_process_helpers import (  # pylint: disable=wrong-import-position, no-name-in-module
-    find_varied_parameters,
-    tabulate_into_csv,
-    load_json,
-)
+from post_process_helpers import find_varied_parameters, tabulate_into_csv, load_json
 
 
 def _load_elmer_runtimes(path: Path, name: str, elmer_n_processes: int) -> dict:

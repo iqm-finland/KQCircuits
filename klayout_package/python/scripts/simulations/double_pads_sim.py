@@ -40,7 +40,7 @@ sim_tools = ["elmer", "eigenmode", "q3d"]
 
 for sim_tool in sim_tools:
     # Simulation parameters
-    sim_class = get_single_element_sim_class(DoublePads)  # pylint: disable=invalid-name
+    SimClass = get_single_element_sim_class(DoublePads)
     sim_parameters = {
         "name": "double_pads",
         "use_internal_ports": True,
@@ -154,7 +154,7 @@ for sim_tool in sim_tools:
         name = sim_parameters["name"]
         name = f"{name}_island_dist_{int(island_island_gap)}"
         simulations += [
-            sim_class(
+            SimClass(
                 layout,
                 **{
                     **sim_parameters,

@@ -112,6 +112,7 @@ class QualityFactor(Chip):
             wg_top_y = (chip_side + max_res_len) / 2
 
         # support resizable chip keeping pad distances from the top constant
+        launchers = None
         if self.sample_holder_type == "ARD24":
             launchers = self.produce_n_launchers(
                 **{**default_sampleholders["ARD24"], "pad_pitch": (chip_side - 4000) / 5, "chip_box": self.box},

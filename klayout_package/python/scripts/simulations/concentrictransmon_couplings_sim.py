@@ -42,7 +42,7 @@ from kqcircuits.simulations.single_element_simulation import get_single_element_
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
 # Simulation parameters
-sim_class = get_single_element_sim_class(ConcentricTransmon)  # pylint: disable=invalid-name
+SimClass = get_single_element_sim_class(ConcentricTransmon)
 sim_parameters = {
     # Arguments for the base Simulation class
     "name": "concentrictransmon",
@@ -89,12 +89,12 @@ elmer_export_parameters = {
 # Get layout
 logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 layout = get_active_or_new_layout()
-simulations = [sim_class(layout, **sim_parameters)]
+simulations = [SimClass(layout, **sim_parameters)]
 
 # Sweep given parameters independently
 simulations += sweep_simulation(
     layout,
-    sim_class,
+    SimClass,
     sim_parameters,
     {
         # The nominal `sim_parameters` are overwritten with these
@@ -106,7 +106,7 @@ simulations += sweep_simulation(
 # Full ND sweep of given parameters
 simulations += cross_sweep_simulation(
     layout,
-    sim_class,
+    SimClass,
     sim_parameters,
     {
         "r_inner": [100, 110, 120],

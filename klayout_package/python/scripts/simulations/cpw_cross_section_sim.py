@@ -161,7 +161,7 @@ args.is_axisymmetric = args.axisymmetric_test or args.is_axisymmetric
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(f"{Path(__file__).stem}_output")
 
-sim_class = CpwCrossSectionSim  # pylint: disable=invalid-name
+SimClass = CpwCrossSectionSim
 
 # Simulate Axi-symmetric case with toroidal revolution symmetry
 is_axisymmetric = args.is_axisymmetric
@@ -204,7 +204,7 @@ layout.dbu = 1e-5  # need finer DBU for SA-interface
 # Create simulations
 simulations = cross_sweep_simulation(
     layout,
-    sim_class,
+    SimClass,
     sim_parameters,
     {
         "number_of_cpws": args.number_of_cpws,
@@ -215,7 +215,7 @@ simulations = cross_sweep_simulation(
 # Test large geometries
 if is_axisymmetric:
     simulations = [
-        sim_class(
+        SimClass(
             layout,
             **{
                 **sim_parameters,

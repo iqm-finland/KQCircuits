@@ -119,7 +119,7 @@ def sweep_orders_and_fit(
         min_func: function of the best fit
         orders: orders of the numerator and denominator for the best fit
     """
-    min_residual = float("inf")
+    min_residual, min_func, orders = float("inf"), None, None
     for num_order in range(min_num_order, max_num_order + 1):
         effective_len = len(f_all) if len(f_all) < 10 else len(f_all) // 2
         cur_max_denom_order = min(effective_len - num_order - 1, max_denom_order + 1)
@@ -461,6 +461,7 @@ def interpolating_frequency_sweep(
 
         if fit_magnitude:
             min_func_re, orders_re = sweep_orders_and_fit(f_all, s_mag_fit)
+            min_func_im, orders_im = None, None
         else:
             min_func_re, orders_re = sweep_orders_and_fit(f_all, s_all[:, 0, fit_index, 0])
             min_func_im, orders_im = sweep_orders_and_fit(f_all, s_all[:, 0, fit_index, 1])

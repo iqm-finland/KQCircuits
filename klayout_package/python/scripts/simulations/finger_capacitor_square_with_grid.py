@@ -35,7 +35,7 @@ from kqcircuits.util.export_helper import (
     open_with_klayout_or_default_application,
 )
 
-sim_class = get_single_element_sim_class(FingerCapacitorSquare)  # pylint: disable=invalid-name
+SimClass = get_single_element_sim_class(FingerCapacitorSquare)
 
 use_elmer = True
 with_grid = True
@@ -105,7 +105,7 @@ logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 layout = get_active_or_new_layout()
 
 sim_param_list = [sim_parameters]
-simulations = [sim_class(layout, **param) for param in sim_param_list]
+simulations = [SimClass(layout, **param) for param in sim_param_list]
 
 # Export Ansys files
 # Write and open oas file

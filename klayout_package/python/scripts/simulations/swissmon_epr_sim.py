@@ -44,7 +44,7 @@ use_xsection = True
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
 # Simulation parameters
-sim_class = get_single_element_sim_class(Swissmon, partition_region_function=partition_regions)
+SimClass = get_single_element_sim_class(Swissmon, partition_region_function=partition_regions)
 sim_parameters = {
     "name": "swissmon_epr",
     "box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(1000, 1000)),
@@ -59,7 +59,7 @@ layout = get_active_or_new_layout()
 
 # Sweep solution type
 simulations = cross_combine(
-    sim_class(layout, **sim_parameters),
+    SimClass(layout, **sim_parameters),
     [
         AnsysEigenmodeSolution(
             name="_eigenmode",

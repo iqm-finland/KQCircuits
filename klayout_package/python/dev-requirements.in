@@ -2,7 +2,7 @@ pytest
 pytest-cov
 pytest-xdist
 tox
-pylint==2.14.0
+pylint
 black
 pytest-mock
 sphinx

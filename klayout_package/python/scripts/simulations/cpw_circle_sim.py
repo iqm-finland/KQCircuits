@@ -59,7 +59,7 @@ class CpwCircleSim(Simulation):
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
-sim_class = CpwCircleSim  # pylint: disable=invalid-name
+SimClass = CpwCircleSim
 
 # Simulation parameters, using multiface interdigital as starting point
 sim_parameters = {
@@ -78,7 +78,7 @@ logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 layout = get_active_or_new_layout()
 
 # Simulation sweep
-simulations = [sim_class(layout, **sim_parameters)]
+simulations = [SimClass(layout, **sim_parameters)]
 
 # Export Ansys files
 if use_elmer:

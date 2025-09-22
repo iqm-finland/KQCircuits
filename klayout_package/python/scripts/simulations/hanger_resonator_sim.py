@@ -52,13 +52,13 @@ box_size_x = coupling_length + 2 * turn_radius + 2000
 box_y1 = -max(head_length, resonator_length - coupling_length - head_length) - 1000.0
 box_y2 = 1000.0
 
-sim_class = get_single_element_sim_class(
+SimClass = get_single_element_sim_class(
     HangerResonator,
     transformation_from_center=lambda cell: pya.DTrans(0, False, -coupling_length / 2.0, -(box_y1 + box_y2) / 2.0),
     # To make the simulation faster the resonator ports are ignored.
     # Remove to get the full 4x4 S-matrix
     ignore_ports=["port_resonator_a", "port_resonator_b"],
-)  # pylint: disable=invalid-name
+)
 
 sim_parameters = {
     "name": "hanger_resonator_sim",
@@ -206,7 +206,7 @@ else:
 logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 layout = get_active_or_new_layout()
 
-simulations = [sim_class(layout, **sim_parameters)]
+simulations = [SimClass(layout, **sim_parameters)]
 
 # Write and open oas file
 open_with_klayout_or_default_application(export_simulation_oas(simulations, path))

@@ -29,13 +29,7 @@ Args:
 """
 import os
 import sys
-
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "util"))
-from post_process_helpers import (  # pylint: disable=wrong-import-position, no-name-in-module
-    find_varied_parameters,
-    tabulate_into_csv,
-    load_json,
-)
+from post_process_helpers import find_varied_parameters, tabulate_into_csv, load_json
 
 pp_data = {}
 if len(sys.argv) > 1:
@@ -133,21 +127,22 @@ def get_deembed_e_dict(simulation: str, region: str, deembed_len: float, excitat
     return deembed_dict
 
 
-def get_all_deembed_energies(sim_data):
+def get_all_deembed_energies(sim_data, excitation):
     """Gathers deembed energies for all ports with `deembed_len` and `deembed_cross_section` defined
     and results from corresponding cross-section found by `get_deembed_e_dict`. The returned energy values
     have a `_deembed` suffix.
 
     Args:
         sim_data: contents of the simulation input json file
+        excitation: signal excitation for the 3D result
     """
 
-    def is_port_excited(original_key, deembed_cs, excitation):
+    def is_port_excited(original_key, deembed_cs, exc):
         """Checks if the port corresponding to deembed_cs is excited in 3D simulation based on layer excitations."""
         cs_data = load_json(f"{original_key}_{deembed_cs}.json")
         if cs_data.get("voltage_excitations"):
             return True
-        return any(v.get("excitation") == excitation for v in cs_data["layers"].values())
+        return any(v.get("excitation") == exc for v in cs_data["layers"].values())
 
     original_key = sim_data["name"]
     regional_deembed_energies = {}
@@ -245,12 +240,9 @@ if result_files:
                             _sum_value(energy, bg_key[z_k], -z_v * d["thickness"] * bg_eps_r[z_k])
 
             elif any(k.startswith("Exy_") or k.startswith("Ez_") for k in result.keys()):
-                print(
-                    'Results contain boundary energies, but no "sheet_approximation" is defined. ',
-                    "Boundary energies will be ignored in EPR",
-                )
+                raise ValueError('Results contain boundary energies, but no "sheet_approximation" is defined.')
 
-            deembed_energy = get_all_deembed_energies(sim_data)
+            deembed_energy = get_all_deembed_energies(sim_data, excitation)
             total_deembed_energy = sum(deembed_energy.values())
 
             total_energy = sum(energy.values()) - total_deembed_energy

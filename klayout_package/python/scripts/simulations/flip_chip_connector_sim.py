@@ -35,7 +35,7 @@ from kqcircuits.util.export_helper import (
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
 # Simulation parameters
-sim_class = get_single_element_sim_class(FlipChipConnectorRf)  # pylint: disable=invalid-name
+SimClass = get_single_element_sim_class(FlipChipConnectorRf)
 sim_parameters = {
     "name": "flip_chip",
     "use_internal_ports": False,
@@ -65,7 +65,7 @@ logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 layout = get_active_or_new_layout()
 
 # Sweep simulations
-simulations = sweep_simulation(layout, sim_class, sim_parameters, {"chip_distance": [2, 3, 4, 5, 6, 7, 8, 9, 10]})
+simulations = sweep_simulation(layout, SimClass, sim_parameters, {"chip_distance": [2, 3, 4, 5, 6, 7, 8, 9, 10]})
 
 # Export Ansys files
 export_ansys(simulations, **export_parameters)

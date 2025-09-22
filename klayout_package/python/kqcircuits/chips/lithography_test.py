@@ -63,6 +63,8 @@ class LithographyTest(Chip):
         cell_vertical = self.layout.create_cell("Stripes")
         cell_diagonal = self.layout.create_cell("Stripes")
 
+        stripe_row_width = 0
+        stripes_cell = None
         for i, width in enumerate(numpy.arange(min_width, max_width + 0.1 * step, step)):
             n_stripes = num_stripes
             if self.stripe_test == "stripe_test":

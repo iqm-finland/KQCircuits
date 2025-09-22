@@ -84,7 +84,9 @@ class Qubit(Element):
             (dict): Relative refpoints for the squid
 
         """
-        cell = self.add_element(Squid, junction_type=self.junction_type, **parameters)
+        if "junction_type" not in parameters:
+            parameters["junction_type"] = self.junction_type
+        cell = self.add_element(Squid, **parameters)
         refpoints_rel = self.get_refpoints(cell)
         mwidth = cell.dbbox_per_layer(self.get_layer("base_metal_gap_wo_grid")).width()
         if mwidth > 0.0:
