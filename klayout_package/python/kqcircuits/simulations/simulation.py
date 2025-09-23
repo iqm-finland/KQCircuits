@@ -1455,39 +1455,65 @@ class Simulation:
         else:
             for i, p in enumerate(points):
                 self.cell.shapes(visualisation_layer).insert(pya.DText(f"{label}_{i+1}", p.x, p.y))
-   def visualise_ports(self, thickness=50):
-    """Visualise all ports in a dedicated 'simulation_ports' layer."""
-    dbu = self.layout.dbu
-    for port in self.ports:
-        if isinstance(port, EdgePort):
-            label = f"edge_port_{port.number}"
-            p = port.signal_location
-            # Add short extension line outward
-            extension = 50  # microns
-            if abs(p.x - self.box.left) < dbu:
-                region = pya.Region(pya.DBox(p.x - extension, p.y - 1, p.x, p.y + 1).to_itype(dbu))
-            elif abs(p.x - self.box.right) < dbu:
-                region = pya.Region(pya.DBox(p.x, p.y - 1, p.x + extension, p.y + 1).to_itype(dbu))
-            elif abs(p.y - self.box.bottom) < dbu:
-                region = pya.Region(pya.DBox(p.x - 1, p.y - extension, p.x + 1, p.y).to_itype(dbu))
-            elif abs(p.y - self.box.top) < dbu:
-                region = pya.Region(pya.DBox(p.x - 1, p.y, p.x + 1, p.y + extension).to_itype(dbu))
-            else:
-                region = pya.Region()
-            self.visualise_region(region, label, "simulation_ports", p)
+    def visualise_ports(self):
+        """Visualise all ports in a dedicated 'simulation_ports' layer."""
+        dbu = self.layout.dbu
+        for port in self.ports:
+            if isinstance(port, EdgePort):
+                label = f"edge_port_{port.number}"
+                p = port.signal_location
 
-        elif isinstance(port, InternalPort):
-            # Signal
-            label_sig = f"internal_port_signal_{port.number}"
-            self.visualise_region(pya.Region(), label_sig, "simulation_ports", port.signal_location)
+                # Triangle parameters
+                extension = 50   # arrow length in µm
+                thickness = 10   # base width in µm
 
-            # Ground, if available
-            if hasattr(port, "ground_location"):
-                label_gnd = f"internal_port_ground_{port.number}"
-                self.visualise_region(pya.Region(), label_gnd, "simulation_ports", port.ground_location)
+                if abs(p.x - self.box.left) < dbu:
+                    # Triangle pointing left
+                    poly = pya.DPolygon([
+                        pya.DPoint(p.x, p.y),
+                        pya.DPoint(p.x - extension, p.y - thickness / 2),
+                        pya.DPoint(p.x - extension, p.y + thickness / 2),
+                    ])
+                elif abs(p.x - self.box.right) < dbu:
+                    # Triangle pointing right
+                    poly = pya.DPolygon([
+                        pya.DPoint(p.x, p.y),
+                        pya.DPoint(p.x + extension, p.y - thickness / 2),
+                        pya.DPoint(p.x + extension, p.y + thickness / 2),
+                    ])
+                elif abs(p.y - self.box.bottom) < dbu:
+                    # Triangle pointing downward
+                    poly = pya.DPolygon([
+                        pya.DPoint(p.x, p.y),
+                        pya.DPoint(p.x - thickness / 2, p.y - extension),
+                        pya.DPoint(p.x + thickness / 2, p.y - extension),
+                    ])
+                elif abs(p.y - self.box.top) < dbu:
+                    # Triangle pointing upward
+                    poly = pya.DPolygon([
+                        pya.DPoint(p.x, p.y),
+                        pya.DPoint(p.x - thickness / 2, p.y + extension),
+                        pya.DPoint(p.x + thickness / 2, p.y + extension),
+                    ])
+                else:
+                    # Fallback: just a single point
+                    poly = pya.DPolygon([p])
 
-                # Draw line between them
-                p1, p2 = port.signal_location, port.ground_location
-                poly = pya.DPolygon([p1, p2, p2, p1])  # simple line as thin polygon
                 region = pya.Region(poly.to_itype(dbu))
-                self.visualise_region(region, f"port_line_{port.number}", "simulation_ports")
+                self.visualise_region(region, label, "simulation_ports", p)
+
+            elif isinstance(port, InternalPort):
+                 # Signal
+                 label_sig = f"internal_port_signal_{port.number}"
+                 self.visualise_region(pya.Region(), label_sig, "simulation_ports", port.signal_location)
+
+                 # Ground, if available
+                 if hasattr(port, "ground_location"):
+                     label_gnd = f"internal_port_ground_{port.number}"
+                     self.visualise_region(pya.Region(), label_gnd, "simulation_ports", port.ground_location)
+
+                     # Draw line between them (thin polygon for visibility)
+                     p1, p2 = port.signal_location, port.ground_location
+                     poly = pya.DPolygon([p1, p2, p2, p1])
+                     region = pya.Region(poly.to_itype(dbu))
+                     self.visualise_region(region, f"port_line_{port.number}", "simulation_ports")
