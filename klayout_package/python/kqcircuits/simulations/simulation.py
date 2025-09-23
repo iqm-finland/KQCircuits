@@ -1514,13 +1514,13 @@ class Simulation:
 
                        # Draw line between signal and ground
                        p1, p2 = port.signal_location, port.ground_location
-                       thickness = 5.0  # µm thickness of the connecting strip
+                       line_thickness = 5.0  # µm, adjustable
                        dx, dy = (p2.x - p1.x), (p2.y - p1.y)
                        length = (dx**2 + dy**2) ** 0.5
                        if length > 0:
                            # Unit perpendicular vector
                            ux, uy = -dy / length, dx / length
-                           offset_x, offset_y = ux * thickness / 2, uy * thickness / 2
+                           offset_x, offset_y = ux * line_thickness / 2, uy * line_thickness / 2
                            poly = pya.DPolygon([
                                pya.DPoint(p1.x - offset_x, p1.y - offset_y),
                                pya.DPoint(p1.x + offset_x, p1.y + offset_y),
