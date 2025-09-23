@@ -1475,45 +1475,64 @@ class Simulation:
                         pya.DPoint(p.x - extension, p.y + thickness / 2),
                     ])
                 elif abs(p.x - self.box.right) < dbu:
-                    # Triangle pointing right
-                    poly = pya.DPolygon([
-                        pya.DPoint(p.x, p.y),
-                        pya.DPoint(p.x + extension, p.y - thickness / 2),
-                        pya.DPoint(p.x + extension, p.y + thickness / 2),
+                      # Triangle pointing right
+                      poly = pya.DPolygon([
+                          pya.DPoint(p.x, p.y),
+                          pya.DPoint(p.x + extension, p.y - thickness / 2),
+                          pya.DPoint(p.x + extension, p.y + thickness / 2),
                     ])
                 elif abs(p.y - self.box.bottom) < dbu:
-                    # Triangle pointing downward
-                    poly = pya.DPolygon([
-                        pya.DPoint(p.x, p.y),
-                        pya.DPoint(p.x - thickness / 2, p.y - extension),
-                        pya.DPoint(p.x + thickness / 2, p.y - extension),
+                      # Triangle pointing downward
+                      poly = pya.DPolygon([
+                          pya.DPoint(p.x, p.y),
+                          pya.DPoint(p.x - thickness / 2, p.y - extension),
+                          pya.DPoint(p.x + thickness / 2, p.y - extension),
                     ])
                 elif abs(p.y - self.box.top) < dbu:
-                    # Triangle pointing upward
-                    poly = pya.DPolygon([
-                        pya.DPoint(p.x, p.y),
-                        pya.DPoint(p.x - thickness / 2, p.y + extension),
-                        pya.DPoint(p.x + thickness / 2, p.y + extension),
-                    ])
-                else:
-                    # Fallback: just a single point
-                    poly = pya.DPolygon([p])
+                      # Triangle pointing upward
+                      poly = pya.DPolygon([
+                          pya.DPoint(p.x, p.y),
+                          pya.DPoint(p.x - thickness / 2, p.y + extension),
+                          pya.DPoint(p.x + thickness / 2, p.y + extension),
+                      ])
+                  else:
+                      # Fallback: just a single point
+                      poly = pya.DPolygon([p])
 
-                region = pya.Region(poly.to_itype(dbu))
-                self.visualise_region(region, label, "simulation_ports", p)
+                  region = pya.Region(poly.to_itype(dbu))
+                  self.visualise_region(region, label, "simulation_ports", p)
 
-            elif isinstance(port, InternalPort):
-                 # Signal
-                 label_sig = f"internal_port_signal_{port.number}"
-                 self.visualise_region(pya.Region(), label_sig, "simulation_ports", port.signal_location)
+              elif isinstance(port, InternalPort):
+                   # Signal always gets a label
+                   label_sig = f"internal_port_signal_{port.number}"
 
-                 # Ground, if available
-                 if hasattr(port, "ground_location"):
-                     label_gnd = f"internal_port_ground_{port.number}"
-                     self.visualise_region(pya.Region(), label_gnd, "simulation_ports", port.ground_location)
+                   if hasattr(port, "ground_location"):
+                       # Ground exists → draw labels for both and a line
+                       label_gnd = f"internal_port_ground_{port.number}"
+                       self.visualise_region(pya.Region(), label_sig, "simulation_ports", port.signal_location)
+                       self.visualise_region(pya.Region(), label_gnd, "simulation_ports", port.ground_location)
 
-                     # Draw line between them (thin polygon for visibility)
-                     p1, p2 = port.signal_location, port.ground_location
-                     poly = pya.DPolygon([p1, p2, p2, p1])
-                     region = pya.Region(poly.to_itype(dbu))
-                     self.visualise_region(region, f"port_line_{port.number}", "simulation_ports")
+                       # Draw line between signal and ground
+                       p1, p2 = port.signal_location, port.ground_location
+                       thickness = 5.0  # µm thickness of the connecting strip
+                       dx, dy = (p2.x - p1.x), (p2.y - p1.y)
+                       length = (dx**2 + dy**2) ** 0.5
+                       if length > 0:
+                           # Unit perpendicular vector
+                           ux, uy = -dy / length, dx / length
+                           offset_x, offset_y = ux * thickness / 2, uy * thickness / 2
+                           poly = pya.DPolygon([
+                               pya.DPoint(p1.x - offset_x, p1.y - offset_y),
+                               pya.DPoint(p1.x + offset_x, p1.y + offset_y),
+                               pya.DPoint(p2.x + offset_x, p2.y + offset_y),
+                               pya.DPoint(p2.x - offset_x, p2.y - offset_y),
+                           ])
+                           region = pya.Region(poly.to_itype(dbu))
+                           self.visualise_region(region, f"port_line_{port.number}", "simulation_ports")
+                   else:
+                       # No ground → draw a box around the signal point
+                       box_size = 20.0  # µm side length
+                       x, y = port.signal_location.x, port.signal_location.y
+                       box = pya.DBox(x - box_size/2, y - box_size/2, x + box_size/2, y + box_size/2)
+                       region = pya.Region(box.to_itype(dbu))
+                       self.visualise_region(region, label_sig, "simulation_ports", port.signal_location)
