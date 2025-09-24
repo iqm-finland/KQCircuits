@@ -901,7 +901,7 @@ class Simulation:
             # Visualise partition regions
             if part.visualise:
                 self.visualise_region(part.region, part.name, f"part_reg_{part.name}")
-    def visualise_ports(self):
+    def visualise_ports(self, extension=50, thickness=10):
         """Visualise all ports in a dedicated 'simulation_ports' layer."""
         dbu = self.layout.dbu
         for port in self.ports:
@@ -909,9 +909,6 @@ class Simulation:
                 label = f"edge_port_{port.number}"
                 p = port.signal_location
 
-                # Triangle parameters
-                extension = 50   # arrow length in µm
-                thickness = 10   # base width in µm
 
                 if abs(p.x - self.box.left) < dbu:
                     # Triangle pointing left
