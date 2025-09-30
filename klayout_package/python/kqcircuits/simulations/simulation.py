@@ -901,84 +901,6 @@ class Simulation:
             # Visualise partition regions
             if part.visualise:
                 self.visualise_region(part.region, part.name, f"part_reg_{part.name}")
-    def visualise_ports(self, extension=50, thickness=10):
-        """Visualise all ports in a dedicated 'simulation_ports' layer."""
-        dbu = self.layout.dbu
-        for port in self.ports:
-            if isinstance(port, EdgePort):
-                label = f"edge_port_{port.number}"
-                p = port.signal_location
-
-
-                if abs(p.x - self.box.left) < dbu:
-                    # Triangle pointing left
-                    poly = pya.DPolygon([
-                        pya.DPoint(p.x, p.y),
-                        pya.DPoint(p.x - extension, p.y - thickness / 2),
-                        pya.DPoint(p.x - extension, p.y + thickness / 2),
-                    ])
-                elif abs(p.x - self.box.right) < dbu:
-                      # Triangle pointing right
-                      poly = pya.DPolygon([
-                          pya.DPoint(p.x, p.y),
-                          pya.DPoint(p.x + extension, p.y - thickness / 2),
-                          pya.DPoint(p.x + extension, p.y + thickness / 2),
-                    ])
-                elif abs(p.y - self.box.bottom) < dbu:
-                      # Triangle pointing downward
-                      poly = pya.DPolygon([
-                          pya.DPoint(p.x, p.y),
-                          pya.DPoint(p.x - thickness / 2, p.y - extension),
-                          pya.DPoint(p.x + thickness / 2, p.y - extension),
-                    ])
-                elif abs(p.y - self.box.top) < dbu:
-                      # Triangle pointing upward
-                      poly = pya.DPolygon([
-                          pya.DPoint(p.x, p.y),
-                          pya.DPoint(p.x - thickness / 2, p.y + extension),
-                          pya.DPoint(p.x + thickness / 2, p.y + extension),
-                      ])
-                  else:
-                      # Fallback: just a single point
-                      poly = pya.DPolygon([p])
-
-                  region = pya.Region(poly.to_itype(dbu))
-                  self.visualise_region(region, label, "simulation_ports", p)
-
-              elif isinstance(port, InternalPort):
-                   # Signal always gets a label
-                   label_sig = f"internal_port_signal_{port.number}"
-
-                   if hasattr(port, "ground_location"):
-                       # Ground exists → draw labels for both and a line
-                       label_gnd = f"internal_port_ground_{port.number}"
-                       self.visualise_region(pya.Region(), label_sig, "simulation_ports", port.signal_location)
-                       self.visualise_region(pya.Region(), label_gnd, "simulation_ports", port.ground_location)
-
-                       # Draw line between signal and ground
-                       p1, p2 = port.signal_location, port.ground_location
-                       line_thickness = 5.0  # µm, adjustable
-                       dx, dy = (p2.x - p1.x), (p2.y - p1.y)
-                       length = (dx**2 + dy**2) ** 0.5
-                       if length > 0:
-                           # Unit perpendicular vector
-                           ux, uy = -dy / length, dx / length
-                           offset_x, offset_y = ux * line_thickness / 2, uy * line_thickness / 2
-                           poly = pya.DPolygon([
-                               pya.DPoint(p1.x - offset_x, p1.y - offset_y),
-                               pya.DPoint(p1.x + offset_x, p1.y + offset_y),
-                               pya.DPoint(p2.x + offset_x, p2.y + offset_y),
-                               pya.DPoint(p2.x - offset_x, p2.y - offset_y),
-                           ])
-                           region = pya.Region(poly.to_itype(dbu))
-                           self.visualise_region(region, f"port_line_{port.number}", "simulation_ports")
-                   else:
-                       # No ground → draw a box around the signal point
-                       box_size = 20.0  # µm side length
-                       x, y = port.signal_location.x, port.signal_location.y
-                       box = pya.DBox(x - box_size/2, y - box_size/2, x + box_size/2, y + box_size/2)
-                       region = pya.Region(box.to_itype(dbu))
-                       self.visualise_region(region, label_sig, "simulation_ports", port.signal_location)
     def produce_layers(self, parts):
         """Finalizes and partitions self.layers.
 
@@ -1532,3 +1454,54 @@ class Simulation:
         else:
             for i, p in enumerate(points):
                 self.cell.shapes(visualisation_layer).insert(pya.DText(f"{label}_{i+1}", p.x, p.y))
+    def visualise_ports(self, edge_port_thickness=500):
+    """Visualise all ports in a dedicated 'simulation_ports' layer using get_port_data().
+
+    Args:
+        edge_port_thickness (float): Extra outward extension (µm) for EdgePorts to make them more visible.
+    """
+    dbu = self.layout.dbu
+    port_json = self.get_port_data()
+
+    for port in self.ports:
+        # Try to find a matching entry in port_json
+        port_data_list = [p for p in port_json if p.get("number") == port.number]
+        if not port_data_list:
+            logging.warning(f"Port {port.number} not found in get_port_data() output, skipping visualisation.")
+            continue
+        port_data = port_data_list[0]
+
+        # Label based on port type
+        if isinstance(port, EdgePort):
+            label = f"edge_port_{port.number}"
+        elif isinstance(port, InternalPort):
+            label = f"internal_port_{port.number}"
+        else:
+            logging.warning(f"Unsupported port type {type(port).__name__} for port {port.number}")
+            continue
+
+        # Construct 2D polygon from port_data["polygon"] (ignoring z coordinate)
+        if "polygon" in port_data and port_data["polygon"]:
+            points_2d = [pya.DPoint(p[0], p[1]) for p in port_data["polygon"]]
+
+            if isinstance(port, EdgePort) and edge_port_thickness > 0:
+                # Extend outward depending on which edge the port is on
+                poly_box = pya.DBox().around(points_2d[0], points_2d[1]) if len(points_2d) >= 2 else None
+                if abs(port.signal_location.x - self.box.left) < dbu:
+                    # Extend leftwards
+                    points_2d = [pya.DPoint(pt.x - edge_port_thickness, pt.y) for pt in points_2d]
+                elif abs(port.signal_location.x - self.box.right) < dbu:
+                    # Extend rightwards
+                    points_2d = [pya.DPoint(pt.x + edge_port_thickness, pt.y) for pt in points_2d]
+                elif abs(port.signal_location.y - self.box.bottom) < dbu:
+                    # Extend downward
+                    points_2d = [pya.DPoint(pt.x, pt.y - edge_port_thickness) for pt in points_2d]
+                elif abs(port.signal_location.y - self.box.top) < dbu:
+                    # Extend upward
+                    points_2d = [pya.DPoint(pt.x, pt.y + edge_port_thickness) for pt in points_2d]
+
+            poly = pya.DPolygon(points_2d)
+            region = pya.Region(poly.to_itype(dbu))
+            self.visualise_region(region, label, "simulation_ports")
+        else:
+            logging.warning(f"Port {port.number} has no polygon data in get_port_data(), skipping visualisation.")
