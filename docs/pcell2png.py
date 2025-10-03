@@ -32,6 +32,7 @@
 from sys import argv
 from importlib import import_module
 from pathlib import Path
+import os
 
 from kqcircuits.defaults import default_layers
 from kqcircuits.klayout_view import KLayoutView
@@ -87,7 +88,8 @@ view.insert_cell(cell)
 
 # save the element as static .oas file
 static_cell = layout.cell(layout.convert_cell_to_static(cell.cell_index()))
-view.save_layout(f"{path}/{cls.__module__}.oas", cells=[static_cell])
+oas_file_path = f"{path}/{cls.__module__}.oas"
+view.save_layout(oas_file_path, cells=[static_cell])
 
 # Hides specified layers before saving png - improves readability and rulers
 layers_to_remove = ["refpoints", "1t1_ports", "1t1_ground_grid_avoidance", "2b1_ground_grid_avoidance"]
@@ -99,3 +101,7 @@ view.focus()
 add_rulers(cls, view)
 size = 1000 if lib_name.find(".chips.") != -1 else 500
 view.export_pcell_png(path, view.top_cell, cls.__module__, max_size=size)
+
+# clean up .oas file
+if os.path.isfile(oas_file_path):
+    os.remove(oas_file_path)
