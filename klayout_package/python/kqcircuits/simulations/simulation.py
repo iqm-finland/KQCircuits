@@ -1458,11 +1458,11 @@ class Simulation:
             for i, p in enumerate(points):
                 self.cell.shapes(visualisation_layer).insert(pya.DText(f"{label}_{i+1}", p.x, p.y))
     def visualise_ports(self, edge_port_thickness=500):
-    """Visualise all ports in a dedicated 'simulation_ports' layer using get_port_data().
+        """Visualise all ports in a dedicated 'simulation_ports' layer using get_port_data().
 
-    Args:
-        edge_port_thickness (float): Extra outward extension (µm) for EdgePorts to make them more visible.
-    """
+        Args:
+            edge_port_thickness (float): Extra outward extension (µm) for EdgePorts to make them more visible.
+        """
     dbu = self.layout.dbu
     port_json = self.get_port_data()
 
@@ -1487,23 +1487,32 @@ class Simulation:
         if "polygon" in port_data and port_data["polygon"]:
             points_2d = [pya.DPoint(p[0], p[1]) for p in port_data["polygon"]]
 
-            if isinstance(port, EdgePort) and edge_port_thickness > 0:
-                # Extend outward depending on which edge the port is on
-                poly_box = pya.DBox().around(points_2d[0], points_2d[1]) if len(points_2d) >= 2 else None
-                if abs(port.signal_location.x - self.box.left) < dbu:
-                    # Extend leftwards
-                    points_2d = [pya.DPoint(pt.x - edge_port_thickness, pt.y) for pt in points_2d]
-                elif abs(port.signal_location.x - self.box.right) < dbu:
-                    # Extend rightwards
-                    points_2d = [pya.DPoint(pt.x + edge_port_thickness, pt.y) for pt in points_2d]
-                elif abs(port.signal_location.y - self.box.bottom) < dbu:
-                    # Extend downward
-                    points_2d = [pya.DPoint(pt.x, pt.y - edge_port_thickness) for pt in points_2d]
-                elif abs(port.signal_location.y - self.box.top) < dbu:
-                    # Extend upward
-                    points_2d = [pya.DPoint(pt.x, pt.y + edge_port_thickness) for pt in points_2d]
+            if isinstance(port, EdgePort) and edge_port_thickness > 0 and len(points_2d) >= 2:
+                # Create a rectangular strip to give thickness to the line
+                p1, p2 = points_2d[0], points_2d[1]
+                dx, dy = (p2.x - p1.x), (p2.y - p1.y)
+                length = (dx**2 + dy**2) ** 0.5
+                if length > 0:
+                    # Normalized perpendicular vector
+                    ux, uy = -dy / length, dx / length
+                    offset_x, offset_y = ux * edge_port_thickness / 2, uy * edge_port_thickness / 2
 
-            poly = pya.DPolygon(points_2d)
+                    # Build a thick polygon from shifted points
+                    poly = pya.DPolygon(
+                        [
+                            pya.DPoint(p1.x - offset_x, p1.y - offset_y),
+                            pya.DPoint(p1.x + offset_x, p1.y + offset_y),
+                            pya.DPoint(p2.x + offset_x, p2.y + offset_y),
+                            pya.DPoint(p2.x - offset_x, p2.y - offset_y),
+                        ]
+                    )
+                else:
+                    # Degenerate case → fallback to single point polygon
+                    poly = pya.DPolygon(points_2d)
+            else:
+                # Internal ports → use polygon directly
+                poly = pya.DPolygon(points_2d)
+
             region = pya.Region(poly.to_itype(dbu))
             self.visualise_region(region, label, "simulation_ports")
         else:
