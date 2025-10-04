@@ -901,6 +901,9 @@ class Simulation:
             # Visualise partition regions
             if part.visualise:
                 self.visualise_region(part.region, part.name, f"part_reg_{part.name}")
+
+        # Finally, visualise all ports
+        self.visualise_ports()        
     def produce_layers(self, parts):
         """Finalizes and partitions self.layers.
 
