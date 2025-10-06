@@ -1488,27 +1488,37 @@ class Simulation:
             points_2d = [pya.DPoint(p[0], p[1]) for p in port_data["polygon"]]
 
             if isinstance(port, EdgePort) and edge_port_thickness > 0:
-                # Create a rectangular strip to give thickness to the line
-                p1, p2 = points_2d[0], points_2d[1]
-                dx, dy = (p2.x - p1.x), (p2.y - p1.y)
-                length = (dx**2 + dy**2) ** 0.5
-                if length > 0:
-                    # Normalized perpendicular vector
-                    ux, uy = -dy / length, dx / length
-                    offset_x, offset_y = ux * edge_port_thickness / 2, uy * edge_port_thickness / 2
-
-                    # Build a thick polygon from shifted points
-                    poly = pya.DPolygon(
-                        [
-                            pya.DPoint(p1.x - offset_x, p1.y - offset_y),
-                            pya.DPoint(p1.x + offset_x, p1.y + offset_y),
-                            pya.DPoint(p2.x + offset_x, p2.y + offset_y),
-                            pya.DPoint(p2.x - offset_x, p2.y - offset_y),
-                        ]
-                    )
-                else:
-                    # Degenerate case → fallback to single point polygon
-                    poly = pya.DPolygon(points_2d)
+                    direction = None
+                    if port.signal_location.x == self.box.p1.x:
+                        # Port on left border of simulation box
+                        direction = pya.DPoint(-edge_port_thickness, 0)
+                    elif port.signal_location.x == self.box.p2.x:
+                        # on right border
+                        direction = pya.DPoint(edge_port_thickness, 0)
+                    elif port.signal_location.y == self.box.p1.y:
+                        # on bottom border
+                        direction = pya.DPoint(0, -edge_port_thickness)
+                    elif port.signal_location.y == self.box.p2.y:
+                        # on top border
+                        direction = pya.DPoint(0, edge_port_thickness)
+                    if not direction:
+                        # Just draw whatever we can get if was not on the border
+                        poly = pya.DPolygon(points_2d)
+                    else:
+                        # Some points are duplicates when projected to 2D. Ensure you get two different points
+                        points_2d = list(set(points_2d))
+                        p1 = points_2d[0]
+                        p2 = points_2d[1]
+                        # Build a thick polygon from shifted points
+                        poly = pya.DPolygon(
+                            [
+                                p1,
+                                p2,
+                                p2 + direction,
+                                p1 + direction,
+                            ]
+                        )
+                        visualise_point = port.signal_location
             else:
                 # Internal ports → use polygon directly
                 poly = pya.DPolygon(points_2d)
