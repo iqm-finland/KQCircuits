@@ -170,7 +170,14 @@ def get_single_element_sim_class(
         ),
     }
     if partition_region_function:
-        overriden_class_attributes["get_partition_regions"] = partition_region_function
+        _cache = {}
+
+        def _get_partition_regions(simulation: Simulation):
+            if simulation not in _cache:
+                _cache[simulation] = partition_region_function(simulation)
+            return _cache[simulation]
+
+        overriden_class_attributes["get_partition_regions"] = _get_partition_regions
     element_sim_class = type(
         f"SingleElementSimulationClassFor{element_class.__name__}",
         (Simulation,),
