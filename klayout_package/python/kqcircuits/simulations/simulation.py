@@ -1487,7 +1487,7 @@ class Simulation:
         if "polygon" in port_data and port_data["polygon"]:
             points_2d = [pya.DPoint(p[0], p[1]) for p in port_data["polygon"]]
 
-            if isinstance(port, EdgePort) and edge_port_thickness > 0 and len(points_2d) >= 2:
+            if isinstance(port, EdgePort) and edge_port_thickness > 0:
                 # Create a rectangular strip to give thickness to the line
                 p1, p2 = points_2d[0], points_2d[1]
                 dx, dy = (p2.x - p1.x), (p2.y - p1.y)
