@@ -1489,7 +1489,7 @@ class Simulation:
             points_2d = [pya.DPoint(p[0], p[1]) for p in port_data["polygon"]]
 
             if isinstance(port, EdgePort) and edge_port_thickness > 0:
-                    direction = None
+                direction = None
                     if port.signal_location.x == self.box.p1.x:
                         # Port on left border of simulation box
                         direction = pya.DPoint(-edge_port_thickness, 0)
