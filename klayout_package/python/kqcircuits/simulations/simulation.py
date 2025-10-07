@@ -1463,10 +1463,10 @@ class Simulation:
         Args:
             edge_port_thickness (float): Extra outward extension (µm) for EdgePorts to make them more visible.
         """
-    dbu = self.layout.dbu
-    port_json = self.get_port_data()
+        dbu = self.layout.dbu
+        port_json = self.get_port_data()
 
-    for port in self.ports:
+        for port in self.ports:
         # Try to find a matching entry in port_json
         port_data_list = [p for p in port_json if p.get("number") == port.number]
         if not port_data_list:
