@@ -1526,12 +1526,12 @@ class Simulation:
                             ]
                         )
                         visualise_point = port.signal_location
-                    else:
-                         poly = pya.DPolygon(points_2d)
-
-                    region = pya.Region(poly.to_itype(dbu))
-                    self.visualise_region(region, label, "simulation_ports", visualise_point)
                 else:
-                    logging.warning(
-                        f"Port {port.number} has no polygon data in get_port_data(), skipping visualisation."
-                    )
+                     poly = pya.DPolygon(points_2d)
+
+                region = pya.Region(poly.to_itype(dbu))
+                self.visualise_region(region, label, "simulation_ports", visualise_point)
+            else:
+                logging.warning(
+                    f"Port {port.number} has no polygon data in get_port_data(), skipping visualisation."
+                )
