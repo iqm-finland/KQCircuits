@@ -1528,7 +1528,7 @@ class Simulation:
                         )
                         visualise_point = port.signal_location
                 else:
-                     poly = pya.DPolygon(points_2d)
+                    poly = pya.DPolygon(points_2d)
 
                 region = pya.Region(poly.to_itype(dbu))
                 self.visualise_region(region, label, "simulation_ports", visualise_point)
