@@ -1314,6 +1314,26 @@ class Simulation:
                     else:
                         raise ValueError(f"Port {port.number} is an EdgePort but not on the edge of the simulation box")
 
+                    # trim out shielded parts of port polygon
+                    for layer in self.layers.values():
+                        if "excitation" not in layer:
+                            continue  # the layer is not metal
+
+                        if port_z0 < layer["z"] + layer["thickness"] < z[face_id][0]:
+                            new_z0, new_z1 = layer["z"] + layer["thickness"], port_z1
+                        elif z[face_id][0] < layer["z"] < port_z1:
+                            new_z0, new_z1 = port_z0, layer["z"]
+                        else:
+                            continue  # the metal layer is vertically too far (or on the same face as the port)
+
+                        if "layer" in layer:
+                            port_box = pya.DBox(port_x0 - dbu, port_y0 - dbu, port_x1 + dbu, port_y1 + dbu) & self.box
+                            layer_region = pya.Region(self.cell.begin_shapes_rec(self.layout.layer(layer["layer"], 0)))
+                            if not (pya.Region(port_box.to_itype(dbu)) - layer_region).is_empty():
+                                continue  # the metal layer is not perfectly shielding
+
+                        port_z0, port_z1 = new_z0, new_z1
+
                     p_data["polygon"] = [
                         [port_x0, port_y0, port_z0],
                         [port_x1, port_y1, port_z0],
