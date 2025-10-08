@@ -1520,10 +1520,10 @@ class Simulation:
                         # Build a thick polygon from shifted points
                         poly = pya.DPolygon(
                             [
-                               p1,
-                               p2,
-                               p2 + direction,
-                               p1 + direction,
+                                p1,
+                                p2,
+                                p2 + direction,
+                                p1 + direction,
                             ]
                         )
                         visualise_point = port.signal_location
