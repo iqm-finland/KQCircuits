@@ -904,6 +904,7 @@ class Simulation:
 
         # Finally, visualise all ports
         self.visualise_ports()
+
     def produce_layers(self, parts):
         """Finalizes and partitions self.layers.
 
