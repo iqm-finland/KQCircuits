@@ -1469,7 +1469,7 @@ class Simulation:
         port_json = self.get_port_data()
 
         for port in self.ports:
-            # Initialize visualise_point at the start of each iteration 
+            # Initialize visualise_point at the start of each iteration
             visualise_point = None
 
             # Try to find a matching entry in port_json
