@@ -1485,9 +1485,7 @@ class Simulation:
             elif isinstance(port, InternalPort):
                 label = f"internal_port_{port.number}"
             else:
-                logging.warning(
-                    f"Unsupported port type {type(port).__name__} for port {port.number}"
-                )
+                logging.warning(f"Unsupported port type {type(port).__name__} for port {port.number}")
                 continue
 
             # Construct 2D polygon from port_data["polygon"] (ignoring z coordinate)
