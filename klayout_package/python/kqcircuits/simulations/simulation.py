@@ -1508,7 +1508,7 @@ class Simulation:
                     elif port.signal_location.y == self.box.p2.y:
                         # on top border
                         direction = pya.DPoint(0, edge_port_thickness)
-                        
+
                     if not direction:
                         # draw
                         poly = pya.DPolygon(points_2d)
