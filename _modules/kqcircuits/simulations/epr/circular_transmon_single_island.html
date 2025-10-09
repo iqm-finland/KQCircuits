@@ -1103,7 +1103,7 @@
 
     <span class="c1"># Main island complement region</span>
     <span class="n">regions</span> <span class="o">+=</span> <span class="n">create_bulk_and_mer_partition_regions</span><span class="p">(</span>
-        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;bcomplement&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">complement&quot;</span><span class="p">,</span>
         <span class="n">face</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
         <span class="n">metal_edge_dimensions</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
         <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1207,7 +1207,7 @@
         <span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">r_island</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">ground_gap</span> <span class="o">+</span> <span class="n">gap_distance</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">complement_angle</span><span class="p">),</span>
     <span class="p">)</span>
 
-    <span class="n">cuts</span><span class="p">[</span><span class="s2">&quot;bcomplementmer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">cuts</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">complementmer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;p1&quot;</span><span class="p">:</span> <span class="n">inner_point</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">],</span>
         <span class="s2">&quot;p2&quot;</span><span class="p">:</span> <span class="n">outer_point</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">],</span>
     <span class="p">}</span>

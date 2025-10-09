@@ -1013,63 +1013,90 @@
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.defaults</span><span class="w"> </span><span class="kn">import</span> <span class="n">node_editor_valid_elements</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.pya_resolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.pya_resolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">pya</span><span class="p">,</span> <span class="n">is_standalone_session</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.gui_helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">node_from_text</span><span class="p">,</span> <span class="n">get_nodes_near_position</span><span class="p">,</span> <span class="n">replace_node</span><span class="p">,</span> <span class="n">node_to_text</span>
 
 
+<span class="k">if</span> <span class="n">is_standalone_session</span><span class="p">():</span>
+    <span class="c1"># Can&#39;t define plugins in standalone KLayout library. Just define stubs</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">EditNodePlugin</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="k">class</span><span class="w"> </span><span class="nc">EditNodePluginFactory</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+<span class="k">else</span><span class="p">:</span>
+
 <div class="viewcode-block" id="EditNodePlugin">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">EditNodePlugin</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Plugin</span><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">manager</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">is_active</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">manager</span> <span class="o">=</span> <span class="n">manager</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="n">view</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">last_dialog_position</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">capture_range</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># Mouse capture and marker size in pixels</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">last_mouse_position</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">create_dialog</span><span class="p">()</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">EditNodePlugin</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Plugin</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">manager</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_active</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">manager</span> <span class="o">=</span> <span class="n">manager</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="n">view</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_dialog_position</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">capture_range</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># Mouse capture and marker size in pixels</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_mouse_position</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">create_dialog</span><span class="p">()</span>
 
-<div class="viewcode-block" id="EditNodePlugin.create_dialog">
-<a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.create_dialog">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">create_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">dialog</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">QDialog</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">main_window</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dialog</span> <span class="o">=</span> <span class="n">dialog</span>
-        <span class="n">dialog</span><span class="o">.</span><span class="n">windowTitle</span> <span class="o">=</span> <span class="s2">&quot;Edit Node&quot;</span>
-        <span class="n">dialog</span><span class="o">.</span><span class="n">setModal</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">create_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">dialog</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">QDialog</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">main_window</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dialog</span> <span class="o">=</span> <span class="n">dialog</span>
+            <span class="n">dialog</span><span class="o">.</span><span class="n">windowTitle</span> <span class="o">=</span> <span class="s2">&quot;Edit Node&quot;</span>
+            <span class="n">dialog</span><span class="o">.</span><span class="n">setModal</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
-        <span class="n">form</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">QFormLayout</span><span class="p">(</span><span class="n">dialog</span><span class="p">)</span>
+            <span class="n">form</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">QFormLayout</span><span class="p">(</span><span class="n">dialog</span><span class="p">)</span>
 
-        <span class="k">def</span><span class="w"> </span><span class="nf">add_row</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
-            <span class="n">form</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">widget</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">widget</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">add_row</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
+                <span class="n">form</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">widget</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">widget</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">text_x</span> <span class="o">=</span> <span class="n">add_row</span><span class="p">(</span><span class="s2">&quot;x position (µm): &quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">(</span><span class="s2">&quot;0.0&quot;</span><span class="p">,</span> <span class="n">dialog</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">text_y</span> <span class="o">=</span> <span class="n">add_row</span><span class="p">(</span><span class="s2">&quot;y position (µm):&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">(</span><span class="s2">&quot;0.0&quot;</span><span class="p">,</span> <span class="n">dialog</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">text_x</span> <span class="o">=</span> <span class="n">add_row</span><span class="p">(</span><span class="s2">&quot;x position (µm): &quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">(</span><span class="s2">&quot;0.0&quot;</span><span class="p">,</span> <span class="n">dialog</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">text_y</span> <span class="o">=</span> <span class="n">add_row</span><span class="p">(</span><span class="s2">&quot;y position (µm):&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">(</span><span class="s2">&quot;0.0&quot;</span><span class="p">,</span> <span class="n">dialog</span><span class="p">))</span>
 
-        <span class="n">form</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Optional arguments, leave empty for default:&quot;</span><span class="p">,</span> <span class="n">dialog</span><span class="p">))</span>
+            <span class="n">form</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Optional arguments, leave empty for default:&quot;</span><span class="p">,</span> <span class="n">dialog</span><span class="p">))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">text_inst_name</span> <span class="o">=</span> <span class="n">add_row</span><span class="p">(</span><span class="s2">&quot;Instance name:&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">dialog</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">text_angle</span> <span class="o">=</span> <span class="n">add_row</span><span class="p">(</span><span class="s2">&quot;Angle (degrees):&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">dialog</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">text_length_before</span> <span class="o">=</span> <span class="n">add_row</span><span class="p">(</span><span class="s2">&quot;Length before (µm):&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">dialog</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">text_length_increment</span> <span class="o">=</span> <span class="n">add_row</span><span class="p">(</span><span class="s2">&quot;Length increment (µm):&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">dialog</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">text_element</span> <span class="o">=</span> <span class="n">add_row</span><span class="p">(</span><span class="s2">&quot;Element:&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">QComboBox</span><span class="p">(</span><span class="n">dialog</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">text_element</span><span class="o">.</span><span class="n">addItems</span><span class="p">([</span><span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">node_editor_valid_elements</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">text_element</span><span class="o">.</span><span class="n">editable</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">text_align</span> <span class="o">=</span> <span class="n">add_row</span><span class="p">(</span><span class="s2">&quot;Refpoint names to align to (input,output):&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">dialog</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">text_params</span> <span class="o">=</span> <span class="n">add_row</span><span class="p">(</span><span class="s2">&quot;Element parameters:&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">QPlainTextEdit</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">dialog</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">button_apply</span> <span class="o">=</span> <span class="n">add_row</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Apply&quot;</span><span class="p">,</span> <span class="n">dialog</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">button_apply</span><span class="o">.</span><span class="n">clicked</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_node_from_form</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">text_inst_name</span> <span class="o">=</span> <span class="n">add_row</span><span class="p">(</span><span class="s2">&quot;Instance name:&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">dialog</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">text_angle</span> <span class="o">=</span> <span class="n">add_row</span><span class="p">(</span><span class="s2">&quot;Angle (degrees):&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">dialog</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">text_length_before</span> <span class="o">=</span> <span class="n">add_row</span><span class="p">(</span><span class="s2">&quot;Length before (µm):&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">dialog</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">text_length_increment</span> <span class="o">=</span> <span class="n">add_row</span><span class="p">(</span><span class="s2">&quot;Length increment (µm):&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">dialog</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">text_element</span> <span class="o">=</span> <span class="n">add_row</span><span class="p">(</span><span class="s2">&quot;Element:&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">QComboBox</span><span class="p">(</span><span class="n">dialog</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">text_element</span><span class="o">.</span><span class="n">addItems</span><span class="p">([</span><span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">node_editor_valid_elements</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">text_element</span><span class="o">.</span><span class="n">editable</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">text_align</span> <span class="o">=</span> <span class="n">add_row</span><span class="p">(</span><span class="s2">&quot;Refpoint names to align to (input,output):&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">dialog</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">text_params</span> <span class="o">=</span> <span class="n">add_row</span><span class="p">(</span><span class="s2">&quot;Element parameters:&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">QPlainTextEdit</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">dialog</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">button_apply</span> <span class="o">=</span> <span class="n">add_row</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Apply&quot;</span><span class="p">,</span> <span class="n">dialog</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">button_apply</span><span class="o">.</span><span class="n">clicked</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_node_from_form</span><span class="p">)</span>
 
+        <span class="k">def</span><span class="w"> </span><span class="nf">update_node_from_form</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span>
 
-<div class="viewcode-block" id="EditNodePlugin.update_node_from_form">
-<a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.update_node_from_form">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">update_node_from_form</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">new_node</span> <span class="o">=</span> <span class="n">node_from_text</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">text_x</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">text_y</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">text_element</span><span class="o">.</span><span class="n">currentText</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">text_inst_name</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">text_angle</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">text_length_before</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">text_length_increment</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">text_align</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">text_params</span><span class="o">.</span><span class="n">toPlainText</span><span class="p">(),</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">pya</span><span class="o">.</span><span class="n">MessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">pya</span><span class="o">.</span><span class="n">MessageBox</span><span class="o">.</span><span class="n">Ok</span><span class="p">)</span>
+                <span class="k">return</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">new_node</span> <span class="o">=</span> <span class="n">node_from_text</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">transaction</span><span class="p">(</span><span class="s2">&quot;Edit node&quot;</span><span class="p">)</span>
+            <span class="n">replace_node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">[</span><span class="s2">&quot;instance&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">[</span><span class="s2">&quot;node_index&quot;</span><span class="p">],</span> <span class="n">new_node</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">[</span><span class="s2">&quot;node&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_node</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">update_form_from_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+            <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">text_x</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">text_y</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">text_element</span><span class="o">.</span><span class="n">currentText</span><span class="p">,</span>
@@ -1078,154 +1105,99 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">text_length_before</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">text_length_increment</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">text_align</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">text_params</span><span class="o">.</span><span class="n">toPlainText</span><span class="p">(),</span>
-            <span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">pya</span><span class="o">.</span><span class="n">MessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">pya</span><span class="o">.</span><span class="n">MessageBox</span><span class="o">.</span><span class="n">Ok</span><span class="p">)</span>
-            <span class="k">return</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">text_params</span><span class="o">.</span><span class="n">plainText</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">=</span> <span class="n">node_to_text</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">transaction</span><span class="p">(</span><span class="s2">&quot;Edit node&quot;</span><span class="p">)</span>
-        <span class="n">replace_node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">[</span><span class="s2">&quot;instance&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">[</span><span class="s2">&quot;node_index&quot;</span><span class="p">],</span> <span class="n">new_node</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">[</span><span class="s2">&quot;node&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_node</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
+        <span class="k">def</span><span class="w"> </span><span class="nf">deselect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_dialog_position</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dialog</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dialog</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dialog</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
 
-
-<div class="viewcode-block" id="EditNodePlugin.update_form_from_node">
-<a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.update_form_from_node">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">update_form_from_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
-        <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">text_x</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">text_y</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">text_element</span><span class="o">.</span><span class="n">currentText</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">text_inst_name</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">text_angle</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">text_length_before</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">text_length_increment</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">text_align</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">text_params</span><span class="o">.</span><span class="n">plainText</span><span class="p">,</span>
-        <span class="p">)</span> <span class="o">=</span> <span class="n">node_to_text</span><span class="p">(</span><span class="n">node</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="EditNodePlugin.deselect">
-<a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.deselect">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">deselect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">last_dialog_position</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dialog</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dialog</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dialog</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="EditNodePlugin.select">
-<a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.select">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">node_index</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">deselect</span><span class="p">()</span>
-
-        <span class="n">marker</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">)</span>
-        <span class="n">position</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">dcplx_trans</span> <span class="o">*</span> <span class="n">node</span><span class="o">.</span><span class="n">position</span>
-        <span class="n">size</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">capture_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">capture_range</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">viewport_trans</span><span class="p">()</span><span class="o">.</span><span class="n">mag</span>
-        <span class="n">marker</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">position</span> <span class="o">-</span> <span class="n">size</span><span class="p">,</span> <span class="n">position</span> <span class="o">+</span> <span class="n">size</span><span class="p">))</span>
-        <span class="n">marker</span><span class="o">.</span><span class="n">vertex_size</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">marker</span><span class="o">.</span><span class="n">line_style</span> <span class="o">=</span> <span class="mi">2</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">update_form_from_node</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_dialog_position</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">dialog</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">last_dialog_position</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dialog</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;instance&quot;</span><span class="p">:</span> <span class="n">instance</span><span class="p">,</span>
-            <span class="s2">&quot;instance_trans&quot;</span><span class="p">:</span> <span class="n">instance</span><span class="o">.</span><span class="n">dcplx_trans</span><span class="p">,</span>
-            <span class="s2">&quot;node_index&quot;</span><span class="p">:</span> <span class="n">node_index</span><span class="p">,</span>
-            <span class="s2">&quot;node&quot;</span><span class="p">:</span> <span class="n">node</span><span class="p">,</span>
-            <span class="s2">&quot;marker&quot;</span><span class="p">:</span> <span class="n">marker</span><span class="p">,</span>
-        <span class="p">}</span></div>
-
-
-<div class="viewcode-block" id="EditNodePlugin.activated">
-<a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.activated">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">activated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">is_active</span> <span class="o">=</span> <span class="kc">True</span></div>
-
-
-<div class="viewcode-block" id="EditNodePlugin.deactivated">
-<a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.deactivated">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">deactivated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">deselect</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">is_active</span> <span class="o">=</span> <span class="kc">False</span></div>
-
-
-<div class="viewcode-block" id="EditNodePlugin.mouse_click_event">
-<a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.mouse_click_event">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">mouse_click_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">buttons</span><span class="p">,</span> <span class="n">prio</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">prio</span> <span class="ow">and</span> <span class="n">buttons</span> <span class="o">==</span> <span class="n">pya</span><span class="o">.</span><span class="n">ButtonState</span><span class="o">.</span><span class="n">LeftButton</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_active</span><span class="p">:</span>
-            <span class="n">cell_view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">active_cellview</span><span class="p">()</span>
-            <span class="n">node_data</span> <span class="o">=</span> <span class="n">get_nodes_near_position</span><span class="p">(</span><span class="n">cell_view</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">capture_range</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">viewport_trans</span><span class="p">()</span><span class="o">.</span><span class="n">mag</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">node_data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">wg_inst</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">node_index</span> <span class="o">=</span> <span class="n">node_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">wg_inst</span><span class="p">,</span> <span class="n">node_index</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">node_index</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">deselect</span><span class="p">()</span>
-            <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span></div>
 
-
-<div class="viewcode-block" id="EditNodePlugin.mouse_moved_event">
-<a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.mouse_moved_event">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">mouse_moved_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">__</span><span class="p">):</span>
-        <span class="c1"># Store current mouse position for use in tracking_position</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">last_mouse_position</span> <span class="o">=</span> <span class="n">p</span></div>
-
-
-<div class="viewcode-block" id="EditNodePlugin.has_tracking_position">
-<a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.has_tracking_position">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">has_tracking_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># We provide a custom tracking position only if a node is selected</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
-
-
-<div class="viewcode-block" id="EditNodePlugin.tracking_position">
-<a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.tracking_position">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">tracking_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">[</span><span class="s2">&quot;instance_trans&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">inverted</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_mouse_position</span>
-            <span class="k">return</span> <span class="n">position</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># Only reached if something in the internal state is broken</span></div>
-
-
-<div class="viewcode-block" id="EditNodePlugin.update">
-<a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.update">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Update marker size to stay constant in pixels</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">marker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">[</span><span class="s2">&quot;marker&quot;</span><span class="p">]</span>
-            <span class="n">position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">[</span><span class="s2">&quot;instance_trans&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">[</span><span class="s2">&quot;node&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">position</span>
+            <span class="n">marker</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">)</span>
+            <span class="n">position</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">dcplx_trans</span> <span class="o">*</span> <span class="n">node</span><span class="o">.</span><span class="n">position</span>
             <span class="n">size</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">capture_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">capture_range</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">viewport_trans</span><span class="p">()</span><span class="o">.</span><span class="n">mag</span>
-            <span class="n">marker</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">position</span> <span class="o">-</span> <span class="n">size</span><span class="p">,</span> <span class="n">position</span> <span class="o">+</span> <span class="n">size</span><span class="p">))</span></div>
-</div>
+            <span class="n">marker</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">position</span> <span class="o">-</span> <span class="n">size</span><span class="p">,</span> <span class="n">position</span> <span class="o">+</span> <span class="n">size</span><span class="p">))</span>
+            <span class="n">marker</span><span class="o">.</span><span class="n">vertex_size</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">marker</span><span class="o">.</span><span class="n">line_style</span> <span class="o">=</span> <span class="mi">2</span>
 
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_form_from_node</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_dialog_position</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dialog</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">last_dialog_position</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dialog</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;instance&quot;</span><span class="p">:</span> <span class="n">instance</span><span class="p">,</span>
+                <span class="s2">&quot;instance_trans&quot;</span><span class="p">:</span> <span class="n">instance</span><span class="o">.</span><span class="n">dcplx_trans</span><span class="p">,</span>
+                <span class="s2">&quot;node_index&quot;</span><span class="p">:</span> <span class="n">node_index</span><span class="p">,</span>
+                <span class="s2">&quot;node&quot;</span><span class="p">:</span> <span class="n">node</span><span class="p">,</span>
+                <span class="s2">&quot;marker&quot;</span><span class="p">:</span> <span class="n">marker</span><span class="p">,</span>
+            <span class="p">}</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">activated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_active</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">deactivated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">deselect</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_active</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">mouse_click_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">buttons</span><span class="p">,</span> <span class="n">prio</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">prio</span> <span class="ow">and</span> <span class="n">buttons</span> <span class="o">==</span> <span class="n">pya</span><span class="o">.</span><span class="n">ButtonState</span><span class="o">.</span><span class="n">LeftButton</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_active</span><span class="p">:</span>
+                <span class="n">cell_view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">active_cellview</span><span class="p">()</span>
+                <span class="n">node_data</span> <span class="o">=</span> <span class="n">get_nodes_near_position</span><span class="p">(</span>
+                    <span class="n">cell_view</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">capture_range</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">viewport_trans</span><span class="p">()</span><span class="o">.</span><span class="n">mag</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">node_data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">wg_inst</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">node_index</span> <span class="o">=</span> <span class="n">node_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">wg_inst</span><span class="p">,</span> <span class="n">node_index</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">deselect</span><span class="p">()</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">mouse_moved_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">__</span><span class="p">):</span>
+            <span class="c1"># Store current mouse position for use in tracking_position</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_mouse_position</span> <span class="o">=</span> <span class="n">p</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">has_tracking_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="c1"># We provide a custom tracking position only if a node is selected</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">tracking_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">[</span><span class="s2">&quot;instance_trans&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">inverted</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_mouse_position</span>
+                <span class="k">return</span> <span class="n">position</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># Only reached if something in the internal state is broken</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="c1"># Update marker size to stay constant in pixels</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">marker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">[</span><span class="s2">&quot;marker&quot;</span><span class="p">]</span>
+                <span class="n">position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">[</span><span class="s2">&quot;instance_trans&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">[</span><span class="s2">&quot;node&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">position</span>
+                <span class="n">size</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">capture_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">capture_range</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">viewport_trans</span><span class="p">()</span><span class="o">.</span><span class="n">mag</span>
+                <span class="n">marker</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">position</span> <span class="o">-</span> <span class="n">size</span><span class="p">,</span> <span class="n">position</span> <span class="o">+</span> <span class="n">size</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="EditNodePluginFactory">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePluginFactory">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">EditNodePluginFactory</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">PluginFactory</span><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">pya</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">is_editable</span><span class="p">():</span>
-            <span class="n">icon_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s2">&quot;edit_node_plugin.png&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="s2">&quot;kqc_edit_node&quot;</span><span class="p">,</span> <span class="s2">&quot;Edit Node&quot;</span><span class="p">,</span> <span class="n">icon_path</span><span class="p">)</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">EditNodePluginFactory</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">PluginFactory</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">pya</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">is_editable</span><span class="p">():</span>
+                <span class="n">icon_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s2">&quot;edit_node_plugin.png&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="s2">&quot;kqc_edit_node&quot;</span><span class="p">,</span> <span class="s2">&quot;Edit Node&quot;</span><span class="p">,</span> <span class="n">icon_path</span><span class="p">)</span>
 
-            <span class="c1"># Set tooltip to something more helpful</span>
-            <span class="n">toolbar_action</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">MainWindow</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">menu</span><span class="p">()</span><span class="o">.</span><span class="n">action</span><span class="p">(</span><span class="s2">&quot;@toolbar.kqc_edit_node&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">toolbar_action</span><span class="p">:</span>
-                <span class="n">toolbar_action</span><span class="o">.</span><span class="n">tool_tip</span> <span class="o">=</span> <span class="s2">&quot;Edit individual Node properties of WaveguideComposite elements&quot;</span>
+                <span class="c1"># Set tooltip to something more helpful</span>
+                <span class="n">toolbar_action</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">MainWindow</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">menu</span><span class="p">()</span><span class="o">.</span><span class="n">action</span><span class="p">(</span><span class="s2">&quot;@toolbar.kqc_edit_node&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">toolbar_action</span><span class="p">:</span>
+                    <span class="n">toolbar_action</span><span class="o">.</span><span class="n">tool_tip</span> <span class="o">=</span> <span class="s2">&quot;Edit individual Node properties of WaveguideComposite elements&quot;</span>
 
-<div class="viewcode-block" id="EditNodePluginFactory.create_plugin">
-<a class="viewcode-back" href="../../../api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePluginFactory.create_plugin">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">create_plugin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">manager</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">EditNodePlugin</span><span class="p">(</span><span class="n">manager</span><span class="p">,</span> <span class="n">view</span><span class="p">)</span></div>
-</div>
+        <span class="k">def</span><span class="w"> </span><span class="nf">create_plugin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">manager</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">EditNodePlugin</span><span class="p">(</span><span class="n">manager</span><span class="p">,</span> <span class="n">view</span><span class="p">)</span></div>
 
 </pre></div>
 
