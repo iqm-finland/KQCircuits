@@ -21,7 +21,7 @@ from kqcircuits.pya_resolver import pya
 
 
 def test_can_create(get_simulation):
-    get_simulation(CapacitiveXCoupler)
+    get_simulation(CapacitiveXCoupler, box=pya.DBox(pya.DPoint(-250, -250), pya.DPoint(250, 250)))
 
 
 # TODO: refactor so box doesn't need to be specified.
