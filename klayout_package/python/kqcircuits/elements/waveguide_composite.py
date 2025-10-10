@@ -735,8 +735,13 @@ class WaveguideComposite(Element):
             s = segment_vector
             for _ in range(100):  # iterate at most 100 times
                 _, d = vector_length_and_direction(s)
-                start_len = self.r * abs(d.vprod(dir_start) / (1.0 + d.sprod(dir_start)))
-                end_len = self.r * abs(d.vprod(dir_end) / (1.0 + d.sprod(dir_end)))
+                try:
+                    start_len = self.r * abs(d.vprod(dir_start) / (1.0 + d.sprod(dir_start)))
+                    end_len = self.r * abs(d.vprod(dir_end) / (1.0 + d.sprod(dir_end)))
+                except ZeroDivisionError:
+                    self.raise_error_on_cell(
+                        "Cannot route, probably trying to make a 180 degree turn.", self._wg_start_pos
+                    )
 
                 # check if converged
                 prev_s = s
