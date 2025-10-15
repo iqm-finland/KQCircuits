@@ -733,7 +733,7 @@ class WaveguideComposite(Element):
 
             # Use optimal corner routing
             s = segment_vector
-            for _ in range(100):  # iterate at most 100 times
+            for n in range(1000):  # iterate at most 1000 times
                 _, d = vector_length_and_direction(s)
                 try:
                     start_len = self.r * abs(d.vprod(dir_start) / (1.0 + d.sprod(dir_start)))
@@ -744,10 +744,17 @@ class WaveguideComposite(Element):
                     )
 
                 # check if converged
-                prev_s = s
-                s = segment_vector - start_len * dir_start - end_len * dir_end
-                if (s - prev_s).length() < 1e-5:
+                mismatch = d.vprod(segment_vector - start_len * dir_start - end_len * dir_end)
+                if abs(mismatch) < 1e-8:
                     return 0.0 if start_len < 0.001 else start_len, 0.0 if end_len < 0.001 else end_len
+
+                # prepare for the next iteration
+                try:
+                    ds = mismatch * pya.DVector(-d.y, d.x) if n == 0 else mismatch / (prev_mismatch - mismatch) * ds
+                except ZeroDivisionError:
+                    break
+                s += ds
+                prev_mismatch = mismatch
 
             # Not converged to up here
             self.raise_error_on_cell("Cannot find suitable routing using 'tight' corners.", self._wg_start_pos)
