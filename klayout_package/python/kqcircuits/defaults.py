@@ -140,11 +140,6 @@ kqc_library_names = (
     "Chip Library",
 )
 
-# The user may override KQC Element's default parameters
-default_parameter_values = {
-    "AirbridgeConnection": {"bridge_length": 60, "pad_length": 22},
-    "TsvTest": {"tsv_elliptical_width": 10},
-}
 
 default_bump_parameters = {
     "bump_diameter": 25,
@@ -256,9 +251,3 @@ default_path_length_layers = layer_config_module.default_path_length_layers
 default_mask_parameters = layer_config_module.default_mask_parameters
 # Path to layer properties file
 default_layer_props = layer_config_module.default_layer_props
-# Update default_parameter_values based on layer config file
-for k, v in layer_config_module.default_parameter_values.items():
-    params = default_parameter_values[k] if k in default_parameter_values else {}
-    for k2, v2 in v.items():
-        params[k2] = v2
-    default_parameter_values[k] = params

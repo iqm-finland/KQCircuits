@@ -25,7 +25,7 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 
 
-@add_parameters_from(Airbridge)
+@add_parameters_from(Airbridge, "*", bridge_length=60, pad_length=22)
 @add_parameters_from(WaveguideCoplanarTaper, "*", m2=5)
 class AirbridgeConnection(Element):
     """The PCell declaration of an Airbridge with tapered waveguides in both ends.

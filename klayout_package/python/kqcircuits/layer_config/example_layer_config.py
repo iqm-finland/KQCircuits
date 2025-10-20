@@ -103,6 +103,3 @@ default_mask_parameters = {
     },
 }
 default_layer_props = None
-default_parameter_values = {
-    "Element": {"face_ids": ["1", "2"]},
-}

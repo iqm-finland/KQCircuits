@@ -29,7 +29,7 @@ class Tsv(Element):
     default_type = default_tsv_type
 
     tsv_type = Param(pdt.TypeString, "TSV type", default_tsv_type, choices=tsv_type_choices)
-    tsv_diameter = Param(pdt.TypeDouble, "TSV diameter", 100, unit="μm")
+    tsv_diameter = Param(pdt.TypeDouble, "TSV diameter", 60, unit="μm")
     tsv_margin = Param(pdt.TypeDouble, "TSV margin", 30, unit="μm")
 
     @classmethod

@@ -25,7 +25,7 @@ from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.elements.tsvs.tsv_ellipse import TsvEllipse
 
 
-@add_parameters_from(TsvEllipse, "*", tsv_diameter=10)
+@add_parameters_from(TsvEllipse, "*", tsv_diameter=10, tsv_elliptical_width=10)
 class TsvTest(Chip):
     """Through silicon via test chip.
 

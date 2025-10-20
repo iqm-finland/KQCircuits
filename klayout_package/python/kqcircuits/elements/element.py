@@ -21,7 +21,7 @@ import importlib
 import importlib.util
 from inspect import isclass
 
-from kqcircuits.defaults import default_layers, default_faces, default_parameter_values
+from kqcircuits.defaults import default_layers, default_faces
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.epr.gui_config import epr_gui_visualised_partition_regions
 from kqcircuits.util.geometry_helper import get_cell_path_length
@@ -162,7 +162,6 @@ class Element(pya.PCellDeclarationHelper):
         super().__init__()
 
         cls = type(self)
-        mro = cls.__mro__
 
         # We may need to redefine a Param object, because multiple classes may refer to the same Param object
         # due to inheritance, so modifying the existing Param object could affect other classes.
@@ -185,16 +184,7 @@ class Element(pya.PCellDeclarationHelper):
         self._param_value_map = {}
         for name, p in sorted(cls.get_schema().items(), key=parameter_order_key):
             self._param_value_map[name] = len(self._param_decls)  # pylint: disable=access-member-before-definition
-            # Override default value based on default_parameter_values if needed.
-            for cl in mro:
-                cls_name = cl.__qualname__
-                if cls_name in default_parameter_values and name in default_parameter_values[cls_name]:
-                    # Ensure that the `cl` default overrides the value only if it is not overridden
-                    # by another class below `cl` in the hierarchy.
-                    if cl != cls and cl.__dict__[name] != p:
-                        break
-                    p = _redef_param(p, default_parameter_values[cls_name][name])
-                    break
+
             self._add_parameter(name, p.data_type, p.description, default=p.default, **p.kwargs)
 
         # Allocate PCell parameters for partition regions to draw in GUI.

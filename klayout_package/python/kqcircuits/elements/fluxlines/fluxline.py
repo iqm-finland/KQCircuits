@@ -30,7 +30,7 @@ class Fluxline(Element):
     default_type = default_fluxline_type
 
     fluxline_type = Param(pdt.TypeString, "Fluxline Type", default_type, choices=fluxline_type_choices)
-    fluxline_width = Param(pdt.TypeDouble, "Fluxline width", 18, unit="μm")
+    fluxline_width = Param(pdt.TypeDouble, "Fluxline width", 20, unit="μm")
     fluxline_gap_width = Param(pdt.TypeDouble, "Fluxline gap width", 2, unit="μm")
 
     @classmethod

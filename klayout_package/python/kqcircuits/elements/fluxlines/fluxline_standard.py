@@ -19,8 +19,10 @@
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.elements.fluxlines.fluxline import Fluxline
+from kqcircuits.util.parameters import add_parameters_from
 
 
+@add_parameters_from(Fluxline, fluxline_width=18)
 class FluxlineStandard(Fluxline):
     """Fluxline variant "standard".
 

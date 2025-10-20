@@ -276,6 +276,5 @@ default_mask_parameters = {
     },
 }
 
-default_parameter_values = {}
 
 default_layer_props = str(Path(__file__).resolve().parent.parent / "layer_config" / "default_layer_props.lyp")
