@@ -21,6 +21,7 @@ from collections.abc import Sequence
 from typing import Tuple
 from tqdm import tqdm
 
+from kqcircuits.util.groundgrid import make_ground_grid_region
 from kqcircuits.util.label_polygons import get_text_polygon
 from kqcircuits.pya_resolver import pya
 from kqcircuits.defaults import (
@@ -156,6 +157,7 @@ class MaskLayout:
         self.align_to = kwargs.get("align_to", None)
         self.chip_counts = {}
         self.extra_chips_maps = kwargs.get("extra_chips_maps", [])
+        self.grid_on_covered_region = kwargs.get("grid_on_covered_region", False)
         self.chip_array_to_export = []
         self.chip_copies = {}
         # For mask name the letter I stats at x=750
@@ -614,7 +616,17 @@ class MaskLayout:
         # `covered_region_excluded_layers`
         for layer_name in layers_dict.keys():
             if layer_name not in self.covered_region_excluded_layers:
-                maskextra_cell.shapes(self.layout.layer(self.face()[layer_name])).insert(region_covered)
+                if self.grid_on_covered_region:
+                    region = make_ground_grid_region(
+                        next(region_covered.each()),
+                        pya.Region(circle_polygon((self.wafer_rad + 100) / self.layout.dbu))
+                        - pya.Region(circle_polygon((self.wafer_rad - 1700) / self.layout.dbu)),
+                        grid_step=200 / self.layout.dbu,
+                        grid_size=100 / self.layout.dbu,
+                    )
+                    maskextra_cell.shapes(self.layout.layer(self.face()[layer_name])).insert(region ^ region_covered)
+                else:
+                    maskextra_cell.shapes(self.layout.layer(self.face()[layer_name])).insert(region_covered)
 
         self.top_cell.insert(pya.DCellInstArray(maskextra_cell.cell_index(), pya.DTrans()))
 
