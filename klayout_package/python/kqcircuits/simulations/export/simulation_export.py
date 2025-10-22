@@ -22,6 +22,8 @@ from itertools import product
 from pathlib import Path
 from shutil import copytree
 from typing import Sequence
+from scipy.stats import qmc
+import numpy as np
 
 from kqcircuits.util.load_save_layout import save_layout
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
@@ -170,3 +172,86 @@ def cross_combine(simulations, solutions):
             solutions if isinstance(solutions, Sequence) else [solutions],
         )
     )
+
+
+def latin_hypercube_sampling(l_bounds, u_bounds, n, integers=True, add_edges=False):
+    """Samples parameters from d-dimensional parameter space defined by bounds using Latin Hypercube sampling.
+    Implementation for sampling either integers or floats
+    https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.qmc.LatinHypercube.html
+
+    Args:
+        l_bounds: Lower bounds for parameters
+        u_bounds: Upper bounds for parameters
+        n: Number of samples
+        integers: Boolean to check if only integer values should be generated
+        add_edges: Boolean to add also the edge points of the hypercube. Adds 2^len(l_bounds) values
+    Returns:
+        A numpy array of samples
+    """
+    assert len(l_bounds) == len(u_bounds), "Lower and upper bounds have different dimensions"
+    sampler = qmc.LatinHypercube(d=len(l_bounds))
+    if integers:
+        samples = sampler.integers(l_bounds=l_bounds, u_bounds=u_bounds, n=n)
+    else:
+        sample = sampler.random(n=n)
+        samples = qmc.scale(sample, l_bounds, u_bounds)
+    if add_edges:
+        # Pair each parameter’s lower and upper bound
+        bounds_pairs = list(zip(l_bounds, u_bounds))
+
+        # Generate all combinations of choosing either the lower or upper value
+        edge_samples = np.array(list(product(*bounds_pairs)))
+        samples = np.vstack((samples, edge_samples))
+    return samples
+
+
+def latin_hypercube_sampling_mixed_dtypes(
+    l_bounds_int, u_bounds_int, l_bounds_float, u_bounds_float, n, add_edges=False
+):
+    """Samples parameters from d-dimensional parameter space defined by bounds using Latin Hypercube sampling.
+    Implemementation for sampling combination of int and float values
+    https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.qmc.LatinHypercube.html
+
+    Args:
+        l_bounds_int: Lower bounds for parameters with int dtype
+        u_bounds_int: Upper bounds for parameters with int dtype
+        l_bounds_float: Lower bounds for parameters with float dtype
+        u_bounds_float: Upper bounds for parameters with float dtype
+        n: Number of samples
+        add_edges: Boolean to add also the edge points of the hypercube. Adds 2^len(l_bounds_int+l_bounds_float) values
+    Returns:
+        A numpy array of samples
+    """
+    samples_int = latin_hypercube_sampling(l_bounds_int, u_bounds_int, n, integers=True, add_edges=False)
+    samples_float = latin_hypercube_sampling(l_bounds_float, u_bounds_float, n, integers=False, add_edges=False)
+    samples = np.hstack((samples_int, samples_float), dtype=object)
+    if add_edges:
+        # Pair each parameter’s lower and upper bound
+        bounds_pairs = list(zip(l_bounds_int + l_bounds_float, u_bounds_int + u_bounds_float))
+
+        # Generate all combinations of choosing either the lower or upper value
+        edge_samples = np.array(list(product(*bounds_pairs)), dtype=object)
+        samples = np.vstack((samples, edge_samples))
+    return samples
+
+
+def combine_sweep_simulation(layout, sim_class, sim_parameters, keys, samples):
+    """Creates a simulation sweep from created samples. Returns a list of simulations.
+    Args:
+        layout: Layout for simulation
+        sim_class: Simulation class
+        sim_parameters: Simulation parameters which are not in the sweep
+        keys: List of parameter names corresponding to samples
+        samples: List of samples for sweep parameters
+    Returns:
+        A list of simulations
+    """
+    assert len(samples[0]) == len(keys), "Samples don't have same dimension as keys"
+    simulations = []
+    for values in samples:
+        parameters = {**sim_parameters}
+        for i, key in enumerate(keys):
+            parameters[key] = values[i]
+        parameters["name"] = _join_flat_str((sim_parameters.get("name", ""), values))
+        simulations.append(sim_class(**parameters) if layout is None else sim_class(layout, **parameters))
+    return simulations

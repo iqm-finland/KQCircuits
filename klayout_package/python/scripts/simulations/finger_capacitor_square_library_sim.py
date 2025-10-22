@@ -23,7 +23,12 @@ from pathlib import Path
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
-from kqcircuits.simulations.export.simulation_export import cross_sweep_simulation, export_simulation_oas
+from kqcircuits.simulations.export.simulation_export import (
+    cross_sweep_simulation,
+    export_simulation_oas,
+    latin_hypercube_sampling,
+    combine_sweep_simulation,
+)
 
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.simulations.post_process import PostProcess
@@ -39,6 +44,7 @@ dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
 SimClass = get_single_element_sim_class(FingerCapacitorSquare)
 
+use_latin_sampling = False
 # Simulation parameters, using multiface interdigital as starting point
 sim_parameters = {
     "name": "finger_capacitor",
@@ -87,18 +93,25 @@ layout = get_active_or_new_layout()
 
 # Cross sweep number of fingers and finger length
 simulations = []
-
-# Multi face finger (interdigital) capacitor sweeps
-simulations += cross_sweep_simulation(
-    layout,
-    SimClass,
-    sim_parameters,
-    {
-        "chip_distance": chip_distances,
-        "finger_number": finger_numbers,
-        "finger_length": finger_lengths,
-    },
-)
+if use_latin_sampling:
+    # Multi face finger (interdigital) capacitor sweeps
+    keys = ["chip_distance", "finger_number", "finger_length"]
+    l_bounds = [4, 2, 0]
+    u_bounds = [22, 8, 100]
+    samples = latin_hypercube_sampling(l_bounds, u_bounds, n=100, integers=True, add_edges=True).tolist()
+    simulations += combine_sweep_simulation(layout, SimClass, sim_parameters, keys, samples)
+else:
+    # Multi face finger (interdigital) capacitor sweeps
+    simulations += cross_sweep_simulation(
+        layout,
+        SimClass,
+        sim_parameters,
+        {
+            "chip_distance": chip_distances,
+            "finger_number": finger_numbers,
+            "finger_length": finger_lengths,
+        },
+    )
 
 # Multi face gap capacitor sweeps
 simulations += cross_sweep_simulation(
