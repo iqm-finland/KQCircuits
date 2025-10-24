@@ -120,7 +120,7 @@ def sif_common_header(
             f"Coordinate Scaling = {coordinate_scaling(json_data)}",
             f'Mesh Levels = {json_data.get("mesh_levels", 1)}',
         ]
-        + ("Discontinuous Boundary Full Angle = Logical True" if discontinuous_boundary else [])
+        + (["Discontinuous Boundary Full Angle = Logical True"] if discontinuous_boundary else [])
         + ([] if angular_frequency is None else [f"Angular Frequency = {angular_frequency}"])
         + ([f'Output File = "{output_file}"', "Binary Output = True", "Output Intervals(1) = 1"] if output_file else [])
         + ([f'Restart File = "{restart_file}"'] if restart_file else [])
@@ -1625,31 +1625,21 @@ def sif_wave_equation(
             if metal_height == 0:
                 signal_port_bc_inds = signal_bc_inds
                 signal_intersection_bc_inds = [vacuum_bc_ind]
-                material_inds = [1, 2]  # material indices hardcoded for now
             else:
-                if "silicon" in json_data["material_dict"]:
-                    substrate_bc_ind = port_part_bc_indices["silicon"]
-                else:
-                    first_material = list(json_data["material_dict"].keys())[0]
-                    logging.warning(
-                        '"silicon" not found in material dict, '
-                        f"using for AV solver intersection ports instead {first_material}"
-                    )
-                    substrate_bc_ind = port_part_bc_indices[first_material]
+                signal_port_bc_inds = [v for k, v in port_part_bc_indices.items() if "_signal_" in k]
 
-                signal_port_bc_inds = [port_part_bc_indices["signal"]]
-                signal_intersection_bc_inds = [vacuum_bc_ind, substrate_bc_ind]
-                material_inds = [1, 3]
+                substrate_bc_inds = [v for k, v in port_part_bc_indices.items() if k.startswith("substrate_")]
+                signal_intersection_bc_inds = [vacuum_bc_ind] + substrate_bc_inds
 
             for signal_ind in signal_port_bc_inds:
-                for signal_edge_bc_ind, material_ind in zip(signal_intersection_bc_inds, material_inds):
+                for signal_edge_bc_ind in signal_intersection_bc_inds:
                     conditions = [
                         f"Constraint Mode = Integer {constraint_ind}",
                         f"Intersection BC(2) = {signal_ind} {signal_edge_bc_ind}",
                         "Layer Thickness = Real $ lambda_l",
                         "Electric Transfer Coefficient = Real $ 1.0/(Z0*signal_area)",
                         "Incident Voltage = Real $ V0",
-                        f"Material = Integer {material_ind}",
+                        # f"Material = Integer {material_ind}", # Material doesn't seem to have any effect
                     ]
                     n_boundaries += 1
                     boundary_conditions += sif_block(f"Boundary Condition {n_boundaries}", conditions)

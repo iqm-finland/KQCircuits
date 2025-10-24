@@ -166,20 +166,6 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
         if name in new_tags and data.get("material") is None:
             del new_tags[name]
 
-    metal_layers = get_metal_layers(layers)
-    excitations = {d["excitation"] for d in metal_layers.values()}
-    metal_boundary_dts = set()
-    for excitation in excitations:
-        excitation_names = [n for n, d in metal_layers.items() if d["excitation"] == excitation and n in new_tags]
-        excitation_dts = [dt for n in excitation_names for dt in new_tags[n]]
-        excitation_boundary = [(d, t) for d, t in get_recursive_children(excitation_dts, True) if d == 2]
-        metal_boundary_dts.update(excitation_boundary)
-        # Add excitation boundaries and remove those from original metal layers
-        if json_data["tool"] != "epr_3d":
-            new_tags[f"excitation_{excitation}_boundary"] = excitation_boundary
-            for n in excitation_names:
-                new_tags[n] = [(d, t) for d, t in new_tags[n] if d == 3]
-
     # Modify new_tags for wave equation simulations
     edge_ports_dts = set()
     if json_data["tool"] == "wave_equation":
@@ -194,6 +180,21 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
                     if part_dts:
                         new_tags[f"{port_name}_{name}"] = part_dts
                 del new_tags[port_name]
+
+    metal_layers = get_metal_layers(layers)
+    excitations = {d["excitation"] for d in metal_layers.values()}
+    metal_boundary_dts = set()
+    for excitation in excitations:
+        excitation_names = [n for n, d in metal_layers.items() if d["excitation"] == excitation and n in new_tags]
+        excitation_dts = [dt for n in excitation_names for dt in new_tags[n]]
+        excitation_boundary = [(d, t) for d, t in get_recursive_children(excitation_dts, True) if d == 2]
+        excitation_boundary = [dt for dt in excitation_boundary if dt not in edge_ports_dts]
+        metal_boundary_dts.update(excitation_boundary)
+        # Add excitation boundaries and remove those from original metal layers
+        if json_data["tool"] != "epr_3d":
+            new_tags[f"excitation_{excitation}_boundary"] = excitation_boundary
+            for n in excitation_names:
+                new_tags[n] = [(d, t) for d, t in new_tags[n] if d == 3]
 
     # Set domain boundary as ground
     solid_dts = [(d, t) for dts in new_tags.values() for d, t in dts if d == 3]
