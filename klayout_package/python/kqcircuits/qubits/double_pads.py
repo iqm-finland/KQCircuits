@@ -230,4 +230,4 @@ class DoublePads(Qubit):
 
     @classmethod
     def get_sim_ports(cls, simulation):  # pylint: disable=unused-argument
-        return [JunctionSimPort(), WaveguideToSimPort("port_cplr", side="top")]
+        return [JunctionSimPort(floating=True), WaveguideToSimPort("port_cplr", side="top")]

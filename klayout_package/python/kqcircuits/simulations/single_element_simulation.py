@@ -112,21 +112,17 @@ def _get_build_function(
                 )
 
             elif isinstance(port, JunctionSimPort):
-                if self.separate_island_internal_ports:
-                    self.ports.append(InternalPort((port_i := port_i + 1), refp[port.refpoint], face=port.face))
-                    self.ports.append(InternalPort((port_i := port_i + 1), refp[port.other_refpoint], face=port.face))
-                else:  # Junction between the islands
-                    self.ports.append(
-                        InternalPort(
-                            (port_i := port_i + 1),
-                            *self.etched_line(refp[port.refpoint], refp[port.other_refpoint]),
-                            face=port.face,
-                            inductance=self.junction_inductance,
-                            capacitance=self.junction_capacitance,
-                            junction=True,
-                            floating=port.floating,
-                        )
+                self.ports.append(
+                    InternalPort(
+                        (port_i := port_i + 1),
+                        *self.etched_line(refp[port.refpoint], refp[port.other_refpoint]),
+                        face=port.face,
+                        inductance=self.junction_inductance,
+                        capacitance=self.junction_capacitance,
+                        junction=True,
+                        floating=port.floating,
                     )
+                )
 
     return _build_for_element_class
 
@@ -158,11 +154,6 @@ def get_single_element_sim_class(
             `simulation.epr.smooth_capacitor.py`, deembed_cross_sections['port_a']='port_amer'.
     """
     overriden_class_attributes = {
-        "separate_island_internal_ports": Param(
-            pdt.TypeBoolean,
-            "Add InternalPorts on both islands (if applicable). Use for capacitive simulations",
-            False,
-        ),
         "junction_inductance": Param(pdt.TypeList, "Junction inductance (if junction exists)", 11.497e-9, unit="H"),
         "junction_capacitance": Param(pdt.TypeList, "Junction capacitance (if junction exists)", 0.1e-15, unit="F"),
         "build": _get_build_function(

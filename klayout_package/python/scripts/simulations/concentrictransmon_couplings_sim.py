@@ -49,7 +49,6 @@ sim_parameters = {
     "box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(2000, 2000)),  # total area for simulation
     "use_ports": True,
     "use_internal_ports": True,  # wave ports are actually internal (lumped) ports instead of at the edge
-    "separate_island_internal_ports": True,
     "waveguide_length": 100,  # wave port length before terminating with InternalPort in this case
     # Nominal qubit parameters for the inherited ConcentricTransmon
     "r_inner": 110,

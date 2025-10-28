@@ -228,7 +228,7 @@ class ConcentricTransmon(Qubit):
 
     @classmethod
     def get_sim_ports(cls, simulation):
-        ports = [JunctionSimPort()]
+        ports = [JunctionSimPort(floating=True)]
         return ports + [
             WaveguideToSimPort(
                 f"port_coupler_{i+1}", side="bottom", a=simulation.couplers_a[i], b=simulation.couplers_b[i]
