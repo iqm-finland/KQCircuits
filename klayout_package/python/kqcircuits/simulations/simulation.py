@@ -1483,76 +1483,26 @@ class Simulation:
             for i, p in enumerate(points):
                 self.cell.shapes(visualisation_layer).insert(pya.DText(f"{label}_{i+1}", p.x, p.y))
 
-    def visualise_ports(self, edge_port_thickness=500):
-        """Visualise all ports in a dedicated 'simulation_ports' layer using get_port_data().
-
-        Args:
-            edge_port_thickness (float): Extra outward extension (µm) for EdgePorts to make them more visible.
-        """
-        dbu = self.layout.dbu
-        port_json = self.get_port_data()
-
-        for port in self.ports:
-            # Initialize visualise_point at the start of each iteration
-            visualise_point = None
-
-            # Try to find a matching entry in port_json
-            port_data_list = [p for p in port_json if p.get("number") == port.number]
-            if not port_data_list:
-                logging.warning(f"Port {port.number} not found in get_port_data() output, skipping visualisation.")
-                continue
-            port_data = port_data_list[0]
-
+    def visualise_ports(self):
+        """Visualise all ports in a dedicated 'simulation_ports' layer using get_port_data()."""
+        for port_data in self.get_port_data():
             # Label based on port type
-            if isinstance(port, EdgePort):
-                label = f"edge_port_{port.number}"
-            elif isinstance(port, InternalPort):
-                label = f"internal_port_{port.number}"
-            else:
-                logging.warning(f"Unsupported port type {type(port).__name__} for port {port.number}")
-                continue
+            type_label = {"EdgePort": "edge_port", "InternalPort": "internal_port"}
+            label = f"{type_label.get(port_data['type'], 'unknown_port')}_{port_data['number']}"
+            label_location = pya.DPoint(*port_data["signal_location"][:2])
 
-            # Construct 2D polygon from port_data["polygon"] (ignoring z coordinate)
-            if "polygon" in port_data and port_data["polygon"]:
-                points_2d = [pya.DPoint(p[0], p[1]) for p in port_data["polygon"]]
+            # Construct 2D projection from port_data["polygon"] (ignoring z coordinate)
+            points_2d = [pya.DPoint(*p[:2]) for p in port_data.get("polygon", [])]
 
-                if isinstance(port, EdgePort) and edge_port_thickness > 0:
-                    direction = None
-                    if port.signal_location.x == self.box.p1.x:
-                        # Port on left border of simulation box
-                        direction = pya.DPoint(-edge_port_thickness, 0)
-                    elif port.signal_location.x == self.box.p2.x:
-                        # on right border
-                        direction = pya.DPoint(edge_port_thickness, 0)
-                    elif port.signal_location.y == self.box.p1.y:
-                        # on bottom border
-                        direction = pya.DPoint(0, -edge_port_thickness)
-                    elif port.signal_location.y == self.box.p2.y:
-                        # on top border
-                        direction = pya.DPoint(0, edge_port_thickness)
+            # Expand polygon projection outwards from the simulation box in case of EdgePort
+            if port_data["type"] == "EdgePort":
+                port_height = max(p[2] for p in port_data["polygon"]) - min(p[2] for p in port_data["polygon"])
+                point_pairs = [((a - b).length(), a, b) for i, a in enumerate(points_2d) for b in points_2d[i + 1 :]]
+                distance, p0, p1 = sorted(point_pairs, key=lambda x: x[0])[-1]  # select the points furthest apart
+                normal_vector = pya.DVector(p1.y - p0.y, p0.x - p1.x) / distance
+                outward_vector = port_height * normal_vector.sprod_sign(p0 - self.box.center()) * normal_vector
+                points_2d = [p0, p1, p1 + outward_vector, p0 + outward_vector]
 
-                    if not direction:
-                        # draw
-                        poly = pya.DPolygon(points_2d)
-                    else:
-                        # Some points are duplicates when projected to 2D. Ensure you get two different points
-                        points_2d = list(set(points_2d))
-                        p1 = points_2d[0]
-                        p2 = points_2d[1]
-                        # Build a thick polygon from shifted points
-                        poly = pya.DPolygon(
-                            [
-                                p1,
-                                p2,
-                                p2 + direction,
-                                p1 + direction,
-                            ]
-                        )
-                        visualise_point = port.signal_location
-                else:
-                    poly = pya.DPolygon(points_2d)
-
-                region = pya.Region(poly.to_itype(dbu))
-                self.visualise_region(region, label, "simulation_ports", visualise_point)
-            else:
-                logging.warning(f"Port {port.number} has no polygon data in get_port_data(), skipping visualisation.")
+            # Visualize region
+            region = pya.Region(pya.DPolygon(points_2d).to_itype(self.layout.dbu))
+            self.visualise_region(region, label, "simulation_ports", label_location)
