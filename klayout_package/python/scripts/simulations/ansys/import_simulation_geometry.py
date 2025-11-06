@@ -475,9 +475,8 @@ elif ansys_tool == "q3d":
         if excitation == 0:
             for i, obj in enumerate(objs):
                 oBoundarySetup.AssignGroundNet(["NAME:Ground{}".format(i + 1), "Objects:=", [obj]])
-        elif excitation is None:
-            for i, obj in enumerate(objs):
-                oBoundarySetup.AssignFloatingNet(["NAME:Floating{}".format(i + 1), "Objects:=", [obj]])
+        elif excitation > len(data["ports"]) and data.get("use_floating_islands", False):
+            oBoundarySetup.AssignFloatingNet(["NAME:Floating{}".format(excitation), "Objects:=", objs])
         else:
             oBoundarySetup.AssignSignalNet(["NAME:Net{}".format(excitation), "Objects:=", objs])
     oBoundarySetup.AutoIdentifyNets()  # Combine Nets by conductor connections. Order: GroundNet, SignalNet, FloatingNet

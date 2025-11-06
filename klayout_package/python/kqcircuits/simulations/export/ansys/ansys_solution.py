@@ -154,11 +154,13 @@ class AnsysQ3dSolution(AnsysSolution):
     Args:
         frequency: Nominal solution frequency (has no effect on capacitance matrix at the moment).
         percent_error: Stopping criterion in Q3D simulation.
+        use_floating_islands: Use floating Net for islands with excitation larger than number of ports.
     """
 
     ansys_tool: ClassVar[str] = "q3d"
     frequency: float = 5
     percent_error: float = 1
+    use_floating_islands: bool = False
 
     def get_solution_data(self):
         """Return the solution data in dictionary form."""
@@ -170,6 +172,7 @@ class AnsysQ3dSolution(AnsysSolution):
                 "frequency": self.frequency,
                 "percent_error": self.percent_error,
             },
+            "use_floating_islands": self.use_floating_islands,
         }
 
 
