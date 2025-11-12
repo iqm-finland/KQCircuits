@@ -174,7 +174,15 @@ def cross_combine(simulations, solutions):
     )
 
 
-def latin_hypercube_sampling(l_bounds, u_bounds, n, integers=True, add_edges=False):
+def unique_rows(a):
+    if np.issubdtype(a.dtype, np.number):
+        return np.unique(a, axis=0)
+    else:
+        # Object arrays
+        return np.array(list({tuple(row) for row in a}), dtype=object)
+
+
+def latin_hypercube_sampling(l_bounds, u_bounds, n, integers=True, add_edges=False, remove_duplicates=True):
     """Samples parameters from d-dimensional parameter space defined by bounds using Latin Hypercube sampling.
     Implementation for sampling either integers or floats
     https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.qmc.LatinHypercube.html
@@ -185,13 +193,14 @@ def latin_hypercube_sampling(l_bounds, u_bounds, n, integers=True, add_edges=Fal
         n: Number of samples
         integers: Boolean to check if only integer values should be generated
         add_edges: Boolean to add also the edge points of the hypercube. Adds 2^len(l_bounds) values
+        remove_duplicates: Boolen to remove duplicate samples
     Returns:
         A numpy array of samples
     """
     assert len(l_bounds) == len(u_bounds), "Lower and upper bounds have different dimensions"
     sampler = qmc.LatinHypercube(d=len(l_bounds))
     if integers:
-        samples = sampler.integers(l_bounds=l_bounds, u_bounds=u_bounds, n=n)
+        samples = sampler.integers(l_bounds=l_bounds, u_bounds=u_bounds, n=n, endpoint=True)
     else:
         sample = sampler.random(n=n)
         samples = qmc.scale(sample, l_bounds, u_bounds)
@@ -202,6 +211,8 @@ def latin_hypercube_sampling(l_bounds, u_bounds, n, integers=True, add_edges=Fal
         # Generate all combinations of choosing either the lower or upper value
         edge_samples = np.array(list(product(*bounds_pairs)))
         samples = np.vstack((samples, edge_samples))
+    if remove_duplicates:
+        samples = unique_rows(samples)
     return samples
 
 
@@ -222,8 +233,12 @@ def latin_hypercube_sampling_mixed_dtypes(
     Returns:
         A numpy array of samples
     """
-    samples_int = latin_hypercube_sampling(l_bounds_int, u_bounds_int, n, integers=True, add_edges=False)
-    samples_float = latin_hypercube_sampling(l_bounds_float, u_bounds_float, n, integers=False, add_edges=False)
+    samples_int = latin_hypercube_sampling(
+        l_bounds_int, u_bounds_int, n, integers=True, add_edges=False, remove_duplicates=False
+    )
+    samples_float = latin_hypercube_sampling(
+        l_bounds_float, u_bounds_float, n, integers=False, add_edges=False, remove_duplicates=False
+    )
     samples = np.hstack((samples_int, samples_float), dtype=object)
     if add_edges:
         # Pair each parameter’s lower and upper bound
@@ -232,6 +247,7 @@ def latin_hypercube_sampling_mixed_dtypes(
         # Generate all combinations of choosing either the lower or upper value
         edge_samples = np.array(list(product(*bounds_pairs)), dtype=object)
         samples = np.vstack((samples, edge_samples))
+    samples = unique_rows(samples)
     return samples
 
 
