@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.export.cross_section.epr_correction_export &mdash; KQCircuits 4.9.4 documentation</title>
+  <title>kqcircuits.simulations.export.cross_section.epr_correction_export &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../../_static/documentation_options.js?v=86e8f750"></script>
+        <script src="../../../../../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/js/theme.js"></script>
@@ -1101,6 +1101,8 @@
     <span class="n">simulations</span> <span class="o">=</span> <span class="p">[</span><span class="n">sim</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">sim</span> <span class="ow">in</span> <span class="n">simulations</span><span class="p">]</span>
     <span class="n">source_sims</span><span class="p">,</span> <span class="n">source_sols</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">simulations</span><span class="p">))</span>
 
+    <span class="n">region_corrections</span> <span class="o">=</span> <span class="p">{</span><span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">source_sims</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">get_partition_regions</span><span class="p">()}</span>
+
     <span class="k">for</span> <span class="n">source_sim</span><span class="p">,</span> <span class="n">source_sol</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">source_sims</span><span class="p">,</span> <span class="n">source_sols</span><span class="p">):</span>
         <span class="n">cuts</span> <span class="o">=</span> <span class="n">correction_cuts</span><span class="p">(</span><span class="n">source_sim</span><span class="p">)</span> <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">correction_cuts</span><span class="p">)</span> <span class="k">else</span> <span class="n">correction_cuts</span>
 
@@ -1115,6 +1117,8 @@
             <span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">source_sim</span><span class="o">.</span><span class="n">get_partition_regions</span><span class="p">()</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">part_names</span><span class="p">]</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">parts</span><span class="p">:</span>
                 <span class="k">continue</span>
+
+            <span class="n">region_corrections</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">p</span><span class="p">:</span> <span class="n">key</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">part_names</span><span class="p">})</span>
 
             <span class="n">v_dims</span> <span class="o">=</span> <span class="n">get_list_of_two</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">vertical_dimensions</span><span class="p">)</span>
             <span class="n">h_dims</span> <span class="o">=</span> <span class="n">get_list_of_two</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">metal_edge_dimensions</span><span class="p">)</span>
@@ -1179,10 +1183,7 @@
                 <span class="s2">&quot;SA&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thickness&quot;</span><span class="p">:</span> <span class="n">sa_thickness</span> <span class="o">*</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="s2">&quot;eps_r&quot;</span><span class="p">:</span> <span class="n">sa_eps_r</span><span class="p">},</span>
             <span class="p">},</span>
             <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;MA&quot;</span><span class="p">,</span> <span class="s2">&quot;MS&quot;</span><span class="p">,</span> <span class="s2">&quot;SA&quot;</span><span class="p">,</span> <span class="s2">&quot;substrate&quot;</span><span class="p">,</span> <span class="s2">&quot;vacuum&quot;</span><span class="p">],</span>
-            <span class="n">region_corrections</span><span class="o">=</span><span class="p">{</span>
-                <span class="o">**</span><span class="p">{</span><span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">source_sims</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">get_partition_regions</span><span class="p">()},</span>
-                <span class="o">**</span><span class="p">{</span><span class="n">p</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">cuts</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;partition_regions&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">k</span><span class="p">])},</span>
-            <span class="p">},</span>
+            <span class="n">region_corrections</span><span class="o">=</span><span class="n">region_corrections</span><span class="p">,</span>
         <span class="p">),</span>
     <span class="p">]</span>
     <span class="k">return</span> <span class="n">correction_simulations</span><span class="p">,</span> <span class="n">post_process</span></div>

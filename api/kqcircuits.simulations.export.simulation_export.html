@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.export.simulation_export &mdash; KQCircuits 4.9.4 documentation</title>
+  <title>kqcircuits.simulations.export.simulation_export &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
@@ -18,7 +18,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=86e8f750"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -1085,6 +1085,73 @@ In case of common keys, ‘solution.’ prefix is added to Solution parameter ke
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A list of tuples containing all combinations of simulations and solutions.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_export.unique_rows">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.simulation_export.</span></span><span class="sig-name descname"><span class="pre">unique_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_export.html#unique_rows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_export.unique_rows" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_export.latin_hypercube_sampling">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.simulation_export.</span></span><span class="sig-name descname"><span class="pre">latin_hypercube_sampling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l_bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_edges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_duplicates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_export.html#latin_hypercube_sampling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_export.latin_hypercube_sampling" title="Link to this definition"></a></dt>
+<dd><p>Samples parameters from d-dimensional parameter space defined by bounds using Latin Hypercube sampling.
+Implementation for sampling either integers or floats
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.qmc.LatinHypercube.html">https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.qmc.LatinHypercube.html</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>l_bounds</strong> – Lower bounds for parameters</p></li>
+<li><p><strong>u_bounds</strong> – Upper bounds for parameters</p></li>
+<li><p><strong>n</strong> – Number of samples</p></li>
+<li><p><strong>integers</strong> – Boolean to check if only integer values should be generated</p></li>
+<li><p><strong>add_edges</strong> – Boolean to add also the edge points of the hypercube. Adds 2^len(l_bounds) values</p></li>
+<li><p><strong>remove_duplicates</strong> – Boolen to remove duplicate samples</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A numpy array of samples</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_export.latin_hypercube_sampling_mixed_dtypes">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.simulation_export.</span></span><span class="sig-name descname"><span class="pre">latin_hypercube_sampling_mixed_dtypes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l_bounds_int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_bounds_int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_bounds_float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_bounds_float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_edges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_export.html#latin_hypercube_sampling_mixed_dtypes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_export.latin_hypercube_sampling_mixed_dtypes" title="Link to this definition"></a></dt>
+<dd><p>Samples parameters from d-dimensional parameter space defined by bounds using Latin Hypercube sampling.
+Implemementation for sampling combination of int and float values
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.qmc.LatinHypercube.html">https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.qmc.LatinHypercube.html</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>l_bounds_int</strong> – Lower bounds for parameters with int dtype</p></li>
+<li><p><strong>u_bounds_int</strong> – Upper bounds for parameters with int dtype</p></li>
+<li><p><strong>l_bounds_float</strong> – Lower bounds for parameters with float dtype</p></li>
+<li><p><strong>u_bounds_float</strong> – Upper bounds for parameters with float dtype</p></li>
+<li><p><strong>n</strong> – Number of samples</p></li>
+<li><p><strong>add_edges</strong> – Boolean to add also the edge points of the hypercube. Adds 2^len(l_bounds_int+l_bounds_float) values</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A numpy array of samples</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_export.combine_sweep_simulation">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.simulation_export.</span></span><span class="sig-name descname"><span class="pre">combine_sweep_simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samples</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_export.html#combine_sweep_simulation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_export.combine_sweep_simulation" title="Link to this definition"></a></dt>
+<dd><p>Creates a simulation sweep from created samples. Returns a list of simulations.
+:param layout: Layout for simulation
+:param sim_class: Simulation class
+:param sim_parameters: Simulation parameters which are not in the sweep
+:param keys: List of parameter names corresponding to samples
+:param samples: List of samples for sweep parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of simulations</p>
 </dd>
 </dl>
 </dd></dl>

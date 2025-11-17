@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.elements.waveguide_composite &mdash; KQCircuits 4.9.4 documentation</title>
+  <title>kqcircuits.elements.waveguide_composite &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=86e8f750"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -1607,7 +1607,9 @@
 
         <span class="n">fc_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_insert_cell_and_waveguide</span><span class="p">(</span><span class="n">ind</span><span class="p">,</span> <span class="n">fc_cell</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">old_id</span><span class="si">}</span><span class="s2">_port&quot;</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">new_id</span><span class="si">}</span><span class="s2">_port&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_insert_cell_and_waveguide</span><span class="p">(</span>
+            <span class="n">ind</span><span class="p">,</span> <span class="n">fc_cell</span><span class="p">,</span> <span class="n">inst_name</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">inst_name</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">old_id</span><span class="si">}</span><span class="s2">_port&quot;</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">new_id</span><span class="si">}</span><span class="s2">_port&quot;</span>
+        <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">new_a</span><span class="p">,</span> <span class="n">new_b</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">new_id</span><span class="p">]</span>
@@ -1762,16 +1764,28 @@
 
             <span class="c1"># Use optimal corner routing</span>
             <span class="n">s</span> <span class="o">=</span> <span class="n">segment_vector</span>
-            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>  <span class="c1"># iterate at most 100 times</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>  <span class="c1"># iterate at most 1000 times</span>
                 <span class="n">_</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">vector_length_and_direction</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-                <span class="n">start_len</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">vprod</span><span class="p">(</span><span class="n">dir_start</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">d</span><span class="o">.</span><span class="n">sprod</span><span class="p">(</span><span class="n">dir_start</span><span class="p">)))</span>
-                <span class="n">end_len</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">vprod</span><span class="p">(</span><span class="n">dir_end</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">d</span><span class="o">.</span><span class="n">sprod</span><span class="p">(</span><span class="n">dir_end</span><span class="p">)))</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">start_len</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">vprod</span><span class="p">(</span><span class="n">dir_start</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">d</span><span class="o">.</span><span class="n">sprod</span><span class="p">(</span><span class="n">dir_start</span><span class="p">)))</span>
+                    <span class="n">end_len</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">vprod</span><span class="p">(</span><span class="n">dir_end</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">d</span><span class="o">.</span><span class="n">sprod</span><span class="p">(</span><span class="n">dir_end</span><span class="p">)))</span>
+                <span class="k">except</span> <span class="ne">ZeroDivisionError</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_on_cell</span><span class="p">(</span>
+                        <span class="s2">&quot;Cannot route, probably trying to make a 180 degree turn.&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wg_start_pos</span>
+                    <span class="p">)</span>
 
                 <span class="c1"># check if converged</span>
-                <span class="n">prev_s</span> <span class="o">=</span> <span class="n">s</span>
-                <span class="n">s</span> <span class="o">=</span> <span class="n">segment_vector</span> <span class="o">-</span> <span class="n">start_len</span> <span class="o">*</span> <span class="n">dir_start</span> <span class="o">-</span> <span class="n">end_len</span> <span class="o">*</span> <span class="n">dir_end</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">-</span> <span class="n">prev_s</span><span class="p">)</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">1e-5</span><span class="p">:</span>
+                <span class="n">mismatch</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">vprod</span><span class="p">(</span><span class="n">segment_vector</span> <span class="o">-</span> <span class="n">start_len</span> <span class="o">*</span> <span class="n">dir_start</span> <span class="o">-</span> <span class="n">end_len</span> <span class="o">*</span> <span class="n">dir_end</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">mismatch</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-8</span><span class="p">:</span>
                     <span class="k">return</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="n">start_len</span> <span class="o">&lt;</span> <span class="mf">0.001</span> <span class="k">else</span> <span class="n">start_len</span><span class="p">,</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="n">end_len</span> <span class="o">&lt;</span> <span class="mf">0.001</span> <span class="k">else</span> <span class="n">end_len</span>
+
+                <span class="c1"># prepare for the next iteration</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">ds</span> <span class="o">=</span> <span class="n">mismatch</span> <span class="o">*</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">-</span><span class="n">d</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">mismatch</span> <span class="o">/</span> <span class="p">(</span><span class="n">prev_mismatch</span> <span class="o">-</span> <span class="n">mismatch</span><span class="p">)</span> <span class="o">*</span> <span class="n">ds</span>
+                <span class="k">except</span> <span class="ne">ZeroDivisionError</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="n">s</span> <span class="o">+=</span> <span class="n">ds</span>
+                <span class="n">prev_mismatch</span> <span class="o">=</span> <span class="n">mismatch</span>
 
             <span class="c1"># Not converged to up here</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_on_cell</span><span class="p">(</span><span class="s2">&quot;Cannot find suitable routing using &#39;tight&#39; corners.&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wg_start_pos</span><span class="p">)</span>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.qubits.concentric_transmon &mdash; KQCircuits 4.9.4 documentation</title>
+  <title>kqcircuits.qubits.concentric_transmon &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=86e8f750"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -1231,7 +1231,7 @@
 <a class="viewcode-back" href="../../../api/kqcircuits.qubits.concentric_transmon.html#kqcircuits.qubits.concentric_transmon.ConcentricTransmon.get_sim_ports">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_sim_ports</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">simulation</span><span class="p">):</span>
-        <span class="n">ports</span> <span class="o">=</span> <span class="p">[</span><span class="n">JunctionSimPort</span><span class="p">()]</span>
+        <span class="n">ports</span> <span class="o">=</span> <span class="p">[</span><span class="n">JunctionSimPort</span><span class="p">(</span><span class="n">floating</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
         <span class="k">return</span> <span class="n">ports</span> <span class="o">+</span> <span class="p">[</span>
             <span class="n">WaveguideToSimPort</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;port_coupler_</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s2">&quot;bottom&quot;</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">couplers_a</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">b</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">couplers_b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
