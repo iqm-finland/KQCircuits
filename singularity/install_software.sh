@@ -168,6 +168,8 @@ compile_netcdf () {
 compile_hypre () {
     git clone https://github.com/hypre-space/hypre.git
     cd /opt/src/hypre/src || exit
+    # Freeze Hypre version to a commit from 3.6.2025
+    git checkout 1d841da1801c66691f72e3e914768ff32bcd3772
     ./configure --with-openmp --with-blas --with-lapack --prefix="/opt/hypre"  CC="mpicc -fPIC -O3 -march=$MARCH"
     make -j "$(nproc)"
     make install
@@ -206,8 +208,8 @@ compile_MUMPS () {
     export LD_LIBRARY_PATH="/opt/mumps/lib:$LD_LIBRARY_PATH"
 }
 
-# compile/install MMG/PARMMG
-compile_mmg_and_parmmg () {
+# compile/install MMG
+compile_mmg () {
     cd /opt/src || exit
     git clone https://github.com/MmgTools/mmg.git
     cd mmg || exit
@@ -219,6 +221,10 @@ compile_mmg_and_parmmg () {
     cmake -DCMAKE_INSTALL_PREFIX="/opt/mmg" -D CMAKE_BUILD_TYPE=RelWithDebInfo -D BUILD_SHARED_LIBS:BOOL=TRUE \
           -D MMG_INSTALL_PRIVATE_HEADERS=ON -D CMAKE_C_FLAGS="-fPIC  -g" -D CMAKE_CXX_FLAGS="-fPIC -std=c++11 -g"  ..
     make -j "$(nproc)" install
+}
+
+# compile/install PARMMG
+compile_parmmg () {
     cd /opt/src || exit
     git clone https://github.com/MmgTools/ParMmg.git
     cd ParMmg || exit
@@ -260,6 +266,7 @@ compile_csa () {
 }
 
 # and, finally, Elmer
+# Note currently compiling Elmer without Hypre, ElmerIce and ParMMG
 compile_elmer () {
     local REMOVE_SOURCE=$1
     git clone https://github.com/ElmerCSC/elmerfem.git
@@ -272,7 +279,7 @@ compile_elmer () {
             -DWITH_MPI:BOOL=TRUE \
             -DWITH_LUA:BOOL=TRUE \
             -DWITH_OpenMP:BOOL=TRUE \
-            -DWITH_ElmerIce:BOOL=TRUE \
+            -DWITH_ElmerIce:BOOL=FALSE \
             -DWITH_NETCDF:BOOL=TRUE \
             -DWITH_GridDataReader:BOOL=TRUE \
             -DNETCDF_INCLUDE_DIR="/opt/netcdf/include" \
@@ -293,7 +300,7 @@ compile_elmer () {
             -DMMG_ROOT="/opt/mmg" \
             -DMMG_LIBRARY="/opt/mmg/lib/libmmg.so" \
             -DMMG_INCLUDE_DIR="/opt/mmg/include" \
-            -DWITH_PARMMG:BOOL=TRUE \
+            -DWITH_PARMMG:BOOL=FALSE \
             -DPARMMGROOT="/opt/parmmg" \
             -DCMAKE_C_FLAGS="-O3 -fopenmp -funroll-loops -march=$MARCH" \
             -DCMAKE_Fortran_FLAGS="-O3 -fPIC -funroll-loops -march=$MARCH"
@@ -419,7 +426,8 @@ compile_netcdf
 compile_hypre
 compile_scalapack
 compile_MUMPS
-compile_mmg_and_parmmg
+compile_mmg
+#compile_parmmg
 compile_NN
 compile_csa
 compile_elmer true
