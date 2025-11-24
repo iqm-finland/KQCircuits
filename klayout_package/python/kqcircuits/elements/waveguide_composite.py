@@ -735,13 +735,14 @@ class WaveguideComposite(Element):
             s = segment_vector
             for n in range(1000):  # iterate at most 1000 times
                 _, d = vector_length_and_direction(s)
-                try:
-                    start_len = self.r * abs(d.vprod(dir_start) / (1.0 + d.sprod(dir_start)))
-                    end_len = self.r * abs(d.vprod(dir_end) / (1.0 + d.sprod(dir_end)))
-                except ZeroDivisionError:
+                start_divisor = 1.0 + d.sprod(dir_start)
+                end_divisor = 1.0 + d.sprod(dir_end)
+                if start_divisor < 1e-13 or end_divisor < 1e-13:
                     self.raise_error_on_cell(
                         "Cannot route, probably trying to make a 180 degree turn.", self._wg_start_pos
                     )
+                start_len = self.r * abs(d.vprod(dir_start)) / start_divisor
+                end_len = self.r * abs(d.vprod(dir_end)) / end_divisor
 
                 # check if converged
                 mismatch = d.vprod(segment_vector - start_len * dir_start - end_len * dir_end)
@@ -749,10 +750,13 @@ class WaveguideComposite(Element):
                     return 0.0 if start_len < 0.001 else start_len, 0.0 if end_len < 0.001 else end_len
 
                 # prepare for the next iteration
-                try:
-                    ds = mismatch * pya.DVector(-d.y, d.x) if n == 0 else mismatch / (prev_mismatch - mismatch) * ds
-                except ZeroDivisionError:
-                    break
+                if n == 0:
+                    ds = mismatch * pya.DVector(-d.y, d.x)
+                else:
+                    ds_divisor = (prev_mismatch - mismatch) / mismatch
+                    if abs(ds_divisor) < 0.1:
+                        ds_divisor = 0.1 if ds_divisor > 0 else -0.1
+                    ds /= ds_divisor
                 s += ds
                 prev_mismatch = mismatch
 
