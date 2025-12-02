@@ -734,7 +734,9 @@ class WaveguideComposite(Element):
             # Use optimal corner routing
             s = segment_vector
             for n in range(1000):  # iterate at most 1000 times
-                _, d = vector_length_and_direction(s)
+                l, d = vector_length_and_direction(s)
+                if l > 1e30:
+                    break  # s diverges, which means the iteration fails
                 start_divisor = 1.0 + d.sprod(dir_start)
                 end_divisor = 1.0 + d.sprod(dir_end)
                 if start_divisor < 1e-13 or end_divisor < 1e-13:
