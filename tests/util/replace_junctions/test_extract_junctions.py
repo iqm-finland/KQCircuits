@@ -71,33 +71,33 @@ def test_junction_entry_equality():
     t1 = pya.DCplxTrans(1, 0, False, pya.DVector(1, 2))
     t1_ = pya.DCplxTrans(1, 0, False, pya.DVector(1, 2))
     t2 = pya.DCplxTrans(1, 180, False, pya.DVector(2, 3))
-    junction_entry = JunctionEntry(Manhattan, t1, {"a": 10, "b": 6}, "qb_0", "squid")
+    junction_entry = JunctionEntry(Manhattan, t1, [t1], {"a": 10, "b": 6}, "qb_0", "squid")
     assert junction_entry == JunctionEntry(
-        Manhattan, t1_, {"b": 6, "a": 10}, "qb_0", "squid"
+        Manhattan, t1_, [t1_], {"b": 6, "a": 10}, "qb_0", "squid"
     ), "Expected these JunctionEntry objects to be considered equal"
     assert junction_entry != JunctionEntry(
-        ManhattanSingleJunction, t1, {"a": 10, "b": 6}, "qb_0", "squid"
+        ManhattanSingleJunction, t1, [t1], {"a": 10, "b": 6}, "qb_0", "squid"
     ), "JunctionEntry objects should not be considered equal if they have different type"
     assert junction_entry != JunctionEntry(
-        type(None), t1, {"a": 10, "b": 6}, "qb_0", "squid"
+        type(None), t1, [t1], {"a": 10, "b": 6}, "qb_0", "squid"
     ), "JunctionEntry objects should not be considered equal if they have different type"
     assert junction_entry != JunctionEntry(
-        Manhattan, t2, {"a": 10, "b": 6}, "qb_0", "squid"
+        Manhattan, t2, [t2], {"a": 10, "b": 6}, "qb_0", "squid"
     ), "JunctionEntry objects should not be considered equal if they have different transformation"
     assert junction_entry != JunctionEntry(
-        Manhattan, t1, {"a": 10, "b": 7}, "qb_0", "squid"
+        Manhattan, t1, [t1], {"a": 10, "b": 7}, "qb_0", "squid"
     ), "JunctionEntry objects should not be considered equal if they have different parameters"
     assert junction_entry != JunctionEntry(
-        Manhattan, t1, {"a": 10, "b": 6, "c": 0}, "qb_0", "squid"
+        Manhattan, t1, [t1], {"a": 10, "b": 6, "c": 0}, "qb_0", "squid"
     ), "JunctionEntry objects should not be considered equal if they have different parameters"
     assert junction_entry != JunctionEntry(
-        Manhattan, t1, {"b": 6}, "qb_0", "squid"
+        Manhattan, t1, [t1], {"b": 6}, "qb_0", "squid"
     ), "JunctionEntry objects should not be considered equal if they have different parameters"
     assert junction_entry != JunctionEntry(
-        Manhattan, t1, {"a": 10, "b": 6}, "qb_1", "squid"
+        Manhattan, t1, [t1], {"a": 10, "b": 6}, "qb_1", "squid"
     ), "JunctionEntry objects should not be considered equal if they have different parent name"
     assert junction_entry != JunctionEntry(
-        Manhattan, t1, {"a": 10, "b": 6}, "qb_0", "squid_1"
+        Manhattan, t1, [t1], {"a": 10, "b": 6}, "qb_0", "squid_1"
     ), "JunctionEntry objects should not be considered equal if they have different parent name"
 
 

@@ -38,9 +38,18 @@ from kqcircuits.util.library_helper import load_libraries, to_library_name
 class JunctionEntry:
     """All junction properties we want to store when extracting junctions"""
 
-    def __init__(self, class_type: type, trans: pya.DCplxTrans, parameters: Dict, parent_name: str, name: str) -> None:
+    def __init__(
+        self,
+        class_type: type,
+        trans: pya.DCplxTrans,
+        trans_path: List[pya.DCplxTrans],
+        parameters: Dict,
+        parent_name: str,
+        name: str,
+    ) -> None:
         self.type = class_type
         self.trans = trans
+        self.trans_path = trans_path
         self.parameters = parameters
         self.parent_name = parent_name
         self.name = name
@@ -246,7 +255,7 @@ def extract_junctions(top_cell: pya.Cell, tuned_junction_parameters: Dict) -> Li
     if not is_pcell:
         logging.warning("Top cell doesn't contain PCell parameter data")
 
-    def recursive_junction_search(inst, parent_name, prev_trans):
+    def recursive_junction_search(inst, parent_name, prev_trans, trans_path):
         cell = layout.cell(inst.cell_index)
         name = inst.property("id")
         trans = prev_trans * inst.dcplx_trans
@@ -305,14 +314,16 @@ def extract_junctions(top_cell: pya.Cell, tuned_junction_parameters: Dict) -> Li
                 parent_name,
                 name,
             )
-            found_junctions.append(JunctionEntry(type(junction_type), trans, params, parent_name, name))
+            found_junctions.append(
+                JunctionEntry(type(junction_type), trans, trans_path + [inst.dcplx_trans], params, parent_name, name)
+            )
         for i in cell.each_inst():
             # For pcell oas, accumulate transformation starting from root
             # For static oas, only use parent.dcplx_trans * this.dcplx_trans
-            recursive_junction_search(i, name, trans if is_pcell else prev_trans)
+            recursive_junction_search(i, name, trans if is_pcell else prev_trans, trans_path + [inst.dcplx_trans])
 
     for i in top_cell.each_inst():
-        recursive_junction_search(i, None, i.dcplx_trans)
+        recursive_junction_search(i, None, i.dcplx_trans, [])
     # Need to know face of junctions before performing chip specific transformation,
     # because we need to know for which face we need to perform the marker position test
     if found_junctions:
