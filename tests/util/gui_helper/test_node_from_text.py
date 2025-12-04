@@ -25,7 +25,7 @@ from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf import Flip
 from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter, t_cross_parameters
 from kqcircuits.elements.waveguide_coplanar_taper import WaveguideCoplanarTaper
 from kqcircuits.pya_resolver import pya
-from kqcircuits.elements.waveguide_composite import Node
+from kqcircuits.util.node import Node
 from kqcircuits.util.gui_helper import node_from_text, node_to_text
 
 

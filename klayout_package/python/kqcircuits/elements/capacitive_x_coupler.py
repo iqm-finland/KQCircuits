@@ -20,7 +20,7 @@ from kqcircuits.util.parameters import Param, pdt, add_parameters_from, pya
 from kqcircuits.elements.element import Element
 
 from kqcircuits.elements.waveguide_composite import WaveguideComposite
-from kqcircuits.elements.waveguide_composite import Node
+from kqcircuits.util.node import Node
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter
 from kqcircuits.elements.finger_capacitor_taper import FingerCapacitorTaper

@@ -21,7 +21,8 @@ import ast
 import re
 
 from kqcircuits.pya_resolver import pya
-from kqcircuits.elements.waveguide_composite import Node, WaveguideComposite
+from kqcircuits.elements.waveguide_composite import WaveguideComposite
+from kqcircuits.util.node import Node
 from kqcircuits.util.library_helper import load_libraries, element_by_class_name
 
 

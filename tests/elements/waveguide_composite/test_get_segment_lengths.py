@@ -21,7 +21,8 @@ import pytest
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.elements.waveguide_coplanar_taper import WaveguideCoplanarTaper
 from kqcircuits.pya_resolver import pya
-from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
+from kqcircuits.elements.waveguide_composite import WaveguideComposite
+from kqcircuits.util.node import Node
 from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter
 from kqcircuits.util.merge import convert_child_instances_to_static
 

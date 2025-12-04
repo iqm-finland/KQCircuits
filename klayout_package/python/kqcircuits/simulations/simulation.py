@@ -25,7 +25,8 @@ import logging
 from kqcircuits.defaults import default_faces
 from kqcircuits.elements.airbridges.airbridge import Airbridge
 from kqcircuits.elements.element import Element, resolve_face
-from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
+from kqcircuits.elements.waveguide_composite import WaveguideComposite
+from kqcircuits.util.node import Node
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.partition_region import PartitionRegion
 from kqcircuits.simulations.port import Port, InternalPort, EdgePort

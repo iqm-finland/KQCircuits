@@ -23,7 +23,8 @@ from kqcircuits.defaults import default_layers
 from kqcircuits.elements.chip_frame import ChipFrame
 from kqcircuits.elements.element import Element, get_refpoints, insert_cell_into
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
-from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
+from kqcircuits.elements.waveguide_composite import WaveguideComposite
+from kqcircuits.util.node import Node
 from kqcircuits.util.parameters import pdt
 from kqcircuits.pya_resolver import pya
 

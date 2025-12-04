@@ -22,7 +22,8 @@ import math
 from kqcircuits.chips.chip import Chip
 from kqcircuits.qubits.qubit import Qubit
 from kqcircuits.qubits.swissmon import Swissmon
-from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
+from kqcircuits.elements.waveguide_composite import WaveguideComposite
+from kqcircuits.util.node import Node
 from kqcircuits.elements.waveguide_coplanar_taper import WaveguideCoplanarTaper
 from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter, t_cross_parameters
 from kqcircuits.pya_resolver import pya

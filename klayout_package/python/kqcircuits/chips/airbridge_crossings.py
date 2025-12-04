@@ -24,7 +24,8 @@ from kqcircuits.chips.chip import Chip
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.airbridges.airbridge import Airbridge
 from kqcircuits.elements.airbridge_connection import AirbridgeConnection
-from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
+from kqcircuits.elements.waveguide_composite import WaveguideComposite
+from kqcircuits.util.node import Node
 
 
 class AirbridgeCrossings(Chip):

@@ -23,7 +23,8 @@ from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter, t_cross_parameters
 from kqcircuits.util.coupler_lib import cap_params
 from kqcircuits.util.refpoints import WaveguideToSimPort
-from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
+from kqcircuits.elements.waveguide_composite import WaveguideComposite
+from kqcircuits.util.node import Node
 from kqcircuits.elements.airbridges.airbridge import Airbridge
 from kqcircuits.elements.airbridge_connection import AirbridgeConnection
 from kqcircuits.defaults import default_airbridge_type

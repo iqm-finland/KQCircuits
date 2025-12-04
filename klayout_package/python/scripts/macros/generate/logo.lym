@@ -37,7 +37,8 @@
 from kqcircuits.pya_resolver import pya
 
 from kqcircuits.klayout_view import KLayoutView
-from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
+from kqcircuits.elements.waveguide_composite import WaveguideComposite
+from kqcircuits.util.node import Node
 
 view = KLayoutView()
 

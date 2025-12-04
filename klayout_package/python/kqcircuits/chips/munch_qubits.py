@@ -21,7 +21,8 @@ import logging
 from kqcircuits.chips.chip import Chip
 from kqcircuits.elements.airbridge_connection import AirbridgeConnection
 from kqcircuits.elements.meander import Meander
-from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
+from kqcircuits.elements.waveguide_composite import WaveguideComposite
+from kqcircuits.util.node import Node
 from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter
 from kqcircuits.pya_resolver import pya
 from kqcircuits.qubits.circular_transmon_single_island import CircularTransmonSingleIsland

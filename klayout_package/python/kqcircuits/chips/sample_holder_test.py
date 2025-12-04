@@ -22,7 +22,8 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
 
 from kqcircuits.chips.chip import Chip
-from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
+from kqcircuits.elements.waveguide_composite import WaveguideComposite
+from kqcircuits.util.node import Node
 
 
 class SampleHolderTest(Chip):

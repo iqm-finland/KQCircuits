@@ -19,7 +19,8 @@ from math import ceil
 
 from kqcircuits.chips.chip import Chip
 from kqcircuits.elements.spiral_resonator_polygon import SpiralResonatorPolygon
-from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
+from kqcircuits.elements.waveguide_composite import WaveguideComposite
+from kqcircuits.util.node import Node
 from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.coupler_lib import cap_params

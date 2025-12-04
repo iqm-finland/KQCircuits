@@ -17,9 +17,6 @@
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
 
-import ast
-from itertools import zip_longest
-from typing import Tuple
 from math import pi, tan, floor
 import logging
 
@@ -27,6 +24,7 @@ from scipy.optimize import root_scalar
 
 from kqcircuits.defaults import node_editor_layer_changing_elements
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.node import Node
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.util.library_helper import element_by_class_name
 from kqcircuits.util.geometry_helper import (
@@ -36,6 +34,7 @@ from kqcircuits.util.geometry_helper import (
     get_angle,
     get_direction,
 )
+from kqcircuits.util.gui_waveguide_editing import coerce_nodes_with_gui_path
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.airbridges.airbridge import Airbridge
 from kqcircuits.elements.airbridge_connection import AirbridgeConnection
@@ -44,155 +43,6 @@ from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_taper import WaveguideCoplanarTaper
 from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf import FlipChipConnectorRf
 from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter
-
-
-class Node:
-    """Specifies a single node of a composite waveguide.
-
-    Node is as a ``position`` and optionally other parameters. The ``element`` argument sets an Element
-    type that gets inserted in the waveguide. Typically this is an Airbridge, but any element with
-    port_a and port_b is supported.
-
-    Args:
-        position: The location of the Node. Represented as a DPoint object.
-        element: The Element type that gets inserted in the waveguide. None by default.
-        inst_name: If an instance name is supplied, the element refpoints will be exposed with that name. Default None.
-        align: Tuple with two refpoint names that correspond the input and output point of element, respectively
-               Default value (None) uses ``('port_a', 'port_b')``
-        angle: Angle of waveguide direction in degrees
-        length_before: Length of the waveguide segment before this node
-        length_increment: Waveguide length increment produced by meander before this node
-        **params: Other optional parameters for the inserted element
-
-    Returns:
-        A Node.
-
-    .. MARKERS_FOR_PNG 180,1.2
-    """
-
-    position: pya.DPoint
-    element: Element
-    inst_name: str
-    align: Tuple
-    angle: float
-    length_before: float
-    length_increment: float
-    meander_direction: int
-
-    def __init__(
-        self,
-        position,
-        element=None,
-        inst_name=None,
-        align=tuple(),
-        angle=None,
-        length_before=None,
-        length_increment=None,
-        meander_direction=1,
-        **params,
-    ):
-        if isinstance(position, tuple):
-            self.position = pya.DPoint(position[0], position[1])
-        else:
-            self.position = position
-        self.element = element
-        self.align = align
-        self.inst_name = inst_name
-        self.angle = angle
-        self.length_before = length_before
-        self.length_increment = length_increment
-        self.meander_direction = meander_direction
-        self.params = params
-
-    def __str__(self):
-        """
-        String representation of a Node, used for serialization and needed for storage in KLayout parameters.
-
-        The corresponding deserialization is implemented in `Node.deserialize`.
-        """
-
-        txt = f"{self.position.x}, {self.position.y}"
-        if self.element is not None:
-            txt += f", '{self.element.__name__}'"
-
-        magic_params = {}
-        if self.align:
-            magic_params["align"] = self.align
-        if self.inst_name:
-            magic_params["inst_name"] = self.inst_name
-        if self.angle is not None:
-            magic_params["angle"] = self.angle
-        if self.length_before is not None:
-            magic_params["length_before"] = self.length_before
-        if self.length_increment is not None:
-            magic_params["length_increment"] = self.length_increment
-        if self.meander_direction != 1:
-            magic_params["meander_direction"] = self.meander_direction
-
-        all_params = {**self.params, **magic_params}
-        if all_params:
-            for pn, pv in all_params.items():
-                if isinstance(pv, pya.DPoint):  # encode DPoint as tuple
-                    all_params[pn] = (pv.x, pv.y)
-            txt += f", {all_params}"
-        return "(" + txt + ")"
-
-    @classmethod
-    def deserialize(cls, node):
-        """
-        Create a Node object from a serialized form, such that ``from_serialized(ast.literal_eval(str(node_object)))``
-        returns an equivalent copy of ``node_obj``.
-
-        Args:
-            node: serialized node, consisting of a tuple ``(x, y, element_name, params)``, where ``x`` and ``y`` are the
-                node coordinates. The string ``element_name`` and dict ``params`` are optional.
-
-        Returns: a Node
-
-        """
-        x, y = float(node[0]), float(node[1])
-        element = None
-        params = {}
-        if len(node) > 2:
-            if isinstance(node[2], dict):
-                params = node[2]
-            else:
-                element = node[2]
-        if len(node) > 3:
-            params = node[3]
-
-        if element is not None:
-            if element in globals():
-                element = globals()[element]
-            else:
-                element = element_by_class_name(element)
-
-        # re-create DPoint from tuple
-        magic_params = ("align", "inst_name", "angle")
-        for pn, pv in params.items():
-            if isinstance(pv, tuple) and pn not in magic_params:
-                if len(pv) < 2:
-                    raise ValueError(f"Point parameter {pn} should have two elements")
-                params[pn] = pya.DPoint(float(pv[0]), float(pv[1]))
-
-        return cls(pya.DPoint(x, y), element, **params)
-
-    @staticmethod
-    def nodes_from_string(nodes):
-        """Converts the human readable text representation of Nodes to an actual Node object list.
-
-        Needed for storage in KLayout parameters. The string has to conform to a specific format:
-        `(x, y, class_str, parameter_dict)`. For example `(0, 500, 'Airbridge', {'n_bridges': 2})`,
-        see also the `Node.__str__` method. Empty class_str or parameter_dict may be omitted.
-
-        Returns:
-            list of Node objects
-        """
-
-        nlas = ", ".join(nodes) if isinstance(nodes, list) else nodes
-        node_list = ast.literal_eval(nlas + ",")
-
-        return [Node.deserialize(node) for node in node_list]
 
 
 @add_parameters_from(WaveguideCoplanarTaper, taper_length=100)
@@ -401,56 +251,14 @@ class WaveguideComposite(Element):
 
     def coerce_parameters_impl(self):
         if self.enable_gui_editing:
-            nodes = Node.nodes_from_string(self.nodes)
-
-            # If gui_path was edited by the user, it is now different from gui_path_shadow. Detect changes
-            changed = self.gui_path != self.gui_path_shadow
-
-            if changed:
-                new_points = list(self.gui_path.each_point())
-                old_points = list(self.gui_path_shadow.each_point())
-
-                length_change = len(new_points) - len(old_points)
-                if length_change == 0:
-                    # One or more points were moved; update node positions of the moved points
-                    for node, new_position, old_position in zip(nodes, new_points, old_points):
-                        if new_position != old_position:
-                            new_position = self.snap_point(new_position)
-                            node.position = new_position
-                    self.nodes = [str(node) for node in nodes]
-                elif length_change == 1:
-                    # One node was added. Figure out which node it was.
-                    added_index = None
-                    added_point = None
-                    for i, (new_point, old_point) in enumerate(zip_longest(new_points, old_points)):
-                        if old_point is None or new_point != old_point:
-                            added_index = i
-                            added_point = new_point
-                            break
-
-                    if added_index is not None:
-                        nodes.insert(added_index, Node(added_point))
-                        self.nodes = [str(node) for node in nodes]
-                elif length_change < 0 and self.gui_path.num_points() >= 2:
-                    # One or more points deleted; delete corresponding nodes. We require at least two remaining nodes.
-                    remaining_indices = []
-                    new_indices = []
-
-                    for i, old_point in enumerate(old_points):
-                        if old_point in new_points:
-                            remaining_indices.append(i)
-                            new_indices.append(new_points.index(old_point))
-
-                    # Verify we found the right number of remaining indices, and the order is correct
-                    new_indices_monotonic = all(i < j for i, j in zip(new_indices, new_indices[1:]))
-                    if len(remaining_indices) == len(new_points) and new_indices_monotonic:
-                        nodes = [nodes[i] for i in remaining_indices]
-                        self.nodes = [str(node) for node in nodes]
-
-            # After coerce the gui_path and gui_path_shadow should both match the nodes.
-            new_path = pya.DPath([node.position for node in nodes], 1)
-            # Force rounding to integer database units since the KLayout Partial tool also rounds to database units.
-            new_path = new_path.to_itype(self.layout.dbu).to_dtype(self.layout.dbu)
+            new_nodes, new_path = coerce_nodes_with_gui_path(
+                Node.nodes_from_string(self.nodes),
+                self.gui_path,
+                self.gui_path_shadow,
+                self.snap_point,
+                self.layout.dbu,
+            )
+            self.nodes = [str(node) for node in new_nodes]
             self.gui_path = new_path
             self.gui_path_shadow = new_path
         else:

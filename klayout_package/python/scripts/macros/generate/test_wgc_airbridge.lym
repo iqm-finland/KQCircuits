@@ -35,7 +35,8 @@
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
 from kqcircuits.klayout_view import KLayoutView
-from kqcircuits.elements.waveguide_composite import Node, WaveguideComposite
+from kqcircuits.elements.waveguide_composite import WaveguideComposite
+from kqcircuits.util.node import Node
 from kqcircuits.elements.airbridges.airbridge import Airbridge
 
 

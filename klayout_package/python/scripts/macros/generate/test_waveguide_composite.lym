@@ -38,7 +38,8 @@
 import pya
 
 from kqcircuits.klayout_view import KLayoutView
-from kqcircuits.elements.waveguide_composite import Node, WaveguideComposite
+from kqcircuits.elements.waveguide_composite import WaveguideComposite
+from kqcircuits.util.node import Node
 from kqcircuits.elements.airbridges.airbridge import Airbridge
 from kqcircuits.elements.airbridge_connection import AirbridgeConnection
 from kqcircuits.elements.waveguide_coplanar_taper import WaveguideCoplanarTaper

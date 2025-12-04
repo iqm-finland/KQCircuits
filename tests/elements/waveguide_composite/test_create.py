@@ -19,7 +19,8 @@ import pytest
 
 from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter, t_cross_parameters
 from kqcircuits.pya_resolver import pya
-from kqcircuits.elements.waveguide_composite import Node, WaveguideComposite
+from kqcircuits.elements.waveguide_composite import WaveguideComposite
+from kqcircuits.util.node import Node
 from kqcircuits.elements.airbridges.airbridge import Airbridge
 from kqcircuits.elements.airbridge_connection import AirbridgeConnection
 from kqcircuits.elements.airbridges.airbridge_rectangular import AirbridgeRectangular

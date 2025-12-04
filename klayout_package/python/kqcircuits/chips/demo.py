@@ -26,7 +26,8 @@ from kqcircuits.elements.finger_capacitor_taper import FingerCapacitorTaper
 from kqcircuits.elements.meander import Meander
 from kqcircuits.qubits.swissmon import Swissmon
 from kqcircuits.elements.airbridge_connection import AirbridgeConnection
-from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
+from kqcircuits.elements.waveguide_composite import WaveguideComposite
+from kqcircuits.util.node import Node
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter, t_cross_parameters
 from kqcircuits.test_structures.junction_test_pads.junction_test_pads import JunctionTestPads
