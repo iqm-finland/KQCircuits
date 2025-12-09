@@ -656,6 +656,7 @@ class WaveguideComposite(Element):
                     "start_point": [meander_start.x, meander_start.y],
                     "end_point": [meander_end.x, meander_end.y],
                     "meander_direction": node1.meander_direction,
+                    "airbridge_type": self.airbridge_type,
                 }
 
                 cell_inst, _ = self.insert_cell(Meander, **params)

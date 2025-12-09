@@ -32,6 +32,7 @@ from kqcircuits.util.geometry_helper import vector_length_and_direction, get_ang
 
 
 @add_parameters_from(WaveguideCoplanarStraight, "ground_grid_in_trace")
+@add_parameters_from(Airbridge, "airbridge_type")
 class Meander(Element):
     """The PCell declaration for a meandering waveguide.
 
@@ -158,7 +159,9 @@ class Meander(Element):
         """
 
         def insert_bridge(position, angle):
-            self.insert_cell(Airbridge, trans * pya.DCplxTrans(1, angle, False, position))
+            self.insert_cell(
+                Airbridge, trans * pya.DCplxTrans(1, angle, False, position), airbridge_type=self.airbridge_type
+            )
 
         bridge_separation = self.length / (self.n_bridges + 1)
         dist_to_next = bridge_separation
