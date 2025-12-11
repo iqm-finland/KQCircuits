@@ -144,10 +144,6 @@ class DoublePads(Qubit):
             0, self.squid_offset - squid_height / 2 - taper_height - float(self.island2_extent[1]) / 2
         )
 
-        # Now actually add SQUID
-        self.refpoints["junction1"] = pya.DPoint(0, squid_height / 2.0)
-        self.refpoints["junction2"] = pya.DPoint(0, -squid_height / 2.0)
-
     def _build_coupler(self, first_island_top_edge):
         coupler_top_edge = first_island_top_edge + self.coupler_offset + float(self.coupler_extent[1])
         coupler_polygon = pya.DPolygon(
@@ -230,4 +226,4 @@ class DoublePads(Qubit):
 
     @classmethod
     def get_sim_ports(cls, simulation):  # pylint: disable=unused-argument
-        return [JunctionSimPort(floating=True), WaveguideToSimPort("port_cplr", side="top")]
+        return [JunctionSimPort(floating=True), WaveguideToSimPort("port_cplr", side="top", a=simulation.coupler_a)]

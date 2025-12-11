@@ -25,6 +25,7 @@ from kqcircuits.simulations.epr.util import (
     EPRTarget,
     get_mer_z,
     create_bulk_and_mer_partition_regions,
+    is_flip_chip,
 )
 from kqcircuits.simulations.partition_region import PartitionRegion
 from kqcircuits.simulations.simulation import Simulation
@@ -39,13 +40,6 @@ def _has_waveguides(simulation):
     if in_gui(simulation):
         return False
     return simulation.fixed_length > 0 or simulation.waveguide_length > 0 or not simulation.use_internal_ports
-
-
-def _is_flip_chip(simulation):
-    """Determines if the geometry consists of multiple substrate layers"""
-    if in_gui(simulation):
-        return True
-    return len(simulation.face_stack) > int(simulation.lower_box_height > 0) + 1
 
 
 def _waveguide_end_dist(simulation):
@@ -210,7 +204,7 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
     result += _init_part_reg("2gap", outer_gap_region)
     result += _init_part_reg(f"{simulation.face_ids[0]}complement", None)
 
-    if _is_flip_chip(simulation):
+    if is_flip_chip(simulation):
         if simulation.etch_opposite_face:
             result += _init_part_reg(f"{simulation.face_ids[1]}complement", None, bulk=False, face=1)
         result += _init_part_reg(f"{simulation.face_ids[1]}complement", None, mer=False, face=1)
@@ -229,7 +223,6 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
 
     z_me_b = get_mer_z(simulation, simulation.face_ids[0])
     r_tot = simulation.r_outer + simulation.ground_gap
-    is_flip_chip = _is_flip_chip(simulation)
 
     a2, b2 = eval_a2(simulation), eval_b2(simulation)
 
@@ -432,7 +425,7 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
         "boundary_conditions": {"xmax": {"potential": 1}},
     }
 
-    if is_flip_chip and simulation.etch_opposite_face:
+    if is_flip_chip(simulation) and simulation.etch_opposite_face:
         cut_center = (
             center
             + (simulation.r_outer + simulation.ground_gap + simulation.etch_opposite_face_margin) * cut_unit_vector

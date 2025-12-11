@@ -190,6 +190,9 @@ class CutSimulation(CrossSectionSimulation):
                     logging.warning(f"The region_map term {definition} is ignored due to unsupported type.")
 
             regions[part].merge()
+            if regions[part].is_empty():
+                logging.warning(f'Partition region "{part}" in 2D CutSimulation "{self.name}" is empty.')
+
         return regions
 
     def apply_partition_regions(self, regions: dict[str, pya.Region]):

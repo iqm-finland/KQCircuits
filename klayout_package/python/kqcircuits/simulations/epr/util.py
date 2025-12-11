@@ -53,6 +53,13 @@ def get_mer_z(element: EPRTarget, face_base: str) -> float:
     return z_levels[face_base][0]
 
 
+def is_flip_chip(element: EPRTarget):
+    """Determines if the geometry consists of multiple substrate layers"""
+    if in_gui(element):
+        return True
+    return len(element.face_stack) > int(element.lower_box_height > 0) + 1
+
+
 def extract_child_simulation(
     simulation: EPRTarget,
     refpoint_prefix: str | None = None,
