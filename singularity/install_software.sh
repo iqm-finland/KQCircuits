@@ -199,7 +199,7 @@ compile_MUMPS () {
     cp /opt/Makefile.inc ./
     # this hack is needed because include directory is again wrongly set up
     ln -sf /usr/include /include
-    make -j "$(nproc)"
+    make all -j "$(nproc)"
     mkdir /opt/mumps
     mv lib /opt/mumps
     mv include /opt/mumps
