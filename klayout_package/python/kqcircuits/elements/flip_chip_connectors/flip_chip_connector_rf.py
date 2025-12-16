@@ -89,8 +89,9 @@ class FlipChipConnectorRf(Element):
                         self.connector_a,
                     )
 
-                # Subtract input trace with possible rotation
-                region -= trace(0, a, -w / 2).transformed(trace_itrans)
+                # Subtract input trace with possible rotation.
+                # Substract extra 1 um to make round connectors work for arbitrary angles
+                region -= trace(0, a, -w / 2 - 1).transformed(trace_itrans)
 
                 # Subtract trace connecting the series bumps
                 region -= trace(-bumps_length / 2, a, bumps_length)
