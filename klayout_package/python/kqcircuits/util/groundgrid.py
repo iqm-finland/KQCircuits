@@ -27,6 +27,7 @@ def insert_ground_grid(
     protection: pya.Region | pya.RecursiveShapeIterator,
     grid_step: int,
     grid_size: int,
+    grid_offset: int = 0,
 ):
     """Generates ground grid as shapes in a target cell, without cell hierarchy.
     This function uses integer database units for all inputs.
@@ -38,8 +39,11 @@ def insert_ground_grid(
         protection: Region to avoid when filling grid
         grid_step: distance between grid rectangles
         grid_size: size of grid rectangles
+        grid_offset: Value between 0 (inclusive) and grid_step/grid_size (exclusive) to place grid rectangle.
+            0 (default) for bottom left of grid_step * grid_step tile, increasing integer value places rectangle
+            further up and right. Ensures multiple grids don't overlap.
     """
-    _, grid_cell = _make_ground_grid_cell(target_layer, grid_area, protection, grid_step, grid_size)
+    _, grid_cell = _make_ground_grid_cell(target_layer, grid_area, protection, grid_step, grid_size, grid_offset)
 
     # Copy shapes from temporary layout to the target cell. This flattens the instances of ``grid_element_cell``.
     cm = pya.CellMapping()
@@ -48,7 +52,11 @@ def insert_ground_grid(
 
 
 def make_ground_grid_region(
-    grid_area: pya.Box, protection: pya.Region | pya.RecursiveShapeIterator, grid_step: int, grid_size: int
+    grid_area: pya.Box,
+    protection: pya.Region | pya.RecursiveShapeIterator,
+    grid_step: int,
+    grid_size: int,
+    grid_offset: int = 0,
 ) -> pya.Region:
     """Returns ground grid as a ``Region``. This function uses integer database units for all inputs.
 
@@ -60,11 +68,14 @@ def make_ground_grid_region(
         protection: Region to avoid when filling grid
         grid_step: distance between grid rectangles
         grid_size: size of grid rectangles
+        grid_offset: Value between 0 (inclusive) and grid_step/grid_size (exclusive) to place grid rectangle.
+            0 (default) for bottom left of grid_step * grid_step tile, increasing integer value places rectangle
+            further up and right. Ensures multiple grids don't overlap.
 
     Returns: a Region containing the ground grid
     """
     dummy_layer = pya.LayerInfo(1, 0)
-    layout, grid_cell = _make_ground_grid_cell(dummy_layer, grid_area, protection, grid_step, grid_size)
+    layout, grid_cell = _make_ground_grid_cell(dummy_layer, grid_area, protection, grid_step, grid_size, grid_offset)
     grid_region = pya.Region(grid_cell.begin_shapes_rec(layout.layer(dummy_layer)))
     grid_region.merge()  # Ensure the RecursiveShapeIterator is fully iterated over before we discard ``layout``
     return grid_region
@@ -76,6 +87,7 @@ def _make_ground_grid_cell(
     protection: pya.Region | pya.RecursiveShapeIterator,
     grid_step: int,
     grid_size: int,
+    grid_offset: int,
 ) -> tuple[pya.Layout, pya.Cell]:
     """Generates ground grid as cell instances in a new cell in a new layout. The returned ``cell`` contains a child
     cell instance for each grid cell element, and should generally be flattened to avoid having too many cell instances.
@@ -90,6 +102,9 @@ def _make_ground_grid_cell(
         protection: Region to avoid when filling grid
         grid_step: distance between grid rectangles
         grid_size: size of grid rectangles
+        grid_offset: Value between 0 (inclusive) and grid_step/grid_size (exclusive) to place grid rectangle.
+            0 (default) for bottom left of grid_step * grid_step tile, increasing integer value places rectangle
+            further up and right. Ensures multiple grids don't overlap.
 
     Returns: tuple ``(layout, cell)`` containing a new ``Layout`` and ``Cell``.
     """
@@ -101,17 +116,23 @@ def _make_ground_grid_cell(
 
     # Create a cell with a single ground grid square
     grid_element_cell = layout.create_cell("grid_element")
-    grid_element_cell.shapes(layout.layer(target_layer)).insert(pya.Box(0, 0, grid_size, grid_size))
+    grid_rectangle = pya.Box(
+        grid_offset * grid_size,
+        grid_offset * grid_size,
+        (grid_offset + 1) * grid_size,
+        (grid_offset + 1) * grid_size,
+    )
+    grid_element_cell.shapes(layout.layer(target_layer)).insert(grid_rectangle)
 
     # Generate the full ground grid as instances of ``grid_element_cell`` in a new cell
     grid_cell = layout.create_cell("grid")
     grid_cell.fill_region(
         region_with_ground_grid,
         grid_element_cell.cell_index(),
-        pya.Box(0, 0, grid_size, grid_size),
+        grid_rectangle,
         pya.Vector(grid_step, 0),
         pya.Vector(0, grid_step),
-        pya.Point(0, 0),
+        pya.Point(grid_offset * grid_size, grid_offset * grid_size),
     )
 
     return layout, grid_cell
