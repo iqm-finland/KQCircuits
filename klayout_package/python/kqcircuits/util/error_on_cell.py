@@ -20,42 +20,68 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.util.instance_hierarchy_helpers import formatted_cell_instance_hierarchy, get_cell_instance_hierarchy
 
 
-def find_cells_with_error(layout: pya.Layout) -> list[tuple[int, str, pya.DPoint]]:
+def all_cell_parents(layout: pya.Layout, cell: pya.Cell) -> list[int]:
+    """Finds all parent cell indices of a given cell, including cell itself
+
+    Args:
+        layout: The layout
+        cell: The cell to find parents of
+
+    Returns: list of cell indices of parent cells, where the first element is always ``cell`` itself.
+    """
+    to_do = list(cell.each_parent_cell())
+    result = [cell.cell_index()]
+    while len(to_do) > 0:
+        c = to_do.pop(0)
+        result.append(c)
+        to_do.extend(layout.cell(c).each_parent_cell())
+    return result
+
+
+def find_cells_with_error(
+    layout: pya.Layout, parent_cell_index: int | None = None
+) -> list[tuple[int, str, pya.DPoint]]:
     """Find cell indices and error messages for all cells in the layout that have called the ``raise_error_on_cell``
     method.
 
     Args:
         layout (pya.Layout): The layout.
+        parent_cell_index: if not None, return only errors where the given cell index is a parent
 
     Returns: List of (cell_index, error_message, error_position) tuples.
     """
     # Cells with errors have a TEXT cell instance inside them, which has the error message set as instance property.
+    if parent_cell_index is not None and not layout.is_valid_cell_index(parent_cell_index):
+        raise ValueError("parent_cell_index does not exist in the layout")
+
     result = []
     for cell in layout.each_cell():
         for inst in cell.each_inst():
             error_message = inst.property("error_on_cell")
             if error_message is not None:
-                error_position = inst.property("error_on_cell_position")
-                if error_position is not None:
-                    x, y = map(float, error_position.split(","))
-                else:
-                    x, y = 0.0, 0.0
-                position = pya.DPoint(x, y)
-                result.append((cell.cell_index(), error_message, position))
-                continue  # No need to search any remaining instances
+                if parent_cell_index is None or parent_cell_index in all_cell_parents(layout, cell):
+                    error_position = inst.property("error_on_cell_position")
+                    if error_position is not None:
+                        x, y = map(float, error_position.split(","))
+                    else:
+                        x, y = 0.0, 0.0
+                    position = pya.DPoint(x, y)
+                    result.append((cell.cell_index(), error_message, position))
+                    continue  # No need to search any remaining instances
     return result
 
 
-def formatted_errors_on_cells(layout: pya.Layout) -> str:
+def formatted_errors_on_cells(layout: pya.Layout, parent_cell_index: int | None = None) -> str:
     """Generate a formatted string describing all errors raised on cells and where in the cell hierarchy these appear.
 
     Args:
-        layout (pya.Layout): The layout
+        layout: The layout
+        parent_cell_index: if not None, include only errors where the given cell index is a parent
 
     Returns: Formatted multiline string
     """
     result = ""
-    for cell_index, error_message, error_position in find_cells_with_error(layout):
+    for cell_index, error_message, error_position in find_cells_with_error(layout, parent_cell_index):
         instance_data = get_cell_instance_hierarchy(layout, cell_index)
         result += f"{error_message}\n"
         for inst_data in instance_data:
