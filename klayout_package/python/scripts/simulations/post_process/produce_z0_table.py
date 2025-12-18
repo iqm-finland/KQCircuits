@@ -16,7 +16,7 @@
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 """
-Produce table containing waveguide parameters Cs, Ls, and Z0 terms from cross section results
+Produce table containing waveguide parameters Cs, Ls, Z0, and c_eff from cross-section results
 """
 
 import os
@@ -40,6 +40,11 @@ if result_files:
         if not (cs and ls):
             print(f"'Cs' and/or 'Ls' not found in the result file {result_file}")
             continue
-        matrix[key] = {"Cs": cs[0][0], "Ls": ls[0][0], "Z0": sqrt(ls[0][0] / cs[0][0])}
+        matrix[key] = {
+            "Cs": cs[0][0],
+            "Ls": ls[0][0],
+            "Z0": sqrt(ls[0][0] / cs[0][0]),
+            "c_eff": 1.0 / sqrt(ls[0][0] * cs[0][0]),
+        }
 
     tabulate_into_csv(f"{os.path.basename(os.path.abspath(path))}_Z0.csv", matrix, parameters, parameter_values)
