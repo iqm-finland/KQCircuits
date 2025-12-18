@@ -211,33 +211,46 @@ def export_mask(export_dir, layer_name, mask_layout, mask_set):
         layer_name = layer_name[1:]
         mirror = True
 
-    top_cell = mask_layout.top_cell
-    layout = top_cell.layout()
+    cell_to_export = mask_layout.top_cell
+    layout = cell_to_export.layout()
     layer_info = resolve_default_layer_info(layer_name, mask_layout.face_id)
     layer = layout.layer(layer_info)
     tmp_layer = layout.layer()
 
     if invert:
-        wafer = pya.Region(top_cell.begin_shapes_rec(layer)).merged()
+        # TODO: collecting merged region of some layer and inverting it is slow,
+        # if it's a full wafer with ground grid. Consider some approach similar to mirror
+        wafer = pya.Region(cell_to_export.begin_shapes_rec(layer)).merged()
         disc = pya.Region(circle_polygon(mask_layout.wafer_rad).to_itype(layout.dbu))
         layout.copy_layer(layer, tmp_layer)
         layout.clear_layer(layer)
-        top_cell.shapes(layer).insert(wafer ^ disc)
+        cell_to_export.shapes(layer).insert(wafer ^ disc)
 
     if mirror:
-        wafer = pya.Region(top_cell.begin_shapes_rec(layer)).merged()
-        layout.copy_layer(layer, tmp_layer)
-        layout.clear_layer(layer)
-        top_cell.shapes(layer).insert(wafer.transformed(pya.Trans(2, True, 0, 0)))
+        # Copying shapes to separate cell, then applying mirror transformation to
+        # entire cell is faster than collecting merged region.
+        # Another option is to copy cell shapes into a separate temporary layout.
+        tmp_cell = layout.create_cell("tmp_cell")
+        cm = pya.CellMapping()
+        cm.for_single_cell(tmp_cell, cell_to_export)
+        lm = pya.LayerMapping()
+        lm.map(layer, layer)
+
+        tmp_cell.copy_tree_shapes(cell_to_export, cm, lm)
+        tmp_cell.transform(pya.Trans(2, True, 0, 0))
+        cell_to_export = tmp_cell
 
     layers_to_export = {layer_info.name: layer}
     path = export_dir / (get_mask_layout_full_name(mask_set, mask_layout) + f"-{layer_info.name}.oas")
-    _export_cell(path, top_cell, layers_to_export)
+    _export_cell(path, cell_to_export, layers_to_export)
 
     if invert:
         layout.clear_layer(layer)
         layout.copy_layer(tmp_layer, layer)
     layout.delete_layer(tmp_layer)
+    if mirror:
+        # Delete temporary cell created for mirroring
+        layout.delete_cell(tmp_cell.cell_index())
 
 
 def export_docs(mask_set, filename="Mask_Documentation.md"):
