@@ -230,7 +230,7 @@ def export_mask(export_dir, layer_name, mask_layout, mask_set):
         # Copying shapes to separate cell, then applying mirror transformation to
         # entire cell is faster than collecting merged region.
         # Another option is to copy cell shapes into a separate temporary layout.
-        tmp_cell = layout.create_cell("tmp_cell")
+        tmp_cell = layout.create_cell(mask_layout.top_cell.name)
         cm = pya.CellMapping()
         cm.for_single_cell(tmp_cell, cell_to_export)
         lm = pya.LayerMapping()
