@@ -471,7 +471,6 @@
 </ul>
 </li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">kqcircuits.elements.waveguide_composite</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#kqcircuits.elements.waveguide_composite.Node"><code class="docutils literal notranslate"><span class="pre">Node</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#kqcircuits.elements.waveguide_composite.WaveguideComposite"><code class="docutils literal notranslate"><span class="pre">WaveguideComposite</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#kqcircuits.elements.waveguide_composite.produce_fixed_length_bend"><code class="docutils literal notranslate"><span class="pre">produce_fixed_length_bend()</span></code></a></li>
 </ul>
@@ -803,6 +802,10 @@
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.gui_helper.html#kqcircuits.util.gui_helper.get_valid_node_elements"><code class="docutils literal notranslate"><span class="pre">get_valid_node_elements()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.gui_waveguide_editing.html">kqcircuits.util.gui_waveguide_editing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.gui_waveguide_editing.html#kqcircuits.util.gui_waveguide_editing.coerce_nodes_with_gui_path"><code class="docutils literal notranslate"><span class="pre">coerce_nodes_with_gui_path()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.import_helper.html">kqcircuits.util.import_helper</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.import_helper.html#kqcircuits.util.import_helper.module_from_file"><code class="docutils literal notranslate"><span class="pre">module_from_file()</span></code></a></li>
 </ul>
@@ -865,6 +868,10 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.netlist_graph.html#kqcircuits.util.netlist_graph.network_as_graph"><code class="docutils literal notranslate"><span class="pre">network_as_graph()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.netlist_graph.html#kqcircuits.util.netlist_graph.draw_graph"><code class="docutils literal notranslate"><span class="pre">draw_graph()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.node.html">kqcircuits.util.node</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.node.html#kqcircuits.util.node.Node"><code class="docutils literal notranslate"><span class="pre">Node</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.parameters.html">kqcircuits.util.parameters</a><ul>
@@ -995,102 +1002,6 @@
              
   <section id="module-kqcircuits.elements.waveguide_composite">
 <span id="kqcircuits-elements-waveguide-composite"></span><h1>kqcircuits.elements.waveguide_composite<a class="headerlink" href="#module-kqcircuits.elements.waveguide_composite" title="Link to this heading"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="kqcircuits.elements.waveguide_composite.Node">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.elements.waveguide_composite.</span></span><span class="sig-name descname"><span class="pre">Node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inst_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length_before</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length_increment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meander_direction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_composite.html#Node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.Node" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Specifies a single node of a composite waveguide.</p>
-<p>Node is as a <code class="docutils literal notranslate"><span class="pre">position</span></code> and optionally other parameters. The <code class="docutils literal notranslate"><span class="pre">element</span></code> argument sets an Element
-type that gets inserted in the waveguide. Typically this is an Airbridge, but any element with
-port_a and port_b is supported.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>position</strong> – The location of the Node. Represented as a DPoint object.</p></li>
-<li><p><strong>element</strong> – The Element type that gets inserted in the waveguide. None by default.</p></li>
-<li><p><strong>inst_name</strong> – If an instance name is supplied, the element refpoints will be exposed with that name. Default None.</p></li>
-<li><p><strong>align</strong> – Tuple with two refpoint names that correspond the input and output point of element, respectively
-Default value (None) uses <code class="docutils literal notranslate"><span class="pre">('port_a',</span> <span class="pre">'port_b')</span></code></p></li>
-<li><p><strong>angle</strong> – Angle of waveguide direction in degrees</p></li>
-<li><p><strong>length_before</strong> – Length of the waveguide segment before this node</p></li>
-<li><p><strong>length_increment</strong> – Waveguide length increment produced by meander before this node</p></li>
-<li><p><strong>**params</strong> – Other optional parameters for the inserted element</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A Node.</p>
-</dd>
-</dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="kqcircuits.elements.waveguide_composite.Node.position">
-<span class="sig-name descname"><span class="pre">position</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DPoint</span></em><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.Node.position" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="kqcircuits.elements.waveguide_composite.Node.element">
-<span class="sig-name descname"><span class="pre">element</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><span class="pre">Element</span></a></em><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.Node.element" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="kqcircuits.elements.waveguide_composite.Node.align">
-<span class="sig-name descname"><span class="pre">align</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span></em><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.Node.align" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="kqcircuits.elements.waveguide_composite.Node.inst_name">
-<span class="sig-name descname"><span class="pre">inst_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.Node.inst_name" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="kqcircuits.elements.waveguide_composite.Node.angle">
-<span class="sig-name descname"><span class="pre">angle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.Node.angle" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="kqcircuits.elements.waveguide_composite.Node.length_before">
-<span class="sig-name descname"><span class="pre">length_before</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.Node.length_before" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="kqcircuits.elements.waveguide_composite.Node.length_increment">
-<span class="sig-name descname"><span class="pre">length_increment</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.Node.length_increment" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="kqcircuits.elements.waveguide_composite.Node.meander_direction">
-<span class="sig-name descname"><span class="pre">meander_direction</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.Node.meander_direction" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.elements.waveguide_composite.Node.deserialize">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">deserialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_composite.html#Node.deserialize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.Node.deserialize" title="Link to this definition"></a></dt>
-<dd><p>Create a Node object from a serialized form, such that <code class="docutils literal notranslate"><span class="pre">from_serialized(ast.literal_eval(str(node_object)))</span></code>
-returns an equivalent copy of <code class="docutils literal notranslate"><span class="pre">node_obj</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>node</strong> – serialized node, consisting of a tuple <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">element_name,</span> <span class="pre">params)</span></code>, where <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> are the
-node coordinates. The string <code class="docutils literal notranslate"><span class="pre">element_name</span></code> and dict <code class="docutils literal notranslate"><span class="pre">params</span></code> are optional.</p>
-</dd>
-</dl>
-<p>Returns: a Node</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.elements.waveguide_composite.Node.nodes_from_string">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nodes_from_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_composite.html#Node.nodes_from_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.Node.nodes_from_string" title="Link to this definition"></a></dt>
-<dd><p>Converts the human readable text representation of Nodes to an actual Node object list.</p>
-<p>Needed for storage in KLayout parameters. The string has to conform to a specific format:
-<cite>(x, y, class_str, parameter_dict)</cite>. For example <cite>(0, 500, ‘Airbridge’, {‘n_bridges’: 2})</cite>,
-see also the <cite>Node.__str__</cite> method. Empty class_str or parameter_dict may be omitted.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list of Node objects</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="kqcircuits.elements.waveguide_composite.WaveguideComposite">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.elements.waveguide_composite.</span></span><span class="sig-name descname"><span class="pre">WaveguideComposite</span></span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_composite.html#WaveguideComposite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.WaveguideComposite" title="Link to this definition"></a></dt>

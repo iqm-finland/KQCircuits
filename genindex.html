@@ -468,7 +468,6 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.elements.waveguide_composite.html">kqcircuits.elements.waveguide_composite</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node"><code class="docutils literal notranslate"><span class="pre">Node</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite"><code class="docutils literal notranslate"><span class="pre">WaveguideComposite</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.produce_fixed_length_bend"><code class="docutils literal notranslate"><span class="pre">produce_fixed_length_bend()</span></code></a></li>
 </ul>
@@ -800,6 +799,10 @@
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.util.gui_helper.html#kqcircuits.util.gui_helper.get_valid_node_elements"><code class="docutils literal notranslate"><span class="pre">get_valid_node_elements()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.gui_waveguide_editing.html">kqcircuits.util.gui_waveguide_editing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.util.gui_waveguide_editing.html#kqcircuits.util.gui_waveguide_editing.coerce_nodes_with_gui_path"><code class="docutils literal notranslate"><span class="pre">coerce_nodes_with_gui_path()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.import_helper.html">kqcircuits.util.import_helper</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.util.import_helper.html#kqcircuits.util.import_helper.module_from_file"><code class="docutils literal notranslate"><span class="pre">module_from_file()</span></code></a></li>
 </ul>
@@ -862,6 +865,10 @@
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.util.netlist_graph.html#kqcircuits.util.netlist_graph.network_as_graph"><code class="docutils literal notranslate"><span class="pre">network_as_graph()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.util.netlist_graph.html#kqcircuits.util.netlist_graph.draw_graph"><code class="docutils literal notranslate"><span class="pre">draw_graph()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.node.html">kqcircuits.util.node</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.util.node.html#kqcircuits.util.node.Node"><code class="docutils literal notranslate"><span class="pre">Node</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a><ul>
@@ -1084,13 +1091,13 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node.align">align (kqcircuits.elements.waveguide_composite.Node attribute)</a>
+      <li><a href="api/kqcircuits.util.node.html#kqcircuits.util.node.Node.align">align (kqcircuits.util.node.Node attribute)</a>
 </li>
       <li><a href="api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.align_to">align_to (kqcircuits.masks.mask_layout.MaskLayout attribute)</a>
 </li>
       <li><a href="api/kqcircuits.layer_cluster.html#kqcircuits.layer_cluster.LayerCluster.all_layers">all_layers() (kqcircuits.layer_cluster.LayerCluster method)</a>
 </li>
-      <li><a href="api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node.angle">angle (kqcircuits.elements.waveguide_composite.Node attribute)</a>
+      <li><a href="api/kqcircuits.util.node.html#kqcircuits.util.node.Node.angle">angle (kqcircuits.util.node.Node attribute)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.export.ansys.ansys_solution.html#kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution.ansys_project_template">ansys_project_template (kqcircuits.simulations.export.ansys.ansys_solution.AnsysSolution attribute)</a>
 </li>
@@ -1420,6 +1427,8 @@
 </li>
       <li><a href="api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.close">close() (kqcircuits.klayout_view.KLayoutView method)</a>
 </li>
+      <li><a href="api/kqcircuits.util.gui_waveguide_editing.html#kqcircuits.util.gui_waveguide_editing.coerce_nodes_with_gui_path">coerce_nodes_with_gui_path() (in module kqcircuits.util.gui_waveguide_editing)</a>
+</li>
       <li><a href="api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite.coerce_parameters_impl">coerce_parameters_impl() (kqcircuits.elements.waveguide_composite.WaveguideComposite method)</a>
 
       <ul>
@@ -1596,7 +1605,7 @@
 </li>
       <li><a href="api/kqcircuits.chips.demo_twoface.html#kqcircuits.chips.demo_twoface.DemoTwoface">DemoTwoface (class in kqcircuits.chips.demo_twoface)</a>
 </li>
-      <li><a href="api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node.deserialize">deserialize() (kqcircuits.elements.waveguide_composite.Node class method)</a>
+      <li><a href="api/kqcircuits.util.node.html#kqcircuits.util.node.Node.deserialize">deserialize() (kqcircuits.util.node.Node class method)</a>
 </li>
       <li><a href="api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.dice_width">dice_width (kqcircuits.masks.mask_layout.MaskLayout attribute)</a>
 </li>
@@ -1638,7 +1647,7 @@
       </ul></li>
       <li><a href="api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element">Element (class in kqcircuits.elements.element)</a>
 </li>
-      <li><a href="api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node.element">element (kqcircuits.elements.waveguide_composite.Node attribute)</a>
+      <li><a href="api/kqcircuits.util.node.html#kqcircuits.util.node.Node.element">element (kqcircuits.util.node.Node attribute)</a>
 </li>
       <li><a href="api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.element_by_class_name">element_by_class_name() (in module kqcircuits.util.library_helper)</a>
 </li>
@@ -2138,7 +2147,7 @@
 </li>
       <li><a href="api/kqcircuits.elements.smooth_capacitor.html#kqcircuits.elements.smooth_capacitor.SmoothCapacitor.insert_wg_joint">insert_wg_joint() (kqcircuits.elements.smooth_capacitor.SmoothCapacitor method)</a>
 </li>
-      <li><a href="api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node.inst_name">inst_name (kqcircuits.elements.waveguide_composite.Node attribute)</a>
+      <li><a href="api/kqcircuits.util.node.html#kqcircuits.util.node.Node.inst_name">inst_name (kqcircuits.util.node.Node attribute)</a>
 </li>
       <li><a href="api/kqcircuits.util.dependencies.html#kqcircuits.util.dependencies.install_kqc_gui_dependencies">install_kqc_gui_dependencies() (in module kqcircuits.util.dependencies)</a>
 </li>
@@ -2845,8 +2854,6 @@
         <li><a href="api/kqcircuits.qubits.html#module-kqcircuits.qubits">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     kqcircuits.qubits.circular_transmon_single_island
 
@@ -2854,6 +2861,8 @@
         <li><a href="api/kqcircuits.qubits.circular_transmon_single_island.html#module-kqcircuits.qubits.circular_transmon_single_island">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     kqcircuits.qubits.concentric_transmon
 
@@ -3373,6 +3382,13 @@
 </li>
       </ul></li>
       <li>
+    kqcircuits.util.gui_waveguide_editing
+
+      <ul>
+        <li><a href="api/kqcircuits.util.gui_waveguide_editing.html#module-kqcircuits.util.gui_waveguide_editing">module</a>
+</li>
+      </ul></li>
+      <li>
     kqcircuits.util.import_helper
 
       <ul>
@@ -3450,6 +3466,13 @@
 </li>
       </ul></li>
       <li>
+    kqcircuits.util.node
+
+      <ul>
+        <li><a href="api/kqcircuits.util.node.html#module-kqcircuits.util.node">module</a>
+</li>
+      </ul></li>
+      <li>
     kqcircuits.util.parameters
 
       <ul>
@@ -3520,9 +3543,9 @@
       </ul></li>
       <li><a href="api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.layout_view">layout_view (kqcircuits.klayout_view.KLayoutView attribute)</a>
 </li>
-      <li><a href="api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node.length_before">length_before (kqcircuits.elements.waveguide_composite.Node attribute)</a>
+      <li><a href="api/kqcircuits.util.node.html#kqcircuits.util.node.Node.length_before">length_before (kqcircuits.util.node.Node attribute)</a>
 </li>
-      <li><a href="api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node.length_increment">length_increment (kqcircuits.elements.waveguide_composite.Node attribute)</a>
+      <li><a href="api/kqcircuits.util.node.html#kqcircuits.util.node.Node.length_increment">length_increment (kqcircuits.util.node.Node attribute)</a>
 </li>
       <li><a href="api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.LIBRARY_DESCRIPTION">LIBRARY_DESCRIPTION (kqcircuits.chips.chip.Chip attribute)</a>
 
@@ -3696,7 +3719,7 @@
       </ul></li>
       <li><a href="api/kqcircuits.elements.meander.html#kqcircuits.elements.meander.Meander">Meander (class in kqcircuits.elements.meander)</a>
 </li>
-      <li><a href="api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node.meander_direction">meander_direction (kqcircuits.elements.waveguide_composite.Node attribute)</a>
+      <li><a href="api/kqcircuits.util.node.html#kqcircuits.util.node.Node.meander_direction">meander_direction (kqcircuits.util.node.Node attribute)</a>
 </li>
       <li><a href="api/kqcircuits.util.merge.html#kqcircuits.util.merge.merge_layers">merge_layers() (in module kqcircuits.util.merge)</a>
 </li>
@@ -4068,6 +4091,8 @@
 </li>
         <li><a href="api/kqcircuits.util.gui_helper.html#module-kqcircuits.util.gui_helper">kqcircuits.util.gui_helper</a>
 </li>
+        <li><a href="api/kqcircuits.util.gui_waveguide_editing.html#module-kqcircuits.util.gui_waveguide_editing">kqcircuits.util.gui_waveguide_editing</a>
+</li>
         <li><a href="api/kqcircuits.util.import_helper.html#module-kqcircuits.util.import_helper">kqcircuits.util.import_helper</a>
 </li>
         <li><a href="api/kqcircuits.util.instance_hierarchy_helpers.html#module-kqcircuits.util.instance_hierarchy_helpers">kqcircuits.util.instance_hierarchy_helpers</a>
@@ -4089,6 +4114,8 @@
         <li><a href="api/kqcircuits.util.netlist_extraction.html#module-kqcircuits.util.netlist_extraction">kqcircuits.util.netlist_extraction</a>
 </li>
         <li><a href="api/kqcircuits.util.netlist_graph.html#module-kqcircuits.util.netlist_graph">kqcircuits.util.netlist_graph</a>
+</li>
+        <li><a href="api/kqcircuits.util.node.html#module-kqcircuits.util.node">kqcircuits.util.node</a>
 </li>
         <li><a href="api/kqcircuits.util.parameters.html#module-kqcircuits.util.parameters">kqcircuits.util.parameters</a>
 </li>
@@ -4131,13 +4158,13 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.util.netlist_graph.html#kqcircuits.util.netlist_graph.network_as_graph">network_as_graph() (in module kqcircuits.util.netlist_graph)</a>
 </li>
-      <li><a href="api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node">Node (class in kqcircuits.elements.waveguide_composite)</a>
+      <li><a href="api/kqcircuits.util.node.html#kqcircuits.util.node.Node">Node (class in kqcircuits.util.node)</a>
 </li>
       <li><a href="api/kqcircuits.util.gui_helper.html#kqcircuits.util.gui_helper.node_from_text">node_from_text() (in module kqcircuits.util.gui_helper)</a>
 </li>
       <li><a href="api/kqcircuits.util.gui_helper.html#kqcircuits.util.gui_helper.node_to_text">node_to_text() (in module kqcircuits.util.gui_helper)</a>
 </li>
-      <li><a href="api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node.nodes_from_string">nodes_from_string() (kqcircuits.elements.waveguide_composite.Node static method)</a>
+      <li><a href="api/kqcircuits.util.node.html#kqcircuits.util.node.Node.nodes_from_string">nodes_from_string() (kqcircuits.util.node.Node static method)</a>
 </li>
       <li><a href="api/kqcircuits.junctions.no_squid.html#kqcircuits.junctions.no_squid.NoSquid">NoSquid (class in kqcircuits.junctions.no_squid)</a>
 </li>
@@ -4241,7 +4268,7 @@
 </li>
       <li><a href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.ports">ports (kqcircuits.simulations.simulation.Simulation attribute)</a>
 </li>
-      <li><a href="api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node.position">position (kqcircuits.elements.waveguide_composite.Node attribute)</a>
+      <li><a href="api/kqcircuits.util.node.html#kqcircuits.util.node.Node.position">position (kqcircuits.util.node.Node attribute)</a>
 </li>
       <li><a href="api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.position_label_to_two_coordinates">position_label_to_two_coordinates() (kqcircuits.masks.mask_layout.MaskLayout static method)</a>
 </li>

@@ -468,7 +468,6 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.waveguide_composite.html">kqcircuits.elements.waveguide_composite</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node"><code class="docutils literal notranslate"><span class="pre">Node</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite"><code class="docutils literal notranslate"><span class="pre">WaveguideComposite</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.produce_fixed_length_bend"><code class="docutils literal notranslate"><span class="pre">produce_fixed_length_bend()</span></code></a></li>
 </ul>
@@ -800,6 +799,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.gui_helper.html#kqcircuits.util.gui_helper.get_valid_node_elements"><code class="docutils literal notranslate"><span class="pre">get_valid_node_elements()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.gui_waveguide_editing.html">kqcircuits.util.gui_waveguide_editing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.gui_waveguide_editing.html#kqcircuits.util.gui_waveguide_editing.coerce_nodes_with_gui_path"><code class="docutils literal notranslate"><span class="pre">coerce_nodes_with_gui_path()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.import_helper.html">kqcircuits.util.import_helper</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.import_helper.html#kqcircuits.util.import_helper.module_from_file"><code class="docutils literal notranslate"><span class="pre">module_from_file()</span></code></a></li>
 </ul>
@@ -862,6 +865,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.netlist_graph.html#kqcircuits.util.netlist_graph.network_as_graph"><code class="docutils literal notranslate"><span class="pre">network_as_graph()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.netlist_graph.html#kqcircuits.util.netlist_graph.draw_graph"><code class="docutils literal notranslate"><span class="pre">draw_graph()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.node.html">kqcircuits.util.node</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.node.html#kqcircuits.util.node.Node"><code class="docutils literal notranslate"><span class="pre">Node</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a><ul>
@@ -1013,9 +1020,6 @@
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
 
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">zip_longest</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tuple</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">pi</span><span class="p">,</span> <span class="n">tan</span><span class="p">,</span> <span class="n">floor</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 
@@ -1023,6 +1027,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.defaults</span><span class="w"> </span><span class="kn">import</span> <span class="n">node_editor_layer_changing_elements</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.pya_resolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.node</span><span class="w"> </span><span class="kn">import</span> <span class="n">Node</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.parameters</span><span class="w"> </span><span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span><span class="p">,</span> <span class="n">add_parameters_from</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.library_helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">element_by_class_name</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.geometry_helper</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
@@ -1032,6 +1037,7 @@
     <span class="n">get_angle</span><span class="p">,</span>
     <span class="n">get_direction</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.gui_waveguide_editing</span><span class="w"> </span><span class="kn">import</span> <span class="n">coerce_nodes_with_gui_path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.element</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.airbridges.airbridge</span><span class="w"> </span><span class="kn">import</span> <span class="n">Airbridge</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.airbridge_connection</span><span class="w"> </span><span class="kn">import</span> <span class="n">AirbridgeConnection</span>
@@ -1040,164 +1046,6 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.waveguide_coplanar_taper</span><span class="w"> </span><span class="kn">import</span> <span class="n">WaveguideCoplanarTaper</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf</span><span class="w"> </span><span class="kn">import</span> <span class="n">FlipChipConnectorRf</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.waveguide_coplanar_splitter</span><span class="w"> </span><span class="kn">import</span> <span class="n">WaveguideCoplanarSplitter</span>
-
-
-<div class="viewcode-block" id="Node">
-<a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">Node</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Specifies a single node of a composite waveguide.</span>
-
-<span class="sd">    Node is as a ``position`` and optionally other parameters. The ``element`` argument sets an Element</span>
-<span class="sd">    type that gets inserted in the waveguide. Typically this is an Airbridge, but any element with</span>
-<span class="sd">    port_a and port_b is supported.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        position: The location of the Node. Represented as a DPoint object.</span>
-<span class="sd">        element: The Element type that gets inserted in the waveguide. None by default.</span>
-<span class="sd">        inst_name: If an instance name is supplied, the element refpoints will be exposed with that name. Default None.</span>
-<span class="sd">        align: Tuple with two refpoint names that correspond the input and output point of element, respectively</span>
-<span class="sd">               Default value (None) uses ``(&#39;port_a&#39;, &#39;port_b&#39;)``</span>
-<span class="sd">        angle: Angle of waveguide direction in degrees</span>
-<span class="sd">        length_before: Length of the waveguide segment before this node</span>
-<span class="sd">        length_increment: Waveguide length increment produced by meander before this node</span>
-<span class="sd">        **params: Other optional parameters for the inserted element</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        A Node.</span>
-
-<span class="sd">    .. MARKERS_FOR_PNG 180,1.2</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">position</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span>
-    <span class="n">element</span><span class="p">:</span> <span class="n">Element</span>
-    <span class="n">inst_name</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">align</span><span class="p">:</span> <span class="n">Tuple</span>
-    <span class="n">angle</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="n">length_before</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="n">length_increment</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="n">meander_direction</span><span class="p">:</span> <span class="nb">int</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">position</span><span class="p">,</span>
-        <span class="n">element</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">inst_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">align</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(),</span>
-        <span class="n">angle</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">length_before</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">length_increment</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">meander_direction</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">params</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">position</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">element</span> <span class="o">=</span> <span class="n">element</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">align</span> <span class="o">=</span> <span class="n">align</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">inst_name</span> <span class="o">=</span> <span class="n">inst_name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="n">angle</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">length_before</span> <span class="o">=</span> <span class="n">length_before</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">length_increment</span> <span class="o">=</span> <span class="n">length_increment</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">meander_direction</span> <span class="o">=</span> <span class="n">meander_direction</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        String representation of a Node, used for serialization and needed for storage in KLayout parameters.</span>
-
-<span class="sd">        The corresponding deserialization is implemented in `Node.deserialize`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">txt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">y</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">txt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;, &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
-
-        <span class="n">magic_params</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">align</span><span class="p">:</span>
-            <span class="n">magic_params</span><span class="p">[</span><span class="s2">&quot;align&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">align</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inst_name</span><span class="p">:</span>
-            <span class="n">magic_params</span><span class="p">[</span><span class="s2">&quot;inst_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inst_name</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">magic_params</span><span class="p">[</span><span class="s2">&quot;angle&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">length_before</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">magic_params</span><span class="p">[</span><span class="s2">&quot;length_before&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">length_before</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">length_increment</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">magic_params</span><span class="p">[</span><span class="s2">&quot;length_increment&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">length_increment</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">meander_direction</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">magic_params</span><span class="p">[</span><span class="s2">&quot;meander_direction&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">meander_direction</span>
-
-        <span class="n">all_params</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">magic_params</span><span class="p">}</span>
-        <span class="k">if</span> <span class="n">all_params</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">pn</span><span class="p">,</span> <span class="n">pv</span> <span class="ow">in</span> <span class="n">all_params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pv</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">):</span>  <span class="c1"># encode DPoint as tuple</span>
-                    <span class="n">all_params</span><span class="p">[</span><span class="n">pn</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">pv</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">pv</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
-            <span class="n">txt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;, </span><span class="si">{</span><span class="n">all_params</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="k">return</span> <span class="s2">&quot;(&quot;</span> <span class="o">+</span> <span class="n">txt</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
-
-<div class="viewcode-block" id="Node.deserialize">
-<a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node.deserialize">[docs]</a>
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">deserialize</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create a Node object from a serialized form, such that ``from_serialized(ast.literal_eval(str(node_object)))``</span>
-<span class="sd">        returns an equivalent copy of ``node_obj``.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            node: serialized node, consisting of a tuple ``(x, y, element_name, params)``, where ``x`` and ``y`` are the</span>
-<span class="sd">                node coordinates. The string ``element_name`` and dict ``params`` are optional.</span>
-
-<span class="sd">        Returns: a Node</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="n">element</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
-                <span class="n">params</span> <span class="o">=</span> <span class="n">node</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">element</span> <span class="o">=</span> <span class="n">node</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
-            <span class="n">params</span> <span class="o">=</span> <span class="n">node</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="n">element</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">element</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">():</span>
-                <span class="n">element</span> <span class="o">=</span> <span class="nb">globals</span><span class="p">()[</span><span class="n">element</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">element</span> <span class="o">=</span> <span class="n">element_by_class_name</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
-
-        <span class="c1"># re-create DPoint from tuple</span>
-        <span class="n">magic_params</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;align&quot;</span><span class="p">,</span> <span class="s2">&quot;inst_name&quot;</span><span class="p">,</span> <span class="s2">&quot;angle&quot;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">pn</span><span class="p">,</span> <span class="n">pv</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pv</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="n">pn</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">magic_params</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pv</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Point parameter </span><span class="si">{</span><span class="n">pn</span><span class="si">}</span><span class="s2"> should have two elements&quot;</span><span class="p">)</span>
-                <span class="n">params</span><span class="p">[</span><span class="n">pn</span><span class="p">]</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">pv</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">pv</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">element</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Node.nodes_from_string">
-<a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node.nodes_from_string">[docs]</a>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">nodes_from_string</span><span class="p">(</span><span class="n">nodes</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts the human readable text representation of Nodes to an actual Node object list.</span>
-
-<span class="sd">        Needed for storage in KLayout parameters. The string has to conform to a specific format:</span>
-<span class="sd">        `(x, y, class_str, parameter_dict)`. For example `(0, 500, &#39;Airbridge&#39;, {&#39;n_bridges&#39;: 2})`,</span>
-<span class="sd">        see also the `Node.__str__` method. Empty class_str or parameter_dict may be omitted.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            list of Node objects</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">nlas</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="n">nodes</span>
-        <span class="n">node_list</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">nlas</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="p">[</span><span class="n">Node</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">node_list</span><span class="p">]</span></div>
-</div>
-
 
 
 <div class="viewcode-block" id="WaveguideComposite">
@@ -1425,56 +1273,14 @@
 <a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite.coerce_parameters_impl">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">coerce_parameters_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_gui_editing</span><span class="p">:</span>
-            <span class="n">nodes</span> <span class="o">=</span> <span class="n">Node</span><span class="o">.</span><span class="n">nodes_from_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
-
-            <span class="c1"># If gui_path was edited by the user, it is now different from gui_path_shadow. Detect changes</span>
-            <span class="n">changed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gui_path</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gui_path_shadow</span>
-
-            <span class="k">if</span> <span class="n">changed</span><span class="p">:</span>
-                <span class="n">new_points</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gui_path</span><span class="o">.</span><span class="n">each_point</span><span class="p">())</span>
-                <span class="n">old_points</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gui_path_shadow</span><span class="o">.</span><span class="n">each_point</span><span class="p">())</span>
-
-                <span class="n">length_change</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_points</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">old_points</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">length_change</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="c1"># One or more points were moved; update node positions of the moved points</span>
-                    <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">new_position</span><span class="p">,</span> <span class="n">old_position</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="n">new_points</span><span class="p">,</span> <span class="n">old_points</span><span class="p">):</span>
-                        <span class="k">if</span> <span class="n">new_position</span> <span class="o">!=</span> <span class="n">old_position</span><span class="p">:</span>
-                            <span class="n">new_position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">snap_point</span><span class="p">(</span><span class="n">new_position</span><span class="p">)</span>
-                            <span class="n">node</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">new_position</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">]</span>
-                <span class="k">elif</span> <span class="n">length_change</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="c1"># One node was added. Figure out which node it was.</span>
-                    <span class="n">added_index</span> <span class="o">=</span> <span class="kc">None</span>
-                    <span class="n">added_point</span> <span class="o">=</span> <span class="kc">None</span>
-                    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">new_point</span><span class="p">,</span> <span class="n">old_point</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">zip_longest</span><span class="p">(</span><span class="n">new_points</span><span class="p">,</span> <span class="n">old_points</span><span class="p">)):</span>
-                        <span class="k">if</span> <span class="n">old_point</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">new_point</span> <span class="o">!=</span> <span class="n">old_point</span><span class="p">:</span>
-                            <span class="n">added_index</span> <span class="o">=</span> <span class="n">i</span>
-                            <span class="n">added_point</span> <span class="o">=</span> <span class="n">new_point</span>
-                            <span class="k">break</span>
-
-                    <span class="k">if</span> <span class="n">added_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="n">nodes</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">added_index</span><span class="p">,</span> <span class="n">Node</span><span class="p">(</span><span class="n">added_point</span><span class="p">))</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">]</span>
-                <span class="k">elif</span> <span class="n">length_change</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">gui_path</span><span class="o">.</span><span class="n">num_points</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
-                    <span class="c1"># One or more points deleted; delete corresponding nodes. We require at least two remaining nodes.</span>
-                    <span class="n">remaining_indices</span> <span class="o">=</span> <span class="p">[]</span>
-                    <span class="n">new_indices</span> <span class="o">=</span> <span class="p">[]</span>
-
-                    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">old_point</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">old_points</span><span class="p">):</span>
-                        <span class="k">if</span> <span class="n">old_point</span> <span class="ow">in</span> <span class="n">new_points</span><span class="p">:</span>
-                            <span class="n">remaining_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-                            <span class="n">new_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_points</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">old_point</span><span class="p">))</span>
-
-                    <span class="c1"># Verify we found the right number of remaining indices, and the order is correct</span>
-                    <span class="n">new_indices_monotonic</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">j</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">new_indices</span><span class="p">,</span> <span class="n">new_indices</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">remaining_indices</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_points</span><span class="p">)</span> <span class="ow">and</span> <span class="n">new_indices_monotonic</span><span class="p">:</span>
-                        <span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">remaining_indices</span><span class="p">]</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">]</span>
-
-            <span class="c1"># After coerce the gui_path and gui_path_shadow should both match the nodes.</span>
-            <span class="n">new_path</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span><span class="n">node</span><span class="o">.</span><span class="n">position</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="c1"># Force rounding to integer database units since the KLayout Partial tool also rounds to database units.</span>
-            <span class="n">new_path</span> <span class="o">=</span> <span class="n">new_path</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span><span class="o">.</span><span class="n">to_dtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
+            <span class="n">new_nodes</span><span class="p">,</span> <span class="n">new_path</span> <span class="o">=</span> <span class="n">coerce_nodes_with_gui_path</span><span class="p">(</span>
+                <span class="n">Node</span><span class="o">.</span><span class="n">nodes_from_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">gui_path</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">gui_path_shadow</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">snap_point</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">new_nodes</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">gui_path</span> <span class="o">=</span> <span class="n">new_path</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">gui_path_shadow</span> <span class="o">=</span> <span class="n">new_path</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1765,7 +1571,9 @@
             <span class="c1"># Use optimal corner routing</span>
             <span class="n">s</span> <span class="o">=</span> <span class="n">segment_vector</span>
             <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>  <span class="c1"># iterate at most 1000 times</span>
-                <span class="n">_</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">vector_length_and_direction</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+                <span class="n">l</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">vector_length_and_direction</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">l</span> <span class="o">&gt;</span> <span class="mf">1e30</span><span class="p">:</span>
+                    <span class="k">break</span>  <span class="c1"># s diverges, which means the iteration fails</span>
                 <span class="n">start_divisor</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">d</span><span class="o">.</span><span class="n">sprod</span><span class="p">(</span><span class="n">dir_start</span><span class="p">)</span>
                 <span class="n">end_divisor</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">d</span><span class="o">.</span><span class="n">sprod</span><span class="p">(</span><span class="n">dir_end</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">start_divisor</span> <span class="o">&lt;</span> <span class="mf">1e-13</span> <span class="ow">or</span> <span class="n">end_divisor</span> <span class="o">&lt;</span> <span class="mf">1e-13</span><span class="p">:</span>

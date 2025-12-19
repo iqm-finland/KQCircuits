@@ -1,0 +1,12 @@
+:github_url: hide
+
+kqcircuits.util.gui\_waveguide\_editing
+=======================================
+
+.. automodule:: kqcircuits.util.gui_waveguide_editing
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.util.gui_waveguide_editing
+.. image:: ../pcell_images/kqcircuits.util.gui_waveguide_editing.png

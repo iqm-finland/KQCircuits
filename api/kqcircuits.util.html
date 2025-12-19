@@ -471,7 +471,6 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_composite.html">kqcircuits.elements.waveguide_composite</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node"><code class="docutils literal notranslate"><span class="pre">Node</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite"><code class="docutils literal notranslate"><span class="pre">WaveguideComposite</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.produce_fixed_length_bend"><code class="docutils literal notranslate"><span class="pre">produce_fixed_length_bend()</span></code></a></li>
 </ul>
@@ -803,6 +802,10 @@
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.gui_helper.html#kqcircuits.util.gui_helper.get_valid_node_elements"><code class="docutils literal notranslate"><span class="pre">get_valid_node_elements()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.gui_waveguide_editing.html">kqcircuits.util.gui_waveguide_editing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.gui_waveguide_editing.html#kqcircuits.util.gui_waveguide_editing.coerce_nodes_with_gui_path"><code class="docutils literal notranslate"><span class="pre">coerce_nodes_with_gui_path()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.import_helper.html">kqcircuits.util.import_helper</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.import_helper.html#kqcircuits.util.import_helper.module_from_file"><code class="docutils literal notranslate"><span class="pre">module_from_file()</span></code></a></li>
 </ul>
@@ -865,6 +868,10 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.netlist_graph.html#kqcircuits.util.netlist_graph.network_as_graph"><code class="docutils literal notranslate"><span class="pre">network_as_graph()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.netlist_graph.html#kqcircuits.util.netlist_graph.draw_graph"><code class="docutils literal notranslate"><span class="pre">draw_graph()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.node.html">kqcircuits.util.node</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.node.html#kqcircuits.util.node.Node"><code class="docutils literal notranslate"><span class="pre">Node</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.parameters.html">kqcircuits.util.parameters</a><ul>
@@ -1091,6 +1098,10 @@
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.util.gui_helper.html#kqcircuits.util.gui_helper.get_valid_node_elements"><code class="docutils literal notranslate"><span class="pre">get_valid_node_elements()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="kqcircuits.util.gui_waveguide_editing.html">kqcircuits.util.gui_waveguide_editing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.util.gui_waveguide_editing.html#kqcircuits.util.gui_waveguide_editing.coerce_nodes_with_gui_path"><code class="docutils literal notranslate"><span class="pre">coerce_nodes_with_gui_path()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="kqcircuits.util.import_helper.html">kqcircuits.util.import_helper</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.util.import_helper.html#kqcircuits.util.import_helper.module_from_file"><code class="docutils literal notranslate"><span class="pre">module_from_file()</span></code></a></li>
 </ul>
@@ -1165,6 +1176,22 @@
 <li class="toctree-l1"><a class="reference internal" href="kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.util.netlist_graph.html#kqcircuits.util.netlist_graph.network_as_graph"><code class="docutils literal notranslate"><span class="pre">network_as_graph()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.util.netlist_graph.html#kqcircuits.util.netlist_graph.draw_graph"><code class="docutils literal notranslate"><span class="pre">draw_graph()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="kqcircuits.util.node.html">kqcircuits.util.node</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.util.node.html#kqcircuits.util.node.Node"><code class="docutils literal notranslate"><span class="pre">Node</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.node.html#kqcircuits.util.node.Node.position"><code class="docutils literal notranslate"><span class="pre">Node.position</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.node.html#kqcircuits.util.node.Node.element"><code class="docutils literal notranslate"><span class="pre">Node.element</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.node.html#kqcircuits.util.node.Node.align"><code class="docutils literal notranslate"><span class="pre">Node.align</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.node.html#kqcircuits.util.node.Node.inst_name"><code class="docutils literal notranslate"><span class="pre">Node.inst_name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.node.html#kqcircuits.util.node.Node.angle"><code class="docutils literal notranslate"><span class="pre">Node.angle</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.node.html#kqcircuits.util.node.Node.length_before"><code class="docutils literal notranslate"><span class="pre">Node.length_before</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.node.html#kqcircuits.util.node.Node.length_increment"><code class="docutils literal notranslate"><span class="pre">Node.length_increment</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.node.html#kqcircuits.util.node.Node.meander_direction"><code class="docutils literal notranslate"><span class="pre">Node.meander_direction</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.node.html#kqcircuits.util.node.Node.deserialize"><code class="docutils literal notranslate"><span class="pre">Node.deserialize()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.node.html#kqcircuits.util.node.Node.nodes_from_string"><code class="docutils literal notranslate"><span class="pre">Node.nodes_from_string()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="kqcircuits.util.parameters.html">kqcircuits.util.parameters</a><ul>

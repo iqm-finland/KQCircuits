@@ -19,6 +19,7 @@ kqcircuits.util
    kqcircuits.util.geometry_json_encoder
    kqcircuits.util.groundgrid
    kqcircuits.util.gui_helper
+   kqcircuits.util.gui_waveguide_editing
    kqcircuits.util.import_helper
    kqcircuits.util.instance_hierarchy_helpers
    kqcircuits.util.label
@@ -30,6 +31,7 @@ kqcircuits.util
    kqcircuits.util.merge
    kqcircuits.util.netlist_extraction
    kqcircuits.util.netlist_graph
+   kqcircuits.util.node
    kqcircuits.util.parameters
    kqcircuits.util.plugin_startup
    kqcircuits.util.refpoints
