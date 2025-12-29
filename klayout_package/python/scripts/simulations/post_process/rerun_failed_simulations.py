@@ -86,6 +86,13 @@ if extension == "sh":
                 missing.add(sim_name)
 
 elif extension == "bat":
+    # Consider Ansys simulations with .sNp files as completed
+    snp_pattern = re.compile(r"^(.*)_project_SMatrix\.s\d+p$")
+    for p in Path(".").glob("*_project_SMatrix.s*p"):
+        snp_m = snp_pattern.search(p.name)
+        if snp_m:
+            completed_simulations.add(snp_m.group(1))
+
     rerun_script = script_contents[:4]
     for line in script_contents[4:]:
         matches = re.findall(r'-scriptargs\s+"(.*?)\.json"', line)
