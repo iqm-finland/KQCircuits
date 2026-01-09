@@ -72,9 +72,9 @@ from kqcircuits.util.plugin_startup import register_plugins
 #        },
 #      },
 #      "osx": {
-#        "command": "${USER}/Applications/klayout.app"
+#        "command": "/Applications/klayout.app/Contents/MacOS/klayout"
 #        # Homebrew installs under /Applications/KLayout/klayout.app
-#        # "command": "${USER}/Applications/KLayout/klayout.app"
+#        # "command": "/Applications/KLayout/klayout.app/Contents/MacOS/klayout"
 #      },
 #      "problemMatchers": [],
 #      // the following field allows running with the default 'build' task (Ctrl+Shift+B)

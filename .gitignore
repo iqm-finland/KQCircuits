@@ -156,3 +156,5 @@ docs/pcell_images
 kqclib
 singularity/python
 singularity/bin
+
+.DS_Store
