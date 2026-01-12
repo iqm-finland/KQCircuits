@@ -83,9 +83,11 @@ class DoublePads(Qubit):
         # Create temporary SQUID cell to calculate SQUID height
         temp_squid_cell = self.add_element(Squid, junction_type=self.junction_type)
         temp_squid_ref = self.get_refpoints(temp_squid_cell)
-        squid_height = temp_squid_ref["port_common"].distance(pya.DPoint(0, 0))
+        squid_height = temp_squid_ref["port_common"].distance(temp_squid_ref["origin_squid"])
         # Now actually add SQUID
-        squid_transf = pya.DCplxTrans(1, 0, False, pya.DVector(0, self.squid_offset - squid_height / 2))
+        squid_transf = pya.DCplxTrans(
+            1, 0, False, pya.DVector(0, self.squid_offset - squid_height / 2 - temp_squid_ref["origin_squid"].y)
+        )
 
         if self.with_squid:
             self.produce_squid(squid_transf)

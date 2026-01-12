@@ -32,7 +32,8 @@ class Junction(Element):
         `self.add_element(Junction, junction_type="JunctionName", **parameters)`,
 
     where "JunctionName" is either a specific junction class name or name of a manually designed
-    junction cell.
+    junction cell. In order to be placed into a qubit, the class should define refpoints "origin_squid" and
+    "port_common" as the two points between which the SQUID will be attached to the base metal
     """
 
     LIBRARY_NAME = "Junction Library"
