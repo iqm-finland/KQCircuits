@@ -190,6 +190,10 @@ class MaskSet:
         The chip's parameters dictionary may also contain an ``alt_netlists`` dictionary to specify alternative ways of
         generating netlists. See ``export_cell_netlist()`` or the ``quick_demo.py`` mask for further information.
 
+        If ``export_chip_layer_clusters`` chip parameter is passed with value True, additional .oas files will be
+        created for the chip containing only the layers defined per each non-empty LayerCluster
+        defined in ``chip_export_layer_clusters``.
+
         Args:
             chip: A chip class. Or a list of tuples, like ``[(QualityFactor, "QDG", parameters),...]``,
                   parameters are optional.
@@ -243,6 +247,7 @@ class MaskSet:
 
         mock_chip = _extra_params["mock_chips"] or chip_params.pop("mock_chip", False)
         skip_extras = _extra_params["skip_extras"]
+        export_chip_layer_clusters = chip_params.pop("export_chip_layer_clusters", False)
 
         view = KLayoutView()
         layout = view.layout
@@ -277,7 +282,16 @@ class MaskSet:
             view.load_layout(chip_class)
             cell = layout.top_cells()[-1]
 
-        export_chip(cell, variant_name, chip_path, layout, export_drc, alt_netlists, skip_extras)
+        export_chip(
+            cell,
+            variant_name,
+            chip_path,
+            layout,
+            export_drc,
+            alt_netlists=alt_netlists,
+            skip_extras=skip_extras,
+            export_chip_layer_clusters=export_chip_layer_clusters,
+        )
         view.close()
 
         return variant_name, str(chip_path / f"{variant_name}.oas")

@@ -63,7 +63,16 @@ def export_designs(mask_set):
         export_masks_of_face(mask_set._mask_set_dir, mask_layout, mask_set)
 
 
-def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc, alt_netlists=None, skip_extras=False):
+def export_chip(
+    chip_cell,
+    chip_name,
+    chip_dir,
+    layout,
+    export_drc,
+    alt_netlists=None,
+    skip_extras=False,
+    export_chip_layer_clusters=False,
+):
     """Exports a chip used in a maskset."""
 
     is_pcell = chip_cell.pcell_declaration() is not None
@@ -108,30 +117,32 @@ def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc, alt_netlists
                     "density": f"{values['density'] * 100:.2f}",
                 }
 
-        # export .gds files for EBL or laser writer
-        for cluster_name, layer_cluster in chip_export_layer_clusters.items():
-            # If the chip has no shapes in the main layers of the layer cluster, should not export the chip with
-            # that layer cluster.
-            export_layer_cluster = False
-            for layer_name in layer_cluster.main_layers:
-                shapes_iter = static_cell.begin_shapes_rec(layout.layer(default_layers[layer_name]))
-                if not shapes_iter.at_end():
-                    export_layer_cluster = True
-                    break
-            if export_layer_cluster:
-                # To transform the exported layer cluster chip correctly (e.g. mirroring for top chip),
-                # an instance of the cell is inserted to a temporary cell with the correct transformation.
-                # Was not able to get this working by just using static_cell.transform_into().
-                temporary_cell = layout.create_cell(chip_name)
-                temporary_cell.insert(
-                    pya.DCellInstArray(
-                        static_cell.cell_index(), default_mask_parameters[layer_cluster.face_id]["chip_trans"]
+        if export_chip_layer_clusters:
+            print(f"{chip_name} - Exporting chip layer clusters")
+            # export .gds files for EBL or laser writer
+            for cluster_name, layer_cluster in chip_export_layer_clusters.items():
+                # If the chip has no shapes in the main layers of the layer cluster, should not export the chip with
+                # that layer cluster.
+                export_layer_cluster = False
+                for layer_name in layer_cluster.main_layers:
+                    shapes_iter = static_cell.begin_shapes_rec(layout.layer(default_layers[layer_name]))
+                    if not shapes_iter.at_end():
+                        export_layer_cluster = True
+                        break
+                if export_layer_cluster:
+                    # To transform the exported layer cluster chip correctly (e.g. mirroring for top chip),
+                    # an instance of the cell is inserted to a temporary cell with the correct transformation.
+                    # Was not able to get this working by just using static_cell.transform_into().
+                    temporary_cell = layout.create_cell(chip_name)
+                    temporary_cell.insert(
+                        pya.DCellInstArray(
+                            static_cell.cell_index(), default_mask_parameters[layer_cluster.face_id]["chip_trans"]
+                        )
                     )
-                )
-                layers_to_export = {name: layout.layer(default_layers[name]) for name in layer_cluster.all_layers()}
-                path = chip_dir / f"{chip_name}-{cluster_name}.gds"
-                _export_cell(path, temporary_cell, layers_to_export)
-                temporary_cell.delete()
+                    layers_to_export = {name: layout.layer(default_layers[name]) for name in layer_cluster.all_layers()}
+                    path = chip_dir / f"{chip_name}-{cluster_name}.gds"
+                    _export_cell(path, temporary_cell, layers_to_export)
+                    temporary_cell.delete()
 
         # export drc report for the chip
         if export_drc:
@@ -150,7 +161,7 @@ def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc, alt_netlists
         json.dump(chip_json, f, cls=GeometryJsonEncoder, sort_keys=True, indent=4)
 
     # delete the static cell which was only needed for export
-    if static_cell.cell_index() != chip_cell.cell_index():
+    if static_cell.cell_index() != chip_cell.cell_index() and static_cell in layout.top_cells():
         layout.delete_cell_rec(static_cell.cell_index())
 
 
