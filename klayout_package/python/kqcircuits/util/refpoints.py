@@ -86,6 +86,10 @@ class Refpoints:
         """Returns a list of positions."""
         return self.dict().values()
 
+    def get(self, key, default=None):
+        """Get value under `key` if it exists, otherwise return `default`"""
+        return self[key] if key in self else default
+
 
 class RefpointToSimPort:
     """Class that takes a refpoint of an Element class with given string

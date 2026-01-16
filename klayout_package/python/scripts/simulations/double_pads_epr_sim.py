@@ -35,10 +35,12 @@ from kqcircuits.util.export_helper import (
 )
 from kqcircuits.simulations.export.cross_section.epr_correction_export import get_epr_correction_simulations
 from kqcircuits.simulations.export.ansys.ansys_solution import AnsysEigenmodeSolution
+from kqcircuits.simulations.export.elmer.elmer_solution import ElmerEPR3DSolution
+from kqcircuits.simulations.export.elmer.mesh_size_helpers import refine_metal_edges
 from kqcircuits.qubits.double_pads import DoublePads
 
 
-use_xsection = True
+use_ansys = False
 
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
@@ -64,49 +66,56 @@ sim_parameters = {
     "island2_taper_junction_width": 8.0,
     "island1_taper_width": 8.0,
     "island2_taper_width": 8.0,
+    "detach_tls_sheets_from_body": use_ansys,
 }
 
-solution = AnsysEigenmodeSolution(
-    name="_eigenmode",
-    max_delta_f=0.05,
-    n_modes=1,
-    min_frequency=1.0,
-    maximum_passes=20,
-    integrate_energies=True,
-)
-
-
+if use_ansys:
+    solution = AnsysEigenmodeSolution(
+        max_delta_f=0.05,
+        n_modes=1,
+        min_frequency=1.0,
+        maximum_passes=20,
+        integrate_energies=True,
+    )
+else:
+    solution = ElmerEPR3DSolution(
+        # Set opposite voltages [1, -1] on the islands and smaller voltage 0.1 on coupler
+        voltage_excitations=[1, 0.1, -1],
+        mesh_size=refine_metal_edges(5.0, 0.5),
+        mesh_optimizer={},
+    )
 # Get layout
 logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 layout = get_active_or_new_layout()
 
-# Sweep solution type
+# Tuples of Simulation and Solution instances
 simulations = [(SimClass(layout, **sim_parameters), solution)]
 
 # Export simulation files
-export_ansys(
-    simulations,
-    path=dir_path,
-    exit_after_run=True,
-    post_process=(
-        PostProcess("epr.sh", command="sh", folder="") if use_xsection else PostProcess("produce_epr_table.py")
-    ),
-    skip_errors=True,
-)
+if use_ansys:
+    export_ansys(
+        simulations,
+        path=dir_path,
+        exit_after_run=True,
+        post_process=PostProcess("epr.sh", command="sh", folder=""),
+    )
+else:  # use Elmer
+    export_elmer(
+        simulations,
+        path=dir_path,
+        workflow={"elmer_n_processes": -1, "gmsh_n_threads": -1},
+        post_process=PostProcess("epr.sh", command="sh", folder=""),
+    )
 
 # produce EPR correction simulations
-if use_xsection:
-    correction_simulations, post_process = get_epr_correction_simulations(
-        simulations, correction_cuts, metal_height=0.2
-    )
-    export_elmer(
-        correction_simulations,
-        dir_path,
-        file_prefix="epr",
-        post_process=post_process,
-    )
+correction_simulations, post_process = get_epr_correction_simulations(simulations, correction_cuts, metal_height=0.2)
+export_elmer(
+    correction_simulations,
+    dir_path,
+    file_prefix="epr",
+    post_process=post_process,
+)
 
 # Write and open oas file
 open_with_klayout_or_default_application(export_simulation_oas(simulations, dir_path))
-if use_xsection:
-    open_with_klayout_or_default_application(export_simulation_oas(correction_simulations, dir_path, "epr"))
+open_with_klayout_or_default_application(export_simulation_oas(correction_simulations, dir_path, "epr"))

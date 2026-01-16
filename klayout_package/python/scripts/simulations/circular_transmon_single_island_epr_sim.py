@@ -34,6 +34,7 @@ from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
 from kqcircuits.simulations.export.cross_section.epr_correction_export import get_epr_correction_simulations
 from kqcircuits.simulations.export.elmer.elmer_solution import ElmerEPR3DSolution
 from kqcircuits.simulations.epr.circular_transmon_single_island import partition_regions, correction_cuts
+from kqcircuits.simulations.export.elmer.mesh_size_helpers import refine_metal_edges
 
 SimClass = get_single_element_sim_class(
     CircularTransmonSingleIsland,
@@ -55,10 +56,7 @@ sim_parameters = {
 
 
 solution = ElmerEPR3DSolution(
-    mesh_size={
-        "1t1_gap&1t1_ground": 3.0,
-        "1t1_gap&1t1_signal_1": 3.0,
-    },
+    mesh_size=refine_metal_edges(3.0, 0.5),
     mesh_optimizer={},
 )
 
@@ -98,7 +96,7 @@ workflow_2d = {
     **workflow_3d,
     "gmsh_n_threads": 1,
     "elmer_n_processes": 1,
-    "n_workers": 1,
+    "n_workers": -1,
 }
 
 export_elmer(
@@ -118,5 +116,5 @@ export_elmer(
     post_process=post_process + [PostProcess("produce_cmatrix_table.py")],
 )
 
-open_with_klayout_or_default_application(export_simulation_oas(correction_simulations, dir_path, "epr"))
 open_with_klayout_or_default_application(export_simulation_oas(simulations, dir_path))
+open_with_klayout_or_default_application(export_simulation_oas(correction_simulations, dir_path, "epr"))

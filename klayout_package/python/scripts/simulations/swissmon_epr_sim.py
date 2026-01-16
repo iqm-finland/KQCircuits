@@ -37,9 +37,10 @@ from kqcircuits.util.export_helper import (
     get_active_or_new_layout,
     open_with_klayout_or_default_application,
 )
+from kqcircuits.simulations.export.elmer.elmer_solution import ElmerEPR3DSolution
+from kqcircuits.simulations.export.elmer.mesh_size_helpers import refine_metal_edges
 
-use_xsection = True
-
+use_ansys = False
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
@@ -52,53 +53,66 @@ sim_parameters = {
     "tls_layer_thickness": 0.01,
     "n": 24,
     "small_shape_area": 0.5,  # Suppress warnings about small shapes (default 1.0)
+    "detach_tls_sheets_from_body": use_ansys,
+    "metal_height": 0.2,
 }
 
 # Get layout
 logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 layout = get_active_or_new_layout()
 
-# Sweep solution type
-simulations = cross_combine(
-    SimClass(layout, **sim_parameters),
-    [
-        AnsysEigenmodeSolution(
-            name="_eigenmode",
-            max_delta_f=0.05,
-            n_modes=1,
-            min_frequency=1.0,
-            maximum_passes=20,
-            integrate_energies=True,
+if use_ansys:
+    # Sweep solution type
+    simulations = cross_combine(
+        SimClass(layout, **sim_parameters),
+        [
+            AnsysEigenmodeSolution(
+                name="_eigenmode",
+                max_delta_f=0.05,
+                n_modes=1,
+                min_frequency=1.0,
+                maximum_passes=20,
+                integrate_energies=True,
+            ),
+            AnsysVoltageSolution(
+                name="_voltage", max_delta_e=0.001, frequency=4.8, maximum_passes=20, integrate_energies=True
+            ),
+        ],
+    )
+    export_ansys(
+        simulations,
+        path=dir_path,
+        exit_after_run=True,
+        post_process=PostProcess("epr.sh", command="sh", folder=""),
+    )
+else:  # use Elmer
+    simulations = cross_combine(
+        SimClass(layout, **sim_parameters),
+        ElmerEPR3DSolution(
+            voltage_excitations=[1.0, 0.01],
+            # poor mesh for faster computation
+            mesh_size=refine_metal_edges(5.0, 1.0),
+            mesh_optimizer={},
         ),
-        AnsysVoltageSolution(
-            name="_voltage", max_delta_e=0.001, frequency=4.8, maximum_passes=20, integrate_energies=True
-        ),
-    ],
-)
+    )
 
-# Export simulation files
-export_ansys(
-    simulations,
-    path=dir_path,
-    exit_after_run=True,
-    post_process=(
-        PostProcess("epr.sh", command="sh", folder="") if use_xsection else PostProcess("produce_epr_table.py")
-    ),
-)
+    export_elmer(
+        simulations,
+        path=dir_path,
+        workflow={"elmer_n_processes": -1, "gmsh_n_threads": -1},
+        post_process=PostProcess("epr.sh", command="sh", folder=""),
+    )
+
 
 # produce EPR correction simulations
-if use_xsection:
-    correction_simulations, post_process = get_epr_correction_simulations(
-        simulations, correction_cuts, metal_height=0.2
-    )
-    export_elmer(
-        correction_simulations,
-        dir_path,
-        file_prefix="epr",
-        post_process=post_process,
-    )
+correction_simulations, post_process = get_epr_correction_simulations(simulations, correction_cuts, metal_height=0.2)
+export_elmer(
+    correction_simulations,
+    dir_path,
+    file_prefix="epr",
+    post_process=post_process,
+)
 
 # Write and open oas file
 open_with_klayout_or_default_application(export_simulation_oas(simulations, dir_path))
-if use_xsection:
-    open_with_klayout_or_default_application(export_simulation_oas(correction_simulations, dir_path, "epr"))
+open_with_klayout_or_default_application(export_simulation_oas(correction_simulations, dir_path, "epr"))
