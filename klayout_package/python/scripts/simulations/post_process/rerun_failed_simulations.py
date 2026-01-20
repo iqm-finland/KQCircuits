@@ -91,7 +91,7 @@ elif extension == "bat":
     for p in Path(".").glob("*_project_SMatrix.s*p"):
         snp_m = snp_pattern.search(p.name)
         if snp_m:
-            completed_simulations.add(snp_m.group(1))
+            completed_simulations.append(snp_m.group(1))
 
     rerun_script = script_contents[:4]
     for line in script_contents[4:]:
