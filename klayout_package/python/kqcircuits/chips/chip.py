@@ -117,6 +117,7 @@ class Chip(Element):
         pdt.TypeList, "List of booleans specifying if the frame is mirrored for each chip frame", [False, True]
     )
     frames_dice_width = Param(pdt.TypeList, "Dicing street width for each chip frame", [200, 140], unit="[μm]")
+    frames_dice_grid_margin = Param(pdt.TypeList, "Dicing street margin for each chip frame", [100, 100], unit="[μm]")
 
     face_boxes = Param(
         pdt.TypeShape,
@@ -307,6 +308,7 @@ class Chip(Element):
                 marker_dist=float(self.frames_marker_dist[i]),
                 diagonal_squares=int(self.frames_diagonal_squares[i]),
                 marker_types=self.marker_types[i * 4 : (i + 1) * 4],
+                dice_grid_margin=float(self.frames_dice_grid_margin[i]),
             )
 
             if str(self.frames_mirrored[i]).lower() == "true":  # Accept both boolean and string representation
