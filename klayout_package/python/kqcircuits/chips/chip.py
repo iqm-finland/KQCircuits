@@ -317,9 +317,6 @@ class Chip(Element):
                 frame_trans = pya.DTrans(0, 0)
             self.produce_frame(frame_parameters, frame_trans)
 
-        if self.with_gnd_tsvs:
-            self._produce_ground_tsvs(tsv_box=self.box.enlarged(-self.edge_from_tsv), faces=[0, 2])
-
     def get_box(self, face=0):
         """
         Get the chip frame box for the specified face, correctly resolving defaults.
@@ -449,6 +446,8 @@ class Chip(Element):
 
     def post_build(self):
         self.produce_structures()
+        if self.with_gnd_tsvs:
+            self._produce_ground_tsvs(tsv_box=self.box.enlarged(-self.edge_from_tsv), faces=[0, 2])
         if self.with_gnd_bumps:
             self._produce_ground_bumps()
         if self.with_grid:
