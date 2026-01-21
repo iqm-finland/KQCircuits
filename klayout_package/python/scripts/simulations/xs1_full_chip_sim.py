@@ -24,6 +24,8 @@ from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.export.elmer.mesh_size_helpers import refine_metal_edges
 from kqcircuits.simulations.export.simulation_export import export_simulation_oas
 from kqcircuits.simulations.single_xmons_full_chip_sim import SingleXmonsFullChipSim
+from kqcircuits.simulations.export.elmer.elmer_solution import ElmerVectorHelmholtzSolution
+from kqcircuits.simulations.export.ansys.ansys_solution import AnsysHfssSolution
 from kqcircuits.util.export_helper import create_or_empty_tmp_directory, open_with_klayout_or_default_application
 
 
@@ -33,10 +35,7 @@ use_sbatch = False
 launchers = True  # True includes bonding pads and tapers, false includes only waveguides
 target_frequency = 5.0  # GHz, can also be list
 
-if use_elmer:
-    dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_elmer")
-else:
-    dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_hfss")
+dir_path = create_or_empty_tmp_directory(Path(__file__).stem + ("_elmer" if use_elmer else "_hfss"))
 
 # Simulation parameters
 SimClass = SingleXmonsFullChipSim
@@ -53,15 +52,17 @@ sim_parameters = {
 if use_elmer:
     mesh_size = {
         "global_max": 200.0,
-        **refine_metal_edges(50.0),
-        "1t1_airbridge_*": 50.0,
+        **refine_metal_edges(10, 1.0),
     }
 
-    export_parameters_elmer = {
-        "path": dir_path,
-        "tool": "wave_equation",
-        "frequency": target_frequency,
-    }
+    solution = ElmerVectorHelmholtzSolution(
+        mesh_size=mesh_size,
+        frequency=target_frequency,
+        # Use first order basis since the model is very large
+        quadratic_approximation=False,
+        linear_system_method="zmumps",
+        use_multigrid_solver=False,
+    )
 
     workflow = {
         "run_gmsh_gui": False,
@@ -91,26 +92,24 @@ if use_elmer:
         }
 
 else:
-    export_parameters_ansys = {
-        "path": dir_path,
-        "frequency": target_frequency,
-        "max_delta_s": 0.001,
-        "sweep_start": 1,
-        "sweep_end": 10,
-        "sweep_count": 1001,
-        "maximum_passes": 20,
-        "exit_after_run": False,
-    }
+    solution = AnsysHfssSolution(
+        frequency=target_frequency,
+        max_delta_s=0.001,
+        sweep_start=1,
+        sweep_end=10,
+        sweep_count=1001,
+        maximum_passes=20,
+    )
 
 
 # Create simulation
-simulations = [SimClass(pya.Layout(), **sim_parameters)]
+simulations = [(SimClass(pya.Layout(), **sim_parameters), solution)]
 
 # Write and open oas file
 open_with_klayout_or_default_application(export_simulation_oas(simulations, dir_path))
 
 
 if use_elmer:
-    export_elmer(simulations, **export_parameters_elmer, mesh_size=mesh_size, workflow=workflow)
+    export_elmer(simulations, path=dir_path, workflow=workflow)
 else:
-    export_ansys(simulations, **export_parameters_ansys)
+    export_ansys(simulations, path=dir_path, exit_after_run=False)

@@ -48,6 +48,8 @@ def validate_simulation(simulation, solution):
     flux_integration_layer_exists_if_needed(simulation, solution)
     london_penetration_depth_with_ansys(simulation, solution)
 
+    check_elmer_solver_options(solution)
+
     # Run these checks only for 3D simulations
     if isinstance(simulation, Simulation):
         has_no_ports_when_required(simulation, solution)
@@ -243,6 +245,33 @@ def check_tls_sheets_by_solution(simulation, solution):
         # TLS sheets detached from metal
         if simulation.tls_sheet_approximation and not simulation.detach_tls_sheets_from_body:
             logging.warning("By convention `detach_tls_sheets_from_body` should be True in Ansys simulations")
+
+
+def check_elmer_solver_options(solution):
+    """Validation check: Raises errors on unsupported linear system solver parameter combinations"""
+    if isinstance(solution, AnsysSolution):
+        return
+
+    linsys = solution.linear_system_method.lower()
+    direct_method = linsys.endswith("mumps") or linsys in ["umfpack", "pardiso", "superlu"]
+    if solution.use_multigrid_solver and direct_method:
+        raise ValidateSimError(
+            f'To use direct solver "{linsys}", "use_multigrid_solver" must be False',
+            validation_type=check_elmer_solver_options.__name__,
+        )
+
+    if solution.linear_system_method == "mg":
+        raise ValidateSimError(
+            'linear_system_method=="mg" is deprecated. Use "use_multigrid_solver=True" instead.',
+            validation_type=check_elmer_solver_options.__name__,
+        )
+
+    if isinstance(solution, ElmerVectorHelmholtzSolution):
+        if not direct_method and not solution.quadratic_approximation:
+            raise ValidateSimError(
+                "ElmerVectorHelmholtzSolution with first order basis only supports direct `linear_system_method`:s",
+                validation_type=check_elmer_solver_options.__name__,
+            )
 
 
 # Following code is not validation checks but utilities used by validity checks

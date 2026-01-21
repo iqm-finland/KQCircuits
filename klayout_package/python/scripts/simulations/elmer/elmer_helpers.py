@@ -160,6 +160,12 @@ def sif_matc_block(data: list[str]) -> str:
     return "".join(f"$  {line}\n" for line in data)
 
 
+def is_direct_method(linsys_method: str) -> bool:
+    """Helper to check if a linear system method is direct or iterative"""
+    linsys_method = linsys_method.lower()
+    return linsys_method in ["umfpack", "pardiso", "superlu"] or linsys_method.endswith("mumps")
+
+
 def sif_linsys(json_data: dict) -> list[str]:
     """
     Returns a linear system definition in sif format.
@@ -179,7 +185,7 @@ def sif_linsys(json_data: dict) -> list[str]:
     linsys_method = json_data["linear_system_method"].lower()
     preconditioner = json_data["linear_system_preconditioning"]
 
-    if linsys_method in ["umfpack", "mumps", "pardiso", "superlu"]:
+    if is_direct_method(linsys_method):
         # direct methods
         linsys += [
             'Linear System Solver = String "Direct"',
@@ -192,25 +198,28 @@ def sif_linsys(json_data: dict) -> list[str]:
             "Linear System Solver = Iterative",
             f"Linear System Max Iterations = Integer {json_data['max_iterations']}",
             f"Linear System Convergence Tolerance = {json_data['convergence_tolerance']}",
-            "Linear System Abort Not Converged = False",
+            f"Linear System Abort Not Converged = Logical {json_data['abort_not_converged']}",
         ]
 
-        if linsys_method == "mg":
+        if json_data["use_multigrid_solver"]:
+            lowest_method = json_data["mg_lowest_method"]
+            lowest_itdir = "Direct" if is_direct_method(lowest_method) else "Iterative"
             linsys += [
-                "Linear System Iterative Method = GCR ",
+                f"Linear System Iterative Method = {linsys_method}",
                 "Linear System Residual Output = 10",
-                "Linear System Preconditioning = multigrid !ILU2",
+                "Linear System Preconditioning = multigrid",
                 "Linear System Refactorize = False",
                 "MG Method = p",
                 "MG Levels = $pn",
                 # SGS has some problems with parallel performance. As an alternative, more reliable
                 # CG could be used, but on average it seems to lead to even worse convergence
-                "MG Smoother = SGS",
-                "MG Pre Smoothing iterations = 2",
-                "MG Post Smoothing Iterations = 2",
-                "MG Lowest Linear Solver = iterative",
+                f"MG Smoother = {json_data['mg_smoother']}",
+                f"MG Smoother Relaxation Factor = $ {json_data['mg_relaxation_factor']}",
+                f"MG Pre Smoothing iterations = {json_data['mg_smoothing_iterations']}",
+                f"MG Post Smoothing Iterations = {json_data['mg_smoothing_iterations']}",
+                f"MG Lowest Linear Solver = {lowest_itdir}",
                 "mglowest: Linear System Scaling = False",
-                "mglowest: Linear System Iterative Method = CG !BiCGStabl",
+                f"mglowest: Linear System {lowest_itdir} Method = {lowest_method}",
                 f"mglowest: Linear System Preconditioning = {preconditioner}",
                 "mglowest: Linear System Max Iterations = 1000",
                 "mglowest: Linear System Convergence Tolerance = 1.0e-4",
@@ -282,7 +291,7 @@ def get_port_solver(json_data: dict[str, Any], ordinate: int | str) -> str:
         "Linear System Convergence Tolerance = 1.0e-5",
         "Linear System Residual Output = 0",
         "Linear System Max Iterations = 5000",
-        "linear system abort not converged = false",
+        f"Linear System Abort Not Converged = Logical {json_data['abort_not_converged']}",
     ]
     if json_data["maximum_passes"] > 1:
         solver_lines += sif_adaptive_mesh(json_data)
@@ -310,6 +319,8 @@ def get_vector_helmholtz(
         vector Helmholtz in sif file format
     """
     use_av = json_data["use_av"]
+    linsys_method = json_data["linear_system_method"]
+    itdir_str = "Direct" if is_direct_method(linsys_method) else "Iterative"
 
     lumping_lines = [
         "! Model lumping",
@@ -324,8 +335,11 @@ def get_vector_helmholtz(
     ]
 
     linear_system_lines = [
-        "Linear System Symmetric = Logical False",
+        "Linear System Symmetric = Logical True",
+        "Linear System Complex = Logical True",
         "Steady State Convergence Tolerance = 1e-09",
+        f"Linear System Abort Not Converged = Logical {json_data['abort_not_converged']}",
+        "Simplicial Mesh = Logical True",
     ]
 
     if use_av:
@@ -371,11 +385,10 @@ def get_vector_helmholtz(
             ]
         else:
             linear_system_lines += [
-                "Linear system complex = Logical True",
                 "Linear System Preconditioning Damp Coefficient im = -0.5",
                 "Mass-proportional Damping = Logical True",
-                'Linear System Solver = String "iterative"',
-                'Linear System Iterative Method = String "GCR"',
+                f"Linear System Solver = String {itdir_str}",
+                f"Linear System {itdir_str} Method = String {linsys_method}",
                 "Linear System GCR Restart = 200",
                 "Linear System Row Equilibration = Logical True",
                 "linear system normwise backward error = Logical True",
@@ -383,21 +396,52 @@ def get_vector_helmholtz(
                 "Linear System ILUT Tolerance = 1.5e-1",
                 f"Linear System Max Iterations = Integer {json_data['max_iterations']}",
                 f"Linear System Convergence Tolerance = {json_data['convergence_tolerance']}",
-                "linear system abort not converged = Logical False",
                 "Linear System Residual Output = 1",
             ]
 
         linear_system_lines += [
-            "linear system abort not converged = false",
             "Linear System Nullify Guess = Logical True",
         ]
 
-    else:
-        linear_system_lines += [
-            "Linear system complex = Logical True",
-            'Linear System Solver = String "Direct"',
-            'Linear system direct method = "mumps"',
-        ]
+    else:  # Not AV
+        if json_data["use_multigrid_solver"]:
+            lowest_method = json_data["mg_lowest_method"]
+            lowest_itdir_str = "Direct" if is_direct_method(lowest_method) else "Iterative"
+            linear_system_lines += [
+                "Linear System Solver = Iterative",
+                "Linear System Scaling = True",
+                f"Linear System Iterative Method = {linsys_method}",
+                f"Linear System Max Iterations = {json_data['max_iterations']}",
+                f"Linear System GCR Restart = {json_data['max_iterations']}",
+                "Linear System Residual Output = 1",
+                f"Linear System Convergence Tolerance = {json_data['convergence_tolerance']}",
+                "Linear System Preconditioning = Multigrid",
+                "! Mg parameters only active when $pn>2 and prec set to multigrid",
+                "Edge Basis = True",
+                "MG Method = p",
+                "MG Levels = 2",
+                f"MG Smoother Relaxation Factor = $ {json_data['mg_relaxation_factor']}",
+                f"MG Smoother = {json_data['mg_smoother']}",
+                f"MG Pre Smoothing iterations = {json_data['mg_smoothing_iterations']}",
+                f"MG Post Smoothing Iterations = {json_data['mg_smoothing_iterations']}",
+                "MG Max Iterations = 1",
+                f"MG Preconditioning = {json_data['linear_system_preconditioning']}",
+                f"MG Lowest Linear Solver = {lowest_itdir_str}",
+                f"mglowest: Linear System {lowest_itdir_str} Method = {lowest_method}",
+                "! If you run out of memory, increase this",
+                "Mumps Percentage Increase Working Space = Integer 50",
+            ]
+        else:
+            linear_system_lines += [
+                f"Linear System Solver = String {itdir_str}",
+                f"Linear system {itdir_str} method = {linsys_method}",
+            ]
+            if not is_direct_method(linsys_method):
+                linear_system_lines += [
+                    f"Linear System Convergence Tolerance = {json_data['convergence_tolerance']}",
+                    f"Linear System Preconditioning ={json_data['linear_system_preconditioning']}",
+                    f"Linear System Max Iterations = {json_data['max_iterations']}",
+                ]
 
     solver_lines = [
         "exec solver = Always",
@@ -558,7 +602,7 @@ def get_magneto_dynamics_2d_harmonic_solver(
         "Linear System Convergence Tolerance = 1.e-10",
         "Linear System Max Iterations = 3000",  # TODO inductanceSolution
         "Linear System Residual Output = 10",
-        "Linear System Abort not Converged = False",
+        f"Linear System Abort Not Converged = Logical {json_data['abort_not_converged']}",
         "Linear System ILUT Tolerance=1e-8",
         "BicgStabL Polynomial Degree = 6",
         "Steady State Convergence Tolerance = 1e-05",

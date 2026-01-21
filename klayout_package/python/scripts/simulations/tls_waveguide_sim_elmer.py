@@ -113,7 +113,6 @@ sim_parameters = {
 sol_parameters = {
     "tool": "epr_3d",
     "mesh_size": {"1t1_layerMAmer": 0.5, "1t1_layerMSmer": 0.5, "1t1_layerSAmer": 0.5},
-    "linear_system_method": "mg",
     "voltage_excitations": [1.0, 0.5],  # Explicitly set the signal voltages
     "save_elmer_data": True,
 }

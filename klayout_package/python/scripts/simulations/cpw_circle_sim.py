@@ -85,7 +85,6 @@ if use_elmer:
     export_parameters = {
         "path": dir_path,
         "tool": "capacitance",
-        "linear_system_method": "mg",
     }
     mesh_size = refine_metal_edges(2.0)
     workflow = {

@@ -157,7 +157,6 @@ if use_elmer:
         export_parameters_elmer = {
             "path": path,
             "tool": "capacitance",
-            "linear_system_method": "mg",
             "p_element_order": args.p_element_order,
             "post_process": PostProcess("produce_cmatrix_table.py"),
             "electric_infinity_bc": True,

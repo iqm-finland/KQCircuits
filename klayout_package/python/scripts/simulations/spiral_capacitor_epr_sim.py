@@ -86,7 +86,6 @@ simulations = cross_combine(
     [SimClass(layout, **sim_parameters, **s, name=f"spiral_capacitor_{i}") for i, s in enumerate(sweep)],
     ElmerEPR3DSolution(
         mesh_size=refine_metal_edges(2.0, ignore_region="waveguides"),
-        linear_system_method="mg",
     ),
 )
 

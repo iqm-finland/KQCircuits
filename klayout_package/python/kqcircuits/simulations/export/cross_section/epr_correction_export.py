@@ -40,7 +40,6 @@ def get_epr_correction_elmer_solution(**override_args):
     """
     return ElmerCrossSectionSolution(
         **{
-            "linear_system_method": "mg",
             "p_element_order": 3,
             "is_axisymmetric": False,
             "mesh_size": {

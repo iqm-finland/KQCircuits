@@ -98,7 +98,6 @@ sim_parameters = {
 solution = ElmerEPR3DSolution(
     mesh_size=refine_metal_edges(2.0, 0.5),
     mesh_optimizer={},
-    linear_system_method="mg",
     voltage_excitations=voltage_excitations,
 )
 

@@ -79,7 +79,6 @@ simulations = [
         SimClass(layout, **sim_parameters),
         ElmerEPR3DSolution(
             mesh_size=refine_metal_edges(2.0),
-            linear_system_method="mg",
         ),
     )
 ]

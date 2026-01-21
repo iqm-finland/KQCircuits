@@ -96,7 +96,7 @@ else:
 
 
 if use_elmer:
-    mesh_size = refine_metal_edges(5.0)
+    mesh_size = refine_metal_edges(5.0, 1.0)
 
     if wave_equation:
         if interpolating_sweep:
@@ -107,7 +107,7 @@ if use_elmer:
                 "frequency": [min(interp_freq), max(interp_freq)],
                 "sweep_type": "interpolating",
                 "max_delta_s": 1e-6,
-                "frequency_batch": 3,
+                "frequency_batch": 4,
                 "post_process": PostProcess("interpolate_s_parameters.py", frequencies=interp_freq.tolist()),
             }
         else:
@@ -121,7 +121,6 @@ if use_elmer:
         export_parameters_elmer = {
             "path": path,
             "tool": "capacitance",
-            "linear_system_method": "mg",
             "p_element_order": 3,
         }
 
@@ -139,14 +138,14 @@ if use_elmer:
                                #             second level of parallelization. -1 uses all
                                #             the physical cores (based on the machine which
                                #             was used to prepare the simulation).
-        'elmer_n_processes': 3,  # <------ This defines the number of
+        'elmer_n_processes': 5,  # <------ This defines the number of
                                                  #         processes in the second level
                                                  #         of parallelization. -1 uses all
                                                  #         the physical cores (based on
                                                  #         the machine which was used to
                                                  #         prepare the simulation)
         'elmer_n_threads': 1,  # <------ This defines the number of omp threads per process
-        'n_workers': 3,              # <--------- This defines the number of
+        'n_workers': 2,              # <--------- This defines the number of
                                       #            parallel independent processes.
                                       #            Setting this larger than 1 activates
                                       #            the use of the simple workload manager.

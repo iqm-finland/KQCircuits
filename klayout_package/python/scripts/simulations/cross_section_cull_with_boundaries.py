@@ -139,5 +139,4 @@ export_elmer(
     boundary_conditions=boundary_conditions,
     workflow=workflow,
     p_element_order=args.p_element_order,
-    linear_system_method="mg",
 )

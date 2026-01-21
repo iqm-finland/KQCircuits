@@ -241,7 +241,6 @@ if use_elmer:
         mesh_size=mesh_size,
         workflow=workflow,
         p_element_order=args.p_element_order,
-        linear_system_method="mg",
         is_axisymmetric=is_axisymmetric,
         integrate_energies=True,
         post_process=PostProcess("produce_epr_table.py", groups=["ma", "ms", "sa", "substrate", "vacuum"]),

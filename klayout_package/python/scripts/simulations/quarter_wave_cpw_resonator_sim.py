@@ -117,7 +117,6 @@ if use_elmer:
         export_parameters_elmer = {
             "path": path,
             "tool": "capacitance",
-            "linear_system_method": "mg",
             "p_element_order": 3,
         }
 

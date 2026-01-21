@@ -135,7 +135,6 @@ do_solution_sweep = True
 sol_parameters = {
     "mesh_size": mesh_size,
     "p_element_order": args.p_element_order,
-    "linear_system_method": "mg",
     "integrate_energies": True,
     # For faster sweep vtu image output and inductance simulations can be turned off
     "run_inductance_sim": True,

@@ -80,7 +80,8 @@ elmer_export_parameters = {
         "elmer_n_threads": 1,  # the number of omp threads per process
         "python_executable": "python",  # use 'kqclib' when using singularity image (you can also put a full path)
     },
-    "linear_system_method": "mg",  # Multigrid solver in Elmer, details in Elmer docs
+    "use_multigrid_solver": True,  # Multigrid solver in Elmer (default in KQCircuits), details in Elmer docs
+    "linear_system_method": "gcr",
     "p_element_order": 2,  # Polynomial order of FEM basis functions, computationally more expensive but more accurate.
     "mesh_size": refine_metal_edges(4.0),
 }
