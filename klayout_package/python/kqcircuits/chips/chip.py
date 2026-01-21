@@ -688,6 +688,7 @@ class Chip(Element):
         self,
         tsv_box=None,
         faces=[0, 2],
+        extra_filter_regions=[],
     ):  # pylint: disable=dangerous-default-value
         """Produces a grid of TSVs between given faces.
 
@@ -714,6 +715,7 @@ class Chip(Element):
             + [("indium_bump", face, self.tsv_edge_to_nearest_element) for face in faces]
             + [("base_metal_gap_wo_grid", face, self.tsv_edge_to_nearest_element) for face in faces]
             + [("through_silicon_via", face, self.tsv_edge_to_tsv_edge_separation) for face in faces]
+            + extra_filter_regions
         )
 
         if tsv_box is None:
