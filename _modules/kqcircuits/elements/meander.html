@@ -742,6 +742,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.error_on_cell.html">kqcircuits.util.error_on_cell</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.all_cell_parents"><code class="docutils literal notranslate"><span class="pre">all_cell_parents()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.find_cells_with_error"><code class="docutils literal notranslate"><span class="pre">find_cells_with_error()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.formatted_errors_on_cells"><code class="docutils literal notranslate"><span class="pre">formatted_errors_on_cells()</span></code></a></li>
 </ul>
@@ -1037,6 +1038,7 @@
 <div class="viewcode-block" id="Meander">
 <a class="viewcode-back" href="../../../api/kqcircuits.elements.meander.html#kqcircuits.elements.meander.Meander">[docs]</a>
 <span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">WaveguideCoplanarStraight</span><span class="p">,</span> <span class="s2">&quot;ground_grid_in_trace&quot;</span><span class="p">)</span>
+<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Airbridge</span><span class="p">,</span> <span class="s2">&quot;airbridge_type&quot;</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">Meander</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The PCell declaration for a meandering waveguide.</span>
 
@@ -1172,7 +1174,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">insert_bridge</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">Airbridge</span><span class="p">,</span> <span class="n">trans</span> <span class="o">*</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">position</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span>
+                <span class="n">Airbridge</span><span class="p">,</span> <span class="n">trans</span> <span class="o">*</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">position</span><span class="p">),</span> <span class="n">airbridge_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">airbridge_type</span>
+            <span class="p">)</span>
 
         <span class="n">bridge_separation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_bridges</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">dist_to_next</span> <span class="o">=</span> <span class="n">bridge_separation</span>
@@ -1222,7 +1226,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021-2025, IQM.</p>
+    <p>&#169; Copyright 2021-2026, IQM.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

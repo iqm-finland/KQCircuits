@@ -745,6 +745,7 @@
 </ul>
 </li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">kqcircuits.util.error_on_cell</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#kqcircuits.util.error_on_cell.all_cell_parents"><code class="docutils literal notranslate"><span class="pre">all_cell_parents()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#kqcircuits.util.error_on_cell.find_cells_with_error"><code class="docutils literal notranslate"><span class="pre">find_cells_with_error()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#kqcircuits.util.error_on_cell.formatted_errors_on_cells"><code class="docutils literal notranslate"><span class="pre">formatted_errors_on_cells()</span></code></a></li>
 </ul>
@@ -1003,13 +1004,31 @@
   <section id="module-kqcircuits.util.error_on_cell">
 <span id="kqcircuits-util-error-on-cell"></span><h1>kqcircuits.util.error_on_cell<a class="headerlink" href="#module-kqcircuits.util.error_on_cell" title="Link to this heading"></a></h1>
 <dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.util.error_on_cell.all_cell_parents">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.error_on_cell.</span></span><span class="sig-name descname"><span class="pre">all_cell_parents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Cell</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/kqcircuits/util/error_on_cell.html#all_cell_parents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.error_on_cell.all_cell_parents" title="Link to this definition"></a></dt>
+<dd><p>Finds all parent cell indices of a given cell, including cell itself</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layout</strong> – The layout</p></li>
+<li><p><strong>cell</strong> – The cell to find parents of</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns: list of cell indices of parent cells, where the first element is always <code class="docutils literal notranslate"><span class="pre">cell</span></code> itself.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.util.error_on_cell.find_cells_with_error">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.error_on_cell.</span></span><span class="sig-name descname"><span class="pre">find_cells_with_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Layout</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DPoint</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/kqcircuits/util/error_on_cell.html#find_cells_with_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.error_on_cell.find_cells_with_error" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.error_on_cell.</span></span><span class="sig-name descname"><span class="pre">find_cells_with_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent_cell_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DPoint</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/kqcircuits/util/error_on_cell.html#find_cells_with_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.error_on_cell.find_cells_with_error" title="Link to this definition"></a></dt>
 <dd><p>Find cell indices and error messages for all cells in the layout that have called the <code class="docutils literal notranslate"><span class="pre">raise_error_on_cell</span></code>
 method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>layout</strong> (<em>pya.Layout</em>) – The layout.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layout</strong> (<em>pya.Layout</em>) – The layout.</p></li>
+<li><p><strong>parent_cell_index</strong> – if not None, return only errors where the given cell index is a parent</p></li>
+</ul>
 </dd>
 </dl>
 <p>Returns: List of (cell_index, error_message, error_position) tuples.</p>
@@ -1017,11 +1036,14 @@ method.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.util.error_on_cell.formatted_errors_on_cells">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.error_on_cell.</span></span><span class="sig-name descname"><span class="pre">formatted_errors_on_cells</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Layout</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/kqcircuits/util/error_on_cell.html#formatted_errors_on_cells"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.error_on_cell.formatted_errors_on_cells" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.error_on_cell.</span></span><span class="sig-name descname"><span class="pre">formatted_errors_on_cells</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent_cell_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/kqcircuits/util/error_on_cell.html#formatted_errors_on_cells"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.error_on_cell.formatted_errors_on_cells" title="Link to this definition"></a></dt>
 <dd><p>Generate a formatted string describing all errors raised on cells and where in the cell hierarchy these appear.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>layout</strong> (<em>pya.Layout</em>) – The layout</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layout</strong> – The layout</p></li>
+<li><p><strong>parent_cell_index</strong> – if not None, include only errors where the given cell index is a parent</p></li>
+</ul>
 </dd>
 </dl>
 <p>Returns: Formatted multiline string</p>
@@ -1041,7 +1063,7 @@ method.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021-2025, IQM.</p>
+    <p>&#169; Copyright 2021-2026, IQM.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

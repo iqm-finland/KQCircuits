@@ -742,6 +742,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.error_on_cell.html">kqcircuits.util.error_on_cell</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.all_cell_parents"><code class="docutils literal notranslate"><span class="pre">all_cell_parents()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.find_cells_with_error"><code class="docutils literal notranslate"><span class="pre">find_cells_with_error()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.formatted_errors_on_cells"><code class="docutils literal notranslate"><span class="pre">formatted_errors_on_cells()</span></code></a></li>
 </ul>
@@ -1032,6 +1033,7 @@
     <span class="n">protection</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span> <span class="o">|</span> <span class="n">pya</span><span class="o">.</span><span class="n">RecursiveShapeIterator</span><span class="p">,</span>
     <span class="n">grid_step</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">grid_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">grid_offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates ground grid as shapes in a target cell, without cell hierarchy.</span>
 <span class="sd">    This function uses integer database units for all inputs.</span>
@@ -1043,8 +1045,11 @@
 <span class="sd">        protection: Region to avoid when filling grid</span>
 <span class="sd">        grid_step: distance between grid rectangles</span>
 <span class="sd">        grid_size: size of grid rectangles</span>
+<span class="sd">        grid_offset: Value between 0 (inclusive) and grid_step/grid_size (exclusive) to place grid rectangle.</span>
+<span class="sd">            0 (default) for bottom left of grid_step * grid_step tile, increasing integer value places rectangle</span>
+<span class="sd">            further up and right. Ensures multiple grids don&#39;t overlap.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">_</span><span class="p">,</span> <span class="n">grid_cell</span> <span class="o">=</span> <span class="n">_make_ground_grid_cell</span><span class="p">(</span><span class="n">target_layer</span><span class="p">,</span> <span class="n">grid_area</span><span class="p">,</span> <span class="n">protection</span><span class="p">,</span> <span class="n">grid_step</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">)</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">grid_cell</span> <span class="o">=</span> <span class="n">_make_ground_grid_cell</span><span class="p">(</span><span class="n">target_layer</span><span class="p">,</span> <span class="n">grid_area</span><span class="p">,</span> <span class="n">protection</span><span class="p">,</span> <span class="n">grid_step</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">,</span> <span class="n">grid_offset</span><span class="p">)</span>
 
     <span class="c1"># Copy shapes from temporary layout to the target cell. This flattens the instances of ``grid_element_cell``.</span>
     <span class="n">cm</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">CellMapping</span><span class="p">()</span>
@@ -1056,7 +1061,11 @@
 <div class="viewcode-block" id="make_ground_grid_region">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.groundgrid.html#kqcircuits.util.groundgrid.make_ground_grid_region">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">make_ground_grid_region</span><span class="p">(</span>
-    <span class="n">grid_area</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Box</span><span class="p">,</span> <span class="n">protection</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span> <span class="o">|</span> <span class="n">pya</span><span class="o">.</span><span class="n">RecursiveShapeIterator</span><span class="p">,</span> <span class="n">grid_step</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">grid_area</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Box</span><span class="p">,</span>
+    <span class="n">protection</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span> <span class="o">|</span> <span class="n">pya</span><span class="o">.</span><span class="n">RecursiveShapeIterator</span><span class="p">,</span>
+    <span class="n">grid_step</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">grid_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">grid_offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns ground grid as a ``Region``. This function uses integer database units for all inputs.</span>
 
@@ -1068,11 +1077,14 @@
 <span class="sd">        protection: Region to avoid when filling grid</span>
 <span class="sd">        grid_step: distance between grid rectangles</span>
 <span class="sd">        grid_size: size of grid rectangles</span>
+<span class="sd">        grid_offset: Value between 0 (inclusive) and grid_step/grid_size (exclusive) to place grid rectangle.</span>
+<span class="sd">            0 (default) for bottom left of grid_step * grid_step tile, increasing integer value places rectangle</span>
+<span class="sd">            further up and right. Ensures multiple grids don&#39;t overlap.</span>
 
 <span class="sd">    Returns: a Region containing the ground grid</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">dummy_layer</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayerInfo</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="n">layout</span><span class="p">,</span> <span class="n">grid_cell</span> <span class="o">=</span> <span class="n">_make_ground_grid_cell</span><span class="p">(</span><span class="n">dummy_layer</span><span class="p">,</span> <span class="n">grid_area</span><span class="p">,</span> <span class="n">protection</span><span class="p">,</span> <span class="n">grid_step</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">)</span>
+    <span class="n">layout</span><span class="p">,</span> <span class="n">grid_cell</span> <span class="o">=</span> <span class="n">_make_ground_grid_cell</span><span class="p">(</span><span class="n">dummy_layer</span><span class="p">,</span> <span class="n">grid_area</span><span class="p">,</span> <span class="n">protection</span><span class="p">,</span> <span class="n">grid_step</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">,</span> <span class="n">grid_offset</span><span class="p">)</span>
     <span class="n">grid_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">grid_cell</span><span class="o">.</span><span class="n">begin_shapes_rec</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">dummy_layer</span><span class="p">)))</span>
     <span class="n">grid_region</span><span class="o">.</span><span class="n">merge</span><span class="p">()</span>  <span class="c1"># Ensure the RecursiveShapeIterator is fully iterated over before we discard ``layout``</span>
     <span class="k">return</span> <span class="n">grid_region</span></div>
@@ -1085,6 +1097,7 @@
     <span class="n">protection</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span> <span class="o">|</span> <span class="n">pya</span><span class="o">.</span><span class="n">RecursiveShapeIterator</span><span class="p">,</span>
     <span class="n">grid_step</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">grid_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">grid_offset</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">Layout</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates ground grid as cell instances in a new cell in a new layout. The returned ``cell`` contains a child</span>
 <span class="sd">    cell instance for each grid cell element, and should generally be flattened to avoid having too many cell instances.</span>
@@ -1099,6 +1112,9 @@
 <span class="sd">        protection: Region to avoid when filling grid</span>
 <span class="sd">        grid_step: distance between grid rectangles</span>
 <span class="sd">        grid_size: size of grid rectangles</span>
+<span class="sd">        grid_offset: Value between 0 (inclusive) and grid_step/grid_size (exclusive) to place grid rectangle.</span>
+<span class="sd">            0 (default) for bottom left of grid_step * grid_step tile, increasing integer value places rectangle</span>
+<span class="sd">            further up and right. Ensures multiple grids don&#39;t overlap.</span>
 
 <span class="sd">    Returns: tuple ``(layout, cell)`` containing a new ``Layout`` and ``Cell``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1110,17 +1126,23 @@
 
     <span class="c1"># Create a cell with a single ground grid square</span>
     <span class="n">grid_element_cell</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">create_cell</span><span class="p">(</span><span class="s2">&quot;grid_element&quot;</span><span class="p">)</span>
-    <span class="n">grid_element_cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">target_layer</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">))</span>
+    <span class="n">grid_rectangle</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span>
+        <span class="n">grid_offset</span> <span class="o">*</span> <span class="n">grid_size</span><span class="p">,</span>
+        <span class="n">grid_offset</span> <span class="o">*</span> <span class="n">grid_size</span><span class="p">,</span>
+        <span class="p">(</span><span class="n">grid_offset</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">grid_size</span><span class="p">,</span>
+        <span class="p">(</span><span class="n">grid_offset</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">grid_size</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">grid_element_cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">target_layer</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">grid_rectangle</span><span class="p">)</span>
 
     <span class="c1"># Generate the full ground grid as instances of ``grid_element_cell`` in a new cell</span>
     <span class="n">grid_cell</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">create_cell</span><span class="p">(</span><span class="s2">&quot;grid&quot;</span><span class="p">)</span>
     <span class="n">grid_cell</span><span class="o">.</span><span class="n">fill_region</span><span class="p">(</span>
         <span class="n">region_with_ground_grid</span><span class="p">,</span>
         <span class="n">grid_element_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span>
-        <span class="n">pya</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">),</span>
+        <span class="n">grid_rectangle</span><span class="p">,</span>
         <span class="n">pya</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="n">grid_step</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
         <span class="n">pya</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">grid_step</span><span class="p">),</span>
-        <span class="n">pya</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">pya</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="n">grid_offset</span> <span class="o">*</span> <span class="n">grid_size</span><span class="p">,</span> <span class="n">grid_offset</span> <span class="o">*</span> <span class="n">grid_size</span><span class="p">),</span>
     <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">layout</span><span class="p">,</span> <span class="n">grid_cell</span>
@@ -1133,7 +1155,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021-2025, IQM.</p>
+    <p>&#169; Copyright 2021-2026, IQM.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

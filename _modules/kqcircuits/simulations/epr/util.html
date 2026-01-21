@@ -742,6 +742,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.error_on_cell.html">kqcircuits.util.error_on_cell</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.all_cell_parents"><code class="docutils literal notranslate"><span class="pre">all_cell_parents()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.find_cells_with_error"><code class="docutils literal notranslate"><span class="pre">find_cells_with_error()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.formatted_errors_on_cells"><code class="docutils literal notranslate"><span class="pre">formatted_errors_on_cells()</span></code></a></li>
 </ul>
@@ -1062,6 +1063,16 @@
 
 
 
+<div class="viewcode-block" id="is_flip_chip">
+<a class="viewcode-back" href="../../../../api/kqcircuits.simulations.epr.util.html#kqcircuits.simulations.epr.util.is_flip_chip">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_flip_chip</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">EPRTarget</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Determines if the geometry consists of multiple substrate layers&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">in_gui</span><span class="p">(</span><span class="n">element</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">face_stack</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">int</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">lower_box_height</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span></div>
+
+
+
 <div class="viewcode-block" id="extract_child_simulation">
 <a class="viewcode-back" href="../../../../api/kqcircuits.simulations.epr.util.html#kqcircuits.simulations.epr.util.extract_child_simulation">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">extract_child_simulation</span><span class="p">(</span>
@@ -1186,7 +1197,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021-2025, IQM.</p>
+    <p>&#169; Copyright 2021-2026, IQM.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

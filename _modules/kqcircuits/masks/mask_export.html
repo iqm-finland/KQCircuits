@@ -742,6 +742,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.error_on_cell.html">kqcircuits.util.error_on_cell</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.all_cell_parents"><code class="docutils literal notranslate"><span class="pre">all_cell_parents()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.find_cells_with_error"><code class="docutils literal notranslate"><span class="pre">find_cells_with_error()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.formatted_errors_on_cells"><code class="docutils literal notranslate"><span class="pre">formatted_errors_on_cells()</span></code></a></li>
 </ul>
@@ -1074,7 +1075,16 @@
 
 <div class="viewcode-block" id="export_chip">
 <a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_chip">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">export_chip</span><span class="p">(</span><span class="n">chip_cell</span><span class="p">,</span> <span class="n">chip_name</span><span class="p">,</span> <span class="n">chip_dir</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">export_drc</span><span class="p">,</span> <span class="n">alt_netlists</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">skip_extras</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">export_chip</span><span class="p">(</span>
+    <span class="n">chip_cell</span><span class="p">,</span>
+    <span class="n">chip_name</span><span class="p">,</span>
+    <span class="n">chip_dir</span><span class="p">,</span>
+    <span class="n">layout</span><span class="p">,</span>
+    <span class="n">export_drc</span><span class="p">,</span>
+    <span class="n">alt_netlists</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">skip_extras</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">export_chip_layer_clusters</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Exports a chip used in a maskset.&quot;&quot;&quot;</span>
 
     <span class="n">is_pcell</span> <span class="o">=</span> <span class="n">chip_cell</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
@@ -1119,30 +1129,32 @@
                     <span class="s2">&quot;density&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">values</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
                 <span class="p">}</span>
 
-        <span class="c1"># export .gds files for EBL or laser writer</span>
-        <span class="k">for</span> <span class="n">cluster_name</span><span class="p">,</span> <span class="n">layer_cluster</span> <span class="ow">in</span> <span class="n">chip_export_layer_clusters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="c1"># If the chip has no shapes in the main layers of the layer cluster, should not export the chip with</span>
-            <span class="c1"># that layer cluster.</span>
-            <span class="n">export_layer_cluster</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">layer_cluster</span><span class="o">.</span><span class="n">main_layers</span><span class="p">:</span>
-                <span class="n">shapes_iter</span> <span class="o">=</span> <span class="n">static_cell</span><span class="o">.</span><span class="n">begin_shapes_rec</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]))</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">shapes_iter</span><span class="o">.</span><span class="n">at_end</span><span class="p">():</span>
-                    <span class="n">export_layer_cluster</span> <span class="o">=</span> <span class="kc">True</span>
-                    <span class="k">break</span>
-            <span class="k">if</span> <span class="n">export_layer_cluster</span><span class="p">:</span>
-                <span class="c1"># To transform the exported layer cluster chip correctly (e.g. mirroring for top chip),</span>
-                <span class="c1"># an instance of the cell is inserted to a temporary cell with the correct transformation.</span>
-                <span class="c1"># Was not able to get this working by just using static_cell.transform_into().</span>
-                <span class="n">temporary_cell</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">create_cell</span><span class="p">(</span><span class="n">chip_name</span><span class="p">)</span>
-                <span class="n">temporary_cell</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
-                    <span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span>
-                        <span class="n">static_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span> <span class="n">default_mask_parameters</span><span class="p">[</span><span class="n">layer_cluster</span><span class="o">.</span><span class="n">face_id</span><span class="p">][</span><span class="s2">&quot;chip_trans&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">export_chip_layer_clusters</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">chip_name</span><span class="si">}</span><span class="s2"> - Exporting chip layer clusters&quot;</span><span class="p">)</span>
+            <span class="c1"># export .gds files for EBL or laser writer</span>
+            <span class="k">for</span> <span class="n">cluster_name</span><span class="p">,</span> <span class="n">layer_cluster</span> <span class="ow">in</span> <span class="n">chip_export_layer_clusters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="c1"># If the chip has no shapes in the main layers of the layer cluster, should not export the chip with</span>
+                <span class="c1"># that layer cluster.</span>
+                <span class="n">export_layer_cluster</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">layer_cluster</span><span class="o">.</span><span class="n">main_layers</span><span class="p">:</span>
+                    <span class="n">shapes_iter</span> <span class="o">=</span> <span class="n">static_cell</span><span class="o">.</span><span class="n">begin_shapes_rec</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]))</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">shapes_iter</span><span class="o">.</span><span class="n">at_end</span><span class="p">():</span>
+                        <span class="n">export_layer_cluster</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">break</span>
+                <span class="k">if</span> <span class="n">export_layer_cluster</span><span class="p">:</span>
+                    <span class="c1"># To transform the exported layer cluster chip correctly (e.g. mirroring for top chip),</span>
+                    <span class="c1"># an instance of the cell is inserted to a temporary cell with the correct transformation.</span>
+                    <span class="c1"># Was not able to get this working by just using static_cell.transform_into().</span>
+                    <span class="n">temporary_cell</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">create_cell</span><span class="p">(</span><span class="n">chip_name</span><span class="p">)</span>
+                    <span class="n">temporary_cell</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
+                        <span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span>
+                            <span class="n">static_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span> <span class="n">default_mask_parameters</span><span class="p">[</span><span class="n">layer_cluster</span><span class="o">.</span><span class="n">face_id</span><span class="p">][</span><span class="s2">&quot;chip_trans&quot;</span><span class="p">]</span>
+                        <span class="p">)</span>
                     <span class="p">)</span>
-                <span class="p">)</span>
-                <span class="n">layers_to_export</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="n">name</span><span class="p">])</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">layer_cluster</span><span class="o">.</span><span class="n">all_layers</span><span class="p">()}</span>
-                <span class="n">path</span> <span class="o">=</span> <span class="n">chip_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">chip_name</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">cluster_name</span><span class="si">}</span><span class="s2">.gds&quot;</span>
-                <span class="n">_export_cell</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">temporary_cell</span><span class="p">,</span> <span class="n">layers_to_export</span><span class="p">)</span>
-                <span class="n">temporary_cell</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+                    <span class="n">layers_to_export</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="n">name</span><span class="p">])</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">layer_cluster</span><span class="o">.</span><span class="n">all_layers</span><span class="p">()}</span>
+                    <span class="n">path</span> <span class="o">=</span> <span class="n">chip_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">chip_name</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">cluster_name</span><span class="si">}</span><span class="s2">.gds&quot;</span>
+                    <span class="n">_export_cell</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">temporary_cell</span><span class="p">,</span> <span class="n">layers_to_export</span><span class="p">)</span>
+                    <span class="n">temporary_cell</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
 
         <span class="c1"># export drc report for the chip</span>
         <span class="k">if</span> <span class="n">export_drc</span><span class="p">:</span>
@@ -1161,7 +1173,7 @@
         <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">chip_json</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">GeometryJsonEncoder</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 
     <span class="c1"># delete the static cell which was only needed for export</span>
-    <span class="k">if</span> <span class="n">static_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">()</span> <span class="o">!=</span> <span class="n">chip_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">static_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">()</span> <span class="o">!=</span> <span class="n">chip_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">()</span> <span class="ow">and</span> <span class="n">static_cell</span> <span class="ow">in</span> <span class="n">layout</span><span class="o">.</span><span class="n">top_cells</span><span class="p">():</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">delete_cell_rec</span><span class="p">(</span><span class="n">static_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">())</span></div>
 
 
@@ -1228,33 +1240,46 @@
         <span class="n">layer_name</span> <span class="o">=</span> <span class="n">layer_name</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
         <span class="n">mirror</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="n">top_cell</span> <span class="o">=</span> <span class="n">mask_layout</span><span class="o">.</span><span class="n">top_cell</span>
-    <span class="n">layout</span> <span class="o">=</span> <span class="n">top_cell</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
+    <span class="n">cell_to_export</span> <span class="o">=</span> <span class="n">mask_layout</span><span class="o">.</span><span class="n">top_cell</span>
+    <span class="n">layout</span> <span class="o">=</span> <span class="n">cell_to_export</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
     <span class="n">layer_info</span> <span class="o">=</span> <span class="n">resolve_default_layer_info</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="n">mask_layout</span><span class="o">.</span><span class="n">face_id</span><span class="p">)</span>
     <span class="n">layer</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">layer_info</span><span class="p">)</span>
     <span class="n">tmp_layer</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">invert</span><span class="p">:</span>
-        <span class="n">wafer</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">top_cell</span><span class="o">.</span><span class="n">begin_shapes_rec</span><span class="p">(</span><span class="n">layer</span><span class="p">))</span><span class="o">.</span><span class="n">merged</span><span class="p">()</span>
+        <span class="c1"># TODO: collecting merged region of some layer and inverting it is slow,</span>
+        <span class="c1"># if it&#39;s a full wafer with ground grid. Consider some approach similar to mirror</span>
+        <span class="n">wafer</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">cell_to_export</span><span class="o">.</span><span class="n">begin_shapes_rec</span><span class="p">(</span><span class="n">layer</span><span class="p">))</span><span class="o">.</span><span class="n">merged</span><span class="p">()</span>
         <span class="n">disc</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">circle_polygon</span><span class="p">(</span><span class="n">mask_layout</span><span class="o">.</span><span class="n">wafer_rad</span><span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">copy_layer</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">tmp_layer</span><span class="p">)</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">clear_layer</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
-        <span class="n">top_cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">wafer</span> <span class="o">^</span> <span class="n">disc</span><span class="p">)</span>
+        <span class="n">cell_to_export</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">wafer</span> <span class="o">^</span> <span class="n">disc</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">mirror</span><span class="p">:</span>
-        <span class="n">wafer</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">top_cell</span><span class="o">.</span><span class="n">begin_shapes_rec</span><span class="p">(</span><span class="n">layer</span><span class="p">))</span><span class="o">.</span><span class="n">merged</span><span class="p">()</span>
-        <span class="n">layout</span><span class="o">.</span><span class="n">copy_layer</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">tmp_layer</span><span class="p">)</span>
-        <span class="n">layout</span><span class="o">.</span><span class="n">clear_layer</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
-        <span class="n">top_cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">wafer</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Trans</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span>
+        <span class="c1"># Copying shapes to separate cell, then applying mirror transformation to</span>
+        <span class="c1"># entire cell is faster than collecting merged region.</span>
+        <span class="c1"># Another option is to copy cell shapes into a separate temporary layout.</span>
+        <span class="n">tmp_cell</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">create_cell</span><span class="p">(</span><span class="n">mask_layout</span><span class="o">.</span><span class="n">top_cell</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">cm</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">CellMapping</span><span class="p">()</span>
+        <span class="n">cm</span><span class="o">.</span><span class="n">for_single_cell</span><span class="p">(</span><span class="n">tmp_cell</span><span class="p">,</span> <span class="n">cell_to_export</span><span class="p">)</span>
+        <span class="n">lm</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayerMapping</span><span class="p">()</span>
+        <span class="n">lm</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
+
+        <span class="n">tmp_cell</span><span class="o">.</span><span class="n">copy_tree_shapes</span><span class="p">(</span><span class="n">cell_to_export</span><span class="p">,</span> <span class="n">cm</span><span class="p">,</span> <span class="n">lm</span><span class="p">)</span>
+        <span class="n">tmp_cell</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Trans</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">cell_to_export</span> <span class="o">=</span> <span class="n">tmp_cell</span>
 
     <span class="n">layers_to_export</span> <span class="o">=</span> <span class="p">{</span><span class="n">layer_info</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">layer</span><span class="p">}</span>
     <span class="n">path</span> <span class="o">=</span> <span class="n">export_dir</span> <span class="o">/</span> <span class="p">(</span><span class="n">get_mask_layout_full_name</span><span class="p">(</span><span class="n">mask_set</span><span class="p">,</span> <span class="n">mask_layout</span><span class="p">)</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;-</span><span class="si">{</span><span class="n">layer_info</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.oas&quot;</span><span class="p">)</span>
-    <span class="n">_export_cell</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">top_cell</span><span class="p">,</span> <span class="n">layers_to_export</span><span class="p">)</span>
+    <span class="n">_export_cell</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">cell_to_export</span><span class="p">,</span> <span class="n">layers_to_export</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">invert</span><span class="p">:</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">clear_layer</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">copy_layer</span><span class="p">(</span><span class="n">tmp_layer</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
-    <span class="n">layout</span><span class="o">.</span><span class="n">delete_layer</span><span class="p">(</span><span class="n">tmp_layer</span><span class="p">)</span></div>
+    <span class="n">layout</span><span class="o">.</span><span class="n">delete_layer</span><span class="p">(</span><span class="n">tmp_layer</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mirror</span><span class="p">:</span>
+        <span class="c1"># Delete temporary cell created for mirroring</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">delete_cell</span><span class="p">(</span><span class="n">tmp_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">())</span></div>
 
 
 
@@ -1439,7 +1464,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021-2025, IQM.</p>
+    <p>&#169; Copyright 2021-2026, IQM.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

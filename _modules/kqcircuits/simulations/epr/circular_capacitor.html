@@ -742,6 +742,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.error_on_cell.html">kqcircuits.util.error_on_cell</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.all_cell_parents"><code class="docutils literal notranslate"><span class="pre">all_cell_parents()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.find_cells_with_error"><code class="docutils literal notranslate"><span class="pre">find_cells_with_error()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.formatted_errors_on_cells"><code class="docutils literal notranslate"><span class="pre">formatted_errors_on_cells()</span></code></a></li>
 </ul>
@@ -1028,6 +1029,7 @@
     <span class="n">EPRTarget</span><span class="p">,</span>
     <span class="n">get_mer_z</span><span class="p">,</span>
     <span class="n">create_bulk_and_mer_partition_regions</span><span class="p">,</span>
+    <span class="n">is_flip_chip</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.partition_region</span><span class="w"> </span><span class="kn">import</span> <span class="n">PartitionRegion</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Simulation</span>
@@ -1042,13 +1044,6 @@
     <span class="k">if</span> <span class="n">in_gui</span><span class="p">(</span><span class="n">simulation</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">False</span>
     <span class="k">return</span> <span class="n">simulation</span><span class="o">.</span><span class="n">fixed_length</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">simulation</span><span class="o">.</span><span class="n">waveguide_length</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">simulation</span><span class="o">.</span><span class="n">use_internal_ports</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_is_flip_chip</span><span class="p">(</span><span class="n">simulation</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Determines if the geometry consists of multiple substrate layers&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">in_gui</span><span class="p">(</span><span class="n">simulation</span><span class="p">):</span>
-        <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_stack</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">int</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">lower_box_height</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_waveguide_end_dist</span><span class="p">(</span><span class="n">simulation</span><span class="p">):</span>
@@ -1215,7 +1210,7 @@
     <span class="n">result</span> <span class="o">+=</span> <span class="n">_init_part_reg</span><span class="p">(</span><span class="s2">&quot;2gap&quot;</span><span class="p">,</span> <span class="n">outer_gap_region</span><span class="p">)</span>
     <span class="n">result</span> <span class="o">+=</span> <span class="n">_init_part_reg</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">complement&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">_is_flip_chip</span><span class="p">(</span><span class="n">simulation</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">is_flip_chip</span><span class="p">(</span><span class="n">simulation</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">simulation</span><span class="o">.</span><span class="n">etch_opposite_face</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">+=</span> <span class="n">_init_part_reg</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">complement&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">bulk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">+=</span> <span class="n">_init_part_reg</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">complement&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">mer</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -1237,7 +1232,6 @@
 
     <span class="n">z_me_b</span> <span class="o">=</span> <span class="n">get_mer_z</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">r_tot</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">r_outer</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">ground_gap</span>
-    <span class="n">is_flip_chip</span> <span class="o">=</span> <span class="n">_is_flip_chip</span><span class="p">(</span><span class="n">simulation</span><span class="p">)</span>
 
     <span class="n">a2</span><span class="p">,</span> <span class="n">b2</span> <span class="o">=</span> <span class="n">eval_a2</span><span class="p">(</span><span class="n">simulation</span><span class="p">),</span> <span class="n">eval_b2</span><span class="p">(</span><span class="n">simulation</span><span class="p">)</span>
 
@@ -1440,7 +1434,7 @@
         <span class="s2">&quot;boundary_conditions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;xmax&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;potential&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}},</span>
     <span class="p">}</span>
 
-    <span class="k">if</span> <span class="n">is_flip_chip</span> <span class="ow">and</span> <span class="n">simulation</span><span class="o">.</span><span class="n">etch_opposite_face</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">is_flip_chip</span><span class="p">(</span><span class="n">simulation</span><span class="p">)</span> <span class="ow">and</span> <span class="n">simulation</span><span class="o">.</span><span class="n">etch_opposite_face</span><span class="p">:</span>
         <span class="n">cut_center</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">center</span>
             <span class="o">+</span> <span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">r_outer</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">ground_gap</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">etch_opposite_face_margin</span><span class="p">)</span> <span class="o">*</span> <span class="n">cut_unit_vector</span>
@@ -1487,7 +1481,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021-2025, IQM.</p>
+    <p>&#169; Copyright 2021-2026, IQM.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

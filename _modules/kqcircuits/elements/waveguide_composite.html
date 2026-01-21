@@ -742,6 +742,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.error_on_cell.html">kqcircuits.util.error_on_cell</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.all_cell_parents"><code class="docutils literal notranslate"><span class="pre">all_cell_parents()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.find_cells_with_error"><code class="docutils literal notranslate"><span class="pre">find_cells_with_error()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.formatted_errors_on_cells"><code class="docutils literal notranslate"><span class="pre">formatted_errors_on_cells()</span></code></a></li>
 </ul>
@@ -1685,6 +1686,7 @@
                     <span class="s2">&quot;start_point&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">meander_start</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">meander_start</span><span class="o">.</span><span class="n">y</span><span class="p">],</span>
                     <span class="s2">&quot;end_point&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">meander_end</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">meander_end</span><span class="o">.</span><span class="n">y</span><span class="p">],</span>
                     <span class="s2">&quot;meander_direction&quot;</span><span class="p">:</span> <span class="n">node1</span><span class="o">.</span><span class="n">meander_direction</span><span class="p">,</span>
+                    <span class="s2">&quot;airbridge_type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">airbridge_type</span><span class="p">,</span>
                 <span class="p">}</span>
 
                 <span class="n">cell_inst</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">Meander</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
@@ -1866,7 +1868,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021-2025, IQM.</p>
+    <p>&#169; Copyright 2021-2026, IQM.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

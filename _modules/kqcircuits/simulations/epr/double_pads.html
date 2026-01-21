@@ -742,6 +742,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.error_on_cell.html">kqcircuits.util.error_on_cell</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.all_cell_parents"><code class="docutils literal notranslate"><span class="pre">all_cell_parents()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.find_cells_with_error"><code class="docutils literal notranslate"><span class="pre">find_cells_with_error()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.formatted_errors_on_cells"><code class="docutils literal notranslate"><span class="pre">formatted_errors_on_cells()</span></code></a></li>
 </ul>
@@ -1020,7 +1021,7 @@
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.pya_resolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.epr.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">EPRTarget</span><span class="p">,</span> <span class="n">create_bulk_and_mer_partition_regions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.epr.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">EPRTarget</span><span class="p">,</span> <span class="n">create_bulk_and_mer_partition_regions</span><span class="p">,</span> <span class="n">is_flip_chip</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.partition_region</span><span class="w"> </span><span class="kn">import</span> <span class="n">PartitionRegion</span>
 
 <span class="c1"># Partition region and correction cuts definitions for double_pads qubit</span>
@@ -1031,20 +1032,24 @@
     <span class="n">metal_edge_dimension</span><span class="p">,</span>  <span class="c1"># gap</span>
     <span class="n">metal_edge_dimension</span><span class="p">,</span>  <span class="c1"># metal</span>
 <span class="p">]</span>
-<span class="n">junction_lead_width</span> <span class="o">=</span> <span class="mf">8.0</span>  <span class="c1"># for now, this is 8 um in Doublepad</span>
 
 
 <div class="viewcode-block" id="partition_regions">
 <a class="viewcode-back" href="../../../../api/kqcircuits.simulations.epr.double_pads.html#kqcircuits.simulations.epr.double_pads.partition_regions">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">partition_regions</span><span class="p">(</span><span class="n">simulation</span><span class="p">:</span> <span class="n">EPRTarget</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">PartitionRegion</span><span class="p">]:</span>
-    <span class="n">squid_height_</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;junction1&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]</span>
-    <span class="n">squid_height</span> <span class="o">=</span> <span class="n">squid_height_</span><span class="o">.</span><span class="n">y</span>
-    <span class="n">island1_bottom</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">squid_offset</span> <span class="o">+</span> <span class="n">squid_height</span> <span class="o">/</span> <span class="mi">2</span>
     <span class="n">base</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]</span>
-    <span class="n">taper_height</span> <span class="o">=</span> <span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">island_island_gap</span> <span class="o">-</span> <span class="n">squid_height</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
 
     <span class="n">island1_extent_0</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">island1_extent</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">island1_extent_1</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">island1_extent</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">island2_extent_0</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">island2_extent</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">island2_extent_1</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">island2_extent</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">junction1</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;probe_island_1&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">island1_extent_1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">junction2</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;probe_island_2&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">island2_extent_1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">squid_height</span> <span class="o">=</span> <span class="n">junction1</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">base</span><span class="o">.</span><span class="n">y</span>
+    <span class="n">island1_bottom</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">squid_offset</span> <span class="o">+</span> <span class="n">squid_height</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">taper_height</span> <span class="o">=</span> <span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">island_island_gap</span> <span class="o">-</span> <span class="n">squid_height</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
 
     <span class="n">island1_polygon</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span>
         <span class="p">[</span>
@@ -1073,46 +1078,19 @@
         <span class="n">simulation</span><span class="o">.</span><span class="n">island1_r</span> <span class="o">/</span> <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">island1_r</span> <span class="o">/</span> <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">n</span>
     <span class="p">)</span>
 
-    <span class="n">island1_taper</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span>
-        <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span>
-            <span class="p">[</span>
-                <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span>
-                    <span class="n">simulation</span><span class="o">.</span><span class="n">island1_taper_width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">metal_edge_dimension</span> <span class="o">-</span> <span class="mf">0.624</span><span class="p">,</span>
-                    <span class="n">island1_bottom</span> <span class="o">+</span> <span class="n">taper_height</span> <span class="o">-</span> <span class="n">metal_edge_dimension</span><span class="p">,</span>
-                <span class="p">),</span>
-                <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span>
-                    <span class="n">simulation</span><span class="o">.</span><span class="n">island1_taper_junction_width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">metal_edge_dimension</span> <span class="o">+</span> <span class="mf">0.08</span><span class="p">,</span>
-                    <span class="n">island1_bottom</span> <span class="o">+</span> <span class="mf">2.75</span> <span class="o">*</span> <span class="n">metal_edge_dimension</span><span class="p">,</span>
-                <span class="p">),</span>
-                <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span>
-                    <span class="o">-</span><span class="n">simulation</span><span class="o">.</span><span class="n">island1_taper_junction_width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">metal_edge_dimension</span> <span class="o">-</span> <span class="mf">0.08</span><span class="p">,</span>
-                    <span class="n">island1_bottom</span> <span class="o">+</span> <span class="mf">2.75</span> <span class="o">*</span> <span class="n">metal_edge_dimension</span><span class="p">,</span>
-                <span class="p">),</span>
-                <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span>
-                    <span class="o">-</span><span class="n">simulation</span><span class="o">.</span><span class="n">island1_taper_width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">metal_edge_dimension</span> <span class="o">+</span> <span class="mf">0.624</span><span class="p">,</span>
-                    <span class="n">island1_bottom</span> <span class="o">+</span> <span class="n">taper_height</span> <span class="o">-</span> <span class="n">metal_edge_dimension</span><span class="p">,</span>
-                <span class="p">),</span>
-            <span class="p">]</span>
-        <span class="p">)</span>
-        <span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
-        <span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
-    <span class="p">)</span>
-
-    <span class="n">island1_region</span> <span class="o">=</span> <span class="n">island1_region</span> <span class="o">+</span> <span class="n">island1_taper</span>
-
     <span class="n">island2_top</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">squid_offset</span> <span class="o">-</span> <span class="n">squid_height</span> <span class="o">/</span> <span class="mi">2</span>
     <span class="n">island2_polygon</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span>
         <span class="p">[</span>
             <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span>
-                <span class="o">-</span><span class="n">island1_extent_0</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">metal_edge_dimension</span><span class="p">,</span>
-                <span class="n">island2_top</span> <span class="o">-</span> <span class="n">taper_height</span> <span class="o">-</span> <span class="n">island1_extent_1</span> <span class="o">-</span> <span class="n">metal_edge_dimension</span><span class="p">,</span>
+                <span class="o">-</span><span class="n">island2_extent_0</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">metal_edge_dimension</span><span class="p">,</span>
+                <span class="n">island2_top</span> <span class="o">-</span> <span class="n">taper_height</span> <span class="o">-</span> <span class="n">island2_extent_1</span> <span class="o">-</span> <span class="n">metal_edge_dimension</span><span class="p">,</span>
             <span class="p">),</span>
             <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span>
-                <span class="n">island1_extent_0</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">metal_edge_dimension</span><span class="p">,</span>
-                <span class="n">island2_top</span> <span class="o">-</span> <span class="n">taper_height</span> <span class="o">-</span> <span class="n">island1_extent_1</span> <span class="o">-</span> <span class="n">metal_edge_dimension</span><span class="p">,</span>
+                <span class="n">island2_extent_0</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">metal_edge_dimension</span><span class="p">,</span>
+                <span class="n">island2_top</span> <span class="o">-</span> <span class="n">taper_height</span> <span class="o">-</span> <span class="n">island2_extent_1</span> <span class="o">-</span> <span class="n">metal_edge_dimension</span><span class="p">,</span>
             <span class="p">),</span>
-            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">island1_extent_0</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">metal_edge_dimension</span><span class="p">,</span> <span class="n">island2_top</span> <span class="o">-</span> <span class="n">taper_height</span> <span class="o">+</span> <span class="n">metal_edge_dimension</span><span class="p">),</span>
-            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">island1_extent_0</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">metal_edge_dimension</span><span class="p">,</span> <span class="n">island2_top</span> <span class="o">-</span> <span class="n">taper_height</span> <span class="o">+</span> <span class="n">metal_edge_dimension</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">island2_extent_0</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">metal_edge_dimension</span><span class="p">,</span> <span class="n">island2_top</span> <span class="o">-</span> <span class="n">taper_height</span> <span class="o">+</span> <span class="n">metal_edge_dimension</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">island2_extent_0</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">metal_edge_dimension</span><span class="p">,</span> <span class="n">island2_top</span> <span class="o">-</span> <span class="n">taper_height</span> <span class="o">+</span> <span class="n">metal_edge_dimension</span><span class="p">),</span>
         <span class="p">]</span>
     <span class="p">)</span>
 
@@ -1123,39 +1101,12 @@
         <span class="n">simulation</span><span class="o">.</span><span class="n">island2_r</span> <span class="o">/</span> <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">island2_r</span> <span class="o">/</span> <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">n</span>
     <span class="p">)</span>
 
-    <span class="n">island2_taper</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span>
-        <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span>
-            <span class="p">[</span>
-                <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span>
-                    <span class="n">simulation</span><span class="o">.</span><span class="n">island2_taper_width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">metal_edge_dimension</span> <span class="o">-</span> <span class="mf">0.624</span><span class="p">,</span>
-                    <span class="n">island2_top</span> <span class="o">-</span> <span class="n">taper_height</span> <span class="o">+</span> <span class="n">metal_edge_dimension</span><span class="p">,</span>
-                <span class="p">),</span>
-                <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span>
-                    <span class="n">simulation</span><span class="o">.</span><span class="n">island2_taper_junction_width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">metal_edge_dimension</span> <span class="o">-</span> <span class="mf">0.6201</span><span class="p">,</span>
-                    <span class="n">island2_top</span> <span class="o">-</span> <span class="mf">1.75</span> <span class="o">*</span> <span class="n">metal_edge_dimension</span><span class="p">,</span>
-                <span class="p">),</span>
-                <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span>
-                    <span class="o">-</span><span class="n">simulation</span><span class="o">.</span><span class="n">island2_taper_junction_width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">metal_edge_dimension</span> <span class="o">+</span> <span class="mf">0.6201</span><span class="p">,</span>
-                    <span class="n">island2_top</span> <span class="o">-</span> <span class="mf">1.75</span> <span class="o">*</span> <span class="n">metal_edge_dimension</span><span class="p">,</span>
-                <span class="p">),</span>
-                <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span>
-                    <span class="o">-</span><span class="n">simulation</span><span class="o">.</span><span class="n">island2_taper_width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">metal_edge_dimension</span> <span class="o">+</span> <span class="mf">0.624</span><span class="p">,</span>
-                    <span class="n">island2_top</span> <span class="o">-</span> <span class="n">taper_height</span> <span class="o">+</span> <span class="n">metal_edge_dimension</span><span class="p">,</span>
-                <span class="p">),</span>
-            <span class="p">]</span>
-        <span class="p">)</span>
-        <span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
-        <span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
-    <span class="p">)</span>
-
-    <span class="n">island2_region</span> <span class="o">=</span> <span class="n">island2_region</span> <span class="o">+</span> <span class="n">island2_taper</span>
-
     <span class="n">sector_region</span> <span class="o">=</span> <span class="n">island1_region</span> <span class="o">+</span> <span class="n">island2_region</span>
 
     <span class="c1"># Lead region</span>
-    <span class="n">leads_p1</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;junction1&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mf">2.5</span> <span class="o">*</span> <span class="n">metal_edge_dimension</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="n">leads_p2</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;junction2&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mf">2.5</span> <span class="o">*</span> <span class="n">metal_edge_dimension</span><span class="p">,</span> <span class="n">metal_edge_dimension</span><span class="p">)</span>
-    <span class="c1"># 2.5 factor is there to cover the electric field in the lead reagion properly.</span>
+    <span class="n">half_leads_w</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">island1_taper_width</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">island2_taper_width</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">metal_edge_dimension</span>
+    <span class="n">leads_p1</span> <span class="o">=</span> <span class="n">junction1</span> <span class="o">-</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">half_leads_w</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">leads_p2</span> <span class="o">=</span> <span class="n">junction2</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">half_leads_w</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
     <span class="c1"># coupler region</span>
     <span class="n">first_island_top_edge</span> <span class="o">=</span> <span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">squid_offset</span> <span class="o">+</span> <span class="n">squid_height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">taper_height</span> <span class="o">+</span> <span class="n">island1_extent_1</span>
@@ -1233,6 +1184,8 @@
         <span class="n">face</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
         <span class="n">region</span><span class="o">=</span><span class="n">sector_region</span><span class="p">,</span>
         <span class="n">vertical_dimensions</span><span class="o">=</span><span class="n">vertical_dimension</span><span class="p">,</span>
+        <span class="c1"># Hack for preventing a thin region of islandbulk from forming due to rounding (discretization).</span>
+        <span class="c1"># Makes the MER larger on the gap side to cover this region.</span>
         <span class="n">metal_edge_dimensions</span><span class="o">=</span><span class="p">[</span><span class="mf">6.0</span><span class="p">,</span> <span class="n">metal_edge_dimensions</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
         <span class="n">visualise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span>
@@ -1252,14 +1205,16 @@
         <span class="n">vertical_dimensions</span><span class="o">=</span><span class="n">vertical_dimension</span><span class="p">,</span>
         <span class="n">visualise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">result</span> <span class="o">+=</span> <span class="n">create_bulk_and_mer_partition_regions</span><span class="p">(</span>
-        <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">complement&quot;</span><span class="p">,</span>
-        <span class="n">face</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-        <span class="n">metal_edge_dimensions</span><span class="o">=</span><span class="n">metal_edge_dimensions</span><span class="p">,</span>
-        <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">vertical_dimensions</span><span class="o">=</span><span class="n">vertical_dimension</span><span class="p">,</span>
-        <span class="n">visualise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_flip_chip</span><span class="p">(</span><span class="n">simulation</span><span class="p">)</span> <span class="ow">and</span> <span class="n">simulation</span><span class="o">.</span><span class="n">etch_opposite_face</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">create_bulk_and_mer_partition_regions</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">complement&quot;</span><span class="p">,</span>
+            <span class="n">face</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">metal_edge_dimensions</span><span class="o">=</span><span class="n">metal_edge_dimensions</span><span class="p">,</span>
+            <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">vertical_dimensions</span><span class="o">=</span><span class="n">vertical_dimension</span><span class="p">,</span>
+            <span class="n">visualise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+
     <span class="k">return</span> <span class="n">result</span></div>
 
 
@@ -1268,31 +1223,29 @@
 <a class="viewcode-back" href="../../../../api/kqcircuits.simulations.epr.double_pads.html#kqcircuits.simulations.epr.double_pads.correction_cuts">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">correction_cuts</span><span class="p">(</span><span class="n">simulation</span><span class="p">:</span> <span class="n">EPRTarget</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
     <span class="n">half_cut_length</span> <span class="o">=</span> <span class="mf">30.0</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]</span>
+    <span class="n">probe1</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;probe_island_1&quot;</span><span class="p">]</span>
 
-    <span class="n">leads_center</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;junction1&quot;</span><span class="p">]</span>
+    <span class="n">leads_center</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;squid_port_squid_a&quot;</span><span class="p">,</span> <span class="n">base</span><span class="p">)</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">metal_edge_dimension</span><span class="p">)</span>
 
-    <span class="n">island2_extent0</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">island2_extent</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">island2_extent1</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">island2_extent</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">island1_extent_0</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">island1_extent</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">island1_extent_1</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">island1_extent</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
     <span class="n">coupler_extent0</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">coupler_extent</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">coupler_extent1</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">coupler_extent</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-    <span class="n">ground_gap</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">ground_gap</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="n">island1_edge</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">island2_extent0</span> <span class="o">/</span> <span class="mf">4.0</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">island_island_gap</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
-    <span class="n">coupler2_center</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;probe_island_1&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span>
-        <span class="mi">0</span><span class="p">,</span> <span class="n">island2_extent1</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">coupler_offset</span> <span class="o">+</span> <span class="n">coupler_extent1</span> <span class="o">/</span> <span class="mi">2</span>
-    <span class="p">)</span>
-    <span class="n">coupler1_center</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;probe_island_1&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span>
-        <span class="mi">0</span><span class="p">,</span> <span class="n">island2_extent1</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">coupler_offset</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">coupler_extent1</span>
-    <span class="p">)</span>
+    <span class="n">ground_gap</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">ground_gap</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">island1_edge</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">island1_extent_0</span> <span class="o">/</span> <span class="mf">4.0</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">island_island_gap</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
+    <span class="n">coupler2_center</span> <span class="o">=</span> <span class="n">probe1</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">island1_extent_1</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">coupler_offset</span> <span class="o">+</span> <span class="n">coupler_extent1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">coupler1_center</span> <span class="o">=</span> <span class="n">probe1</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">island1_extent_1</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">coupler_offset</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">coupler_extent1</span><span class="p">)</span>
 
     <span class="n">result</span> <span class="o">=</span> <span class="p">{</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">islandmer&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">&quot;p1&quot;</span><span class="p">:</span> <span class="n">island1_edge</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">half_cut_length</span><span class="p">),</span>
             <span class="s2">&quot;p2&quot;</span><span class="p">:</span> <span class="n">island1_edge</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">half_cut_length</span><span class="p">),</span>
-            <span class="s2">&quot;boundary_conditions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;xmin&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;potential&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="s2">&quot;ymax&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;potential&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}},</span>
+            <span class="s2">&quot;boundary_conditions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;xmin&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;potential&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}},</span>
         <span class="p">},</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">leadsmer&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;p1&quot;</span><span class="p">:</span> <span class="n">leads_center</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">half_cut_length</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">metal_edge_dimension</span><span class="p">),</span>
-            <span class="s2">&quot;p2&quot;</span><span class="p">:</span> <span class="n">leads_center</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">half_cut_length</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">metal_edge_dimension</span><span class="p">),</span>
+            <span class="s2">&quot;p1&quot;</span><span class="p">:</span> <span class="n">leads_center</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">half_cut_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="s2">&quot;p2&quot;</span><span class="p">:</span> <span class="n">leads_center</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">half_cut_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
             <span class="s2">&quot;boundary_conditions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;xmax&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;potential&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="s2">&quot;xmin&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;potential&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}},</span>
         <span class="p">},</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">coupler2mer&quot;</span><span class="p">:</span> <span class="p">{</span>
@@ -1308,14 +1261,16 @@
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">complementmer&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">&quot;p1&quot;</span><span class="p">:</span> <span class="n">ground_gap</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">half_cut_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
             <span class="s2">&quot;p2&quot;</span><span class="p">:</span> <span class="n">ground_gap</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">half_cut_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-            <span class="s2">&quot;boundary_conditions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;xmin&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;potential&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="s2">&quot;ymax&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;potential&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}},</span>
-        <span class="p">},</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">complementmer&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;p1&quot;</span><span class="p">:</span> <span class="n">ground_gap</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">half_cut_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-            <span class="s2">&quot;p2&quot;</span><span class="p">:</span> <span class="n">ground_gap</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">half_cut_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-            <span class="s2">&quot;boundary_conditions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;xmin&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;potential&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="s2">&quot;ymax&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;potential&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}},</span>
+            <span class="s2">&quot;boundary_conditions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;xmin&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;potential&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}},</span>
         <span class="p">},</span>
     <span class="p">}</span>
+    <span class="k">if</span> <span class="n">is_flip_chip</span><span class="p">(</span><span class="n">simulation</span><span class="p">)</span> <span class="ow">and</span> <span class="n">simulation</span><span class="o">.</span><span class="n">etch_opposite_face</span><span class="p">:</span>
+        <span class="n">result</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">simulation</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">complementmer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;p1&quot;</span><span class="p">:</span> <span class="n">ground_gap</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">half_cut_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="s2">&quot;p2&quot;</span><span class="p">:</span> <span class="n">ground_gap</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">half_cut_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="s2">&quot;boundary_conditions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;xmin&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;potential&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}},</span>
+        <span class="p">}</span>
+
     <span class="k">return</span> <span class="n">result</span></div>
 
 </pre></div>
@@ -1327,7 +1282,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021-2025, IQM.</p>
+    <p>&#169; Copyright 2021-2026, IQM.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

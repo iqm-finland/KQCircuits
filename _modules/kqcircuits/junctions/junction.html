@@ -742,6 +742,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.error_on_cell.html">kqcircuits.util.error_on_cell</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.all_cell_parents"><code class="docutils literal notranslate"><span class="pre">all_cell_parents()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.find_cells_with_error"><code class="docutils literal notranslate"><span class="pre">find_cells_with_error()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.formatted_errors_on_cells"><code class="docutils literal notranslate"><span class="pre">formatted_errors_on_cells()</span></code></a></li>
 </ul>
@@ -1037,7 +1038,8 @@
 <span class="sd">        `self.add_element(Junction, junction_type=&quot;JunctionName&quot;, **parameters)`,</span>
 
 <span class="sd">    where &quot;JunctionName&quot; is either a specific junction class name or name of a manually designed</span>
-<span class="sd">    junction cell.</span>
+<span class="sd">    junction cell. In order to be placed into a qubit, the class should define refpoints &quot;origin_squid&quot; and</span>
+<span class="sd">    &quot;port_common&quot; as the two points between which the SQUID will be attached to the base metal</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">LIBRARY_NAME</span> <span class="o">=</span> <span class="s2">&quot;Junction Library&quot;</span>
@@ -1072,7 +1074,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021-2025, IQM.</p>
+    <p>&#169; Copyright 2021-2026, IQM.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

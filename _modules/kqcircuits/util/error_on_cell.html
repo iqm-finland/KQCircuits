@@ -742,6 +742,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.error_on_cell.html">kqcircuits.util.error_on_cell</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.all_cell_parents"><code class="docutils literal notranslate"><span class="pre">all_cell_parents()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.find_cells_with_error"><code class="docutils literal notranslate"><span class="pre">find_cells_with_error()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.formatted_errors_on_cells"><code class="docutils literal notranslate"><span class="pre">formatted_errors_on_cells()</span></code></a></li>
 </ul>
@@ -1023,47 +1024,76 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.instance_hierarchy_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">formatted_cell_instance_hierarchy</span><span class="p">,</span> <span class="n">get_cell_instance_hierarchy</span>
 
 
+<div class="viewcode-block" id="all_cell_parents">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.all_cell_parents">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">all_cell_parents</span><span class="p">(</span><span class="n">layout</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Layout</span><span class="p">,</span> <span class="n">cell</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Finds all parent cell indices of a given cell, including cell itself</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        layout: The layout</span>
+<span class="sd">        cell: The cell to find parents of</span>
+
+<span class="sd">    Returns: list of cell indices of parent cells, where the first element is always ``cell`` itself.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">to_do</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">each_parent_cell</span><span class="p">())</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="n">cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">()]</span>
+    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">to_do</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">to_do</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+        <span class="n">to_do</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="o">.</span><span class="n">each_parent_cell</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+
 <div class="viewcode-block" id="find_cells_with_error">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.find_cells_with_error">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">find_cells_with_error</span><span class="p">(</span><span class="n">layout</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Layout</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">]]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_cells_with_error</span><span class="p">(</span>
+    <span class="n">layout</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Layout</span><span class="p">,</span> <span class="n">parent_cell_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Find cell indices and error messages for all cells in the layout that have called the ``raise_error_on_cell``</span>
 <span class="sd">    method.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        layout (pya.Layout): The layout.</span>
+<span class="sd">        parent_cell_index: if not None, return only errors where the given cell index is a parent</span>
 
 <span class="sd">    Returns: List of (cell_index, error_message, error_position) tuples.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Cells with errors have a TEXT cell instance inside them, which has the error message set as instance property.</span>
+    <span class="k">if</span> <span class="n">parent_cell_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">layout</span><span class="o">.</span><span class="n">is_valid_cell_index</span><span class="p">(</span><span class="n">parent_cell_index</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;parent_cell_index does not exist in the layout&quot;</span><span class="p">)</span>
+
     <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">layout</span><span class="o">.</span><span class="n">each_cell</span><span class="p">():</span>
         <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">cell</span><span class="o">.</span><span class="n">each_inst</span><span class="p">():</span>
             <span class="n">error_message</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">property</span><span class="p">(</span><span class="s2">&quot;error_on_cell&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">error_message</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">error_position</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">property</span><span class="p">(</span><span class="s2">&quot;error_on_cell_position&quot;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">error_position</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">error_position</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">))</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span>
-                <span class="n">position</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span> <span class="n">error_message</span><span class="p">,</span> <span class="n">position</span><span class="p">))</span>
-                <span class="k">continue</span>  <span class="c1"># No need to search any remaining instances</span>
+                <span class="k">if</span> <span class="n">parent_cell_index</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">parent_cell_index</span> <span class="ow">in</span> <span class="n">all_cell_parents</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">cell</span><span class="p">):</span>
+                    <span class="n">error_position</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">property</span><span class="p">(</span><span class="s2">&quot;error_on_cell_position&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">error_position</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">error_position</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span>
+                    <span class="n">position</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span> <span class="n">error_message</span><span class="p">,</span> <span class="n">position</span><span class="p">))</span>
+                    <span class="k">continue</span>  <span class="c1"># No need to search any remaining instances</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
 
 
 <div class="viewcode-block" id="formatted_errors_on_cells">
 <a class="viewcode-back" href="../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.formatted_errors_on_cells">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">formatted_errors_on_cells</span><span class="p">(</span><span class="n">layout</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Layout</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">formatted_errors_on_cells</span><span class="p">(</span><span class="n">layout</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Layout</span><span class="p">,</span> <span class="n">parent_cell_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a formatted string describing all errors raised on cells and where in the cell hierarchy these appear.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        layout (pya.Layout): The layout</span>
+<span class="sd">        layout: The layout</span>
+<span class="sd">        parent_cell_index: if not None, include only errors where the given cell index is a parent</span>
 
 <span class="sd">    Returns: Formatted multiline string</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">result</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">cell_index</span><span class="p">,</span> <span class="n">error_message</span><span class="p">,</span> <span class="n">error_position</span> <span class="ow">in</span> <span class="n">find_cells_with_error</span><span class="p">(</span><span class="n">layout</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">cell_index</span><span class="p">,</span> <span class="n">error_message</span><span class="p">,</span> <span class="n">error_position</span> <span class="ow">in</span> <span class="n">find_cells_with_error</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">parent_cell_index</span><span class="p">):</span>
         <span class="n">instance_data</span> <span class="o">=</span> <span class="n">get_cell_instance_hierarchy</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">cell_index</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">error_message</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">for</span> <span class="n">inst_data</span> <span class="ow">in</span> <span class="n">instance_data</span><span class="p">:</span>
@@ -1080,7 +1110,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021-2025, IQM.</p>
+    <p>&#169; Copyright 2021-2026, IQM.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

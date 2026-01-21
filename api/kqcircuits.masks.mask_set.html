@@ -745,6 +745,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.error_on_cell.html">kqcircuits.util.error_on_cell</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.all_cell_parents"><code class="docutils literal notranslate"><span class="pre">all_cell_parents()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.find_cells_with_error"><code class="docutils literal notranslate"><span class="pre">find_cells_with_error()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.formatted_errors_on_cells"><code class="docutils literal notranslate"><span class="pre">formatted_errors_on_cells()</span></code></a></li>
 </ul>
@@ -1137,6 +1138,9 @@ keyword arguments to apply only to the mask layout for <code class="docutils lit
 <code class="docutils literal notranslate"><span class="pre">chips</span></code> (or the individual chip part of tuples) may be a simple file name to load a static .oas file instead.</p>
 <p>The chip’s parameters dictionary may also contain an <code class="docutils literal notranslate"><span class="pre">alt_netlists</span></code> dictionary to specify alternative ways of
 generating netlists. See <code class="docutils literal notranslate"><span class="pre">export_cell_netlist()</span></code> or the <code class="docutils literal notranslate"><span class="pre">quick_demo.py</span></code> mask for further information.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">export_chip_layer_clusters</span></code> chip parameter is passed with value True, additional .oas files will be
+created for the chip containing only the layers defined per each non-empty LayerCluster
+defined in <code class="docutils literal notranslate"><span class="pre">chip_export_layer_clusters</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1204,7 +1208,7 @@ lists) where each element is a string identifying the chip type</p></li>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021-2025, IQM.</p>
+    <p>&#169; Copyright 2021-2026, IQM.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

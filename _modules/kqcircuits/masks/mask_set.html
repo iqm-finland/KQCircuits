@@ -742,6 +742,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.error_on_cell.html">kqcircuits.util.error_on_cell</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.all_cell_parents"><code class="docutils literal notranslate"><span class="pre">all_cell_parents()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.find_cells_with_error"><code class="docutils literal notranslate"><span class="pre">find_cells_with_error()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.error_on_cell.html#kqcircuits.util.error_on_cell.formatted_errors_on_cells"><code class="docutils literal notranslate"><span class="pre">formatted_errors_on_cells()</span></code></a></li>
 </ul>
@@ -1203,6 +1204,10 @@
 <span class="sd">        The chip&#39;s parameters dictionary may also contain an ``alt_netlists`` dictionary to specify alternative ways of</span>
 <span class="sd">        generating netlists. See ``export_cell_netlist()`` or the ``quick_demo.py`` mask for further information.</span>
 
+<span class="sd">        If ``export_chip_layer_clusters`` chip parameter is passed with value True, additional .oas files will be</span>
+<span class="sd">        created for the chip containing only the layers defined per each non-empty LayerCluster</span>
+<span class="sd">        defined in ``chip_export_layer_clusters``.</span>
+
 <span class="sd">        Args:</span>
 <span class="sd">            chip: A chip class. Or a list of tuples, like ``[(QualityFactor, &quot;QDG&quot;, parameters),...]``,</span>
 <span class="sd">                  parameters are optional.</span>
@@ -1257,6 +1262,7 @@
 
         <span class="n">mock_chip</span> <span class="o">=</span> <span class="n">_extra_params</span><span class="p">[</span><span class="s2">&quot;mock_chips&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="n">chip_params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;mock_chip&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="n">skip_extras</span> <span class="o">=</span> <span class="n">_extra_params</span><span class="p">[</span><span class="s2">&quot;skip_extras&quot;</span><span class="p">]</span>
+        <span class="n">export_chip_layer_clusters</span> <span class="o">=</span> <span class="n">chip_params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;export_chip_layer_clusters&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
         <span class="n">view</span> <span class="o">=</span> <span class="n">KLayoutView</span><span class="p">()</span>
         <span class="n">layout</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">layout</span>
@@ -1291,7 +1297,16 @@
             <span class="n">view</span><span class="o">.</span><span class="n">load_layout</span><span class="p">(</span><span class="n">chip_class</span><span class="p">)</span>
             <span class="n">cell</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">top_cells</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
-        <span class="n">export_chip</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="n">chip_path</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">export_drc</span><span class="p">,</span> <span class="n">alt_netlists</span><span class="p">,</span> <span class="n">skip_extras</span><span class="p">)</span>
+        <span class="n">export_chip</span><span class="p">(</span>
+            <span class="n">cell</span><span class="p">,</span>
+            <span class="n">variant_name</span><span class="p">,</span>
+            <span class="n">chip_path</span><span class="p">,</span>
+            <span class="n">layout</span><span class="p">,</span>
+            <span class="n">export_drc</span><span class="p">,</span>
+            <span class="n">alt_netlists</span><span class="o">=</span><span class="n">alt_netlists</span><span class="p">,</span>
+            <span class="n">skip_extras</span><span class="o">=</span><span class="n">skip_extras</span><span class="p">,</span>
+            <span class="n">export_chip_layer_clusters</span><span class="o">=</span><span class="n">export_chip_layer_clusters</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">view</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="n">variant_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">chip_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variant_name</span><span class="si">}</span><span class="s2">.oas&quot;</span><span class="p">)</span>
@@ -1446,7 +1461,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021-2025, IQM.</p>
+    <p>&#169; Copyright 2021-2026, IQM.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
