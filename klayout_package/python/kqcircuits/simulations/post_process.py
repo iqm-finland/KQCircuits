@@ -16,6 +16,7 @@
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 import json
+import platform
 from pathlib import Path
 
 
@@ -25,7 +26,7 @@ class PostProcess:
     def __init__(
         self,
         script: str,
-        command: str = "python",
+        command: str | None = "python",
         arguments: str = "",
         folder: str = "scripts",
         repeat_for_each: bool = False,
@@ -34,8 +35,9 @@ class PostProcess:
     ):
         """
         Args:
-            script: name of the post-processing script
-            command: command to run the post-processing script
+            script: name of the post-processing script.
+                    If script has no extension, a platform dependent .sh or .bat is used.
+            command: command to run the post-processing script. If None, a platform dependent "sh" or "call" is used.
             arguments: command line arguments for the post-processing script given as string
             folder: path where to look for the post-processing script file
             repeat_for_each: whether to repeat the post-processing script for every simulation. The simulation json file
@@ -43,6 +45,13 @@ class PostProcess:
             data_file_prefix: prefix of the saved data file if data is given
             data: additional data to be saved into a file. The data file name becomes the last command line argument.
         """
+
+        if Path(script).suffix == "":
+            script = script + (".bat" if platform.system() == "Windows" else ".sh")
+
+        if command is None:
+            command = "call" if platform.system() == "Windows" else "sh"
+
         self.script = script
         self.command = command
         self.arguments = arguments

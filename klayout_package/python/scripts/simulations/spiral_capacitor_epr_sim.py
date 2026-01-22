@@ -108,7 +108,7 @@ export_elmer(
     workflow=workflow,
     post_process=[
         PostProcess("produce_cmatrix_table.py"),
-        (PostProcess("epr.sh", command="sh", folder="") if use_xsection else PostProcess("produce_epr_table.py")),
+        (PostProcess("epr", command=None, folder="") if use_xsection else PostProcess("produce_epr_table.py")),
     ],
 )
 

@@ -103,7 +103,7 @@ export_elmer(
     simulations,
     path=dir_path,
     workflow=workflow_3d,
-    post_process=[PostProcess("elmer_profiler.py"), PostProcess("epr.sh", command="sh", folder="")],
+    post_process=[PostProcess("epr", command=None, folder="")],
 )
 
 correction_simulations, post_process = get_epr_correction_simulations(simulations, correction_cuts)
@@ -113,7 +113,7 @@ export_elmer(
     dir_path,
     file_prefix="epr",
     workflow=workflow_2d,
-    post_process=post_process + [PostProcess("produce_cmatrix_table.py")],
+    post_process=post_process + [PostProcess("produce_cmatrix_table.py"), PostProcess("elmer_profiler.py")],
 )
 
 open_with_klayout_or_default_application(export_simulation_oas(simulations, dir_path))

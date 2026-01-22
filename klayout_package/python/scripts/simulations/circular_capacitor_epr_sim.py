@@ -129,7 +129,7 @@ if use_sbatch:
         PostProcess("epr.sh", command="source", folder=""),
     ]
 else:
-    pp += [PostProcess("epr.sh", command="sh", folder="")]
+    pp += [PostProcess("epr", command=None, folder="")]
 
 simulations = cross_combine(simulations, solution)
 

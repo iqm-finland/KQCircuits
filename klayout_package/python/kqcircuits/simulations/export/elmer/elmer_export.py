@@ -146,28 +146,33 @@ def export_elmer_script(
         workflow = {}
     sbatch = "sbatch_parameters" in workflow
 
+    use_sh = sbatch or platform.system() != "Windows"
+    extension = ".sh" if use_sh else ".bat"
+
     python_executable = workflow.get("python_executable", "python")
-    main_script_filename = str(path.joinpath(file_prefix + ".sh"))
+    main_script_filename = str(path.joinpath(file_prefix + extension))
     execution_script = Path(script_folder).joinpath(script_file)
 
     n_jsons = len(json_filenames)
 
-    elmer_compile_str = 'echo "Compiling Elmer modules"\n'
-
-    if platform.system() == "Windows":
-        elmer_compile_str += (
-            f'cmd //c "elmerf90 -fcheck=all {script_folder}/SaveBoundaryEnergy.F90 -o SaveBoundaryEnergy.dll"\n'
-        )
-    else:
-        elmer_compile_str += (
-            f"elmerf90 -fcheck=all {script_folder}/SaveBoundaryEnergy.F90 -o SaveBoundaryEnergy > /dev/null\n"
-        )
+    nul_redirect = "/dev/null" if use_sh else "nul"
+    elmerf90_prefix = "" if use_sh else "call "
+    dll_extension = "" if use_sh else ".dll"
+    elmer_compile_str = (
+        'echo "Compiling Elmer modules"\n'
+        f"{elmerf90_prefix}elmerf90 -fcheck=all {Path(script_folder)/'SaveBoundaryEnergy.F90'}"
+        f" -o SaveBoundaryEnergy{dll_extension} > {nul_redirect}\n"
+    )
 
     path.joinpath("log_files").mkdir(parents=True, exist_ok=True)
 
-    def _write_script(filename, lines, interp_line="#!/bin/bash\n"):
+    def _write_script(filename, lines, interp_line=None):
         """Writes a script and makes it executable.
         `lines` is a string or list of strings that will be written into `filename`"""
+
+        if interp_line is None:
+            interp_line = "#!/bin/bash\n" if use_sh else "@echo off\n"
+
         with open(filename, "w", encoding="utf-8") as file:
             if isinstance(lines, list):
                 lines = "".join(lines)
@@ -384,7 +389,7 @@ def export_elmer_script(
                 f'{srun_cmd_gmsh} {python_run_cmd} --only-elmer-sifs {get_log_cmd("Elmer_sifs")}',
             ]
 
-            script_filename_meshes = str(path.joinpath(simulation_name + "_meshes.sh"))
+            script_filename_meshes = str(path.joinpath(simulation_name + "_meshes" + extension))
             _write_script(script_filename_meshes, script_lines)
 
             run_str = f'source "{Path(script_filename_meshes).relative_to(path)}" &\n'
@@ -404,7 +409,7 @@ def export_elmer_script(
             for i, s in enumerate(dep_mesh_scripts, 1)
         ]
 
-        _write_script(str(path.joinpath(file_prefix + "_meshes.sh")), meshes_script_lines)
+        _write_script(str(path.joinpath(file_prefix + "_meshes" + extension)), meshes_script_lines)
 
         main_script_lines = _get_sbatch_lines(sbatch_settings_elmer)
         main_script_lines += env_setup
@@ -437,7 +442,7 @@ def export_elmer_script(
                 f'{srun_cmd_script} {python_run_cmd} --write-project-results {get_log_cmd("write_project_results")}',
             ]
 
-            script_filename = str(path.joinpath(simulation_name + ".sh"))
+            script_filename = str(path.joinpath(simulation_name + extension))
             _write_script(script_filename, script_lines)
 
             main_script_lines += [
@@ -463,8 +468,11 @@ def export_elmer_script(
             main_script_lines.append(elmer_compile_str)
 
         if parallelize_workload:
-            main_script_lines.append(f"export OMP_NUM_THREADS={workflow['elmer_n_threads']}\n")
-            main_script_lines.append(f"{python_executable} {script_folder}/simple_workload_manager.py {n_workers}")
+            export_kw = "export" if use_sh else "set"
+            main_script_lines.append(f"{export_kw} OMP_NUM_THREADS={workflow['elmer_n_threads']}\n")
+            main_script_lines.append(
+                f"{python_executable} {Path(script_folder) / 'simple_workload_manager.py'} {n_workers}"
+            )
 
         dependent_sims = []
         for i, json_filename in enumerate(json_filenames):
@@ -472,12 +480,13 @@ def export_elmer_script(
             python_run_cmd = f'{python_executable} "{execution_script}" "{Path(json_filename).relative_to(path)}"'
 
             def get_log_cmd(logfile_suffix, filename=simulation_name):
-                return f'2>&1 >> "log_files/{filename}.{logfile_suffix}.log"\n'
+                log_file = Path("log_files") / f"{filename}.{logfile_suffix}.log"
+                return f'2>&1 >> "{log_file}"\n'
 
-            script_filename = str(path.joinpath(simulation_name + ".sh"))
+            script_filename = str(path.joinpath(simulation_name + extension))
 
             script_lines = [
-                "set -e\n",
+                "set -e\n" if use_sh else "if errorlevel 1 exit /b 1\n",
                 _sim_part_echo(i, "Gmsh"),
                 f'{python_run_cmd} --only-gmsh {get_log_cmd("Gmsh")}',
                 _sim_part_echo(i, "ElmerGrid"),
@@ -494,21 +503,25 @@ def export_elmer_script(
 
             _write_script(script_filename, script_lines)
 
+            script_path = Path(script_filename).relative_to(path)
             if parallelize_workload:
-                run_str = f' "./{Path(script_filename).relative_to(path)}"'
+                script_cmd = f' "./{script_path}"' if use_sh else f" {script_path}"
                 if mesh_name == simulation_name:
-                    main_script_lines.append(run_str)
+                    main_script_lines.append(script_cmd)
                 else:
-                    dependent_sims.append(run_str)
+                    dependent_sims.append(script_cmd)
             else:
+                script_cmd = f'"./{script_path}"' if use_sh else f"call {script_path}"
                 main_script_lines += [
                     f'echo "Submitting the main script of simulation {i + 1}/{n_jsons}"\n',
                     'echo "--------------------------------------------"\n',
-                    f'"./{Path(script_filename).relative_to(path)}"\n',
+                    f"{script_cmd}\n",
                 ]
 
         if dependent_sims:
-            main_script_lines.append(f"\n{python_executable} {script_folder}/simple_workload_manager.py {n_workers}")
+            main_script_lines.append(
+                f"\n{python_executable} {Path(script_folder)/'simple_workload_manager.py'} {n_workers}"
+            )
             main_script_lines += dependent_sims
 
         main_script_lines += [
@@ -570,7 +583,7 @@ def export_elmer(
 
     # If doing 3D epr simulations the custom Elmer energy integration module is compiled at runtime
     epr_sim = _is_epr_sim(simulations, common_sol)
-    script_paths = ELMER_SCRIPT_PATHS + [SIM_SCRIPT_PATH / "elmer_modules"] if epr_sim else ELMER_SCRIPT_PATHS
+    script_paths = ELMER_SCRIPT_PATHS + [Path(SIM_SCRIPT_PATH) / "elmer_modules"] if epr_sim else ELMER_SCRIPT_PATHS
 
     write_commit_reference_file(path)
     copy_content_into_directory(script_paths, path, script_folder)

@@ -756,12 +756,13 @@ def sif_body(
         body in sif file format
     """
     keywords = [] if keywords is None else keywords
-    value_list = [
-        f'Target Bodies({len(target_bodies)}) = $ {" ".join(target_bodies)}',
-        f"Equation = {str(equation)}",
-        f"Material = {str(material)}",
-    ]
-    return sif_block(f"Body {ordinate}", value_list + keywords)
+    value_list = [f"Equation = {str(equation)}", f"Material = {str(material)}"] + keywords
+
+    if len(target_bodies) > 0:
+        bodies = [f'Target Bodies({len(target_bodies)}) = $ {" ".join(target_bodies)}']
+        value_list = bodies + value_list
+
+    return sif_block(f"Body {ordinate}", value_list)
 
 
 def sif_component(

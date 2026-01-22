@@ -83,6 +83,7 @@ else:
         voltage_excitations=[1, 0.1, -1],
         mesh_size=refine_metal_edges(5.0, 0.5),
         mesh_optimizer={},
+        p_element_order=2,
     )
 # Get layout
 logging.basicConfig(level=logging.WARN, stream=sys.stdout)
@@ -97,14 +98,14 @@ if use_ansys:
         simulations,
         path=dir_path,
         exit_after_run=True,
-        post_process=PostProcess("epr.sh", command="sh", folder=""),
+        post_process=PostProcess("epr", command=None, folder=""),
     )
 else:  # use Elmer
     export_elmer(
         simulations,
         path=dir_path,
         workflow={"elmer_n_processes": -1, "gmsh_n_threads": -1},
-        post_process=PostProcess("epr.sh", command="sh", folder=""),
+        post_process=PostProcess("epr", command=None, folder=""),
     )
 
 # produce EPR correction simulations

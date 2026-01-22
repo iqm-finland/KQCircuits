@@ -88,7 +88,7 @@ def get_data_extraction_sif(
     )
 
     placeholders = sif_block("Equation 1", ["Active Solvers(1) = 1"])
-    placeholders += sif_block("Boundary Condition 1", [" Target Boundaries(0) = "])
+    placeholders += sif_block("Boundary Condition 1", [" Target Boundaries(1) = $ domain_boundary"])
 
     mesh_bodies, _ = read_mesh_names(Path(json_data["mesh_name"]))
     sif_bodies = get_layer_list(json_data, mesh_bodies)

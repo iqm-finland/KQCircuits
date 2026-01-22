@@ -83,7 +83,7 @@ if use_ansys:
         simulations,
         path=dir_path,
         exit_after_run=True,
-        post_process=PostProcess("epr.sh", command="sh", folder=""),
+        post_process=PostProcess("epr", command=None, folder=""),
     )
 else:  # use Elmer
     simulations = cross_combine(
@@ -100,7 +100,7 @@ else:  # use Elmer
         simulations,
         path=dir_path,
         workflow={"elmer_n_processes": -1, "gmsh_n_threads": -1},
-        post_process=PostProcess("epr.sh", command="sh", folder=""),
+        post_process=PostProcess("epr", command=None, folder=""),
     )
 
 
