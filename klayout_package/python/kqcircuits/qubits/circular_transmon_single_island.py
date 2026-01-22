@@ -94,28 +94,28 @@ class CircularTransmonSingleIsland(Qubit):
 
     def _make_arc_island(self, island_outer_radius, island_width, swept_angle):
         # Generate a polygon arc of any size and angle, starting from the outer edge to the inner edge
-        angle_rad = math.radians(swept_angle)
-        points_outside = arc_points(island_outer_radius, -angle_rad / 2, angle_rad / 2, self.n)
-        points_inside = arc_points(island_outer_radius - island_width, angle_rad / 2, -angle_rad / 2, self.n)
-        points = points_outside + points_inside
-        arc_island = pya.DPolygon(points)
+        angle_rad = math.radians(.....)
+        points_outside = arc_points(island_outer_radius, -angle_rad / 2, ....., self.n)
+        points_inside = arc_points(island_outer_radius - ....., angle_rad / 2, -angle_rad / 2, .....)
+        points = .....
+        arc_island = pya.DPolygon(.....)
 
         return arc_island
 
     def _make_qubit_island(self):
         # Circular qubit island
-        qubit_island = circle_polygon(self.r_island, self.n)
+        qubit_island = circle_polygon(....., .....)
 
-        return pya.Region(qubit_island.to_itype(self.layout.dbu))
+        return pya.Region(......to_itype(self.layout.dbu))
 
     def _add_junction(self, region):
         # Add the junction to the qubit island
         squid_origin = arc_points(
-            self.r_island + self.ground_gap, self.squid_angle * math.pi / 180, 2 * math.pi, self.n, pya.DPoint(0, 0)
+            ..... + self.ground_gap, self.squid_angle * math.pi / 180, 2 * math.pi, self.n, pya.DPoint(0, 0)
         )[0]
 
-        squid_transf = pya.DCplxTrans(1, 90 + self.squid_angle, False, squid_origin)
-        self.produce_squid(squid_transf)
+        squid_transf = pya.DCplxTrans(....., 90 + ....., False, .....)
+        self.produce_squid(.....)
         squid_distance_from_centre = self.refpoints["squid_port_common"].distance(self.refpoints["base"])
         # Connect the junction to the inner island
         squid_connection = pya.Region(
@@ -129,30 +129,30 @@ class CircularTransmonSingleIsland(Qubit):
                 ]
             ).to_itype(self.layout.dbu)
         )
-        region += squid_connection
+        region += .....
 
     def _make_coupler_island(self):
         # Generate the regions of the coupler islands.
         round_corner = 5
         coupler_islands_region = pya.Region()
         # Generate all the couplers in the same region
-        for c_angle, c_width, c_arc_ampl in zip(self.couplers_angle, self.couplers_width, self.couplers_arc_amplitude):
+        for c_angle, c_width, c_arc_ampl in zip(.....):
             coupler_island = self._make_arc_island(
-                self.couplers_r + float(c_width) / 2, float(c_width), float(c_arc_ampl)
+                self.couplers_r + float(.....) / 2, float(.....), float(.....)
             )
             coupler_island_region = (
-                pya.Region(coupler_island.to_itype(self.layout.dbu))
-                .round_corners(round_corner / self.layout.dbu, round_corner / self.layout.dbu, self.n)
-                .transformed(pya.ICplxTrans(1, float(c_angle), False, 0, 0))
+                pya.Region(......to_itype(self.layout.dbu))
+                .round_corners(..... / self.layout.dbu, ..... / self.layout.dbu, self.n)
+                .transformed(pya.ICplxTrans(....., float(c_angle), ....., ....., .....))
             )
-            coupler_islands_region += coupler_island_region
+            coupler_islands_region += .....
 
         return coupler_islands_region
 
     def _make_ground_region(self):
         # Generate the ground region as a filled (negative) circle of the maximum size
         n_points = self.n
-        return pya.Region(circle_polygon(self.r_island + self.ground_gap, n_points).to_itype(self.layout.dbu))
+        return pya.Region(circle_polygon(....., n_points).to_itype(self.layout.dbu))
 
     def _make_waveguides(self):
         # Make the waveguides for each coupler with custom impedance and return the region
@@ -162,27 +162,27 @@ class CircularTransmonSingleIsland(Qubit):
         overlapping_margin = 0.5
         # Outermost coordinate
         x_end = self.r_island + self.ground_gap
-        for c_a, c_b, c_angle in zip(self.couplers_a, self.couplers_b, self.couplers_angle):
+        for c_a, c_b, c_angle in zip(....., ....., .....):
             waveguide_signal = pya.Region(
                 pya.DPolygon(
                     [
-                        pya.DPoint(x_end + overlapping_margin, float(c_a) / 2),
-                        pya.DPoint(self.couplers_r, float(c_a) / 2),
-                        pya.DPoint(self.couplers_r, -float(c_a) / 2),
-                        pya.DPoint(x_end + overlapping_margin, -float(c_a) / 2),
+                        pya.DPoint(..... + overlapping_margin, float(c_a) / 2),
+                        pya.DPoint(....., float(c_a) / 2),
+                        pya.DPoint(....., -float(c_a) / 2),
+                        pya.DPoint(..... + overlapping_margin, -float(c_a) / 2),
                     ]
                 ).to_itype(self.layout.dbu)
-            ).transformed(pya.ICplxTrans(1, float(c_angle), False, 0, 0))
+            ).transformed(pya.ICplxTrans(1, float(.....), False, 0, 0))
             waveguide_gap = pya.Region(
                 pya.DPolygon(
                     [
-                        pya.DPoint(x_end, float(c_a) / 2 + float(c_b)),
-                        pya.DPoint(self.couplers_r, float(c_a) / 2 + float(c_b)),
-                        pya.DPoint(self.couplers_r, -float(c_a) / 2 - float(c_b)),
-                        pya.DPoint(x_end, -float(c_a) / 2 - float(c_b)),
+                        pya.DPoint(x_end, float(c_a) / 2 + .....),
+                        pya.DPoint(self.couplers_r, float(c_a) / 2 + .....),
+                        pya.DPoint(self.couplers_r, -float(c_a) / 2 - .....),
+                        pya.DPoint(x_end, -float(c_a) / 2 - .....),
                     ]
                 ).to_itype(self.layout.dbu)
-            ).transformed(pya.ICplxTrans(1, float(c_angle), False, 0, 0))
+            ).transformed(pya.ICplxTrans(1, float(.....), False, 0, 0))
             waveguides_signal_region += waveguide_signal
             waveguides_gap_region += waveguide_gap
         return waveguides_signal_region, waveguides_gap_region
@@ -191,7 +191,7 @@ class CircularTransmonSingleIsland(Qubit):
         # Add couplers ports
         for i, c_angle in enumerate(map(float, self.couplers_angle)):
             coupler_origin = arc_points(
-                self.r_island + self.ground_gap, c_angle * math.pi / 180, 2 * math.pi, self.n, pya.DPoint(0, 0)
+                ....., c_angle * math.pi / 180, 2 * math.pi, self.n, pya.DPoint(0, 0)
             )[0]
             coupler_transf = pya.DCplxTrans(1, 90 + c_angle, False, coupler_origin)
             self.add_port(
@@ -201,14 +201,14 @@ class CircularTransmonSingleIsland(Qubit):
             )
         # Add driveline port
         drive_origin = arc_points(
-            float(self.drive_distance), float(self.drive_angle) * math.pi / 180, 2 * math.pi, self.n, pya.DPoint(0, 0)
+            float(.....), float(.....) * math.pi / 180, 2 * math.pi, self.n, pya.DPoint(0, 0)
         )[0]
-        drive_transf = pya.DCplxTrans(1, 90 + self.drive_angle, False, drive_origin)
+        drive_transf = pya.DCplxTrans(1, 90 + ....., False, drive_origin)
         self.add_port("drive", drive_transf * pya.DPoint(0, 0), direction=pya.DVector(drive_transf * pya.DPoint(0, 0)))
 
     def _get_protection_region(self, region):
         # Region which we don't want to cover with the automatically generated ground grid
-        protection_region = region.sized(self.margin / self.layout.dbu, self.margin / self.layout.dbu, 2)
+        protection_region = region.sized(....., ....., 2)
 
         return protection_region
 

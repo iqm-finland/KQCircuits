@@ -132,53 +132,53 @@ class MunchQubits(Chip):
                 couplers_width=list(map(float, couplers_width)),
                 couplers_arc_amplitude=list(map(float, couplers_arc_amplitude)),
             )
-            _, _ = self.insert_cell(qubit_cell, trans, name, rec_levels=None)
+            _, _ = self.insert_cell(qubit_cell, ....., ....., rec_levels=None)
 
         # Insert both circular qubits
         produce_circular_qubit(
             "QB1",
-            transformations[0],
+            transformations[.....],
             self.couplers_a_qb1,
             self.couplers_b_qb1,
             self.couplers_angle_qb1,
             self.couplers_width_qb1,
             self.couplers_arc_amplitude_qb1,
-            drive_angles[0],
-            self.drive_line_offsets[0],
+            drive_angles[.....],
+            self.drive_line_offsets[.....],
         )
         produce_circular_qubit(
             "QB2",
-            transformations[1],
+            transformations[.....],
             self.couplers_a_qb2,
             self.couplers_b_qb2,
             self.couplers_angle_qb2,
             self.couplers_width_qb2,
             self.couplers_arc_amplitude_qb2,
-            drive_angles[1],
-            self.drive_line_offsets[1],
+            drive_angles[.....],
+            self.drive_line_offsets[.....],
         )
 
         # Add now the floating island qubit
-        qubit_cell = self.add_element(DoublePads)
-        _, _ = self.insert_cell(qubit_cell, pya.DCplxTrans(1, 180, False, 5000, 4000), "QB3", rec_levels=None)
+        qubit_cell = self.add_element(.....)
+        _, _ = self.insert_cell(....., pya.DCplxTrans(1, 180, False, 5000, 4000), "QB3", rec_levels=.....)
 
     def produce_coupler(self):
         # Insert a fixed coupler of a variable meander size in between qubits
         _, _, length = WaveguideComposite.produce_fixed_length_waveguide(
             self,
             lambda x: [
-                Node(self.refpoints["QB1_port_coupler_2"]),
+                Node(.....),
                 Node(self.refpoints["QB1_port_coupler_2_corner"], n_bridges=1),
                 Node(pya.DPoint(4500, 6500), n_bridges=2),
                 Node(pya.DPoint(5500, 6500), length_before=x, n_bridges=6),
                 Node(self.refpoints["QB2_port_coupler_2_corner"], n_bridges=2),
-                Node(self.refpoints["QB2_port_coupler_2"], n_bridges=1),
+                Node(....., n_bridges=1),
             ],
             initial_guess=5000,
-            length=self.coupler_length,
-            a=float(self.couplers_a_qb1[1]),
+            length=.....,
+            a=float(.....),
             b=float(self.couplers_b_qb1[1]),
-            term1=0,
+            term1=.....,
             term2=0,
         )
 
@@ -187,19 +187,19 @@ class MunchQubits(Chip):
     def produce_probeline(self):
         # Make the probeline pass through the resonators tees
         probeline = self.add_element(
-            WaveguideComposite,
+            .....,
             nodes=[
                 Node(self.refpoints["PL-1-IN_base"]),
-                Node(self.refpoints["PL-1-IN_port_corner"], n_bridges=1),
-                Node(pya.DPoint(self.refpoints["QB1_base"].x - 1000, 1500), n_bridges=4),
+                Node(....., n_bridges=1),
+                Node(pya.DPoint(..... - 1000, 1500), n_bridges=4),
                 Node(
-                    pya.DPoint(self.refpoints["QB1_base"].x, 1500),
+                    pya.DPoint(....., 1500),
                     WaveguideCoplanarSplitter,
                     align=("port_a", "port_c"),
-                    angles=[180, 90, 0],
+                    angles=[180, ....., 0],
                     lengths=[50, 150, 50],
                     inst_name="QB1_tee",
-                    use_airbridges=True,
+                    use_airbridges=.....,
                     n_bridges=1,
                 ),
                 Node(
@@ -231,7 +231,7 @@ class MunchQubits(Chip):
             term1=0,
             term2=0,
         )
-        self.insert_cell(probeline, inst_name="pl")
+        self.insert_cell(....., inst_name="pl")
 
     def produce_drivelines(self):
         # Connect the drivelines to the qubit ports
@@ -242,8 +242,8 @@ class MunchQubits(Chip):
                 nodes=[
                     Node(self.refpoints[f"DL-QB{qubit_nr}_base"]),
                     Node(self.refpoints[f"DL-QB{qubit_nr}_port_corner"], n_bridges=1),
-                    Node(self.refpoints[f"DL-QB{qubit_nr}_port_corner"] + pya.DPoint(0, -1200), n_bridges=1),
-                    Node(self.refpoints[f"QB{qubit_nr}_port_drive_corner"], n_bridges=1),
+                    Node(self.refpoints[.....] + pya.DPoint(0, -1200), n_bridges=1),
+                    Node(self.refpoints[.....], n_bridges=1),
                     Node(self.refpoints[f"QB{qubit_nr}_port_drive"]),
                 ],
                 term2=self.b,
@@ -251,14 +251,14 @@ class MunchQubits(Chip):
             # Double pad qubit
             airbridge_crossing_coordinate = (
                 self.refpoints["pl_QB2_tee_base"] - self.refpoints["pl_QB3_tee_base"]
-            ) / 2 + self.refpoints["pl_QB3_tee_base"]
+            ) / 2 + self.refpoints[.....]
             self.insert_cell(
                 WaveguideComposite,
                 nodes=[
                     Node(self.refpoints["DL-QB3_base"]),
                     Node(self.refpoints["DL-QB3_port_corner"], n_bridges=1),
                     Node(airbridge_crossing_coordinate + pya.DVector(0, -300), n_bridges=1),
-                    Node(airbridge_crossing_coordinate, AirbridgeConnection, n_bridges=1),
+                    Node(....., AirbridgeConnection, n_bridges=1),
                     Node(airbridge_crossing_coordinate + pya.DVector(0, 200), n_bridges=1),
                     Node(
                         pya.DPoint(
@@ -278,7 +278,7 @@ class MunchQubits(Chip):
         for i, t_angle in enumerate(tee_angles):
             capacitor = self.add_element(
                 **cap_params(
-                    fingers=float(self.kappa_finger_control[i]),
+                    fingers=float(.....),
                     coupler_type="smooth",
                     element_key="cls",
                     fixed_length=160,
@@ -288,7 +288,7 @@ class MunchQubits(Chip):
                 capacitor,
                 trans=pya.DCplxTrans(1, t_angle, False, 0, 0),
                 align_to=f"pl_QB{i + 1}_tee_port_b",
-                align="port_a",
+                align=.....,
             )
             # Add the lower part of the resonator, align it, measure it
             # Qubits ports are called slightly different for the circular qubits and the double pad
@@ -307,7 +307,7 @@ class MunchQubits(Chip):
                 ],
                 inst_name=f"resonator_bottom_{i + 1}",
             )
-            length_nonmeander_bottom = resonator_bottom.cell.length()
+            length_nonmeander_bottom = resonator_bottom.cell......
             # Add the upper part of the resonator, align it, measure it
             resonator_top, _ = self.insert_cell(
                 WaveguideComposite,
@@ -324,7 +324,7 @@ class MunchQubits(Chip):
                 Meander,
                 start_point=self.refpoints[qubits_couplers_corners[i]] + pya.DPoint(0, -300),
                 end_point=self.refpoints[f"resonator_bottom_{i + 1}_port_b"],
-                length=float(self.readout_res_lengths[i]) - length_nonmeander_top - length_nonmeander_bottom,
+                length=float(self.readout_res_lengths[i]) - ..... - .....,
                 n_bridges=18,
             )
             logging.info(
