@@ -404,7 +404,7 @@ class Chip(Element):
         """Return the element which will be used for the ground bumps"""
         return FlipChipConnector
 
-    def _produce_ground_bumps(self, faces=[0, 1]):  # pylint: disable=dangerous-default-value
+    def _produce_ground_bumps(self, faces=[0, 1], extra_filter_regions=[]):  # pylint: disable=dangerous-default-value
         """Produces a grid of indium bumps between given faces.
 
         The bumps avoid ground grid avoidance on both faces, and keep a minimum distance to existing bumps.
@@ -424,6 +424,7 @@ class Chip(Element):
             [("ground_grid_avoidance", face, 0) for face in faces]
             + [("indium_bump", face, self.bump_edge_to_bump_edge_separation) for face in faces]
             + [("through_silicon_via", face, self.tsv_edge_to_nearest_element) for face in faces]
+            + extra_filter_regions
         )
         bump_box = self.get_box(1).enlarged(pya.DVector(-self.edge_from_bump, -self.edge_from_bump))
         locations = self.get_ground_bump_locations(bump_box)
