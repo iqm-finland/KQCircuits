@@ -1760,6 +1760,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">tsv_box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">faces</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+        <span class="n">extra_filter_regions</span><span class="o">=</span><span class="p">[],</span>
     <span class="p">):</span>  <span class="c1"># pylint: disable=dangerous-default-value</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Produces a grid of TSVs between given faces.</span>
 
@@ -1786,6 +1787,7 @@
             <span class="o">+</span> <span class="p">[(</span><span class="s2">&quot;indium_bump&quot;</span><span class="p">,</span> <span class="n">face</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tsv_edge_to_nearest_element</span><span class="p">)</span> <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">]</span>
             <span class="o">+</span> <span class="p">[(</span><span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">,</span> <span class="n">face</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tsv_edge_to_nearest_element</span><span class="p">)</span> <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">]</span>
             <span class="o">+</span> <span class="p">[(</span><span class="s2">&quot;through_silicon_via&quot;</span><span class="p">,</span> <span class="n">face</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tsv_edge_to_tsv_edge_separation</span><span class="p">)</span> <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">]</span>
+            <span class="o">+</span> <span class="n">extra_filter_regions</span>
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">tsv_box</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
