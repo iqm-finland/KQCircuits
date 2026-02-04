@@ -139,21 +139,13 @@ class SmoothCapacitor(Element):
 
     def middle_gap_fill(self):
         scale = self.finger_width + self.finger_gap
-        x_max = max(self.finger_control, 1.0 / self.finger_control) * scale - self.finger_gap / 2
-        x_mid = x_max - self.finger_width
-        y = scale / 2
-        x = (x_mid + x_max) / 2
-        l = 2 * x if self.finger_control < 1 else scale
-        rr = (self.finger_width / 2 + self.ground_gap) / self.layout.dbu
-        return (
-            pya.Region(
-                pya.DPolygon(
-                    [pya.DPoint(-x, y), pya.DPoint(l - x, y), pya.DPoint(x, -y), pya.DPoint(x - l, -y)]
-                ).to_itype(self.layout.dbu)
-            )
-            .sized(rr, 5)
-            .rounded_corners(rr, rr, self.n)
-        )
+        r = self.finger_width / 2 + self.ground_gap
+        x = (1 / self.finger_control - 0.5 if self.finger_control < 1 else 1.5 - self.finger_control) * scale + r
+        if x <= 0.0:
+            return pya.Region()
+        y = scale / 2 + r
+        rr = r / self.layout.dbu
+        return pya.Region(pya.DBox(-x, -y, x, y).to_itype(self.layout.dbu)).rounded_corners(rr, rr, self.n)
 
     def insert_wg_joint(self, reg, x0, xr, r):
         rr = r / self.layout.dbu
