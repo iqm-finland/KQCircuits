@@ -51,9 +51,16 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../installation/klayout.html">Installing KLayout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/klayout.html">Installing KLayout</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/klayout.html#python">Python</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../installation/known_issues.html">Known installation issues</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../installation/known_issues.html#installing-different-python-package-versions-to-klayout-manually">Installing different Python package versions to KLayout manually</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/known_issues.html#standalone-klayout-python-library">Standalone KLayout python library</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/known_issues.html#gui-klayout-application">GUI KLayout application</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../installation/known_issues.html#installing-different-python-package-versions-to-klayout-manually">Installing different Python package versions to KLayout manually</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -207,10 +214,7 @@
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Developer Guide</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="setup.html">Developer GUI Setup</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="setup.html#prerequisites">Prerequisites</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="setup.html#python">Python</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="setup.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="setup.html#sources">Sources</a></li>
 <li class="toctree-l3"><a class="reference internal" href="setup.html#install">Install</a></li>
 <li class="toctree-l3"><a class="reference internal" href="setup.html#unlinking">Unlinking</a></li>
@@ -226,12 +230,13 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="standalone.html">Developer Standalone module Setup</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="standalone.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="standalone.html#sources">Sources</a></li>
 <li class="toctree-l3"><a class="reference internal" href="standalone.html#installation">Installation</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="standalone.html#basic-installation">1. Basic installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="standalone.html#reproducible-secure-installation">2. Reproducible, Secure Installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="standalone.html#kqcircuits-exclusive-python-environment">3. KQCircuits exclusive python environment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="standalone.html#pypi-installation">4. PyPI Installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="standalone.html#dependency-extensions">Dependency extensions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="standalone.html#pypi-installation">PyPI Installation</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="standalone.html#usage">Usage</a></li>
@@ -1026,7 +1031,7 @@ annotate the generated .png image with “rulers” documenting the important di
 The rulers are placed according to KLayout’s rules for rulers going through a specified point.
 These annotations should preferably also have the name of the parameter controlling the illustrated
 dimensions, like <code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">MARKERS_FOR_PNG</span> <span class="pre">x,y,param_name</span></code>. Some times KLayout’s automatic ruler
-placement is not satisfactory in this case the user may specify both starting and ending points of
+placement is not satisfactory - in this case the user may specify both starting and ending points of
 the ruler <code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">MARKERS_FOR_PNG</span> <span class="pre">x,y,x2,y2[,param_name]</span></code>.</p>
 </section>
 

@@ -25,5 +25,5 @@ annotate the generated .png image with "rulers" documenting the important dimens
 The rulers are placed according to KLayout's rules for rulers going through a specified point.
 These annotations should preferably also have the name of the parameter controlling the illustrated
 dimensions, like ``.. MARKERS_FOR_PNG x,y,param_name``. Some times KLayout's automatic ruler
-placement is not satisfactory in this case the user may specify both starting and ending points of
+placement is not satisfactory - in this case the user may specify both starting and ending points of
 the ruler ``.. MARKERS_FOR_PNG x,y,x2,y2[,param_name]``.

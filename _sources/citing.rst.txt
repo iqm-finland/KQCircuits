@@ -17,6 +17,7 @@ the following ``.bib`` file can be used::
    @software{kqcircuits,
      author       = {Cucurachi, Daniele and
                      Das, Soumya Ranjan and
+                     Damskägg, Erno and
                      Giri, Rakshyakar and
                      Gusenkova, Daria and
                      Guthrie, Andrew and

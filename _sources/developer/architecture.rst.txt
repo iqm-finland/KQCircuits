@@ -63,22 +63,13 @@ hierarchy. When building hierarchical elements the parameter values appropriate
 for a sub-element are transparently passed to it from the caller with
 ``add_element`` or ``insert_cell``.
 
-It is possible to change inherited parameters default values in a per class
-basis using the ``default_parameter_values`` section of the :git_url:`defaults.py <klayout_package/python/kqcircuits/defaults.py>`
-configuration file. Technically this creates a copy of the Param object with
-different default value.
-
 The ``add_parameters_from``  or ``add_parameter`` decorator functions add some other class'
 parameter(s) to the decorated class so there is no need to re-define the same
 parameter in multiple places. They are like normal parameters to all intents and
 purposes. Note that these parameters will be inherited by descendants of the
 decorated class. Technically these are like references to the same Param object.
-
 With ``add_parameters_from`` it is also possible to add some other class'
-parameter with a changed default value. This is practically identical to setting
-a default value for the decorated class using ``default_parameter_values`` in
-the configuration file. Technically, new parameter(s) are created with the
-updated values.
+parameter with a changed default value.
 
 Examples::
 

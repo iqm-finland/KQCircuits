@@ -8,8 +8,7 @@ the bottom face of the 2nd chip in a typical flip-chip configuration.
 
 The example chips included in KQCircuits use up to four faces, describing a flip-chip architecture. Face `1t1` is the
 bottom chip, and also the face used for single-face designs. `2b1` is the bottom side of the top chip, connecting to
-`1t1` with indium bumps. See the :class:`DemoTwoface` chip for an example flip-chip design. The faces `1b1` and `2t1`
-(representing the outer side of
+`1t1` with indium bumps. See the :class:`DemoTwoface` chip for an example flip-chip design.
 
 .. note::
   The face configuration is defined in

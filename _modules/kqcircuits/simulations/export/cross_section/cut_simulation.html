@@ -48,9 +48,16 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../installation/index.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../../../installation/klayout.html">Installing KLayout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../installation/klayout.html">Installing KLayout</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../installation/klayout.html#python">Python</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../installation/known_issues.html">Known installation issues</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../installation/known_issues.html#installing-different-python-package-versions-to-klayout-manually">Installing different Python package versions to KLayout manually</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../installation/known_issues.html#standalone-klayout-python-library">Standalone KLayout python library</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../installation/known_issues.html#gui-klayout-application">GUI KLayout application</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../installation/known_issues.html#installing-different-python-package-versions-to-klayout-manually">Installing different Python package versions to KLayout manually</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -204,10 +211,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../developer/index.html">Developer Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../developer/setup.html">Developer GUI Setup</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../developer/setup.html#prerequisites">Prerequisites</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../developer/setup.html#python">Python</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer/setup.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../developer/setup.html#sources">Sources</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../developer/setup.html#install">Install</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../developer/setup.html#unlinking">Unlinking</a></li>
@@ -223,12 +227,13 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../developer/standalone.html">Developer Standalone module Setup</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../developer/standalone.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer/standalone.html#sources">Sources</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../developer/standalone.html#installation">Installation</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../developer/standalone.html#basic-installation">1. Basic installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../developer/standalone.html#reproducible-secure-installation">2. Reproducible, Secure Installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../developer/standalone.html#kqcircuits-exclusive-python-environment">3. KQCircuits exclusive python environment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer/standalone.html#pypi-installation">4. PyPI Installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../developer/standalone.html#dependency-extensions">Dependency extensions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../developer/standalone.html#pypi-installation">PyPI Installation</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../developer/standalone.html#usage">Usage</a></li>
@@ -1112,6 +1117,7 @@
 
         <span class="n">regions</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">sheet_metals</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">skew_edge_intersections</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_sim</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="s2">&quot;layer&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
                 <span class="n">segments</span> <span class="o">=</span> <span class="p">[(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">cut_length</span><span class="p">)]</span>
@@ -1122,13 +1128,11 @@
                 <span class="k">for</span> <span class="n">polygon</span> <span class="ow">in</span> <span class="n">intersection</span><span class="o">.</span><span class="n">each</span><span class="p">():</span>
                     <span class="n">crossing_edges</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">polygon</span><span class="o">.</span><span class="n">each_edge</span><span class="p">()</span> <span class="k">if</span> <span class="n">cut_edge</span><span class="o">.</span><span class="n">crossed_by</span><span class="p">(</span><span class="n">e</span><span class="p">)]</span>
 
-                    <span class="c1"># Warn if cross-section is taken with non-orthogonal edges</span>
+                    <span class="c1"># Save intersections with non-orthogonal cuts</span>
                     <span class="n">skew_edges</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">crossing_edges</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">cut_vector</span><span class="o">.</span><span class="n">sprod</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">d</span><span class="p">()))</span> <span class="o">&gt;</span> <span class="n">max_cut_vector_sprod</span><span class="p">]</span>
                     <span class="k">for</span> <span class="n">skew_edge</span> <span class="ow">in</span> <span class="n">skew_edges</span><span class="p">:</span>
-                        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;Cross section is taken with non-orthogonal edge from simulation &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">source_sim</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;layer &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; at location (</span><span class="si">{</span><span class="n">cut_edge</span><span class="o">.</span><span class="n">crossing_point</span><span class="p">(</span><span class="n">skew_edge</span><span class="p">)</span><span class="o">.</span><span class="n">to_dtype</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span><span class="si">}</span><span class="s2">).&quot;</span>
-                        <span class="p">)</span>
+                        <span class="n">skew_p</span> <span class="o">=</span> <span class="n">cut_edge</span><span class="o">.</span><span class="n">crossing_point</span><span class="p">(</span><span class="n">skew_edge</span><span class="p">)</span><span class="o">.</span><span class="n">to_dtype</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
+                        <span class="n">skew_edge_intersections</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">skew_edge_intersections</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">[])</span> <span class="o">+</span> <span class="p">[</span><span class="n">skew_p</span><span class="p">]</span>
 
                     <span class="c1"># Calculate intersection as value between 0 and cut length</span>
                     <span class="n">dists</span> <span class="o">=</span> <span class="p">[</span>
@@ -1164,6 +1168,13 @@
             <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;material&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">excitation</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;excitation&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;excitation&quot;</span><span class="p">]}</span> <span class="k">if</span> <span class="s2">&quot;excitation&quot;</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">else</span> <span class="p">{}</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">insert_layer</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">regions</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;material&quot;</span><span class="p">],</span> <span class="o">**</span><span class="n">excitation</span><span class="p">)</span>
+
+        <span class="c1"># Warn if cross-section is taken with non-orthogonal edges</span>
+        <span class="k">if</span> <span class="n">skew_edge_intersections</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Cross section &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; is taken with non-orthogonal edge from simulation&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">source_sim</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;. Layers and intersections: </span><span class="si">{</span><span class="n">skew_edge_intersections</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">insert_sheet_metals</span><span class="p">(</span><span class="n">sheet_metals</span><span class="p">)</span></div>
 

@@ -51,9 +51,16 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Installation</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="klayout.html">Installing KLayout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="klayout.html">Installing KLayout</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="klayout.html#python">Python</a></li>
+</ul>
+</li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Known installation issues</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#installing-different-python-package-versions-to-klayout-manually">Installing different Python package versions to KLayout manually</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#standalone-klayout-python-library">Standalone KLayout python library</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui-klayout-application">GUI KLayout application</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#installing-different-python-package-versions-to-klayout-manually">Installing different Python package versions to KLayout manually</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -207,10 +214,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../developer/setup.html">Developer GUI Setup</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#prerequisites">Prerequisites</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../developer/setup.html#python">Python</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#sources">Sources</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#install">Install</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#unlinking">Unlinking</a></li>
@@ -226,12 +230,13 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../developer/standalone.html">Developer Standalone module Setup</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#sources">Sources</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#installation">Installation</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../developer/standalone.html#basic-installation">1. Basic installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../developer/standalone.html#reproducible-secure-installation">2. Reproducible, Secure Installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../developer/standalone.html#kqcircuits-exclusive-python-environment">3. KQCircuits exclusive python environment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/standalone.html#pypi-installation">4. PyPI Installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../developer/standalone.html#dependency-extensions">Dependency extensions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../developer/standalone.html#pypi-installation">PyPI Installation</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#usage">Usage</a></li>
@@ -1008,16 +1013,28 @@
   <section id="known-installation-issues">
 <span id="installation-issues"></span><h1>Known installation issues<a class="headerlink" href="#known-installation-issues" title="Link to this heading"></a></h1>
 <p>For some specific KLayout builds there can be problems with KQCircuits
-installation that require some extra steps:</p>
+installation that require some extra steps.</p>
+<p>Please feel free to <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/issues/new/choose">report an issue</a>
+if you experience installation issues not covered in this page.</p>
+<section id="standalone-klayout-python-library">
+<h2>Standalone KLayout python library<a class="headerlink" href="#standalone-klayout-python-library" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>Standalone KLayout 0.28 package installed with <code class="docutils literal notranslate"><span class="pre">pip</span></code> is not available
-for Python version 3.13. There is probably a way to compile such package
-yourself if you really need this configuration.</p></li>
+for Python versions starting from 3.13.
+KLayout 0.29 is not available starting from Python version 3.14.
+When attempted to use <code class="docutils literal notranslate"><span class="pre">pip</span></code> to install KLayout under such configurations,
+it will attempt to locally compile the KLayout package, which takes longer time
+and may fail if compilation tools are not properly configured in the system.</p></li>
+</ul>
+</section>
+<section id="gui-klayout-application">
+<h2>GUI KLayout application<a class="headerlink" href="#gui-klayout-application" title="Link to this heading"></a></h2>
+<ul class="simple">
 <li><p>Standard KLayout installation package for MacOS (<code class="docutils literal notranslate"><span class="pre">ST-klayout-*</span></code>)
 is compiled to use the system Python dynamic library, which for
 Sonoma version still has Python version 3.9. We officially only support
-python versions starting from 3.10. We recommend using heavyweight KLayout
-package (<code class="docutils literal notranslate"><span class="pre">HW-klayout-*</span></code>) that uses compatible Python.</p></li>
+python versions starting from 3.11. We recommend using heavyweight KLayout
+package (<code class="docutils literal notranslate"><span class="pre">HW-klayout-*</span></code>) of more recent KLayout versions that uses compatible Python.</p></li>
 <li><p>Since non-HW KLayout installation package for MacOS and linux KLayout
 packages link to system Python, to install KQCircuits the package <code class="docutils literal notranslate"><span class="pre">python3-pip</span></code>
 needs to be installed in the system.</p></li>
@@ -1032,7 +1049,7 @@ also some other versions). See
 install a specific package version to KLayout.</p></li>
 </ul>
 <section id="installing-different-python-package-versions-to-klayout-manually">
-<span id="manual-installation-of-klayout-packages"></span><h2>Installing different Python package versions to KLayout manually<a class="headerlink" href="#installing-different-python-package-versions-to-klayout-manually" title="Link to this heading"></a></h2>
+<span id="manual-installation-of-klayout-packages"></span><h3>Installing different Python package versions to KLayout manually<a class="headerlink" href="#installing-different-python-package-versions-to-klayout-manually" title="Link to this heading"></a></h3>
 <p>Sometimes there are issues with specific package versions in the KLayout
 Python environment. To install a different version of some package, use:</p>
 <blockquote>
@@ -1045,15 +1062,18 @@ in the console.</p>
 <p>KLAYOUT-PYTHON-VERSION may expect a different version than the Python version you use in the terminal,
 so it’s best to query that from KLayout macro editor: <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">sys</span></code>, <code class="docutils literal notranslate"><span class="pre">sys.version_info</span></code>.</p>
 <p>On other operating systems than MacOS the <code class="docutils literal notranslate"><span class="pre">--platform</span></code> argument can be omitted.
-However Mac distributions of KLayout are compiled on <code class="docutils literal notranslate"><span class="pre">x86_64</span></code> CPU architecture,
-while many modern macbooks have <code class="docutils literal notranslate"><span class="pre">M2</span></code> or other CPU architecture. Hence some dependencies
+However, if you installed a <code class="docutils literal notranslate"><span class="pre">x86_64</span> <span class="pre">10.10-15.7</span></code> Mac distribution of KLayout, it is compiled on <code class="docutils literal notranslate"><span class="pre">x86_64</span></code> CPU architecture.
+Hence some dependencies
 like <code class="docutils literal notranslate"><span class="pre">numpy</span></code> and <code class="docutils literal notranslate"><span class="pre">scipy</span></code> need to be compiled for platform <code class="docutils literal notranslate"><span class="pre">macosx_10_9_x86_64</span></code>,
-even when <code class="docutils literal notranslate"><span class="pre">pip</span></code> will by default fetch distributions compiled for <code class="docutils literal notranslate"><span class="pre">macosx_10_9_arm64</span></code>.</p>
+even when <code class="docutils literal notranslate"><span class="pre">pip</span></code> will by default fetch distributions compiled for <code class="docutils literal notranslate"><span class="pre">macosx_10_9_arm64</span></code>.
+If you installed a <code class="docutils literal notranslate"><span class="pre">arm64</span> <span class="pre">26.1+</span></code> Mac distribution, you don’t need to worry about the <code class="docutils literal notranslate"><span class="pre">--platform</span></code> argument,
+which is also the recommended version of KLayout.</p>
 <p>Notice that this only affects the GUI installation of KQCircuits.
 The standalone, GUI-less KQCircuits installation will use whatever Python environment
 where it was explicitly installed in, which is most likely separate from the Python
 environment used by KLayout. It is even recommended to install standalone KQCircuits
-into a virtual environment.</p>
+into a virtual environment like <code class="docutils literal notranslate"><span class="pre">venv</span></code>.</p>
+</section>
 </section>
 </section>
 

@@ -3,32 +3,33 @@
 Developer GUI Setup
 ===================
 
+With the KQCircuits developer GUI setup, you will have many visual and interactive KQCircuits features
+available when you launch the KLayout GUI application, such as
+previewing the KQCircuits element and chip libraries, studying how
+changing PCell parameters affect the element design and manually routing waveguides on your chip. In addition
+to enabling all features you would get from installing :ref:`salt_package` -
+with the developer setup, any change you make in cloned KQCircuits code
+will take effect after KLayout application is restarted or ``Reload Libraries`` action is run.
+In this setup you can amend or create new KQCircuits features which you are welcome to share with us!
+
+The Developer GUI setup will **not** enable some KQCircuits features that work best when executed from a terminal -
+for example generating mask sets or exporting and executing simulations are enabled with :ref:`standalone`.
+In standalone setup you will also get access to KQCircuits as a python library, which you can
+import into your own codebase.
+
 Prerequisites
 -------------
 
-First install :ref:`klayout`.
+First go through :ref:`klayout`. Please also verify that your python version is in order.
 
 If using existing KLayout installation which has KQCircuits Salt package installed, we recommend
 to remove such package from the Salt package manager. Two concurrent GUI setups may lead to many
 problems such as duplicate macros etc.
 
-Python
-^^^^^^
-
-KQCircuits installation requires Python 3.10 minimum. This should already come pre-packaged at least
-with Ubuntu 22.04. On Windows platforms Python needs to be installed manually.
-If your Python installation does not already contain the ``pip`` package
-manager, you have to also install that.
-
-Successfully tested versions:
-
-- Ubuntu 22.04 LTS with Python 3.10.14
-- Windows: Python 3.11.2
-
 Sources
 -------
 
-Get KQCircuits' sources with:
+Get KQCircuits' sources (if you haven't already) with:
 
 .. parsed-literal::
 
@@ -73,15 +74,15 @@ installation automatically. If you wish to unlink, then write in your terminal::
 Update
 ------
 
-Updating an existing KQCircuits GUI setup is easy. After updating KQCircuits code itself with ``git
-pull`` just run :git_url:`setup_within_klayout.py` again. This will take care of upgrading (or downgrading)
-KQCircuits' Python dependencies and installing new ones, as needed. Alternatively, KQCircuits dependencies
-can be installed by launching KLayout and accepting the window that asks to update dependencies.
-This usually requires a KLayout restart afterwards.
+In most cases, after KQCircuits code has been modified (either with ``git pull`` or by manually changing the code),
+it is enough to restart the KLayout application or to run the ``Reload Libraries`` action.
 
-The list of dependencies of KQCircuits as KLayout GUI plugin are maintained in ``gui-requirements.txt``
-files present in the :git_url:`klayout_packages/python/requirements` folder. These files may evolve
-as KQCircuits code evolves.
+If a requirement library has been added, or its version
+updated in :git_url:`klayout_package/python/requirements/linux/gui-requirements.txt`, further action may be required.
+KLayout will compare dependencies it detected in its system with the contents of this file, and ask the user
+to upgrade (or downgrade) the requirements. It is recommended to click Yes, and it may require another KLayout
+restart for requirement upgrades to take effect.
+You can also run :git_url:`setup_within_klayout.py` again to manually prompt the requirement upgrade.
 
 .. note::
     If a new version of KQCircuits has stopped using a certain Python dependency that will **not**

@@ -51,9 +51,16 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Installation</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Installing KLayout</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Installing KLayout</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#python">Python</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="known_issues.html">Known installation issues</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="known_issues.html#installing-different-python-package-versions-to-klayout-manually">Installing different Python package versions to KLayout manually</a></li>
+<li class="toctree-l3"><a class="reference internal" href="known_issues.html#standalone-klayout-python-library">Standalone KLayout python library</a></li>
+<li class="toctree-l3"><a class="reference internal" href="known_issues.html#gui-klayout-application">GUI KLayout application</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="known_issues.html#installing-different-python-package-versions-to-klayout-manually">Installing different Python package versions to KLayout manually</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -207,10 +214,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../developer/setup.html">Developer GUI Setup</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#prerequisites">Prerequisites</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../developer/setup.html#python">Python</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#sources">Sources</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#install">Install</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#unlinking">Unlinking</a></li>
@@ -226,12 +230,13 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../developer/standalone.html">Developer Standalone module Setup</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#sources">Sources</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#installation">Installation</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../developer/standalone.html#basic-installation">1. Basic installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../developer/standalone.html#reproducible-secure-installation">2. Reproducible, Secure Installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../developer/standalone.html#kqcircuits-exclusive-python-environment">3. KQCircuits exclusive python environment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/standalone.html#pypi-installation">4. PyPI Installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../developer/standalone.html#dependency-extensions">Dependency extensions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../developer/standalone.html#pypi-installation">PyPI Installation</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#usage">Usage</a></li>
@@ -1032,17 +1037,32 @@ tested using KLayout versions:</p>
 </ul>
 <p>on the following platforms:</p>
 <ul class="simple">
-<li><p>Linux: Ubuntu 22.04 LTS, 64-bit</p></li>
+<li><p>Linux: Ubuntu 24.04 LTS, 64-bit</p></li>
 <li><p>MacOS: latest github image</p></li>
-<li><p>Microsoft Windows Server 2022, OS version 10</p></li>
+<li><p>Microsoft Windows Server 2025, OS version 10</p></li>
 </ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>KQC documentation uses Linux conventions and examples unless explicitly talking about Windows or
-MacOS. For example a Windows user should mentally translate path separator <code class="docutils literal notranslate"><span class="pre">/</span></code> to <code class="docutils literal notranslate"><span class="pre">\</span></code>,
-klayout executable <code class="docutils literal notranslate"><span class="pre">klayout</span></code> to <code class="docutils literal notranslate"><span class="pre">%APPDATA%\KLayout\klayout_app.exe</span></code> or the KLayout
-environment directory <code class="docutils literal notranslate"><span class="pre">~/.klayout</span></code> to <code class="docutils literal notranslate"><span class="pre">%HOMEPATH%\KLayout</span></code>.</p>
+<section id="python">
+<h2>Python<a class="headerlink" href="#python" title="Link to this heading"></a></h2>
+<p>KQCircuits installation requires Python 3.11 minimum. This should already come pre-packaged at least
+with Ubuntu 24.04. On Windows platforms Python needs to be installed manually.
+If your Python installation does not already contain the <code class="docutils literal notranslate"><span class="pre">pip</span></code> package
+manager, you have to also install that.</p>
+<p>Successfully tested versions:</p>
+<ul class="simple">
+<li><p>Ubuntu 24.04 LTS with Python 3.12.3</p></li>
+<li><p>Windows: Python 3.11.2</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>For linux, KLayout installation is compiled in such a way
+that the system python is used to execute python commands within KLayout GUI runtime.
+Please check that your system python version is at least 3.11, as otherwise KQCircuits plug-in
+may be incompatible. Since system python is not recommended to be updated, consider in this case to either
+update the system OS or to manually compile KLayout application linked with separately installed python executable.
+Reminder that system python version doesn’t affect most KLayout installations
+for other OS, and it also doesn’t affect <a class="reference internal" href="../developer/standalone.html#standalone"><span class="std std-ref">Developer Standalone module Setup</span></a>.</p>
 </div>
+</section>
 </section>
 
 

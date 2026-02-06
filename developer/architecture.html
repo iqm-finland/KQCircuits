@@ -51,9 +51,16 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../installation/klayout.html">Installing KLayout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/klayout.html">Installing KLayout</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/klayout.html#python">Python</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../installation/known_issues.html">Known installation issues</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../installation/known_issues.html#installing-different-python-package-versions-to-klayout-manually">Installing different Python package versions to KLayout manually</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/known_issues.html#standalone-klayout-python-library">Standalone KLayout python library</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/known_issues.html#gui-klayout-application">GUI KLayout application</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../installation/known_issues.html#installing-different-python-package-versions-to-klayout-manually">Installing different Python package versions to KLayout manually</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -207,10 +214,7 @@
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Developer Guide</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="setup.html">Developer GUI Setup</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="setup.html#prerequisites">Prerequisites</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="setup.html#python">Python</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="setup.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="setup.html#sources">Sources</a></li>
 <li class="toctree-l3"><a class="reference internal" href="setup.html#install">Install</a></li>
 <li class="toctree-l3"><a class="reference internal" href="setup.html#unlinking">Unlinking</a></li>
@@ -226,12 +230,13 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="standalone.html">Developer Standalone module Setup</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="standalone.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="standalone.html#sources">Sources</a></li>
 <li class="toctree-l3"><a class="reference internal" href="standalone.html#installation">Installation</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="standalone.html#basic-installation">1. Basic installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="standalone.html#reproducible-secure-installation">2. Reproducible, Secure Installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="standalone.html#kqcircuits-exclusive-python-environment">3. KQCircuits exclusive python environment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="standalone.html#pypi-installation">4. PyPI Installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="standalone.html#dependency-extensions">Dependency extensions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="standalone.html#pypi-installation">PyPI Installation</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="standalone.html#usage">Usage</a></li>
@@ -1115,20 +1120,13 @@ an instance will contain the parameters of all its ancestors in the inheritance
 hierarchy. When building hierarchical elements the parameter values appropriate
 for a sub-element are transparently passed to it from the caller with
 <code class="docutils literal notranslate"><span class="pre">add_element</span></code> or <code class="docutils literal notranslate"><span class="pre">insert_cell</span></code>.</p>
-<p>It is possible to change inherited parameters default values in a per class
-basis using the <code class="docutils literal notranslate"><span class="pre">default_parameter_values</span></code> section of the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/kqcircuits/defaults.py">defaults.py</a>
-configuration file. Technically this creates a copy of the Param object with
-different default value.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">add_parameters_from</span></code>  or <code class="docutils literal notranslate"><span class="pre">add_parameter</span></code> decorator functions add some other class’
 parameter(s) to the decorated class so there is no need to re-define the same
 parameter in multiple places. They are like normal parameters to all intents and
 purposes. Note that these parameters will be inherited by descendants of the
-decorated class. Technically these are like references to the same Param object.</p>
-<p>With <code class="docutils literal notranslate"><span class="pre">add_parameters_from</span></code> it is also possible to add some other class’
-parameter with a changed default value. This is practically identical to setting
-a default value for the decorated class using <code class="docutils literal notranslate"><span class="pre">default_parameter_values</span></code> in
-the configuration file. Technically, new parameter(s) are created with the
-updated values.</p>
+decorated class. Technically these are like references to the same Param object.
+With <code class="docutils literal notranslate"><span class="pre">add_parameters_from</span></code> it is also possible to add some other class’
+parameter with a changed default value.</p>
 <p>Examples:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get two parameters form &#39;OtherClass&#39;</span>
 <span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">OtherClass</span><span class="p">,</span> <span class="s2">&quot;param_a&quot;</span><span class="p">,</span> <span class="s2">&quot;param_b&quot;</span><span class="p">)</span>

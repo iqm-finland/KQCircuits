@@ -30,12 +30,28 @@ tested using KLayout versions:
 
 on the following platforms:
 
-- Linux: Ubuntu 22.04 LTS, 64-bit
+- Linux: Ubuntu 24.04 LTS, 64-bit
 - MacOS: latest github image
-- Microsoft Windows Server 2022, OS version 10
+- Microsoft Windows Server 2025, OS version 10
 
-.. note::
-    KQC documentation uses Linux conventions and examples unless explicitly talking about Windows or
-    MacOS. For example a Windows user should mentally translate path separator ``/`` to ``\``,
-    klayout executable ``klayout`` to ``%APPDATA%\KLayout\klayout_app.exe`` or the KLayout
-    environment directory ``~/.klayout`` to ``%HOMEPATH%\KLayout``.
+Python
+^^^^^^
+
+KQCircuits installation requires Python 3.11 minimum. This should already come pre-packaged at least
+with Ubuntu 24.04. On Windows platforms Python needs to be installed manually.
+If your Python installation does not already contain the ``pip`` package
+manager, you have to also install that.
+
+Successfully tested versions:
+
+- Ubuntu 24.04 LTS with Python 3.12.3
+- Windows: Python 3.11.2
+
+.. warning::
+    For linux, KLayout installation is compiled in such a way
+    that the system python is used to execute python commands within KLayout GUI runtime.
+    Please check that your system python version is at least 3.11, as otherwise KQCircuits plug-in
+    may be incompatible. Since system python is not recommended to be updated, consider in this case to either
+    update the system OS or to manually compile KLayout application linked with separately installed python executable.
+    Reminder that system python version doesn't affect most KLayout installations
+    for other OS, and it also doesn't affect :ref:`standalone`.

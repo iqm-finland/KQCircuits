@@ -20,6 +20,12 @@ python code by importing the ``kqcircuits`` module. This also enables terminal c
   kqc sim <simulation_script> # to export simulation data and then to process it with a third-party simulator
   kqc mask <mask_script>      # to export mask layout files for fabrication
 
+.. note::
+    KQC documentation uses Linux conventions and examples unless explicitly talking about Windows or
+    MacOS. For example a Windows user should mentally translate path separator ``/`` to ``\``,
+    klayout executable ``klayout`` to ``%APPDATA%\KLayout\klayout_app.exe`` or the KLayout
+    environment directory ``~/.klayout`` to ``%HOMEPATH%\KLayout``.
+
 .. toctree::
    :maxdepth: 1
 

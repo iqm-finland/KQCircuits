@@ -51,9 +51,16 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../installation/klayout.html">Installing KLayout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/klayout.html">Installing KLayout</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/klayout.html#python">Python</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../installation/known_issues.html">Known installation issues</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../installation/known_issues.html#installing-different-python-package-versions-to-klayout-manually">Installing different Python package versions to KLayout manually</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/known_issues.html#standalone-klayout-python-library">Standalone KLayout python library</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/known_issues.html#gui-klayout-application">GUI KLayout application</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../installation/known_issues.html#installing-different-python-package-versions-to-klayout-manually">Installing different Python package versions to KLayout manually</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -207,10 +214,7 @@
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Developer Guide</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Developer GUI Setup</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#python">Python</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sources">Sources</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#install">Install</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#unlinking">Unlinking</a></li>
@@ -226,12 +230,13 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="standalone.html">Developer Standalone module Setup</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="standalone.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="standalone.html#sources">Sources</a></li>
 <li class="toctree-l3"><a class="reference internal" href="standalone.html#installation">Installation</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="standalone.html#basic-installation">1. Basic installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="standalone.html#reproducible-secure-installation">2. Reproducible, Secure Installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="standalone.html#kqcircuits-exclusive-python-environment">3. KQCircuits exclusive python environment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="standalone.html#pypi-installation">4. PyPI Installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="standalone.html#dependency-extensions">Dependency extensions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="standalone.html#pypi-installation">PyPI Installation</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="standalone.html#usage">Usage</a></li>
@@ -1007,28 +1012,28 @@
              
   <section id="developer-gui-setup">
 <span id="developer-setup"></span><h1>Developer GUI Setup<a class="headerlink" href="#developer-gui-setup" title="Link to this heading"></a></h1>
+<p>With the KQCircuits developer GUI setup, you will have many visual and interactive KQCircuits features
+available when you launch the KLayout GUI application, such as
+previewing the KQCircuits element and chip libraries, studying how
+changing PCell parameters affect the element design and manually routing waveguides on your chip. In addition
+to enabling all features you would get from installing <a class="reference internal" href="../getting_started/salt.html#salt-package"><span class="std std-ref">KQCircuits Salt package</span></a> -
+with the developer setup, any change you make in cloned KQCircuits code
+will take effect after KLayout application is restarted or <code class="docutils literal notranslate"><span class="pre">Reload</span> <span class="pre">Libraries</span></code> action is run.
+In this setup you can amend or create new KQCircuits features which you are welcome to share with us!</p>
+<p>The Developer GUI setup will <strong>not</strong> enable some KQCircuits features that work best when executed from a terminal -
+for example generating mask sets or exporting and executing simulations are enabled with <a class="reference internal" href="standalone.html#standalone"><span class="std std-ref">Developer Standalone module Setup</span></a>.
+In standalone setup you will also get access to KQCircuits as a python library, which you can
+import into your own codebase.</p>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
-<p>First install <a class="reference internal" href="../installation/klayout.html#klayout"><span class="std std-ref">Installing KLayout</span></a>.</p>
+<p>First go through <a class="reference internal" href="../installation/klayout.html#klayout"><span class="std std-ref">Installing KLayout</span></a>. Please also verify that your python version is in order.</p>
 <p>If using existing KLayout installation which has KQCircuits Salt package installed, we recommend
 to remove such package from the Salt package manager. Two concurrent GUI setups may lead to many
 problems such as duplicate macros etc.</p>
-<section id="python">
-<h3>Python<a class="headerlink" href="#python" title="Link to this heading"></a></h3>
-<p>KQCircuits installation requires Python 3.10 minimum. This should already come pre-packaged at least
-with Ubuntu 22.04. On Windows platforms Python needs to be installed manually.
-If your Python installation does not already contain the <code class="docutils literal notranslate"><span class="pre">pip</span></code> package
-manager, you have to also install that.</p>
-<p>Successfully tested versions:</p>
-<ul class="simple">
-<li><p>Ubuntu 22.04 LTS with Python 3.10.14</p></li>
-<li><p>Windows: Python 3.11.2</p></li>
-</ul>
-</section>
 </section>
 <section id="sources">
 <h2>Sources<a class="headerlink" href="#sources" title="Link to this heading"></a></h2>
-<p>Get KQCircuits’ sources with:</p>
+<p>Get KQCircuits’ sources (if you haven’t already) with:</p>
 <pre class="literal-block">git clone <a class="reference external" href="https://github.com/iqm-finland/KQCircuits">https://github.com/iqm-finland/KQCircuits</a></pre>
 </section>
 <section id="install">
@@ -1066,14 +1071,14 @@ installation automatically. If you wish to unlink, then write in your terminal:<
 </section>
 <section id="update">
 <h2>Update<a class="headerlink" href="#update" title="Link to this heading"></a></h2>
-<p>Updating an existing KQCircuits GUI setup is easy. After updating KQCircuits code itself with <code class="docutils literal notranslate"><span class="pre">git</span>
-<span class="pre">pull</span></code> just run <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//setup_within_klayout.py">setup_within_klayout.py</a> again. This will take care of upgrading (or downgrading)
-KQCircuits’ Python dependencies and installing new ones, as needed. Alternatively, KQCircuits dependencies
-can be installed by launching KLayout and accepting the window that asks to update dependencies.
-This usually requires a KLayout restart afterwards.</p>
-<p>The list of dependencies of KQCircuits as KLayout GUI plugin are maintained in <code class="docutils literal notranslate"><span class="pre">gui-requirements.txt</span></code>
-files present in the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_packages/python/requirements">klayout_packages/python/requirements</a> folder. These files may evolve
-as KQCircuits code evolves.</p>
+<p>In most cases, after KQCircuits code has been modified (either with <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">pull</span></code> or by manually changing the code),
+it is enough to restart the KLayout application or to run the <code class="docutils literal notranslate"><span class="pre">Reload</span> <span class="pre">Libraries</span></code> action.</p>
+<p>If a requirement library has been added, or its version
+updated in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/requirements/linux/gui-requirements.txt">klayout_package/python/requirements/linux/gui-requirements.txt</a>, further action may be required.
+KLayout will compare dependencies it detected in its system with the contents of this file, and ask the user
+to upgrade (or downgrade) the requirements. It is recommended to click Yes, and it may require another KLayout
+restart for requirement upgrades to take effect.
+You can also run <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//setup_within_klayout.py">setup_within_klayout.py</a> again to manually prompt the requirement upgrade.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If a new version of KQCircuits has stopped using a certain Python dependency that will <strong>not</strong>

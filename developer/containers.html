@@ -51,9 +51,16 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../installation/klayout.html">Installing KLayout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/klayout.html">Installing KLayout</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/klayout.html#python">Python</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../installation/known_issues.html">Known installation issues</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../installation/known_issues.html#installing-different-python-package-versions-to-klayout-manually">Installing different Python package versions to KLayout manually</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/known_issues.html#standalone-klayout-python-library">Standalone KLayout python library</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/known_issues.html#gui-klayout-application">GUI KLayout application</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../installation/known_issues.html#installing-different-python-package-versions-to-klayout-manually">Installing different Python package versions to KLayout manually</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -207,10 +214,7 @@
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Developer Guide</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="setup.html">Developer GUI Setup</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="setup.html#prerequisites">Prerequisites</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="setup.html#python">Python</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="setup.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="setup.html#sources">Sources</a></li>
 <li class="toctree-l3"><a class="reference internal" href="setup.html#install">Install</a></li>
 <li class="toctree-l3"><a class="reference internal" href="setup.html#unlinking">Unlinking</a></li>
@@ -226,12 +230,13 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="standalone.html">Developer Standalone module Setup</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="standalone.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="standalone.html#sources">Sources</a></li>
 <li class="toctree-l3"><a class="reference internal" href="standalone.html#installation">Installation</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="standalone.html#basic-installation">1. Basic installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="standalone.html#reproducible-secure-installation">2. Reproducible, Secure Installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="standalone.html#kqcircuits-exclusive-python-environment">3. KQCircuits exclusive python environment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="standalone.html#pypi-installation">4. PyPI Installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="standalone.html#dependency-extensions">Dependency extensions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="standalone.html#pypi-installation">PyPI Installation</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="standalone.html#usage">Usage</a></li>
@@ -1011,10 +1016,10 @@
 <p>The image can be built manually from the root of the repository with <code class="docutils literal notranslate"><span class="pre">-f</span> <span class="pre">ci/Dockerfile</span></code>.
 Additionally, the KLayout version can be specified with <code class="docutils literal notranslate"><span class="pre">--build-arg</span></code> options by
 providing the name of the KLayout package as <code class="docutils literal notranslate"><span class="pre">KL_FILE</span></code> and its MD5 hash as <code class="docutils literal notranslate"><span class="pre">KL_HASH</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">build</span> <span class="o">-</span><span class="n">t</span> <span class="n">kqcircuits</span> <span class="o">-</span><span class="n">f</span> <span class="n">ci</span><span class="o">/</span><span class="n">Dockerfile</span> <span class="o">--</span><span class="n">build</span><span class="o">-</span><span class="n">arg</span> <span class="n">KL_FILE</span><span class="o">=</span><span class="n">klayout_0</span><span class="mf">.30.1</span><span class="o">-</span><span class="mi">1</span><span class="n">_amd64</span><span class="o">.</span><span class="n">deb</span> <span class="o">--</span><span class="n">build</span><span class="o">-</span><span class="n">arg</span> <span class="n">KL_HASH</span><span class="o">=</span><span class="mi">11953</span><span class="n">ce5009a0e83f9840b506f80df49</span> <span class="o">.</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">build</span> <span class="o">-</span><span class="n">t</span> <span class="n">kqcircuits</span> <span class="o">-</span><span class="n">f</span> <span class="n">ci</span><span class="o">/</span><span class="n">Dockerfile</span> <span class="o">--</span><span class="n">build</span><span class="o">-</span><span class="n">arg</span> <span class="n">KL_FILE</span><span class="o">=</span><span class="n">klayout_0</span><span class="mf">.30.5</span><span class="o">-</span><span class="mi">1</span><span class="n">_amd64</span><span class="o">.</span><span class="n">deb</span> <span class="o">--</span><span class="n">build</span><span class="o">-</span><span class="n">arg</span> <span class="n">KL_HASH</span><span class="o">=</span><span class="n">c63629bdebe20261c2cfaaa0827c6ab8</span> <span class="o">.</span>
 </pre></div>
 </div>
-<p>See possible versions and hashes for Ubuntu 22 in the <a class="reference external" href="https://www.klayout.de/build.html">KLayout website</a>.</p>
+<p>See possible versions and hashes for Ubuntu 24 in the <a class="reference external" href="https://www.klayout.de/build.html">KLayout website</a>.</p>
 <section id="cli-usage">
 <h2>CLI usage<a class="headerlink" href="#cli-usage" title="Link to this heading"></a></h2>
 <p>The image can be used to quickly generate files, such as masks and chips from Python scripts.
