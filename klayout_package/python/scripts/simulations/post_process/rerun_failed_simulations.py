@@ -74,18 +74,27 @@ missing = set()
 with open(input_file, "r", encoding="utf-8") as f:
     script_contents = f.readlines()
 
-if extension == "sh":
+use_ansys = any("ansysedt" in s for s in script_contents)
+
+if not use_ansys:
+    subscript_cmd = "call " if platform.system() == "Windows" else "./"
     rerun_script = script_contents[:1]
     for line in script_contents[1:]:
-        matches = re.findall(r'"\./(.*?)\.sh"', line)
+        if "simple_workload_manager.py" in line and line.strip().endswith(".txt"):
+            txtfile = line.strip().split()[-1]
+            with open(txtfile, "r", encoding="utf-8") as f:
+                matches = [l.strip().removeprefix("./").partition(".")[0] for l in f]
+        else:
+            matches = re.findall(rf"{re.escape(subscript_cmd)}(.*?)\.{extension}", line)
+
         for sim_name in matches:
             json_name = f"{sim_name}.json"
             if sim_name not in completed_simulations and Path(json_name).exists():
                 _force_serial_workflow(json_name)
-                rerun_script.append(f"./{sim_name}.sh\n")
+                rerun_script.append(f"{subscript_cmd}{sim_name}.{extension}\n")
                 missing.add(sim_name)
 
-elif extension == "bat":
+else:
     # Consider Ansys simulations with .sNp files as completed
     snp_pattern = re.compile(r"^(.*)_project_SMatrix\.s\d+p$")
     for p in Path(".").glob("*_project_SMatrix.s*p"):
@@ -100,12 +109,9 @@ elif extension == "bat":
             if matches[0] not in completed_simulations and Path(f"{matches[0]}.json").exists():
                 rerun_script.append(line)
                 missing.add(matches[0])
-else:
-    raise ValueError(f'Unknown main script extension: "{extension}" ')
-
 
 if missing:
-    sim_tool = "Elmer" if extension == "sh" else "Ansys"
+    sim_tool = "Ansys" if use_ansys else "Elmer"
     print(f"Missing {len(missing)} {sim_tool} simulations:")
     print(missing)
 

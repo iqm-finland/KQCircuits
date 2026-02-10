@@ -25,13 +25,25 @@ _description = """
 Run Elmer simulations with first-level parallelisation.
 This means that N workers are created to run the given simulations, which themselves may be parallelised.
 For example, with n_workers=4 and elmer_n_processes=2 in the workflow settings, up to 8 processes are used.
+
+Usage options:
+
+1. Give list of simulation scripts on command line:  "python simple_workload_manager.py 4 sim1.sh sim2.sh ..."
+2. Load simulation script names from a file:         "python simple_workload_manager.py 4 simulation_list.txt"
+
 """
 
 parser = argparse.ArgumentParser(description=_description, epilog="A progress bar is shown if `tqdm` is installed.")
 parser.add_argument("n_workers", metavar="n_workers", type=int, help="Number of workers to use")
-parser.add_argument("simulations", metavar="sim", type=str, nargs="+", help="All simulations to simulate (`.sh` file)")
+parser.add_argument("simulations", metavar="sim", type=str, nargs="+", help="All simulations to simulate")
 
 if __name__ == "__main__":
     args = parser.parse_args()
     env = os.environ.copy()
-    pool_run_cmds(args.n_workers, args.simulations, env=env, cwd=os.getcwd())
+    sim_list = args.simulations
+
+    # Load from file if a single .txt file is given
+    if len(sim_list) == 1 and sim_list[0].endswith(".txt"):
+        with open(args.simulations[0], "r", encoding="utf-8") as f:
+            sim_list = [l.strip() for l in f if len(l.strip()) > 0]
+    pool_run_cmds(args.n_workers, sim_list, env=env, cwd=os.getcwd())

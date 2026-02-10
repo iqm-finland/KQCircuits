@@ -482,14 +482,21 @@ def export_elmer_script(
         if compile_elmer_modules:
             main_script_lines.append(elmer_compile_str)
 
+        def _prepare_workload_manager(script_lines, simulation_cmds, suffix=""):
+            """Writes simulation_cmds to a file and adds a line in script_lines for running
+            the simulations using simple_workload_manager"""
+            sim_list_fname = f"{file_prefix}_{suffix}.txt"
+            with open(path / sim_list_fname, "w", encoding="utf-8") as f:
+                f.write("\n".join(simulation_cmds))
+
+            run_cmd = Path(script_folder) / "simple_workload_manager.py"
+            script_lines.append(f"{python_executable} {run_cmd} {n_workers} {sim_list_fname}\n")
+
         if parallelize_workload:
             export_kw = "export" if use_sh else "set"
             main_script_lines.append(f"{export_kw} OMP_NUM_THREADS={workflow['elmer_n_threads']}\n")
-            main_script_lines.append(
-                f"{python_executable} {Path(script_folder) / 'simple_workload_manager.py'} {n_workers}"
-            )
 
-        dependent_sims = []
+        full_sims, dependent_sims = [], []
         for i, json_filename in enumerate(json_filenames):
             (simulation_name, mesh_name) = _get_from_json(json_filename, ["name", "mesh_name"])
             python_run_cmd = f'{python_executable} "{execution_script}" "{Path(json_filename).relative_to(path)}"'
@@ -520,9 +527,9 @@ def export_elmer_script(
 
             script_path = Path(script_filename).relative_to(path)
             if parallelize_workload:
-                script_cmd = f' "./{script_path}"' if use_sh else f" {script_path}"
+                script_cmd = f"./{script_path}" if use_sh else f"{script_path}"
                 if mesh_name == simulation_name:
-                    main_script_lines.append(script_cmd)
+                    full_sims.append(script_cmd)
                 else:
                     dependent_sims.append(script_cmd)
             else:
@@ -533,11 +540,11 @@ def export_elmer_script(
                     f"{script_cmd}\n",
                 ]
 
-        if dependent_sims:
-            main_script_lines.append(
-                f"\n{python_executable} {Path(script_folder)/'simple_workload_manager.py'} {n_workers}"
-            )
-            main_script_lines += dependent_sims
+        if parallelize_workload:
+            if full_sims:
+                _prepare_workload_manager(main_script_lines, full_sims, suffix="simlist_independent")
+            if dependent_sims:
+                _prepare_workload_manager(main_script_lines, dependent_sims, suffix="simlist_dependent")
 
         main_script_lines += [
             '\necho "--------------------------------------------"\n',
