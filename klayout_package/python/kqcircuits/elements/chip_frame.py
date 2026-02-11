@@ -51,6 +51,7 @@ class ChipFrame(Element):
     name_chip = Param(pdt.TypeString, "Name of the chip", "CTest")
     name_copy = Param(pdt.TypeString, "Name of the copy", None)
     name_brand = Param(pdt.TypeString, "Name of the brand", default_brand)
+    frame_text_size = Param(pdt.TypeDouble, "Label text size", 350, unit="µm")
     text_margin = Param(
         pdt.TypeDouble, "Margin for labels", 100, docstring="Margin of the ground grid avoidance layer around the text"
     )
@@ -134,7 +135,7 @@ class ChipFrame(Element):
         if margin is None:
             margin = self.text_margin
         if size is None:
-            size = 350 * min(1, self.box.width() / 7000, self.box.height() / 7000)
+            size = self.frame_text_size * min(1, self.box.width() / 7000, self.box.height() / 7000)
         return produce_label(
             self.cell,
             label,
