@@ -1059,6 +1059,8 @@
     <span class="n">flux_integration_layer_exists_if_needed</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">)</span>
     <span class="n">london_penetration_depth_with_ansys</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">)</span>
 
+    <span class="n">check_elmer_solver_options</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span>
+
     <span class="c1"># Run these checks only for 3D simulations</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">Simulation</span><span class="p">):</span>
         <span class="n">has_no_ports_when_required</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">)</span>
@@ -1278,6 +1280,36 @@
         <span class="c1"># TLS sheets detached from metal</span>
         <span class="k">if</span> <span class="n">simulation</span><span class="o">.</span><span class="n">tls_sheet_approximation</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">simulation</span><span class="o">.</span><span class="n">detach_tls_sheets_from_body</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;By convention `detach_tls_sheets_from_body` should be True in Ansys simulations&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="check_elmer_solver_options">
+<a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.simulation_validate.html#kqcircuits.simulations.export.simulation_validate.check_elmer_solver_options">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_elmer_solver_options</span><span class="p">(</span><span class="n">solution</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validation check: Raises errors on unsupported linear system solver parameter combinations&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">solution</span><span class="p">,</span> <span class="n">AnsysSolution</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="n">linsys</span> <span class="o">=</span> <span class="n">solution</span><span class="o">.</span><span class="n">linear_system_method</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">direct_method</span> <span class="o">=</span> <span class="n">linsys</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;mumps&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">linsys</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;umfpack&quot;</span><span class="p">,</span> <span class="s2">&quot;pardiso&quot;</span><span class="p">,</span> <span class="s2">&quot;superlu&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">solution</span><span class="o">.</span><span class="n">use_multigrid_solver</span> <span class="ow">and</span> <span class="n">direct_method</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ValidateSimError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;To use direct solver &quot;</span><span class="si">{</span><span class="n">linsys</span><span class="si">}</span><span class="s1">&quot;, &quot;use_multigrid_solver&quot; must be False&#39;</span><span class="p">,</span>
+            <span class="n">validation_type</span><span class="o">=</span><span class="n">check_elmer_solver_options</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">solution</span><span class="o">.</span><span class="n">linear_system_method</span> <span class="o">==</span> <span class="s2">&quot;mg&quot;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ValidateSimError</span><span class="p">(</span>
+            <span class="s1">&#39;linear_system_method==&quot;mg&quot; is deprecated. Use &quot;use_multigrid_solver=True&quot; instead.&#39;</span><span class="p">,</span>
+            <span class="n">validation_type</span><span class="o">=</span><span class="n">check_elmer_solver_options</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">solution</span><span class="p">,</span> <span class="n">ElmerVectorHelmholtzSolution</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">direct_method</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">solution</span><span class="o">.</span><span class="n">quadratic_approximation</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidateSimError</span><span class="p">(</span>
+                <span class="s2">&quot;ElmerVectorHelmholtzSolution with first order basis only supports direct `linear_system_method`:s&quot;</span><span class="p">,</span>
+                <span class="n">validation_type</span><span class="o">=</span><span class="n">check_elmer_solver_options</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+            <span class="p">)</span></div>
 
 
 

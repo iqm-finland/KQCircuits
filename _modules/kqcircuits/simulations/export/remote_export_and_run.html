@@ -1040,6 +1040,21 @@
 <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">WARN</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_check_ssh_connection</span><span class="p">(</span><span class="n">ssh_login</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;ssh&quot;</span><span class="p">,</span> <span class="s2">&quot;-o&quot;</span><span class="p">,</span> <span class="s2">&quot;BatchMode=yes&quot;</span><span class="p">,</span> <span class="n">ssh_login</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">],</span>
+            <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ssh connection failed with code </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">returncode</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+
+
 <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_remote_tmp</span><span class="p">(</span><span class="n">ssh_login</span><span class="p">,</span> <span class="n">kqc_remote_tmp_path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Internal helper function to create remote tmp directory if it doesnt exist and raise error if its not empty</span>
@@ -1048,11 +1063,25 @@
 <span class="sd">        ssh_login              (str): ssh login info &quot;user@hostname&quot;</span>
 <span class="sd">        kqc_remote_tmp_path    (str): current run tmp directory on remote</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ssh_cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;ssh </span><span class="si">{</span><span class="n">ssh_login</span><span class="si">}</span><span class="s2"> &#39;mkdir -p </span><span class="si">{</span><span class="n">kqc_remote_tmp_path</span><span class="si">}</span><span class="s2"> &amp;&amp; ! </span><span class="se">{{</span><span class="s2"> ls -1qA </span><span class="si">{</span><span class="n">kqc_remote_tmp_path</span><span class="si">}</span><span class="s2"> | grep -q . ; </span><span class="se">}}</span><span class="s2">&#39;&quot;</span>
-    <span class="n">is_empty</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">ssh_cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">is_empty</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Your remote tmp folder </span><span class="si">{</span><span class="n">kqc_remote_tmp_path</span><span class="si">}</span><span class="s2"> is not empty!&quot;</span><span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Either delete its contents manually or use another directory&quot;</span><span class="p">)</span>
+
+    <span class="n">ssh_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ssh&quot;</span><span class="p">,</span> <span class="n">ssh_login</span><span class="p">]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">mkdir_cmd</span> <span class="o">=</span> <span class="n">ssh_cmd</span> <span class="o">+</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;mkdir -p </span><span class="si">{</span><span class="n">kqc_remote_tmp_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">mkdir_cmd</span><span class="p">,</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Remote tmp dir </span><span class="si">{</span><span class="n">kqc_remote_tmp_path</span><span class="si">}</span><span class="s2"> could not be created.&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Check that KQC_REMOTE_TMP_PATH is set correctly&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">check_empty_cmd</span> <span class="o">=</span> <span class="n">ssh_cmd</span> <span class="o">+</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;! </span><span class="se">{{</span><span class="s2"> ls -1qA </span><span class="si">{</span><span class="n">kqc_remote_tmp_path</span><span class="si">}</span><span class="s2"> | grep -q . ; </span><span class="se">}}</span><span class="s2">&quot;</span><span class="p">]</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">check_empty_cmd</span><span class="p">,</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">returncode</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Your remote tmp folder </span><span class="si">{</span><span class="n">kqc_remote_tmp_path</span><span class="si">}</span><span class="s2"> is not empty!&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Either delete its contents manually or use another directory&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Encountered error in ssh call (code </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">returncode</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">stderr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
 
@@ -1106,8 +1135,7 @@
 <span class="sd">        poll_interval           (int): Polling interval in seconds when waiting for the remote simulation to finish</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Windows&quot;</span><span class="p">:</span>  <span class="c1"># Windows</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Connecting to remote host not supported on Windows&quot;</span><span class="p">)</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Connecting to remote host not supported on Windows&quot;</span><span class="p">)</span>
 
     <span class="c1"># set defaults</span>
     <span class="k">if</span> <span class="n">kqc_remote_tmp_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1126,6 +1154,7 @@
     <span class="n">run_uuid</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
     <span class="n">kqc_remote_tmp_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">kqc_remote_tmp_path</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="s2">&quot;run_&quot;</span> <span class="o">+</span> <span class="n">run_uuid</span><span class="p">))</span>
     <span class="c1"># Create remote tmp if it doesnt exist, and check that its empty</span>
+    <span class="n">_check_ssh_connection</span><span class="p">(</span><span class="n">ssh_login</span><span class="p">)</span>
     <span class="n">_prepare_remote_tmp</span><span class="p">(</span><span class="n">ssh_login</span><span class="p">,</span> <span class="n">kqc_remote_tmp_path</span><span class="p">)</span>
 
     <span class="n">dirs_remote</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">kqc_remote_tmp_path</span><span class="p">)</span> <span class="o">/</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">))</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">export_tmp_paths</span><span class="p">]</span>
@@ -1210,6 +1239,10 @@
 <span class="s2">    echo &quot;</span><span class="se">\n</span><span class="s2">Simulations finished at:&quot;</span>
 <span class="s2">    date +&quot;%d-%m-%y %T&quot;</span>
 <span class="s2">    echo &quot;---------STOP-WAIT-SCRIPT---------&quot;</span>
+<span class="s2">    echo &quot;Output:&quot;</span>
+<span class="s2">    for dir in </span><span class="si">{</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="w"> </span><span class="n">export_tmp_paths</span><span class="p">))</span><span class="si">}</span><span class="s2">; do</span>
+<span class="s2">        cat &quot;$dir&quot;/slurm-*.out || true</span>
+<span class="s2">    done</span>
 <span class="s2">    rm -- &quot;$0&quot;</span>
 <span class="s2">    &quot;&quot;&quot;</span>
 
@@ -1223,11 +1256,11 @@
         <span class="p">)</span>
         <span class="n">run_cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;ssh </span><span class="si">{</span><span class="n">ssh_login</span><span class="si">}</span><span class="s2"> -tt -q &#39;bash -l -c &quot;cd </span><span class="si">{</span><span class="n">kqc_remote_tmp_path</span><span class="si">}</span><span class="s2"> &amp;&amp; ./</span><span class="si">{</span><span class="n">remote_script_name</span><span class="si">}</span><span class="s2">&quot;&#39;&quot;&quot;&quot;</span>
         <span class="c1"># COPY (dirs_local) -&gt; (dirs_remote)</span>
-        <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">copy_cmd</span><span class="p">)</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">copy_cmd</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
         <span class="c1"># Remove remote simulation script from local tmp folder</span>
         <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s2">&quot;rm&quot;</span><span class="p">,</span> <span class="n">remote_simulation_script</span><span class="p">])</span>
         <span class="c1"># Force to use login shell on remote to get correct env variables</span>
-        <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">run_cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">run_cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 
         <span class="nb">print</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Simulations started and connection to remote closed.</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -1248,7 +1281,7 @@
                 <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="p">)</span>
 
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+    <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Remote run failed. Please manually fetch and delete data from remote&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
 
 

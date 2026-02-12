@@ -1066,21 +1066,57 @@
 <span class="sd">                    Turning this off will make the simulations slightly faster</span>
 <span class="sd">        save_elmer_data: Save the full Elmer model after simulation. This can be used to restart the simulation</span>
 <span class="sd">                         or extract result field values as a post-processing step.</span>
+
+<span class="sd">        linear_system_method: Method for solving the FEM linear system of equations in Elmer. For iterative methods use</span>
+<span class="sd">                &quot;GCR&quot;, &quot;bicgstab&quot; or any other iterative solver mentioned in ElmerSolver manual section 4.3.1.</span>
+<span class="sd">                For direct methods &quot;umfpack&quot;, &quot;mumps&quot;, &quot;pardiso&quot; or &quot;superlu&quot; can be used, but note that other</span>
+<span class="sd">                methods than &quot;umfpack&quot; require Elmer to be explicitly compiled with the corresponding solver software.</span>
+<span class="sd">                If a direct method is used the parameters &quot;convergence_tolerance&quot;, &quot;max_iterations&quot;,</span>
+<span class="sd">                &quot;linear_system_preconditioning&quot;, &quot;abort_not_converged&quot; and all multigrid options (&quot;mg_*&quot;) are redundant.</span>
+<span class="sd">        convergence_tolerance: Convergence tolerance of the iterative solver.</span>
+<span class="sd">        max_iterations: Maximum number of iterations for the iterative solver.</span>
+<span class="sd">        linear_system_preconditioning: Choice of preconditioner before using an iterative linear system solver.</span>
+<span class="sd">                        If using multigrid, the preconditioning is applied on the lowest iteration level.</span>
+<span class="sd">        abort_not_converged: Stop Elmer execution immediately if an iterative linear system solver fails to reach</span>
+<span class="sd">            convergence. If False, a warning is printed after the simulation finishes.</span>
+
+<span class="sd">        use_multigrid_solver: Use hierarchical iterative multigrid solver.</span>
+<span class="sd">        mg_smoother: Choice of smoother in multigrid solver. Tested options for electrostatic simulations are</span>
+<span class="sd">                     &quot;SGS&quot;, &quot;CG&quot; and &quot;wjacobi&quot;. VectorHelmholtzSolution support &quot;cjacobi&quot;.</span>
+<span class="sd">        mg_smoothing_iterations: Number of smoothing iterations.</span>
+<span class="sd">        mg_relaxation_factor: Parameter for tuning the smoothers &quot;wjacobi&quot; and &quot;cjacobi&quot;.</span>
+<span class="sd">        mg_lowest_method: Linear system method used for solving the smallest/lowest order linear system in multigrid.</span>
+<span class="sd">                          See `linear_system_method` for options.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">tool</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-
+    <span class="c1"># Adaptive meshing settings</span>
     <span class="n">percent_error</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.005</span>
     <span class="n">max_error_scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span>
     <span class="n">max_outlier_fraction</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-3</span>
     <span class="n">maximum_passes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">minimum_passes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="c1"># general</span>
     <span class="n">is_axisymmetric</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">mesh_levels</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">mesh_size</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
     <span class="n">mesh_optimizer</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">vtu_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">save_elmer_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="n">linear_system_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;GCR&quot;</span>
+    <span class="n">convergence_tolerance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0e-9</span>
+    <span class="n">max_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span>
+    <span class="n">linear_system_preconditioning</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ILU0&quot;</span>
+    <span class="n">abort_not_converged</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># Multigrid solver settings</span>
+    <span class="n">use_multigrid_solver</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">mg_smoother</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;SGS&quot;</span>
+    <span class="n">mg_smoothing_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># default depends on mg_smoother</span>
+    <span class="n">mg_relaxation_factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.28</span>
+    <span class="n">mg_lowest_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;CG&quot;</span>
 
 <div class="viewcode-block" id="ElmerSolution.get_solution_data">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerSolution.get_solution_data">[docs]</a>
@@ -1089,7 +1125,13 @@
         <span class="n">sol_dict</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">,</span> <span class="s2">&quot;tool&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tool</span><span class="p">}</span>
         <span class="n">sol_dict</span><span class="p">[</span><span class="s2">&quot;solution_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sol_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">sol_dict</span></div>
-</div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Used for automatically setting default values depending on other parameters&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mg_smoothing_iterations</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;sgs&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;wjacobi&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;cjacobi&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;cg&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">}</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;mg_smoothing_iterations&quot;</span><span class="p">,</span> <span class="n">defaults</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mg_smoother</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="mi">1</span><span class="p">))</span></div>
 
 
 
@@ -1107,17 +1149,15 @@
 <span class="sd">        max_delta_s: Convergence tolerance in interpolating sweep</span>
 <span class="sd">        london_penetration_depth: Allows supercurrent to flow on the metal boundaries within a layer</span>
 <span class="sd">                                  of thickness `london_penetration_depth`</span>
-<span class="sd">        quadratic_approximation: Use edge finite elements of second degree</span>
-<span class="sd">        second_kind_basis: Use Nedelec finite elements of second kind</span>
+<span class="sd">        quadratic_approximation: Use edge finite elements of second order. Otherwise use first order.</span>
+<span class="sd">                                 If False, a direct solver such as `linear_system_method=zmumps` should be used.</span>
+<span class="sd">        second_kind_basis: Use Nedelec finite elements of second kind.</span>
 
 <span class="sd">        use_av: Use a formulation of VectorHelmHoltz equation based on potentials A-V instead of electric field E.</span>
 <span class="sd">                For details see https://www.nic.funet.fi/pub/sci/physics/elmer/doc/ElmerModelsManual.pdf</span>
 <span class="sd">                WARNING: This option is experimental and might lead to poor convergence.</span>
 <span class="sd">        conductivity: Adds a specified film conductivity on metal boundaries. Applies only when `use_av=True`</span>
 <span class="sd">        nested_iteration: Enables alternative nested iterative solver to be used. Applies only when `use_av=True`</span>
-<span class="sd">        convergence_tolerance: Convergence tolerance of the iterative solver. Applies only when `use_av=True`</span>
-<span class="sd">        max_iterations: Maximum number of iterations for the iterative solver.</span>
-<span class="sd">                        Applies only when `use_av=True` and only to the main solver (not to calc fields or port solver)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">tool</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;wave_equation&quot;</span>
@@ -1127,17 +1167,23 @@
     <span class="n">sweep_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;explicit&quot;</span>
     <span class="n">max_delta_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span>
     <span class="n">london_penetration_depth</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">quadratic_approximation</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">quadratic_approximation</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">second_kind_basis</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-
+    <span class="c1"># Experimental options</span>
     <span class="n">use_av</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">conductivity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">nested_iteration</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">convergence_tolerance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0e-10</span>
-    <span class="n">max_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2000</span>
+
+    <span class="c1"># override defaults</span>
+    <span class="n">mg_smoother</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;cjacobi&quot;</span>
+    <span class="n">convergence_tolerance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0e-6</span>
+    <span class="n">max_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span>
+    <span class="n">linear_system_preconditioning</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span>
+    <span class="n">mg_lowest_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;zmumps&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Cast frequency to list. Automatically called after init&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__post_init__</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frequency</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">)):</span>
             <span class="c1"># hack to modify the attributes of frozen dataclass</span>
             <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;frequency&quot;</span><span class="p">,</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frequency</span><span class="p">)])</span>
@@ -1155,26 +1201,14 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        p_element_order: polynomial order of p-elements</span>
-<span class="sd">        linear_system_method: Options: 1. Iterative methods &quot;mg&quot; (multigrid), &quot;bicgstab&quot; or any other iterative</span>
-<span class="sd">                solver mentioned in ElmerSolver manual section 4.3.1. 2. Direct methods &quot;umfpack&quot;, &quot;mumps&quot;, &quot;pardiso&quot; or</span>
-<span class="sd">                &quot;superlu&quot;. Note that the use of other methods than &quot;umfpack&quot; requires Elmer to be explicitly compiled</span>
-<span class="sd">                with the corresponding solver software. If a direct method is used the parameters</span>
-<span class="sd">                &quot;convergence_tolerance&quot;, &quot;max_iterations&quot; and &quot;linear_system_preconditioning&quot; are redundant</span>
 <span class="sd">        integrate_energies: Calculate energy integrals over each object. Used in EPR simulations</span>
-<span class="sd">        convergence_tolerance: Convergence tolerance of the iterative solver.</span>
-<span class="sd">        max_iterations: Maximum number of iterations for the iterative solver.</span>
-<span class="sd">        linear_system_preconditioning: Choice of preconditioner before using an iterative linear system solver</span>
 <span class="sd">        electric_infinity_bc: effectively extend the model domain to infinity using spherical boundary conditions</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">tool</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;capacitance&quot;</span>
 
     <span class="n">p_element_order</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span>
-    <span class="n">linear_system_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;mg&quot;</span>
     <span class="n">integrate_energies</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">convergence_tolerance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0e-9</span>
-    <span class="n">max_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span>
-    <span class="n">linear_system_preconditioning</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ILU0&quot;</span>
     <span class="n">electric_infinity_bc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
@@ -1184,27 +1218,18 @@
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ElmerCrossSectionSolution</span><span class="p">(</span><span class="n">ElmerSolution</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Class for Elmer cross-section solution parameters.</span>
-<span class="sd">    By default both 2D Capacitance and 2D Inductance simulation will be run when using this</span>
+<span class="sd">    Class for Elmer cross-section solution parameters. By default both 2D Capacitance and 2D Inductance simulation</span>
+<span class="sd">    will be run when using this Solution type. The linear system solver parameters are hardcoded for the inductance</span>
+<span class="sd">    simulation and the solver related parameters in ElmerSolution only have effect on the Capacitance simulation.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        p_element_order: polynomial order of p-elements</span>
-<span class="sd">        linear_system_method: Options: 1. Iterative methods &quot;mg&quot; (multigrid), &quot;bicgstab&quot; or any other iterative</span>
-<span class="sd">                solver mentioned in ElmerSolver manual section 4.3.1. 2. Direct methods &quot;umfpack&quot;, &quot;mumps&quot;, &quot;pardiso&quot; or</span>
-<span class="sd">                &quot;superlu&quot;. Note that the use of other methods than &quot;umfpack&quot; requires Elmer to be explicitly compiled</span>
-<span class="sd">                with the corresponding solver software. If a direct method is used the parameters</span>
-<span class="sd">                &quot;convergence_tolerance&quot;, &quot;max_iterations&quot; and &quot;linear_system_preconditioning&quot; are redundant</span>
 <span class="sd">        integrate_energies: Calculate energy integrals over each object. Used in EPR simulations</span>
 <span class="sd">        boundary_conditions: Parameters to determine boundary conditions for potential on the edges</span>
 <span class="sd">                             of simulation box. Supported keys are `xmin` , `xmax` ,`ymin` and `ymax`</span>
 <span class="sd">                             Example: `boundary_conditions = {&quot;xmin&quot;: {&quot;potential&quot;: 0}}`</span>
-<span class="sd">        convergence_tolerance: Convergence tolerance of the iterative solver.</span>
-<span class="sd">                               Applies only to capacitance part of the simulation</span>
-<span class="sd">        max_iterations: Maximum number of iterations for the iterative solver.</span>
-<span class="sd">                        Applies only to capacitance part of the simulation</span>
 <span class="sd">        run_inductance_sim: Can be used to skip running the inductance simulation and just do 2D capacitance.</span>
 <span class="sd">                            No impendance can then be calculated but useful for making EPR simulations faster</span>
-<span class="sd">        linear_system_preconditioning: Choice of preconditioner before using an iterative linear system solver</span>
 <span class="sd">        voltage_excitations: Can be used to excite signals with arbitrary voltages, instead of 1V. If this parameter is</span>
 <span class="sd">                             used, no capacitances will be computed.</span>
 <span class="sd">        electric_infinity_bc: effectively extend the model domain to infinity using spherical boundary conditions</span>
@@ -1213,13 +1238,9 @@
     <span class="n">tool</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;cross-section&quot;</span>
 
     <span class="n">p_element_order</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span>
-    <span class="n">linear_system_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;mg&quot;</span>
     <span class="n">integrate_energies</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">boundary_conditions</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
-    <span class="n">convergence_tolerance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0e-9</span>
-    <span class="n">max_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span>
     <span class="n">run_inductance_sim</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">linear_system_preconditioning</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ILU0&quot;</span>
     <span class="n">voltage_excitations</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">electric_infinity_bc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
 
@@ -1235,14 +1256,6 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        p_element_order: polynomial order of p-elements</span>
-<span class="sd">        linear_system_method: Options: 1. Iterative methods &quot;mg&quot; (multigrid), &quot;bicgstab&quot; or any other iterative</span>
-<span class="sd">                solver mentioned in ElmerSolver manual section 4.3.1. 2. Direct methods &quot;umfpack&quot;, &quot;mumps&quot;, &quot;pardiso&quot; or</span>
-<span class="sd">                &quot;superlu&quot;. Note that the use of other methods than &quot;umfpack&quot; requires Elmer to be explicitly compiled</span>
-<span class="sd">                with the corresponding solver software. If a direct method is used the parameters</span>
-<span class="sd">                &quot;convergence_tolerance&quot;, &quot;max_iterations&quot; and &quot;linear_system_preconditioning&quot; are redundant</span>
-<span class="sd">        convergence_tolerance: Convergence tolerance of the iterative solver.</span>
-<span class="sd">        max_iterations: Maximum number of iterations for the iterative solver.</span>
-<span class="sd">        linear_system_preconditioning: Choice of preconditioner before using an iterative linear system solver</span>
 <span class="sd">        voltage_excitations: Can be used to excite signals with arbitrary voltages, instead of 1V. If this parameter is</span>
 <span class="sd">                             used, no capacitances will be computed.</span>
 <span class="sd">        electric_infinity_bc: effectively extend the model domain to infinity using spherical boundary conditions</span>
@@ -1251,10 +1264,6 @@
     <span class="n">tool</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;epr_3d&quot;</span>
 
     <span class="n">p_element_order</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span>
-    <span class="n">linear_system_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;mg&quot;</span>
-    <span class="n">convergence_tolerance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0e-9</span>
-    <span class="n">max_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span>
-    <span class="n">linear_system_preconditioning</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ILU0&quot;</span>
     <span class="n">voltage_excitations</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">electric_infinity_bc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
 
