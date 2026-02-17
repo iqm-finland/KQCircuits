@@ -92,7 +92,6 @@ else:  # use Elmer
             voltage_excitations=[1.0, 0.01],
             # poor mesh for faster computation
             mesh_size=refine_metal_edges(5.0, 1.0),
-            mesh_optimizer={},
         ),
     )
 

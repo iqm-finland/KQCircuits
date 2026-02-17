@@ -159,7 +159,7 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
     # Set meshing
     mesh_size = json_data.get("mesh_size", {})
     workflow = json_data.get("workflow", {})
-    set_meshing(mesh_size, new_tags, workflow)
+    mesh_field_ids, global_max_mesh_size = set_meshing(mesh_size, new_tags, workflow)
 
     # Remove layers without material
     for name, data in layers.items():
@@ -222,6 +222,34 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
     gmsh.model.mesh.generate(3)
 
     optimize_mesh(json_data.get("mesh_optimizer"))
+
+    min_quality = json_data["min_mesh_quality"]
+    if min_quality > 0:
+        deg_elements = get_elements_by_quality(min_quality)
+        if len(deg_elements) > 0:
+            logging.warning(f"Found {len(deg_elements)} poor elements. Starting iterative refinement")
+
+            refined_mesh_field_ids = mesh_field_ids.copy()
+            max_iter = 5
+            for i in range(max_iter):
+                print_mesh_quality_metrics()
+                logging.warning(f"Iterative refinement {i + 1}: Remeshing...")
+
+                refined_mesh_field_ids = remesh_with_local_box_refinement(
+                    deg_elements, refined_mesh_field_ids, global_max_mesh_size
+                )
+                optimize_mesh(json_data.get("mesh_optimizer"))
+
+                deg_elements = get_elements_by_quality(min_quality)
+
+                if len(deg_elements) == 0:
+                    logging.warning(f"Iterative refinement {i + 1}: Completed succesfully.")
+                    break
+                logging.warning(f"Iterative refinement {i + 1}: {len(deg_elements)} poor elements still left")
+            else:
+                logging.warning(f"Iterative refinement: Failed to improve the mesh in {max_iter} iterations")
+            print_mesh_quality_metrics()
+
     gmsh.write(str(msh_file))
 
     # Open mesh viewer
@@ -231,13 +259,86 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
     gmsh.finalize()
 
 
+def get_element_qualities(element_type: int | None = None) -> dict[int, float]:
+    """Get element quality metrics in dictionary format ElementTag -> Quality.
+    `element_type` can be used to filter by element type, for example tetras=4"""
+    qualities = {}
+    elemTypes, elemTags, _ = gmsh.model.mesh.getElements(3)
+    for etype, tags in zip(elemTypes, elemTags):
+        if element_type and element_type != etype:
+            continue
+
+        tag_qualities = gmsh.model.mesh.getElementQualities(tags)
+        qualities.update(dict(zip(tags, tag_qualities)))
+
+    return qualities
+
+
+def get_elements_by_quality(threshold: float, element_type: int | None = None) -> list[int]:
+    """Get Tags of Elements with quality below given threshold."""
+    return sorted([e for e, q in get_element_qualities(element_type).items() if q < threshold])
+
+
+def remesh_with_local_box_refinement(
+    refined_elements: list[int],
+    existing_mesh_fields: list,
+    global_max: float,
+    mesh_size_factor: float = 1.0,
+) -> list:
+    """Applies mesh refinement trying to improve quality of target elements. Mesh is refined in a box around each
+    target element with a mesh size equal to average edge length of the element.
+
+    Args:
+        refined_elements: List of elements to refine.
+        existing_mesh_fields: GMSH mesh field list of the current mesh
+        global_max: Global maximum mesh size
+        mesh_size_factor: Mesh size in the refinement box relative to the average edge length of the element.
+
+    Returns:
+        Gmsh mesh size fields for the refined mesh (including the original fields)
+    """
+    box_fields = []
+    for e in refined_elements:
+        nodeTags = gmsh.model.mesh.getElement(e)[1]
+        node_coords = [gmsh.model.mesh.getNode(n)[0] for n in nodeTags]
+
+        average_dist = sum(coord_dist(p1, p2) for p1, p2 in itertools.combinations(node_coords, 2)) / 6
+        # Set mesh size inside refinement box as average edge length times a factor
+        f_box = gmsh.model.mesh.field.add("Box")
+        mesh_size_inside = mesh_size_factor * average_dist
+        gmsh.model.mesh.field.setNumber(f_box, "VIn", mesh_size_inside)
+        gmsh.model.mesh.field.setNumber(f_box, "VOut", global_max)
+
+        gmsh.model.mesh.field.setNumber(f_box, "Thickness", (global_max - mesh_size_inside) / 2)
+        for coord, values in zip(["X", "Y", "Z"], zip(*node_coords)):
+            gmsh.model.mesh.field.setNumber(f_box, coord + "Min", min(values))
+            gmsh.model.mesh.field.setNumber(f_box, coord + "Max", max(values))
+
+        box_fields.append(f_box)
+
+    all_mesh_fields = existing_mesh_fields + box_fields
+    background_field_id = gmsh.model.mesh.field.add("Min")
+    gmsh.model.mesh.field.setNumbers(background_field_id, "FieldsList", all_mesh_fields)
+    gmsh.model.mesh.field.setAsBackgroundMesh(background_field_id)
+
+    gmsh.model.mesh.clear()
+    gmsh.model.mesh.generate(3)
+
+    return all_mesh_fields
+
+
+def print_mesh_quality_metrics(element_type: int | None = None):
+    """Prints minimum and average element quality metrics"""
+    qualities = np.array(list(get_element_qualities(element_type).values()))
+    logging.warning(f"Min quality: {float(np.min(qualities)):.4g}. Mean quality: {float(np.average(qualities)):.4g}")
+
+
 def optimize_mesh(mesh_optimizer: dict | None) -> None:
     """Optimize the mesh if the mesh_optimizer is a dictionary. Ignore mesh optimization if mesh_optimizer is None."""
     if mesh_optimizer is None:
         return
     try:
-        # Try optimizing with Netgen as the default method
-        gmsh.model.mesh.optimize(**{"method": "Netgen", **mesh_optimizer})
+        gmsh.model.mesh.optimize(**mesh_optimizer)
     except Exception as error:  # pylint: disable=broad-except
         logging.warning(f"Mesh optimization failed: {error}")
 
@@ -414,13 +515,18 @@ def get_recursive_children(dim_tags: Iterable[DimTag], include_parent: bool = Fa
 
 def set_meshing(
     mesh_size: dict[str, float | list[float]], layer_dts: dict[str, list[DimTag]], workflow: dict[str, Any]
-):
+) -> tuple[list, float]:
     """Applies mesh refinement and sets meshing options
 
     Args:
         mesh_size: Dictionary to determine mesh refinement
         layer_dts: dictionary with layer names as keys and lists of dim-tags as values
         workflow: Parameters for simulation workflow
+
+    Returns:
+        Tuple of
+            1. List of mesh field ids used in the refinement
+            2. global max mesh size
     """
     # Find global maximum mesh element length
     mesh_global_max_size = mesh_size.pop("global_max", 0)
@@ -459,6 +565,7 @@ def set_meshing(
     n_threads_dict = workflow["sbatch_parameters"] if "sbatch_parameters" in workflow else workflow
     gmsh_n_threads = int(n_threads_dict.get("gmsh_n_threads", 1))
     set_meshing_options(mesh_field_ids, mesh_global_max_size, gmsh_n_threads)
+    return mesh_field_ids, mesh_global_max_size
 
 
 def set_meshing_options(mesh_field_ids: list[int], max_size: float, n_threads: int) -> None:

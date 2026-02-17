@@ -48,13 +48,18 @@ class ElmerSolution(Solution):
             For example, if the dictionary is {'substrate*': 10, 'substrate*&vacuum': [2, 5], 'global_max': 100}, then
             the maximal mesh element length is 10 inside the substrates and 2 on region which is less than 5 units away
             from any substrate-vacuum interface. Outside these regions, the mesh element size can increase up to 100.
-        mesh_optimizer: Dictionary to determine mesh optimization, or None (default) to ignore optimization. The
-            dictionary can contain keywords 'method', 'force', 'niter' and 'dimTags'. See Gmsh manual
-            (gmsh.model.mesh.optimize) for details. The default value for 'method' is 'Netgen'.
+        mesh_optimizer: Dictionary to determine mesh optimization, or None to ignore optimization. The dictionary can
+            contain keywords 'method', 'force', 'niter' and 'dimTags'. See Gmsh manual (gmsh.model.mesh.optimize) for
+            details. The default value is {'method': 'Netgen'}.
         vtu_output: Output vtu files to view fields in Paraview.
                     Turning this off will make the simulations slightly faster
         save_elmer_data: Save the full Elmer model after simulation. This can be used to restart the simulation
                          or extract result field values as a post-processing step.
+        min_mesh_quality: If the initial Gmsh mesh contains elements with quality below this limit, a local mesh
+            refinement around those elements is applied. This causes the whole mesh to be recomputed and can therefore
+            cause performance issues if set too high. The aim of the remeshing is to prevent fatal errors due
+            to degenerate elements in Elmer. The default value of 5e-7 is determined experimentally and might need
+            adjustment. Setting this to 0 disables the feature.
 
         linear_system_method: Method for solving the FEM linear system of equations in Elmer. For iterative methods use
                 "GCR", "bicgstab" or any other iterative solver mentioned in ElmerSolver manual section 4.3.1.
@@ -90,9 +95,10 @@ class ElmerSolution(Solution):
     is_axisymmetric: bool = False
     mesh_levels: int = 1
     mesh_size: dict = field(default_factory=dict)
-    mesh_optimizer: dict | None = None
+    mesh_optimizer: dict | None = field(default_factory=lambda: {"method": "Netgen"})
     vtu_output: bool = True
     save_elmer_data: bool = False
+    min_mesh_quality: float = 5e-7
 
     linear_system_method: str = "GCR"
     convergence_tolerance: float = 1.0e-9
@@ -118,6 +124,8 @@ class ElmerSolution(Solution):
         if self.mg_smoothing_iterations is None:
             defaults = {"sgs": 1, "wjacobi": 4, "cjacobi": 4, "cg": 8}
             object.__setattr__(self, "mg_smoothing_iterations", defaults.get(self.mg_smoother.lower(), 1))
+        if self.mesh_optimizer == {}:
+            object.__setattr__(self, "mesh_optimizer", {"method": "Netgen"})
 
 
 @dataclass(kw_only=True, frozen=True)

@@ -74,10 +74,7 @@ sim_parameters = {
     "n": 64,
 }
 
-solution = ElmerCapacitanceSolution(
-    mesh_size=refine_metal_edges(2.0, 0.5),
-    mesh_optimizer={},
-)
+solution = ElmerCapacitanceSolution(mesh_size=refine_metal_edges(2.0, 0.5))
 
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + var_str + "_output")
