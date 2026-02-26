@@ -126,7 +126,7 @@ class ElmerSolution(Solution):
     def __post_init__(self):
         """Used for automatically setting default values depending on other parameters"""
         if self.mg_smoothing_iterations is None:
-            defaults = {"sgs": 1, "wjacobi": 4, "cjacobi": 4, "cg": 8}
+            defaults = {"sgs": 1, "wjacobi": 4, "cjacobi": 4, "cg": 12}
             object.__setattr__(self, "mg_smoothing_iterations", defaults.get(self.mg_smoother.lower(), 1))
         if self.mesh_optimizer == {}:
             object.__setattr__(self, "mesh_optimizer", {"method": "Netgen"})

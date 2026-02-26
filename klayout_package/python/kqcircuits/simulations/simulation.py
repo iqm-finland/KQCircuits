@@ -1436,6 +1436,7 @@ class Simulation:
         """
         return {
             "simulation_name": self.name,
+            "parent_simulation": self.parent_simulation.name if hasattr(self, "parent_simulation") else None,
             "units": "um",  # hardcoded assumption in multiple places
             "layers": self.layers,
             "material_dict": self.check_material_dict(),
@@ -1523,3 +1524,136 @@ class Simulation:
             # Visualize region
             region = pya.Region(pya.DPolygon(points_2d).to_itype(self.layout.dbu))
             self.visualise_region(region, label, "simulation_ports", label_location)
+
+    def create_submodel(
+        self,
+        sim_name: str,
+        box: pya.DBox | None = None,
+        z_limits: list | None = None,
+        override_parameters: dict | None = None,
+        magnification_order: int = 0,
+    ) -> "Simulation":
+        """
+        Creates a new Simulation with restricted domain both in xy and z-dimensions. Does not modify current simulation.
+
+        This differs from initializing the simulation with smaller "box" and substrate/vacuum_height parameters
+        in the sense that signal ordering is preserved.
+
+        Reference to the current simulation is saved in "parent_simulation" attribute of the new simulation.
+
+        Arguments:
+            sim_name: Name of the new simulation
+            box: pya.DBox for cropping the new simulation in xy-plane
+            z_limits: List of two float coordinates used to restrict the domain in z-direction.
+            override_parameters: Dictionary of Simulation parameters to modify when creating the submodel.
+                                 Can be for example used to enable finer geometric details for the submodel.
+            magnification_order: Increase magnification of simulation geometry to accomodate more precise spacial units:
+                0 = no magnification compared to current simulation. 1 =  10x magnification, 2 = 100x magnification, etc
+
+        Returns:
+            A new Simulation instance
+        """
+
+        if sim_name == self.cell.name:
+            raise ValueError("Cropped cell cannot have same name as the parent simulation")
+
+        new_layout = pya.Layout()
+        new_layout.dbu = self.layout.dbu * 10 ** (-magnification_order)
+        if new_layout.dbu < 1e-6:
+            logging.warning(
+                "Using dbu smaller than 1e-6 could lead to integer overflow. Consider decreasing `magnification_order`"
+            )
+        highest_parent_sim = self
+        while getattr(highest_parent_sim, "parent_simulation", None) is not None:
+            highest_parent_sim = highest_parent_sim.parent_simulation
+
+        parameters = {
+            **self.get_parameters(),
+            **(override_parameters or {}),
+            "name": sim_name,
+            "box": highest_parent_sim.box,
+        }
+
+        submodel = self.__class__(layout=new_layout, **parameters)
+        submodel.crop(box, z_limits)
+        submodel.parent_simulation = self
+
+        return submodel
+
+    def crop(self, box: pya.DBox | None = None, z_limits: None | list = None) -> None:
+        """
+        Crops simulation layers in-place (modifies current Simulation instance). Only crops layers
+        specified in self.layers. Removes ports which are not inside the new simulation box.
+
+        Does not modify face_stack even if some of the faces are cropped out.
+
+        Arguments:
+            box: pya.DBox used to crop the simulation in xy-plane
+            z_limits: Vertical limits for cropping in terms of z-coordinates.
+        """
+
+        if box is None and z_limits is None:
+            logging.warning("No box or z-limits provided in `simulation.crop()`")
+            return
+
+        if box is not None:
+            if not isinstance(box, pya.DBox):
+                raise ValueError(f"`simulation.crop()` only supports pya.DBox. Given {type(box).__name__}")
+            crop_region = pya.Region(box.to_itype(dbu=self.layout.dbu))
+        else:
+            crop_region = None
+
+        new_layers = {}
+        for name, data in self.layers.items():
+            sim_layer = get_simulation_layer_by_name(name)
+            layer_info = self.layout.layer(sim_layer)
+            layer_shapes = self.cell.shapes(layer_info)
+
+            if crop_region is not None:
+                cropped = pya.Region(layer_shapes) & crop_region
+            else:
+                cropped = pya.Region(layer_shapes)
+
+            layer_shapes.clear()
+
+            if cropped.is_empty():
+                continue
+
+            if z_limits is not None:
+                zmin, zmax = z_limits
+                z0 = data["z"]
+                z_top = z0 + data["thickness"]
+                lower = z0 if zmin is None else max(z0, zmin)
+                upper = z_top if zmax is None else min(z_top, zmax)
+                if upper < lower or (upper == lower and data["thickness"] != 0):
+                    continue  # not intersecting in z
+
+                data["z"] = lower
+                data["thickness"] = upper - lower
+
+            layer_shapes.insert(cropped)
+            new_layers[name] = data
+
+        if len(new_layers) == 0:
+            raise RuntimeError("Simulation has no layers left after cropping")
+
+        # Remove "subtract" entries which are not not in layers
+        layer_names = set(new_layers.keys())
+        for l in layer_names:
+            if "subtract" in new_layers[l]:
+                new_layers[l]["subtract"] = [s for s in new_layers[l]["subtract"] if s in layer_names]
+
+        if box is not None:
+            self.box = box
+
+        self.layers = new_layers
+
+        new_ports = []
+        for port in self.ports:
+            port_points = [port.signal_location]
+            if getattr(port, "ground_location", None) is not None:
+                port_points.append(port.ground_location)
+            if all(self.box.contains(point) for point in port_points):
+                new_ports.append(port)
+
+        self.ports = new_ports
