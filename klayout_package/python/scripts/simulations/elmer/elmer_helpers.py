@@ -206,7 +206,7 @@ def sif_linsys(json_data: dict) -> list[str]:
             lowest_itdir = "Direct" if is_direct_method(lowest_method) else "Iterative"
             linsys += [
                 f"Linear System Iterative Method = {linsys_method}",
-                "Linear System Residual Output = 10",
+                "Linear System Residual Output = 1",
                 "Linear System Preconditioning = multigrid",
                 "Linear System Refactorize = False",
                 "MG Method = p",
@@ -218,6 +218,9 @@ def sif_linsys(json_data: dict) -> list[str]:
                 f"MG Pre Smoothing iterations = {json_data['mg_smoothing_iterations']}",
                 f"MG Post Smoothing Iterations = {json_data['mg_smoothing_iterations']}",
                 f"MG Lowest Linear Solver = {lowest_itdir}",
+                # Show no output and no abort in the inner mglowest solver
+                "mglowest: Linear system residual output = 0",
+                "mglowest: Linear System Abort Not Converged = False",
                 "mglowest: Linear System Scaling = False",
                 f"mglowest: Linear System {lowest_itdir} Method = {lowest_method}",
                 f"mglowest: Linear System Preconditioning = {preconditioner}",
