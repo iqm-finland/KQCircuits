@@ -110,6 +110,13 @@ class Chip(Element):
         unit="μm",
     )
 
+    bump_edge_to_metal_gap = Param(
+        pdt.TypeDouble,
+        "Bump edge clearance to metal gap",
+        default_bump_parameters["bump_edge_to_metal_gap"],
+        unit="μm",
+    )
+
     frames_enabled = Param(pdt.TypeList, "List of face ids (integers) for which a ChipFrame is drawn", [0])
     frames_marker_dist = Param(pdt.TypeList, "Marker distance from edge for each chip frame", [1500, 1000], unit="[μm]")
     frames_diagonal_squares = Param(pdt.TypeList, "Number of diagonal marker squares for each chip frame", [10, 2])
@@ -419,9 +426,9 @@ class Chip(Element):
 
         # Specify bump element, filter regions, and locations
         bump = self.add_element(self._get_ground_bump_element(), face_ids=[self.face_ids[face] for face in faces])
-        shape_layers = [("underbump_metallization", face) for face in faces]
+        shape_layers = [("indium_bump", face) for face in faces]
         filter_regions = self.get_filter_regions(
-            [("ground_grid_avoidance", face, 0) for face in faces]
+            [("ground_grid_avoidance", face, self.bump_edge_to_metal_gap - self.margin) for face in faces]
             + [("indium_bump", face, self.bump_edge_to_bump_edge_separation) for face in faces]
             + [("through_silicon_via", face, self.tsv_edge_to_nearest_element) for face in faces]
             + extra_filter_regions

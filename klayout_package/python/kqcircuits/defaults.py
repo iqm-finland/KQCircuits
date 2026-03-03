@@ -147,6 +147,7 @@ default_bump_parameters = {
     "bump_grid_spacing": 120,
     "bump_edge_to_bump_edge_separation": 95,
     "edge_from_bump": 550,
+    "bump_edge_to_metal_gap": 20,
 }
 
 
