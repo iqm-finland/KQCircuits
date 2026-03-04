@@ -39,6 +39,11 @@ from kqcircuits.elements.markers.mask_marker_fc import MaskMarkerFc
 from kqcircuits.util.geometry_helper import circle_polygon
 from kqcircuits.util.label import produce_label, LabelOrigin
 from kqcircuits.util.merge import merge_layout_layers_on_face, convert_child_instances_to_static
+from kqcircuits.util.static_chip_helper import (
+    get_chip_boundary_box,
+    copy_chip_cell_from_face,
+    swap_face,
+)
 
 
 class MaskLayout:
@@ -187,6 +192,57 @@ class MaskLayout:
         chip_size = self.chip_size if not chip_size else chip_size
         self.extra_chips_maps.append((chips_map, chip_size, align, align_to, chip_trans))
 
+    def copy_chip_cell(self, orig_cell, chip_name, from_face=None, bbox_face_ids=None):
+        """Copies ``orig_cell`` to a separate cell, with irrelevant faces stripped
+
+        Adds entry to ``self.chip_bounding_boxes`` as boundary box of the chip
+        and  entry to ``self.chips_map_legend`` as the cell copy.
+
+        Args:
+            orig_cell: Original cell, not affected after this call
+            chip_name: Name of the chip, used as key in ``self.chip_bounding_boxes`` and ``self.chips_map_legend``
+            from_face: Optional. If set, will copy geometry only from this face, instead of ``self.face_id``.
+                If set, the key ``(chip_name, from_face)`` is used in
+                ``self.chip_bounding_boxes`` and ``self.chips_map_legend``
+            bbox_face_ids: Optional. If set, will take the superset bounding box from this list of faces.
+                Otherwise will only get bounding box from ``from_face``.
+        """
+        if from_face is None:
+            new_cell_name = chip_name
+            key = chip_name
+        else:
+            new_cell_name = f"{chip_name}-{from_face}"
+            key = (chip_name, from_face)
+        if bbox_face_ids is None:
+            bbox_face_ids = [from_face]
+        self.chip_bounding_boxes[key] = get_chip_boundary_box(orig_cell, bbox_face_ids)
+        new_cell = copy_chip_cell_from_face(orig_cell, new_cell_name, self.face_id if from_face is None else from_face)
+        # chip_bounding_boxes set to empty box, try finding explicit 'box' parameter
+        if from_face is not None and self.chip_bounding_boxes[key].empty():
+            boxes = set(
+                v.get("box")
+                for v in self.chips_map.values()
+                if v["chip_name"] == chip_name and v.get("from_face") == from_face and v.get("box") is not None
+            )
+            if len(boxes) < 1:
+                print(
+                    f"Chip {chip_name} taken from face {from_face} can't infer bounding box from geometry, "
+                    "and didn't have 'box' field in 'chips_map'. "
+                    f"Expect empty slots in mask layout on face {self.face_id}"
+                )
+            else:
+                if len(boxes) > 1:
+                    print(
+                        f"Chip {chip_name} taken from face {from_face} has inconsistent "
+                        f"'box' values in 'chips_map'. Using value {list(boxes)[0]}"
+                    )
+                self.chip_bounding_boxes[key] = list(boxes)[0]
+
+        self.chips_map_legend[key] = new_cell
+        # Swap layers from "from_face" to mask layout's face_id
+        if from_face is not None and from_face != self.face_id:
+            swap_face(self.chips_map_legend[key], from_face, self.face_id)
+
     def build(self, chips_map_legend):
         """Builds the cell hierarchy for this mask layout.
 
@@ -205,27 +261,21 @@ class MaskLayout:
         for name, cell in tqdm(chips_map_legend.items(), desc="Building cell hierarchy", bar_format=default_bar_format):
             self.chip_counts[name] = 0
             # create copies of the chips, so that modifying these only affects the ones in this MaskLayout
-            new_cell = self.layout.create_cell(name)
-            new_cell.copy_tree(cell)
+            self.copy_chip_cell(cell, name, bbox_face_ids=self.bbox_face_ids)
 
-            # Find the bounding box encompassing base metal gap shapes in all in bbox_face_ids
-            bboxes = [
-                new_cell.dbbox_per_layer(self.layout.layer(default_faces[face_id]["base_metal_gap_wo_grid"]))
-                for face_id in self.bbox_face_ids
-            ]
-            if not all(b.empty() for b in bboxes):
-                p1_xs, p1_ys, p2_xs, p2_ys = zip(*[(b.p1.x, b.p1.y, b.p2.x, b.p2.y) for b in bboxes if not b.empty()])
-                self.chip_bounding_boxes[name] = pya.DBox(min(p1_xs), min(p1_ys), max(p2_xs), max(p2_ys))
-            else:
-                self.chip_bounding_boxes[name] = pya.DBox()
-
-            # remove layers belonging to another face
-            for face_id, face_dictionary in default_faces.items():
-                if face_id != self.face_id:
-                    for layer_info in face_dictionary.values():
-                        new_cell.flatten(True).clear(self.layout.layer(layer_info))
-
-            self.chips_map_legend[name] = new_cell
+            if not isinstance(self.chips_map, dict):
+                # Face swapping feature not currently supported when mask layout built using ``_add_chips_from_map``
+                # instead of ``_add_chips_map_dict``
+                continue
+            # From one chip we might take a different geometry set from different faces
+            # Make separate cell copies for them
+            other_faces = set(
+                v.get("from_face")
+                for v in self.chips_map.values()
+                if v.get("from_face") is not None and v["chip_name"] == name
+            )
+            for other_face in other_faces:
+                self.copy_chip_cell(cell, name, from_face=other_face)
 
         self.region_covered = self._mask_create_geometry()
         if len(self.submasks) > 0:
@@ -483,6 +533,7 @@ class MaskLayout:
                     allowed_region=allowed_region,
                     chip_width=chip_width,
                     adjust_trans=False,
+                    other_face=chip_dict.get("from_face"),
                 )
                 region_used += region_chip
                 if added_chip:
@@ -543,15 +594,26 @@ class MaskLayout:
         self._max_y = max(box.p2.y, self._max_y)
 
     def _add_chip(
-        self, name, position, trans, position_label=None, allowed_region=None, chip_width=None, adjust_trans=True
+        self,
+        name,
+        position,
+        trans,
+        position_label=None,
+        allowed_region=None,
+        chip_width=None,
+        adjust_trans=True,
+        other_face=None,
     ):
         """Returns a tuple (Boolean telling if the chip was added, Region which the chip covers)."""
         if chip_width is None:
             chip_width = self.chip_width
         chip_region = pya.Region()
-        if name in self.chips_map_legend:
-            chip_cell = self.chips_map_legend[name]
-            bounding_box = self.chip_bounding_boxes[name]
+        key = name
+        if other_face:
+            key = (name, other_face)
+        if key in self.chips_map_legend:
+            chip_cell = self.chips_map_legend[key]
+            bounding_box = self.chip_bounding_boxes[key]
             bbox_offset = chip_width - bounding_box.width()
             if adjust_trans:
                 trans = pya.DTrans(position + pya.DVector(bbox_offset, 0) - self.chip_box_offset) * trans

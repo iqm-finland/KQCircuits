@@ -84,14 +84,18 @@ class MaskSet:
         mask_export_layers=None,
         export_path=None,
         add_mask_name_to_chips=False,
+        parse_sys_args=True,
     ):
 
         self._time = {"INIT": perf_counter(), "ADD_CHIPS": 0, "BUILD": 0, "EXPORT": 0, "END": 0}
 
         if export_path is None:
-            arg_parser, _ = argument_parser()
-            arg_values, _ = arg_parser.parse_known_args(sys.argv[1:])
-            export_path = TMP_PATH if not arg_values.p else arg_values.p
+            if parse_sys_args:
+                arg_parser, _ = argument_parser()
+                arg_values, _ = arg_parser.parse_known_args(sys.argv[1:])
+                export_path = TMP_PATH if not arg_values.p else arg_values.p
+            else:
+                export_path = TMP_PATH
 
         self.view = KLayoutView() if view is None else view
         self.layout = self.view.layout
@@ -105,20 +109,21 @@ class MaskSet:
         self.mask_export_layers = mask_export_layers if mask_export_layers is not None else []
         self.used_chips = {}
         self.add_mask_name_to_chips = add_mask_name_to_chips
+        self.parse_sys_args = parse_sys_args
         self._extra_params = {}
         self._mask_set_dir = Path(export_path) / f"{name}_v{version}"
         print(f"Exporting to: {str(self._mask_set_dir)}")
 
         self._mask_set_dir.mkdir(parents=True, exist_ok=True)
 
-        self._extra_params["enable_debug"] = "-d" in argv
+        self._extra_params["enable_debug"] = parse_sys_args and "-d" in argv
         self._single_process = self._extra_params["enable_debug"] or not is_standalone_session()
 
-        self._extra_params["mock_chips"] = "-m" in argv
-        self._extra_params["skip_extras"] = "-s" in argv
+        self._extra_params["mock_chips"] = parse_sys_args and "-m" in argv
+        self._extra_params["skip_extras"] = parse_sys_args and "-s" in argv
 
         self._cpu_override = 0
-        if "-c" in argv and len(argv) > argv.index("-c") + 1:
+        if parse_sys_args and "-c" in argv and len(argv) > argv.index("-c") + 1:
             self._cpu_override = int(argv[argv.index("-c") + 1])
 
     def add_mask_layout(self, chips_map, face_id=default_face_id, mask_layout_type=MaskLayout, **kwargs):
