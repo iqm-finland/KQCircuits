@@ -62,8 +62,9 @@ Singularity usage
 Singularity images are like docker images that work better
 in HPC environments. Singularity images are managed using apptainer (https://apptainer.org/).
 The latest image of a KQCircuits compatible Elmer installation can be downloaded from the
-`GitHub Container registry <https://github.com/iqm-finland/KQCircuits/pkgs/container/kqcircuits/397719722?tag=main-singularity>`__.
-Sinularity images can be pulled to Linux operating systems and also to Windows Subsystem for Linux (WSL).
+`GitHub Container registry <https://github.com/iqm-finland/KQCircuits/pkgs/container/kqcircuits/versions>`__
+using the ``main-singularity`` tag.
+Singularity images can be pulled to Linux operating systems and also to Windows Subsystem for Linux (WSL).
 
 Install apptainer (substituting 1.4.0 to whatever version is the most recent)::
 
