@@ -781,6 +781,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.arc_points"><code class="docutils literal notranslate"><span class="pre">arc_points()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.bspline_points"><code class="docutils literal notranslate"><span class="pre">bspline_points()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.bezier_points"><code class="docutils literal notranslate"><span class="pre">bezier_points()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.bspline_path"><code class="docutils literal notranslate"><span class="pre">bspline_path()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.force_rounded_corners"><code class="docutils literal notranslate"><span class="pre">force_rounded_corners()</span></code></a></li>
 </ul>
 </li>
@@ -1059,13 +1060,18 @@
 <span class="sd">            For example, if the dictionary is {&#39;substrate*&#39;: 10, &#39;substrate*&amp;vacuum&#39;: [2, 5], &#39;global_max&#39;: 100}, then</span>
 <span class="sd">            the maximal mesh element length is 10 inside the substrates and 2 on region which is less than 5 units away</span>
 <span class="sd">            from any substrate-vacuum interface. Outside these regions, the mesh element size can increase up to 100.</span>
-<span class="sd">        mesh_optimizer: Dictionary to determine mesh optimization, or None (default) to ignore optimization. The</span>
-<span class="sd">            dictionary can contain keywords &#39;method&#39;, &#39;force&#39;, &#39;niter&#39; and &#39;dimTags&#39;. See Gmsh manual</span>
-<span class="sd">            (gmsh.model.mesh.optimize) for details. The default value for &#39;method&#39; is &#39;Netgen&#39;.</span>
+<span class="sd">        mesh_optimizer: Dictionary to determine mesh optimization, or None to ignore optimization. The dictionary can</span>
+<span class="sd">            contain keywords &#39;method&#39;, &#39;force&#39;, &#39;niter&#39; and &#39;dimTags&#39;. See Gmsh manual (gmsh.model.mesh.optimize) for</span>
+<span class="sd">            details. The default value is {&#39;method&#39;: &#39;Netgen&#39;}.</span>
 <span class="sd">        vtu_output: Output vtu files to view fields in Paraview.</span>
 <span class="sd">                    Turning this off will make the simulations slightly faster</span>
 <span class="sd">        save_elmer_data: Save the full Elmer model after simulation. This can be used to restart the simulation</span>
 <span class="sd">                         or extract result field values as a post-processing step.</span>
+<span class="sd">        min_mesh_quality: If the initial Gmsh mesh contains elements with quality below this limit, a local mesh</span>
+<span class="sd">            refinement around those elements is applied. This causes the whole mesh to be recomputed and can therefore</span>
+<span class="sd">            cause performance issues if set too high. The aim of the remeshing is to prevent fatal errors due</span>
+<span class="sd">            to degenerate elements in Elmer. The default value of 5e-7 is determined experimentally and might need</span>
+<span class="sd">            adjustment. Setting this to 0 disables the feature.</span>
 
 <span class="sd">        linear_system_method: Method for solving the FEM linear system of equations in Elmer. For iterative methods use</span>
 <span class="sd">                &quot;GCR&quot;, &quot;bicgstab&quot; or any other iterative solver mentioned in ElmerSolver manual section 4.3.1.</span>
@@ -1101,9 +1107,10 @@
     <span class="n">is_axisymmetric</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">mesh_levels</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">mesh_size</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
-    <span class="n">mesh_optimizer</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">mesh_optimizer</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;Netgen&quot;</span><span class="p">})</span>
     <span class="n">vtu_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">save_elmer_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">min_mesh_quality</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5e-7</span>
 
     <span class="n">linear_system_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;GCR&quot;</span>
     <span class="n">convergence_tolerance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0e-9</span>
@@ -1131,7 +1138,9 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Used for automatically setting default values depending on other parameters&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mg_smoothing_iterations</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;sgs&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;wjacobi&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;cjacobi&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;cg&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">}</span>
-            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;mg_smoothing_iterations&quot;</span><span class="p">,</span> <span class="n">defaults</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mg_smoother</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="mi">1</span><span class="p">))</span></div>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;mg_smoothing_iterations&quot;</span><span class="p">,</span> <span class="n">defaults</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mg_smoother</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_optimizer</span> <span class="o">==</span> <span class="p">{}:</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;mesh_optimizer&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;Netgen&quot;</span><span class="p">})</span></div>
 
 
 

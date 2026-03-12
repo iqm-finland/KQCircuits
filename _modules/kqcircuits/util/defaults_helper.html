@@ -781,6 +781,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.arc_points"><code class="docutils literal notranslate"><span class="pre">arc_points()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.bspline_points"><code class="docutils literal notranslate"><span class="pre">bspline_points()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.bezier_points"><code class="docutils literal notranslate"><span class="pre">bezier_points()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.bspline_path"><code class="docutils literal notranslate"><span class="pre">bspline_path()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.force_rounded_corners"><code class="docutils literal notranslate"><span class="pre">force_rounded_corners()</span></code></a></li>
 </ul>
 </li>
@@ -1035,7 +1036,8 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Finds latest Ansys Electronics executable from default installation locations. Returns &#39;default&#39; if not found.&quot;&quot;&quot;</span>
     <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ProgramFiles&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;C:\Program Files&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;AnsysEM&quot;</span><span class="p">),</span> <span class="sa">r</span><span class="s2">&quot;Win64\ansysedt.exe&quot;</span><span class="p">),</span>
-        <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;/opt/AnsysEM&quot;</span><span class="p">),</span> <span class="s2">&quot;Linux64/ansysedt&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;/opt/AnsysEM&quot;</span><span class="p">),</span> <span class="s2">&quot;Linux64/ansysedt&quot;</span><span class="p">),</span>  <span class="c1"># LINX64 Ansys 2024/R2 or older</span>
+        <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;/ansys_inc&quot;</span><span class="p">),</span> <span class="s2">&quot;AnsysEM/ansysedt&quot;</span><span class="p">),</span>  <span class="c1"># LINX64 Ansys 2025/R1 or newer</span>
     <span class="p">]</span>
     <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">exe</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">root</span><span class="p">):</span>
