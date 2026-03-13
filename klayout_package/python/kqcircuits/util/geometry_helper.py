@@ -631,3 +631,74 @@ def force_rounded_corners(region: pya.Region, r_inner: float, r_outer: float, n:
             poly.insert_hole(process_points(list(polygon.each_point_hole(hole))))
         result.insert(poly.round_corners(r_inner, r_outer, n))
     return result
+
+
+def get_center_of_bounding_box(polygon: pya.DPolygon) -> pya.DPoint:
+    """
+    Get the center position of a polygon from its bounding box.
+
+    The function computes the center of the polygon's bounding box and returns
+    it as a ``pya.DPoint``.
+
+    Args:
+        polygon (pya.DPolygon):
+            The polygon whose position is to be determined.
+
+    Returns:
+        pya.DPoint:
+            The center of the polygon's bounding box.
+    """
+    center = polygon.bbox().center()
+    return pya.DPoint(center.x, center.y)
+
+
+def rotate_arbitrary_degrees(
+    angle: float, polygon: pya.DPolygon, pivot: pya.DPoint = None, points: list[pya.DPoint] = None
+) -> tuple[pya.DPolygon, None | list[pya.DPoint]]:
+    """
+    Rotate a polygon by any angle around either its center or a specified pivot point.
+
+    Args:
+
+        angle (float):
+            Rotation angle in degrees.
+
+        polygon (pya.DPolygon):
+            The polygon to rotate.
+
+        pivot (pya.DPoint, optional):
+            The point around which the polygon is rotated. If not provided,
+            the function uses the polygon's current position as returned by
+            ``get_center_of_mass(...)``.
+
+        points (list[pya.DPoint] optional):
+            List of DPoints in order to return the transformed points
+
+    Returns:
+        tuple consisting of
+
+        pya.DPolygon:
+            A new transformed polygon rotated by the specified angle.
+
+        list[pya.DPoint]:
+            list of the transformed points in the same order as the given list.
+
+
+    Notes:
+        - If ``pivot`` is ``None``, the polygon is rotated around its current
+          position.
+        - The transformation does not modify the original polygon in place;
+          it returns a rotated copy instead.
+        - Internally, the polygon is translated to the pivot, rotated, and
+          translated back.
+
+    """
+    if pivot is None:
+        pivot = get_center_of_bounding_box(polygon=polygon)
+    v = pya.DVector(pivot.x, pivot.y)
+    t = pya.DCplxTrans(u=v) * pya.DCplxTrans(rot=angle) * pya.DCplxTrans(u=-v)
+
+    rotated_polygon = t * polygon
+    rotated_points = [t * p for p in points] if points is not None else None
+
+    return rotated_polygon, rotated_points
