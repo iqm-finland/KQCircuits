@@ -1927,9 +1927,23 @@ def read_snp_file(filename: str | Path) -> tuple[np.ndarray, np.ndarray, bool, f
     return frequencies, smatrix_arr, polar_form, renormalization, port_data
 
 
+def delete_meshes(path, simname):
+    """Deletes Elmer and Gmsh meshes corresponding to simname"""
+    sif_folder = path / simname
+    (path / f"{simname}.msh").unlink(missing_ok=True)
+    elmer_mesh_files = ["mesh.nodes", "mesh.elements", "mesh.boundary"]
+    for ef in elmer_mesh_files:
+        (sif_folder / ef).unlink(missing_ok=True)
+    for part_folder in sif_folder.glob("partitioning.*"):
+        if part_folder.is_dir():
+            shutil.rmtree(part_folder)
+
+
 def write_project_results_json(json_data: dict[str, Any], path: Path, polar_form: bool = True) -> None:
     """
     Writes the solution data in '_project_results.json' format for one Elmer simulation.
+
+    Deletes Gmsh and Elmer mesh files if json_data["workflow"]["delete_meshes"] is True
 
     If tool is capacitance, writes capacitance matrix
     If tool is epr_3d or capacitance with integrate energies=True, writes energies
@@ -1944,6 +1958,8 @@ def write_project_results_json(json_data: dict[str, Any], path: Path, polar_form
     simname = json_data["name"]
     sif_folder = path / simname
     result_json_path = path / (simname + "_project_results.json")
+    if json_data["workflow"]["delete_meshes"]:
+        delete_meshes(path, simname)
 
     if tool in ("capacitance", "epr_3d"):
         results = {}

@@ -197,6 +197,8 @@ if use_elmer:
                                       #            parallel independent processes.
                                       #            Setting this larger than 1 activates
                                       #            the use of the simple workload manager.
+        'delete_meshes': True,        # Automatically delete meshes after each simulation.
+                                      # Can be used to reduce disk usage in long sweeps
     }
     if use_sbatch:
         # if simulation is run in a HPC system, sbatch_parameters can be given here

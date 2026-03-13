@@ -21,20 +21,11 @@ Deletes all Elmer and Gmsh mesh files from the current tmp folder
 """
 
 from pathlib import Path
-import shutil
+from elmer_helpers import delete_meshes
 
 path = Path.cwd()
 
-for msh_file in path.glob("*.msh"):
-    msh_file.unlink()
-
-elmer_mesh_files = ["mesh.nodes", "mesh.elements", "mesh.boundary"]
 non_sim_dirs = ["scripts", "log_files", "elmer_data", "s_matrix_plots"]
 for p in path.iterdir():
     if p.is_dir() and p not in non_sim_dirs:
-        for ef in elmer_mesh_files:
-            (p / ef).unlink(missing_ok=True)
-
-        for part_folder in p.glob("partitioning.*"):
-            if part_folder.is_dir():
-                shutil.rmtree(part_folder)
+        delete_meshes(path, p.name)
