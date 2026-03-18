@@ -16,9 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         klayout_version: [klayout28, klayout29, latest]
-        python-version: ["3.11.x", "3.12.x", "3.13.x"]
-        # TODO: Fix failing test_ansys_export_produces_output_files on 3.14. __annotations__ call is deprecated
-        # python-version: ["3.11.x", "3.12.x", "3.13.x", "3.14.x"]
+        python-version: ["3.11.x", "3.12.x", "3.13.x", "3.14.x"]
         exclude:
           - klayout_version: klayout28
             python-version: "3.13.x"
@@ -57,9 +55,7 @@ jobs:
       matrix:
         os: [windows-latest, macos-latest]
         klayout_version: [klayout28, klayout29, latest]
-        python-version: ["3.11.x", "3.12.x", "3.13.x"]
-        # TODO: Fix failing test_ansys_export_produces_output_files on 3.14. __annotations__ call is deprecated
-        # python-version: ["3.11.x", "3.12.x", "3.13.x", "3.14.x"]
+        python-version: ["3.11.x", "3.12.x", "3.13.x", "3.14.x"]
         exclude:
           - klayout_version: klayout28
             python-version: "3.13.x"
