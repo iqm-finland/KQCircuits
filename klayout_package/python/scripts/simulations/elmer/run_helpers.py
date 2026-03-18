@@ -222,17 +222,35 @@ def elmer_check_warnings(log_file: Path | str, cwd: Path | str | None = None):
     with open(log_file, "r", encoding="utf-8") as f:
         lines = [line.rstrip() for line in f]
 
+    ignore_warnings = ["loadrestartfile: permutation vector too small:"]
+    warnings = {}
     # Only log each warning once
     for ind, l in enumerate(lines, 1):
+        warn_str = ""
         l_lower = l.lower()
         if "error" in l_lower:
-            logging.error(f"{l}. See {log_file}:{ind}")
-        elif "warning" in l_lower:
-            logging.warning(f"{l.replace('WARNING::', '')}. See {log_file}:{ind}")
+            warn_str = l
+        elif "warning" in l_lower and not any(w in l_lower for w in ignore_warnings):
+            warn_str = l.replace("WARNING::", "")
         elif "did not converge" in l_lower:
-            logging.warning(f" Linear system iteration did not converge. See {log_file}:{ind}")
+            warn_str = "Linear system iteration did not converge"
         elif "solution trivially zero" in l_lower:
-            logging.warning(f" Solution trivially zero. See {log_file}:{ind}")
+            warn_str = "Solution trivially zero"
+
+        if warn_str:
+            warnings[warn_str] = warnings.get(warn_str, []) + [str(ind)]
+
+    if warnings:
+        all_warnings = f"Elmer completed with warnings. Log file: {log_file}\n"
+        for warning, lines in warnings.items():
+            lines_str = ", ".join(lines) if len(lines) < 6 else ", ".join(lines[:5]) + f" (+ {len(lines) - 5} more)"
+            all_warnings += f"{warning}. See lines: {lines_str}\n"
+        # hack to prevent duplicating the warnings
+        logger = logging.getLogger()
+        old_handlers = logger.handlers
+        logger.handlers = old_handlers[-1:]
+        logging.warning(all_warnings)
+        logger.handlers = old_handlers
 
 
 def _run_elmer_solver(
