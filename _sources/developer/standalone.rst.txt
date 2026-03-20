@@ -16,7 +16,7 @@ Prerequisites
 
 Make sure you have at least Python 3.11 and ``pip`` installed.
 We automatically test that KQCircuits works on latest versions
-of following python major releases: ``3.11.x``, ``3.12.x``, ``3.13.x``.
+of following python major releases: ``3.11.x``, ``3.12.x``, ``3.13.x``, ``3.14.x``.
 We also test that KQCircuits works on Windows, Ubuntu 24 and MacOS 15.7.3.
 
 Older versions of klayout (<0.28) do not support certain new features of
