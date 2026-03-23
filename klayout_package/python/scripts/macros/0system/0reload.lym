@@ -8,7 +8,7 @@
  <doc/>
  <autorun>false</autorun>
  <autorun-early>false</autorun-early>
- <shortcut/>
+ <shortcut>F10</shortcut>
  <show-in-menu>true</show-in-menu>
  <menu-path>kqcircuits_menu&gt;end("&amp;KQCircuits").begin</menu-path>
  <interpreter>python</interpreter>
