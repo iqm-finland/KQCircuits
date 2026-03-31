@@ -24,6 +24,7 @@ def find_ansys_executable(default):
     """Finds latest Ansys Electronics executable from default installation locations. Returns 'default' if not found."""
     paths = [
         (Path(os.environ.get("ProgramFiles", r"C:\Program Files")).joinpath("AnsysEM"), r"Win64\ansysedt.exe"),
+        (Path(os.environ.get("ProgramFiles", r"C:\Program Files")).joinpath("ANSYS Inc"), r"AnsysEM\ansysedt.exe"),
         (Path("/opt/AnsysEM"), "Linux64/ansysedt"),  # LINX64 Ansys 2024/R2 or older
         (Path("/ansys_inc"), "AnsysEM/ansysedt"),  # LINX64 Ansys 2025/R1 or newer
     ]
