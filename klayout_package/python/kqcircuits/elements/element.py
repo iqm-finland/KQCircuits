@@ -150,6 +150,18 @@ class Element(pya.PCellDeclarationHelper):
     opposing_face_id_groups = Param(
         pdt.TypeList, "Opposing face ID groups (list of lists)", [["1t1", "2b1"]], hidden=True
     )
+    duplicate_face_ids = Param(
+        pdt.TypeList,
+        "Duplicate face IDs (list of lists), where the first face of each group is copied into other faces",
+        [],
+        hidden=True,
+    )
+    duplicate_layers = Param(
+        pdt.TypeList,
+        "Layers (list), which are copied into other faces when duplicate_face_ids are given",
+        ["base_metal_gap", "base_metal_gap_wo_grid", "base_metal_addition"],
+        hidden=True,
+    )
     etch_opposite_face = Param(pdt.TypeBoolean, "Etch avoidance shaped gap on the opposite face too", False)
     etch_opposite_face_margin = Param(pdt.TypeDouble, "Margin of the opposite face etch shape", 5, unit="μm")
 
@@ -480,12 +492,34 @@ class Element(pya.PCellDeclarationHelper):
                             self.cell.shapes(self.get_layer("base_metal_gap_wo_grid", other_face)).insert(etch_shape)
                             self.cell.shapes(self.get_layer("ground_grid_avoidance", other_face)).insert(protection)
 
+    def duplicate_face_impl(self):
+        """Duplicates the shapes from one face to others, if the ``duplicate_face_ids`` is enabled."""
+        for faces in self.duplicate_face_ids:
+            if len(faces) < 2:
+                continue
+            if not isinstance(faces, list):
+                raise ValueError("faces have to be given as list of lists.")
+            source_shapes = {
+                n: self.cell.shapes(self.layout.layer(i))
+                for n, i in self.face(faces[0]).items()
+                if not self.cell.shapes(self.layout.layer(i)).is_empty()
+            }
+            for other_face in faces[1:]:
+                for name, info in self.face(other_face).items():
+                    if name in self.duplicate_layers:
+                        target_shapes = self.cell.shapes(self.layout.layer(info))
+                        if name in source_shapes:
+                            target_shapes.assign(source_shapes[name].dup())
+                        else:
+                            target_shapes.clear()
+
     def build(self):
         """Child classes re-define this method to build the PCell."""
 
     def post_build(self):
         """Child classes may re-define this method for post-build operations."""
         self.etch_opposite_face_impl()
+        self.duplicate_face_impl()
         self._show_epr_cross_section_cuts()
         self._show_epr_partition_regions()
 
