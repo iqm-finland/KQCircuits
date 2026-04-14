@@ -256,7 +256,7 @@ class KLayoutView:
         """
 
         zoom = cell.dbbox()
-        x, y = zoom.width(), zoom.height()
+        x, y = max(zoom.width(), 1), max(zoom.height(), 1)
         if max_size * x / y < max_size - 200:  # 200x100 is enough for the sizebar
             size = (max_size * x / y + 200, max_size)
         else:
