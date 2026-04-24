@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description>Instance Hierarchy Browser (beta)</description>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <priority>0</priority>
+ <shortcut/>
+ <show-in-menu>true</show-in-menu>
+ <group-name>misc</group-name>
+ <menu-path>kqcircuits_menu.#7</menu-path>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text># This code is part of KQCircuits
+# Copyright (C) 2026 IQM Finland Oy
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
+# License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program. If not, see
+# https://www.gnu.org/licenses/gpl-3.0.html.
+#
+# The software distribution should follow IQM trademark policy for open-source software
+# (meetiqm.com/iqm-open-source-trademark-policy). IQM welcomes contributions to the code.
+# Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
+# and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
+
+"""
+Instance hierarchy browser utility
+
+Running this macro shows a dialog with the instance hierarchy of the current layout, including instance names of each
+element (if they were created by KQCircuits with the insert_cell function). 
+
+Click an instance in the dialog to select it in the layout, or double click to open the instance properties dialog.
+Note that modifying an instance inside a PCell is not recommended, as the changes may be overwritten the next time the
+top PCell is regenerated.
+
+The dialog is currently a beta. Notably, it is not updated automatically if the layout changes, so close the dialog
+and rerun the macro if needed.
+"""
+
+from kqcircuits.pya_resolver import pya
+from kqcircuits.klayout_view import KLayoutView
+
+view = KLayoutView(current=True)
+layout = view.layout
+top_cell = view.active_cell
+
+def create_dialog():
+    """Simple dialog containing a TreeWidget"""
+    dialog = pya.QDialog(pya.Application.instance().main_window())
+    dialog.windowTitle = "Instance Hierarchy"
+    dialog.setModal(False)
+
+    treeWidget = pya.QTreeWidget()
+    treeWidget.setColumnCount(2)
+    treeWidget.setHeaderLabels(["Cell", "Instance name"])
+    treeWidget.setColumnWidth(0, 300)
+    treeWidget.setColumnWidth(1, 200)
+    treeWidget.setSortingEnabled(True)
+    dialog.resize(600, 700)
+    
+    form = pya.QFormLayout(dialog)
+    form.addRow(treeWidget)
+    return dialog, treeWidget
+
+dialog, tree_widget = create_dialog()
+dialog.show()
+
+top_item = pya.QTreeWidgetItem([top_cell.name, ""])
+tree_widget.insertTopLevelItem(0, top_item)
+
+def add_instances(item, cell):
+    """Recursively add child instances of a cell as subitems of a given tree widget item.
+
+    Args:
+         item: parent QTreeWidgetItem
+         cell: parent Cell in the layout
+    """
+    child_insts = list(cell.each_inst())
+    child_insts_by_cell = {inst.cell_index: [] for inst in child_insts}
+    for inst in child_insts:
+        child_insts_by_cell[inst.cell_index].append((inst, inst.property('id')))
+    
+    for cell_index, cell_insts in child_insts_by_cell.items():
+        if len(cell_insts) &gt; 10 and all(inst_name is None for _, inst_name in cell_insts):
+            child_item = pya.QTreeWidgetItem([layout.cell(cell_index).name, f"({len(cell_insts)} instances)"])
+            child_item._inst = None
+            item.insertChild(None, child_item)    
+        else:
+            for inst, inst_name in cell_insts:
+                child_item = pya.QTreeWidgetItem([inst.cell.name, "" if inst_name is None else inst_name])
+                child_item._inst = inst
+                item.insertChild(None, child_item)
+                add_instances(child_item, inst.cell)
+
+# Populate dialog
+add_instances(top_item, top_cell)
+top_item.setExpanded(True)
+
+def selection_changed(*args):
+    """Callback when an instance is selected in the dialog. Selects the corresponding instance in the layout.
+    """
+    view.layout_view.clear_object_selection()
+    for item in tree_widget.selectedItems():
+        inst = getattr(item, "_inst", None)
+        if inst is not None:
+            # Select the instance
+            inst_path = pya.ObjectInstPath()
+            inst_path.cv_index = view.cell_view.index()
+            inst_path.top = view.cell_view.cell_index
+            # path should be a list from top to the final instance, but just giving the final instance seems to work too
+            inst_path.path = [pya.InstElement(inst)]
+            view.layout_view.select_object(inst_path)
+
+
+def double_clicked(*args):
+    """Callback on double click. Selects the instance in the layout and opens the instance property dialog."""
+    view.layout_view.clear_object_selection()
+    for item in tree_widget.selectedItems():
+        inst = getattr(item, "_inst", None)
+        if inst is not None:
+            # Select the instance
+            inst_path = pya.ObjectInstPath()
+            inst_path.cv_index = view.cell_view.index()
+            inst_path.top = view.cell_view.cell_index
+            # path should be a list from top to the final instance, but just giving the final instance seems to work too
+            inst_path.path = [pya.InstElement(inst)]
+            view.layout_view.select_object(inst_path)
+        
+            # Open property dialog.
+            menu = pya.MainWindow.instance().menu()
+            menu.action('edit_menu.show_properties').trigger()
+        break  # Only accept one selection
+   
+
+tree_widget.itemSelectionChanged = selection_changed
+tree_widget.itemDoubleClicked = double_clicked
+</text>
+</klayout-macro>
