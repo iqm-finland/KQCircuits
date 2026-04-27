@@ -22,7 +22,6 @@ import logging
 import numpy
 
 from kqcircuits.defaults import (
-    default_layers,
     default_junction_type,
     default_sampleholders,
     default_mask_parameters,
@@ -34,10 +33,10 @@ from kqcircuits.elements.element import Element
 from kqcircuits.elements.launcher import Launcher
 from kqcircuits.elements.launcher_dc import LauncherDC
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.chip_helpers import produce_instance_name_labels
 from kqcircuits.util.merge import merge_layout_layers_on_face
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from, add_parameter
 from kqcircuits.test_structures.junction_test_pads.junction_test_pads import JunctionTestPads
-from kqcircuits.test_structures.stripes_test import StripesTest
 from kqcircuits.util.groundgrid import insert_ground_grid
 from kqcircuits.elements.tsvs.tsv import Tsv
 from kqcircuits.elements.flip_chip_connectors.flip_chip_connector import FlipChipConnector
@@ -192,49 +191,6 @@ class Chip(Element):
         self.insert_cell(junction_tests_w, pya.DTrans(0, False, (10e3 - 2.5e3) / 2, 0.35e3), "testarray_s")
         self.insert_cell(junction_tests_h, pya.DTrans(0, False, 9.65e3 - 1.3e3, (10e3 - 2.5e3) / 2), "testarray_e")
         self.insert_cell(junction_tests_w, pya.DTrans(0, False, (10e3 - 2.5e3) / 2, 9.65e3 - 1.3e3), "testarray_n")
-
-    def produce_opt_lit_tests(self):
-        """Produces optical lithography test stripes at chip corners."""
-
-        num_stripes = 20
-        length = 100
-        min_width = 1
-        max_width = 15
-        step = 3
-        first_stripes_width = 2 * num_stripes * min_width
-
-        combined_cell = self.layout.create_cell("Stripes")
-        for i, width in enumerate(numpy.arange(max_width + 0.1 * step, min_width, -step)):
-            stripes_cell = self.add_element(
-                StripesTest, num_stripes=num_stripes, stripe_width=width, stripe_length=length
-            )
-            # horizontal
-            combined_cell.insert(
-                pya.DCellInstArray(
-                    stripes_cell.cell_index(),
-                    pya.DCplxTrans(1, 0, False, -880, 2 * i * length + first_stripes_width - 200),
-                )
-            )
-            # vertical
-            combined_cell.insert(
-                pya.DCellInstArray(
-                    stripes_cell.cell_index(),
-                    pya.DCplxTrans(1, 90, False, 2 * i * length + length + first_stripes_width - 200, -880),
-                )
-            )
-            # diagonal
-            diag_offset = 2 * num_stripes * width / numpy.sqrt(8)
-            combined_cell.insert(
-                pya.DCellInstArray(
-                    stripes_cell.cell_index(),
-                    pya.DCplxTrans(1, -45, False, 250 + i * length - diag_offset, 250 + i * length + diag_offset),
-                )
-            )
-
-        self.insert_cell(combined_cell, pya.DCplxTrans(1, 0, False, 1500, 1500))
-        self.insert_cell(combined_cell, pya.DCplxTrans(1, 90, False, 8500, 1500))
-        self.insert_cell(combined_cell, pya.DCplxTrans(1, 180, False, 8500, 8500))
-        self.insert_cell(combined_cell, pya.DCplxTrans(1, 270, False, 1500, 8500))
 
     def produce_ground_grid(self):
         """Produces ground grid on all faces with ChipFrames.
@@ -465,24 +421,7 @@ class Chip(Element):
         self._produce_instance_name_labels()
 
     def _produce_instance_name_labels(self):
-
-        for inst in self.cell.each_inst():
-            inst_id = inst.property("id")
-            if inst_id:
-                cell = self.layout.create_cell(
-                    "TEXT", "Basic", {"layer": default_layers["instance_names"], "text": inst_id, "mag": 400.0}
-                )
-                label_trans = inst.dcplx_trans
-                # prevent the label from being upside-down or mirrored
-                if 90 < label_trans.angle < 270:
-                    label_trans.angle += 180
-                label_trans.mirror = False
-                # optionally apply relative transformation to the label
-                rel_label_trans_str = inst.property("label_trans")
-                if rel_label_trans_str is not None:
-                    rel_label_trans = pya.DCplxTrans.from_s(rel_label_trans_str)
-                    label_trans = label_trans * rel_label_trans
-                self.insert_cell(cell, label_trans)
+        produce_instance_name_labels(self.cell)
 
     def produce_launchers(self, sampleholder_type, launcher_assignments=None, enabled=None, face_id=0):
         """Produces launchers for typical sample holders and sets chip size (``self.box``) accordingly.
