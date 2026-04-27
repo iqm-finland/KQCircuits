@@ -19,7 +19,7 @@
 
 import abc
 import ast
-
+from math import inf
 import logging
 
 from kqcircuits.defaults import default_faces
@@ -933,7 +933,7 @@ class Simulation:
                     return True
             elif obj["top"] <= tool["bottom"] or tool["top"] <= obj["bottom"]:
                 return True
-            return tool["region"].overlapping(obj["region"]).is_empty()
+            return tool["region"].overlapping(obj["region"].sized(-1)).is_empty()
 
         def subtract(obj, lay):
             """Subtracts layers[lay] from obj."""
@@ -948,55 +948,71 @@ class Simulation:
                 return  # ignore separate objects
             obj["subtract"] = obj.get("subtract", set()) | {lay}
 
-        def subtract_hard(obj, tool):
-            """Subtracts tool from obj by modifying dimensions of obj. Returns True if successful."""
-            if are_separate(obj, tool):
-                return True
-            subtract_diff = tool.get("subtract", set()) - obj["subtract"]
-            if any(layers[s].get("material", None) is None and not are_separate(obj, layers[s]) for s in subtract_diff):
-                return False  # can't apply hard subtract if tool has non-material subtractions that obj doesn't have
-            if obj["bottom"] < tool["bottom"]:
-                if tool["top"] < obj["top"]:
-                    return False
-                if obj["region"].not_inside(tool["region"]).is_empty() or not exists(
-                    {
-                        "bottom": tool["bottom"],
-                        "top": obj["top"],
-                        "region": obj["region"].dup(),
-                        "subtract": obj["subtract"].copy(),
-                    }
-                ):
-                    obj["top"] = tool["bottom"]
-                    return True
-                return False
-            if tool["top"] < obj["top"]:
-                if obj["region"].not_inside(tool["region"]).is_empty() or not exists(
-                    {
-                        "bottom": obj["bottom"],
-                        "top": tool["top"],
-                        "region": obj["region"].dup(),
-                        "subtract": obj["subtract"].copy(),
-                    }
-                ):
-                    obj["bottom"] = tool["top"]
-                    return True
-                return False
-            if not can_modify(tool) and tool["region"].inside(obj["region"]).count() > 10 * obj["region"].count():
-                return False  # avoid lateral hard subtract if it creates lots of holes (useful with lots of vias)
-            obj["region"] -= tool["region"]
-            return True
+        def subtract_avoid_hole_grid(obj_region, tool_region):
+            """Subtracts the tool region from the object region unless the subtraction creates lots of holes. Avoiding
+            subtraction with plenty of holes is important for the performance for example in case of lots of vias.
+            """
+            if tool_region.inside(obj_region).count() <= 10 * obj_region.count():
+                obj_region -= tool_region
+
+        def sub_layers(obj, bottom=-inf, top=inf):
+            """Returns object divided into sub-layers such that the subtractions in obj['subtract'] are applied.
+            The return format for sub-layers is a list of tuples containing bottom height, top height, and region.
+            Only non-empty regions are returned.
+            """
+            # Determine z-intersection between given bottom and top and the object
+            bottom, top = max(bottom, obj["bottom"]), min(top, obj["top"])
+            if bottom > top:
+                return []
+
+            # Get sub-layer divisions for all subtracted objects
+            subtracts_layers = [sub_layers(layers[s], bottom, top) for s in obj.get("subtract", set())]
+
+            # Special case for sheet object
+            if obj["bottom"] == obj["top"]:
+                z = obj["bottom"]
+                below_region = obj["region"].dup()
+                above_region = obj["region"].dup()
+                for subtract_layers in subtracts_layers:
+                    for b, t, r in subtract_layers:
+                        if b == z == t or b <= z < t:
+                            subtract_avoid_hole_grid(above_region, r)
+                        if b == z == t or b < z <= t:
+                            subtract_avoid_hole_grid(below_region, r)
+                region = below_region + above_region
+                return [] if region.sized(-1).is_empty() else [(z, z, region)]
+
+            # For solid objects only, define z-intervals for the sub-layers
+            subtract_zs = {z for subtract_layers in subtracts_layers for b, t, _ in subtract_layers for z in (b, t)}
+            if bottom == top:  # if sheet projection is requested, defines z-intervals above and below
+                bottom = max([obj["bottom"]] + [z for z in subtract_zs if z < bottom])
+                top = min([obj["top"]] + [z for z in subtract_zs if top < z])
+            zs = sorted({bottom, top} | {z for z in subtract_zs if bottom < z < top})
+
+            # Return sub-layers for determined z-intervals
+            _layers = []
+            for _bottom, _top in zip(zs[:-1], zs[1:]):
+                region = obj["region"].dup()
+                for subtract_layers in subtracts_layers:
+                    for b, t, r in subtract_layers:
+                        if b <= _bottom and _top <= t:
+                            subtract_avoid_hole_grid(region, r)
+                if not region.sized(-1).is_empty():
+                    _layers.append((_bottom, _top, region))
+            return _layers
 
         def exists(obj):
             """Hardens subtractions and returns True if geometry exists."""
             if "subtract" in obj:
-                while True:
-                    for s in obj["subtract"]:
-                        if subtract_hard(obj, layers[s]):
-                            obj["subtract"].remove(s)
-                            break
-                    else:
-                        break
-
+                _layers = sub_layers(obj)
+                obj["region"] = pya.Region()
+                if _layers:
+                    obj["bottom"] = _layers[0][0]
+                    obj["top"] = _layers[-1][1]
+                    for _, _, r in _layers:
+                        obj["region"] += r
+                    obj["region"].merge()
+                    obj["subtract"] = {s for s in obj["subtract"] if not are_separate(obj, layers[s])}
             return not obj["region"].is_empty()
 
         def covering_regions(obj, tool):
