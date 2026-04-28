@@ -104,6 +104,10 @@ def get_epr_correction_simulations(
     for source_sim, source_sol in zip(source_sims, source_sols):
         cuts = correction_cuts(source_sim) if callable(correction_cuts) else correction_cuts
 
+        tls_thickness = [ma_thickness, ms_thickness, sa_thickness]
+        if source_sim.tls_layer_thickness not in ([0.0], 0.0):
+            tls_thickness = [source_sim.ith_value(source_sim.tls_layer_thickness, i) for i in range(3)]
+
         for key, cut in cuts.items():
             if "simulations" in cut and source_sim.name not in cut["simulations"]:
                 continue
@@ -137,6 +141,7 @@ def get_epr_correction_simulations(
                 mer_box.append(pya.DBox(x - h_dims[1 - dx], z - v_dims[dz], x + h_dims[dx], z + v_dims[1 - dz]))
 
             cords_list = [(cut["p1"], cut["p2"])]
+
             correction_layout.dbu = 1e-4
             cross_section = CutSimulation(
                 correction_layout,
@@ -144,7 +149,7 @@ def get_epr_correction_simulations(
                 source_sim=source_sim,
                 cut_start=cut["p1"],
                 cut_end=cut["p2"],
-                tls_layer_thickness=[ma_thickness, ms_thickness, sa_thickness],
+                tls_layer_thickness=tls_thickness,
                 tls_layer_material=["ma", "ms", "sa"],
                 material_dict={
                     "ma": {"permittivity": ma_eps_r},
