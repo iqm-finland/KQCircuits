@@ -362,8 +362,7 @@ class Chip(Element):
         """
         return self.make_grid_locations(bump_box, delta_x=self.bump_grid_spacing, delta_y=self.bump_grid_spacing)
 
-    @classmethod
-    def _get_ground_bump_element(cls):
+    def _get_ground_bump_element(self):
         """Return the element which will be used for the ground bumps"""
         return FlipChipConnector
 
