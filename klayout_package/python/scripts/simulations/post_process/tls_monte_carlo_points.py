@@ -46,7 +46,6 @@ This script can be reused without re-exporting the simulation if the points need
 import argparse
 import os
 import json
-import random
 import sys
 import klayout.db
 import numpy as np
@@ -64,13 +63,9 @@ if not files:
         sys.exit()
     print("No '_project_results.json' files detected. Will sample MC points for each .gds file")
 
-sample_from_walls = Version(klayout.__version__) >= Version("0.30.0")
-if not sample_from_walls:
-    print("WARNING: Sampling from MA and SA walls is only supported with KLayout version 0.30.0 or higher")
-
 
 def get_random_point_from_box(
-    rng: random.Random, box_x1: float, box_x2: float, box_y1: float, box_y2: float, dbu: float
+    rng: np.random.Generator, box_x1: float, box_x2: float, box_y1: float, box_y2: float, dbu: float
 ) -> tuple[klayout.db.Point, klayout.db.DPoint]:
     """Two independent uniform distributed random variables
     (box_x1 - box_x2), (box_y1 - box_y2) to sample a 2D point.
@@ -132,7 +127,7 @@ def get_z(
         return None
 
 
-def _sample_from_triangle(tri: np.ndarray) -> np.ndarray:
+def _sample_from_triangle(rng: np.random.Generator, tri: np.ndarray) -> np.ndarray:
     """
     Uniformly samples a point from a triangle
 
@@ -140,22 +135,26 @@ def _sample_from_triangle(tri: np.ndarray) -> np.ndarray:
     https://math.stackexchange.com/questions/18686/uniform-random-point-in-triangle-in-3d
 
     Args:
+        rng: Random number generator object
         tri: points defining the triangle (array of shape 3x2)
 
     Returns:
         sampled point (array of shape 1x2)
     """
-    r1, r2 = np.random.rand(2)
+    r1, r2 = rng.uniform(0, 1, size=2)
     sqrt_r1 = np.sqrt(r1)
     point = (1 - sqrt_r1) * tri[0] + sqrt_r1 * (1 - r2) * tri[1] + sqrt_r1 * r2 * tri[2]
     return point
 
 
-def _sample_from_region(region: klayout.db.Region, n_samples: int, zlims: list[float], dbu: float) -> list[dict]:
+def _sample_from_region(
+    rng: np.random.Generator, region: klayout.db.Region, n_samples: int, zlims: list[float], dbu: float
+) -> list[dict]:
     """Samples points uniformly from an arbitrary 2D region using triangulation. Additionally samples
     z-coordinates for each point which is done uniformly and independent of the xy-sampling from `region`.
 
     Args:
+        rng: Random number generator object
         region: 2D region to sample from
         n_samples: Number of samples to be returned
         zlims: list defining the range for sampling z-coordinates. Should have 2 elements in the order [min, max]
@@ -175,12 +174,12 @@ def _sample_from_region(region: klayout.db.Region, n_samples: int, zlims: list[f
     areas = np.array(areas)
     probs = areas / areas.sum()
     # sample z independently
-    z_sampled = np.random.uniform(low=zlims[0], high=zlims[1], size=n_samples)
+    z_sampled = rng.uniform(low=zlims[0], high=zlims[1], size=n_samples)
     sampled_points = []
     for z in z_sampled:
         # randomly choose a triangle and then point inside the triangle
-        tri = triangles[np.random.choice(len(triangles), p=probs)]
-        pt = _sample_from_triangle(tri)
+        tri = triangles[rng.choice(len(triangles), p=probs)]
+        pt = _sample_from_triangle(rng, tri)
         sampled_points.append({"x": pt[0] * dbu, "y": pt[1] * dbu, "z": z})
     return sampled_points
 
@@ -199,6 +198,18 @@ parser.add_argument(
 parser.add_argument(
     "--density-substrate", type=float, required=True, help="Substrate sampling volume density, unit: defects/µm^3"
 )
+parser.add_argument(
+    "--density-ma-wall",
+    type=float,
+    default=None,
+    help="MA wall TLS sampling volume density, unit: defects/µm^3. Defaults to --density-ma",
+)
+parser.add_argument(
+    "--density-sa-wall",
+    type=float,
+    default=None,
+    help="SA wall TLS sampling volume density, unit: defects/µm^3. Defaults to --density-sa",
+)
 parser.add_argument("--x1", type=int, default=None, help="X position of sample box left boundary in microns")
 parser.add_argument("--x2", type=int, default=None, help="X position of sample box right boundary in microns")
 parser.add_argument("--y1", type=int, default=None, help="Y position of sample box bottom boundary in microns")
@@ -209,9 +220,17 @@ parser.add_argument("--thickness-sa", type=float, default=None, help="Optional: 
 
 args = parser.parse_args()
 
+density_ma_wall = args.density_ma if args.density_ma_wall is None else args.density_ma_wall
+density_sa_wall = args.density_sa if args.density_sa_wall is None else args.density_sa_wall
+sample_from_walls = density_ma_wall > 0 or density_sa_wall > 0
+
+if sample_from_walls and Version(klayout.__version__) < Version("0.30.0"):
+    sample_from_walls = False
+    print("WARNING: Sampling from MA and SA walls is only supported with KLayout version 0.30.0 or higher")
+
 # If seed not specified, make "undeterministic" sampling but log the seed so same sampling can be done deterministically
 if args.seed is None:
-    seed = random.randrange(sys.maxsize)
+    seed = np.random.randint(2**31 - 1)
 else:
     seed = args.seed
 custom_sample_box = args.x1 is not None and args.x2 is not None and args.y1 is not None and args.y2 is not None
@@ -276,7 +295,7 @@ for file_name, parameters in sim_parameters.items():
     layer_thickness = dict(zip(sheet_distributions, args_th_l))
 
     # Use same seed for all sweeps
-    rng = random.Random(seed)
+    rng = np.random.default_rng(seed)
     # Number of sample points = given defect density * sampling box area
     sampling_box_area = (box_x2 - box_x1) * (box_y2 - box_y1)
 
@@ -358,7 +377,7 @@ for file_name, parameters in sim_parameters.items():
             gap_props = parameters["layers"][f"{face}_gap"]
             ma_wall_region = (metal_region.sized(round(ma_th / layout.dbu)) & gap_region).merged()
             ma_wall_height = ma_th + gap_props["thickness"]
-            ma_wall_n_points = round(args.density_ma * ma_wall_region.area() * layout.dbu**2 * ma_wall_height)
+            ma_wall_n_points = round(density_ma_wall * ma_wall_region.area() * layout.dbu**2 * ma_wall_height)
             if ma_wall_n_points > 0:
                 zlims = [gap_props["z"], gap_props["z"] + gap_props["thickness"]]
                 if face[1] == "t":
@@ -366,18 +385,20 @@ for file_name, parameters in sim_parameters.items():
                 else:
                     zlims[0] -= ma_th
                 print(f"Sampling {file_name} ma wall on face {face} using {ma_wall_n_points} points")
-                result[face]["ma_wall"] = _sample_from_region(ma_wall_region, ma_wall_n_points, zlims, layout.dbu)
+                result[face]["ma_wall"] = _sample_from_region(rng, ma_wall_region, ma_wall_n_points, zlims, layout.dbu)
             # SA wall
             trench_props = parameters["layers"].get(f"{face}_etch")
             if trench_props:
                 sa_wall_region = (metal_region.sized(round(layer_thickness["sa"] / layout.dbu)) & gap_region).merged()
                 sa_wall_n_points = round(
-                    args.density_sa * sa_wall_region.area() * layout.dbu**2 * trench_props["thickness"]
+                    density_sa_wall * sa_wall_region.area() * layout.dbu**2 * trench_props["thickness"]
                 )
                 if sa_wall_n_points > 0:
                     zlims = [trench_props["z"], trench_props["z"] + trench_props["thickness"]]
                     print(f"Sampling {file_name} sa wall on face {face} using {sa_wall_n_points} points")
-                    result[face]["sa_wall"] = _sample_from_region(sa_wall_region, sa_wall_n_points, zlims, layout.dbu)
+                    result[face]["sa_wall"] = _sample_from_region(
+                        rng, sa_wall_region, sa_wall_n_points, zlims, layout.dbu
+                    )
 
     with open(f"{parameters['name']}_tls_mc.json", "w", encoding="utf-8") as file:
         json.dump(result, file, indent=4)
