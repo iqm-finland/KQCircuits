@@ -113,7 +113,8 @@ def produce_cross_section_mesh(json_data: dict[str, Any], msh_file: Path | str) 
     # Set meshing
     mesh_size = json_data.get("mesh_size", {})
     workflow = json_data.get("workflow", {})
-    set_meshing(mesh_size, new_tags, workflow)
+    mesh_options = json_data.get("mesh_options", {})
+    set_meshing(mesh_size, new_tags, workflow, mesh_options)
 
     # Add excitation boundaries
     metal_layers = get_metal_layers(layers)

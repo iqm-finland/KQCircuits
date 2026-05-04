@@ -159,7 +159,8 @@ def produce_mesh(json_data: dict[str, Any], msh_file: Path) -> None:
     # Set meshing
     mesh_size = json_data.get("mesh_size", {})
     workflow = json_data.get("workflow", {})
-    mesh_field_ids, global_max_mesh_size = set_meshing(mesh_size, new_tags, workflow)
+    mesh_options = json_data.get("mesh_options", {})
+    mesh_field_ids, global_max_mesh_size = set_meshing(mesh_size, new_tags, workflow, mesh_options)
 
     # Remove layers without material
     for name, data in layers.items():
@@ -514,7 +515,10 @@ def get_recursive_children(dim_tags: Iterable[DimTag], include_parent: bool = Fa
 
 
 def set_meshing(
-    mesh_size: dict[str, float | list[float]], layer_dts: dict[str, list[DimTag]], workflow: dict[str, Any]
+    mesh_size: dict[str, float | list[float]],
+    layer_dts: dict[str, list[DimTag]],
+    workflow: dict[str, Any],
+    mesh_options: dict[str, Any],
 ) -> tuple[list, float]:
     """Applies mesh refinement and sets meshing options
 
@@ -522,6 +526,7 @@ def set_meshing(
         mesh_size: Dictionary to determine mesh refinement
         layer_dts: dictionary with layer names as keys and lists of dim-tags as values
         workflow: Parameters for simulation workflow
+        mesh_options: Dictionary of additional meshing options to be set
 
     Returns:
         Tuple of
@@ -564,29 +569,48 @@ def set_meshing(
     # Set meshing options
     n_threads_dict = workflow["sbatch_parameters"] if "sbatch_parameters" in workflow else workflow
     gmsh_n_threads = int(n_threads_dict.get("gmsh_n_threads", 1))
-    set_meshing_options(mesh_field_ids, mesh_global_max_size, gmsh_n_threads)
+
+    set_meshing_options(mesh_field_ids, mesh_global_max_size, gmsh_n_threads, mesh_options)
+
     return mesh_field_ids, mesh_global_max_size
 
 
-def set_meshing_options(mesh_field_ids: list[int], max_size: float, n_threads: int) -> None:
+def set_meshing_options(
+    mesh_field_ids: list[int], max_size: float, n_threads: int, mesh_options: dict[str, Any]
+) -> None:
     """Setup meshing options including mesh size fields and number of parallel threads.
 
     Args:
         mesh_field_ids: list of the threshold field ids that are given by set_mesh_size function
         max_size: global maximal mesh element length
         n_threads: Number of threads to be used in mesh generation
+        mesh_options: Dictionary of additional meshing options to be set
     """
     background_field_id = gmsh.model.mesh.field.add("Min")
     gmsh.model.mesh.field.setNumbers(background_field_id, "FieldsList", mesh_field_ids)
     gmsh.model.mesh.field.setAsBackgroundMesh(background_field_id)
-    gmsh.option.setNumber("Mesh.MeshSizeMax", max_size)
-    gmsh.option.setNumber("Mesh.MeshSizeExtendFromBoundary", 0)
-    gmsh.option.setNumber("Mesh.MeshSizeFromPoints", 0)
-    gmsh.option.setNumber("Mesh.MeshSizeFromCurvature", 0)
-    gmsh.option.setNumber("Mesh.Algorithm", 5)
-    gmsh.option.setNumber("Mesh.Algorithm3D", 1)  # 1: Delaunay, 10: HXT
-    gmsh.option.setNumber("Mesh.ToleranceInitialDelaunay", 1e-16)
-    gmsh.option.setNumber("General.NumThreads", n_threads)
-    gmsh.option.setNumber("Mesh.MaxNumThreads1D", n_threads)
-    gmsh.option.setNumber("Mesh.MaxNumThreads2D", n_threads)
-    gmsh.option.setNumber("Mesh.MaxNumThreads3D", n_threads)
+
+    mesh_options = {
+        # Default mesh options
+        "Mesh.MeshSizeExtendFromBoundary": 0,
+        "Mesh.MeshSizeFromPoints": 0,
+        "Mesh.MeshSizeFromCurvature": 0,
+        "Mesh.Algorithm": 5,
+        "Mesh.Algorithm3D": 1,  # 1: Delaunay, 10: HXT
+        "Mesh.ToleranceInitialDelaunay": 1e-16,
+        # User defined mesh options
+        **mesh_options,
+        # Mesh options not to be modified
+        "Mesh.MeshSizeMax": max_size,
+        "General.NumThreads": n_threads,
+        "Mesh.MaxNumThreads1D": n_threads,
+        "Mesh.MaxNumThreads2D": n_threads,
+        "Mesh.MaxNumThreads3D": n_threads,
+    }
+
+    # Set the values
+    for name, value in mesh_options.items():
+        if isinstance(value, (int, float)):
+            gmsh.option.set_number(name, value)
+        if isinstance(value, str):
+            gmsh.option.set_string(name, value)

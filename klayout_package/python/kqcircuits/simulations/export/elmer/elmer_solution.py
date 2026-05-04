@@ -51,6 +51,9 @@ class ElmerSolution(Solution):
         mesh_optimizer: Dictionary to determine mesh optimization, or None to ignore optimization. The dictionary can
             contain keywords 'method', 'force', 'niter' and 'dimTags'. See Gmsh manual (gmsh.model.mesh.optimize) for
             details. The default value is {'method': 'Netgen'}.
+        mesh_options: Dictionary of additional meshing options. The key of every item must be the full name of the gmsh
+            option and the value is then the corresponding option value to be set. For a list of available options,
+            refer to https://gmsh.info/doc/texinfo/gmsh.html#Gmsh-options.
         vtu_output: Output vtu files to view fields in Paraview.
                     Turning this off will make the simulations slightly faster
         save_elmer_data: Save the full Elmer model after simulation. This can be used to restart the simulation
@@ -96,6 +99,7 @@ class ElmerSolution(Solution):
     mesh_levels: int = 1
     mesh_size: dict = field(default_factory=dict)
     mesh_optimizer: dict | None = field(default_factory=lambda: {"method": "Netgen"})
+    mesh_options: dict = field(default_factory=dict)
     vtu_output: bool = True
     save_elmer_data: bool = False
     min_mesh_quality: float = 5e-7
