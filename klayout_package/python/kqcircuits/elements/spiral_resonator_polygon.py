@@ -54,8 +54,9 @@ class SpiralResonatorPolygon(Element):
     `bridge_spacing`. Alternatively, one can independently set number of airbridges on each straight segment of spiral
     polygon by using parameter `n_bridges_pattern`.
 
-    Non-negative value to `connector_dist` inserts face-to-face connector to spiral resonator so that the beginning and
-    the end of resonator will be on different faces.
+    Non-negative value to `connector_dist` inserts face-to-face connector to spiral resonator so that the waveguide
+    transitions on a different face. When `connector_dist` is a list of positive values, multiple connectors are
+    placed accordingly.
     """
 
     length = Param(pdt.TypeDouble, "Resonator length", 5000, unit="μm")
@@ -69,7 +70,7 @@ class SpiralResonatorPolygon(Element):
     bridge_spacing = Param(pdt.TypeDouble, "Airbridge spacing", 0, unit="μm")
     n_bridges_pattern = Param(pdt.TypeList, "Pattern for number of airbridges on edges", [0])
     connector_dist = Param(
-        pdt.TypeDouble,
+        pdt.TypeList,
         "Face to face connector distance from beginning",
         -1,
         unit="µm",
@@ -77,13 +78,13 @@ class SpiralResonatorPolygon(Element):
     )
 
     def build(self):
-        if self.connector_dist >= 0 and not self.include_connector_length:
+        if self._connector_dist_list() and not self.include_connector_length:
             conn_cell = self.add_element(FlipChipConnectorRf)
             conn_ref = self.get_refpoints(conn_cell)
             port0 = self.face_ids[0] + "_port"
             port1 = self.face_ids[1] + "_port"
             conn_len, _ = vector_length_and_direction(conn_ref[port1] - conn_ref[port0])
-            self.length += conn_len
+            self.length += len(self._connector_dist_list()) * conn_len
         if isinstance(self.input_path, list):
             self.input_path = pya.DPath(self.input_path, 1)
         if isinstance(self.poly_path, list):
@@ -294,10 +295,7 @@ class SpiralResonatorPolygon(Element):
         self._produce_airbridges(points)
 
         # insert waveguide with or without connector
-        if self.connector_dist >= 0:
-            self._produce_wg_with_connector(points, term2)
-        else:
-            self.insert_cell(WaveguideCoplanar, path=points, term2=term2)
+        self._insert_wg(points, term2)
 
         self.add_port("a", points[0], points[0] - points[1])
         self.add_port("b", points[-1], points[-1] - points[-2])
@@ -339,7 +337,7 @@ class SpiralResonatorPolygon(Element):
                     curve_length = self.length - (points[-1] - points[-2]).length()
                 curve_alpha = curve_length / self.r
                 # add new curve piece at the waveguide end
-                face = int(self.connector_dist >= 0)
+                face = len(self._connector_dist_list()) % 2
                 curve_cell = self.add_element(
                     WaveguideCoplanarCurved, alpha=curve_alpha, face_ids=[self.face_ids[face]]
                 )
@@ -402,65 +400,113 @@ class SpiralResonatorPolygon(Element):
                     self.insert_cell(Airbridge, pya.DCplxTrans(1, angle, False, pos))
                 cut_dist0 = cut_dist1
 
-    def _produce_wg_with_connector(self, points, term2):
-        """Produces waveguide with face-to-face connector.
+    def _connector_dist_list(self):
+        if isinstance(self.connector_dist, list):
+            return [d for d in self.connector_dist if float(d) >= 0]
+        return [self.connector_dist] if self.connector_dist >= 0 else []
+
+    def _insert_wg(self, points, term2):
+        """Produces waveguide with face-to-face connectors.
 
         Args:
             points: list of points used to create the resonator waveguide
             term2: end termination
         """
-        # add connector cell and get connector length
+        cdist_list = sorted(self._connector_dist_list())
+        if not cdist_list:
+            self.insert_cell(WaveguideCoplanar, path=points, term2=term2)
+            return
+
+        # Create connector cell
         conn_cell = self.add_element(FlipChipConnectorRf)
         conn_ref = self.get_refpoints(conn_cell)
         port0 = self.face_ids[0] + "_port"
         port1 = self.face_ids[1] + "_port"
         conn_len, conn_dir = vector_length_and_direction(conn_ref[port1] - conn_ref[port0])
 
-        def insert_wg_with_connector(segment, distance):
-            s_len, s_dir = vector_length_and_direction(points[segment + 1] - points[segment])
-            b_pos = points[segment] + distance * s_dir
-            ang = get_angle(s_dir) - get_angle(conn_dir)
-            trans = pya.DCplxTrans(1.0, ang, False, b_pos) * pya.DTrans(-conn_ref[port0])
-            t_pos = self.insert_cell(conn_cell, trans=trans)[1][port1]
-            if segment == 0 and distance < 1e-3:
-                WaveguideCoplanar.produce_end_termination(self, t_pos, b_pos, self.term1)
-            else:
-                self.insert_cell(WaveguideCoplanar, path=points[: segment + 1] + [b_pos], term2=0)
-            if segment + 2 == len(points) and s_len - conn_len - distance < 1e-3:
-                WaveguideCoplanar.produce_end_termination(self, b_pos, t_pos, term2, face_index=1)
-            else:
-                self.insert_cell(
-                    WaveguideCoplanar,
-                    path=[t_pos] + points[segment + 1 :],
-                    term1=0,
-                    term2=term2,
-                    face_ids=self.face_ids[1::-1],
-                )
-
-        last = {}  # parameters for last possible connector position
+        # Determine connector locations
+        p_front = []  # first possible connector positions
+        p_back = []  # last possible connector positions
         prev_len = 0.0
         prev_cut_dist = 0.0
-        for i, p in enumerate(points):
-            if i + 1 >= len(points):
-                if last:
-                    insert_wg_with_connector(**last)
-                    return
-                self.raise_error_on_cell(
-                    "Face-to-face connector cannot fit.", (self.input_path.bbox() + self.poly_path.bbox()).center()
-                )
+        for i, p in enumerate(points[:-1]):
             corner_cut_dist, corner_length = (
                 (0.0, 0.0) if i + 2 == len(points) else self._corner_cut_distance(p, points[i + 1], points[i + 2])
             )
             segment_len, _ = vector_length_and_direction(points[i + 1] - p)
             straight_len = segment_len - prev_cut_dist - corner_cut_dist
-            if conn_len <= straight_len:
-                last = {"segment": i, "distance": segment_len - corner_cut_dist - conn_len}
-                dist = self.connector_dist - conn_len / 2 - prev_len + prev_cut_dist
-                if dist <= last["distance"]:
-                    insert_wg_with_connector(i, max(prev_cut_dist, dist))
-                    return
+
+            n_conn = int(straight_len / conn_len)
+            if n_conn > 0:
+                last_dist = segment_len - corner_cut_dist - n_conn * conn_len
+                p_back += [(i, last_dist + j * conn_len) for j in range(n_conn)]
+                earliest_dist = prev_cut_dist
+                while len(p_front) < len(cdist_list):
+                    dist = float(cdist_list[len(p_front)]) - conn_len / 2 - prev_len + prev_cut_dist
+                    if dist > p_back[-1][1]:
+                        break
+                    p_front.append((i, max(earliest_dist, dist)))
+                    earliest_dist = p_front[-1][1] + conn_len
             prev_len += straight_len + corner_length
             prev_cut_dist = corner_cut_dist
+
+        if len(p_back) < len(cdist_list):
+            self.raise_error_on_cell(
+                "Face-to-face connectors cannot fit.", (self.input_path.bbox() + self.poly_path.bbox()).center()
+            )
+        p_front += [(len(points), 0.0)] * (len(cdist_list) - len(p_front))
+        placements = [min(f, b) for f, b in zip(p_front, p_back[-len(cdist_list) :])]
+
+        # insert waveguides and connectors
+        current_face = 0
+        current_pts = [points[0]]
+        current_segment = 0
+        current_distance = 0.0
+        for i, (segment, distance) in enumerate(placements):
+            s_len, s_dir = vector_length_and_direction(points[segment + 1] - points[segment])
+            b_pos = points[segment] + distance * s_dir
+
+            if current_face == 0:
+                ang = get_angle(s_dir) - get_angle(conn_dir)
+                trans = pya.DCplxTrans(1.0, ang, False, b_pos) * pya.DTrans(-conn_ref[port0])
+                t_pos = self.insert_cell(conn_cell, trans=trans)[1][port1]
+            else:
+                ang = get_angle(s_dir) - get_angle(-conn_dir)
+                trans = pya.DCplxTrans(1.0, ang, False, b_pos) * pya.DTrans(-conn_ref[port1])
+                t_pos = self.insert_cell(conn_cell, trans=trans)[1][port0]
+
+            b_distance = current_distance if segment == current_segment else 0.0
+            b_pts = [] if distance < b_distance + 1e-3 else [b_pos]
+            path = current_pts + points[current_segment + 1 : segment + 1] + b_pts
+            if len(path) >= 2:
+                self.insert_cell(
+                    WaveguideCoplanar,
+                    path=path,
+                    term1=self.term1 if i == 0 else 0,
+                    term2=0,
+                    face_ids=self.face_ids[1::-1] if current_face == 1 else self.face_ids,
+                )
+            elif i == 0:
+                WaveguideCoplanar.produce_end_termination(self, points[1], points[0], self.term1)
+
+            current_face = 1 - current_face
+            current_pts = [] if distance + conn_len > s_len - 1e-3 else [t_pos]
+            current_segment = segment
+            current_distance = distance + conn_len
+
+        path = current_pts + points[current_segment + 1 :]
+        if len(path) >= 2:
+            self.insert_cell(
+                WaveguideCoplanar,
+                path=path,
+                term1=0,
+                term2=term2,
+                face_ids=self.face_ids[1::-1] if current_face == 1 else self.face_ids,
+            )
+        else:
+            WaveguideCoplanar.produce_end_termination(
+                self, points[current_segment], points[current_segment + 1], term2, current_face
+            )
 
     def _corner_cut_distance(self, point1, point2, point3):
         """Returns the distance from waveguide path corner to the start of the curve and the curve length.
