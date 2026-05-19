@@ -83,7 +83,7 @@ class WaveguideCoplanar(Element):
             # distance between points[i + 1] and beginning of the straight
             cut_dist = self.r * math.tan(abs(alpha) / 2)
             straight_length = v1.length() - last_cut_dist - cut_dist
-            if straight_length < -eps_length:
+            if straight_length < -self.layout.dbu:
                 self.raise_error_on_cell(
                     "Straight segment cannot fit. Try decreasing the turn radius.", points[i] + v1 / 2
                 )
@@ -105,7 +105,7 @@ class WaveguideCoplanar(Element):
         # Check if straight can fit between the last two points
         v1 = points[-1] - points[-2]
         straight_length = v1.length() - last_cut_dist
-        if straight_length < -eps_length:
+        if straight_length < -self.layout.dbu:
             self.raise_error_on_cell(
                 "Straight segment cannot fit. Try decreasing the turn radius.", points[-2] + v1 / 2
             )
