@@ -7,6 +7,7 @@ kqcircuits.util
 .. toctree::
 
    kqcircuits.util.area
+   kqcircuits.util.chip_helpers
    kqcircuits.util.count_instances
    kqcircuits.util.coupler_lib
    kqcircuits.util.deep_delete

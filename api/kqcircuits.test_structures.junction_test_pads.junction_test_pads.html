@@ -723,6 +723,10 @@
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.area.html#kqcircuits.util.area.get_area_and_density"><code class="docutils literal notranslate"><span class="pre">get_area_and_density()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.chip_helpers.html">kqcircuits.util.chip_helpers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.chip_helpers.html#kqcircuits.util.chip_helpers.produce_instance_name_labels"><code class="docutils literal notranslate"><span class="pre">produce_instance_name_labels()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.count_instances.html">kqcircuits.util.count_instances</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.count_instances.html#kqcircuits.util.count_instances.count_instances_in_cell"><code class="docutils literal notranslate"><span class="pre">count_instances_in_cell()</span></code></a></li>
 </ul>
@@ -1079,6 +1083,8 @@ the arms</p></li>
 <li><p><strong>display_name</strong><em> (String)</em><span> - Name displayed in GUI (empty for default)</span><em>, default=</em><code class="docutils literal notranslate"></code></p></li>
 <li><p><strong>protect_opposite_face</strong><em> (Boolean)</em><span> - This applies only on signal carrying elements that typically include some metal between gaps.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>opposing_face_id_groups</strong><em> (List)</em><span> - Opposing face ID groups (list of lists)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[['1t1',</span> <span class="pre">'2b1']]</span></code></p></li>
+<li><p><strong>duplicate_face_ids</strong><em> (List)</em><span> - Duplicate face IDs (list of lists), where the first face of each group is copied into other faces</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[]</span></code></p></li>
+<li><p><strong>duplicate_layers</strong><em> (List)</em><span> - Layers (list), which are copied into other faces when duplicate_face_ids are given</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['base_metal_gap',</span> <span class="pre">'base_metal_gap_wo_grid',</span> <span class="pre">'base_metal_addition']</span></code></p></li>
 <li><p><strong>etch_opposite_face</strong><em> (Boolean)</em><span> - Etch avoidance shaped gap on the opposite face too</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>etch_opposite_face_margin</strong><em> (Double)</em><span> - Margin of the opposite face etch shape</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>_epr_show</strong><em> (Boolean)</em><span> - Show geometry related to EPR simulation, if available</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>

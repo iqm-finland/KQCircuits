@@ -720,6 +720,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.area.html#kqcircuits.util.area.get_area_and_density"><code class="docutils literal notranslate"><span class="pre">get_area_and_density()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.chip_helpers.html">kqcircuits.util.chip_helpers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.chip_helpers.html#kqcircuits.util.chip_helpers.produce_instance_name_labels"><code class="docutils literal notranslate"><span class="pre">produce_instance_name_labels()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.count_instances.html">kqcircuits.util.count_instances</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.count_instances.html#kqcircuits.util.count_instances.count_instances_in_cell"><code class="docutils literal notranslate"><span class="pre">count_instances_in_cell()</span></code></a></li>
 </ul>
@@ -1036,6 +1040,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Finds latest Ansys Electronics executable from default installation locations. Returns &#39;default&#39; if not found.&quot;&quot;&quot;</span>
     <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ProgramFiles&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;C:\Program Files&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;AnsysEM&quot;</span><span class="p">),</span> <span class="sa">r</span><span class="s2">&quot;Win64\ansysedt.exe&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ProgramFiles&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;C:\Program Files&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;ANSYS Inc&quot;</span><span class="p">),</span> <span class="sa">r</span><span class="s2">&quot;AnsysEM\ansysedt.exe&quot;</span><span class="p">),</span>
         <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;/opt/AnsysEM&quot;</span><span class="p">),</span> <span class="s2">&quot;Linux64/ansysedt&quot;</span><span class="p">),</span>  <span class="c1"># LINX64 Ansys 2024/R2 or older</span>
         <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;/ansys_inc&quot;</span><span class="p">),</span> <span class="s2">&quot;AnsysEM/ansysedt&quot;</span><span class="p">),</span>  <span class="c1"># LINX64 Ansys 2025/R1 or newer</span>
     <span class="p">]</span>

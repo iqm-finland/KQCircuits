@@ -720,6 +720,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.util.area.html#kqcircuits.util.area.get_area_and_density"><code class="docutils literal notranslate"><span class="pre">get_area_and_density()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.util.chip_helpers.html">kqcircuits.util.chip_helpers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.util.chip_helpers.html#kqcircuits.util.chip_helpers.produce_instance_name_labels"><code class="docutils literal notranslate"><span class="pre">produce_instance_name_labels()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.util.count_instances.html">kqcircuits.util.count_instances</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.util.count_instances.html#kqcircuits.util.count_instances.count_instances_in_cell"><code class="docutils literal notranslate"><span class="pre">count_instances_in_cell()</span></code></a></li>
 </ul>
@@ -1661,6 +1665,9 @@
                 <span class="p">)</span>
                 <span class="k">break</span>
 
+    <span class="k">if</span> <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;delete_meshes&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">mesh_reuse_name</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;workflow[&quot;delete_meshes&quot;] is not supported with Solution sweeps&#39;</span><span class="p">)</span>
+
     <span class="n">json_filenames</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">,</span> <span class="n">mesh_reuse</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">sim_objects</span><span class="p">,</span> <span class="n">sol_objects</span><span class="p">,</span> <span class="n">mesh_reuse_name</span><span class="p">):</span>
         <span class="n">validate_simulation</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">solution</span><span class="p">)</span>
@@ -1789,6 +1796,8 @@
         <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;elmer_n_processes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_processes</span>
         <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;elmer_n_threads&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_threads</span>
         <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;gmsh_n_threads&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gmsh_n_threads</span>
+
+        <span class="n">workflow</span><span class="p">[</span><span class="s2">&quot;delete_meshes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;delete_meshes&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
     <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-q&quot;</span><span class="p">,</span> <span class="s2">&quot;--quiet&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">)</span>

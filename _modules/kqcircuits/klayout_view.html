@@ -720,6 +720,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../../api/kqcircuits.util.area.html#kqcircuits.util.area.get_area_and_density"><code class="docutils literal notranslate"><span class="pre">get_area_and_density()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.chip_helpers.html">kqcircuits.util.chip_helpers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/kqcircuits.util.chip_helpers.html#kqcircuits.util.chip_helpers.produce_instance_name_labels"><code class="docutils literal notranslate"><span class="pre">produce_instance_name_labels()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.count_instances.html">kqcircuits.util.count_instances</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../api/kqcircuits.util.count_instances.html#kqcircuits.util.count_instances.count_instances_in_cell"><code class="docutils literal notranslate"><span class="pre">count_instances_in_cell()</span></code></a></li>
 </ul>
@@ -1297,7 +1301,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">zoom</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">dbbox</span><span class="p">()</span>
-        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">zoom</span><span class="o">.</span><span class="n">width</span><span class="p">(),</span> <span class="n">zoom</span><span class="o">.</span><span class="n">height</span><span class="p">()</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">zoom</span><span class="o">.</span><span class="n">width</span><span class="p">(),</span> <span class="mi">1</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">zoom</span><span class="o">.</span><span class="n">height</span><span class="p">(),</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">max_size</span> <span class="o">*</span> <span class="n">x</span> <span class="o">/</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">max_size</span> <span class="o">-</span> <span class="mi">200</span><span class="p">:</span>  <span class="c1"># 200x100 is enough for the sizebar</span>
             <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="n">max_size</span> <span class="o">*</span> <span class="n">x</span> <span class="o">/</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">200</span><span class="p">,</span> <span class="n">max_size</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
