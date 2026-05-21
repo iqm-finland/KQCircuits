@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.masks.mask_set &mdash; KQCircuits 4.9.9 documentation</title>
+  <title>kqcircuits.masks.mask_set &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=fd725ae1"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -914,6 +914,14 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.convert_cells_to_static"><code class="docutils literal notranslate"><span class="pre">convert_cells_to_static()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.static_chip_helper.html">kqcircuits.util.static_chip_helper</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.static_chip_helper.html#kqcircuits.util.static_chip_helper.clear_layer"><code class="docutils literal notranslate"><span class="pre">clear_layer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.static_chip_helper.html#kqcircuits.util.static_chip_helper.strip_faces"><code class="docutils literal notranslate"><span class="pre">strip_faces()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.static_chip_helper.html#kqcircuits.util.static_chip_helper.get_chip_boundary_box"><code class="docutils literal notranslate"><span class="pre">get_chip_boundary_box()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.static_chip_helper.html#kqcircuits.util.static_chip_helper.copy_chip_cell_from_face"><code class="docutils literal notranslate"><span class="pre">copy_chip_cell_from_face()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.static_chip_helper.html#kqcircuits.util.static_chip_helper.swap_face"><code class="docutils literal notranslate"><span class="pre">swap_face()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.symmetric_polygons.html">kqcircuits.util.symmetric_polygons</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.symmetric_polygons.html#kqcircuits.util.symmetric_polygons.polygon_with_hsym"><code class="docutils literal notranslate"><span class="pre">polygon_with_hsym()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.symmetric_polygons.html#kqcircuits.util.symmetric_polygons.polygon_with_vsym"><code class="docutils literal notranslate"><span class="pre">polygon_with_vsym()</span></code></a></li>
@@ -1100,14 +1108,18 @@
         <span class="n">mask_export_layers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">export_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">add_mask_name_to_chips</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">parse_sys_args</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">):</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_time</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;INIT&quot;</span><span class="p">:</span> <span class="n">perf_counter</span><span class="p">(),</span> <span class="s2">&quot;ADD_CHIPS&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;BUILD&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;EXPORT&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;END&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
 
         <span class="k">if</span> <span class="n">export_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">arg_parser</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">argument_parser</span><span class="p">()</span>
-            <span class="n">arg_values</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">arg_parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-            <span class="n">export_path</span> <span class="o">=</span> <span class="n">TMP_PATH</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">arg_values</span><span class="o">.</span><span class="n">p</span> <span class="k">else</span> <span class="n">arg_values</span><span class="o">.</span><span class="n">p</span>
+            <span class="k">if</span> <span class="n">parse_sys_args</span><span class="p">:</span>
+                <span class="n">arg_parser</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">argument_parser</span><span class="p">()</span>
+                <span class="n">arg_values</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">arg_parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+                <span class="n">export_path</span> <span class="o">=</span> <span class="n">TMP_PATH</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">arg_values</span><span class="o">.</span><span class="n">p</span> <span class="k">else</span> <span class="n">arg_values</span><span class="o">.</span><span class="n">p</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">export_path</span> <span class="o">=</span> <span class="n">TMP_PATH</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="n">KLayoutView</span><span class="p">()</span> <span class="k">if</span> <span class="n">view</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">view</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">layout</span>
@@ -1121,20 +1133,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">mask_export_layers</span> <span class="o">=</span> <span class="n">mask_export_layers</span> <span class="k">if</span> <span class="n">mask_export_layers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">used_chips</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_mask_name_to_chips</span> <span class="o">=</span> <span class="n">add_mask_name_to_chips</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parse_sys_args</span> <span class="o">=</span> <span class="n">parse_sys_args</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_extra_params</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mask_set_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">export_path</span><span class="p">)</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">_v</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exporting to: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mask_set_dir</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_mask_set_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_extra_params</span><span class="p">[</span><span class="s2">&quot;enable_debug&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;-d&quot;</span> <span class="ow">in</span> <span class="n">argv</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_extra_params</span><span class="p">[</span><span class="s2">&quot;enable_debug&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">parse_sys_args</span> <span class="ow">and</span> <span class="s2">&quot;-d&quot;</span> <span class="ow">in</span> <span class="n">argv</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_single_process</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extra_params</span><span class="p">[</span><span class="s2">&quot;enable_debug&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">is_standalone_session</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_extra_params</span><span class="p">[</span><span class="s2">&quot;mock_chips&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;-m&quot;</span> <span class="ow">in</span> <span class="n">argv</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_extra_params</span><span class="p">[</span><span class="s2">&quot;skip_extras&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;-s&quot;</span> <span class="ow">in</span> <span class="n">argv</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_extra_params</span><span class="p">[</span><span class="s2">&quot;mock_chips&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">parse_sys_args</span> <span class="ow">and</span> <span class="s2">&quot;-m&quot;</span> <span class="ow">in</span> <span class="n">argv</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_extra_params</span><span class="p">[</span><span class="s2">&quot;skip_extras&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">parse_sys_args</span> <span class="ow">and</span> <span class="s2">&quot;-s&quot;</span> <span class="ow">in</span> <span class="n">argv</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_cpu_override</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">if</span> <span class="s2">&quot;-c&quot;</span> <span class="ow">in</span> <span class="n">argv</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">argv</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;-c&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">parse_sys_args</span> <span class="ow">and</span> <span class="s2">&quot;-c&quot;</span> <span class="ow">in</span> <span class="n">argv</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">argv</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;-c&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cpu_override</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="n">argv</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;-c&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
 
 <div class="viewcode-block" id="MaskSet.add_mask_layout">

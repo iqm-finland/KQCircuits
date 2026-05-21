@@ -103,7 +103,7 @@ Then (if you haven't already) follow the Standalone installation guide :ref:`sta
 including ``simulations`` or ``sim-requirements.txt`` requirements. Notice that for WSL, a separate
 `"venv" <https://docs.python.org/3/library/venv.html>`__ virtual environment needs to be created for WSL terminal.
 
-Thats it! Try running ``kqc sim waveguide_sim_compare.py`` to see that it runs the simulations.
+Thats it! Try running ``kqc sim waveguides_sim_compare.py`` to see that it runs the simulations.
 
 If you want to build the Singularity image yourself, in the :git_url:`singularity` folder run::
 

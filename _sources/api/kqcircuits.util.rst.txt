@@ -37,6 +37,7 @@ kqcircuits.util
    kqcircuits.util.plugin_startup
    kqcircuits.util.refpoints
    kqcircuits.util.replace_junctions
+   kqcircuits.util.static_chip_helper
    kqcircuits.util.symmetric_polygons
 
 Module contents

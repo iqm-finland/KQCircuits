@@ -1,0 +1,12 @@
+:github_url: hide
+
+kqcircuits.util.static\_chip\_helper
+====================================
+
+.. automodule:: kqcircuits.util.static_chip_helper
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.util.static_chip_helper
+.. image:: ../pcell_images/kqcircuits.util.static_chip_helper.png
