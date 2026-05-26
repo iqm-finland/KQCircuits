@@ -1,5 +1,5 @@
 # This code is part of KQCircuits
-# Copyright (C) 2025 IQM Finland Oy
+# Copyright (C) 2026 IQM Finland Oy
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 # License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
@@ -47,7 +47,7 @@ sim_parameters = {
     "tls_sheet_approximation": True,
     "tls_layer_thickness": 0.01,
     "name": "double_pads",
-    "box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(2000, 2000)),
+    "box": pya.DBox(-1000, -1000, 1000, 1000),
     "face_stack": ["1t1"],
     "metal_height": 0.2,
     "coupler_a": 5,
@@ -63,6 +63,7 @@ sim_parameters = {
 # Get layout
 logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 layout = get_active_or_new_layout()
+layout.dbu = 1e-5
 
 # Override the default simulation ports which use refpoints that only exist with Sim junction
 DoublePads.get_sim_ports = lambda sim: [
@@ -72,7 +73,7 @@ DoublePads.get_sim_ports = lambda sim: [
 ]
 voltages = [1, -1, 0.1]
 
-SimClassManhattan = get_single_element_sim_class(DoublePads, sim_junction_type="Manhattan")
+SimClassManhattan = get_single_element_sim_class(DoublePads, sim_junction_type="Manhattan", center=pya.DPoint(0, 0))
 simulation = SimClassManhattan(layout, **sim_parameters)
 
 # Enable additional details in the submodel
@@ -89,23 +90,34 @@ submodel_params = {
     # Finer junction structures
     "finger_overshoot": -0.5,
     "base_metal_addition_layers": ["base_metal_addition", "SIS_junction", "SIS_junction_2"],
+    "use_ports": False,
+    "small_shape_area": 0.01,
 }
 
 # Submodel centered at the junction
-junction_sim = simulation.create_submodel(
-    "junction_submodel",
-    pya.DBox(pya.DPoint(975, 975), pya.DPoint(1025, 1025)),
-    z_limits=[-5, 5],
-    magnification_order=1,
-    override_parameters=submodel_params,
+junction_sim = SimClassManhattan(
+    layout,
+    **{
+        **sim_parameters,
+        **submodel_params,
+        "name": "junction_submodel",
+        "box": pya.DBox(-25, -25, 25, 25),
+        "substrate_height": 5,
+        "upper_box_height": 5,
+        "parent_simulation": simulation,
+    },
 )
-# Submodel of the submodel
-junction_sim_zoomed = junction_sim.create_submodel(
-    "junction_submodel_zoomed",
-    pya.DBox(pya.DPoint(989, 993), pya.DPoint(993, 997)),
-    z_limits=[-2, 2],
-    magnification_order=1,  # NOTE: This magnifies 1 more level from the larger submodel
-    override_parameters=submodel_params,
+junction_sim_zoomed = SimClassManhattan(
+    layout,
+    **{
+        **sim_parameters,
+        **submodel_params,
+        "name": "junction_submodel_zoomed",
+        "box": pya.DBox(-11, -7, -7, -3),
+        "substrate_height": 2,
+        "upper_box_height": 2,
+        "parent_simulation": junction_sim,
+    },
 )
 
 # Main model solution settings
@@ -148,8 +160,4 @@ pp = PostProcess(
 
 export_elmer(junction_sim_sol, path=dir_path, workflow=workflow, post_process=pp)
 
-open_with_klayout_or_default_application(export_simulation_oas([simulation], dir_path))
-open_with_klayout_or_default_application(export_simulation_oas([junction_sim], dir_path, file_prefix=junction_sim.name))
-open_with_klayout_or_default_application(
-    export_simulation_oas([junction_sim_zoomed], dir_path, file_prefix=junction_sim_zoomed.name)
-)
+open_with_klayout_or_default_application(export_simulation_oas(junction_sim_sol, dir_path))

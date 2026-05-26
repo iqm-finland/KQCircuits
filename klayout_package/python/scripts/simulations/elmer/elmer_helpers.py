@@ -954,7 +954,7 @@ def sif_placeholder_boundaries(groups: list[str], n_boundaries: int) -> str:
     return boundary_conditions
 
 
-def get_simulation_restart_solver(ordinate: str | int, parent_simulation: str) -> str:
+def get_simulation_restart_solver(ordinate: str | int, parent_name: str, path: Path) -> str:
     """
     Returns solver for loading existing Elmer results from a .result file exported by setting
     `save_elmer_results=True`. Does not solve anything, but allocates required data structures.
@@ -963,17 +963,22 @@ def get_simulation_restart_solver(ordinate: str | int, parent_simulation: str) -
 
     Args:
         ordinate: solver ordinate
-        parent_simulation: Name of the simulation to be loaded
+        parent_name: Name of the simulation to be loaded
+        path: simulation folder path
 
     Returns:
         solver in sif file format
     """
+    with open(path / f"{parent_name}.json", encoding="utf-8") as f:
+        json_data = json.load(f)
+    mesh_name = json_data["mesh_name"]
+
     solver_lines = [
         'Equation = "CoarseRestart"',
         'Procedure = "AllocateSolver" "AllocateSolver"',
         "Exec Solver = never",
-        f'Mesh = "{parent_simulation}"',
-        f'Restart File = File "../{parent_simulation}/{parent_simulation}.result"',
+        f'Mesh = "{mesh_name}"',
+        f'Restart File = File "../{mesh_name}/{parent_name}.result"',
         "Restart Variable 1 = String Potential",
         "Target Variable 1 = String ParentPotential",
         "Restart Error Continue = Logical True",
@@ -1004,8 +1009,8 @@ def sif_epr_3d(json_data: dict[str, Any], folder_path: Path, vtu_name: str | Pat
     mesh_path = Path(json_data["mesh_name"])
 
     submodel_restart_lines = None
-    parent_simulation = json_data["parent_simulation"]
-    if parent_simulation:
+    parent_name = json_data["parent_name"]
+    if parent_name:
         submodel_restart_lines = [
             "Initialize Dirichlet Conditions = False",
             "Restart Before Initial Conditions = Logical True",
@@ -1061,8 +1066,8 @@ def sif_epr_3d(json_data: dict[str, Any], folder_path: Path, vtu_name: str | Pat
         sheet_bodies=mesh_boundaries,
     )
 
-    if parent_simulation:
-        solvers += get_simulation_restart_solver(5, parent_simulation)
+    if parent_name:
+        solvers += get_simulation_restart_solver(5, parent_name, folder_path.parent)
         equations_ids = [5, 1]
     else:
         equations_ids = [1]
@@ -1116,7 +1121,7 @@ def sif_epr_3d(json_data: dict[str, Any], folder_path: Path, vtu_name: str | Pat
     boundary_conditions = ""
     n_bcs = 1
 
-    if parent_simulation:
+    if parent_name:
         outer_condition = ["Potential = Equals ParentPotential"]
     elif json_data.get("electric_infinity_bc", False):
         outer_condition = ["Electric Infinity BC = Logical True"]

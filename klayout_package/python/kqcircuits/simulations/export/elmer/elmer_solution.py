@@ -76,6 +76,7 @@ class ElmerSolution(Solution):
                         If using multigrid, the preconditioning is applied on the lowest iteration level.
         abort_not_converged: Stop Elmer execution immediately if an iterative linear system solver fails to reach
             convergence. If False, a warning is printed after the simulation finishes.
+        parent_solution: parent solution name to be used together with Simulation.parent_simulation
 
         use_multigrid_solver: Use hierarchical iterative multigrid solver.
         mg_smoother: Choice of smoother in multigrid solver. Tested options for electrostatic simulations are
@@ -109,6 +110,7 @@ class ElmerSolution(Solution):
     max_iterations: int = 500
     linear_system_preconditioning: str = "ILU0"
     abort_not_converged: bool = False
+    parent_solution: str = ""
 
     # Multigrid solver settings
     use_multigrid_solver: bool = True
