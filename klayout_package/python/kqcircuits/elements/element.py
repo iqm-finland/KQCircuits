@@ -414,7 +414,7 @@ class Element(pya.PCellDeclarationHelper):
             new_name: Optionally rename the port
         """
         copy_name = name if new_name is None else new_name
-        port_name = "port" if name == "" else f"port_{name}"
+        port_name = name if "port" in name else ("port_" + name if name else "port")
         port_corner_name = f"{port_name}_corner"
 
         # workaround for getting the cell due to KLayout bug, see
