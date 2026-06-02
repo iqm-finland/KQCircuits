@@ -27,5 +27,5 @@ path = Path.cwd()
 
 non_sim_dirs = ["scripts", "log_files", "elmer_data", "s_matrix_plots"]
 for p in path.iterdir():
-    if p.is_dir() and p not in non_sim_dirs:
+    if p.is_dir() and p.name not in non_sim_dirs:
         delete_meshes(path, p.name)
