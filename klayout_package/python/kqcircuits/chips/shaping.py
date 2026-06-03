@@ -25,7 +25,7 @@ from kqcircuits.elements.meander import Meander
 from kqcircuits.junctions.squid import Squid
 from kqcircuits.qubits.swissmon import Swissmon
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
-from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter, t_cross_parameters
+from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter
 from kqcircuits.util.coupler_lib import cap_params
 
 
@@ -100,9 +100,15 @@ class Shaping(Chip):
         # Waveguide t-cross used in multiple locations
         cross1 = self.add_element(
             WaveguideCoplanarSplitter,
-            **t_cross_parameters(
-                a=self.a, b=self.b, a2=self.a, b2=self.b, length_extra_side=2 * self.a, length_extra=50
-            ),
+            lengths=[
+                self.a / 2 + self.b + 50,
+                self.a / 2 + self.b + 50,
+                self.a / 2 + self.b + 2 * self.a,
+            ],
+            angles=[0, 180, 270],
+            a_list=[self.a, self.a, self.a],
+            b_list=[self.b, self.b, self.b],
+            port_names=["right", "left", "bottom"],
         )
         cross1_refpoints_rel = self.get_refpoints(cross1, pya.DTrans(0, False, 0, 0))
         cross1_length = cross1_refpoints_rel["port_right"].distance(cross1_refpoints_rel["port_left"])
