@@ -31,7 +31,10 @@ epr_gui_visualised_partition_regions = {
         "waveguides",
     ],
     "Swissmon": [
-        "crossbulk",
+        "crossleftbulk",
+        "crosstopbulk",
+        "crossrightbulk",
+        "crossbottombulk",
         "0cplrbulk",
         "1cplrbulk",
         "2cplrbulk",
