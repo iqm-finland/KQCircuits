@@ -49,14 +49,32 @@ and rerun the macro if needed.
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.klayout_view import KLayoutView
+from kqcircuits.util.instance_hierarchy_helpers import get_instance_marker_polygons
 
 view = KLayoutView(current=True)
 layout = view.layout
 top_cell = view.active_cell
 
+selection_markers = []
+
+def clear_marker_highlights():
+    """Clear visual markers created by this instance hierarchy browser."""
+    while selection_markers:
+        marker = selection_markers.pop()
+        if not marker.destroyed():
+            marker.destroy()
+
+
 def create_dialog():
     """Simple dialog containing a TreeWidget"""
-    dialog = pya.QDialog(pya.Application.instance().main_window())
+    class InstanceHierarchyDialog(pya.QDialog):
+        """Dialog that clears instance marker highlights when closed."""
+
+        def closeEvent(self, *args):
+            clear_marker_highlights()
+            super().closeEvent(*args)
+
+    dialog = InstanceHierarchyDialog(pya.Application.instance().main_window())
     dialog.windowTitle = "Instance Hierarchy"
     dialog.setModal(False)
 
@@ -78,13 +96,20 @@ dialog.show()
 top_item = pya.QTreeWidgetItem([top_cell.name, ""])
 tree_widget.insertTopLevelItem(0, top_item)
 
-def add_instances(item, cell):
+def add_instances(item, cell, inst_path=None, trans=None):
     """Recursively add child instances of a cell as subitems of a given tree widget item.
 
     Args:
          item: parent QTreeWidgetItem
          cell: parent Cell in the layout
+         inst_path: instance path from top cell to ``cell``
+         trans: transformation from top cell to ``cell``
     """
+    if inst_path is None:
+        inst_path = []
+    if trans is None:
+        trans = pya.DCplxTrans()
+
     child_insts = list(cell.each_inst())
     child_insts_by_cell = {inst.cell_index: [] for inst in child_insts}
     for inst in child_insts:
@@ -99,47 +124,63 @@ def add_instances(item, cell):
             for inst, inst_name in cell_insts:
                 child_item = pya.QTreeWidgetItem([inst.cell.name, "" if inst_name is None else inst_name])
                 child_item._inst = inst
+                child_item._inst_path = inst_path + [inst]
+                child_item._inst_trans = trans * inst.dcplx_trans
                 item.insertChild(None, child_item)
-                add_instances(child_item, inst.cell)
+                add_instances(child_item, inst.cell, child_item._inst_path, child_item._inst_trans)
 
 # Populate dialog
 add_instances(top_item, top_cell)
 top_item.setExpanded(True)
 
+def add_marker_highlights(inst, trans):
+    """Add marker highlights for the selected instance geometry."""
+    for polygon in get_instance_marker_polygons(layout, inst, trans):
+        marker = pya.Marker()
+        marker.set_polygon(polygon)
+        marker.color = 0xDD2222
+        marker.dither_pattern = -1
+        marker.vertex_size = 0
+        marker.line_width = 3
+        marker.halo = 1
+        view.layout_view.add_marker(marker)
+        selection_markers.append(marker)
+
+
+def select_instance_item(item):
+    """Select and highlight the instance represented by a tree widget item."""
+    inst = getattr(item, "_inst", None)
+    if inst is None:
+        return False
+
+    inst_path = pya.ObjectInstPath()
+    inst_path.cv_index = view.cell_view.index()
+    inst_path.top = view.cell_view.cell_index
+    inst_path.path = [pya.InstElement(path_inst) for path_inst in getattr(item, "_inst_path", [inst])]
+    view.layout_view.select_object(inst_path)
+    add_marker_highlights(inst, getattr(item, "_inst_trans", inst.dcplx_trans))
+    return True
+
+
 def selection_changed(*args):
     """Callback when an instance is selected in the dialog. Selects the corresponding instance in the layout.
     """
+    clear_marker_highlights()
     view.layout_view.clear_object_selection()
     for item in tree_widget.selectedItems():
-        inst = getattr(item, "_inst", None)
-        if inst is not None:
-            # Select the instance
-            inst_path = pya.ObjectInstPath()
-            inst_path.cv_index = view.cell_view.index()
-            inst_path.top = view.cell_view.cell_index
-            # path should be a list from top to the final instance, but just giving the final instance seems to work too
-            inst_path.path = [pya.InstElement(inst)]
-            view.layout_view.select_object(inst_path)
+        select_instance_item(item)
 
 
 def double_clicked(*args):
     """Callback on double click. Selects the instance in the layout and opens the instance property dialog."""
+    clear_marker_highlights()
     view.layout_view.clear_object_selection()
     for item in tree_widget.selectedItems():
-        inst = getattr(item, "_inst", None)
-        if inst is not None:
-            # Select the instance
-            inst_path = pya.ObjectInstPath()
-            inst_path.cv_index = view.cell_view.index()
-            inst_path.top = view.cell_view.cell_index
-            # path should be a list from top to the final instance, but just giving the final instance seems to work too
-            inst_path.path = [pya.InstElement(inst)]
-            view.layout_view.select_object(inst_path)
-        
+        if select_instance_item(item):
             # Open property dialog.
             menu = pya.MainWindow.instance().menu()
             menu.action('edit_menu.show_properties').trigger()
-        break  # Only accept one selection
+            break  # Only accept one selection
    
 
 tree_widget.itemSelectionChanged = selection_changed
