@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.util.geometry_helper &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.util.geometry_helper &mdash; KQCircuits 4.9.11 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../_static/documentation_options.js?v=982ae252"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -787,6 +787,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.bezier_points"><code class="docutils literal notranslate"><span class="pre">bezier_points()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.bspline_path"><code class="docutils literal notranslate"><span class="pre">bspline_path()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.force_rounded_corners"><code class="docutils literal notranslate"><span class="pre">force_rounded_corners()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.get_center_of_bounding_box"><code class="docutils literal notranslate"><span class="pre">get_center_of_bounding_box()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.rotate_arbitrary_degrees"><code class="docutils literal notranslate"><span class="pre">rotate_arbitrary_degrees()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a><ul>
@@ -1703,6 +1705,83 @@
             <span class="n">poly</span><span class="o">.</span><span class="n">insert_hole</span><span class="p">(</span><span class="n">process_points</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">polygon</span><span class="o">.</span><span class="n">each_point_hole</span><span class="p">(</span><span class="n">hole</span><span class="p">))))</span>
         <span class="n">result</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">poly</span><span class="o">.</span><span class="n">round_corners</span><span class="p">(</span><span class="n">r_inner</span><span class="p">,</span> <span class="n">r_outer</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<div class="viewcode-block" id="get_center_of_bounding_box">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.get_center_of_bounding_box">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_center_of_bounding_box</span><span class="p">(</span><span class="n">polygon</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the center position of a polygon from its bounding box.</span>
+
+<span class="sd">    The function computes the center of the polygon&#39;s bounding box and returns</span>
+<span class="sd">    it as a ``pya.DPoint``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        polygon (pya.DPolygon):</span>
+<span class="sd">            The polygon whose position is to be determined.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        pya.DPoint:</span>
+<span class="sd">            The center of the polygon&#39;s bounding box.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">center</span> <span class="o">=</span> <span class="n">polygon</span><span class="o">.</span><span class="n">bbox</span><span class="p">()</span><span class="o">.</span><span class="n">center</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">center</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">center</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="rotate_arbitrary_degrees">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.rotate_arbitrary_degrees">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">rotate_arbitrary_degrees</span><span class="p">(</span>
+    <span class="n">angle</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">polygon</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">,</span> <span class="n">pivot</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">,</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Rotate a polygon by any angle around either its center or a specified pivot point.</span>
+
+<span class="sd">    Args:</span>
+
+<span class="sd">        angle (float):</span>
+<span class="sd">            Rotation angle in degrees.</span>
+
+<span class="sd">        polygon (pya.DPolygon):</span>
+<span class="sd">            The polygon to rotate.</span>
+
+<span class="sd">        pivot (pya.DPoint, optional):</span>
+<span class="sd">            The point around which the polygon is rotated. If not provided,</span>
+<span class="sd">            the function uses the polygon&#39;s current position as returned by</span>
+<span class="sd">            ``get_center_of_mass(...)``.</span>
+
+<span class="sd">        points (list[pya.DPoint] optional):</span>
+<span class="sd">            List of DPoints in order to return the transformed points</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple consisting of</span>
+
+<span class="sd">        pya.DPolygon:</span>
+<span class="sd">            A new transformed polygon rotated by the specified angle.</span>
+
+<span class="sd">        list[pya.DPoint]:</span>
+<span class="sd">            list of the transformed points in the same order as the given list.</span>
+
+
+<span class="sd">    Notes:</span>
+<span class="sd">        - If ``pivot`` is ``None``, the polygon is rotated around its current</span>
+<span class="sd">          position.</span>
+<span class="sd">        - The transformation does not modify the original polygon in place;</span>
+<span class="sd">          it returns a rotated copy instead.</span>
+<span class="sd">        - Internally, the polygon is translated to the pivot, rotated, and</span>
+<span class="sd">          translated back.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">pivot</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">pivot</span> <span class="o">=</span> <span class="n">get_center_of_bounding_box</span><span class="p">(</span><span class="n">polygon</span><span class="o">=</span><span class="n">polygon</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="n">pivot</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">pivot</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">v</span><span class="p">)</span> <span class="o">*</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="n">rot</span><span class="o">=</span><span class="n">angle</span><span class="p">)</span> <span class="o">*</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="n">u</span><span class="o">=-</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="n">rotated_polygon</span> <span class="o">=</span> <span class="n">t</span> <span class="o">*</span> <span class="n">polygon</span>
+    <span class="n">rotated_points</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="o">*</span> <span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">points</span><span class="p">]</span> <span class="k">if</span> <span class="n">points</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="n">rotated_polygon</span><span class="p">,</span> <span class="n">rotated_points</span></div>
 
 </pre></div>
 
