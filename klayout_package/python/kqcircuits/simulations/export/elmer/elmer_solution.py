@@ -189,6 +189,25 @@ class ElmerVectorHelmholtzSolution(ElmerSolution):
 
 
 @dataclass(kw_only=True, frozen=True)
+class ElmerEigenmodeSolution(ElmerSolution):
+    """
+    Class for Elmer eigenmode solution parameters
+
+    Args:
+        n_modes: Number of eigenmodes to solve.
+        min_frequency: Minimum allowed eigenmode frequency in GHz
+        quadratic_approximation: Use edge finite elements of second order. Otherwise use first order.
+                                 If False, a direct solver such as `linear_system_method=zmumps` should be used.
+    """
+
+    tool: ClassVar[str] = "eigenmode"
+
+    n_modes: int = 2
+    min_frequency: float = 0.1  # NOTE: sometimes this does not filter zero modes (appears to be some Elmer issue)
+    quadratic_approximation: bool = True
+
+
+@dataclass(kw_only=True, frozen=True)
 class ElmerCapacitanceSolution(ElmerSolution):
     """
     Class for Elmer capacitance solution parameters
@@ -263,7 +282,13 @@ def get_elmer_solution(tool="capacitance", **solution_params):
         tool: Determines the subclass of ElmerSolution.
         solution_params: Arguments passed for  ElmerSolution subclass.
     """
-    for c in [ElmerVectorHelmholtzSolution, ElmerCapacitanceSolution, ElmerCrossSectionSolution, ElmerEPR3DSolution]:
+    for c in [
+        ElmerVectorHelmholtzSolution,
+        ElmerCapacitanceSolution,
+        ElmerCrossSectionSolution,
+        ElmerEPR3DSolution,
+        ElmerEigenmodeSolution,
+    ]:
         if tool == c.tool:
             return c(**solution_params)
     raise ValueError(f"No ElmerSolution found for tool={tool}.")

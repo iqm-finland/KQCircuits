@@ -34,8 +34,8 @@ from kqcircuits.util.export_helper import (
 SimClass = WaveGuidesSim
 path = create_or_empty_tmp_directory("waveguide_eig_mesh_test")
 
-box_size_x = 6000
-box_size_y = 1000
+box_size_x = 8000
+box_size_y = 8000
 
 sim_parameters = {
     "name": "waveguides",
@@ -44,13 +44,15 @@ sim_parameters = {
     "port_termination_end": False,
     "use_ports": True,
     "box": pya.DBox(pya.DPoint(-box_size_x / 2.0, -box_size_y / 2.0), pya.DPoint(box_size_x / 2.0, box_size_y / 2.0)),
-    "cpw_length": 4000,  # if edge_ports then this has to be box_size_x
+    "cpw_length": 10,  # if edge_ports then this has to be box_size_x
     "a": 10,
     "b": 6,
     "add_bumps": False,
     "face_stack": ["1t1"],
     "n_guides": 1,
     "port_size": 50,
+    "substrate_height": [1000, 1000],
+    "upper_box_height": 1000,
 }
 
 export_parameters_ansys = {
@@ -61,8 +63,8 @@ export_parameters_ansys = {
     "mesh_size": {"1t1_gap": 4},
     "exit_after_run": True,
     "max_delta_f": 0.1,  # maximum relative difference for convergence in %
-    "n_modes": 1,  # eigenmodes to solve
-    "min_frequency": 10,  # minimum allowed eigenmode frequency
+    "n_modes": 3,  # eigenmodes to solve
+    "min_frequency": 1,  # minimum allowed eigenmode frequency
 }
 
 # Get layout
