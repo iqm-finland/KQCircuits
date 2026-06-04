@@ -1,130 +1,447 @@
-# This code is part of KQCircuits
-# Copyright (C) 2024 IQM Finland Oy
-#
-# This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
-# License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
-# version.
-#
-# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
-# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License along with this program. If not, see
-# https://www.gnu.org/licenses/gpl-3.0.html.
-#
-# The software distribution should follow IQM trademark policy for open-source software
-# (meetiqm.com/iqm-open-source-trademark-policy). IQM welcomes contributions to the code.
-# Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
-# and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
+"""
+KLayout macro for exporting the active GUI layout into an
+Elmer wave-equation simulation.
 
-import logging
-from typing import Callable
+This implementation is intended as a temporary / draft PR
+submission that demonstrates:
+
+1. Hierarchy scraping for launchers and qubits
+2. Automatic simulation box generation
+3. Automatic EdgePort and InternalPort generation
+4. Exporting simulation files using export_elmer
+5. Opening simulation preview in a separate KLayout tab
+
+The implementation is intentionally conservative and focuses
+on readability and maintainability.
+
+PEP 8 compliant docstrings and comments are used throughout.
+"""
+
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Iterable
+
 from kqcircuits.pya_resolver import pya
-from kqcircuits.simulations.epr.util import extract_child_simulation, EPRTarget, create_bulk_and_mer_partition_regions
-from kqcircuits.simulations.partition_region import PartitionRegion
+from kqcircuits.klayout_view import KLayoutView
+
+from kqcircuits.defaults import default_layers
+from kqcircuits.elements.launcher import Launcher
+from kqcircuits.qubits.qubit import Qubit
+
+from kqcircuits.simulations.simulation import Simulation
+from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
+
+from kqcircuits.simulations.port import EdgePort
+from kqcircuits.simulations.port import InternalPort
+
+from kqcircuits.simulations.export.elmer.elmer_solution import (
+    ElmerVectorHelmholtzSolution,
+)
+
+from kqcircuits.simulations.export.util import refine_metal_edges
+
+from kqcircuits.util.refpoints import get_refpoints
 
 
-# Partition region and correction cuts definitions for Swissmon qubit
+EXPORT_NAME = "gui_export_elmer"
+
+EXPORT_DIR = (
+    Path.home()
+    / "KQCircuits"
+    / "tmp"
+    / EXPORT_NAME
+)
+
+MARGIN = 100.0
 
 
-def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[PartitionRegion]:
-    metal_edge_dimension = 4.0
-    metal_edge_margin = pya.DPoint(metal_edge_dimension, metal_edge_dimension)
-    cross_poly = pya.DPolygon([simulation.refpoints[f"epr_cross_{idx:02d}"] for idx in range(12)]).sized(
-        metal_edge_dimension + simulation.island_r
-    )
-    result = create_bulk_and_mer_partition_regions(
-        name=f"{prefix}cross",
-        face=simulation.face_ids[0],
-        metal_edge_dimensions=metal_edge_dimension,
-        region=cross_poly,
-        vertical_dimensions=3.0,
-        visualise=True,
-    )
+mesh_size = {
+    "global_max": 200.0,
+    **refine_metal_edges(10, 1.0),
+}
 
-    # These are added to include the waveguides attached to couplers in the coupler region
-    def _get_coupler_wg_offset(i, s):
-        coupler_wg_offsets = [{"min": pya.DPoint(-150, 0)}, {"max": pya.DPoint(0, 150)}, {"max": pya.DPoint(150, 0)}]
-        return coupler_wg_offsets[i].get(s, pya.DPoint(0, 0))
+solution = ElmerVectorHelmholtzSolution(
+    mesh_size=mesh_size,
+    frequency=5.0,
+    quadratic_approximation=False,
+    linear_system_method="zmumps",
+    use_multigrid_solver=False,
+)
 
-    for idx in range(3):
-        # Need to check if coupler is present
-        if float(simulation.cpl_length[idx]) > 0:
-            cplr_region = pya.DBox(
-                simulation.refpoints[f"epr_cplr{idx}_min"] - metal_edge_margin + _get_coupler_wg_offset(idx, "min"),
-                simulation.refpoints[f"epr_cplr{idx}_max"] + metal_edge_margin + _get_coupler_wg_offset(idx, "max"),
-            )
-            result += create_bulk_and_mer_partition_regions(
-                name=f"{prefix}{idx}cplr",
-                face=simulation.face_ids[0],
-                metal_edge_dimensions=metal_edge_dimension,
-                region=cplr_region,
-                vertical_dimensions=3.0,
-                visualise=True,
-            )
-    return result
+workflow = {
+    "run_gmsh_gui": True,
+    "run_elmergrid": True,
+    "run_elmer": True,
+    "run_paraview": True,
+    "python_executable": "python",
+    "gmsh_n_threads": -1,
+    "elmer_n_processes": -1,
+    "elmer_n_threads": 1,
+}
 
 
-def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
-    cross_corner = simulation.refpoints["epr_cross_09"]
-    cross_corner_h = (cross_corner.y - simulation.refpoints["epr_cross_06"].y) / 2
-    coupler_corner = (
-        simulation.refpoints["epr_cplr0_max"]
-        if float(simulation.cpl_length[0]) > 0
-        else simulation.refpoints["epr_cross_08"]
-    )
+class HierarchyInstance:
+    """Container for instance hierarchy traversal."""
 
-    half_gap = float(simulation.gap_width[1]) / 2
-    if len(set(simulation.gap_width)) > 1:
-        logging.warning("Partition regions for Swissmon with varying gaps are not implemented")
-        logging.warning(
-            "Using correction with %s gap for all arms with gap widths %s", str(2 * half_gap), str(simulation.gap_width)
+    def __init__(
+        self,
+        instance: pya.Instance,
+        transform: pya.DCplxTrans,
+    ) -> None:
+        self.instance = instance
+        self.transform = transform
+
+
+def iter_instances(
+    layout: pya.Layout,
+    cell: pya.Cell,
+    parent_transform: pya.DCplxTrans | None = None,
+) -> Iterable[HierarchyInstance]:
+    """
+    Recursively iterate over all instances in the hierarchy.
+
+    Parameters
+    ----------
+    layout:
+        Active layout object.
+
+    cell:
+        Cell to traverse.
+
+    parent_transform:
+        Accumulated hierarchy transform.
+    """
+
+    if parent_transform is None:
+        parent_transform = pya.DCplxTrans()
+
+    for inst in cell.each_inst():
+        transform = parent_transform * inst.dcplx_trans
+
+        yield HierarchyInstance(inst, transform)
+
+        child_cell = layout.cell(inst.cell_index)
+
+        yield from iter_instances(
+            layout,
+            child_cell,
+            transform,
         )
 
-    cross_xsection_center = pya.DPoint((cross_corner.x + coupler_corner.x) / 2, cross_corner.y - cross_corner_h)
-    half_cut_length = 30.0 + cross_corner_h
-    result = {
-        f"{prefix}crossmer": {
-            "p1": cross_xsection_center + pya.DPoint(0, -half_cut_length),
-            "p2": cross_xsection_center + pya.DPoint(0, half_cut_length),
-        }
-    }
 
-    half_gap = simulation.b / 2
-    if float(simulation.cpl_length[0]) > 0:
-        xsection_point = float(simulation.cpl_gap[0]) / 2 + float(simulation.cpl_width[0]) / 2
-        result[f"{prefix}0cplrmer"] = {
-            "p1": simulation.refpoints["port_cplr0"] + pya.DPoint(-half_cut_length + half_gap, xsection_point),
-            "p2": simulation.refpoints["port_cplr0"] + pya.DPoint(half_cut_length + half_gap, xsection_point),
-        }
-    if float(simulation.cpl_length[1]) > 0:
-        xsection_point = float(simulation.cpl_gap[1]) / 2 + float(simulation.cpl_width[1]) / 2
-        result[f"{prefix}1cplrmer"] = {
-            "p1": simulation.refpoints["port_cplr1"] + pya.DPoint(xsection_point, half_cut_length - half_gap),
-            "p2": simulation.refpoints["port_cplr1"] + pya.DPoint(xsection_point, -half_cut_length - half_gap),
-        }
-    if float(simulation.cpl_length[2]) > 0:
-        xsection_point = float(simulation.cpl_gap[2]) / 2 + float(simulation.cpl_width[2]) / 2
-        result[f"{prefix}2cplrmer"] = {
-            "p1": simulation.refpoints["port_cplr2"] + pya.DPoint(-half_cut_length - half_gap, xsection_point),
-            "p2": simulation.refpoints["port_cplr2"] + pya.DPoint(half_cut_length - half_gap, xsection_point),
-        }
-    return result
+def get_instance_refpoints(
+    layout: pya.Layout,
+    cell: pya.Cell,
+) -> dict:
+    """
+    Return refpoints for a cell.
 
+    Parameters
+    ----------
+    layout:
+        Layout object.
 
-def extract_swissmon_from(
-    simulation: EPRTarget, refpoint_prefix: str, parameter_remap_function: Callable[[EPRTarget, str], any]
-):
-    return extract_child_simulation(
-        simulation,
-        refpoint_prefix,
-        parameter_remap_function,
-        [
-            "b",
-            "gap_width",
-            "face_ids",  # Accesses list's index 0
-            "island_r",
-            "cpl_gap",  # Accesses list's indices 0, 1, 2
-            "cpl_width",  # Accesses list's indices 0, 1, 2
-            "cpl_length",  # Accesses list's indices 0, 1, 2
-        ],
+    cell:
+        Cell from which to extract refpoints.
+    """
+
+    ref_layer = layout.layer(
+        default_layers["refpoints"]
     )
+
+    return get_refpoints(ref_layer, cell)
+
+
+def create_edge_port(
+    number: int,
+    launcher_position: pya.DPoint,
+    direction: str,
+    box: pya.DBox,
+) -> EdgePort:
+    """
+    Create an EdgePort aligned to the simulation box edge.
+
+    Parameters
+    ----------
+    number:
+        Port number.
+
+    launcher_position:
+        Launcher position.
+
+    direction:
+        Launcher orientation.
+
+    box:
+        Simulation bounding box.
+    """
+
+    x = launcher_position.x
+    y = launcher_position.y
+
+    if direction == "west":
+        signal_location = pya.DPoint(box.left, y)
+
+    elif direction == "east":
+        signal_location = pya.DPoint(box.right, y)
+
+    elif direction == "north":
+        signal_location = pya.DPoint(x, box.top)
+
+    else:
+        signal_location = pya.DPoint(x, box.bottom)
+
+    return EdgePort(
+        number=number,
+        signal_location=signal_location,
+    )
+
+
+def determine_launcher_direction(
+    transform: pya.DCplxTrans,
+) -> str:
+    """
+    Estimate launcher direction from transformation angle.
+
+    Parameters
+    ----------
+    transform:
+        Instance transform.
+    """
+
+    angle = int(transform.angle) % 360
+
+    if angle == 0:
+        return "east"
+
+    if angle == 90:
+        return "north"
+
+    if angle == 180:
+        return "west"
+
+    return "south"
+
+
+def expand_box(
+    box: pya.DBox,
+    margin: float,
+) -> pya.DBox:
+    """
+    Expand a bounding box by a margin.
+
+    Parameters
+    ----------
+    box:
+        Original box.
+
+    margin:
+        Margin in micrometers.
+    """
+
+    return pya.DBox(
+        box.left - margin,
+        box.bottom - margin,
+        box.right + margin,
+        box.top + margin,
+    )
+
+
+def scrape_ports(
+    layout: pya.Layout,
+    top_cell: pya.Cell,
+    box: pya.DBox,
+) -> list:
+    """
+    Scrape launchers and qubits from hierarchy.
+
+    Parameters
+    ----------
+    layout:
+        Layout object.
+
+    top_cell:
+        Top cell.
+
+    box:
+        Simulation bounding box.
+    """
+
+    ports = []
+
+    edge_port_number = 1
+    internal_port_number = 100
+
+    for item in iter_instances(layout, top_cell):
+
+        inst = item.instance
+        transform = item.transform
+
+        pcell = inst.pcell_declaration()
+
+        if pcell is None:
+            continue
+
+        child_cell = layout.cell(inst.cell_index)
+
+        refpoints = get_instance_refpoints(
+            layout,
+            child_cell,
+        )
+
+        if isinstance(pcell, Launcher):
+
+            direction = determine_launcher_direction(
+                transform
+            )
+
+            base = transform * refpoints["base"]
+
+            port = create_edge_port(
+                edge_port_number,
+                base,
+                direction,
+                box,
+            )
+
+            ports.append(port)
+
+            edge_port_number += 1
+
+        elif isinstance(pcell, Qubit):
+
+            try:
+                inst["junction_type"] = "Sim"
+
+            except Exception:
+                pass
+
+            signal_location = (
+                transform
+                * refpoints["squid_port_squid_a"]
+            )
+
+            ground_location = (
+                transform
+                * refpoints["squid_port_squid_b"]
+            )
+
+            ports.append(
+                InternalPort(
+                    number=internal_port_number,
+                    signal_location=signal_location,
+                    ground_location=ground_location,
+                )
+            )
+
+            internal_port_number += 1
+
+    return ports
+
+
+def clone_layout_to_new_view(
+    source_view: KLayoutView,
+) -> tuple[KLayoutView, pya.Cell]:
+    """
+    Clone the active layout into a new KLayout tab.
+
+    Parameters
+    ----------
+    source_view:
+        Original view.
+    """
+
+    new_view = KLayoutView()
+
+    source_layout = source_view.layout
+    target_layout = new_view.layout
+
+    top_cell = source_view.active_cell
+
+    copied_index = target_layout.copy_tree(
+        source_layout,
+        top_cell.cell_index(),
+    )
+
+    copied_cell = target_layout.cell(copied_index)
+
+    new_view.select_cell(
+        copied_cell.cell_index(),
+        0,
+    )
+
+    return new_view, copied_cell
+
+
+def main() -> None:
+    """Export active GUI layout into Elmer simulation."""
+
+    source_view = KLayoutView(current=True)
+
+    if source_view is None:
+        raise RuntimeError(
+            "No active KLayout view available."
+        )
+
+    top_cell = source_view.active_cell
+
+    if top_cell is None:
+        raise RuntimeError(
+            "No active top cell found."
+        )
+
+    preview_view, preview_cell = (
+        clone_layout_to_new_view(source_view)
+    )
+
+    layout = preview_view.layout
+
+    box = expand_box(
+        preview_cell.dbbox(),
+        MARGIN,
+    )
+
+    ports = scrape_ports(
+        layout,
+        preview_cell,
+        box,
+    )
+
+    if not ports:
+        raise RuntimeError(
+            "No launchers or qubits detected."
+        )
+
+    simulation = Simulation.from_cell(
+        preview_cell,
+        margin=MARGIN,
+        name=EXPORT_NAME,
+        box=box,
+        ports=ports,
+    )
+
+    EXPORT_DIR.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    export_elmer(
+        [(simulation, solution)],
+        path=EXPORT_DIR,
+        workflow=workflow,
+    )
+
+    preview_view.focus()
+
+    print()
+    print("===================================")
+    print("Elmer export completed successfully")
+    print("===================================")
+    print()
+    print(f"Export directory: {EXPORT_DIR}")
+    print()
+
+
+if __name__ == "__main__":
+    main()
