@@ -11,10 +11,7 @@ submission that demonstrates:
 4. Exporting simulation files using export_elmer
 5. Opening simulation preview in a separate KLayout tab
 
-The implementation is intentionally conservative and focuses
-on readability and maintainability.
 
-PEP 8 compliant docstrings and comments are used throughout.
 """
 
 from __future__ import annotations
