@@ -51,10 +51,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Installation</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Installing KLayout</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#python">Python</a></li>
-</ul>
-</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Installing KLayout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="known_issues.html">Known installation issues</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="known_issues.html#standalone-klayout-python-library">Standalone KLayout python library</a></li>
 <li class="toctree-l3"><a class="reference internal" href="known_issues.html#gui-klayout-application">GUI KLayout application</a><ul>
@@ -1029,18 +1026,67 @@
 <span id="klayout"></span><h1>Installing KLayout<a class="headerlink" href="#installing-klayout" title="Link to this heading"></a></h1>
 <p>Download and install KLayout from <a class="reference external" href="https://www.klayout.de/build.html">https://www.klayout.de/build.html</a>. Builds
 should exist there for most common operating systems, choose the correct one
-for your OS. Otherwise you need to build KLayout yourself. We recommend installing
+for your OS.</p>
+<p>An important consideration when choosing an installation package is how
+a python interpreter is linked into the KLayout compilation. For linux builds,
+it will always link the system python of the OS. For windows, a copy of python executable
+is packaged with the installation. For macOS, package names starting with <code class="docutils literal notranslate"><span class="pre">ST-*</span></code>
+link to system python, and <code class="docutils literal notranslate"><span class="pre">HW-*</span></code> include a python executable with the package.</p>
+<p>The reason why we need to care about system python is that ideally we would like
+the python version to be recent enough so that its compatible with our dependencies.
+<strong>KQCircuits requires Python 3.11 minimum.</strong> This is not a problem for sufficiently
+recent linux distributions (Ubuntu 24.04), as well as Windows and <code class="docutils literal notranslate"><span class="pre">HW-*</span></code> macOS installations
+since pre-packaged python executables fulfill the requirement.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Do note that updating system python executable to later version is <strong>NOT</strong> recommended
+and may risk breaking your operating system.</p>
+</div>
+<p>Wherever the python executable happens to be, make sure that <code class="docutils literal notranslate"><span class="pre">pip</span></code> package
+manager is installed for that python executable.</p>
+<p>You can also build KLayout yourself, which allows you to link the python
+executable of your choosing.</p>
+<p>We recommend installing
 KLayout without changing the installation directory location from default,
 as many KQCircuits features assume that KLayout specific files can be found there.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>For mac users:</p>
-<p>KLayout can also be installed using the <a class="reference external" href="https://formulae.brew.sh/cask/klayout">HomeBrew package manager</a>,
-using terminal command <code class="docutils literal notranslate"><span class="pre">brew</span> <span class="pre">install</span> <span class="pre">--cask</span> <span class="pre">klayout</span></code>.</p>
+<p>There are KLayout installation packages precompiled natively for <code class="docutils literal notranslate"><span class="pre">arm64</span></code>,
+but they are only available in <code class="docutils literal notranslate"><span class="pre">ST-*</span></code> form. Most macOS distributions
+have Python version 3.9.6 as the system python. There are multiple ways
+to resolve this problem.</p>
+<p>1. Easiest way is to install older dependencies that are compatible with older
+python. Copy the contents of <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/requirements/mac/gui-requirements-396.txt">gui-requirements-396.txt</a>
+into <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main//klayout_package/python/requirements/mac/gui-requirements.txt">gui-requirements.txt</a>
+then proceed with installation guides as usual. There are risks that we might
+use features not supported by out-of-date dependencies in KQC, and also that
+a standalone KQCircuits installation may be out-of-sync with the GUI KQCircuits installation.</p>
+<p>2. Next consideration is to use <code class="docutils literal notranslate"><span class="pre">HW-*</span></code> macOS installation of KLayout. At the time
+of writing this is only available for <code class="docutils literal notranslate"><span class="pre">x86_64</span></code> compilations, which means for some macOS
+devices it is dependent on Rosetta to recompile the KLayout executable during launch.
+This slows down KLayout startup, and also at some macOS release in the future
+Rosetta support will be deprecated.</p>
+<p>3. Finally, KLayout can be compiled yourself using your macOS device. We recommend
+<a class="reference external" href="https://github.com/KLayout/klayout/tree/master/macbuild#6c-fully-homebrew-flavored-build-with-homebrew-ruby-34-and-homebrew-python-313">Guide 6C. Fully Homebrew-flavored build with Homebrew Ruby 3.4 and Homebrew Python 3.13</a>,
+which we have tested to work for us. A prerequisite is to install a python version of your choice
+using the HomeBrew package manager,
+then instructing KLayout compiler to link to Homebrew python installation.</p>
+<p>4. There is a KLayout cask in <a class="reference external" href="https://formulae.brew.sh/cask/klayout">HomeBrew package manager</a>,
+available for install using <code class="docutils literal notranslate"><span class="pre">brew</span> <span class="pre">install</span> <span class="pre">--cask</span> <span class="pre">klayout</span></code>.
+This will install a <code class="docutils literal notranslate"><span class="pre">x86_64</span></code> compilation with prepackaged python executable.
+At the time of writing there seemed to be problems installing from homebrew, which is
+why we don’t recommend anymore to install KLayout using this method.</p>
 <p>There might be issues on first time launch of KLayout with window:
 <code class="docutils literal notranslate"><span class="pre">&quot;klayout&quot;</span> <span class="pre">cannot</span> <span class="pre">be</span> <span class="pre">opened</span> <span class="pre">because</span> <span class="pre">the</span> <span class="pre">developer</span> <span class="pre">cannot</span> <span class="pre">be</span> <span class="pre">verified</span></code>.
 To fix this, find KLayout app using Finder, control+click KLayout,
 click Open, then in the warning window there should be option to Open.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If problems with linking python executable to KLayout installation seem insurmountable,
+do remember that it doesn’t affect the <a class="reference internal" href="../developer/standalone.html#standalone"><span class="std std-ref">Developer Standalone module Setup</span></a>, in case you only care about
+such use case of KQCircuits.</p>
 </div>
 <p>KLayout is an actively maintained project with regular feature updates, bugfixes and
 stability improvements. We recommend using the latest version. KQCircuits is automatically
@@ -1056,28 +1102,6 @@ tested using KLayout versions:</p>
 <li><p>MacOS: latest github image</p></li>
 <li><p>Microsoft Windows Server 2025, OS version 10</p></li>
 </ul>
-<section id="python">
-<h2>Python<a class="headerlink" href="#python" title="Link to this heading"></a></h2>
-<p>KQCircuits installation requires Python 3.11 minimum. This should already come pre-packaged at least
-with Ubuntu 24.04. On Windows platforms Python needs to be installed manually.
-If your Python installation does not already contain the <code class="docutils literal notranslate"><span class="pre">pip</span></code> package
-manager, you have to also install that.</p>
-<p>Successfully tested versions:</p>
-<ul class="simple">
-<li><p>Ubuntu 24.04 LTS with Python 3.12.3</p></li>
-<li><p>Windows: Python 3.11.2</p></li>
-</ul>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>For linux, KLayout installation is compiled in such a way
-that the system python is used to execute python commands within KLayout GUI runtime.
-Please check that your system python version is at least 3.11, as otherwise KQCircuits plug-in
-may be incompatible. Since system python is not recommended to be updated, consider in this case to either
-update the system OS or to manually compile KLayout application linked with separately installed python executable.
-Reminder that system python version doesn’t affect most KLayout installations
-for other OS, and it also doesn’t affect <a class="reference internal" href="../developer/standalone.html#standalone"><span class="std std-ref">Developer Standalone module Setup</span></a>.</p>
-</div>
-</section>
 </section>
 
 
