@@ -70,7 +70,7 @@ class Swissmon(Qubit):
     def _produce_coupler(self, cpl_nr):
         # shorthand
         a = float(self.port_width[cpl_nr])
-        b = self.b
+        b = float(self.cpl_b[cpl_nr])
         [ww, wn, we, ws] = [float(width) / 2 for width in self.arm_width]
         aw = [ww, wn, we, ws][cpl_nr]
         w = float(self.cpl_width[cpl_nr])
