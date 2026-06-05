@@ -277,6 +277,8 @@ def _export_netlist(circuit, filename, internal_layout, original_layout, cell_ma
             "cell_name": internal_cell.name,
             "instance_name": correct_instance.property("id") if correct_instance else None,
             "subcircuit_origin": subcircuit_trans.disp,
+            "subcircuit_angle": subcircuit_trans.angle,
+            "subcircuit_mirror": subcircuit_trans.is_mirror(),
             "subcircuit_location": subcircuit_location,
             "properties": property_dict,
         }
