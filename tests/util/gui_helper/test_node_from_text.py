@@ -22,7 +22,7 @@ from kqcircuits.elements.airbridge_connection import AirbridgeConnection
 from kqcircuits.elements.airbridges.airbridge import Airbridge
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf import FlipChipConnectorRf
-from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter, t_cross_parameters
+from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter
 from kqcircuits.elements.waveguide_coplanar_taper import WaveguideCoplanarTaper
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.node import Node

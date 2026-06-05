@@ -23,7 +23,7 @@ from kqcircuits.chips.chip import Chip
 from kqcircuits.elements.meander import Meander
 from kqcircuits.qubits.swissmon import Swissmon
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
-from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter, t_cross_parameters
+from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.coupler_lib import cap_params
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
@@ -333,7 +333,11 @@ class SingleXmons(Chip):
 
         cell_cross = self.add_element(
             WaveguideCoplanarSplitter,
-            **t_cross_parameters(a=self.a, b=self.b, a2=self.a, b2=self.b, length_extra_side=2 * self.a),
+            lengths=[self.a / 2 + self.b, self.a / 2 + self.b, self.a / 2 + self.b + 2 * self.a],
+            angles=[0, 180, 270],
+            a_list=[self.a, self.a, self.a],
+            b_list=[self.b, self.b, self.b],
+            port_names=["right", "left", "bottom"],
         )
         inst_crosses = []
 
