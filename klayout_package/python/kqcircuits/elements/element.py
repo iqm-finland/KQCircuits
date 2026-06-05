@@ -166,8 +166,8 @@ class Element(pya.PCellDeclarationHelper):
     etch_opposite_face_margin = Param(pdt.TypeDouble, "Margin of the opposite face etch shape", 5, unit="μm")
 
     _epr_show = Param(pdt.TypeBoolean, "Show geometry related to EPR simulation, if available", False)
-    _epr_cross_section_cut_layer = Param(pdt.TypeLayer, "Layer where EPR cross section cuts are placed", None)
-    _epr_cross_section_cut_width = Param(pdt.TypeDouble, "Width of the EPR cross section cuts when visualised", 0.0)
+    # Changed from TypeLayer to TypeBoolean — EPR cuts are now drawn as Markers, not into fabrication layers
+    _epr_cross_section_cut = Param(pdt.TypeBoolean, "Show EPR cross section cuts, if available", False)
 
     def __init__(self):
         """"""
@@ -214,15 +214,16 @@ class Element(pya.PCellDeclarationHelper):
         #     if attr.startswith(epr_part_reg_prefix):
         #         delattr(type(self), attr)
         # Now add the new parameters
+        # Changed from TypeLayer to TypeBoolean — partition regions are now drawn as Markers
         if to_library_name(cls.__name__) in epr_gui_visualised_partition_regions:
             for pr in epr_gui_visualised_partition_regions[to_library_name(cls.__name__)]:
-                pr_name = f"{epr_part_reg_prefix}{pr}_layer"
+                pr_name = f"{epr_part_reg_prefix}{pr}"
                 self._param_value_map[pr_name] = len(self._param_decls)
-                pr_desc = f"Layer where EPR partition region '{pr}' is placed"
-                param = Param(pdt.TypeLayer, pr_desc, None)
+                pr_desc = f"Show EPR partition region '{pr}'"
+                param = Param(pdt.TypeBoolean, pr_desc, False)
                 param.__set_name__(cls, pr_name)
                 setattr(type(self), pr_name, param)
-                self._add_parameter(pr_name, pdt.TypeLayer, pr_desc, default=None)
+                self._add_parameter(pr_name, pdt.TypeBoolean, pr_desc, default=False)
 
     @staticmethod
     def create_cell_from_shape(layout, name):
@@ -520,6 +521,15 @@ class Element(pya.PCellDeclarationHelper):
         """Child classes may re-define this method for post-build operations."""
         self.etch_opposite_face_impl()
         self.duplicate_face_impl()
+        # Clear all existing EPR markers before redrawing, so there is no duplication or lingering
+        if self._epr_show:
+            try:
+                from kqcircuits.pya_resolver import lay  # pylint: disable=import-outside-toplevel
+                layout_view = lay.LayoutView.current()
+                if layout_view is not None:
+                    layout_view.clear_markers()
+            except Exception:  # pylint: disable=broad-except
+                pass
         self._show_epr_cross_section_cuts()
         self._show_epr_partition_regions()
 
@@ -670,50 +680,106 @@ class Element(pya.PCellDeclarationHelper):
         """
         return []
 
-    def _show_epr_cross_section_cuts(self):
-        if not self._epr_show or self._epr_cross_section_cut_layer is None:
-            return
-        if self._epr_cross_section_cut_layer.layer < 0:
-            return
+    def _get_epr_instance_trans(self):
+        """Returns DCplxTrans of the single currently selected instance in the active LayoutView.
+
+        Returns None (without raising) if:
+          - no LayoutView is active
+          - no instance is selected
+          - more than one instance is selected
+        Refusing to draw in those cases keeps the feature safe and non-crashy.
+        """
+        try:
+            from kqcircuits.pya_resolver import lay  # pylint: disable=import-outside-toplevel
+            layout_view = lay.LayoutView.current()
+            if layout_view is None:
+                return None
+            selected = list(layout_view.each_object_selected())
+            if len(selected) != 1:
+                return None
+            return selected[0].inst().dcplx_trans
+        except Exception:  # pylint: disable=broad-except
+            return None
+
+    def _load_epr_module(self):
+        """Dynamically imports and reloads the EPR module that corresponds to this element.
+
+        Returns the module, or None if no EPR module exists for this element.
+        """
         library_name = self.__module__.split(".", maxsplit=1)[0]
         element_name = self.__module__.rsplit(".", maxsplit=1)[-1]
         epr_module_path = f"{library_name}.simulations.epr.{element_name}"
         if not importlib.util.find_spec(epr_module_path):
-            return
-        epr_layer = self.layout.layer(self._epr_cross_section_cut_layer)
+            return None
         epr_module = importlib.import_module(epr_module_path)
         importlib.reload(epr_module)
-        assert hasattr(epr_module, "correction_cuts"), f"No 'correction_cuts' function defined in {epr_module_path}"
+        return epr_module
+
+    def _show_epr_cross_section_cuts(self):
+        """Draw EPR correction cuts as KLayout Markers into the active LayoutView.
+
+        Draws a line marker for each cut and text markers at both endpoints.
+        Requires _epr_show and _epr_cross_section_cut to both be True, and exactly
+        one instance selected in the layout view (for transform).
+        """
+        if not self._epr_show or not self._epr_cross_section_cut:
+            return
+        trans = self._get_epr_instance_trans()
+        if trans is None:
+            return
+        epr_module = self._load_epr_module()
+        if epr_module is None:
+            return
+        assert hasattr(epr_module, "correction_cuts"), \
+            f"No 'correction_cuts' function defined in EPR module for {type(self).__name__}"
+
+        from kqcircuits.pya_resolver import lay  # pylint: disable=import-outside-toplevel
+        layout_view = lay.LayoutView.current()
+
         cuts = epr_module.correction_cuts(self)
         for cut_name, cut in cuts.items():
-            cut_path = pya.DPath([cut["p1"], cut["p2"]], self._epr_cross_section_cut_width).to_itype(self.layout.dbu)
-            # Prevent .OAS saving errors by rounding integer value of path width to even value
-            cut_path.width -= cut_path.width % 2
-            cut_region = pya.Region(cut_path)
-            self.cell.shapes(epr_layer).insert(cut_region)
-            self.cell.shapes(epr_layer).insert(pya.DText(f"{cut_name}_1", cut["p1"].x, cut["p1"].y))
-            self.cell.shapes(epr_layer).insert(pya.DText(f"{cut_name}_2", cut["p2"].x, cut["p2"].y))
+            p1 = trans.trans(cut["p1"])
+            p2 = trans.trans(cut["p2"])
+
+            # Line marker representing the cut path
+            line_marker = pya.Marker(layout_view)
+            line_marker.set_polygon(pya.DPolygon(pya.DPath([p1, p2], 0.5)))
+            line_marker.line_width = 2
+            line_marker.color = 0xFF4500  # orange-red
+
+            # Text markers at each endpoint of the cut
+            for label, pt in [(f"{cut_name}_p1", p1), (f"{cut_name}_p2", p2)]:
+                text_marker = pya.Marker(layout_view)
+                text_marker.set_text(pya.DText(label, pt.x, pt.y))
+                text_marker.color = 0xFF4500
 
     def _show_epr_partition_regions(self):
+        """Draw EPR partition regions as KLayout Markers into the active LayoutView.
+
+        Draws a filled polygon marker and a centred text marker for each enabled partition region.
+        Requires _epr_show to be True, and exactly one instance selected in the layout view (for transform).
+        """
         if not self._epr_show:
             return
-        library_name = self.__module__.split(".", maxsplit=1)[0]
-        element_name = self.__module__.rsplit(".", maxsplit=1)[-1]
-        epr_module_path = f"{library_name}.simulations.epr.{element_name}"
-        if not importlib.util.find_spec(epr_module_path):
+        trans = self._get_epr_instance_trans()
+        if trans is None:
             return
-        epr_module = importlib.import_module(epr_module_path)
-        importlib.reload(epr_module)
-        assert hasattr(epr_module, "partition_regions"), f"No 'partition_regions' function defined in {epr_module_path}"
+        epr_module = self._load_epr_module()
+        if epr_module is None:
+            return
+        assert hasattr(epr_module, "partition_regions"), \
+            f"No 'partition_regions' function defined in EPR module for {type(self).__name__}"
+
+        from kqcircuits.pya_resolver import lay  # pylint: disable=import-outside-toplevel
+        layout_view = lay.LayoutView.current()
+
         for pr in epr_module.partition_regions(self):
-            if not hasattr(self, f"_epr_part_reg_{pr.name}_layer"):
+            if not hasattr(self, f"_epr_part_reg_{pr.name}"):
                 continue
-            epr_layer_info = getattr(self, f"_epr_part_reg_{pr.name}_layer")
-            if not epr_layer_info:
+            if not getattr(self, f"_epr_part_reg_{pr.name}"):
                 continue
-            if epr_layer_info.layer < 0:
-                continue
-            epr_layer = self.layout.layer(self._param_values[self._param_value_map[f"_epr_part_reg_{pr.name}_layer"]])
+
+            # Collect all sub-polygons from the partition region into a Region
             region = pya.Region()
             if isinstance(pr.region, list):
                 for r in pr.region:
@@ -722,6 +788,20 @@ class Element(pya.PCellDeclarationHelper):
                 region = pr.region
             else:
                 region = pya.Region(pr.region.to_itype(self.layout.dbu))
-            self.cell.shapes(epr_layer).insert(region)
-            center_point = region.bbox().to_dtype(self.layout.dbu).center()
-            self.cell.shapes(epr_layer).insert(pya.DText(pr.name, center_point.x, center_point.y))
+
+            # Draw one polygon marker per sub-polygon, applying the instance transform
+            for polygon in region.each():
+                dpoly = polygon.to_dtype(self.layout.dbu).transformed(trans)
+                poly_marker = pya.Marker(layout_view)
+                poly_marker.set_polygon(dpoly)
+                poly_marker.dither_pattern = 2   # crosshatch fill — makes region extent clearly visible
+                poly_marker.line_width = 2
+                poly_marker.color = 0x1E90FF      # dodger blue
+                poly_marker.vertex_size = 4
+
+            # Text marker at the centroid of the whole region bounding box
+            center = region.bbox().to_dtype(self.layout.dbu).center()
+            center_transformed = trans.trans(center)
+            text_marker = pya.Marker(layout_view)
+            text_marker.set_text(pya.DText(pr.name, center_transformed.x, center_transformed.y))
+            text_marker.color = 0x1E90FF
