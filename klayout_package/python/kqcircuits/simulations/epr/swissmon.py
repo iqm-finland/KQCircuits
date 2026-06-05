@@ -246,6 +246,7 @@ def extract_swissmon_from(
         parameter_remap_function,
         [
             "b",
+            "cpl_b",
             "gap_width",
             "face_ids",  # Accesses list's index 0
             "island_r",
