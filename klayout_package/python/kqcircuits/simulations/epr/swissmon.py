@@ -29,14 +29,27 @@ from kqcircuits.simulations.partition_region import PartitionRegion
 def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[PartitionRegion]:
     metal_edge_dimension = 4.0
     metal_edge_margin = pya.DPoint(metal_edge_dimension, metal_edge_dimension)
-    cross_poly = pya.DPolygon([simulation.refpoints[f"epr_cross_{idx:02d}"] for idx in range(12)]).sized(
-        metal_edge_dimension + simulation.island_r
-    )
-    result = create_bulk_and_mer_partition_regions(
-        name=f"{prefix}cross",
+    result = []
+
+base = simulation.refpoints["base"]
+sized = metal_edge_dimension + simulation.island_r
+
+for arm_name, indices in [
+    ("crossleft", [6, 7, 8, 9]),
+    ("crosstop", [9, 10, 11, 0]),
+    ("crossright", [0, 1, 2, 3]),
+    ("crossbottom", [3, 4, 5, 6]),
+]:
+    arm_poly = pya.DPolygon(
+        [simulation.refpoints[f"epr_cross_{i:02d}"] for i in indices]
+        + [base]
+    ).sized(sized)
+
+    result += create_bulk_and_mer_partition_regions(
+        name=f"{prefix}{arm_name}",
         face=simulation.face_ids[0],
         metal_edge_dimensions=metal_edge_dimension,
-        region=cross_poly,
+        region=arm_poly,
         vertical_dimensions=3.0,
         visualise=True,
     )
