@@ -96,15 +96,6 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
 
 
 def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
-    cross_corner = simulation.refpoints["epr_cross_09"]
-    cross_corner_h = (cross_corner.y - simulation.refpoints["epr_cross_06"].y) / 2
-
-    coupler_corner = (
-        simulation.refpoints["epr_cplr0_max"]
-        if float(simulation.cpl_length[0]) > 0
-        else simulation.refpoints["epr_cross_08"]
-    )
-
     half_gap = float(simulation.gap_width[1]) / 2
 
     if len(set(simulation.gap_width)) > 1:
@@ -115,6 +106,16 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
             str(simulation.gap_width),
         )
 
+    # --- crossleft (West arm) — same geometry as the original crossmer ---
+    cross_corner = simulation.refpoints["epr_cross_09"]
+    cross_corner_h = (cross_corner.y - simulation.refpoints["epr_cross_06"].y) / 2
+
+    coupler_corner = (
+        simulation.refpoints["epr_cplr0_max"]
+        if float(simulation.cpl_length[0]) > 0
+        else simulation.refpoints["epr_cross_08"]
+    )
+
     cross_xsection_center = pya.DPoint(
         (cross_corner.x + coupler_corner.x) / 2,
         cross_corner.y - cross_corner_h,
@@ -123,10 +124,79 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
     half_cut_length = 30.0 + cross_corner_h
 
     result = {
-        f"{prefix}crossmer": {
+        f"{prefix}crossleftmer": {
             "p1": cross_xsection_center + pya.DPoint(0, -half_cut_length),
             "p2": cross_xsection_center + pya.DPoint(0, half_cut_length),
         }
+    }
+
+    # --- crosstop (North arm) ---
+    cross_corner_top = simulation.refpoints["epr_cross_00"]
+
+    cross_corner_top_w = (
+        cross_corner_top.x - simulation.refpoints["epr_cross_11"].x
+    ) / 2  # half-width of arm gap
+
+    coupler_corner_top = (
+        simulation.refpoints["epr_cplr1_max"]
+        if float(simulation.cpl_length[1]) > 0
+        else simulation.refpoints["epr_cross_11"]
+    )
+
+    cross_xsection_center_top = pya.DPoint(
+        cross_corner_top.x - cross_corner_top_w,
+        (cross_corner_top.y + coupler_corner_top.y) / 2,
+    )
+
+    half_cut_length_top = 30.0 + cross_corner_top_w
+
+    result[f"{prefix}crosstopmer"] = {
+        "p1": cross_xsection_center_top + pya.DPoint(-half_cut_length_top, 0),
+        "p2": cross_xsection_center_top + pya.DPoint(half_cut_length_top, 0),
+    }
+
+    # --- crossright (East arm) ---
+    cross_corner_right = simulation.refpoints["epr_cross_03"]
+
+    cross_corner_right_h = (
+        cross_corner_right.y - simulation.refpoints["epr_cross_00"].y
+    ) / 2
+
+    coupler_corner_right = (
+        simulation.refpoints["epr_cplr2_max"]
+        if float(simulation.cpl_length[2]) > 0
+        else simulation.refpoints["epr_cross_01"]
+    )
+
+    cross_xsection_center_right = pya.DPoint(
+        (cross_corner_right.x + coupler_corner_right.x) / 2,
+        cross_corner_right.y - cross_corner_right_h,
+    )
+
+    half_cut_length_right = 30.0 + cross_corner_right_h
+
+    result[f"{prefix}crossrightmer"] = {
+        "p1": cross_xsection_center_right + pya.DPoint(0, -half_cut_length_right),
+        "p2": cross_xsection_center_right + pya.DPoint(0, half_cut_length_right),
+    }
+
+    # --- crossbottom (South arm) ---
+    cross_corner_bot = simulation.refpoints["epr_cross_06"]
+
+    cross_corner_bot_w = (
+        cross_corner_bot.x - simulation.refpoints["epr_cross_05"].x
+    ) / 2
+
+    cross_xsection_center_bot = pya.DPoint(
+        cross_corner_bot.x - cross_corner_bot_w,
+        (cross_corner_bot.y + simulation.refpoints["epr_cross_04"].y) / 2,
+    )
+
+    half_cut_length_bot = 30.0 + cross_corner_bot_w
+
+    result[f"{prefix}crossbottommer"] = {
+        "p1": cross_xsection_center_bot + pya.DPoint(-half_cut_length_bot, 0),
+        "p2": cross_xsection_center_bot + pya.DPoint(half_cut_length_bot, 0),
     }
 
     if float(simulation.cpl_length[0]) > 0:
