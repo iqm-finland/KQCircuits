@@ -60,11 +60,15 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
 
     # These are added to include the waveguides attached to couplers in the coupler region
     def _get_coupler_wg_offset(i, s):
+        wg_len = float(simulation.waveguide_length) if hasattr(simulation, "waveguide_length") else 0
+        offset = wg_len + 25
+
         coupler_wg_offsets = [
-            {"min": pya.DPoint(-150, 0)},
-            {"max": pya.DPoint(0, 150)},
-            {"max": pya.DPoint(150, 0)},
+            {"min": pya.DPoint(-offset, 0)},
+            {"max": pya.DPoint(0, offset)},
+            {"max": pya.DPoint(offset, 0)},
         ]
+
         return coupler_wg_offsets[i].get(s, pya.DPoint(0, 0))
 
     for idx in range(3):
