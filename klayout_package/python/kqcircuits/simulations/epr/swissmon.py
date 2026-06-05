@@ -129,9 +129,8 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
         }
     }
 
-    half_gap = simulation.b / 2
-
     if float(simulation.cpl_length[0]) > 0:
+        half_gap = float(simulation.cpl_b[0]) / 2
         xsection_point = float(simulation.cpl_gap[0]) / 2 + float(simulation.cpl_width[0]) / 2
 
         result[f"{prefix}0cplrmer"] = {
@@ -142,6 +141,7 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
         }
 
     if float(simulation.cpl_length[1]) > 0:
+        half_gap = float(simulation.cpl_b[1]) / 2
         xsection_point = float(simulation.cpl_gap[1]) / 2 + float(simulation.cpl_width[1]) / 2
 
         result[f"{prefix}1cplrmer"] = {
@@ -152,6 +152,7 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
         }
 
     if float(simulation.cpl_length[2]) > 0:
+        half_gap = float(simulation.cpl_b[2]) / 2
         xsection_point = float(simulation.cpl_gap[2]) / 2 + float(simulation.cpl_width[2]) / 2
 
         result[f"{prefix}2cplrmer"] = {
