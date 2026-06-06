@@ -353,4 +353,3 @@ def update_epr_markers(element):
                     "Failed drawing correction cuts:",
                     exc,
                 )
-```
