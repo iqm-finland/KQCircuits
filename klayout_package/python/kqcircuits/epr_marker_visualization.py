@@ -1,4 +1,3 @@
-```python
 # epr_marker_visualization.py
 
 from __future__ import annotations
