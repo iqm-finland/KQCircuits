@@ -51,6 +51,13 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.klayout_view import KLayoutView
 from kqcircuits.util.instance_hierarchy_helpers import get_instance_marker_polygons
 
+# Marker highlight parameters (adjust these to change marker appearance)
+M_COLOR = 0xDD2222
+M_DITHER = -1
+M_VTX_SIZE = 0
+M_LINE_WIDTH = 3
+M_HALO = 1
+
 view = KLayoutView(current=True)
 layout = view.layout
 top_cell = view.active_cell
@@ -135,14 +142,14 @@ top_item.setExpanded(True)
 
 def add_marker_highlights(inst, trans):
     """Add marker highlights for the selected instance geometry."""
-    for polygon in get_instance_marker_polygons(layout, inst, trans):
+    for polygon in get_instance_marker_polygons(inst, trans):
         marker = pya.Marker()
         marker.set_polygon(polygon)
-        marker.color = 0xDD2222
-        marker.dither_pattern = -1
-        marker.vertex_size = 0
-        marker.line_width = 3
-        marker.halo = 1
+        marker.color = M_COLOR
+        marker.dither_pattern = M_DITHER
+        marker.vertex_size = M_VTX_SIZE
+        marker.line_width = M_LINE_WIDTH
+        marker.halo = M_HALO
         view.layout_view.add_marker(marker)
         selection_markers.append(marker)
 

@@ -20,13 +20,11 @@ import pytest
 
 from kqcircuits.defaults import default_faces
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util import instance_hierarchy_helpers
+from kqcircuits.util.instance_hierarchy_helpers import get_instance_marker_polygons
 
 
 def test_get_instance_marker_polygons_applies_recursive_and_instance_transforms():
     """Marker polygons are returned in top-cell coordinates for recursively nested shapes."""
-    assert hasattr(instance_hierarchy_helpers, "get_instance_marker_polygons")
-
     layout = pya.Layout()
     top_cell = layout.create_cell("top_cell")
     selected_cell = layout.create_cell("selected_cell")
@@ -39,7 +37,7 @@ def test_get_instance_marker_polygons_applies_recursive_and_instance_transforms(
         pya.DCellInstArray(selected_cell.cell_index(), pya.DCplxTrans(1, 0, False, 100, 200))
     )
 
-    polygons = instance_hierarchy_helpers.get_instance_marker_polygons(layout, selected_inst)
+    polygons = get_instance_marker_polygons(selected_inst)
 
     assert len(polygons) == 1
     marker_box = polygons[0].bbox()
