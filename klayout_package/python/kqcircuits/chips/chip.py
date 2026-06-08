@@ -623,22 +623,21 @@ class Chip(Element):
                 locations.append(box.center() + pya.DPoint(x0 + i * delta_x, y0 + j * delta_y))
         return locations
 
-    def get_ground_tsv_locations(self, tsv_box):
+    def get_ground_tsv_locations(self, tsv_box, **kwargs):
+        # pylint: disable=unused-argument
         """
         Define the locations for a grid. This method returns the full grid.
 
         Args:
             box: DBox specifying the region that should be filled with TSVs
+            kwargs: additional keyword arguments
 
         Returns: list of DPoint coordinates where a ground bump can be placed
         """
         return self.make_grid_locations(tsv_box, delta_x=self.tsv_grid_spacing, delta_y=self.tsv_grid_spacing)
 
     def _produce_ground_tsvs(
-        self,
-        tsv_box=None,
-        faces=[0, 2],
-        extra_filter_regions=[],
+        self, tsv_box=None, faces=[0, 2], extra_filter_regions=[], **kwargs
     ):  # pylint: disable=dangerous-default-value
         """Produces a grid of TSVs between given faces.
 
@@ -646,6 +645,8 @@ class Chip(Element):
         Args:
             tsv_box: DBox specifying the region that should be filled with TSVs
             faces: indices of faces in self.face_ids that should have the TSVs
+            extra_filter_regions: extra inputs lists to self.get_filter_regions
+            kwargs: auxiliary inputs to be passed to self.get_ground_tsv_locations
         Returns: list of DPoint coordinates where a ground TSVs will be placed
         """
         logging.info(f"Starting TSV grid generation on face(s) {[self.face_ids[face] for face in faces]}")
@@ -670,7 +671,7 @@ class Chip(Element):
 
         if tsv_box is None:
             tsv_box = self.box.enlarged(-self.edge_from_tsv)
-        locations = self.get_ground_tsv_locations(tsv_box)
+        locations = self.get_ground_tsv_locations(tsv_box, **kwargs)
 
         # Produce TSV grid
         if isinstance(locations, dict):
