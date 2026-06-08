@@ -20,7 +20,7 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
-from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter, t_cross_parameters
+from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter
 from kqcircuits.util.coupler_lib import cap_params
 from kqcircuits.util.refpoints import WaveguideToSimPort
 from kqcircuits.elements.waveguide_composite import WaveguideComposite
@@ -77,13 +77,11 @@ class QuarterWaveCpwResonator(Element):
 
         cell_cross = self.add_element(
             WaveguideCoplanarSplitter,
-            **t_cross_parameters(
-                length_extra_side=2 * self.a,
-                a=self.a,
-                b=self.b,
-                a2=self.a,
-                b2=self.b,
-            ),
+            lengths=[self.a / 2 + self.b, self.a / 2 + self.b, self.a / 2 + self.b + 2 * self.a],
+            angles=[0, 180, 270],
+            a_list=[self.a, self.a, self.a],
+            b_list=[self.b, self.b, self.b],
+            port_names=["right", "left", "bottom"],
         )
 
         cell_ab_crossing = self.add_element(Airbridge)

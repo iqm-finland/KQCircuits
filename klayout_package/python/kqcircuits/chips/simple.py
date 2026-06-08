@@ -22,7 +22,7 @@ from kqcircuits.chips.chip import Chip
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.qubits.swissmon import Swissmon
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
-from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter, t_cross_parameters
+from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 
 
@@ -51,7 +51,13 @@ class Simple(Chip):
         # WaveguideCoplanarSplitter
         _pos = pya.DTrans(launchers["SE"][0].x, launchers["WN"][0].y)
         _, tcross_refs = self.insert_cell(
-            WaveguideCoplanarSplitter, _pos, **t_cross_parameters(a=self.a, b=self.b, a2=self.a, b2=self.b)
+            WaveguideCoplanarSplitter,
+            _pos,
+            lengths=[self.a / 2 + self.b, self.a / 2 + self.b, self.a / 2 + self.b],
+            angles=[0, 180, 270],
+            a_list=[self.a, self.a, self.a],
+            b_list=[self.b, self.b, self.b],
+            port_names=["right", "left", "bottom"],
         )
 
         # Waveguides: WN -> Swissmon -> FingerCapacitorSquare -> WaveguideCoplanarSplitter -> EN
