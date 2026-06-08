@@ -19,6 +19,7 @@
 from typing import List
 from dataclasses import dataclass
 
+from kqcircuits.defaults import default_faces, default_face_id
 from kqcircuits.pya_resolver import pya
 
 
@@ -68,6 +69,46 @@ def get_cell_instance_hierarchy(layout: pya.Layout, cell_index: int) -> List[Ins
                 )
             )
     return results
+
+
+def _get_instance_primary_face_id(instance: pya.Instance) -> str:
+    """Return the primary face id for an instance, or the default KQC face."""
+    face_ids = instance.pcell_parameter("face_ids")
+    if isinstance(face_ids, str):
+        return face_ids
+    if face_ids is not None:
+        try:
+            if len(face_ids) > 0:
+                return face_ids[0]
+        except TypeError:
+            pass
+    return default_face_id
+
+
+def get_instance_marker_polygons(
+    instance: pya.Instance, trans: pya.DCplxTrans | None = None, marker_shape_layer: str = "ground_grid_avoidance"
+) -> List[pya.DPolygon]:
+    """Return ground-grid silhouette polygons for an instance in top-cell coordinates.
+
+    Args:
+        instance: Instance whose geometry should be highlighted.
+        trans: Optional instance transform in top-cell coordinates. Defaults to ``instance.dcplx_trans``.
+        marker_shape_layer: Name of the layer to use for marker shapes. Defaults to ``"ground_grid_avoidance"``.
+
+    Returns: DPolygons from the instance's primary face marker layer.
+    """
+    layout = instance.layout()
+    instance_trans = instance.dcplx_trans if trans is None else trans
+    face_id = _get_instance_primary_face_id(instance)
+    face = default_faces[face_id]
+    marker_layer = layout.layer(face[marker_shape_layer])
+
+    polygons = []
+    for shape_iter in instance.cell.begin_shapes_rec(marker_layer):
+        polygon = shape_iter.shape().dpolygon
+        if polygon is not None:
+            polygons.append(instance_trans * shape_iter.dtrans() * polygon)
+    return polygons
 
 
 def formatted_cell_instance_hierarchy(inst_data: InstanceHierarchy) -> str:
