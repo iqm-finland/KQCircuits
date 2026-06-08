@@ -820,6 +820,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.instance_hierarchy_helpers.html">kqcircuits.util.instance_hierarchy_helpers</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.instance_hierarchy_helpers.html#kqcircuits.util.instance_hierarchy_helpers.InstanceHierarchy"><code class="docutils literal notranslate"><span class="pre">InstanceHierarchy</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.instance_hierarchy_helpers.html#kqcircuits.util.instance_hierarchy_helpers.get_cell_instance_hierarchy"><code class="docutils literal notranslate"><span class="pre">get_cell_instance_hierarchy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.instance_hierarchy_helpers.html#kqcircuits.util.instance_hierarchy_helpers.get_instance_marker_polygons"><code class="docutils literal notranslate"><span class="pre">get_instance_marker_polygons()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.instance_hierarchy_helpers.html#kqcircuits.util.instance_hierarchy_helpers.formatted_cell_instance_hierarchy"><code class="docutils literal notranslate"><span class="pre">formatted_cell_instance_hierarchy()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.instance_hierarchy_helpers.html#kqcircuits.util.instance_hierarchy_helpers.transform_top_cell"><code class="docutils literal notranslate"><span class="pre">transform_top_cell()</span></code></a></li>
 </ul>
@@ -1040,6 +1041,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.defaults</span><span class="w"> </span><span class="kn">import</span> <span class="n">default_faces</span><span class="p">,</span> <span class="n">default_face_id</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.pya_resolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">pya</span>
 
 
@@ -1094,6 +1096,49 @@
                 <span class="p">)</span>
             <span class="p">)</span>
     <span class="k">return</span> <span class="n">results</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_instance_primary_face_id</span><span class="p">(</span><span class="n">instance</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Instance</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the primary face id for an instance, or the default KQC face.&quot;&quot;&quot;</span>
+    <span class="n">face_ids</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">pcell_parameter</span><span class="p">(</span><span class="s2">&quot;face_ids&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">face_ids</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">face_ids</span>
+    <span class="k">if</span> <span class="n">face_ids</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">face_ids</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="k">return</span> <span class="n">default_face_id</span>
+
+
+<div class="viewcode-block" id="get_instance_marker_polygons">
+<a class="viewcode-back" href="../../../api/kqcircuits.util.instance_hierarchy_helpers.html#kqcircuits.util.instance_hierarchy_helpers.get_instance_marker_polygons">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_instance_marker_polygons</span><span class="p">(</span>
+    <span class="n">instance</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Instance</span><span class="p">,</span> <span class="n">trans</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">marker_shape_layer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ground_grid_avoidance&quot;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return ground-grid silhouette polygons for an instance in top-cell coordinates.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        instance: Instance whose geometry should be highlighted.</span>
+<span class="sd">        trans: Optional instance transform in top-cell coordinates. Defaults to ``instance.dcplx_trans``.</span>
+<span class="sd">        marker_shape_layer: Name of the layer to use for marker shapes. Defaults to ``&quot;ground_grid_avoidance&quot;``.</span>
+
+<span class="sd">    Returns: DPolygons from the instance&#39;s primary face marker layer.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">layout</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
+    <span class="n">instance_trans</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">dcplx_trans</span> <span class="k">if</span> <span class="n">trans</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">trans</span>
+    <span class="n">face_id</span> <span class="o">=</span> <span class="n">_get_instance_primary_face_id</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
+    <span class="n">face</span> <span class="o">=</span> <span class="n">default_faces</span><span class="p">[</span><span class="n">face_id</span><span class="p">]</span>
+    <span class="n">marker_layer</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">face</span><span class="p">[</span><span class="n">marker_shape_layer</span><span class="p">])</span>
+
+    <span class="n">polygons</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">shape_iter</span> <span class="ow">in</span> <span class="n">instance</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">begin_shapes_rec</span><span class="p">(</span><span class="n">marker_layer</span><span class="p">):</span>
+        <span class="n">polygon</span> <span class="o">=</span> <span class="n">shape_iter</span><span class="o">.</span><span class="n">shape</span><span class="p">()</span><span class="o">.</span><span class="n">dpolygon</span>
+        <span class="k">if</span> <span class="n">polygon</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">polygons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">instance_trans</span> <span class="o">*</span> <span class="n">shape_iter</span><span class="o">.</span><span class="n">dtrans</span><span class="p">()</span> <span class="o">*</span> <span class="n">polygon</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">polygons</span></div>
 
 
 

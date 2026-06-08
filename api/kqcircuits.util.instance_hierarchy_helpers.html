@@ -823,6 +823,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">kqcircuits.util.instance_hierarchy_helpers</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#kqcircuits.util.instance_hierarchy_helpers.InstanceHierarchy"><code class="docutils literal notranslate"><span class="pre">InstanceHierarchy</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#kqcircuits.util.instance_hierarchy_helpers.get_cell_instance_hierarchy"><code class="docutils literal notranslate"><span class="pre">get_cell_instance_hierarchy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#kqcircuits.util.instance_hierarchy_helpers.get_instance_marker_polygons"><code class="docutils literal notranslate"><span class="pre">get_instance_marker_polygons()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#kqcircuits.util.instance_hierarchy_helpers.formatted_cell_instance_hierarchy"><code class="docutils literal notranslate"><span class="pre">formatted_cell_instance_hierarchy()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#kqcircuits.util.instance_hierarchy_helpers.transform_top_cell"><code class="docutils literal notranslate"><span class="pre">transform_top_cell()</span></code></a></li>
 </ul>
@@ -1061,6 +1062,22 @@ Resolves the full cell hierarchy.</p>
 </dd>
 </dl>
 <p>Returns: list of <code class="docutils literal notranslate"><span class="pre">InstanceHierarchy</span></code> structrures describing the cell hierarchy of each instance</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.util.instance_hierarchy_helpers.get_instance_marker_polygons">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.instance_hierarchy_helpers.</span></span><span class="sig-name descname"><span class="pre">get_instance_marker_polygons</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Instance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trans</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DCplxTrans</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker_shape_layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'ground_grid_avoidance'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">DPolygon</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/kqcircuits/util/instance_hierarchy_helpers.html#get_instance_marker_polygons"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.instance_hierarchy_helpers.get_instance_marker_polygons" title="Link to this definition"></a></dt>
+<dd><p>Return ground-grid silhouette polygons for an instance in top-cell coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>instance</strong> – Instance whose geometry should be highlighted.</p></li>
+<li><p><strong>trans</strong> – Optional instance transform in top-cell coordinates. Defaults to <code class="docutils literal notranslate"><span class="pre">instance.dcplx_trans</span></code>.</p></li>
+<li><p><strong>marker_shape_layer</strong> – Name of the layer to use for marker shapes. Defaults to <code class="docutils literal notranslate"><span class="pre">&quot;ground_grid_avoidance&quot;</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns: DPolygons from the instance’s primary face marker layer.</p>
 </dd></dl>
 
 <dl class="py function">
