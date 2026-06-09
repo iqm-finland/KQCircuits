@@ -48,15 +48,13 @@ class XMonsDirectCoupling(Chip):
         taper_length = 100
 
         # T to PL
+        half_wg = self.a / 2 + self.b
         _, pl_cross_ref = self.insert_cell(
             WaveguideCoplanarSplitter,
             pya.DTrans(pos_start.x, end_y),
             inst_name=(f"PL{name}" if name else None),
             label_trans=pya.DTrans.R90,
-            lengths=[self.a / 2 + self.b, self.a / 2 + self.b, self.a / 2 + self.b + 20],
-            angles=[0, 180, 270],
-            a_list=[self.a, self.a, self.a],
-            b_list=[self.b, self.b, self.b],
+            lengths=[half_wg, half_wg, half_wg + 20],
             port_names=["right", "left", "bottom"],
         )
 
@@ -83,10 +81,10 @@ class XMonsDirectCoupling(Chip):
         )
 
         # T to tail and straight
+        ro_half_wg = ro_a / 2 + ro_b
         rr_cross_cell = self.add_element(
             WaveguideCoplanarSplitter,
-            lengths=[ro_a / 2 + ro_b, ro_a / 2 + ro_b, ro_a / 2 + ro_b + 40],
-            angles=[0, 180, 270],
+            lengths=[ro_half_wg, ro_half_wg, ro_half_wg + 40],
             a_list=[ro_a, ro_a, ro_a],
             b_list=[ro_b, ro_b, ro_b],
             port_names=["right", "left", "bottom"],

@@ -98,12 +98,10 @@ class Shaping(Chip):
         caps_type = ["gap", "interdigital", "gap"]  # J, kappa, drive
 
         # Waveguide t-cross used in multiple locations
+        half_wg = self.a / 2 + self.b
         cross1 = self.add_element(
             WaveguideCoplanarSplitter,
-            lengths=[self.a / 2 + self.b + 50, self.a / 2 + self.b + 50, self.a / 2 + self.b + 2 * self.a],
-            angles=[0, 180, 270],
-            a_list=[self.a, self.a, self.a],
-            b_list=[self.b, self.b, self.b],
+            lengths=[half_wg + 50, half_wg + 50, half_wg + 2 * self.a],
             port_names=["right", "left", "bottom"],
         )
         cross1_refpoints_rel = self.get_refpoints(cross1, pya.DTrans(0, False, 0, 0))

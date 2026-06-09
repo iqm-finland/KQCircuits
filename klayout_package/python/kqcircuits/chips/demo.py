@@ -205,6 +205,7 @@ class Demo(Chip):
             finger_number=cap_finger_nr,
         )
 
+        half_wg = self.a / 2 + self.b
         self.insert_cell(
             WaveguideCoplanarSplitter,
             pya.DTrans(tcross_rot, False, 0, 0),
@@ -212,10 +213,7 @@ class Demo(Chip):
             label_trans=pya.DCplxTrans(0.2),
             align_to=cap_ref_abs["port_b"],
             align="port_bottom",
-            lengths=[self.a / 2 + self.b, self.a / 2 + self.b, self.a / 2 + self.b + 30],
-            angles=[0, 180, 270],
-            a_list=[self.a, self.a, self.a],
-            b_list=[self.b, self.b, self.b],
+            lengths=[half_wg, half_wg, half_wg + 30],
             port_names=["right", "left", "bottom"],
         )
 

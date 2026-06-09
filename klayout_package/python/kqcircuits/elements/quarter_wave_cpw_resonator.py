@@ -75,12 +75,10 @@ class QuarterWaveCpwResonator(Element):
 
     def build(self):
 
+        half_wg = self.a / 2 + self.b
         cell_cross = self.add_element(
             WaveguideCoplanarSplitter,
-            lengths=[self.a / 2 + self.b, self.a / 2 + self.b, self.a / 2 + self.b + 2 * self.a],
-            angles=[0, 180, 270],
-            a_list=[self.a, self.a, self.a],
-            b_list=[self.b, self.b, self.b],
+            lengths=[half_wg, half_wg, half_wg + 2 * self.a],
             port_names=["right", "left", "bottom"],
         )
 

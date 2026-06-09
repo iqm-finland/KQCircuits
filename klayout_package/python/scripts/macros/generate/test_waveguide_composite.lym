@@ -82,9 +82,6 @@ nodes = [
     Node(pya.DPoint(50,-800), WaveguideCoplanarSplitter,
          align=("port_left", "port_right"),                # Specify input and output port to connect
          lengths=[11, 11, 111],
-         angles=[0, 180, 270],
-         a_list=[10, 10, 10],
-         b_list=[6, 6, 6],
          port_names=["right", "left", "bottom"]),
 #    Node(pya.DPoint(150, 0)),                             # A bend is inserted towards the next point automatically
     Node(pya.DPoint(250, -750)),                           # Specify one point before the next TCross to define it's direction
@@ -92,16 +89,10 @@ nodes = [
          align=("port_right", "port_left"),                # Reverse port order to change orientation
          inst_name="second_tee",                           # Specify instance name to export element refpoints
          lengths=[11, 11, 111],
-         angles=[0, 180, 270],
-         a_list=[10, 10, 10],
-         b_list=[6, 6, 6],
          port_names=["right", "left", "bottom"]),
     Node(pya.DPoint(400, -750)),
     Node(pya.DPoint(500, -750), WaveguideCoplanarSplitter,
          lengths=[11, 11, 11],
-         angles=[0, 180, 270],
-         a_list=[10, 10, 10],
-         b_list=[6, 6, 6],
          port_names=["right", "left", "bottom"],
          r=50,                                             # "Element Nodes" may change curvature for the following section(s)
          align=("port_bottom", "port_right")),             # Ports can be at arbitrary angles if they have corner refpoints

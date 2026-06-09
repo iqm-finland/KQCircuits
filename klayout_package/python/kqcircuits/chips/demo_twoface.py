@@ -187,12 +187,10 @@ class DemoTwoface(Chip):
         cap_trans = pya.DTrans(cap_rot, False, meander_end + cap_ref_rel["base"] - cap_ref_rel["port_a"])
         _, cap_ref_abs = self.insert_cell(cap_cell, cap_trans)
 
+        half_wg = self.a / 2 + self.b
         tcross_cell = self.add_element(
             WaveguideCoplanarSplitter,
-            lengths=[self.a / 2 + self.b, self.a / 2 + self.b, self.a / 2 + self.b + 30],
-            angles=[0, 180, 270],
-            a_list=[self.a, self.a, self.a],
-            b_list=[self.b, self.b, self.b],
+            lengths=[half_wg, half_wg, half_wg + 30],
             port_names=["right", "left", "bottom"],
             face_ids=[self.face_ids[1]],
         )
