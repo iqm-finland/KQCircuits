@@ -1,5 +1,5 @@
 # This code is part of KQCircuits
-# Copyright (C) 2024 IQM Finland Oy
+# Copyright (C) 2021 IQM Finland Oy
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 # License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
@@ -45,9 +45,15 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
         ("crossright", [0, 1, 2, 3]),
         ("crossbottom", [3, 4, 5, 6]),
     ]:
-        arm_poly = pya.DPolygon(
-            [simulation.refpoints[f"epr_cross_{i:02d}"] for i in indices] + [base]
-        ).sized(sized)
+        # Build polygon from epr_cross_* refpoints only (without base), size it,
+        # then reconstruct adding base unsized so the four arm polygons meet at center
+        # without overlapping each other.
+        arm_points_poly = pya.DPolygon(
+            [simulation.refpoints[f"epr_cross_{i:02d}"] for i in indices]
+        )
+        sized_poly = arm_points_poly.sized(sized)
+        hull_points = [sized_poly.point_hull(i) for i in range(sized_poly.num_points_hull())]
+        arm_poly = pya.DPolygon(hull_points + [base])
 
         result += create_bulk_and_mer_partition_regions(
             name=f"{prefix}{arm_name}",
@@ -106,9 +112,13 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
             str(simulation.gap_width),
         )
 
-    # --- crossleft (West arm) — same geometry as the original crossmer ---
-    cross_corner = simulation.refpoints["epr_cross_09"]
-    cross_corner_h = (cross_corner.y - simulation.refpoints["epr_cross_06"].y) / 2
+    # --- crossleft (West arm) ---
+    # Vertical cut placed between the cross body and the west coupler (or arm tip if no coupler).
+    # Runs from ground metal below the arm, through the arm gap+metal, back to ground above.
+    # Refpoints for west arm gap: 06=(-sw-ws, -ww-sw), 07=(-l0-sw, -ww-sw),
+    #                              08=(-l0-sw, +ww+sw), 09=(-wn-sn, +ww+sw)
+    cross_corner = simulation.refpoints["epr_cross_09"]  # inner top corner of west arm gap
+    cross_corner_h = (cross_corner.y - simulation.refpoints["epr_cross_06"].y) / 2  # half-height of arm gap
 
     coupler_corner = (
         simulation.refpoints["epr_cplr0_max"]
@@ -116,6 +126,7 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
         else simulation.refpoints["epr_cross_08"]
     )
 
+    # x: midpoint between inner gap edge and coupler/arm-tip; y: vertical center of arm (y=0)
     cross_xsection_center = pya.DPoint(
         (cross_corner.x + coupler_corner.x) / 2,
         cross_corner.y - cross_corner_h,
@@ -131,21 +142,24 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
     }
 
     # --- crosstop (North arm) ---
-    cross_corner_top = simulation.refpoints["epr_cross_00"]
-
-    cross_corner_top_w = (
-        cross_corner_top.x - simulation.refpoints["epr_cross_11"].x
-    ) / 2  # half-width of arm gap
+    # Horizontal cut placed between the cross body and the north coupler (or arm tip if no coupler).
+    # Runs from ground metal left of arm, through arm gap+metal, back to ground on right.
+    # Refpoints for north arm gap: 09=(-wn-sn, +ww+sw), 10=(-wn-sn, +l1+sn),
+    #                               11=(+wn+sn, +l1+sn), 00=(+wn+sn, +ww+sw)
+    cross_corner_top_l = simulation.refpoints["epr_cross_09"]  # inner bottom-left of north arm gap
+    cross_corner_top_r = simulation.refpoints["epr_cross_00"]  # inner bottom-right of north arm gap
+    cross_corner_top_w = (cross_corner_top_r.x - cross_corner_top_l.x) / 2  # half-width of arm gap
 
     coupler_corner_top = (
         simulation.refpoints["epr_cplr1_max"]
         if float(simulation.cpl_length[1]) > 0
-        else simulation.refpoints["epr_cross_11"]
+        else simulation.refpoints["epr_cross_10"]
     )
 
+    # x: horizontal center of arm; y: midpoint between inner gap edge and coupler/arm-tip
     cross_xsection_center_top = pya.DPoint(
-        cross_corner_top.x - cross_corner_top_w,
-        (cross_corner_top.y + coupler_corner_top.y) / 2,
+        cross_corner_top_l.x + cross_corner_top_w,
+        (cross_corner_top_l.y + coupler_corner_top.y) / 2,
     )
 
     half_cut_length_top = 30.0 + cross_corner_top_w
@@ -156,11 +170,14 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
     }
 
     # --- crossright (East arm) ---
-    cross_corner_right = simulation.refpoints["epr_cross_03"]
-
-    cross_corner_right_h = (
-        cross_corner_right.y - simulation.refpoints["epr_cross_00"].y
-    ) / 2
+    # Vertical cut placed between the cross body and the east coupler (or arm tip if no coupler).
+    # Runs from ground metal below the arm, through arm gap+metal, back to ground above.
+    # Mirror of crossleftmer on the east side.
+    # Refpoints for east arm gap: 00=(+wn+sn, +we+se), 01=(+l2+se, +we+se),
+    #                              02=(+l2+se, -we-se), 03=(+ws+ss, -we-se)
+    cross_corner_right_top = simulation.refpoints["epr_cross_00"]  # inner top-left of east arm gap
+    cross_corner_right_bot = simulation.refpoints["epr_cross_03"]  # inner bottom-left of east arm gap
+    cross_corner_right_h = (cross_corner_right_top.y - cross_corner_right_bot.y) / 2  # half-height of arm gap
 
     coupler_corner_right = (
         simulation.refpoints["epr_cplr2_max"]
@@ -168,9 +185,10 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
         else simulation.refpoints["epr_cross_01"]
     )
 
+    # x: midpoint between inner gap edge and coupler/arm-tip; y: vertical center of arm (y=0)
     cross_xsection_center_right = pya.DPoint(
-        (cross_corner_right.x + coupler_corner_right.x) / 2,
-        cross_corner_right.y - cross_corner_right_h,
+        (cross_corner_right_top.x + coupler_corner_right.x) / 2,
+        cross_corner_right_top.y - cross_corner_right_h,
     )
 
     half_cut_length_right = 30.0 + cross_corner_right_h
@@ -181,15 +199,19 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
     }
 
     # --- crossbottom (South arm) ---
-    cross_corner_bot = simulation.refpoints["epr_cross_06"]
+    # Horizontal cut placed between the cross body and the south arm tip (no coupler on south arm).
+    # Runs from ground metal left of arm, through arm gap+metal, back to ground on right.
+    # Mirror of crosstopmer on the south side.
+    # Refpoints for south arm gap: 03=(+ws+ss, -we-se), 04=(+ws+ss, -l3-ss),
+    #                               05=(-ws-ss, -l3-ss), 06=(-ws-ss, -ww-sw)
+    cross_corner_bot_r = simulation.refpoints["epr_cross_03"]  # inner top-right of south arm gap
+    cross_corner_bot_l = simulation.refpoints["epr_cross_06"]  # inner top-left of south arm gap
+    cross_corner_bot_w = (cross_corner_bot_r.x - cross_corner_bot_l.x) / 2  # half-width of arm gap
 
-    cross_corner_bot_w = (
-        cross_corner_bot.x - simulation.refpoints["epr_cross_05"].x
-    ) / 2
-
+    # x: horizontal center of arm; y: midpoint between inner gap edge and arm tip
     cross_xsection_center_bot = pya.DPoint(
-        cross_corner_bot.x - cross_corner_bot_w,
-        (cross_corner_bot.y + simulation.refpoints["epr_cross_04"].y) / 2,
+        cross_corner_bot_l.x + cross_corner_bot_w,
+        (cross_corner_bot_l.y + simulation.refpoints["epr_cross_04"].y) / 2,
     )
 
     half_cut_length_bot = 30.0 + cross_corner_bot_w
