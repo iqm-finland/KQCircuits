@@ -32,41 +32,31 @@
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
-\"\"\"Export the layout currently open in KLayout as an Elmer wave equation simulation.
+"""Export the layout currently open in KLayout as an Elmer wave equation simulation.
 
-Draw a design in the GUI using KQC library elements, with launchers at the chip edge and qubits placed
-in the layout, then run this macro with that design as the top cell. The macro finds the launchers and
-qubits, places edge ports and internal ports, works out the simulation box, and writes the Elmer
-simulation files.
+Draw a design in the GUI using KQC library elements, with launchers at the chip edge and qubits placed in the
+layout, then run this macro with that design as the top cell. The macro finds the launchers and qubits, places
+edge ports and internal ports, works out the simulation box, and writes the Elmer simulation files.
 
-A copy of the active layout is exported so that simulation layers and temporary modifications do not
-affect the user's original design.
-\"\"\"
+A copy of the active layout is exported so that simulation layers and temporary modifications do not affect the
+user's original design.
+"""
 
 from kqcircuits.defaults import TMP_PATH
 from kqcircuits.klayout_view import KLayoutView
 from kqcircuits.simulations.export.elmer.gui_layout_export import (
+    export_open_layout_to_elmer,
     default_mesh_size,
     default_workflow,
-    export_open_layout_to_elmer,
 )
 
-
-
-# Export configuration
-
-name = "gui_simulation"
-output_dir = TMP_PATH / f"{name}_elmer"
-
-target_frequency = 5.0  # GHz
-margin = 100.0  # um
-
-mesh_size = default_mesh_size()
-workflow = default_workflow()
-
-
-
-# Obtain the currently active layout and cell
+# Configuration. Adjust these to your simulation.
+name = "gui_simulation"  # simulation name and file name stem
+path = TMP_PATH.joinpath(name + "_elmer")  # output directory
+target_frequency = 5.0  # solver frequency in GHz
+margin = 100.0  # extra space in micrometers on sides without a launcher
+mesh_size = default_mesh_size()  # Gmsh mesh size, refined at the metal edges
+workflow = default_workflow()  # Elmer pipeline steps
 
 source_view = KLayoutView(current=True)
 
@@ -75,25 +65,16 @@ if source_view.active_cell is None:
         "No active cell is selected in the current KLayout view."
     )
 
-source_cell = source_view.active_cell
-source_name = source_cell.name
+source_name = source_view.active_cell.name
 
-
-
-# Create an isolated copy of the layout
-#
-# Layout.assign preserves PCell information. This is important because the
-# export code relies on launcher and qubit PCell metadata when constructing
-# ports and converting junctions to Sim junctions.
-# -----------------------------------------------------------------------------
-
+# Copy the active design into a new layout so the geometry the user drew is left intact.
+# The export adds simulation layers, and those should not pollute the original view.
+# Layout.assign copies the cells with their PCell data kept, which Cell.copy_tree across
+# layouts would drop. The PCell data is needed to find the launchers and qubits and to
+# switch the qubit junctions to the Sim type.
 preview = KLayoutView()
 preview.layout.assign(source_view.layout)
 
-
-#
-# Locate the copied top cell
-# 
 matches = [
     cell
     for cell in preview.layout.top_cells()
@@ -102,33 +83,22 @@ matches = [
 
 if not matches:
     raise RuntimeError(
-        f"Could not locate copied top cell '{source_name}' "
-        "after duplicating the layout."
+        f"Could not locate copied top cell '{source_name}' after duplicating the layout."
     )
 
-copied_cell = matches[0]
+copy = matches[0]
 
-preview.focus(copied_cell)
+preview.focus(copy)
 
-
-# 
-# Run export
-# 
-try:
-    output_path = export_open_layout_to_elmer(
-        copied_cell,
-        output_dir,
-        name=name,
-        target_frequency=target_frequency,
-        mesh_size=mesh_size,
-        workflow=workflow,
-        margin=margin,
-    )
-except Exception as exc:
-    raise RuntimeError(
-        f"Elmer export failed: {exc}"
-    ) from exc
-
+output_path = export_open_layout_to_elmer(
+    copy,
+    path,
+    name=name,
+    target_frequency=target_frequency,
+    mesh_size=mesh_size,
+    workflow=workflow,
+    margin=margin,
+)
 
 print(f"Exported Elmer simulation to {output_path}")
 </text>
