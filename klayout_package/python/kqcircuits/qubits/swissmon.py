@@ -16,264 +16,201 @@
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
-import logging
-from typing import Callable
 
+import math
+
+from kqcircuits.util.parameters import Param, pdt
+from kqcircuits.qubits.qubit import Qubit
 from kqcircuits.pya_resolver import pya
-from kqcircuits.simulations.epr.util import (
-    extract_child_simulation,
-    EPRTarget,
-    create_bulk_and_mer_partition_regions,
-)
-from kqcircuits.simulations.partition_region import PartitionRegion
+from kqcircuits.util.refpoints import JunctionSimPort, WaveguideToSimPort
 
 
-# Partition region and correction cuts definitions for Swissmon qubit
+class Swissmon(Qubit):
+    """The PCell declaration for a Swissmon qubit.
 
+    Swissmon type qubit. Each arm (West, North, East, South) has it's own arm gap width
+    (``gap_width``) and arm metal width (``arm_width``). SQUID is loaded from another library.
+    Option of having fluxline.  Refpoints for 3 couplers, fluxline position and chargeline position.
+    Length between the ports is from waveguide port to the rectangular part of the launcher pad.
+    Length of the fingers is also used for the length of the launcher pad.
 
-def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[PartitionRegion]:
-    metal_edge_dimension = 4.0
-    metal_edge_margin = pya.DPoint(metal_edge_dimension, metal_edge_dimension)
+    .. MARKERS_FOR_PNG 56,-61 140,0 0,175 -64,117
+    """
 
-    result = []
-    base = simulation.refpoints["base"]
-    sized = metal_edge_dimension + simulation.island_r
+    arm_length = Param(pdt.TypeList, "Arm length (um, WNES))", [300.0 / 2] * 4)
+    arm_width = Param(pdt.TypeList, "Arm metal width (um, WNES)", [24, 24, 24, 24])
+    gap_width = Param(pdt.TypeList, "Arm gap width (um, WNES)", [12, 12, 12, 12])
+    cpl_width = Param(pdt.TypeList, "Coupler width (um, WNE)", [24, 24, 24])
+    cpl_length = Param(pdt.TypeList, "Coupler lengths (um, WNE)", [120, 120, 120])
+    cpl_gap = Param(pdt.TypeList, "Coupler gap (um, WNE)", [102, 102, 102])
+    cpl_b = Param(pdt.TypeList, "Coupler gap to ground (um, WNE)", [6, 6, 6])
+    port_width = Param(pdt.TypeList, "Port width (um, WNE)", [10, 10, 10])
+    cl_offset = Param(pdt.TypeList, "Chargeline offset (um, um)", [200, 200])
+    island_r = Param(pdt.TypeDouble, "Center island rounding radius", 5, unit="μm")
 
-    for arm_name, indices in [
-        ("crossleft", [6, 7, 8, 9]),
-        ("crosstop", [9, 10, 11, 0]),
-        ("crossright", [0, 1, 2, 3]),
-        ("crossbottom", [3, 4, 5, 6]),
-    ]:
-        # Build polygon from epr_cross_* refpoints only (without base), size it,
-        # then reconstruct adding base unsized so the four arm polygons meet at center
-        # without overlapping each other.
-        arm_points_poly = pya.DPolygon(
-            [simulation.refpoints[f"epr_cross_{i:02d}"] for i in indices]
+    def build(self):
+        self._produce_cross_and_squid()
+
+        self._produce_chargeline()  # refpoint only ATM
+
+        self.produce_fluxline()
+
+        for i in range(3):
+            self._produce_coupler(i)
+
+    def _produce_chargeline(self):
+        # shorthands
+        l = [float(offset) for offset in self.cl_offset]  # swissmon arm length from the center of the cross (refpoint)
+
+        # add ref point
+        # port_ref = pya.DPoint(-g-b-a/2, -l)
+        port_ref = pya.DPoint(-l[0], -l[1])
+        self.add_port("drive", port_ref)
+
+    def _produce_coupler(self, cpl_nr):
+        # shorthand
+        a = float(self.port_width[cpl_nr])
+        b = float(self.cpl_b[cpl_nr])
+        [ww, wn, we, ws] = [float(width) / 2 for width in self.arm_width]
+        aw = [ww, wn, we, ws][cpl_nr]
+        w = float(self.cpl_width[cpl_nr])
+        l = float(self.cpl_length[cpl_nr])
+        g = float(self.cpl_gap[cpl_nr]) / 2
+
+        # Location for connecting the waveguides to
+        port_shape = pya.DBox(-a / 2, 0, a / 2, b)
+        port_region = pya.Region(port_shape.to_itype(self.layout.dbu))
+
+        if l > 0:
+            # Horseshoe opened to below
+            # Refpoint in the top center
+            shoe_points = [
+                pya.DPoint(a, 0),
+                pya.DPoint(g + w, 0),
+                pya.DPoint(g + w, -l),
+                pya.DPoint(g, -l),
+                pya.DPoint(g, -w),
+                pya.DPoint(-g, -w),
+                pya.DPoint(-g, -l),
+                pya.DPoint(-g - w, -l),
+                pya.DPoint(-g - w, 0),
+                pya.DPoint(-a, 0),
+            ]
+            shoe = pya.DPolygon(shoe_points)
+            shoe.size(b)
+            shoe.insert_hole(shoe_points[::-1])
+
+            # convert to range and recover CPW port
+            shoe_region = pya.Region(shoe.to_itype(self.layout.dbu))
+            shoe_region.round_corners(self.island_r / self.layout.dbu, self.island_r / self.layout.dbu, self.n)
+            shoe_region2 = shoe_region - port_region
+
+        # move to the north arm of swiss cross
+        ground_width = (2 * g - float(self.gap_width[1]) - 2 * b) / 2
+        shift_up = float(self.arm_length[cpl_nr]) + (float(self.gap_width[1]) - 2 * aw) / 2 + ground_width + w + b
+        transf = pya.DCplxTrans(1, 0, False, pya.DVector(0, shift_up))
+
+        # rotate to the correct direction
+        rotation = [pya.DCplxTrans.R90, pya.DCplxTrans.R0, pya.DCplxTrans.R270][cpl_nr]
+
+        # draw
+        if l > 0:
+            shoe_region3 = shoe_region2.transformed((rotation * transf).to_itrans(self.layout.dbu))
+            self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(shoe_region3)
+            self.refpoints[f"epr_cplr{cpl_nr}_min"] = shoe_region3.bbox().to_dtype(self.layout.dbu).p1
+            self.refpoints[f"epr_cplr{cpl_nr}_max"] = shoe_region3.bbox().to_dtype(self.layout.dbu).p2
+
+        self.cell.shapes(self.get_layer("waveguide_path")).insert(
+            port_region.transformed((rotation * transf).to_itrans(self.layout.dbu))
         )
-        sized_poly = arm_points_poly.sized(sized)
-        hull_points = [sized_poly.point_hull(i) for i in range(sized_poly.num_points_hull())]
-        arm_poly = pya.DPolygon(hull_points + [base])
 
-        result += create_bulk_and_mer_partition_regions(
-            name=f"{prefix}{arm_name}",
-            face=simulation.face_ids[0],
-            metal_edge_dimensions=metal_edge_dimension,
-            region=arm_poly,
-            vertical_dimensions=3.0,
-            visualise=True,
-        )
+        # protection
+        if l > 0:
+            protection = pya.DBox(
+                -g - w - b - self.margin, -l - b - self.margin, g + w + b + self.margin, b + self.margin
+            )
+            self.add_protection(protection.transformed((rotation * transf)))
 
-    # These are added to include the waveguides attached to couplers in the coupler region
-    def _get_coupler_wg_offset(i, s):
-        wg_len = float(simulation.waveguide_length) if hasattr(simulation, "waveguide_length") else 0
-        offset = wg_len + 25
+        # add ref point
+        port_ref = pya.DPoint(0, b)
+        self.add_port(f"cplr{cpl_nr}", (rotation * transf).trans(port_ref), rotation * pya.DVector(0, 1))
 
-        coupler_wg_offsets = [
-            {"min": pya.DPoint(-offset, 0)},
-            {"max": pya.DPoint(0, offset)},
-            {"max": pya.DPoint(offset, 0)},
+    def _produce_cross_and_squid(self):
+        """Produces the cross and squid for the Swissmon."""
+        # shorthand
+        [ww, wn, we, ws] = [float(width) / 2 for width in self.arm_width]
+        l = [float(length) for length in self.arm_length]
+
+        [sw, sn, se, ss] = [float(width) for width in self.gap_width]
+
+        # # SQUID
+        # SQUID origin at the ground plane edge
+        squid_transf = pya.DCplxTrans(1, 0, False, pya.DVector(0, -l[3] - ss))
+        squid_ref_rel = self.produce_squid(squid_transf)
+        # SQUID port_common at the end of the south arm
+        squid_length = squid_ref_rel["port_common"].distance(pya.DPoint(0, 0))
+
+        # Swissmon etch region
+
+        # refpoint in the center of the swiss cross
+        cross_island_points = [
+            pya.DPoint(wn, we),
+            pya.DPoint(l[2], we),
+            pya.DPoint(l[2], -we),
+            pya.DPoint(ws, -we),
+            pya.DPoint(ws, -l[3] - ss + squid_length),
+            pya.DPoint(-ws, -l[3] - ss + squid_length),
+            pya.DPoint(-ws, -ww),
+            pya.DPoint(-l[0], -ww),
+            pya.DPoint(-l[0], ww),
+            pya.DPoint(-wn, ww),
+            pya.DPoint(-wn, l[1]),
+            pya.DPoint(wn, l[1]),
         ]
 
-        return coupler_wg_offsets[i].get(s, pya.DPoint(0, 0))
+        # refpoint in the center of the swiss cross
+        cross_gap_points = [
+            pya.DPoint(wn + sn, we + se),
+            pya.DPoint(l[2] + se, we + se),
+            pya.DPoint(l[2] + se, -we - se),
+            pya.DPoint(ws + ss, -we - se),
+            pya.DPoint(ws + ss, -l[3] - ss),
+            pya.DPoint(-ws - ss, -l[3] - ss),
+            pya.DPoint(-ws - ss, -ww - sw),
+            pya.DPoint(-l[0] - sw, -ww - sw),
+            pya.DPoint(-l[0] - sw, ww + sw),
+            pya.DPoint(-wn - sn, ww + sw),
+            pya.DPoint(-wn - sn, l[1] + sn),
+            pya.DPoint(wn + sn, l[1] + sn),
+        ]
 
-    for idx in range(3):
-        # Need to check if coupler is present
-        if float(simulation.cpl_length[idx]) > 0:
-            cplr_region = pya.DBox(
-                simulation.refpoints[f"epr_cplr{idx}_min"]
-                - metal_edge_margin
-                + _get_coupler_wg_offset(idx, "min"),
-                simulation.refpoints[f"epr_cplr{idx}_max"]
-                + metal_edge_margin
-                + _get_coupler_wg_offset(idx, "max"),
-            )
+        for idx, p in enumerate(cross_gap_points):
+            self.refpoints[f"epr_cross_{idx:02d}"] = p
+        cross = pya.DPolygon(cross_gap_points)
+        cross.insert_hole(cross_island_points)
+        cross_rounded = cross.round_corners(self.island_r, self.island_r, self.n)
+        region_etch = pya.Region([cross_rounded.to_itype(self.layout.dbu)])
+        self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(region_etch)
 
-            result += create_bulk_and_mer_partition_regions(
-                name=f"{prefix}{idx}cplr",
-                face=simulation.face_ids[0],
-                metal_edge_dimensions=metal_edge_dimension,
-                region=cplr_region,
-                vertical_dimensions=3.0,
-                visualise=True,
-            )
-
-    return result
-
-
-def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
-    half_gap = float(simulation.gap_width[1]) / 2
-
-    if len(set(simulation.gap_width)) > 1:
-        logging.warning("Partition regions for Swissmon with varying gaps are not implemented")
-        logging.warning(
-            "Using correction with %s gap for all arms with gap widths %s",
-            str(2 * half_gap),
-            str(simulation.gap_width),
+        # Protection
+        cross_protection = pya.DPolygon(
+            [
+                p
+                + pya.DVector(
+                    math.copysign(max([sw, sn, se, ss]) + self.margin, p.x),
+                    math.copysign(max([sw, sn, se, ss]) + self.margin, p.y),
+                )
+                for p in cross_gap_points
+            ]
         )
+        self.add_protection(cross_protection)
 
-    # --- crossleft (West arm) ---
-    # Vertical cut placed between the cross body and the west coupler (or arm tip if no coupler).
-    # Runs from ground metal below the arm, through the arm gap+metal, back to ground above.
-    # Refpoints for west arm gap: 06=(-sw-ws, -ww-sw), 07=(-l0-sw, -ww-sw),
-    #                              08=(-l0-sw, +ww+sw), 09=(-wn-sn, +ww+sw)
-    cross_corner = simulation.refpoints["epr_cross_09"]  # inner top corner of west arm gap
-    cross_corner_h = (cross_corner.y - simulation.refpoints["epr_cross_06"].y) / 2  # half-height of arm gap
+        # Probepoint
+        probepoint = pya.DPoint(0, 0)
+        self.refpoints["probe_qb_c"] = probepoint
 
-    coupler_corner = (
-        simulation.refpoints["epr_cplr0_max"]
-        if float(simulation.cpl_length[0]) > 0
-        else simulation.refpoints["epr_cross_08"]
-    )
-
-    # x: midpoint between inner gap edge and coupler/arm-tip; y: vertical center of arm (y=0)
-    cross_xsection_center = pya.DPoint(
-        (cross_corner.x + coupler_corner.x) / 2,
-        cross_corner.y - cross_corner_h,
-    )
-
-    half_cut_length = 30.0 + cross_corner_h
-
-    result = {
-        f"{prefix}crossleftmer": {
-            "p1": cross_xsection_center + pya.DPoint(0, -half_cut_length),
-            "p2": cross_xsection_center + pya.DPoint(0, half_cut_length),
-        }
-    }
-
-    # --- crosstop (North arm) ---
-    # Horizontal cut placed between the cross body and the north coupler (or arm tip if no coupler).
-    # Runs from ground metal left of arm, through arm gap+metal, back to ground on right.
-    # Refpoints for north arm gap: 09=(-wn-sn, +ww+sw), 10=(-wn-sn, +l1+sn),
-    #                               11=(+wn+sn, +l1+sn), 00=(+wn+sn, +ww+sw)
-    cross_corner_top_l = simulation.refpoints["epr_cross_09"]  # inner bottom-left of north arm gap
-    cross_corner_top_r = simulation.refpoints["epr_cross_00"]  # inner bottom-right of north arm gap
-    cross_corner_top_w = (cross_corner_top_r.x - cross_corner_top_l.x) / 2  # half-width of arm gap
-
-    coupler_corner_top = (
-        simulation.refpoints["epr_cplr1_max"]
-        if float(simulation.cpl_length[1]) > 0
-        else simulation.refpoints["epr_cross_10"]
-    )
-
-    # x: horizontal center of arm; y: midpoint between inner gap edge and coupler/arm-tip
-    cross_xsection_center_top = pya.DPoint(
-        cross_corner_top_l.x + cross_corner_top_w,
-        (cross_corner_top_l.y + coupler_corner_top.y) / 2,
-    )
-
-    half_cut_length_top = 30.0 + cross_corner_top_w
-
-    result[f"{prefix}crosstopmer"] = {
-        "p1": cross_xsection_center_top + pya.DPoint(-half_cut_length_top, 0),
-        "p2": cross_xsection_center_top + pya.DPoint(half_cut_length_top, 0),
-    }
-
-    # --- crossright (East arm) ---
-    # Vertical cut placed between the cross body and the east coupler (or arm tip if no coupler).
-    # Runs from ground metal below the arm, through arm gap+metal, back to ground above.
-    # Mirror of crossleftmer on the east side.
-    # Refpoints for east arm gap: 00=(+wn+sn, +we+se), 01=(+l2+se, +we+se),
-    #                              02=(+l2+se, -we-se), 03=(+ws+ss, -we-se)
-    cross_corner_right_top = simulation.refpoints["epr_cross_00"]  # inner top-left of east arm gap
-    cross_corner_right_bot = simulation.refpoints["epr_cross_03"]  # inner bottom-left of east arm gap
-    cross_corner_right_h = (cross_corner_right_top.y - cross_corner_right_bot.y) / 2  # half-height of arm gap
-
-    coupler_corner_right = (
-        simulation.refpoints["epr_cplr2_max"]
-        if float(simulation.cpl_length[2]) > 0
-        else simulation.refpoints["epr_cross_01"]
-    )
-
-    # x: midpoint between inner gap edge and coupler/arm-tip; y: vertical center of arm (y=0)
-    cross_xsection_center_right = pya.DPoint(
-        (cross_corner_right_top.x + coupler_corner_right.x) / 2,
-        cross_corner_right_top.y - cross_corner_right_h,
-    )
-
-    half_cut_length_right = 30.0 + cross_corner_right_h
-
-    result[f"{prefix}crossrightmer"] = {
-        "p1": cross_xsection_center_right + pya.DPoint(0, -half_cut_length_right),
-        "p2": cross_xsection_center_right + pya.DPoint(0, half_cut_length_right),
-    }
-
-    # --- crossbottom (South arm) ---
-    # Horizontal cut placed between the cross body and the south arm tip (no coupler on south arm).
-    # Runs from ground metal left of arm, through arm gap+metal, back to ground on right.
-    # Mirror of crosstopmer on the south side.
-    # Refpoints for south arm gap: 03=(+ws+ss, -we-se), 04=(+ws+ss, -l3-ss),
-    #                               05=(-ws-ss, -l3-ss), 06=(-ws-ss, -ww-sw)
-    cross_corner_bot_r = simulation.refpoints["epr_cross_03"]  # inner top-right of south arm gap
-    cross_corner_bot_l = simulation.refpoints["epr_cross_06"]  # inner top-left of south arm gap
-    cross_corner_bot_w = (cross_corner_bot_r.x - cross_corner_bot_l.x) / 2  # half-width of arm gap
-
-    # x: horizontal center of arm; y: midpoint between inner gap edge and arm tip
-    cross_xsection_center_bot = pya.DPoint(
-        cross_corner_bot_l.x + cross_corner_bot_w,
-        (cross_corner_bot_l.y + simulation.refpoints["epr_cross_04"].y) / 2,
-    )
-
-    half_cut_length_bot = 30.0 + cross_corner_bot_w
-
-    result[f"{prefix}crossbottommer"] = {
-        "p1": cross_xsection_center_bot + pya.DPoint(-half_cut_length_bot, 0),
-        "p2": cross_xsection_center_bot + pya.DPoint(half_cut_length_bot, 0),
-    }
-
-    if float(simulation.cpl_length[0]) > 0:
-        half_gap = float(simulation.cpl_b[0]) / 2
-        xsection_point = float(simulation.cpl_gap[0]) / 2 + float(simulation.cpl_width[0]) / 2
-
-        result[f"{prefix}0cplrmer"] = {
-            "p1": simulation.refpoints["port_cplr0"]
-            + pya.DPoint(-half_cut_length + half_gap, xsection_point),
-            "p2": simulation.refpoints["port_cplr0"]
-            + pya.DPoint(half_cut_length + half_gap, xsection_point),
-        }
-
-    if float(simulation.cpl_length[1]) > 0:
-        half_gap = float(simulation.cpl_b[1]) / 2
-        xsection_point = float(simulation.cpl_gap[1]) / 2 + float(simulation.cpl_width[1]) / 2
-
-        result[f"{prefix}1cplrmer"] = {
-            "p1": simulation.refpoints["port_cplr1"]
-            + pya.DPoint(xsection_point, half_cut_length - half_gap),
-            "p2": simulation.refpoints["port_cplr1"]
-            + pya.DPoint(xsection_point, -half_cut_length - half_gap),
-        }
-
-    if float(simulation.cpl_length[2]) > 0:
-        half_gap = float(simulation.cpl_b[2]) / 2
-        xsection_point = float(simulation.cpl_gap[2]) / 2 + float(simulation.cpl_width[2]) / 2
-
-        result[f"{prefix}2cplrmer"] = {
-            "p1": simulation.refpoints["port_cplr2"]
-            + pya.DPoint(-half_cut_length - half_gap, xsection_point),
-            "p2": simulation.refpoints["port_cplr2"]
-            + pya.DPoint(half_cut_length - half_gap, xsection_point),
-        }
-
-    return result
-
-
-def extract_swissmon_from(
-    simulation: EPRTarget,
-    refpoint_prefix: str,
-    parameter_remap_function: Callable[[EPRTarget, str], any],
-):
-    return extract_child_simulation(
-        simulation,
-        refpoint_prefix,
-        parameter_remap_function,
-        [
-            "b",
-            "cpl_b",
-            "gap_width",
-            "face_ids",  # Accesses list's index 0
-            "island_r",
-            "cpl_gap",  # Accesses list's indices 0, 1, 2
-            "cpl_width",  # Accesses list's indices 0, 1, 2
-            "cpl_length",  # Accesses list's indices 0, 1, 2
-        ],
-    )
+    @classmethod
+    def get_sim_ports(cls, simulation):  # pylint: disable=unused-argument
+        return [JunctionSimPort()] + [
+            WaveguideToSimPort(f"port_cplr{i}", side=s) for i, s in enumerate(["left", "top", "right"])
+        ]
