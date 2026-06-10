@@ -29,6 +29,15 @@ from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf import FlipChipConnectorRf
 
+# Common WaveguideCoplanarSplitter (T-cross) parameters reused by the nodes below.
+tee_params = {
+    "lengths": [11, 11, 10],
+    "angles": [0, 180, 270],
+    "a_list": [10, 10, 10],
+    "b_list": [5, 5, 6],
+    "port_names": ["right", "left", "bottom"],
+}
+
 
 @pytest.fixture
 def nodes1():
@@ -57,22 +66,14 @@ def nodes1():
         Node(
             pya.DPoint(2150, 0),
             WaveguideCoplanarSplitter,
-            lengths=[11, 11, 10],
-            angles=[0, 180, 270],
-            a_list=[10, 10, 10],
-            b_list=[5, 5, 6],
-            port_names=["right", "left", "bottom"],
+            **tee_params,
             align=("port_left", "port_right"),
         ),
         Node(pya.DPoint(2350, 50)),
         Node(
             pya.DPoint(2400, 50),
             WaveguideCoplanarSplitter,
-            lengths=[11, 11, 10],
-            angles=[0, 180, 270],
-            a_list=[10, 10, 10],
-            b_list=[5, 5, 6],
-            port_names=["right", "left", "bottom"],
+            **tee_params,
             align=("port_right", "port_left"),
             inst_name="second_tee",
         ),
@@ -80,11 +81,7 @@ def nodes1():
         Node(
             pya.DPoint(2600, 50),
             WaveguideCoplanarSplitter,
-            lengths=[11, 11, 10],
-            angles=[0, 180, 270],
-            a_list=[10, 10, 10],
-            b_list=[5, 5, 6],
-            port_names=["right", "left", "bottom"],
+            **tee_params,
             align=("port_bottom", "port_right"),
         ),
         Node(pya.DPoint(2700, -200)),
@@ -113,22 +110,14 @@ def nodes2():
         Node(
             pya.DPoint(2150, 0),
             WaveguideCoplanarSplitter,
-            lengths=[11, 11, 10],
-            angles=[0, 180, 270],
-            a_list=[10, 10, 10],
-            b_list=[5, 5, 6],
-            port_names=["right", "left", "bottom"],
+            **tee_params,
             align=("port_left", "port_right"),
         ),
         Node(pya.DPoint(2350, 50)),
         Node(
             pya.DPoint(2400, 50),
             WaveguideCoplanarSplitter,
-            lengths=[11, 11, 10],
-            angles=[0, 180, 270],
-            a_list=[10, 10, 10],
-            b_list=[5, 5, 6],
-            port_names=["right", "left", "bottom"],
+            **tee_params,
             align=("port_right", "port_left"),
             inst_name="second_tee",
         ),
@@ -136,11 +125,7 @@ def nodes2():
         Node(
             pya.DPoint(2600, 50),
             WaveguideCoplanarSplitter,
-            lengths=[11, 11, 10],
-            angles=[0, 180, 270],
-            a_list=[10, 10, 10],
-            b_list=[5, 5, 6],
-            port_names=["right", "left", "bottom"],
+            **tee_params,
             align=("port_bottom", "port_right"),
         ),
         Node(pya.DPoint(2700, -200)),
