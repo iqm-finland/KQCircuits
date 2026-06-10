@@ -18,11 +18,10 @@
 
 import json
 
-import pandas as pd
 import pytest
 
 
-def test_computes_quality_factors_from_epr_table(write_simulation, run_post_process, sim_folder):
+def test_computes_quality_factors_from_epr_table(write_simulation, run_post_process, read_csv, sim_folder):
     # `produce_q_factor_table.py` consumes the table written by `produce_epr_table.py`, so run that first
     write_simulation(
         "waveguide",
@@ -35,10 +34,10 @@ def test_computes_quality_factors_from_epr_table(write_simulation, run_post_proc
     (sim_folder / "loss_tangents.json").write_text(json.dumps(loss_tangents), encoding="utf-8")
     run_post_process("produce_q_factor_table.py", args=["loss_tangents.json"])
 
-    row = pd.read_csv(sim_folder / f"{sim_folder.name}_q_factors.csv").iloc[0]
+    row = read_csv(sim_folder / f"{sim_folder.name}_q_factors.csv")[0]
     p_substrate, p_vacuum = 2.0 / 8.0, 6.0 / 8.0
-    assert row["Q_substrate"] == pytest.approx(1.0 / (p_substrate * loss_tangents["substrate"]))
-    assert row["Q_vacuum"] == pytest.approx(1.0 / (p_vacuum * loss_tangents["vacuum"]))
-    assert row["Q_total"] == pytest.approx(
+    assert float(row["Q_substrate"]) == pytest.approx(1.0 / (p_substrate * loss_tangents["substrate"]))
+    assert float(row["Q_vacuum"]) == pytest.approx(1.0 / (p_vacuum * loss_tangents["vacuum"]))
+    assert float(row["Q_total"]) == pytest.approx(
         1.0 / (p_substrate * loss_tangents["substrate"] + p_vacuum * loss_tangents["vacuum"])
     )
