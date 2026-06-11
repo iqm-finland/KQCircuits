@@ -16,66 +16,12 @@
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
-import csv
-import json
-import runpy
-from pathlib import Path
-
-import pytest
-
-
-POST_PROCESS_DIR = Path("klayout_package/python/scripts/simulations/post_process")
-
-
-def _write_json(path, data):
-    path.write_text(json.dumps(data), encoding="utf-8")
-
-
-def _run_post_process(script_name, tmp_path, monkeypatch):
-    script_dir = Path(__file__).parents[3] / POST_PROCESS_DIR
-    monkeypatch.chdir(tmp_path)
-    monkeypatch.syspath_prepend(str(script_dir))
-    runpy.run_path(str(script_dir / script_name), run_name="__main__")
-
-
-def _read_csv(path):
-    with path.open(encoding="utf-8", newline="") as csv_file:
-        return list(csv.DictReader(csv_file))
-
-
-def test_produce_cmatrix_table_writes_capacitance_matrix_csv(tmp_path, monkeypatch):
-    """`produce_cmatrix_table.py` turns mocked project capacitances into a result table."""
-    _write_json(tmp_path / "waveguide.json", {"parameters": {}, "tool": "cross-section"})
-    _write_json(tmp_path / "waveguide_project_results.json", {"CMatrix": [[1.0, 2.0], [3.0, 4.0]]})
-
-    _run_post_process("produce_cmatrix_table.py", tmp_path, monkeypatch)
-
-    rows = _read_csv(tmp_path / f"{tmp_path.name}_results.csv")
-    assert rows == [{"key": "waveguide", "C11": "1.0", "C12": "2.0", "C21": "3.0", "C22": "4.0"}]
-
-
-@pytest.mark.parametrize(
-    ("cs", "ls", "expected_z0", "expected_c_eff"),
-    [([[4.0]], [[9.0]], "1.5", "0.16666666666666666")],
-)
-def test_produce_z0_table_writes_impedance_and_effective_velocity(
-    tmp_path, monkeypatch, cs, ls, expected_z0, expected_c_eff
-):
-    """`produce_z0_table.py` computes Z0 and c_eff from mocked C/L matrices."""
-    _write_json(tmp_path / "waveguide.json", {"parameters": {}})
-    _write_json(tmp_path / "waveguide_project_results.json", {"Cs": cs, "Ls": ls})
-
-    _run_post_process("produce_z0_table.py", tmp_path, monkeypatch)
-
-    rows = _read_csv(tmp_path / f"{tmp_path.name}_Z0.csv")
-    assert rows == [
-        {"key": "waveguide", "Cs": "4.0", "Ls": "9.0", "Z0": expected_z0, "c_eff": expected_c_eff}
-    ]
+from post_process_test_helpers import read_csv, run_post_process, write_json
 
 
 def test_elmer_profiler_collects_runtime_and_mesh_statistics(tmp_path, monkeypatch):
-    """`elmer_profiler.py` compiles mocked Gmsh, Elmer, workflow, and mesh data into a profile table."""
-    _write_json(
+    """`elmer_profiler.py` compiles mocked runtime and mesh data into a profile table."""
+    write_json(
         tmp_path / "waveguide.json",
         {
             "parameters": {},
@@ -83,7 +29,7 @@ def test_elmer_profiler_collects_runtime_and_mesh_statistics(tmp_path, monkeypat
             "workflow": {"elmer_n_processes": 2, "elmer_n_threads": 3, "gmsh_n_threads": 4},
         },
     )
-    _write_json(tmp_path / "waveguide_project_results.json", {})
+    write_json(tmp_path / "waveguide_project_results.json", {})
 
     log_dir = tmp_path / "log_files"
     log_dir.mkdir()
@@ -104,9 +50,9 @@ def test_elmer_profiler_collects_runtime_and_mesh_statistics(tmp_path, monkeypat
     mesh_dir.mkdir()
     (mesh_dir / "mesh.header").write_text("header 123 other data\n", encoding="utf-8")
 
-    _run_post_process("elmer_profiler.py", tmp_path, monkeypatch)
+    run_post_process("elmer_profiler.py", tmp_path, monkeypatch, __file__)
 
-    rows = _read_csv(tmp_path / f"{tmp_path.name}_profile.csv")
+    rows = read_csv(tmp_path / f"{tmp_path.name}_profile.csv")
     assert rows == [
         {
             "key": "waveguide",
