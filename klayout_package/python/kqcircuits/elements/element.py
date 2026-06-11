@@ -743,7 +743,7 @@ class Element(pya.PCellDeclarationHelper):
 
             # Line marker representing the cut path
             line_marker = pya.Marker(layout_view)
-            line_marker.set_polygon(pya.DPolygon(pya.DPath([p1, p2], 0.5)))
+            line_marker.set_path(pya.DPath([p1, p2], 0))
             line_marker.line_width = 2
             line_marker.color = 0xFF4500  # orange-red
 
