@@ -522,7 +522,7 @@ class Element(pya.PCellDeclarationHelper):
         self.etch_opposite_face_impl()
         self.duplicate_face_impl()
         # Clear all existing EPR markers before redrawing, so there is no duplication or lingering
-        if self._epr_show:
+        if self._epr_show and not is_standalone_session():
             try:
                 from kqcircuits.pya_resolver import lay  # pylint: disable=import-outside-toplevel
                 layout_view = lay.LayoutView.current()
