@@ -471,6 +471,35 @@ class Element(pya.PCellDeclarationHelper):
             text = pya.DText(name, refpoint.x, refpoint.y)
             self.cell.shapes(self.get_layer("refpoints")).insert(text)
 
+    def coerce_parameters_impl(self):
+        """Redraws EPR markers on every parameter change.
+
+        KLayout calls this unconditionally on each parameter edit, before deciding whether to
+        regenerate geometry. This makes it the correct entry point for marker rendering —
+        produce_impl/post_build are geometry-cached and silently skipped when only boolean
+        display flags (_epr_show, _epr_cross_section_cut, _epr_part_reg_*) change, which
+        was the root cause of markers not updating.
+
+        Markers are cleared on every call to prevent stale or duplicate markers, then
+        redrawn if _epr_show is True.
+        """
+        if is_standalone_session():
+            return
+
+        layout_view = lay.LayoutView.current()
+        if layout_view is None:
+            return
+
+        # Always clear first — prevents stale/duplicate markers when toggling parameters
+        # or when _epr_show is turned off.
+        layout_view.clear_markers()
+
+        if not self._epr_show:
+            return
+
+        self._show_epr_cross_section_cuts()
+        self._show_epr_partition_regions()
+
     def etch_opposite_face_impl(self):
         """Implements the shape of the opposite face,
         which is etched out if ``etch_opposite_face`` is enabled.
@@ -519,12 +548,10 @@ class Element(pya.PCellDeclarationHelper):
         """Child classes may re-define this method for post-build operations."""
         self.etch_opposite_face_impl()
         self.duplicate_face_impl()
-        if self._epr_show and not is_standalone_session():
-            layout_view = lay.LayoutView.current()
-            if layout_view is not None:
-                layout_view.clear_markers()
-        self._show_epr_cross_section_cuts()
-        self._show_epr_partition_regions()
+        # EPR markers are intentionally not drawn here. produce_impl is geometry-cached
+        # and skipped by KLayout when only boolean display flags change, making post_build
+        # an unreliable entry point for marker updates. Marker rendering is handled
+        # exclusively in coerce_parameters_impl, which always fires on every parameter change.
 
     def display_text_impl(self):
         if self.display_name:
@@ -729,7 +756,7 @@ class Element(pya.PCellDeclarationHelper):
             p1 = trans.trans(cut["p1"])
             p2 = trans.trans(cut["p2"])
 
-            line_marker = pya.Marker()
+            line_marker = pya.Marker(layout_view)
             line_marker.set_path(pya.DPath([p1, p2], 0))
             line_marker.line_width = 2
             line_marker.color = 0xFF4500  # orange-red
