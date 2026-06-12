@@ -485,7 +485,6 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.waveguide_coplanar_splitter.html">kqcircuits.elements.waveguide_coplanar_splitter</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.waveguide_coplanar_splitter.html#kqcircuits.elements.waveguide_coplanar_splitter.WaveguideCoplanarSplitter"><code class="docutils literal notranslate"><span class="pre">WaveguideCoplanarSplitter</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.waveguide_coplanar_splitter.html#kqcircuits.elements.waveguide_coplanar_splitter.t_cross_parameters"><code class="docutils literal notranslate"><span class="pre">t_cross_parameters()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.waveguide_coplanar_straight.html">kqcircuits.elements.waveguide_coplanar_straight</a><ul>
@@ -1044,7 +1043,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.parameters</span><span class="w"> </span><span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.qubits.swissmon</span><span class="w"> </span><span class="kn">import</span> <span class="n">Swissmon</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.waveguide_coplanar</span><span class="w"> </span><span class="kn">import</span> <span class="n">WaveguideCoplanar</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.waveguide_coplanar_splitter</span><span class="w"> </span><span class="kn">import</span> <span class="n">WaveguideCoplanarSplitter</span><span class="p">,</span> <span class="n">t_cross_parameters</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.waveguide_coplanar_splitter</span><span class="w"> </span><span class="kn">import</span> <span class="n">WaveguideCoplanarSplitter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.finger_capacitor_square</span><span class="w"> </span><span class="kn">import</span> <span class="n">FingerCapacitorSquare</span>
 
 
@@ -1076,8 +1075,12 @@
 
         <span class="c1"># WaveguideCoplanarSplitter</span>
         <span class="n">_pos</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;SE&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;WN&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">half_wg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">tcross_refs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span>
-            <span class="n">WaveguideCoplanarSplitter</span><span class="p">,</span> <span class="n">_pos</span><span class="p">,</span> <span class="o">**</span><span class="n">t_cross_parameters</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="n">a2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">b2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)</span>
+            <span class="n">WaveguideCoplanarSplitter</span><span class="p">,</span>
+            <span class="n">_pos</span><span class="p">,</span>
+            <span class="n">lengths</span><span class="o">=</span><span class="p">[</span><span class="n">half_wg</span><span class="p">,</span> <span class="n">half_wg</span><span class="p">,</span> <span class="n">half_wg</span><span class="p">],</span>
+            <span class="n">port_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="s2">&quot;bottom&quot;</span><span class="p">],</span>
         <span class="p">)</span>
 
         <span class="c1"># Waveguides: WN -&gt; Swissmon -&gt; FingerCapacitorSquare -&gt; WaveguideCoplanarSplitter -&gt; EN</span>

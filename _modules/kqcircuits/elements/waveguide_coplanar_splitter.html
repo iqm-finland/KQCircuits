@@ -485,7 +485,6 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.waveguide_coplanar_splitter.html">kqcircuits.elements.waveguide_coplanar_splitter</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.waveguide_coplanar_splitter.html#kqcircuits.elements.waveguide_coplanar_splitter.WaveguideCoplanarSplitter"><code class="docutils literal notranslate"><span class="pre">WaveguideCoplanarSplitter</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.waveguide_coplanar_splitter.html#kqcircuits.elements.waveguide_coplanar_splitter.t_cross_parameters"><code class="docutils literal notranslate"><span class="pre">t_cross_parameters()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.waveguide_coplanar_straight.html">kqcircuits.elements.waveguide_coplanar_straight</a><ul>
@@ -1179,43 +1178,6 @@
             <span class="n">points</span> <span class="o">+=</span> <span class="n">arc_points</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">angle_rad</span> <span class="o">+</span> <span class="n">next_rad</span><span class="p">,</span> <span class="n">angle_rad</span> <span class="o">+</span> <span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span><span class="n">points</span><span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="t_cross_parameters">
-<a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_splitter.html#kqcircuits.elements.waveguide_coplanar_splitter.t_cross_parameters">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">t_cross_parameters</span><span class="p">(</span>
-    <span class="n">a</span><span class="o">=</span><span class="n">Element</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()[</span><span class="s2">&quot;a&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">default</span><span class="p">,</span>
-    <span class="n">b</span><span class="o">=</span><span class="n">Element</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()[</span><span class="s2">&quot;b&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">default</span><span class="p">,</span>
-    <span class="n">a2</span><span class="o">=</span><span class="n">Element</span><span class="o">.</span><span class="n">a</span><span class="p">,</span>
-    <span class="n">b2</span><span class="o">=</span><span class="n">Element</span><span class="o">.</span><span class="n">b</span><span class="p">,</span>
-    <span class="n">length_extra</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-    <span class="n">length_extra_side</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-<span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A utility function to easily produce T-cross splitter (old WaveguideCoplanarTCross).</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        a: Width of center conductor</span>
-<span class="sd">        b: Width of gap</span>
-<span class="sd">        a2: Center conductor width of the side waveguide</span>
-<span class="sd">        b2: Gap of the side waveguide</span>
-<span class="sd">        length_extra: Extra length</span>
-<span class="sd">        length_extra_side: Extra length of the side waveguide</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        dictionary of parameters for WaveguideCoplanarSplitter</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">length</span> <span class="o">=</span> <span class="n">a2</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">b2</span> <span class="o">+</span> <span class="n">length_extra</span>
-    <span class="n">length2</span> <span class="o">=</span> <span class="n">a</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="n">length_extra_side</span>
-    <span class="k">return</span> <span class="p">{</span>
-        <span class="s2">&quot;lengths&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">length</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">length2</span><span class="p">],</span>
-        <span class="s2">&quot;angles&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">270</span><span class="p">],</span>
-        <span class="s2">&quot;a_list&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">a2</span><span class="p">],</span>
-        <span class="s2">&quot;b_list&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">b</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">b2</span><span class="p">],</span>
-        <span class="s2">&quot;port_names&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="s2">&quot;bottom&quot;</span><span class="p">],</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">}</span></div>
 
 </pre></div>
 
