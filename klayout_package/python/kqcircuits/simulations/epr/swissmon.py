@@ -74,10 +74,10 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
         raw = [simulation.refpoints[f"epr_cross_{i:02d}"] for i in indices]
 
         pts = [
-            _offset_point_toward(raw[0], sized),  # inner corner A → toward origin
-            _offset_point_away(raw[1], sized),     # outer point   → away from origin
-            _offset_point_away(raw[2], sized),     # outer point   → away from origin
-            _offset_point_toward(raw[3], sized),   # inner corner B → toward origin
+            _offset_point_away(raw[0], sized),
+            _offset_point_away(raw[1], sized),
+            _offset_point_away(raw[2], sized),
+            _offset_point_away(raw[3], sized),
         ]
         arm_poly = pya.DPolygon(pts + [base])
 
