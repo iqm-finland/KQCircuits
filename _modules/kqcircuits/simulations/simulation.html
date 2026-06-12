@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.simulation &mdash; KQCircuits 4.9.11 documentation</title>
+  <title>kqcircuits.simulations.simulation &mdash; KQCircuits 4.9.12 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=982ae252"></script>
+        <script src="../../../_static/documentation_options.js?v=afd26838"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -1305,7 +1305,7 @@
         <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;This field may be used to store &#39;virtual&#39; parameters useful for your simulations&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">ports</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a Simulation.</span>
 
 <span class="sd">        The initializer parses parameters, creates a top cell, and then calls `self.build` to create</span>
@@ -1314,6 +1314,11 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            layout: the layout on which to create the simulation</span>
+<span class="sd">            ports: optional list of `Port` to assign to the simulation. This is meant for simulations</span>
+<span class="sd">                created with an existing cell where `build` does not add ports itself, such as</span>
+<span class="sd">                `Simulation.from_cell`. When given, the list replaces `self.ports` after `build` has</span>
+<span class="sd">                run and before the simulation layers are created. Leave as None for subclasses that</span>
+<span class="sd">                populate `self.ports` inside `build`.</span>
 
 <span class="sd">        Keyword arguments:</span>
 <span class="sd">            `**kwargs`:</span>
@@ -1355,13 +1360,15 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">ports</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ports</span> <span class="o">=</span> <span class="n">ports</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">create_simulation_layers</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">warn_of_small_shapes</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Simulation.from_cell">
 <a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.from_cell">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_cell</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">margin</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">grid_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_cell</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">margin</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">grid_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ports</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a Simulation from an existing cell.</span>
 
 <span class="sd">        Arguments:</span>
@@ -1370,6 +1377,8 @@
 <span class="sd">                box of the cell If the `box` keyword argument is given, margin is ignored.</span>
 <span class="sd">            grid_size: size of the simulation box will be rounded to this resolution</span>
 <span class="sd">                If the `box` keyword argument is given, grid_size is ignored.</span>
+<span class="sd">            ports: optional list of `Port` to assign to the simulation. Pass this when the ports are</span>
+<span class="sd">                determined from the existing geometry, since the default `build` does not add ports.</span>
 <span class="sd">            `**kwargs`: any simulation parameters passed</span>
 
 <span class="sd">        Returns:</span>
@@ -1386,7 +1395,7 @@
                 <span class="n">box</span><span class="o">.</span><span class="n">top</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">top</span> <span class="o">/</span> <span class="n">grid_size</span><span class="p">)</span> <span class="o">*</span> <span class="n">grid_size</span>
             <span class="n">extra_kwargs</span><span class="p">[</span><span class="s2">&quot;box&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">box</span>
 
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">layout</span><span class="p">(),</span> <span class="n">cell</span><span class="o">=</span><span class="n">cell</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="o">**</span><span class="n">extra_kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">layout</span><span class="p">(),</span> <span class="n">cell</span><span class="o">=</span><span class="n">cell</span><span class="p">,</span> <span class="n">ports</span><span class="o">=</span><span class="n">ports</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="o">**</span><span class="n">extra_kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Simulation.build">

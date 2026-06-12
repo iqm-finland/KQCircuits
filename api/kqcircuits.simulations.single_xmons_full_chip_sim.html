@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.single_xmons_full_chip_sim &mdash; KQCircuits 4.9.11 documentation</title>
+  <title>kqcircuits.simulations.single_xmons_full_chip_sim &mdash; KQCircuits 4.9.12 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
@@ -18,7 +18,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=982ae252"></script>
+        <script src="../_static/documentation_options.js?v=afd26838"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -1022,7 +1022,7 @@
 <span id="kqcircuits-simulations-single-xmons-full-chip-sim"></span><h1>kqcircuits.simulations.single_xmons_full_chip_sim<a class="headerlink" href="#module-kqcircuits.simulations.single_xmons_full_chip_sim" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="kqcircuits.simulations.single_xmons_full_chip_sim.SingleXmonsFullChipSim">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.single_xmons_full_chip_sim.</span></span><span class="sig-name descname"><span class="pre">SingleXmonsFullChipSim</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/single_xmons_full_chip_sim.html#SingleXmonsFullChipSim"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.single_xmons_full_chip_sim.SingleXmonsFullChipSim" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.single_xmons_full_chip_sim.</span></span><span class="sig-name descname"><span class="pre">SingleXmonsFullChipSim</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ports</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/single_xmons_full_chip_sim.html#SingleXmonsFullChipSim"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.single_xmons_full_chip_sim.SingleXmonsFullChipSim" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Simulation</span></code></a></p>
 <p>Initialize a Simulation.</p>
 <p>The initializer parses parameters, creates a top cell, and then calls <cite>self.build</cite> to create
@@ -1030,7 +1030,14 @@ the simulation geometry, followed by <cite>self.create_simulation_layers</cite> 
 so it is ready for exporting.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>layout</strong> – the layout on which to create the simulation</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layout</strong> – the layout on which to create the simulation</p></li>
+<li><p><strong>ports</strong> – optional list of <cite>Port</cite> to assign to the simulation. This is meant for simulations
+created with an existing cell where <cite>build</cite> does not add ports itself, such as
+<cite>Simulation.from_cell</cite>. When given, the list replaces <cite>self.ports</cite> after <cite>build</cite> has
+run and before the simulation layers are created. Leave as None for subclasses that
+populate <cite>self.ports</cite> inside <cite>build</cite>.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>**kwargs</strong> – <p>Any parameter can be passed as a keyword argument.</p>
