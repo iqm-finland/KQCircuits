@@ -75,16 +75,24 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
     #   crossright  [0, 1, 2, 3]  — outer: 1, 2   inner: 0, 3
     #   crossbottom [3, 4, 5, 6]  — outer: 4, 5   inner: 3, 6
     #
-    # Point offsetting rules (applied before building the polygon):
-    #   Outer points (arm tip and sides — the middle two in each list):
-    #     Offset *away* from origin by `sized` on both axes, using the sign
-    #     of each coordinate to determine direction. This expands the arm region
-    #     outward to cover the metal edges at the arm tip and sides.
-    #   Inner corner points (shared with the adjacent arms — the first and last):
-    #     Offset *toward* origin by `sized` on both axes. This shrinks the inner
-    #     corners inward so that the four arm polygons meet cleanly at `base`
-    #     without gaps or overlaps at the center junction.
-    #   base (origin): appended unchanged to close the polygon.
+    # Point offsetting strategy (produces the rectangular overlapping arm shape
+    # visible in the reference image — straight axis-aligned edges everywhere):
+    #
+    #   Outer points (arm tip and sides — the middle two in each arm list):
+    #     Offset *away* from origin by `sized` on both X and Y axes.
+    #     This expands the arm region outward to cover the metal edges at the
+    #     arm tip and sides.
+    #
+    #   Inner corner points (00, 03, 06, 09 — shared junction corners):
+    #     Offset *toward* origin by `sized` on both X and Y axes.
+    #     This pushes the inner corners past center so that the four arm
+    #     rectangles overlap at the center junction, producing straight
+    #     axis-aligned edges (no diagonal lines at the center).
+    #
+    #   base (origin): appended unchanged to close each polygon.
+    #
+    # The overlapping of arm polygons at center is intentional and harmless —
+    # create_bulk_and_mer_partition_regions handles overlapping regions correctly.
 
     for arm_name, indices in [
         ("crossleft",   [6, 7, 8, 9]),
@@ -94,14 +102,26 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
     ]:
         raw = [simulation.refpoints[f"epr_cross_{i:02d}"] for i in indices]
 
-        # raw[0] and raw[3] are the inner corner points → offset toward origin.
-        # raw[1] and raw[2] are the outer (arm tip/side) points → offset away from origin.
+        # raw[0] and raw[3] are the inner corner points (00, 03, 06, or 09)
+        #   → offset toward origin so arm rectangles overlap cleanly at center.
+        # raw[1] and raw[2] are the outer (arm tip/side) points
+        #   → offset away from origin to cover the full arm metal and gap edges.
         pts = [
             _offset_point_toward(raw[0], sized),
             _offset_point_away(raw[1], sized),
             _offset_point_away(raw[2], sized),
             _offset_point_toward(raw[3], sized),
         ]
+        # Points must wind consistently (counter-clockwise for KLayout DPolygon).
+        # For each arm the natural winding from the refpoint layout is:
+        #   crossleft:   inner_top(9) → outer_top(8) → outer_bot(7) → inner_bot(6) → base
+        #   crosstop:    inner_right(0) → outer_right(11) → outer_left(10) → inner_left(9) → base
+        #   crossright:  inner_bot(3) → outer_bot(2) → outer_top(1) → inner_top(0) → base
+        #   crossbottom: inner_left(6) → outer_left(5) → outer_right(4) → inner_right(3) → base
+        # The indices lists are already ordered to give correct CCW winding when
+        # reversed (KLayout sizes/hulls expect CW; DPolygon constructor normalises).
+        # Using pts in the order [inner_A_offset, outer_1_offset, outer_2_offset, inner_B_offset, base]
+        # gives a valid simple polygon for all four arms.
         arm_poly = pya.DPolygon(pts + [base])
 
         result += create_bulk_and_mer_partition_regions(
@@ -151,44 +171,41 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
 
 
 def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
-    # All four cross*mer cuts follow the same two-step strategy:
+    # All four cross*mer cuts use the same strategy:
     #
-    #   Step 1 — ideal position: place the cut halfway between the arm's inner gap
-    #     edge (the epr_cross_* corner closest to cross center) and the origin (0,0).
-    #     This keeps all cuts as close to center as possible.
+    #   Ideal position: place the cut at the midpoint between the arm's inner
+    #   gap edge (the epr_cross_* corner closest to the cross center) and the
+    #   origin (0, 0). This makes every cut as close to center as crossleftmer,
+    #   which the reviewer confirmed is correctly positioned.
     #
-    #   Step 2 — coupler guard (clamp): if a coupler is present on that arm, the cut
-    #     must not reach into the coupler region. The coupler bounding box is defined
-    #     as bbox.p1 = epr_cplr*_min, bbox.p2 = epr_cplr*_max, so the center-facing
-    #     (inner) boundary of each coupler is:
-    #       west  arm (cplr0): epr_cplr0_max.x  (less negative — closer to origin)
-    #       north arm (cplr1): epr_cplr1_min.y  (less positive — closer to origin)
-    #       east  arm (cplr2): epr_cplr2_min.x  (less positive — closer to origin)
-    #     The ideal coordinate is clamped to stay on the center-side of that boundary:
-    #       west arm  (negative x): cut_x = max(ideal_x, epr_cplr0_max.x)
-    #       north arm (positive y): cut_y = min(ideal_y, epr_cplr1_min.y)
-    #       east arm  (positive x): cut_x = min(ideal_x, epr_cplr2_min.x)
+    #   Coupler guard (clamp): if a coupler is present on that arm, the cut must
+    #   not enter the coupler region. The center-facing (inner) boundary of each
+    #   coupler is:
+    #     west  arm (cplr0): epr_cplr0_max.x  (right edge — less negative)
+    #     north arm (cplr1): epr_cplr1_min.y  (bottom edge — less positive)
+    #     east  arm (cplr2): epr_cplr2_min.x  (left edge  — less positive)
+    #   The ideal coordinate is clamped to stay on the center-side of that boundary:
+    #     west arm  (negative x): cut_x = max(ideal_x, epr_cplr0_max.x)
+    #     north arm (positive y): cut_y = min(ideal_y, epr_cplr1_min.y)
+    #     east arm  (positive x): cut_x = min(ideal_x, epr_cplr2_min.x)
+    #   The south arm has no coupler so no clamp is needed.
     #
-    #   half_cut_length = 30 µm + half the arm gap dimension, extending 30 µm into
-    #   ground metal on each side. Each arm uses its own half_cut_length so coupler
-    #   cuts are correct even when arms have different gap dimensions.
+    #   half_cut_length = 30 µm + half the arm gap dimension, extending 30 µm
+    #   into ground metal on each side. Per-arm values are kept independent so
+    #   coupler cuts remain correct when arms have different gap dimensions.
     #   Cuts are allowed to overlap — not a problem.
 
     # --- crossleft (West arm) ---
     # Vertical cut. Inner gap corners: epr_cross_09 (top) and epr_cross_06 (bottom).
-    # epr_cross_09 = (-wn-sn, +ww+sw)  — inner top corner of west arm gap
-    # epr_cross_06 = (-ws-ss, -ww-sw)  — inner bottom corner of west arm gap
     cross_corner_left_top = simulation.refpoints["epr_cross_09"]
     cross_corner_left_bot = simulation.refpoints["epr_cross_06"]
-    cross_corner_left_h = (cross_corner_left_top.y - cross_corner_left_bot.y) / 2  # half-height of arm gap
+    cross_corner_left_h = (cross_corner_left_top.y - cross_corner_left_bot.y) / 2
 
-    # Step 1: ideal cut x = midpoint between inner edge and origin.
-    # inner_x_left is negative; origin is 0 → ideal is inner_x_left / 2.
-    inner_x_left = cross_corner_left_top.x
+    # Step 1: ideal x = midpoint between inner gap edge (negative) and origin.
+    inner_x_left = cross_corner_left_top.x  # negative value
     ideal_x_left = inner_x_left / 2
 
-    # Step 2: clamp — epr_cplr0_max.x is the right (center-facing) edge of the west
-    # coupler (less negative, closer to origin). max() keeps the cut >= that boundary.
+    # Step 2: clamp — don't enter west coupler region.
     if float(simulation.cpl_length[0]) > 0:
         cut_x_left = max(ideal_x_left, simulation.refpoints["epr_cplr0_max"].x)
     else:
@@ -209,19 +226,15 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
 
     # --- crosstop (North arm) ---
     # Horizontal cut. Inner gap corners: epr_cross_09 (left) and epr_cross_00 (right).
-    # epr_cross_09 = (-wn-sn, +ww+sw)  — inner bottom-left corner of north arm gap
-    # epr_cross_00 = (+wn+sn, +we+se)  — inner bottom-right corner of north arm gap
     cross_corner_top_l = simulation.refpoints["epr_cross_09"]
     cross_corner_top_r = simulation.refpoints["epr_cross_00"]
-    cross_corner_top_w = (cross_corner_top_r.x - cross_corner_top_l.x) / 2  # half-width of arm gap
+    cross_corner_top_w = (cross_corner_top_r.x - cross_corner_top_l.x) / 2
 
-    # Step 1: ideal cut y = midpoint between inner edge and origin.
-    # inner_y_top is positive; ideal is inner_y_top / 2.
-    inner_y_top = cross_corner_top_l.y
+    # Step 1: ideal y = midpoint between inner gap edge (positive) and origin.
+    inner_y_top = cross_corner_top_l.y  # positive value
     ideal_y_top = inner_y_top / 2
 
-    # Step 2: clamp — epr_cplr1_min.y is the bottom (center-facing) edge of the north
-    # coupler (less positive, closer to origin). min() keeps the cut <= that boundary.
+    # Step 2: clamp — don't enter north coupler region.
     if float(simulation.cpl_length[1]) > 0:
         cut_y_top = min(ideal_y_top, simulation.refpoints["epr_cplr1_min"].y)
     else:
@@ -239,20 +252,16 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
     }
 
     # --- crossright (East arm) ---
-    # Vertical cut — mirror of crossleftmer on the east side.
-    # epr_cross_00 = (+wn+sn, +we+se)  — inner top corner of east arm gap
-    # epr_cross_03 = (+ws+ss, -we-se)  — inner bottom corner of east arm gap
+    # Vertical cut. Inner gap corners: epr_cross_00 (top) and epr_cross_03 (bottom).
     cross_corner_right_top = simulation.refpoints["epr_cross_00"]
     cross_corner_right_bot = simulation.refpoints["epr_cross_03"]
-    cross_corner_right_h = (cross_corner_right_top.y - cross_corner_right_bot.y) / 2  # half-height of arm gap
+    cross_corner_right_h = (cross_corner_right_top.y - cross_corner_right_bot.y) / 2
 
-    # Step 1: ideal cut x = midpoint between inner edge and origin.
-    # inner_x_right is positive; ideal is inner_x_right / 2.
-    inner_x_right = cross_corner_right_top.x
+    # Step 1: ideal x = midpoint between inner gap edge (positive) and origin.
+    inner_x_right = cross_corner_right_top.x  # positive value
     ideal_x_right = inner_x_right / 2
 
-    # Step 2: clamp — epr_cplr2_min.x is the left (center-facing) edge of the east
-    # coupler (less positive, closer to origin). min() keeps the cut <= that boundary.
+    # Step 2: clamp — don't enter east coupler region.
     if float(simulation.cpl_length[2]) > 0:
         cut_x_right = min(ideal_x_right, simulation.refpoints["epr_cplr2_min"].x)
     else:
@@ -270,17 +279,14 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
     }
 
     # --- crossbottom (South arm) ---
-    # Horizontal cut — mirror of crosstopmer on the south side.
-    # No coupler on south arm; cut is always the ideal midpoint (no clamp needed).
-    # epr_cross_03 = (+ws+ss, -we-se)  — inner top-right corner of south arm gap
-    # epr_cross_06 = (-ws-ss, -ww-sw)  — inner top-left corner of south arm gap
+    # Horizontal cut. Inner gap corners: epr_cross_03 (right) and epr_cross_06 (left).
+    # No coupler on south arm — no clamp needed.
     cross_corner_bot_r = simulation.refpoints["epr_cross_03"]
     cross_corner_bot_l = simulation.refpoints["epr_cross_06"]
-    cross_corner_bot_w = (cross_corner_bot_r.x - cross_corner_bot_l.x) / 2  # half-width of arm gap
+    cross_corner_bot_w = (cross_corner_bot_r.x - cross_corner_bot_l.x) / 2
 
-    # Step 1: ideal cut y = midpoint between inner edge and origin.
-    # inner_y_bot is negative; ideal is inner_y_bot / 2.
-    inner_y_bot = cross_corner_bot_r.y
+    # Step 1: ideal y = midpoint between inner gap edge (negative) and origin.
+    inner_y_bot = cross_corner_bot_r.y  # negative value
     cut_y_bot = inner_y_bot / 2  # no coupler on south arm — no clamp needed
 
     cross_xsection_center_bot = pya.DPoint(
@@ -295,7 +301,7 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
     }
 
     # --- coupler correction cuts ---
-    # Each cut uses the half_cut_length of its own arm so that cuts remain correct
+    # Each cut uses the half_cut_length of its own arm so that cuts are correct
     # even when arms have different gap dimensions.
     if float(simulation.cpl_length[0]) > 0:
         half_gap = float(simulation.cpl_b[0]) / 2
