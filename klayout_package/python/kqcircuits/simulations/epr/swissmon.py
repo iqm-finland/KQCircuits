@@ -31,10 +31,10 @@ from kqcircuits.simulations.partition_region import PartitionRegion
 # Partition region and correction cuts definitions for Swissmon qubit
 
 
-def _offset_point_away(p: pya.DPoint, sized: float) -> pya.DPoint:
+def _offset_point_away(p: pya.DPoint, sized: float, origin: pya.DPoint) -> pya.DPoint:
     """Offset a point *away* from the origin by `sized` on each axis."""
-    dx = math.copysign(sized, p.x) if p.x != 0 else 0.0
-    dy = math.copysign(sized, p.y) if p.y != 0 else 0.0
+    dx = math.copysign(sized, p.x - origin.x) if p.x != 0 else 0.0
+    dy = math.copysign(sized, p.y - origin.y) if p.y != 0 else 0.0
     return pya.DPoint(p.x + dx, p.y + dy)
 
 
