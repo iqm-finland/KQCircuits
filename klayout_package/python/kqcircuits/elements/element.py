@@ -22,7 +22,7 @@ import importlib.util
 from inspect import isclass
 
 from kqcircuits.defaults import default_layers, default_faces
-from kqcircuits.pya_resolver import pya, lay
+from kqcircuits.pya_resolver import pya, lay, is_standalone_session
 from kqcircuits.simulations.epr.gui_config import epr_gui_visualised_partition_regions
 from kqcircuits.util.geometry_helper import get_cell_path_length
 from kqcircuits.util.library_helper import load_libraries, to_library_name, to_module_name
