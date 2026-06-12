@@ -1,5 +1,5 @@
 # This code is part of KQCircuits
-# Copyright (C) 2025 IQM Finland Oy
+# Copyright (C) 2026 IQM Finland Oy
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 # License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
@@ -15,17 +15,3 @@
 # (meetiqm.com/iqm-open-source-trademark-policy). IQM welcomes contributions to the code.
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
-
-"""
-Deletes all Elmer and Gmsh mesh files from the current tmp folder
-"""
-
-from pathlib import Path
-from elmer_helpers import delete_meshes
-
-path = Path.cwd()
-
-non_sim_dirs = ["scripts", "log_files", "elmer_data", "s_matrix_plots"]
-for p in path.iterdir():
-    if p.is_dir() and p.name not in non_sim_dirs:
-        delete_meshes(path, p.name)
