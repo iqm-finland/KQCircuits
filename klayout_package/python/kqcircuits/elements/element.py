@@ -22,7 +22,7 @@ import importlib.util
 from inspect import isclass
 
 from kqcircuits.defaults import default_layers, default_faces
-from kqcircuits.pya_resolver import pya
+from kqcircuits.pya_resolver import pya, lay
 from kqcircuits.simulations.epr.gui_config import epr_gui_visualised_partition_regions
 from kqcircuits.util.geometry_helper import get_cell_path_length
 from kqcircuits.util.library_helper import load_libraries, to_library_name, to_module_name
@@ -166,7 +166,6 @@ class Element(pya.PCellDeclarationHelper):
     etch_opposite_face_margin = Param(pdt.TypeDouble, "Margin of the opposite face etch shape", 5, unit="μm")
 
     _epr_show = Param(pdt.TypeBoolean, "Show geometry related to EPR simulation, if available", False)
-    # Changed from TypeLayer to TypeBoolean — EPR cuts are now drawn as Markers, not into fabrication layers
     _epr_cross_section_cut = Param(pdt.TypeBoolean, "Show EPR cross section cuts, if available", False)
 
     def __init__(self):
@@ -214,7 +213,6 @@ class Element(pya.PCellDeclarationHelper):
         #     if attr.startswith(epr_part_reg_prefix):
         #         delattr(type(self), attr)
         # Now add the new parameters
-        # Changed from TypeLayer to TypeBoolean — partition regions are now drawn as Markers
         if to_library_name(cls.__name__) in epr_gui_visualised_partition_regions:
             for pr in epr_gui_visualised_partition_regions[to_library_name(cls.__name__)]:
                 pr_name = f"{epr_part_reg_prefix}{pr}"
@@ -521,15 +519,10 @@ class Element(pya.PCellDeclarationHelper):
         """Child classes may re-define this method for post-build operations."""
         self.etch_opposite_face_impl()
         self.duplicate_face_impl()
-        # Clear all existing EPR markers before redrawing, so there is no duplication or lingering
         if self._epr_show and not is_standalone_session():
-            try:
-                from kqcircuits.pya_resolver import lay  # pylint: disable=import-outside-toplevel
-                layout_view = lay.LayoutView.current()
-                if layout_view is not None:
-                    layout_view.clear_markers()
-            except Exception:  # pylint: disable=broad-except
-                pass
+            layout_view = lay.LayoutView.current()
+            if layout_view is not None:
+                layout_view.clear_markers()
         self._show_epr_cross_section_cuts()
         self._show_epr_partition_regions()
 
@@ -689,17 +682,13 @@ class Element(pya.PCellDeclarationHelper):
           - more than one instance is selected
         Refusing to draw in those cases keeps the feature safe and non-crashy.
         """
-        try:
-            from kqcircuits.pya_resolver import lay  # pylint: disable=import-outside-toplevel
-            layout_view = lay.LayoutView.current()
-            if layout_view is None:
-                return None
-            selected = list(layout_view.each_object_selected())
-            if len(selected) != 1:
-                return None
-            return selected[0].inst().dcplx_trans
-        except Exception:  # pylint: disable=broad-except
+        layout_view = lay.LayoutView.current()
+        if layout_view is None:
             return None
+        selected = list(layout_view.each_object_selected())
+        if len(selected) != 1:
+            return None
+        return selected[0].inst().dcplx_trans
 
     def _load_epr_module(self):
         """Dynamically imports and reloads the EPR module that corresponds to this element.
@@ -733,7 +722,6 @@ class Element(pya.PCellDeclarationHelper):
         assert hasattr(epr_module, "correction_cuts"), \
             f"No 'correction_cuts' function defined in EPR module for {type(self).__name__}"
 
-        from kqcircuits.pya_resolver import lay  # pylint: disable=import-outside-toplevel
         layout_view = lay.LayoutView.current()
 
         cuts = epr_module.correction_cuts(self)
@@ -741,13 +729,11 @@ class Element(pya.PCellDeclarationHelper):
             p1 = trans.trans(cut["p1"])
             p2 = trans.trans(cut["p2"])
 
-            # Line marker representing the cut path
-            line_marker = pya.Marker()
+            line_marker = pya.Marker(layout_view)
             line_marker.set_path(pya.DPath([p1, p2], 0))
             line_marker.line_width = 2
             line_marker.color = 0xFF4500  # orange-red
 
-            # Text markers at each endpoint of the cut
             for label, pt in [(f"{cut_name}_p1", p1), (f"{cut_name}_p2", p2)]:
                 text_marker = pya.Marker(layout_view)
                 text_marker.set_text(pya.DText(label, pt.x, pt.y))
@@ -770,7 +756,6 @@ class Element(pya.PCellDeclarationHelper):
         assert hasattr(epr_module, "partition_regions"), \
             f"No 'partition_regions' function defined in EPR module for {type(self).__name__}"
 
-        from kqcircuits.pya_resolver import lay  # pylint: disable=import-outside-toplevel
         layout_view = lay.LayoutView.current()
 
         for pr in epr_module.partition_regions(self):
@@ -779,7 +764,6 @@ class Element(pya.PCellDeclarationHelper):
             if not getattr(self, f"_epr_part_reg_{pr.name}"):
                 continue
 
-            # Collect all sub-polygons from the partition region into a Region
             region = pya.Region()
             if isinstance(pr.region, list):
                 for r in pr.region:
@@ -789,7 +773,6 @@ class Element(pya.PCellDeclarationHelper):
             else:
                 region = pya.Region(pr.region.to_itype(self.layout.dbu))
 
-            # Draw one polygon marker per sub-polygon, applying the instance transform
             for polygon in region.each():
                 dpoly = polygon.to_dtype(self.layout.dbu).transformed(trans)
                 poly_marker = pya.Marker(layout_view)
@@ -799,7 +782,6 @@ class Element(pya.PCellDeclarationHelper):
                 poly_marker.color = 0x1E90FF      # dodger blue
                 poly_marker.vertex_size = 4
 
-            # Text marker at the centroid of the whole region bounding box
             center = region.bbox().to_dtype(self.layout.dbu).center()
             center_transformed = trans.trans(center)
             text_marker = pya.Marker(layout_view)
