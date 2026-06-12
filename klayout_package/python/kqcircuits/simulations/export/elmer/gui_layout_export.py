@@ -189,6 +189,11 @@ def collect_ports(top_cell):
     return ports, edge_directions, edge_footprints
 
 
+def _clamp(value, low, high):
+    """Clamp ``value`` to the closed interval ``[low, high]``."""
+    return min(max(value, low), high)
+
+
 def simulation_box(top_cell, ports, edge_directions, edge_footprints, margin=100.0):
     """Return the simulation box as a :class:`pya.DBox` and place the edge ports on its rim.
 
@@ -200,8 +205,9 @@ def simulation_box(top_cell, ports, edge_directions, edge_footprints, margin=100
     guarantees each EdgePort sits on the box rim, which the Elmer export requires.
 
     A clear error is raised when the launcher positions do not admit a valid box: when a side has no room
-    against the opposite side, or when the rim cannot pass through a launcher because it sits too far out
-    relative to its neighbour on the same side.
+    against the opposite side, when the rim cannot pass through a launcher because it sits too far out
+    relative to its neighbour on the same side or when the horizontal and vertical launchers do not agree
+    on one box, so a launcher falls past a box corner and has no point on the finite rim.
 
     The ``signal_location`` of the affected EdgePorts is updated in place.
     """
@@ -236,36 +242,56 @@ def simulation_box(top_cell, ports, edge_directions, edge_footprints, margin=100
             "outward and sit at the edge of the design."
         )
 
-    # Each launcher must still be crossed by its box edge, otherwise it has no point on the rim to host the
-    # port. This rejects a launcher that sits too far out compared to its neighbours on the same side.
+    # Each launcher must sit on its box edge. Two things can go wrong. The box edge may miss the launcher
+    # along its own axis, when the launcher sits too far out compared to its neighbours on the same side.
+    # Or the launcher may fall past a box corner along the other axis, when the horizontal and vertical
+    # launchers do not agree on one box, for example a south launcher pushed out beyond the right edge. Then
+    # there is no point on the finite rim to host the port, so both cases are rejected.
     edges = {"left": left, "right": right, "bottom": bottom, "top": top}
+    too_far_out = (
+        "A launcher sits too far outside the box for the box edge to reach it. The launcher locations are "
+        "incorrect: launchers on the same side should sit at a similar distance from the design."
+    )
+    inconsistent_box = (
+        "The launchers do not fit a single simulation box: a launcher falls past a box corner, so no box "
+        "holds every launcher. Check that the horizontal and vertical launchers all sit at the design edges."
+    )
+
+    # Left and right launchers: the edge must cross the launcher in x. The launcher must also overlap the
+    # vertical span so its port lands on the finite rim, not past a corner.
     for side in ("left", "right"):
         for port in sides[side]:
             footprint = edge_footprints.get(port.number)
-            if footprint is not None and not footprint.left - 1e-6 <= edges[side] <= footprint.right + 1e-6:
-                raise ValueError(
-                    "A launcher sits too far outside the box for the box edge to reach it. The launcher "
-                    "locations are incorrect: launchers on the same side should sit at a similar distance "
-                    "from the design."
-                )
+            if footprint is None:
+                continue
+            if not footprint.left - 1e-6 <= edges[side] <= footprint.right + 1e-6:
+                raise ValueError(too_far_out)
+            if footprint.bottom > top + 1e-6 or footprint.top < bottom - 1e-6:
+                raise ValueError(inconsistent_box)
+
+    # Bottom and top launchers, mirrored: the edge must cross the launcher in y. The launcher must overlap
+    # the horizontal span.
     for side in ("bottom", "top"):
         for port in sides[side]:
             footprint = edge_footprints.get(port.number)
-            if footprint is not None and not footprint.bottom - 1e-6 <= edges[side] <= footprint.top + 1e-6:
-                raise ValueError(
-                    "A launcher sits too far outside the box for the box edge to reach it. The launcher "
-                    "locations are incorrect: launchers on the same side should sit at a similar distance "
-                    "from the design."
-                )
+            if footprint is None:
+                continue
+            if not footprint.bottom - 1e-6 <= edges[side] <= footprint.top + 1e-6:
+                raise ValueError(too_far_out)
+            if footprint.left > right + 1e-6 or footprint.right < left - 1e-6:
+                raise ValueError(inconsistent_box)
 
+    # Project every EdgePort onto its box edge. The free coordinate is clamped into the rim so a launcher
+    # placed slightly past a corner still lands on the box, the same way the edge projection absorbs a small
+    # offset along the launcher's own axis.
     for port in sides["left"]:
-        port.signal_location = pya.DPoint(left, port.signal_location.y)
+        port.signal_location = pya.DPoint(left, _clamp(port.signal_location.y, bottom, top))
     for port in sides["right"]:
-        port.signal_location = pya.DPoint(right, port.signal_location.y)
+        port.signal_location = pya.DPoint(right, _clamp(port.signal_location.y, bottom, top))
     for port in sides["bottom"]:
-        port.signal_location = pya.DPoint(port.signal_location.x, bottom)
+        port.signal_location = pya.DPoint(_clamp(port.signal_location.x, left, right), bottom)
     for port in sides["top"]:
-        port.signal_location = pya.DPoint(port.signal_location.x, top)
+        port.signal_location = pya.DPoint(_clamp(port.signal_location.x, left, right), top)
 
     return pya.DBox(left, bottom, right, top)
 

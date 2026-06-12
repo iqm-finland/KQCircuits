@@ -47,11 +47,11 @@ def _design_with_two_launchers_and_qubit():
     return layout, top
 
 
-def _cell_with_bbox(left, bottom, right, top_):
+def _cell_with_bbox(x1, y1, x2, y2):
     """Return a layout and a top cell whose bounding box is the given rectangle."""
     layout = pya.Layout()
     top = layout.create_cell("Top")
-    top.shapes(layout.layer(1, 0)).insert(pya.DBox(left, bottom, right, top_))
+    top.shapes(layout.layer(1, 0)).insert(pya.DBox(x1, y1, x2, y2))
     return layout, top
 
 
@@ -132,6 +132,60 @@ def test_simulation_box_raises_when_launcher_too_far_out():
         simulation_box(top, [inner_right, far_right], directions, footprints, margin=100.0)
 
 
+def test_simulation_box_places_vertical_launcher_on_box_rim():
+    """A south launcher inside the horizontal span lands on the bottom rim, so the box is consistent.
+
+    The left and right edges are set by the west and east launchers. A south launcher whose footprint sits
+    between them shares that box: its port is projected onto the bottom rim at its own x.
+    """
+    layout, top = _cell_with_bbox(-1000.0, -1000.0, 1000.0, 1000.0)
+    assert layout.cells() > 0
+
+    west = EdgePort(1, pya.DPoint(-1000.0, 0.0))
+    east = EdgePort(2, pya.DPoint(1000.0, 0.0))
+    south = EdgePort(3, pya.DPoint(300.0, -1000.0))
+    directions = {1: pya.DVector(-1, 0), 2: pya.DVector(1, 0), 3: pya.DVector(0, -1)}
+    footprints = {
+        1: pya.DBox(-1050.0, -100.0, -800.0, 100.0),
+        2: pya.DBox(800.0, -100.0, 1050.0, 100.0),
+        3: pya.DBox(200.0, -1050.0, 400.0, -950.0),
+    }
+
+    box = simulation_box(top, [west, east, south], directions, footprints, margin=100.0)
+
+    assert box.left == pytest.approx(-1000.0)
+    assert box.right == pytest.approx(1000.0)
+    assert box.bottom == pytest.approx(-1000.0)
+    # The south port sits on the bottom rim, keeping its own x which is inside the horizontal span.
+    assert south.signal_location.y == pytest.approx(box.bottom)
+    assert south.signal_location.x == pytest.approx(300.0)
+
+
+def test_simulation_box_raises_when_launcher_outside_perpendicular_span():
+    """A south launcher sitting outside the horizontal span cannot share a consistent box, so it is rejected.
+
+    The west and east launchers fix the left and right edges. A south launcher placed to the right of the
+    east launcher has no point on the finite bottom rim, the box corner cuts it off. The old code projected
+    its port outside the box instead of complaining, so this guards that the launchers are reconciled across
+    both axes.
+    """
+    layout, top = _cell_with_bbox(-1000.0, -1000.0, 1000.0, 1000.0)
+    assert layout.cells() > 0
+
+    west = EdgePort(1, pya.DPoint(-1000.0, 0.0))
+    east = EdgePort(2, pya.DPoint(1000.0, 0.0))
+    south = EdgePort(3, pya.DPoint(2000.0, -1000.0))
+    directions = {1: pya.DVector(-1, 0), 2: pya.DVector(1, 0), 3: pya.DVector(0, -1)}
+    footprints = {
+        1: pya.DBox(-1050.0, -100.0, -800.0, 100.0),
+        2: pya.DBox(800.0, -100.0, 1050.0, 100.0),
+        3: pya.DBox(1900.0, -1050.0, 2100.0, -950.0),  # entirely past the right edge
+    }
+
+    with pytest.raises(ValueError):
+        simulation_box(top, [west, east, south], directions, footprints, margin=100.0)
+
+
 def test_layout_without_launchers_has_no_edge_ports():
     """A layout with only a qubit yields no edge ports or directions."""
     layout = pya.Layout()
@@ -167,11 +221,9 @@ def test_export_on_copied_layout_keeps_qubit_internal_port(tmp_path):
 def test_export_raises_when_folder_exists(tmp_path):
     """The library refuses to overwrite an existing output folder."""
     layout, top = _design_with_two_launchers_and_qubit()
-    copy_layout = pya.Layout()
-    copy_layout.assign(layout)
-    copy_top = [cell for cell in copy_layout.top_cells() if cell.name == top.name][0]
+    assert layout.cells() > 0
 
     out_dir = tmp_path / "sim"
     out_dir.mkdir()
     with pytest.raises(FileExistsError):
-        export_open_layout_to_elmer(copy_top, out_dir, name="sim")
+        export_open_layout_to_elmer(top, out_dir, name="sim")
