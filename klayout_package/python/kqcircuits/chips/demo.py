@@ -29,7 +29,7 @@ from kqcircuits.elements.airbridge_connection import AirbridgeConnection
 from kqcircuits.elements.waveguide_composite import WaveguideComposite
 from kqcircuits.util.node import Node
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
-from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter, t_cross_parameters
+from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter
 from kqcircuits.test_structures.junction_test_pads.junction_test_pads import JunctionTestPads
 from kqcircuits.util.geometry_helper import point_shift_along_vector
 
@@ -205,6 +205,7 @@ class Demo(Chip):
             finger_number=cap_finger_nr,
         )
 
+        half_wg = self.a / 2 + self.b
         self.insert_cell(
             WaveguideCoplanarSplitter,
             pya.DTrans(tcross_rot, False, 0, 0),
@@ -212,7 +213,8 @@ class Demo(Chip):
             label_trans=pya.DCplxTrans(0.2),
             align_to=cap_ref_abs["port_b"],
             align="port_bottom",
-            **t_cross_parameters(a=self.a, b=self.b, a2=self.a, b2=self.b, length_extra_side=30),
+            lengths=[half_wg, half_wg, half_wg + 30],
+            port_names=["right", "left", "bottom"],
         )
 
     def produce_probelines(self):

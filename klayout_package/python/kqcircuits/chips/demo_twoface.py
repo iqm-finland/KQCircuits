@@ -25,7 +25,7 @@ from kqcircuits.junctions.junction import Junction
 from kqcircuits.qubits.swissmon import Swissmon
 from kqcircuits.elements.waveguide_composite import WaveguideComposite
 from kqcircuits.util.node import Node
-from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter, t_cross_parameters
+from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.geometry_helper import point_shift_along_vector
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
@@ -187,11 +187,12 @@ class DemoTwoface(Chip):
         cap_trans = pya.DTrans(cap_rot, False, meander_end + cap_ref_rel["base"] - cap_ref_rel["port_a"])
         _, cap_ref_abs = self.insert_cell(cap_cell, cap_trans)
 
+        half_wg = self.a / 2 + self.b
         tcross_cell = self.add_element(
             WaveguideCoplanarSplitter,
-            **t_cross_parameters(
-                a=self.a, b=self.b, a2=self.a, b2=self.b, length_extra_side=30, face_ids=[self.face_ids[1]]
-            ),
+            lengths=[half_wg, half_wg, half_wg + 30],
+            port_names=["right", "left", "bottom"],
+            face_ids=[self.face_ids[1]],
         )
         tcross_ref_rel = self.get_refpoints(tcross_cell, pya.DTrans(tcross_rot, False, 0, 0))
         tcross_trans = pya.DTrans(tcross_rot, False, cap_ref_abs["port_b"] - tcross_ref_rel["port_bottom"])
