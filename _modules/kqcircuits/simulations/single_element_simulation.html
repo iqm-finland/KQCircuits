@@ -1050,7 +1050,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_get_build_function</span><span class="p">(</span>
-    <span class="n">element_class</span><span class="p">,</span> <span class="n">ignore_ports</span><span class="p">,</span> <span class="n">transformation_from_center</span><span class="p">,</span> <span class="n">sim_junction_type</span><span class="p">,</span> <span class="n">deembed_cross_sections</span>
+    <span class="n">element_class</span><span class="p">,</span> <span class="n">ignore_ports</span><span class="p">,</span> <span class="n">transformation_from_center</span><span class="p">,</span> <span class="n">sim_junction_type</span><span class="p">,</span> <span class="n">deembed_cross_sections</span><span class="p">,</span> <span class="n">center</span>
 <span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_build_for_element_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">sim_junction_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">junction_type_choices</span><span class="p">:</span>
@@ -1063,7 +1063,7 @@
             <span class="n">element_class</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">(),</span> <span class="s2">&quot;junction_type&quot;</span><span class="p">:</span> <span class="n">sim_junction_type</span><span class="p">,</span> <span class="s2">&quot;fluxline_type&quot;</span><span class="p">:</span> <span class="s2">&quot;none&quot;</span><span class="p">}</span>
         <span class="p">)</span>
 
-        <span class="n">element_trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">center</span><span class="p">())</span>
+        <span class="n">element_trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">center</span><span class="p">()</span> <span class="k">if</span> <span class="n">center</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">center</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">transformation_from_center</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">element_trans</span> <span class="o">*=</span> <span class="n">transformation_from_center</span><span class="p">(</span><span class="n">simulation_cell</span><span class="p">)</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">refp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">simulation_cell</span><span class="p">,</span> <span class="n">element_trans</span><span class="p">,</span> <span class="n">rec_levels</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
@@ -1158,6 +1158,7 @@
     <span class="n">partition_region_function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Simulation</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">PartitionRegion</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">sim_junction_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Sim&quot;</span><span class="p">,</span>
     <span class="n">deembed_cross_sections</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">center</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">[</span><span class="n">Simulation</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Formulates a simulation class containing a single cell of a given Element class</span>
 
@@ -1176,12 +1177,13 @@
 <span class="sd">            The naming convention in the dictionary is `deembed_cross_sections[port_refpoint]=cross_section_name`,</span>
 <span class="sd">            where `cross_section_name` is the name given to the correction cuts. For example, see</span>
 <span class="sd">            `simulation.epr.smooth_capacitor.py`, deembed_cross_sections[&#39;port_a&#39;]=&#39;port_amer&#39;.</span>
+<span class="sd">        center: the element center location. If not give, box.center() is used.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">overriden_class_attributes</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;junction_inductance&quot;</span><span class="p">:</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Junction inductance (if junction exists)&quot;</span><span class="p">,</span> <span class="mf">11.497e-9</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;H&quot;</span><span class="p">),</span>
         <span class="s2">&quot;junction_capacitance&quot;</span><span class="p">:</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Junction capacitance (if junction exists)&quot;</span><span class="p">,</span> <span class="mf">0.1e-15</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;F&quot;</span><span class="p">),</span>
         <span class="s2">&quot;build&quot;</span><span class="p">:</span> <span class="n">_get_build_function</span><span class="p">(</span>
-            <span class="n">element_class</span><span class="p">,</span> <span class="n">ignore_ports</span><span class="p">,</span> <span class="n">transformation_from_center</span><span class="p">,</span> <span class="n">sim_junction_type</span><span class="p">,</span> <span class="n">deembed_cross_sections</span>
+            <span class="n">element_class</span><span class="p">,</span> <span class="n">ignore_ports</span><span class="p">,</span> <span class="n">transformation_from_center</span><span class="p">,</span> <span class="n">sim_junction_type</span><span class="p">,</span> <span class="n">deembed_cross_sections</span><span class="p">,</span> <span class="n">center</span>
         <span class="p">),</span>
     <span class="p">}</span>
     <span class="k">if</span> <span class="n">partition_region_function</span><span class="p">:</span>

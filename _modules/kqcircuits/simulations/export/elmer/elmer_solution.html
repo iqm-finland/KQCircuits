@@ -1100,6 +1100,7 @@
 <span class="sd">                        If using multigrid, the preconditioning is applied on the lowest iteration level.</span>
 <span class="sd">        abort_not_converged: Stop Elmer execution immediately if an iterative linear system solver fails to reach</span>
 <span class="sd">            convergence. If False, a warning is printed after the simulation finishes.</span>
+<span class="sd">        parent_solution: parent solution name to be used together with Simulation.parent_simulation</span>
 
 <span class="sd">        use_multigrid_solver: Use hierarchical iterative multigrid solver.</span>
 <span class="sd">        mg_smoother: Choice of smoother in multigrid solver. Tested options for electrostatic simulations are</span>
@@ -1133,6 +1134,7 @@
     <span class="n">max_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span>
     <span class="n">linear_system_preconditioning</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ILU0&quot;</span>
     <span class="n">abort_not_converged</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">parent_solution</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
     <span class="c1"># Multigrid solver settings</span>
     <span class="n">use_multigrid_solver</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
@@ -1153,7 +1155,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Used for automatically setting default values depending on other parameters&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mg_smoothing_iterations</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;sgs&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;wjacobi&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;cjacobi&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;cg&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">}</span>
+            <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;sgs&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;wjacobi&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;cjacobi&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;cg&quot;</span><span class="p">:</span> <span class="mi">12</span><span class="p">}</span>
             <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;mg_smoothing_iterations&quot;</span><span class="p">,</span> <span class="n">defaults</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mg_smoother</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="mi">1</span><span class="p">))</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_optimizer</span> <span class="o">==</span> <span class="p">{}:</span>
             <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;mesh_optimizer&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;Netgen&quot;</span><span class="p">})</span></div>
