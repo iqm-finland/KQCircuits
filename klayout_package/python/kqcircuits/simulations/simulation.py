@@ -1304,10 +1304,10 @@ class Simulation:
 
     def get_parameters(self):
         """Return dictionary with all parameters and their values."""
-        return {
-            **{param: getattr(self, param) for param in type(self).get_schema()},
-            "parent_simulation": self.parent_simulation.name if self.parent_simulation is not None else "",
-        }
+        params = {param: getattr(self, param) for param in type(self).get_schema()}
+        if "parent_simulation" in params:
+            params["parent_simulation"] = self.parent_simulation.name if self.parent_simulation is not None else ""
+        return params
 
     def etched_line(self, p1: pya.DPoint, p2: pya.DPoint):
         """
