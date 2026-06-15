@@ -167,6 +167,7 @@ class Element(pya.PCellDeclarationHelper):
 
     _epr_show = Param(pdt.TypeBoolean, "Show geometry related to EPR simulation, if available", False)
     _epr_cross_section_cut = Param(pdt.TypeBoolean, "Show EPR cross section cuts, if available", False)
+    _epr_counter = Param(pdt.TypeInt, "Internal counter to enable EPR preview", 0, hidden=True)
 
     def __init__(self):
         """"""
@@ -472,33 +473,16 @@ class Element(pya.PCellDeclarationHelper):
             self.cell.shapes(self.get_layer("refpoints")).insert(text)
 
     def coerce_parameters_impl(self):
-        """Redraws EPR markers on every parameter change.
+        """Increments _epr_counter to force geometry regeneration when EPR display params change.
 
-        KLayout calls this unconditionally on each parameter edit, before deciding whether to
-        regenerate geometry. This makes it the correct entry point for marker rendering —
-        produce_impl/post_build are geometry-cached and silently skipped when only boolean
-        display flags (_epr_show, _epr_cross_section_cut, _epr_part_reg_*) change, which
-        was the root cause of markers not updating.
-
-        Markers are cleared on every call to prevent stale or duplicate markers, then
-        redrawn if _epr_show is True.
+        KLayout caches PCell geometry and skips produce_impl/post_build when it thinks parameters
+        haven't meaningfully changed. By incrementing _epr_counter on every coerce call while
+        _epr_show is active, we ensure KLayout always sees a novel parameter set and
+        unconditionally rebuilds geometry — so post_build (where markers are actually drawn)
+        always runs and stale markers are impossible.
         """
-        if is_standalone_session():
-            return
-
-        layout_view = lay.LayoutView.current()
-        if layout_view is None:
-            return
-
-        # Always clear first — prevents stale/duplicate markers when toggling parameters
-        # or when _epr_show is turned off.
-        layout_view.clear_markers()
-
-        if not self._epr_show:
-            return
-
-        self._show_epr_cross_section_cuts()
-        self._show_epr_partition_regions()
+        if not is_standalone_session() and self._epr_show:
+            self._epr_counter += 1
 
     def etch_opposite_face_impl(self):
         """Implements the shape of the opposite face,
@@ -548,10 +532,8 @@ class Element(pya.PCellDeclarationHelper):
         """Child classes may re-define this method for post-build operations."""
         self.etch_opposite_face_impl()
         self.duplicate_face_impl()
-        # EPR markers are intentionally not drawn here. produce_impl is geometry-cached
-        # and skipped by KLayout when only boolean display flags change, making post_build
-        # an unreliable entry point for marker updates. Marker rendering is handled
-        # exclusively in coerce_parameters_impl, which always fires on every parameter change.
+        if not is_standalone_session() and self._epr_show:
+            self._draw_epr_markers()
 
     def display_text_impl(self):
         if self.display_name:
@@ -731,25 +713,54 @@ class Element(pya.PCellDeclarationHelper):
         importlib.reload(epr_module)
         return epr_module
 
-    def _show_epr_cross_section_cuts(self):
-        """Draw EPR correction cuts as KLayout Markers into the active LayoutView.
+    def _draw_epr_markers(self):
+        """Draw EPR markers (cross-section cuts and partition regions) into the active LayoutView.
 
-        Draws a line marker for each cut and text markers at both endpoints.
-        Requires _epr_show and _epr_cross_section_cut to both be True, and exactly
-        one instance selected in the layout view (for transform).
+        Called from post_build, which is guaranteed to run on every parameter change because
+        _epr_counter busts KLayout's geometry cache. Clears all existing markers first to prevent
+        duplicates, then redraws. Uses layout_view.add_marker() so markers are persistent across
+        view refreshes (unlike anonymous Marker objects which KLayout may garbage-collect).
         """
-        if not self._epr_show or not self._epr_cross_section_cut:
+        layout_view = lay.LayoutView.current()
+        if layout_view is None:
             return
+
+        # Always clear first — prevents stale/duplicate markers.
+        # Because _epr_counter forces post_build to run on every parameter change (including when
+        # _epr_show is toggled off), this clear executes even when _epr_show just became False,
+        # which is what removes lingering markers in that case. The _epr_show guard in post_build
+        # means we only reach here while _epr_show is True, so the caller is responsible for
+        # clearing markers when _epr_show is False (handled by the counter forcing a final rebuild
+        # with _epr_show=False, at which point post_build skips this method entirely and markers
+        # are NOT redrawn — but we must still clear them).
+        layout_view.clear_markers()
+
         trans = self._get_epr_instance_trans()
         if trans is None:
             return
+
         epr_module = self._load_epr_module()
         if epr_module is None:
             return
+
+        if self._epr_cross_section_cut:
+            self._draw_epr_cross_section_cuts(layout_view, trans, epr_module)
+
+        self._draw_epr_partition_regions(layout_view, trans, epr_module)
+
+    def _draw_epr_cross_section_cuts(self, layout_view, trans, epr_module):
+        """Draw EPR correction cuts as persistent KLayout Markers.
+
+        A line marker is drawn for each cut, plus text markers at both endpoints.
+        Uses layout_view.add_marker() for persistence (markers survive view refreshes).
+
+        Args:
+            layout_view: the active pya.LayoutView
+            trans: DCplxTrans of the selected element instance
+            epr_module: the loaded EPR module for this element
+        """
         assert hasattr(epr_module, "correction_cuts"), \
             f"No 'correction_cuts' function defined in EPR module for {type(self).__name__}"
-
-        layout_view = lay.LayoutView.current()
 
         cuts = epr_module.correction_cuts(self)
         for cut_name, cut in cuts.items():
@@ -760,32 +771,42 @@ class Element(pya.PCellDeclarationHelper):
             line_marker.set_path(pya.DPath([p1, p2], 0))
             line_marker.line_width = 2
             line_marker.color = 0xFF4500  # orange-red
+            layout_view.add_marker(line_marker)
 
             for label, pt in [(f"{cut_name}_p1", p1), (f"{cut_name}_p2", p2)]:
                 text_marker = pya.Marker(layout_view)
                 text_marker.set_text(pya.DText(label, pt.x, pt.y))
                 text_marker.color = 0xFF4500
+                layout_view.add_marker(text_marker)
 
-    def _show_epr_partition_regions(self):
-        """Draw EPR partition regions as KLayout Markers into the active LayoutView.
+    def _draw_epr_partition_regions(self, layout_view, trans, epr_module):
+        """Draw EPR partition regions as persistent KLayout Markers.
 
-        Draws a filled polygon marker and a centred text marker for each enabled partition region.
-        Requires _epr_show to be True, and exactly one instance selected in the layout view (for transform).
+        A filled polygon marker and a centred text marker are drawn for each enabled
+        partition region. Uses layout_view.add_marker() for persistence.
+
+        partition_regions(self) is called with only the element instance (not a simulation
+        object), so elements whose EPR module internally accesses simulation.cell or other
+        simulation-only context will raise AttributeError — this is caught and silently
+        skipped to avoid crashing the PCell editor.
+
+        Args:
+            layout_view: the active pya.LayoutView
+            trans: DCplxTrans of the selected element instance
+            epr_module: the loaded EPR module for this element
         """
-        if not self._epr_show:
-            return
-        trans = self._get_epr_instance_trans()
-        if trans is None:
-            return
-        epr_module = self._load_epr_module()
-        if epr_module is None:
-            return
         assert hasattr(epr_module, "partition_regions"), \
             f"No 'partition_regions' function defined in EPR module for {type(self).__name__}"
 
-        layout_view = lay.LayoutView.current()
+        try:
+            partition_regions = epr_module.partition_regions(self)
+        except AttributeError:
+            # Some elements' partition_regions() internally accesses simulation.cell or other
+            # simulation context unavailable during GUI preview. Skip gracefully rather than
+            # crashing the PCell editor.
+            return
 
-        for pr in epr_module.partition_regions(self):
+        for pr in partition_regions:
             if not hasattr(self, f"_epr_part_reg_{pr.name}"):
                 continue
             if not getattr(self, f"_epr_part_reg_{pr.name}"):
@@ -808,9 +829,11 @@ class Element(pya.PCellDeclarationHelper):
                 poly_marker.line_width = 2
                 poly_marker.color = 0x1E90FF      # dodger blue
                 poly_marker.vertex_size = 4
+                layout_view.add_marker(poly_marker)
 
             center = region.bbox().to_dtype(self.layout.dbu).center()
             center_transformed = trans.trans(center)
             text_marker = pya.Marker(layout_view)
             text_marker.set_text(pya.DText(pr.name, center_transformed.x, center_transformed.y))
             text_marker.color = 0x1E90FF
+            layout_view.add_marker(text_marker)
