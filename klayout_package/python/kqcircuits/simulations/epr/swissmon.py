@@ -73,13 +73,7 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
     ]:
         raw = [simulation.refpoints[f"epr_cross_{i:02d}"] for i in indices]
 
-        pts = [
-            _offset_point_away(raw[0], sized, base),
-            _offset_point_away(raw[1], sized, base),
-            _offset_point_away(raw[2], sized, base),
-            _offset_point_away(raw[3], sized, base),
-        ]
-        arm_poly = pya.DPolygon(pts + [base])
+        arm_poly = pya.DPolygon([_offset_point_away(p, sized, base) for p in raw] + [base])
 
         result += create_bulk_and_mer_partition_regions(
             name=f"{prefix}{arm_name}",
