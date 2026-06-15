@@ -54,16 +54,6 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
     sized = metal_edge_dimension + simulation.island_r
 
     # Each arm polygon is a pentagon: 4 offset epr_cross_* points + base (origin).
-    #
-    # Per-arm index roles [inner_A, outer_1, outer_2, inner_B]:
-    #   crossleft   [6, 7, 8, 9]  — outer: 7, 8   inner: 6, 9
-    #   crosstop    [9,10,11, 0]  — outer:10,11   inner: 9, 0
-    #   crossright  [0, 1, 2, 3]  — outer: 1, 2   inner: 0, 3
-    #   crossbottom [3, 4, 5, 6]  — outer: 4, 5   inner: 3, 6
-    #
-    # Outer points (middle two): offset *away* from origin → expands arm tip outward.
-    # Inner corner points (first and last): offset *toward* origin → pushes inner
-    #   corners inward so arm rectangles overlap at center with straight X/Y edges.
 
     for arm_name, indices in [
         ("crossleft",   [6, 7, 8, 9]),
