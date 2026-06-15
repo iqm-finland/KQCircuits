@@ -27,7 +27,6 @@ from kqcircuits.simulations.epr.util import (
 )
 from kqcircuits.simulations.partition_region import PartitionRegion
 
-
 # Partition region and correction cuts definitions for Swissmon qubit
 
 
@@ -59,9 +58,9 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
     # Each arm polygon is a pentagon: 4 offset epr_cross_* points + base (origin).
 
     for arm_name, indices in [
-        ("crossleft",   [6, 7, 8, 9]),
-        ("crosstop",    [9, 10, 11, 0]),
-        ("crossright",  [0, 1, 2, 3]),
+        ("crossleft", [6, 7, 8, 9]),
+        ("crosstop", [9, 10, 11, 0]),
+        ("crossright", [0, 1, 2, 3]),
         ("crossbottom", [3, 4, 5, 6]),
     ]:
         raw = [simulation.refpoints[f"epr_cross_{i:02d}"] for i in indices]
@@ -80,12 +79,8 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
     for idx in range(3):
         if float(simulation.cpl_length[idx]) > 0:
             cplr_region = pya.DBox(
-                simulation.refpoints[f"epr_cplr{idx}_min"]
-                - metal_edge_margin
-                + _get_coupler_wg_offset(idx, "min"),
-                simulation.refpoints[f"epr_cplr{idx}_max"]
-                + metal_edge_margin
-                + _get_coupler_wg_offset(idx, "max"),
+                simulation.refpoints[f"epr_cplr{idx}_min"] - metal_edge_margin + _get_coupler_wg_offset(idx, "min"),
+                simulation.refpoints[f"epr_cplr{idx}_max"] + metal_edge_margin + _get_coupler_wg_offset(idx, "max"),
             )
             result += create_bulk_and_mer_partition_regions(
                 name=f"{prefix}{idx}cplr",
@@ -137,7 +132,7 @@ def _swissmon_cross_cut(
         half_len = 30.0 + half_width
         return {
             "p1": center + pya.DPoint(0, -half_len),
-            "p2": center + pya.DPoint(0,  half_len),
+            "p2": center + pya.DPoint(0, half_len),
         }
     else:
         # Horizontal cut: half-width measured along x, center y between gap edge and coupler
@@ -149,38 +144,26 @@ def _swissmon_cross_cut(
         half_len = 30.0 + half_width
         return {
             "p1": center + pya.DPoint(-half_len, 0),
-            "p2": center + pya.DPoint( half_len, 0),
+            "p2": center + pya.DPoint(half_len, 0),
         }
 
 
 def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
     # --- crossleft (West arm) ---
     # Vertical cut. Inner gap corners: epr_cross_06 (bottom), epr_cross_09 (top).
-    coupler_left = (
-        "epr_cplr0_max"
-        if float(simulation.cpl_length[0]) > 0
-        else "epr_cross_08"
-    )
+    coupler_left = "epr_cplr0_max" if float(simulation.cpl_length[0]) > 0 else "epr_cross_08"
     result = {
         f"{prefix}crossleftmer": _swissmon_cross_cut(simulation, 9, 6, coupler_left, axis="x"),
     }
 
     # --- crosstop (North arm) ---
     # Horizontal cut. Inner gap corners: epr_cross_09 (left), epr_cross_00 (right).
-    coupler_top = (
-        "epr_cplr1_min"
-        if float(simulation.cpl_length[1]) > 0
-        else "epr_cross_10"
-    )
+    coupler_top = "epr_cplr1_min" if float(simulation.cpl_length[1]) > 0 else "epr_cross_10"
     result[f"{prefix}crosstopmer"] = _swissmon_cross_cut(simulation, 9, 0, coupler_top, axis="y")
 
     # --- crossright (East arm) ---
     # Vertical cut. Inner gap corners: epr_cross_00 (top), epr_cross_03 (bottom).
-    coupler_right = (
-        "epr_cplr2_min"
-        if float(simulation.cpl_length[2]) > 0
-        else "epr_cross_01"
-    )
+    coupler_right = "epr_cplr2_min" if float(simulation.cpl_length[2]) > 0 else "epr_cross_01"
     result[f"{prefix}crossrightmer"] = _swissmon_cross_cut(simulation, 0, 3, coupler_right, axis="x")
 
     # --- crossbottom (South arm) ---
@@ -192,40 +175,34 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
     if float(simulation.cpl_length[0]) > 0:
         half_gap = float(simulation.cpl_b[0]) / 2
         xsection_point = float(simulation.cpl_gap[0]) / 2 + float(simulation.cpl_width[0]) / 2
-        half_cut_length_left = 30.0 + (
-            simulation.refpoints["epr_cross_09"].y - simulation.refpoints["epr_cross_06"].y
-        ) / 2
+        half_cut_length_left = (
+            30.0 + (simulation.refpoints["epr_cross_09"].y - simulation.refpoints["epr_cross_06"].y) / 2
+        )
         result[f"{prefix}0cplrmer"] = {
-            "p1": simulation.refpoints["port_cplr0"]
-            + pya.DPoint(-half_cut_length_left + half_gap, xsection_point),
-            "p2": simulation.refpoints["port_cplr0"]
-            + pya.DPoint( half_cut_length_left + half_gap, xsection_point),
+            "p1": simulation.refpoints["port_cplr0"] + pya.DPoint(-half_cut_length_left + half_gap, xsection_point),
+            "p2": simulation.refpoints["port_cplr0"] + pya.DPoint(half_cut_length_left + half_gap, xsection_point),
         }
 
     if float(simulation.cpl_length[1]) > 0:
         half_gap = float(simulation.cpl_b[1]) / 2
         xsection_point = float(simulation.cpl_gap[1]) / 2 + float(simulation.cpl_width[1]) / 2
-        half_cut_length_top = 30.0 + (
-            simulation.refpoints["epr_cross_00"].x - simulation.refpoints["epr_cross_09"].x
-        ) / 2
+        half_cut_length_top = (
+            30.0 + (simulation.refpoints["epr_cross_00"].x - simulation.refpoints["epr_cross_09"].x) / 2
+        )
         result[f"{prefix}1cplrmer"] = {
-            "p1": simulation.refpoints["port_cplr1"]
-            + pya.DPoint( xsection_point,  half_cut_length_top - half_gap),
-            "p2": simulation.refpoints["port_cplr1"]
-            + pya.DPoint( xsection_point, -half_cut_length_top - half_gap),
+            "p1": simulation.refpoints["port_cplr1"] + pya.DPoint(xsection_point, half_cut_length_top - half_gap),
+            "p2": simulation.refpoints["port_cplr1"] + pya.DPoint(xsection_point, -half_cut_length_top - half_gap),
         }
 
     if float(simulation.cpl_length[2]) > 0:
         half_gap = float(simulation.cpl_b[2]) / 2
         xsection_point = float(simulation.cpl_gap[2]) / 2 + float(simulation.cpl_width[2]) / 2
-        half_cut_length_right = 30.0 + (
-            simulation.refpoints["epr_cross_00"].y - simulation.refpoints["epr_cross_03"].y
-        ) / 2
+        half_cut_length_right = (
+            30.0 + (simulation.refpoints["epr_cross_00"].y - simulation.refpoints["epr_cross_03"].y) / 2
+        )
         result[f"{prefix}2cplrmer"] = {
-            "p1": simulation.refpoints["port_cplr2"]
-            + pya.DPoint(-half_cut_length_right - half_gap, xsection_point),
-            "p2": simulation.refpoints["port_cplr2"]
-            + pya.DPoint( half_cut_length_right - half_gap, xsection_point),
+            "p1": simulation.refpoints["port_cplr2"] + pya.DPoint(-half_cut_length_right - half_gap, xsection_point),
+            "p2": simulation.refpoints["port_cplr2"] + pya.DPoint(half_cut_length_right - half_gap, xsection_point),
         }
 
     return result
