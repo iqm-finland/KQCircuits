@@ -123,13 +123,7 @@ def partition_regions(simulation: EPRTarget, prefix: str = "") -> list[Partition
 
 
 def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
-    # Each cross*mer cut is placed at the midpoint between the arm's inner gap
-    # edge and the coupler's center-facing boundary (or the arm-tip refpoint when
-    # no coupler is present). This guarantees the cut crosses the gap metal.
-    # Cuts are allowed to overlap each other — not a problem.
-
-    # --- crossleft (West arm) ---
-    # Vertical cut. Inner gap corners: epr_cross_09 (top), epr_cross_06 (bottom).
+    # Cuts for cross partition regions
     cross_corner = simulation.refpoints["epr_cross_09"]
     cross_corner_h = (cross_corner.y - simulation.refpoints["epr_cross_06"].y) / 2
 
