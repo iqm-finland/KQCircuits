@@ -19,6 +19,7 @@
 # TODO: Consider refactoring to reduce number of public methods
 
 import logging
+
 import numpy
 
 from kqcircuits.defaults import (
@@ -30,16 +31,16 @@ from kqcircuits.defaults import (
 )
 from kqcircuits.elements.chip_frame import ChipFrame
 from kqcircuits.elements.element import Element
+from kqcircuits.elements.flip_chip_connectors.flip_chip_connector import FlipChipConnector
 from kqcircuits.elements.launcher import Launcher
 from kqcircuits.elements.launcher_dc import LauncherDC
+from kqcircuits.elements.tsvs.tsv import Tsv
 from kqcircuits.pya_resolver import pya
+from kqcircuits.test_structures.junction_test_pads.junction_test_pads import JunctionTestPads
 from kqcircuits.util.chip_helpers import produce_instance_name_labels
+from kqcircuits.util.groundgrid import insert_ground_grid
 from kqcircuits.util.merge import merge_layout_layers_on_face
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from, add_parameter
-from kqcircuits.test_structures.junction_test_pads.junction_test_pads import JunctionTestPads
-from kqcircuits.util.groundgrid import insert_ground_grid
-from kqcircuits.elements.tsvs.tsv import Tsv
-from kqcircuits.elements.flip_chip_connectors.flip_chip_connector import FlipChipConnector
 
 
 @add_parameters_from(Tsv, "tsv_type")
@@ -366,7 +367,9 @@ class Chip(Element):
         """Return the element which will be used for the ground bumps"""
         return FlipChipConnector
 
-    def _produce_ground_bumps(self, faces=[0, 1], extra_filter_regions=[]):  # pylint: disable=dangerous-default-value
+    def _produce_ground_bumps(
+        self, faces=[0, 1], extra_filter_regions=[], bump_box=None
+    ):  # pylint: disable=dangerous-default-value
         """Produces a grid of indium bumps between given faces.
 
         The bumps avoid ground grid avoidance on both faces, and keep a minimum distance to existing bumps.
@@ -388,7 +391,8 @@ class Chip(Element):
             + [("through_silicon_via", face, self.tsv_edge_to_nearest_element) for face in faces]
             + extra_filter_regions
         )
-        bump_box = self.get_box(1).enlarged(pya.DVector(-self.edge_from_bump, -self.edge_from_bump))
+        if not bump_box:
+            bump_box = self.get_box(1).enlarged(pya.DVector(-self.edge_from_bump, -self.edge_from_bump))
         locations = self.get_ground_bump_locations(bump_box)
 
         # Produce bump grid

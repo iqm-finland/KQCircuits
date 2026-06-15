@@ -1,5 +1,5 @@
 # This code is part of KQCircuits
-# Copyright (C) 2025 IQM Finland Oy
+# Copyright (C) 2026 IQM Finland Oy
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 # License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
@@ -16,16 +16,30 @@
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
-"""
-Deletes all Elmer and Gmsh mesh files from the current tmp folder
-"""
+from math import sqrt
 
-from pathlib import Path
-from elmer_helpers import delete_meshes
+import pytest
 
-path = Path.cwd()
+SCRIPT = "produce_z0_table.py"
 
-non_sim_dirs = ["scripts", "log_files", "elmer_data", "s_matrix_plots"]
-for p in path.iterdir():
-    if p.is_dir() and p.name not in non_sim_dirs:
-        delete_meshes(path, p.name)
+
+def test_computes_impedance_and_effective_velocity(write_simulation, run_post_process, read_csv):
+    cs, ls = 4.0, 9.0
+    write_simulation("waveguide", {}, {"Cs": [[cs]], "Ls": [[ls]]})
+
+    sim_folder = run_post_process(SCRIPT)
+
+    rows = read_csv(sim_folder / f"{sim_folder.name}_Z0.csv")
+    assert len(rows) == 1
+    assert float(rows[0]["Cs"]) == pytest.approx(cs)
+    assert float(rows[0]["Ls"]) == pytest.approx(ls)
+    assert float(rows[0]["Z0"]) == pytest.approx(sqrt(ls / cs))
+    assert float(rows[0]["c_eff"]) == pytest.approx(1.0 / sqrt(ls * cs))
+
+
+def test_skips_results_without_cs_and_ls(write_simulation, run_post_process, read_csv):
+    write_simulation("waveguide", {}, {"Cs": [[4.0]]})
+
+    sim_folder = run_post_process(SCRIPT)
+
+    assert read_csv(sim_folder / f"{sim_folder.name}_Z0.csv") == []

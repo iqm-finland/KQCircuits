@@ -33,7 +33,7 @@ jobs:
       - name: Init KQCircuits
         # Was previously run: ci/init_kqc.sh
         run: |
-          python -m pip install -r klayout_package/python/requirements/linux/requirements.txt -r klayout_package/python/requirements/linux/dev-requirements.txt
+          python -m pip install -r klayout_package/python/requirements/linux/requirements.txt -r klayout_package/python/requirements/linux/dev-requirements.txt -r klayout_package/python/requirements/linux/sim-requirements.txt
           pip install --no-deps -e "klayout_package/python/"
       - name: Select KLayout version
         run: pip install --force-reinstall -r "ci/requirements/${{ matrix.klayout_version }}-requirements.txt"
@@ -79,7 +79,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Init KQCircuits
         run: |
-          python -m pip install -r klayout_package/python/requirements/${{ matrix.os-folder }}/requirements.txt -r klayout_package/python/requirements/${{ matrix.os-folder }}/dev-requirements.txt
+          python -m pip install -r klayout_package/python/requirements/${{ matrix.os-folder }}/requirements.txt -r klayout_package/python/requirements/${{ matrix.os-folder }}/dev-requirements.txt -r klayout_package/python/requirements/${{ matrix.os-folder }}/sim-requirements.txt
           pip3 install --no-deps -e "klayout_package/python/"
       - name: Select KLayout version
         run: pip3 install --force-reinstall -r "ci/requirements/${{ matrix.klayout_version }}-requirements.txt"

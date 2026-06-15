@@ -16,6 +16,7 @@
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 from dataclasses import dataclass
+from copy import deepcopy
 
 try:
     # Python 3.14+
@@ -48,3 +49,9 @@ class Solution:
             **{k: getattr(self, k) for k in _class_annotations(type(self)).keys()},
             **self.__dict__,
         }
+
+    def updated(self, **parameters):
+        """Returns a modified copy of the Solution object"""
+        p_dict = deepcopy(self.__dict__)
+        p_dict.update(**parameters)
+        return self.__class__(**p_dict)

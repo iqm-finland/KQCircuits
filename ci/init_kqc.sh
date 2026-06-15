@@ -7,7 +7,8 @@ mkdir -p "$HOME"/.klayout/python .pip-cache
 # since this script is only intended to be executed by a Docker image.
 python -m pip install --cache-dir=.pip-cache --break-system-packages \
     -r klayout_package/python/requirements/linux/requirements.txt \
-    -r klayout_package/python/requirements/linux/dev-requirements.txt
+    -r klayout_package/python/requirements/linux/dev-requirements.txt \
+    -r klayout_package/python/requirements/linux/sim-requirements.txt
 ret=$?
 if [ $ret -ne 0 ]; then
     echo "Can't install KQCircuits: installing requirements.txt failed"

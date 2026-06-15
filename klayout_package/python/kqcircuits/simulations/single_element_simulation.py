@@ -28,7 +28,7 @@ from kqcircuits.util.refpoints import RefpointToInternalPort, RefpointToEdgePort
 
 
 def _get_build_function(
-    element_class, ignore_ports, transformation_from_center, sim_junction_type, deembed_cross_sections
+    element_class, ignore_ports, transformation_from_center, sim_junction_type, deembed_cross_sections, center
 ):
     def _build_for_element_class(self):
         if sim_junction_type not in junction_type_choices:
@@ -41,7 +41,7 @@ def _get_build_function(
             element_class, **{**self.get_parameters(), "junction_type": sim_junction_type, "fluxline_type": "none"}
         )
 
-        element_trans = pya.DTrans(0, False, self.box.center())
+        element_trans = pya.DTrans(0, False, self.box.center() if center is None else center)
         if transformation_from_center is not None:
             element_trans *= transformation_from_center(simulation_cell)
         _, refp = self.insert_cell(simulation_cell, element_trans, rec_levels=None)
@@ -134,6 +134,7 @@ def get_single_element_sim_class(
     partition_region_function: Callable[[Simulation], list[PartitionRegion]] | None = None,
     sim_junction_type: str = "Sim",
     deembed_cross_sections: dict[str] = None,
+    center: pya.DPoint | None = None,
 ) -> type[Simulation]:
     """Formulates a simulation class containing a single cell of a given Element class
 
@@ -152,12 +153,13 @@ def get_single_element_sim_class(
             The naming convention in the dictionary is `deembed_cross_sections[port_refpoint]=cross_section_name`,
             where `cross_section_name` is the name given to the correction cuts. For example, see
             `simulation.epr.smooth_capacitor.py`, deembed_cross_sections['port_a']='port_amer'.
+        center: the element center location. If not give, box.center() is used.
     """
     overriden_class_attributes = {
         "junction_inductance": Param(pdt.TypeList, "Junction inductance (if junction exists)", 11.497e-9, unit="H"),
         "junction_capacitance": Param(pdt.TypeList, "Junction capacitance (if junction exists)", 0.1e-15, unit="F"),
         "build": _get_build_function(
-            element_class, ignore_ports, transformation_from_center, sim_junction_type, deembed_cross_sections
+            element_class, ignore_ports, transformation_from_center, sim_junction_type, deembed_cross_sections, center
         ),
     }
     if partition_region_function:
