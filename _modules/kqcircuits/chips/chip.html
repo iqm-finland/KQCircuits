@@ -1708,12 +1708,14 @@
 
 <div class="viewcode-block" id="Chip.get_ground_tsv_locations">
 <a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.get_ground_tsv_locations">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_ground_tsv_locations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsv_box</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_ground_tsv_locations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsv_box</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># pylint: disable=unused-argument</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Define the locations for a grid. This method returns the full grid.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            box: DBox specifying the region that should be filled with TSVs</span>
+<span class="sd">            kwargs: additional keyword arguments</span>
 
 <span class="sd">        Returns: list of DPoint coordinates where a ground bump can be placed</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1721,10 +1723,7 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_produce_ground_tsvs</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">tsv_box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">faces</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
-        <span class="n">extra_filter_regions</span><span class="o">=</span><span class="p">[],</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">tsv_box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">faces</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">extra_filter_regions</span><span class="o">=</span><span class="p">[],</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>  <span class="c1"># pylint: disable=dangerous-default-value</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Produces a grid of TSVs between given faces.</span>
 
@@ -1732,6 +1731,8 @@
 <span class="sd">        Args:</span>
 <span class="sd">            tsv_box: DBox specifying the region that should be filled with TSVs</span>
 <span class="sd">            faces: indices of faces in self.face_ids that should have the TSVs</span>
+<span class="sd">            extra_filter_regions: extra inputs lists to self.get_filter_regions</span>
+<span class="sd">            kwargs: auxiliary inputs to be passed to self.get_ground_tsv_locations</span>
 <span class="sd">        Returns: list of DPoint coordinates where a ground TSVs will be placed</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting TSV grid generation on face(s) </span><span class="si">{</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="n">face</span><span class="p">]</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">face</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">faces</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -1756,7 +1757,7 @@
 
         <span class="k">if</span> <span class="n">tsv_box</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">tsv_box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">enlarged</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">edge_from_tsv</span><span class="p">)</span>
-        <span class="n">locations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ground_tsv_locations</span><span class="p">(</span><span class="n">tsv_box</span><span class="p">)</span>
+        <span class="n">locations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ground_tsv_locations</span><span class="p">(</span><span class="n">tsv_box</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># Produce TSV grid</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">locations</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>

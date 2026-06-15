@@ -1302,11 +1302,14 @@ For example, to flip the launcher order by chip’s y-axis, set port_id_remap to
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.get_ground_tsv_locations">
-<span class="sig-name descname"><span class="pre">get_ground_tsv_locations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tsv_box</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.get_ground_tsv_locations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.get_ground_tsv_locations" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_ground_tsv_locations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tsv_box</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.get_ground_tsv_locations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.get_ground_tsv_locations" title="Link to this definition"></a></dt>
 <dd><p>Define the locations for a grid. This method returns the full grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>box</strong> – DBox specifying the region that should be filled with TSVs</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>box</strong> – DBox specifying the region that should be filled with TSVs</p></li>
+<li><p><strong>kwargs</strong> – additional keyword arguments</p></li>
+</ul>
 </dd>
 </dl>
 <p>Returns: list of DPoint coordinates where a ground bump can be placed</p>
