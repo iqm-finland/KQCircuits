@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description>Current view to Elmer</description>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>false</show-in-menu>
+ <group-name>Export</group-name>
+ <menu-path/>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text># This code is part of KQCircuits
+# Copyright (C) 2026 IQM Finland Oy
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
+# License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program. If not, see
+# https://www.gnu.org/licenses/gpl-3.0.html.
+#
+# The software distribution should follow IQM trademark policy for open-source software
+# (meetiqm.com/iqm-open-source-trademark-policy). IQM welcomes contributions to the code.
+# Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
+# and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
+
+"""Export the layout currently open in KLayout as an Elmer wave equation simulation.
+
+Draw a design in the GUI using KQC library elements, with launchers at the chip edge and qubits placed in the
+layout, then run this macro with that design as the top cell. The macro finds the launchers and qubits, places
+edge ports and internal ports, works out the simulation box, and writes the Elmer simulation files. The result
+opens in a new tab so the original design is left untouched.
+"""
+
+import shutil
+from pathlib import Path
+
+from kqcircuits.klayout_view import KLayoutView
+from kqcircuits.pya_resolver import pya
+from kqcircuits.simulations.export.elmer.gui_layout_export import (
+    export_open_layout_to_elmer,
+    default_mesh_size,
+    default_workflow,
+)
+from kqcircuits.defaults import TMP_PATH
+
+# Configuration. Adjust these to your simulation.
+name = "gui_simulation"  # simulation name and file name stem
+path = TMP_PATH.joinpath(name + "_elmer")  # output directory
+target_frequency = 5.0  # solver frequency in GHz
+margin = 100.0  # extra space in micrometers on sides without a launcher
+mesh_size = default_mesh_size()  # Gmsh mesh size, refined at the metal edges
+workflow = default_workflow()  # Elmer pipeline steps
+
+# If the output folder already exists, ask before overwriting so an earlier export is not lost. On abort
+# leave everything unchanged and do not even open a preview tab.
+overwrite = True
+if Path(path).exists():
+    overwrite = (
+        pya.MessageBox.warning(
+            "Simulation folder exists",
+            f"The folder\n{path}\nalready exists.\n\nDelete it and export again?",
+            pya.MessageBox.Yes + pya.MessageBox.No,
+        )
+        == pya.MessageBox.Yes
+    )
+    if overwrite:
+        shutil.rmtree(path)
+
+if overwrite:
+    # Copy the active design into a new layout so the geometry the user drew is left intact. The export adds
+    # simulation layers, and those should not pollute the original view. Layout.assign copies the cells with
+    # their PCell data kept, which Cell.copy_tree across layouts would drop. The PCell data is needed to find
+    # the launchers and qubits and to switch the qubit junctions to the Sim type.
+    source_view = KLayoutView(current=True)
+    source_name = source_view.active_cell.name
+    preview = KLayoutView()
+    preview.layout.assign(source_view.layout)
+    copy = [cell for cell in preview.layout.top_cells() if cell.name == source_name][0]
+    preview.focus(copy)
+
+    path = export_open_layout_to_elmer(
+        copy,
+        path,
+        name=name,
+        target_frequency=target_frequency,
+        mesh_size=mesh_size,
+        workflow=workflow,
+        margin=margin,
+    )
+    preview.layout_view.add_missing_layers()
+    print(f"Exported Elmer simulation to {path}")
+else:
+    print(f"Export aborted, {path} left unchanged.")</text>
+</klayout-macro>

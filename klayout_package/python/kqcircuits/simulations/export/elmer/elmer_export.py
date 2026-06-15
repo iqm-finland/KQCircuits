@@ -79,6 +79,7 @@ def export_elmer_json(
     sim_data = simulation.get_simulation_data()
     sol_data = solution.get_solution_data()
     full_name = simulation.name + solution.name
+    parent_name = sim_data.get("parent_simulation", "") + sol_data.get("parent_solution", "")
 
     if is_cross_section:
         sif_names = [f"{full_name}_C"]
@@ -103,6 +104,7 @@ def export_elmer_json(
         **sol_data,
         "sif_names": sif_names,
         "gds_file": gds_file,
+        "parent_name": parent_name,
         "parameters": get_combined_parameters(simulation, solution),
     }
 

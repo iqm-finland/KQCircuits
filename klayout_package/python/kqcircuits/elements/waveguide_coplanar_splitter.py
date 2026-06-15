@@ -152,37 +152,3 @@ class WaveguideCoplanarSplitter(Element):
             points += arc_points(r, angle_rad + next_rad, angle_rad + pi / 2, self.n)
 
         return pya.DPolygon(points)
-
-
-def t_cross_parameters(
-    a=Element.get_schema()["a"].default,
-    b=Element.get_schema()["b"].default,
-    a2=Element.a,
-    b2=Element.b,
-    length_extra=0,
-    length_extra_side=0,
-    **kwargs,
-):
-    """A utility function to easily produce T-cross splitter (old WaveguideCoplanarTCross).
-
-    Args:
-        a: Width of center conductor
-        b: Width of gap
-        a2: Center conductor width of the side waveguide
-        b2: Gap of the side waveguide
-        length_extra: Extra length
-        length_extra_side: Extra length of the side waveguide
-
-    Returns:
-        dictionary of parameters for WaveguideCoplanarSplitter
-    """
-    length = a2 / 2 + b2 + length_extra
-    length2 = a / 2 + b + length_extra_side
-    return {
-        "lengths": [length, length, length2],
-        "angles": [0, 180, 270],
-        "a_list": [a, a, a2],
-        "b_list": [b, b, b2],
-        "port_names": ["right", "left", "bottom"],
-        **kwargs,
-    }
