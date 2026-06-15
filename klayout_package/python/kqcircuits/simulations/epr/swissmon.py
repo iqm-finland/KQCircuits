@@ -177,7 +177,7 @@ def correction_cuts(simulation: EPRTarget, prefix: str = "") -> dict[str, dict]:
     # --- crossright (East arm) ---
     # Vertical cut. Inner gap corners: epr_cross_00 (top), epr_cross_03 (bottom).
     coupler_right = (
-        f"epr_cplr2_min"
+        "epr_cplr2_min"
         if float(simulation.cpl_length[2]) > 0
         else "epr_cross_01"
     )
