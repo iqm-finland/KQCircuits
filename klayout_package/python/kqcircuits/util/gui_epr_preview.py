@@ -1,4 +1,5 @@
 # This code is part of KQCircuits
+
 # Copyright (C) 2026 IQM Finland Oy
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -69,12 +70,12 @@ def draw_epr_markers(element, layout_view):
         return
 
     if element._epr_cross_section_cut:
-        _draw_epr_cross_section_cuts(element, layout_view, trans, epr_module)
+        draw_epr_cross_section_cuts(element, layout_view, trans, epr_module)
 
-    _draw_epr_partition_regions(element, layout_view, trans, epr_module)
+    draw_epr_partition_regions(element, layout_view, trans, epr_module)
 
 
-def _draw_epr_cross_section_cuts(element, layout_view, trans, epr_module):
+def draw_epr_cross_section_cuts(element, layout_view, trans, epr_module):
     """Draw EPR correction cuts as persistent KLayout Markers.
 
     A line marker is drawn for each cut, plus text markers at both endpoints.
@@ -106,7 +107,7 @@ def _draw_epr_cross_section_cuts(element, layout_view, trans, epr_module):
             layout_view.add_marker(text_marker)
 
 
-def _draw_epr_partition_regions(element, layout_view, trans, epr_module):
+def draw_epr_partition_regions(element, layout_view, trans, epr_module):
     """Draw EPR partition regions as persistent KLayout Markers.
 
     A filled polygon marker and a centred text marker are drawn for each enabled
