@@ -43,6 +43,7 @@ class Swissmon(Qubit):
     cpl_width = Param(pdt.TypeList, "Coupler width (um, WNE)", [24, 24, 24])
     cpl_length = Param(pdt.TypeList, "Coupler lengths (um, WNE)", [120, 120, 120])
     cpl_gap = Param(pdt.TypeList, "Coupler gap (um, WNE)", [102, 102, 102])
+    cpl_b = Param(pdt.TypeList, "Coupler gap to ground (um, WNE)", [6, 6, 6])
     port_width = Param(pdt.TypeList, "Port width (um, WNE)", [10, 10, 10])
     cl_offset = Param(pdt.TypeList, "Chargeline offset (um, um)", [200, 200])
     island_r = Param(pdt.TypeDouble, "Center island rounding radius", 5, unit="μm")
@@ -69,7 +70,7 @@ class Swissmon(Qubit):
     def _produce_coupler(self, cpl_nr):
         # shorthand
         a = float(self.port_width[cpl_nr])
-        b = self.b
+        b = float(self.cpl_b[cpl_nr])
         [ww, wn, we, ws] = [float(width) / 2 for width in self.arm_width]
         aw = [ww, wn, we, ws][cpl_nr]
         w = float(self.cpl_width[cpl_nr])
