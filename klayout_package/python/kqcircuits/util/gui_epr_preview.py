@@ -86,8 +86,9 @@ def draw_epr_cross_section_cuts(element, layout_view, trans, epr_module):
         trans: DCplxTrans of the selected element instance
         epr_module: the loaded EPR module for this element
     """
-    assert hasattr(epr_module, "correction_cuts"), \
-        f"No 'correction_cuts' function defined in EPR module for {type(element).__name__}"
+    assert hasattr(
+        epr_module, "correction_cuts"
+    ), f"No 'correction_cuts' function defined in EPR module for {type(element).__name__}"
 
     cuts = epr_module.correction_cuts(element)
     for cut_name, cut in cuts.items():
@@ -119,8 +120,9 @@ def draw_epr_partition_regions(element, layout_view, trans, epr_module):
         trans: DCplxTrans of the selected element instance
         epr_module: the loaded EPR module for this element
     """
-    assert hasattr(epr_module, "partition_regions"), \
-        f"No 'partition_regions' function defined in EPR module for {type(element).__name__}"
+    assert hasattr(
+        epr_module, "partition_regions"
+    ), f"No 'partition_regions' function defined in EPR module for {type(element).__name__}"
 
     partition_regions = epr_module.partition_regions(element)
 
@@ -143,9 +145,9 @@ def draw_epr_partition_regions(element, layout_view, trans, epr_module):
             dpoly = polygon.to_dtype(element.layout.dbu).transformed(trans)
             poly_marker = pya.Marker()
             poly_marker.set_polygon(dpoly)
-            poly_marker.dither_pattern = 2   # crosshatch fill — makes region extent clearly visible
+            poly_marker.dither_pattern = 2  # crosshatch fill — makes region extent clearly visible
             poly_marker.line_width = 2
-            poly_marker.color = 0x1E90FF      # dodger blue
+            poly_marker.color = 0x1E90FF  # dodger blue
             poly_marker.vertex_size = 4
             layout_view.add_marker(poly_marker)
 
