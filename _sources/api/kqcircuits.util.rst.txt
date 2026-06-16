@@ -19,6 +19,7 @@ kqcircuits.util
    kqcircuits.util.geometry_helper
    kqcircuits.util.geometry_json_encoder
    kqcircuits.util.groundgrid
+   kqcircuits.util.gui_epr_preview
    kqcircuits.util.gui_helper
    kqcircuits.util.gui_waveguide_editing
    kqcircuits.util.import_helper

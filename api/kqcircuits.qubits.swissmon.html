@@ -802,6 +802,12 @@
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.groundgrid.html#kqcircuits.util.groundgrid.make_ground_grid_region"><code class="docutils literal notranslate"><span class="pre">make_ground_grid_region()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.gui_epr_preview.html">kqcircuits.util.gui_epr_preview</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.gui_epr_preview.html#kqcircuits.util.gui_epr_preview.draw_epr_markers"><code class="docutils literal notranslate"><span class="pre">draw_epr_markers()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.gui_epr_preview.html#kqcircuits.util.gui_epr_preview.draw_epr_cross_section_cuts"><code class="docutils literal notranslate"><span class="pre">draw_epr_cross_section_cuts()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.gui_epr_preview.html#kqcircuits.util.gui_epr_preview.draw_epr_partition_regions"><code class="docutils literal notranslate"><span class="pre">draw_epr_partition_regions()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.gui_helper.html">kqcircuits.util.gui_helper</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.gui_helper.html#kqcircuits.util.gui_helper.get_nodes_near_position"><code class="docutils literal notranslate"><span class="pre">get_nodes_near_position()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.gui_helper.html#kqcircuits.util.gui_helper.node_to_text"><code class="docutils literal notranslate"><span class="pre">node_to_text()</span></code></a></li>
@@ -1075,13 +1081,13 @@ for RefpointToSimPort objects based on simulation’s parameters</p></li>
 <li><p><strong>port_width</strong><em> (List)</em><span> - Port width (um, WNE)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[10,</span> <span class="pre">10,</span> <span class="pre">10]</span></code></p></li>
 <li><p><strong>cl_offset</strong><em> (List)</em><span> - Chargeline offset (um, um)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[200,</span> <span class="pre">200]</span></code></p></li>
 <li><p><strong>island_r</strong><em> (Double)</em><span> - Center island rounding radius</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>_epr_part_reg_crossleftbulk_layer</strong><em> (Layer)</em><span> - Layer where EPR partition region ‘crossleftbulk’ is placed</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-<li><p><strong>_epr_part_reg_crosstopbulk_layer</strong><em> (Layer)</em><span> - Layer where EPR partition region ‘crosstopbulk’ is placed</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-<li><p><strong>_epr_part_reg_crossrightbulk_layer</strong><em> (Layer)</em><span> - Layer where EPR partition region ‘crossrightbulk’ is placed</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-<li><p><strong>_epr_part_reg_crossbottombulk_layer</strong><em> (Layer)</em><span> - Layer where EPR partition region ‘crossbottombulk’ is placed</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-<li><p><strong>_epr_part_reg_0cplrbulk_layer</strong><em> (Layer)</em><span> - Layer where EPR partition region ‘0cplrbulk’ is placed</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-<li><p><strong>_epr_part_reg_1cplrbulk_layer</strong><em> (Layer)</em><span> - Layer where EPR partition region ‘1cplrbulk’ is placed</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-<li><p><strong>_epr_part_reg_2cplrbulk_layer</strong><em> (Layer)</em><span> - Layer where EPR partition region ‘2cplrbulk’ is placed</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>_epr_part_reg_crossleftbulk</strong><em> (Boolean)</em><span> - Show EPR partition region ‘crossleftbulk’</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>_epr_part_reg_crosstopbulk</strong><em> (Boolean)</em><span> - Show EPR partition region ‘crosstopbulk’</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>_epr_part_reg_crossrightbulk</strong><em> (Boolean)</em><span> - Show EPR partition region ‘crossrightbulk’</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>_epr_part_reg_crossbottombulk</strong><em> (Boolean)</em><span> - Show EPR partition region ‘crossbottombulk’</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>_epr_part_reg_0cplrbulk</strong><em> (Boolean)</em><span> - Show EPR partition region ‘0cplrbulk’</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>_epr_part_reg_1cplrbulk</strong><em> (Boolean)</em><span> - Show EPR partition region ‘1cplrbulk’</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>_epr_part_reg_2cplrbulk</strong><em> (Boolean)</em><span> - Show EPR partition region ‘2cplrbulk’</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.qubits.swissmon.png" src="../_images/kqcircuits.qubits.swissmon.png" />
 </section>

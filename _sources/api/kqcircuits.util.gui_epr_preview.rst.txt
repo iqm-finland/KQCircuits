@@ -1,0 +1,12 @@
+:github_url: hide
+
+kqcircuits.util.gui\_epr\_preview
+=================================
+
+.. automodule:: kqcircuits.util.gui_epr_preview
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.util.gui_epr_preview
+.. image:: ../pcell_images/kqcircuits.util.gui_epr_preview.png

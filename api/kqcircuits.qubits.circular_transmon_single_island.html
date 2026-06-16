@@ -802,6 +802,12 @@
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.groundgrid.html#kqcircuits.util.groundgrid.make_ground_grid_region"><code class="docutils literal notranslate"><span class="pre">make_ground_grid_region()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.gui_epr_preview.html">kqcircuits.util.gui_epr_preview</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.gui_epr_preview.html#kqcircuits.util.gui_epr_preview.draw_epr_markers"><code class="docutils literal notranslate"><span class="pre">draw_epr_markers()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.gui_epr_preview.html#kqcircuits.util.gui_epr_preview.draw_epr_cross_section_cuts"><code class="docutils literal notranslate"><span class="pre">draw_epr_cross_section_cuts()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.gui_epr_preview.html#kqcircuits.util.gui_epr_preview.draw_epr_partition_regions"><code class="docutils literal notranslate"><span class="pre">draw_epr_partition_regions()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.gui_helper.html">kqcircuits.util.gui_helper</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.gui_helper.html#kqcircuits.util.gui_helper.get_nodes_near_position"><code class="docutils literal notranslate"><span class="pre">get_nodes_near_position()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.util.gui_helper.html#kqcircuits.util.gui_helper.node_to_text"><code class="docutils literal notranslate"><span class="pre">node_to_text()</span></code></a></li>
@@ -1075,10 +1081,10 @@ for RefpointToSimPort objects based on simulation’s parameters</p></li>
 <li><p><strong>drive_angle</strong><em> (Double)</em><span> - Angle of the drive port, where 0deg corresponds to positive x-axis</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">300</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">degrees</span></code></p></li>
 <li><p><strong>drive_distance</strong><em> (Double)</em><span> - Distance of the driveline, measured from qubit centre</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">400</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
 <li><p><strong>n</strong><em> (Int)</em><span> - Number of points on turns</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">128</span></code></p></li>
-<li><p><strong>_epr_part_reg_0cplrmer_layer</strong><em> (Layer)</em><span> - Layer where EPR partition region ‘0cplrmer’ is placed</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-<li><p><strong>_epr_part_reg_1cplrmer_layer</strong><em> (Layer)</em><span> - Layer where EPR partition region ‘1cplrmer’ is placed</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-<li><p><strong>_epr_part_reg_2cplrmer_layer</strong><em> (Layer)</em><span> - Layer where EPR partition region ‘2cplrmer’ is placed</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-<li><p><strong>_epr_part_reg_leadsmer_layer</strong><em> (Layer)</em><span> - Layer where EPR partition region ‘leadsmer’ is placed</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>_epr_part_reg_0cplrmer</strong><em> (Boolean)</em><span> - Show EPR partition region ‘0cplrmer’</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>_epr_part_reg_1cplrmer</strong><em> (Boolean)</em><span> - Show EPR partition region ‘1cplrmer’</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>_epr_part_reg_2cplrmer</strong><em> (Boolean)</em><span> - Show EPR partition region ‘2cplrmer’</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>_epr_part_reg_leadsmer</strong><em> (Boolean)</em><span> - Show EPR partition region ‘leadsmer’</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.qubits.circular_transmon_single_island.png" src="../_images/kqcircuits.qubits.circular_transmon_single_island.png" />
 </section>
