@@ -535,7 +535,7 @@ class Element(pya.PCellDeclarationHelper):
             if layout_view is not None:
                 layout_view.clear_markers()
                 if self._epr_show:
-                    _draw_epr_markers(self, layout_view)
+                    draw_epr_markers(self, layout_view)
 
     def display_text_impl(self):
         if self.display_name:
