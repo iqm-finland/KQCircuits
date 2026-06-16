@@ -788,13 +788,7 @@ class Element(pya.PCellDeclarationHelper):
         assert hasattr(epr_module, "partition_regions"), \
             f"No 'partition_regions' function defined in EPR module for {type(self).__name__}"
 
-        try:
-            partition_regions = epr_module.partition_regions(self)
-        except AttributeError:
-            # Some elements' partition_regions() internally accesses simulation.cell or other
-            # simulation context unavailable during GUI preview. Skip gracefully rather than
-            # crashing the PCell editor.
-            return
+        partition_regions = epr_module.partition_regions(self)
 
         for pr in partition_regions:
             if not hasattr(self, f"_epr_part_reg_{pr.name}"):
