@@ -473,15 +473,19 @@ class Element(pya.PCellDeclarationHelper):
             self.cell.shapes(self.get_layer("refpoints")).insert(text)
 
     def coerce_parameters_impl(self):
-        """Increments _epr_counter to force geometry regeneration when EPR display params change.
+        """Increments _epr_counter to force geometry regeneration on every parameter change.
 
         KLayout caches PCell geometry and skips produce_impl/post_build when it thinks parameters
-        haven't meaningfully changed. By incrementing _epr_counter on every coerce call while
-        _epr_show is active, we ensure KLayout always sees a novel parameter set and
-        unconditionally rebuilds geometry — so post_build (where markers are actually drawn)
-        always runs and stale markers are impossible.
+        haven't meaningfully changed. By unconditionally incrementing _epr_counter on every
+        coerce call (not only while _epr_show is True), we ensure KLayout always sees a novel
+        parameter set and rebuilds geometry — so post_build always runs.
+
+        This is critical for marker cleanup: if we only incremented while _epr_show=True, then
+        toggling _epr_show off would produce no counter change, KLayout would reuse cached
+        geometry, post_build would be skipped, and clear_markers() would never fire — leaving
+        stale markers on screen indefinitely.
         """
-        if not is_standalone_session() and self._epr_show:
+        if not is_standalone_session():
             self._epr_counter += 1
 
     def etch_opposite_face_impl(self):
@@ -532,8 +536,17 @@ class Element(pya.PCellDeclarationHelper):
         """Child classes may re-define this method for post-build operations."""
         self.etch_opposite_face_impl()
         self.duplicate_face_impl()
-        if not is_standalone_session() and self._epr_show:
-            self._draw_epr_markers()
+        if not is_standalone_session():
+            # Always clear markers, even when _epr_show is False.
+            # This is what removes lingering markers when the user toggles _epr_show or
+            # _epr_cross_section_cut off: _epr_counter increments unconditionally on every
+            # coerce_parameters_impl call, so post_build always runs and this clear always
+            # fires — regardless of the current value of _epr_show.
+            layout_view = lay.LayoutView.current()
+            if layout_view is not None:
+                layout_view.clear_markers()
+                if self._epr_show:
+                    self._draw_epr_markers(layout_view)
 
     def display_text_impl(self):
         if self.display_name:
@@ -713,28 +726,16 @@ class Element(pya.PCellDeclarationHelper):
         importlib.reload(epr_module)
         return epr_module
 
-    def _draw_epr_markers(self):
+    def _draw_epr_markers(self, layout_view):
         """Draw EPR markers (cross-section cuts and partition regions) into the active LayoutView.
 
-        Called from post_build, which is guaranteed to run on every parameter change because
-        _epr_counter busts KLayout's geometry cache. Clears all existing markers first to prevent
-        duplicates, then redraws. Uses layout_view.add_marker() so markers are persistent across
-        view refreshes (unlike anonymous Marker objects which KLayout may garbage-collect).
+        Called from post_build only when _epr_show is True. Markers are cleared before this
+        method is called (unconditionally in post_build), so this method only needs to add new
+        ones. Uses layout_view.add_marker() so markers are persistent across view refreshes.
+
+        Args:
+            layout_view: the active pya.LayoutView, already confirmed non-None by the caller.
         """
-        layout_view = lay.LayoutView.current()
-        if layout_view is None:
-            return
-
-        # Always clear first — prevents stale/duplicate markers.
-        # Because _epr_counter forces post_build to run on every parameter change (including when
-        # _epr_show is toggled off), this clear executes even when _epr_show just became False,
-        # which is what removes lingering markers in that case. The _epr_show guard in post_build
-        # means we only reach here while _epr_show is True, so the caller is responsible for
-        # clearing markers when _epr_show is False (handled by the counter forcing a final rebuild
-        # with _epr_show=False, at which point post_build skips this method entirely and markers
-        # are NOT redrawn — but we must still clear them).
-        layout_view.clear_markers()
-
         trans = self._get_epr_instance_trans()
         if trans is None:
             return
