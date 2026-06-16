@@ -783,12 +783,7 @@ class Element(pya.PCellDeclarationHelper):
         """Draw EPR partition regions as persistent KLayout Markers.
 
         A filled polygon marker and a centred text marker are drawn for each enabled
-        partition region. Uses layout_view.add_marker() for persistence.
-
-        partition_regions(self) is called with only the element instance (not a simulation
-        object), so elements whose EPR module internally accesses simulation.cell or other
-        simulation-only context will raise AttributeError — this is caught and silently
-        skipped to avoid crashing the PCell editor.
+        partition region.
 
         Args:
             layout_view: the active pya.LayoutView
