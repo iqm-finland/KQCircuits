@@ -834,7 +834,7 @@ class Element(pya.PCellDeclarationHelper):
 
             center = region.bbox().to_dtype(self.layout.dbu).center()
             center_transformed = trans.trans(center)
-            text_marker = pya.Marker(layout_view)
+            text_marker = pya.Marker()
             text_marker.set_text(pya.DText(pr.name, center_transformed.x, center_transformed.y))
             text_marker.color = 0x1E90FF
             layout_view.add_marker(text_marker)
