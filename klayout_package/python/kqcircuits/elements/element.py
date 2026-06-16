@@ -824,7 +824,7 @@ class Element(pya.PCellDeclarationHelper):
 
             for polygon in region.each():
                 dpoly = polygon.to_dtype(self.layout.dbu).transformed(trans)
-                poly_marker = pya.Marker(layout_view)
+                poly_marker = pya.Marker()
                 poly_marker.set_polygon(dpoly)
                 poly_marker.dither_pattern = 2   # crosshatch fill — makes region extent clearly visible
                 poly_marker.line_width = 2
