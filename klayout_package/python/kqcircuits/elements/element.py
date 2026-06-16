@@ -23,7 +23,7 @@ from kqcircuits.defaults import default_layers, default_faces
 from kqcircuits.pya_resolver import pya, lay, is_standalone_session
 from kqcircuits.simulations.epr.gui_config import epr_gui_visualised_partition_regions
 from kqcircuits.util.geometry_helper import get_cell_path_length
-from kqcircuits.util.gui_epr_preview import _draw_epr_markers
+from kqcircuits.util.gui_epr_preview import draw_epr_markers
 from kqcircuits.util.library_helper import load_libraries, to_library_name, to_module_name
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.util.refpoints import Refpoints
