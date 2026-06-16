@@ -17,14 +17,13 @@
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
 
 
-import importlib
-import importlib.util
 from inspect import isclass
 
 from kqcircuits.defaults import default_layers, default_faces
 from kqcircuits.pya_resolver import pya, lay, is_standalone_session
 from kqcircuits.simulations.epr.gui_config import epr_gui_visualised_partition_regions
 from kqcircuits.util.geometry_helper import get_cell_path_length
+from kqcircuits.util.gui_epr_preview import _draw_epr_markers
 from kqcircuits.util.library_helper import load_libraries, to_library_name, to_module_name
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.util.refpoints import Refpoints
@@ -475,15 +474,10 @@ class Element(pya.PCellDeclarationHelper):
     def coerce_parameters_impl(self):
         """Increments _epr_counter to force geometry regeneration on every parameter change.
 
-        KLayout caches PCell geometry and skips produce_impl/post_build when it thinks parameters
-        haven't meaningfully changed. By unconditionally incrementing _epr_counter on every
-        coerce call (not only while _epr_show is True), we ensure KLayout always sees a novel
-        parameter set and rebuilds geometry — so post_build always runs.
-
-        This is critical for marker cleanup: if we only incremented while _epr_show=True, then
-        toggling _epr_show off would produce no counter change, KLayout would reuse cached
-        geometry, post_build would be skipped, and clear_markers() would never fire — leaving
-        stale markers on screen indefinitely.
+        KLayout caches PCell geometry and skips produce_impl/post_build call on cache hit,
+        returning cached layout instead. By incrementing _epr_counter on every coerce parameters call while
+        _epr_show is active, we ensure KLayout always sees a novel parameter set and unconditionally
+        rebuilds geometry — so post_build always runs and EPR preview markers are redrawn.
         """
         if not is_standalone_session() and self._epr_show:
             self._epr_counter += 1
@@ -537,16 +531,11 @@ class Element(pya.PCellDeclarationHelper):
         self.etch_opposite_face_impl()
         self.duplicate_face_impl()
         if not is_standalone_session():
-            # Always clear markers, even when _epr_show is False.
-            # This is what removes lingering markers when the user toggles _epr_show or
-            # _epr_cross_section_cut off: _epr_counter increments unconditionally on every
-            # coerce_parameters_impl call, so post_build always runs and this clear always
-            # fires — regardless of the current value of _epr_show.
             layout_view = lay.LayoutView.current()
             if layout_view is not None:
                 layout_view.clear_markers()
                 if self._epr_show:
-                    self._draw_epr_markers(layout_view)
+                    _draw_epr_markers(self, layout_view)
 
     def display_text_impl(self):
         if self.display_name:
@@ -694,130 +683,3 @@ class Element(pya.PCellDeclarationHelper):
             List of RefpointToSimPort objects, empty list by default
         """
         return []
-
-    def _get_epr_instance_trans(self, layout_view):
-        """Returns DCplxTrans of the single currently selected instance in the LayoutView.
-
-        Returns None (without raising) if:
-          - no instance is selected
-          - more than one instance is selected
-        """
-        selected = list(layout_view.each_object_selected())
-        if len(selected) != 1:
-            return None
-        return selected[0].inst().dcplx_trans
-
-    def _load_epr_module(self):
-        """Dynamically imports and reloads the EPR module that corresponds to this element.
-
-        Returns the module, or None if no EPR module exists for this element.
-        """
-        library_name = self.__module__.split(".", maxsplit=1)[0]
-        element_name = self.__module__.rsplit(".", maxsplit=1)[-1]
-        epr_module_path = f"{library_name}.simulations.epr.{element_name}"
-        if not importlib.util.find_spec(epr_module_path):
-            return None
-        epr_module = importlib.import_module(epr_module_path)
-        importlib.reload(epr_module)
-        return epr_module
-
-    def _draw_epr_markers(self, layout_view):
-        """Draw EPR markers (cross-section cuts and partition regions) into the active LayoutView.
-
-        Called from post_build only when _epr_show is True. Markers are cleared before this
-        method is called (unconditionally in post_build), so this method only needs to add new
-        ones. Uses layout_view.add_marker() so markers are persistent across view refreshes.
-
-        Args:
-            layout_view: the active pya.LayoutView, already confirmed non-None by the caller.
-        """
-        trans = self._get_epr_instance_trans()
-        if trans is None:
-            return
-
-        epr_module = self._load_epr_module()
-        if epr_module is None:
-            return
-
-        if self._epr_cross_section_cut:
-            self._draw_epr_cross_section_cuts(layout_view, trans, epr_module)
-
-        self._draw_epr_partition_regions(layout_view, trans, epr_module)
-
-    def _draw_epr_cross_section_cuts(self, layout_view, trans, epr_module):
-        """Draw EPR correction cuts as persistent KLayout Markers.
-
-        A line marker is drawn for each cut, plus text markers at both endpoints.
-
-        Args:
-            layout_view: the active pya.LayoutView
-            trans: DCplxTrans of the selected element instance
-            epr_module: the loaded EPR module for this element
-        """
-        assert hasattr(epr_module, "correction_cuts"), \
-            f"No 'correction_cuts' function defined in EPR module for {type(self).__name__}"
-
-        cuts = epr_module.correction_cuts(self)
-        for cut_name, cut in cuts.items():
-            p1 = trans.trans(cut["p1"])
-            p2 = trans.trans(cut["p2"])
-
-            line_marker = pya.Marker()
-            line_marker.set_path(pya.DPath([p1, p2], 0))
-            line_marker.line_width = 2
-            line_marker.color = 0xFF4500  # orange-red
-            layout_view.add_marker(line_marker)
-
-            for label, pt in [(f"{cut_name}_p1", p1), (f"{cut_name}_p2", p2)]:
-                text_marker = pya.Marker()
-                text_marker.set_text(pya.DText(label, pt.x, pt.y))
-                text_marker.color = 0xFF4500
-                layout_view.add_marker(text_marker)
-
-    def _draw_epr_partition_regions(self, layout_view, trans, epr_module):
-        """Draw EPR partition regions as persistent KLayout Markers.
-
-        A filled polygon marker and a centred text marker are drawn for each enabled
-        partition region.
-
-        Args:
-            layout_view: the active pya.LayoutView
-            trans: DCplxTrans of the selected element instance
-            epr_module: the loaded EPR module for this element
-        """
-        assert hasattr(epr_module, "partition_regions"), \
-            f"No 'partition_regions' function defined in EPR module for {type(self).__name__}"
-
-        partition_regions = epr_module.partition_regions(self)
-
-        for pr in partition_regions:
-            if not hasattr(self, f"_epr_part_reg_{pr.name}"):
-                continue
-            if not getattr(self, f"_epr_part_reg_{pr.name}"):
-                continue
-
-            region = pya.Region()
-            if isinstance(pr.region, list):
-                for r in pr.region:
-                    region += pya.Region(r.to_itype(self.layout.dbu))
-            elif isinstance(pr.region, pya.Region):
-                region = pr.region
-            else:
-                region = pya.Region(pr.region.to_itype(self.layout.dbu))
-
-            for polygon in region.each():
-                dpoly = polygon.to_dtype(self.layout.dbu).transformed(trans)
-                poly_marker = pya.Marker()
-                poly_marker.set_polygon(dpoly)
-                poly_marker.dither_pattern = 2   # crosshatch fill — makes region extent clearly visible
-                poly_marker.line_width = 2
-                poly_marker.color = 0x1E90FF      # dodger blue
-                poly_marker.vertex_size = 4
-                layout_view.add_marker(poly_marker)
-
-            center = region.bbox().to_dtype(self.layout.dbu).center()
-            center_transformed = trans.trans(center)
-            text_marker = pya.Marker()
-            text_marker.set_text(pya.DText(pr.name, center_transformed.x, center_transformed.y))
-            text_marker.color = 0x1E90FF
-            layout_view.add_marker(text_marker)
