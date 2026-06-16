@@ -753,7 +753,6 @@ class Element(pya.PCellDeclarationHelper):
         """Draw EPR correction cuts as persistent KLayout Markers.
 
         A line marker is drawn for each cut, plus text markers at both endpoints.
-        Uses layout_view.add_marker() for persistence (markers survive view refreshes).
 
         Args:
             layout_view: the active pya.LayoutView
