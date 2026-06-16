@@ -485,7 +485,7 @@ class Element(pya.PCellDeclarationHelper):
         geometry, post_build would be skipped, and clear_markers() would never fire — leaving
         stale markers on screen indefinitely.
         """
-        if not is_standalone_session():
+        if not is_standalone_session() and self._epr_show:
             self._epr_counter += 1
 
     def etch_opposite_face_impl(self):
