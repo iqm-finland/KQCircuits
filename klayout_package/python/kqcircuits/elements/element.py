@@ -695,18 +695,13 @@ class Element(pya.PCellDeclarationHelper):
         """
         return []
 
-    def _get_epr_instance_trans(self):
-        """Returns DCplxTrans of the single currently selected instance in the active LayoutView.
+    def _get_epr_instance_trans(self, layout_view):
+        """Returns DCplxTrans of the single currently selected instance in the LayoutView.
 
         Returns None (without raising) if:
-          - no LayoutView is active
           - no instance is selected
           - more than one instance is selected
-        Refusing to draw in those cases keeps the feature safe and non-crashy.
         """
-        layout_view = lay.LayoutView.current()
-        if layout_view is None:
-            return None
         selected = list(layout_view.each_object_selected())
         if len(selected) != 1:
             return None
