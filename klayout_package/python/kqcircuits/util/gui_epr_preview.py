@@ -58,7 +58,7 @@ def _load_epr_module(element):
     return epr_module
 
 
-def _draw_epr_markers(element, layout_view):
+def draw_epr_markers(element, layout_view):
     """Draw EPR markers (cross-section cuts and partition regions) into the active LayoutView."""
     trans = _get_epr_instance_trans(layout_view)
     if trans is None:
