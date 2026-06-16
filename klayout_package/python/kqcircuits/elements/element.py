@@ -775,7 +775,7 @@ class Element(pya.PCellDeclarationHelper):
             layout_view.add_marker(line_marker)
 
             for label, pt in [(f"{cut_name}_p1", p1), (f"{cut_name}_p2", p2)]:
-                text_marker = pya.Marker(layout_view)
+                text_marker = pya.Marker()
                 text_marker.set_text(pya.DText(label, pt.x, pt.y))
                 text_marker.color = 0xFF4500
                 layout_view.add_marker(text_marker)
