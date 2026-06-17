@@ -99,6 +99,8 @@ def _check_missing_junction_parameters(
         "_epr_show",
         "_epr_cross_section_cut_width",
         "_epr_cross_section_cut_layer",
+        "_epr_cross_section_cut",
+        "_epr_counter",
     }
     if junction_class_name not in junction_schema_errors:
         junction_schema_errors[junction_class_name] = {"missing_fields": (set(), []), "surplus_fields": (set(), [])}
