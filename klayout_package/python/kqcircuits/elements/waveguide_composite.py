@@ -124,6 +124,7 @@ class WaveguideComposite(Element):
 
         cell = super().create(layout, library, **parameters)
         setattr(cell, "segment_lengths", lambda: WaveguideComposite.get_segment_lengths(cell))
+        setattr(cell, "segment_cells", lambda: WaveguideComposite.get_segment_cells(cell))
 
         return cell
 
