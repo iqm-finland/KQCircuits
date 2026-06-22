@@ -141,13 +141,16 @@ def _export_netlist(circuit, filename, internal_layout, original_layout, cell_ma
     """
 
     # first flatten subcircuits mentioned in elements to breakdown
-    # TODO implement an efficient depth first search or similar solution
     for _ in range(internal_layout.top_cell().hierarchy_levels()):
         subcircuits = list(circuit.each_subcircuit())
+        modified_circuit = False
         for subcircuit in subcircuits:
             internal_cell = internal_layout.cell(subcircuit.circuit_ref().cell_index)
             if internal_cell.name.split("$")[0].replace("*", " ") in breakdown_list:
                 circuit.flatten_subcircuit(subcircuit)
+                modified_circuit = True
+        if not modified_circuit:
+            break
 
     nets_for_export = {}
     for net in circuit.each_net():

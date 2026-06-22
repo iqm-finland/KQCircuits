@@ -100,6 +100,7 @@ default_bump_type = "Flip Chip Connector Dc"
 default_netlist_breakdown = [
     "Waveguide Composite",
     "Meander",
+    "Spiral Resonator Polygon",
 ]
 
 default_netlist_ignore_connections = [

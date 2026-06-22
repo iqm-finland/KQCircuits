@@ -15,14 +15,13 @@
 # (meetiqm.com/iqm-open-source-trademark-policy). IQM welcomes contributions to the code.
 # Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)
 # and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).
-from math import pi, tan, degrees, atan2, sqrt
+from math import pi, tan, degrees, atan2, sqrt, cos, sin
 
 from kqcircuits.elements.airbridges.airbridge import Airbridge
 from kqcircuits.elements.airbridges.airbridge_multi_face import AirbridgeMultiFace
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf import FlipChipConnectorRf
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
-from kqcircuits.elements.waveguide_coplanar_curved import WaveguideCoplanarCurved
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.geometry_helper import vector_length_and_direction, is_clockwise, get_angle
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
@@ -288,36 +287,28 @@ class SpiralResonatorPolygon(Element):
         length = tmp_cell.length()
 
         # handle correctly the last waveguide segment
-        last_segment_curved = self._fix_waveguide_end(points, length)
-        term2 = 0 if last_segment_curved else self.term2
+        self._fix_waveguide_end(points, length)
 
         # produce bridges
         self._produce_airbridges(points)
 
         # insert waveguide with or without connector
-        self._insert_wg(points, term2)
+        self._insert_wg(points)
 
         self.add_port("a", points[0], points[0] - points[1])
         self.add_port("b", points[-1], points[-1] - points[-2])
 
     def _fix_waveguide_end(self, points, current_length):
-        """Modifies the last points and places a WaveguideCoplanarCurved element at the end if needed.
-
-        This is required since WaveguideCoplanar cannot end in the middle of a curved segment.
+        """Modifies the last points.
 
         Args:
             points: list of points used to create the resonator waveguide, may be modified by this method
             current_length: length of the resonator if points are not modified
-
-        Returns:
-            True if the last segment is curved and False if it's straight
         """
         extra_len = current_length - self.length
         last_seg_len, last_seg_dir = vector_length_and_direction(points[-1] - points[-2])
         if len(points) > 2:
-            v1, v2, alpha1, alpha2, corner_pos = WaveguideCoplanar.get_corner_data(
-                points[-3], points[-2], points[-1], self.r
-            )
+            v1, v2, alpha1, alpha2, _ = WaveguideCoplanar.get_corner_data(points[-3], points[-2], points[-1], self.r)
             # distance between points[-2] and start of the curve
             corner_cut_dist = self.r * tan((pi - abs(pi - abs(alpha2 - alpha1))) / 2)
             # check if last waveguide segment is too short to be straight
@@ -332,25 +323,18 @@ class SpiralResonatorPolygon(Element):
                     curve_length = self.length - tmp_cell.length()
                     if curve_length <= 0.0:
                         points[-1] += curve_length * new_last_dir
-                        return False
+                        return
                 else:
                     curve_length = self.length - (points[-1] - points[-2]).length()
                 curve_alpha = curve_length / self.r
-                # add new curve piece at the waveguide end
-                face = len(self._connector_dist_list()) % 2
-                curve_cell = self.add_element(
-                    WaveguideCoplanarCurved, alpha=curve_alpha, face_ids=[self.face_ids[face]]
-                )
-                curve_trans = pya.DCplxTrans(
-                    1, degrees(alpha1) - v1.vprod_sign(v2) * 90, v1.vprod_sign(v2) < 0, corner_pos
-                )
-                self.insert_cell(curve_cell, curve_trans)
-                WaveguideCoplanarCurved.produce_curve_termination(self, curve_alpha, self.term2, curve_trans, face)
-                return True
+                last_cut_dist = self.r * tan(curve_alpha / 2)
+                last_alpha = alpha1 + v1.vprod_sign(v2) * curve_alpha
+                points[-1] += last_cut_dist * new_last_dir
+                points.append(points[-1] + last_cut_dist * pya.DVector(cos(last_alpha), sin(last_alpha)))
+                return
 
         # set last point to correct position based on length
-        points[-1] = points[-1] - extra_len * last_seg_dir
-        return False
+        points[-1] -= extra_len * last_seg_dir
 
     def _produce_airbridges(self, points):
         """Produces airbridges defined either by self.bridge_spacing or self.n_bridges_pattern.
@@ -405,16 +389,15 @@ class SpiralResonatorPolygon(Element):
             return [d for d in self.connector_dist if float(d) >= 0]
         return [self.connector_dist] if self.connector_dist >= 0 else []
 
-    def _insert_wg(self, points, term2):
+    def _insert_wg(self, points):
         """Produces waveguide with face-to-face connectors.
 
         Args:
             points: list of points used to create the resonator waveguide
-            term2: end termination
         """
         cdist_list = sorted(self._connector_dist_list())
         if not cdist_list:
-            self.insert_cell(WaveguideCoplanar, path=points, term2=term2)
+            self.insert_cell(WaveguideCoplanar, path=points)
             return
 
         # Create connector cell
@@ -500,12 +483,11 @@ class SpiralResonatorPolygon(Element):
                 WaveguideCoplanar,
                 path=path,
                 term1=0,
-                term2=term2,
                 face_ids=self.face_ids[1::-1] if current_face == 1 else self.face_ids,
             )
         else:
             WaveguideCoplanar.produce_end_termination(
-                self, points[current_segment], points[current_segment + 1], term2, current_face
+                self, points[current_segment], points[current_segment + 1], self.term2, current_face
             )
 
     def _corner_cut_distance(self, point1, point2, point3):
