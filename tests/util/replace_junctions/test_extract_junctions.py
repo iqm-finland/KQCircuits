@@ -51,54 +51,75 @@ def static_cell(layout, test_chip, tmp_path):
     return [c for c in layout.top_cells() if c.name != "top_pcell"][-1]
 
 
-def check_static_cell_extracts_same_junctions(junctions, static_cell, caplog):
-    tuned_params = get_tuned_junction_json(junctions)
-    static_junctions = extract_junctions(static_cell, tuned_params)
+def get_warnings(caplog):
+    return "".join(x.message for x in caplog.records)
+
+
+def junction_lists_are_equal(j1, j2, ignore_parameters=None):
+    """Call this last if using ignore_parameters, modifies j1 and j2 JunctionEntry lists"""
+    if ignore_parameters is None:
+        ignore_parameters = []
+    else:
+        for jj in j1 + j2:
+            jj.parameters = {k: v for k, v in jj.parameters.items() if k not in ignore_parameters}
 
     def comparator(j):
         return (j.parent_name, j.name)
 
-    assert sorted(junctions, key=comparator) == sorted(
-        static_junctions, key=comparator
+    return sorted(j1, key=comparator) == sorted(j2, key=comparator)
+
+
+def check_static_cell_extracts_same_junctions(junctions, static_cell):
+    tuned_params = get_tuned_junction_json(junctions)
+    static_junctions = extract_junctions(static_cell, tuned_params)
+
+    assert junction_lists_are_equal(
+        junctions, static_junctions
     ), "Static cell produces different set of junction entries than PCell"
-    log_messages = [x.message for x in caplog.records]
-    assert (
-        len(log_messages) == 1 and log_messages[0] == "Top cell doesn't contain PCell parameter data"
-    ), "Expected warning about top cell not containing PCell data"
+    return static_junctions
 
 
 def test_junction_entry_equality():
     t1 = pya.DCplxTrans(1, 0, False, pya.DVector(1, 2))
     t1_ = pya.DCplxTrans(1, 0, False, pya.DVector(1, 2))
     t2 = pya.DCplxTrans(1, 180, False, pya.DVector(2, 3))
-    junction_entry = JunctionEntry(Manhattan, t1, [t1], {"a": 10, "b": 6}, "qb_0", "squid")
+    refp = {"l": pya.DPoint(-1, 0), "r": pya.DPoint(1, 0)}
+    junction_entry = JunctionEntry(
+        Manhattan, t1, [t1], {"a": 10, "b": 6, "face_ids": ["1t1", "2b1"]}, "qb_0", "squid", refp
+    )
     assert junction_entry == JunctionEntry(
-        Manhattan, t1_, [t1_], {"b": 6, "a": 10}, "qb_0", "squid"
+        Manhattan, t1_, [t1_], {"b": 6, "a": 10, "face_ids": ["1t1", "2b1"]}, "qb_0", "squid", refp
     ), "Expected these JunctionEntry objects to be considered equal"
     assert junction_entry != JunctionEntry(
-        ManhattanSingleJunction, t1, [t1], {"a": 10, "b": 6}, "qb_0", "squid"
+        ManhattanSingleJunction, t1, [t1], {"a": 10, "b": 6, "face_ids": ["1t1", "2b1"]}, "qb_0", "squid", refp
     ), "JunctionEntry objects should not be considered equal if they have different type"
     assert junction_entry != JunctionEntry(
-        type(None), t1, [t1], {"a": 10, "b": 6}, "qb_0", "squid"
+        type(None), t1, [t1], {"a": 10, "b": 6, "face_ids": ["1t1", "2b1"]}, "qb_0", "squid", refp
     ), "JunctionEntry objects should not be considered equal if they have different type"
     assert junction_entry != JunctionEntry(
-        Manhattan, t2, [t2], {"a": 10, "b": 6}, "qb_0", "squid"
+        Manhattan, t2, [t2], {"a": 10, "b": 6, "face_ids": ["1t1", "2b1"]}, "qb_0", "squid", refp
     ), "JunctionEntry objects should not be considered equal if they have different transformation"
     assert junction_entry != JunctionEntry(
-        Manhattan, t1, [t1], {"a": 10, "b": 7}, "qb_0", "squid"
+        Manhattan, t1, [t1], {"a": 10, "b": 7, "face_ids": ["1t1", "2b1"]}, "qb_0", "squid", refp
     ), "JunctionEntry objects should not be considered equal if they have different parameters"
     assert junction_entry != JunctionEntry(
-        Manhattan, t1, [t1], {"a": 10, "b": 6, "c": 0}, "qb_0", "squid"
+        Manhattan, t1, [t1], {"a": 10, "b": 6, "c": 0, "face_ids": ["1t1", "2b1"]}, "qb_0", "squid", refp
     ), "JunctionEntry objects should not be considered equal if they have different parameters"
     assert junction_entry != JunctionEntry(
-        Manhattan, t1, [t1], {"b": 6}, "qb_0", "squid"
+        Manhattan, t1, [t1], {"b": 6, "face_ids": ["1t1", "2b1"]}, "qb_0", "squid", refp
     ), "JunctionEntry objects should not be considered equal if they have different parameters"
     assert junction_entry != JunctionEntry(
-        Manhattan, t1, [t1], {"a": 10, "b": 6}, "qb_1", "squid"
+        Manhattan, t1, [t1], {"a": 10, "b": 6, "face_ids": ["1t1", "2b1"]}, "qb_1", "squid", refp
     ), "JunctionEntry objects should not be considered equal if they have different parent name"
     assert junction_entry != JunctionEntry(
-        Manhattan, t1, [t1], {"a": 10, "b": 6}, "qb_0", "squid_1"
+        Manhattan, t1, [t1], {"a": 10, "b": 6, "face_ids": ["1t1", "2b1"]}, "qb_0", "squid_1", refp
     ), "JunctionEntry objects should not be considered equal if they have different parent name"
+    assert junction_entry != JunctionEntry(
+        Manhattan, t1, [t1], {"a": 10, "b": 6, "face_ids": ["2b1", "1t1"]}, "qb_0", "squid_1", refp
+    ), "JunctionEntry objects should not be considered equal if they have different face_ids"
+    assert junction_entry != JunctionEntry(
+        Manhattan, t1, [t1], {"a": 10, "b": 6, "face_ids": ["1t1"]}, "qb_0", "squid_1", refp
+    ), "JunctionEntry objects should not be considered equal if they have different face_ids"
 
 
 def test_junctions_get_extracted_from_pcell(pcell):
@@ -142,19 +163,37 @@ def test_junctions_get_extracted_from_pcell(pcell):
         horizontal_test_array_params[0] == param for param in horizontal_test_array_params
     ), "Horizontal test array junctions should have same junction parameters"
     assert all(qb_params[0] == param for param in qb_params), "Qubit junctions should have same junction parameters"
+    expected_refpoints = {
+        "base": pya.DPoint(0, 0),
+        "center_squid": pya.DPoint(0, 6.5),
+        "l": pya.DPoint(-9.25, 8.25),
+        "origin_squid": pya.DPoint(0, 0),
+        "port_common": pya.DPoint(0, 26.5),
+        "r": pya.DPoint(1.75, 8.25),
+    }
+    assert all(jj.refpoints == expected_refpoints for jj in junctions), "Junctions had unexpected refpoints"
 
 
-def test_same_junctions_get_extracted_from_static_cell(pcell, static_cell, caplog):
+def test_same_junctions_get_extracted_from_static_cell(pcell, static_cell):
     junctions = extract_junctions(pcell, {})
-    check_static_cell_extracts_same_junctions(junctions, static_cell, caplog)
+    static_junctions = check_static_cell_extracts_same_junctions(junctions, static_cell)
+    expected_refpoints = {
+        "base": pya.DPoint(0, 0),
+        "center_squid": pya.DPoint(0, 6.5),
+        "l": pya.DPoint(-9.25, 8.25),
+        "origin_squid": pya.DPoint(0, 0),
+        "port_common": pya.DPoint(0, 26.5),
+        "r": pya.DPoint(1.75, 8.25),
+    }
+    assert all(jj.refpoints == expected_refpoints for jj in static_junctions), "Junctions had unexpected refpoints"
 
 
 def test_junction_parameters_must_be_exhaustive_for_static_cell1(static_cell):
     with pytest.raises(ValueError) as expected_error:
         extract_junctions(static_cell, {})
-    assert "'junction_type' value None for junction" in str(
+    assert "Some junction parameters were missing in the tuning json, see log for details" in str(
         expected_error.value
-    ) and "is not part of junction_type_choices" in str(expected_error.value), f"Unexpected error {expected_error}"
+    ), f"Unexpected error {str(expected_error.value)}"
 
 
 def test_junction_parameters_must_be_exhaustive_for_static_cell2(pcell, static_cell, caplog):
@@ -168,15 +207,14 @@ def test_junction_parameters_must_be_exhaustive_for_static_cell2(pcell, static_c
     assert "Some junction parameters were missing in the tuning json, see log for details" in str(
         expected_error.value
     ), f"Unexpected error {expected_error}"
-    main_warning = [x.message for x in caplog.records][1]
+    main_warning = get_warnings(caplog)
     assert (
         "Since the cell doesn't contain pre-existing PCell parameter data, "
         "the tuned junction json should be exhaustive.\n"
         "Following junction parameters missing:\n\n"
         "Manhattan class junction parameters missing {"
-    ) in main_warning and all(
-        x in main_warning for x in ["'face_ids'", "'junction_width'", "'loop_area'"]
-    ), f"Unexpected warning: {main_warning}"
+    ) in main_warning, f"Unexpected warning: {main_warning}"
+    assert all(x in main_warning for x in ["'junction_width'", "'loop_area'"]), f"Unexpected warning: {main_warning}"
 
 
 def test_junction_parameters_must_be_exhaustive_for_static_cell3(pcell, static_cell, caplog):
@@ -188,7 +226,7 @@ def test_junction_parameters_must_be_exhaustive_for_static_cell3(pcell, static_c
     assert "Some junction parameters were missing in the tuning json, see log for details" in str(
         expected_error.value
     ), f"Unexpected error {expected_error}"
-    main_warning = [x.message for x in caplog.records][1]
+    main_warning = get_warnings(caplog)
     assert (
         "Since the cell doesn't contain pre-existing PCell parameter data, "
         "the tuned junction json should be exhaustive.\n"
@@ -198,18 +236,70 @@ def test_junction_parameters_must_be_exhaustive_for_static_cell3(pcell, static_c
     ) in main_warning, f"Unexpected warning: {main_warning}"
 
 
-def test_junction_cant_be_none_for_static_cell(pcell, static_cell):
+def test_junction_parameters_static_cell_no_halt(static_cell, caplog):
+    junctions = extract_junctions(static_cell, {}, halt_on_missing_params=False)
+    warnings = get_warnings(caplog)
+    assert (
+        "Following junction parameters were missing in tuned junction json, "
+        "which were replaced with following default values:"
+    ) in warnings, f"Unexpected warning: {warnings}"
+    assert len(junctions) == 22, "Should have extracted junctions"
+
+
+def test_junction_parameters_static_cell_no_check(static_cell, caplog):
+    junctions = extract_junctions(static_cell, {}, check_paramset=False)
+    warnings = get_warnings(caplog)
+    assert warnings == "", f"Unexpected warning: {warnings}"
+    assert len(junctions) == 22, "Should have extracted junctions"
+
+
+def test_junction_type_infered_for_static_cells(pcell, static_cell):
     junctions = extract_junctions(pcell, {})
     tuned_params = get_tuned_junction_json(junctions)
-    del tuned_params["qb_1"]["squid"]["junction_type"]
-    with pytest.raises(ValueError) as expected_error:
-        extract_junctions(static_cell, tuned_params)
-    assert "'junction_type' value None for junction (qb_1, squid) is not part of junction_type_choices" in str(
-        expected_error.value
-    ), f"Unexpected error {expected_error}"
+    for jj_params in tuned_params.values():
+        for squid in jj_params.values():
+            del squid["junction_type"]
+    assert all("junction_type" not in tuned_params[f"qb_{idx}"]["squid"] for idx in range(6))
+    junctions_static = extract_junctions(static_cell, tuned_params)
+    assert junction_lists_are_equal(junctions, junctions_static)
+    assert all(jj.parameters["junction_type"] == "Manhattan" for jj in junctions_static)
 
 
-def test_tune_parameter1(pcell, static_cell, caplog):
+def test_face_ids_infered_for_static_cells1(pcell, static_cell):
+    junctions = extract_junctions(pcell, {})
+    tuned_params = get_tuned_junction_json(junctions)
+    for jj_params in tuned_params.values():
+        for squid in jj_params.values():
+            del squid["face_ids"]
+    assert all("face_ids" not in tuned_params[f"qb_{idx}"]["squid"] for idx in range(6))
+    junctions_static = extract_junctions(static_cell, tuned_params)
+    assert all(jj.parameters["face_ids"] == ["1t1"] for jj in junctions_static)
+    assert junction_lists_are_equal(junctions, junctions_static, ignore_parameters=["face_ids"])
+
+
+def test_face_ids_infered_for_static_cells2(layout, tmp_path):
+    chip = SingleXmons.create(layout, face_ids=["2b1", "1t1"])
+    pcell = layout.create_cell("top_pcell")
+    pcell.insert(pya.DCellInstArray(chip.cell_index(), pya.DTrans()))
+
+    cell_to_save = layout.cell(layout.convert_cell_to_static(chip.cell_index()))
+    static_cell_path = str(tmp_path / "static.oas")
+    save_layout(static_cell_path, layout, [cell_to_save])
+    load_layout(static_cell_path, layout)
+    static_cell = [c for c in layout.top_cells() if c.name != "top_pcell"][-1]
+
+    junctions = extract_junctions(pcell, {})
+    tuned_params = get_tuned_junction_json(junctions)
+    for jj_params in tuned_params.values():
+        for squid in jj_params.values():
+            del squid["face_ids"]
+    assert all("face_ids" not in tuned_params[f"qb_{idx}"]["squid"] for idx in range(6))
+    junctions_static = extract_junctions(static_cell, tuned_params)
+    assert all(jj.parameters["face_ids"] == ["2b1"] for jj in junctions_static)
+    assert junction_lists_are_equal(junctions, junctions_static, ignore_parameters=["face_ids"])
+
+
+def test_tune_parameter1(pcell, static_cell):
     junctions = extract_junctions(pcell, {"qb_1": {"squid": {"junction_width": 2.0}}})
     assert [j.parameters for j in junctions if j.parent_name == "qb_1" and j.name == "squid"][0][
         "junction_width"
@@ -221,10 +311,10 @@ def test_tune_parameter1(pcell, static_cell, caplog):
         for j in junctions
         if not (j.parent_name == "qb_1" and j.name == "squid")
     ), "All other junction_width values should be the same"
-    check_static_cell_extracts_same_junctions(junctions, static_cell, caplog)
+    check_static_cell_extracts_same_junctions(junctions, static_cell)
 
 
-def test_tune_parameter2(pcell, static_cell, caplog):
+def test_tune_parameter2(pcell, static_cell):
     junctions = extract_junctions(
         pcell,
         {
@@ -251,10 +341,10 @@ def test_tune_parameter2(pcell, static_cell, caplog):
         for j in junctions
         if not (j.parent_name == "qb_1" and j.name == "squid")
     ), "All other junction_width values should be the same"
-    check_static_cell_extracts_same_junctions(junctions, static_cell, caplog)
+    check_static_cell_extracts_same_junctions(junctions, static_cell)
 
 
-def test_tune_parameter3(pcell, static_cell, caplog):
+def test_tune_parameter3(pcell, static_cell):
     junctions = extract_junctions(
         pcell,
         {
@@ -292,10 +382,10 @@ def test_tune_parameter3(pcell, static_cell, caplog):
             (j.parent_name == "qb_1" and j.name == "squid") or (j.parent_name == "testarray_s" and j.name == "squid_1")
         )
     ), "All other junction_width values should be the same"
-    check_static_cell_extracts_same_junctions(junctions, static_cell, caplog)
+    check_static_cell_extracts_same_junctions(junctions, static_cell)
 
 
-def test_change_junction_type(pcell, static_cell, caplog):
+def test_change_junction_type(pcell, static_cell):
     junctions = extract_junctions(
         pcell,
         {
@@ -359,7 +449,7 @@ def test_change_junction_type(pcell, static_cell, caplog):
         horizontal_test_array_params[0] == param for param in horizontal_test_array_params
     ), "Horizontal test array junctions should have same junction parameters"
     assert all(qb_params[0] == param for param in qb_params), "Qubit junctions should have same junction parameters"
-    check_static_cell_extracts_same_junctions(junctions, static_cell, caplog)
+    check_static_cell_extracts_same_junctions(junctions, static_cell)
 
 
 def test_changing_junction_type_requires_missing_parameters_for_pcell1(pcell, caplog):
@@ -377,7 +467,7 @@ def test_changing_junction_type_requires_missing_parameters_for_pcell1(pcell, ca
     assert "Some junction parameters were missing in the tuning json, see log for details" in str(
         expected_error.value
     ), f"Unexpected error {expected_error}"
-    main_warning = [x.message for x in caplog.records][0]
+    main_warning = get_warnings(caplog)
     assert (
         (
             "Since junction type was changed for some junctions, "
@@ -427,7 +517,7 @@ def test_changing_junction_type_requires_missing_parameters_for_pcell2(pcell, ca
     assert "Some junction parameters were missing in the tuning json, see log for details" in str(
         expected_error.value
     ), f"Unexpected error {expected_error}"
-    main_warning = [x.message for x in caplog.records][0]
+    main_warning = get_warnings(caplog)
     assert (
         "Since junction type was changed for some junctions, "
         "the tuned junction json should give value at least for parameters that are in new junction type "
@@ -435,6 +525,59 @@ def test_changing_junction_type_requires_missing_parameters_for_pcell2(pcell, ca
         "ManhattanSingleJunction class junction parameters missing {'pad_to_pad_separation'}\n"
         "missing for [('qb_1', 'squid')]\n\n"
     ) in main_warning
+
+
+def test_changing_junction_type_no_halt(pcell, caplog):
+    extract_junctions(
+        pcell,
+        {
+            "qb_1": {
+                "squid": {
+                    "junction_type": "Manhattan Single Junction",
+                }
+            }
+        },
+        halt_on_missing_params=False,
+    )
+    main_warning = get_warnings(caplog)
+    assert (
+        (
+            "Following junction parameters were missing in tuned junction json, "
+            "which were replaced with following default values:\n\n"
+            "ManhattanSingleJunction class junction parameters missing {"
+        )
+        in main_warning
+        and all(
+            x in main_warning
+            for x in [
+                "'pad_rounding_radius'",
+                "'include_base_metal_addition'",
+                "'height'",
+                "'width'",
+                "'pad_to_pad_separation'",
+                "'x_offset'",
+                "'pad_width'",
+                "'pad_height'",
+            ]
+        )
+        and "missing for [('qb_1', 'squid')]\n\n" in main_warning
+    )
+
+
+def test_changing_junction_type_no_check(pcell, caplog):
+    extract_junctions(
+        pcell,
+        {
+            "qb_1": {
+                "squid": {
+                    "junction_type": "Manhattan Single Junction",
+                }
+            }
+        },
+        check_paramset=False,
+    )
+    main_warning = get_warnings(caplog)
+    assert main_warning == ""
 
 
 def test_changing_junction_type_for_pcell_can_reuse_parameter_values(pcell):
@@ -519,7 +662,7 @@ def test_changing_junction_type_expects_different_schema_for_static_cell(pcell, 
     assert "Some junction parameters were missing in the tuning json, see log for details" in str(
         expected_error.value
     ), f"Unexpected error {expected_error}"
-    main_warning = [x.message for x in caplog.records][-1]
+    main_warning = get_warnings(caplog)
     assert (
         "Since the cell doesn't contain pre-existing PCell parameter data, "
         "the tuned junction json should be exhaustive.\nFollowing junction parameters missing:\n\n"
@@ -534,13 +677,46 @@ def test_changing_junction_type_expects_different_schema_for_static_cell(pcell, 
     ), "All extracted junctions except qb_1 should be of type Manhattan"
 
 
+def test_changing_junction_type_for_static_cell_no_halt(pcell, static_cell, caplog):
+    # First extract junctions to get schemas at runtime of both junction types
+    params_with_orig_junction = extract_junctions(pcell, {})
+    params_with_orig_junction = get_tuned_junction_json(params_with_orig_junction)
+    params_with_orig_junction["qb_1"]["squid"]["junction_type"] = "Manhattan Single Junction"
+    junctions = extract_junctions(static_cell, params_with_orig_junction, halt_on_missing_params=False)
+    main_warning = get_warnings(caplog)
+    assert (
+        "ManhattanSingleJunction class junction attempted to be tuned "
+        "with parameters that are not part of the class: {"
+    ) in main_warning and "for [('qb_1', 'squid')]\n\n" in main_warning
+    assert (
+        "Following junction parameters were missing in tuned junction json, "
+        "which were replaced with following default values:"
+    ) in main_warning and "for [('qb_1', 'squid')]\n\n" in main_warning
+    assert [j for j in junctions if j.parent_name == "qb_1"][
+        0
+    ].type == ManhattanSingleJunction, "Junction of qb_1 should be of type ManhattanSingleJunction"
+    assert all(
+        j.type == Manhattan for j in junctions if j.parent_name != "qb_1"
+    ), "All extracted junctions except qb_1 should be of type Manhattan"
+
+
+def test_changing_junction_type_for_static_cell_no_check(pcell, static_cell, caplog):
+    # First extract junctions to get schemas at runtime of both junction types
+    params_with_orig_junction = extract_junctions(pcell, {})
+    params_with_orig_junction = get_tuned_junction_json(params_with_orig_junction)
+    params_with_orig_junction["qb_1"]["squid"]["junction_type"] = "Manhattan Single Junction"
+    junctions = extract_junctions(static_cell, params_with_orig_junction, check_paramset=False)
+    main_warning = get_warnings(caplog)
+    assert main_warning == ""
+
+
 def test_warn_about_surplus_parameters_pcell1(pcell, caplog):
     junctions = extract_junctions(pcell, {"qb_1": {"squid": {"foobar": 123}}})
-    warnings = [x.message for x in caplog.records]
+    warnings = get_warnings(caplog)
     assert (
         "Manhattan class junction attempted to be tuned with parameters " "that are not part of the class: {'foobar'}"
-    ) in warnings[0], f"Unexpected warning: {warnings[0]}"
-    assert "for [('qb_1', 'squid')]" in warnings[1], f"Unexpected warning: {warnings[1]}"
+    ) in warnings, f"Unexpected warning: {warnings}"
+    assert "for [('qb_1', 'squid')]" in warnings, f"Unexpected warning: {warnings}"
     assert len(junctions) == 22, "Junctions should get extracted even if it caused warnings"
 
 
@@ -562,11 +738,11 @@ def test_warn_about_surplus_parameters_pcell2(pcell, caplog):
             }
         },
     )
-    warnings = [x.message for x in caplog.records]
+    warnings = get_warnings(caplog)
     assert (
         "Manhattan class junction attempted to be tuned with parameters " "that are not part of the class: {"
-    ) in warnings[0] and all(
-        x in warnings[0]
+    ) in warnings and all(
+        x in warnings
         for x in [
             "'width'",
             "'pad_to_pad_separation'",
@@ -577,9 +753,16 @@ def test_warn_about_surplus_parameters_pcell2(pcell, caplog):
             "'height'",
             "'pad_rounding_radius'",
         ]
-    ), f"Unexpected warning: {warnings[0]}"
-    assert "for [('qb_1', 'squid')]" in warnings[1], f"Unexpected warning: {warnings[1]}"
+    ), f"Unexpected warning: {warnings}"
+    assert "for [('qb_1', 'squid')]" in warnings, f"Unexpected warning: {warnings}"
     assert len(junctions) == 22, "Junctions should get extracted even if it caused warnings"
+
+
+def test_surplus_parameters_no_check(pcell, caplog):
+    junctions = extract_junctions(pcell, {"qb_1": {"squid": {"foobar": 123}}}, check_paramset=False)
+    warnings = get_warnings(caplog)
+    assert warnings == "", f"Unexpected warning: {warnings}"
+    assert len(junctions) == 22
 
 
 def test_warn_about_surplus_parameters_static1(pcell, static_cell, caplog):
@@ -587,12 +770,11 @@ def test_warn_about_surplus_parameters_static1(pcell, static_cell, caplog):
     tuned_params = get_tuned_junction_json(tuned_params)
     tuned_params["qb_1"]["squid"]["foobar"] = 123
     junctions = extract_junctions(static_cell, tuned_params)
-    warnings = [x.message for x in caplog.records]
-    assert "Top cell doesn't contain PCell parameter data" in warnings[0], f"Unexpected warning: {warnings[0]}"
+    warnings = get_warnings(caplog)
     assert (
         "Manhattan class junction attempted to be tuned with parameters " "that are not part of the class: {'foobar'}"
-    ) in warnings[1], f"Unexpected warning: {warnings[1]}"
-    assert "for [('qb_1', 'squid')]" in warnings[2], f"Unexpected warning: {warnings[2]}"
+    ) in warnings, f"Unexpected warning: {warnings}"
+    assert "for [('qb_1', 'squid')]" in warnings, f"Unexpected warning: {warnings}"
     assert len(junctions) == 22, "Junctions should get extracted even if it caused warnings"
 
 
@@ -618,12 +800,11 @@ def test_warn_about_surplus_parameters_static2(pcell, static_cell, caplog):
     tuned_params = get_tuned_junction_json(tuned_params)
     tuned_params["qb_1"]["squid"].update(tuned_params["qb_0"]["squid"])
     junctions = extract_junctions(static_cell, tuned_params)
-    warnings = [x.message for x in caplog.records]
-    assert "Top cell doesn't contain PCell parameter data" in warnings[0], f"Unexpected warning: {warnings[0]}"
+    warnings = get_warnings(caplog)
     assert (
         "Manhattan class junction attempted to be tuned with parameters " "that are not part of the class: {"
-    ) in warnings[1] and all(
-        x in warnings[1]
+    ) in warnings and all(
+        x in warnings
         for x in [
             "'width'",
             "'pad_to_pad_separation'",
@@ -634,8 +815,18 @@ def test_warn_about_surplus_parameters_static2(pcell, static_cell, caplog):
             "'height'",
             "'pad_rounding_radius'",
         ]
-    ), f"Unexpected warning: {warnings[1]}"
-    assert "for [('qb_1', 'squid')]" in warnings[2], f"Unexpected warning: {warnings[2]}"
+    ), f"Unexpected warning: {warnings}"
+    assert "for [('qb_1', 'squid')]" in warnings, f"Unexpected warning: {warnings}"
+    assert len(junctions) == 22, "Junctions should get extracted even if it caused warnings"
+
+
+def test_surplus_parameters_static1_no_check(pcell, static_cell, caplog):
+    tuned_params = extract_junctions(pcell, {})
+    tuned_params = get_tuned_junction_json(tuned_params)
+    tuned_params["qb_1"]["squid"]["foobar"] = 123
+    junctions = extract_junctions(static_cell, tuned_params, check_paramset=False)
+    warnings = get_warnings(caplog)
+    assert warnings == "", f"Unexpected warning: {warnings}"
     assert len(junctions) == 22, "Junctions should get extracted even if it caused warnings"
 
 
