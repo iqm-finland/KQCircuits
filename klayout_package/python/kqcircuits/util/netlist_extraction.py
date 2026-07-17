@@ -77,12 +77,12 @@ def export_cell_netlist(cell, filename, pcell=None, alt_netlists=None):
 
     if isinstance(alt_netlists, dict):
         fn, ext = os.path.splitext(filename)
-        for tag, breakdown in alt_netlists.items():
+        for tag, alt_netlist in alt_netlists.items():
             fnt = f"{fn}_{tag}{ext}"
-            _export_cell_netlist_breakdown(cell, fnt, pcell, breakdown)
+            _export_cell_netlist_breakdown(cell, fnt, pcell, **alt_netlist)
 
 
-def _export_cell_netlist_breakdown(cell, filename, pcell, breakdown_list):
+def _export_cell_netlist_breakdown(cell, filename, pcell, breakdown_list, inherit_id_on_circuit_flatten=False):
     """A helper function of ``export_cell_netlist``, processes a single breakdown list."""
 
     # get LayoutToNetlist object
@@ -108,7 +108,9 @@ def _export_cell_netlist_breakdown(cell, filename, pcell, breakdown_list):
     circuit = ltn.netlist().circuit_by_cell_index(reverse_cell_map[cell.cell_index()])
     if circuit:
         log.info(f"Exporting netlist to {filename}")
-        _export_netlist(circuit, filename, ltn.internal_layout(), layout, cm, pcell, breakdown_list)
+        _export_netlist(
+            circuit, filename, ltn.internal_layout(), layout, cm, pcell, breakdown_list, inherit_id_on_circuit_flatten
+        )
     else:
         log.info(f"No circuit found for {cell.display_title()}")
 
@@ -127,7 +129,16 @@ def _transformations_close_enough(trans_a, trans_b):
     )
 
 
-def _export_netlist(circuit, filename, internal_layout, original_layout, cell_mapping, pcell, breakdown_list):
+def _export_netlist(
+    circuit,
+    filename,
+    internal_layout,
+    original_layout,
+    cell_mapping,
+    pcell,
+    breakdown_list,
+    inherit_id_on_circuit_flatten=False,
+):
     """A helper function of ``export_cell_netlist``,  exports ``circuit`` into ``filename``.
 
     Args:
@@ -167,16 +178,25 @@ def _export_netlist(circuit, filename, internal_layout, original_layout, cell_ma
     # the concatenated transformation of instance's predecessors is stored as tuple's second element
     original_instances_by_cell_index = {}
     instance_queue = list(last_cell.each_inst())
-    instance_queue = [(instance, pya.DCplxTrans.R0) for instance in instance_queue]
+    instance_queue = [(instance, pya.DCplxTrans.R0, None) for instance in instance_queue]
     while len(instance_queue) > 0:
-        instance, instance_trans = instance_queue.pop(0)
+        instance, instance_trans, id_property = instance_queue.pop(0)
+        stored_id = instance.property("id")
+        if stored_id is None:
+            stored_id = id_property
+        if (
+            inherit_id_on_circuit_flatten
+            and instance.property("id") is not None
+            and instance.cell.name.split("$")[0].replace("*", " ") in breakdown_list
+        ):
+            id_property = instance.property("id")
         cell_index = instance.cell.cell_index()
         if cell_index in original_instances_by_cell_index:
-            original_instances_by_cell_index[cell_index].append((instance, instance_trans))
+            original_instances_by_cell_index[cell_index].append((instance, instance_trans, stored_id))
         else:
-            original_instances_by_cell_index[cell_index] = [(instance, instance_trans)]
+            original_instances_by_cell_index[cell_index] = [(instance, instance_trans, stored_id)]
         for child in instance.cell.each_inst():
-            instance_queue.append((child, instance_trans * instance.dcplx_trans))
+            instance_queue.append((child, instance_trans * instance.dcplx_trans, id_property))
 
     # Indexing as defined in default_layers is not consistent with layer indexing in original_layout
     base_metal_gap_wo_grid_layer_idx_array = [
@@ -192,51 +212,45 @@ def _export_netlist(circuit, filename, internal_layout, original_layout, cell_ma
             original_cell = original_layout.cell(internal_cell.name)
             if not original_cell:
                 log.info(
-                    (
-                        f"{internal_cell.name} element has no cell mapping in {circuit.name} "
-                        "between circuit layout and orignal layout. "
-                        "Depending on cell type this can make the netlist unusable. "
-                        "Using subcircuit center point as subcircuit_location"
-                    )
+                    f"{internal_cell.name} element has no cell mapping in {circuit.name} "
+                    "between circuit layout and orignal layout. "
+                    "Depending on cell type this can make the netlist unusable. "
+                    "Using subcircuit center point as subcircuit_location"
                 )
                 possible_instances = []
             else:
                 log.info(
-                    (
-                        f"There was no cell mapping for {internal_cell.name} element "
-                        "between circuit layout and orignal layout, "
-                        "but the element in original layout was succesfully looked up by name."
-                    )
+                    f"There was no cell mapping for {internal_cell.name} element "
+                    "between circuit layout and orignal layout, "
+                    "but the element in original layout was succesfully looked up by name."
                 )
                 original_cell_index = original_cell.cell_index()
                 possible_instances = original_instances_by_cell_index[original_cell_index]
 
         used_internal_cells.add(internal_cell)
 
-        if hasattr(subcircuit, "trans"):
-            subcircuit_trans = subcircuit.trans
-            subcircuit_location = (subcircuit.trans * subcircuit.circuit_ref().boundary).bbox().center()
-        else:  # sane defaults for klayout 0.26 as it does not have `subcircuit.trans`
-            subcircuit_trans = pya.DCplxTrans.R0
-            subcircuit_location = pya.DPoint(0.0, 0.0)
+        subcircuit_trans = subcircuit.trans
+        subcircuit_location = (subcircuit.trans * subcircuit.circuit_ref().boundary).bbox().center()
 
         instances_with_eq_trans = [
-            (i, i_trans)
-            for i, i_trans in possible_instances
+            (i, i_trans, i_id)
+            for i, i_trans, i_id in possible_instances
             if _transformations_close_enough(i_trans * i.dcplx_trans, subcircuit_trans)
         ]
         property_dict = {}
-        correct_instance = None
+        correct_instance, correct_instance_id = None, None
         if instances_with_eq_trans:
             # Find property_dict if available
-            instances_with_property_dict = [(i, i_trans) for i, i_trans in instances_with_eq_trans if i.has_prop_id()]
+            instances_with_property_dict = [
+                (i, i_trans, i_id) for i, i_trans, i_id in instances_with_eq_trans if i.has_prop_id()
+            ]
             if instances_with_property_dict:
-                correct_instance, correct_instance_trans = instances_with_property_dict[0]
+                correct_instance, correct_instance_trans, correct_instance_id = instances_with_property_dict[0]
                 property_dict = {
                     key: value for (key, value) in original_layout.properties(correct_instance.prop_id) if key != "id"
                 }
             else:
-                correct_instance, correct_instance_trans = instances_with_eq_trans[0]
+                correct_instance, correct_instance_trans, correct_instance_id = instances_with_eq_trans[0]
             # Collect bounding boxes for all *_base_metal_gap_wo_grid layers
             # then construct a bigger bounding box that envelops all of them
             bboxes = []
@@ -256,26 +270,22 @@ def _export_netlist(circuit, filename, internal_layout, original_layout, cell_ma
                 subcircuit_location = correct_instance_trans * combined_bbox.center()
             else:
                 log.info(
-                    (
-                        "%s element has no bounding boxes in *_base_metal_gap_wo_grid layers in %s,"
-                        " using subcircuit center point as subcircuit_location instead"
-                    ),
+                    "%s element has no bounding boxes in *_base_metal_gap_wo_grid layers in %s,"
+                    " using subcircuit center point as subcircuit_location instead",
                     internal_cell.name,
                     circuit.name,
                 )
         elif possible_instances:
             log.info(
-                (
-                    "Could not find a matching element for %s subcircuit in the orignal layout of %s,"
-                    " using subcircuit center point as subcircuit_location instead"
-                ),
+                "Could not find a matching element for %s subcircuit in the orignal layout of %s,"
+                " using subcircuit center point as subcircuit_location instead",
                 internal_cell.name,
                 circuit.name,
             )
 
         subcircuits_for_export[subcircuit.id()] = {
             "cell_name": internal_cell.name,
-            "instance_name": correct_instance.property("id") if correct_instance else None,
+            "instance_name": correct_instance_id,
             "subcircuit_origin": subcircuit_trans.disp,
             "subcircuit_angle": subcircuit_trans.angle,
             "subcircuit_mirror": subcircuit_trans.is_mirror(),

@@ -51,7 +51,10 @@ qdemo.add_mask_layout(
 )
 
 # This is just a demonstration how to generate netlists with something else than 'default_netlist_breakdown'.
-alt_nets = {"2nd": ["Meander"], "3rd": []}
+alt_nets = {
+    "2nd": {"breakdown_list": ["Meander"], "inherit_id_on_circuit_flatten": True},
+    "3rd": {"breakdown_list": []},
+}
 
 # chip definitions
 qdemo.add_chip(
