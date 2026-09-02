@@ -1,0 +1,12 @@
+:github_url: hide
+
+kqcircuits.layer\_config.stack\_info
+====================================
+
+.. automodule:: kqcircuits.layer_config.stack_info
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.layer_config.stack_info
+.. image:: ../pcell_images/kqcircuits.layer_config.stack_info.png

@@ -533,6 +533,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.layer_config.html">kqcircuits.layer_config</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.default_layer_config.html">kqcircuits.layer_config.default_layer_config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.example_layer_config.html">kqcircuits.layer_config.example_layer_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.stack_info.html">kqcircuits.layer_config.stack_info</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.layer_config.stack_info.html#kqcircuits.layer_config.stack_info.FaceInfo"><code class="docutils literal notranslate"><span class="pre">FaceInfo</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.layer_config.stack_info.html#kqcircuits.layer_config.stack_info.StackInfo"><code class="docutils literal notranslate"><span class="pre">StackInfo</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.html#module-kqcircuits.layer_config">Module contents</a></li>
 </ul>
 </li>
@@ -1204,7 +1209,7 @@
 <div class="viewcode-block" id="WaveguideCoplanar.produce_end_termination">
 <a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar.html#kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.produce_end_termination">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">produce_end_termination</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">point_1</span><span class="p">,</span> <span class="n">point_2</span><span class="p">,</span> <span class="n">term_len</span><span class="p">,</span> <span class="n">face_index</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">produce_end_termination</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">point_1</span><span class="p">,</span> <span class="n">point_2</span><span class="p">,</span> <span class="n">term_len</span><span class="p">,</span> <span class="n">face_index</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Produces termination for a waveguide.</span>
 
 <span class="sd">        The termination consists of a rectangular polygon in the metal gap layer, and grid avoidance around it.</span>
@@ -1216,11 +1221,13 @@
 <span class="sd">            point_1: DPoint before point_2, used only to determine the direction</span>
 <span class="sd">            point_2: DPoint after which termination is produced</span>
 <span class="sd">            term_len (double): termination length, assumed positive</span>
-<span class="sd">            face_index (int): face index of the face in elem where the termination is created</span>
+<span class="sd">            face_index (int): face index of the face in elem where the termination is created,</span>
+<span class="sd">             default=None and uses elements.active_face</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">a</span> <span class="o">=</span> <span class="n">elem</span><span class="o">.</span><span class="n">a</span>
         <span class="n">b</span> <span class="o">=</span> <span class="n">elem</span><span class="o">.</span><span class="n">b</span>
-
+        <span class="k">if</span> <span class="n">face_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">face_index</span> <span class="o">=</span> <span class="n">elem</span><span class="o">.</span><span class="n">active_face</span>
         <span class="n">v</span> <span class="o">=</span> <span class="p">(</span><span class="n">point_2</span> <span class="o">-</span> <span class="n">point_1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">point_1</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">point_2</span><span class="p">))</span>
         <span class="n">u</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="o">.</span><span class="n">R270</span><span class="o">.</span><span class="n">trans</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
         <span class="n">shift_start</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="n">point_2</span><span class="p">))</span>

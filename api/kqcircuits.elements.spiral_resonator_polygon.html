@@ -536,6 +536,11 @@
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.layer_config.html">kqcircuits.layer_config</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.layer_config.default_layer_config.html">kqcircuits.layer_config.default_layer_config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.layer_config.example_layer_config.html">kqcircuits.layer_config.example_layer_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.layer_config.stack_info.html">kqcircuits.layer_config.stack_info</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.layer_config.stack_info.html#kqcircuits.layer_config.stack_info.FaceInfo"><code class="docutils literal notranslate"><span class="pre">FaceInfo</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.layer_config.stack_info.html#kqcircuits.layer_config.stack_info.StackInfo"><code class="docutils literal notranslate"><span class="pre">StackInfo</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.layer_config.html#module-kqcircuits.layer_config">Module contents</a></li>
 </ul>
 </li>
@@ -1043,9 +1048,8 @@ attempts to find the largest possible spacing.</p>
 <p>Airbridges can optionally be placed with a given spacing along the resonator waveguide by setting non-zero value to
 <cite>bridge_spacing</cite>. Alternatively, one can independently set number of airbridges on each straight segment of spiral
 polygon by using parameter <cite>n_bridges_pattern</cite>.</p>
-<p>Non-negative value to <cite>connector_dist</cite> inserts face-to-face connector to spiral resonator so that the waveguide
-transitions on a different face. When <cite>connector_dist</cite> is a list of positive values, multiple connectors are
-placed accordingly.</p>
+<p>Non-negative value to <cite>connector_dist</cite> inserts face-to-face connector to spiral resonator so that the beginning and
+the end of resonator will be on different faces.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.elements.spiral_resonator_polygon.SpiralResonatorPolygon.build">
 <span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/spiral_resonator_polygon.html#SpiralResonatorPolygon.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.spiral_resonator_polygon.SpiralResonatorPolygon.build" title="Link to this definition"></a></dt>
@@ -1090,6 +1094,7 @@ placed accordingly.</p>
 <li><p><strong>bridge_spacing</strong><em> (Double)</em><span> - Airbridge spacing</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>n_bridges_pattern</strong><em> (List)</em><span> - Pattern for number of airbridges on edges</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[0]</span></code></p></li>
 <li><p><strong>connector_dist</strong><em> (List)</em><span> - Negative value means single face resonator without connector.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">-1</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
+<li><p><strong>other_resonator_face_id</strong><em> (String)</em><span> - face id of the ‘other’ face that the resonator is on</span><em>, default=</em><code class="docutils literal notranslate"></code></p></li>
 <li><p><strong>term1</strong><em> (Double)</em><span> - Termination length start</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>term2</strong><em> (Double)</em><span> - Termination length end</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>connector_a</strong><em> (Double)</em><span> - Conductor width at the connector area</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">40</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
@@ -1101,9 +1106,11 @@ placed accordingly.</p>
 <li><p><strong>r</strong><em> (Double)</em><span> - Turn radius</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>margin</strong><em> (Double)</em><span> - Margin of the protection layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>face_ids</strong><em> (List)</em><span> - Chip face IDs list</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['1t1',</span> <span class="pre">'2b1',</span> <span class="pre">'1b1',</span> <span class="pre">'2t1']</span></code></p></li>
+<li><p><strong>active_face</strong><em> (Int)</em><span> - Active face when procession element</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code></p></li>
 <li><p><strong>display_name</strong><em> (String)</em><span> - Name displayed in GUI (empty for default)</span><em>, default=</em><code class="docutils literal notranslate"></code></p></li>
 <li><p><strong>protect_opposite_face</strong><em> (Boolean)</em><span> - This applies only on signal carrying elements that typically include some metal between gaps.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>opposing_face_id_groups</strong><em> (List)</em><span> - Opposing face ID groups (list of lists)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[['1t1',</span> <span class="pre">'2b1']]</span></code></p></li>
+<li><p><strong>stack_name</strong><em> (String)</em><span> - Name of the stack defined in stack_info.py</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">default_stack</span></code></p></li>
 <li><p><strong>duplicate_face_ids</strong><em> (List)</em><span> - Duplicate face IDs (list of lists), where the first face of each group is copied into other faces</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[]</span></code></p></li>
 <li><p><strong>duplicate_layers</strong><em> (List)</em><span> - Layers (list), which are copied into other faces when duplicate_face_ids are given</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['base_metal_gap',</span> <span class="pre">'base_metal_gap_wo_grid',</span> <span class="pre">'base_metal_addition']</span></code></p></li>
 <li><p><strong>etch_opposite_face</strong><em> (Boolean)</em><span> - Etch avoidance shaped gap on the opposite face too</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
@@ -1119,6 +1126,8 @@ placed accordingly.</p>
 <li><p><strong>ubm_diameter</strong><em> (Double)</em><span> - Under-bump metalization diameter</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">40</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>bump_diameter</strong><em> (Double)</em><span> - Bump diameter</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">25</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>bump_type</strong><em> (String)</em><span> - Bump type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Flip</span> <span class="pre">Chip</span> <span class="pre">Connector</span> <span class="pre">Dc</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Flip</span> <span class="pre">Chip</span> <span class="pre">Connector</span> <span class="pre">Dc']</span></code></p></li>
+<li><p><strong>one_sided_bump</strong><em> (Boolean)</em><span> - Only add bump on active face</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>face_id_across_vacuum</strong><em> (String)</em><span> - Face id of the face across from the active face</span><em>, default=</em><code class="docutils literal notranslate"></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.elements.spiral_resonator_polygon.png" src="../_images/kqcircuits.elements.spiral_resonator_polygon.png" />
 </section>
