@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.util.replace_junctions &mdash; KQCircuits 4.9.12 documentation</title>
+  <title>kqcircuits.util.replace_junctions &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
@@ -18,7 +18,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=afd26838"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -917,9 +917,6 @@
 <li class="toctree-l4"><a class="reference internal" href="#kqcircuits.util.replace_junctions.place_junctions"><code class="docutils literal notranslate"><span class="pre">place_junctions()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#kqcircuits.util.replace_junctions.get_tuned_junction_json"><code class="docutils literal notranslate"><span class="pre">get_tuned_junction_json()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#kqcircuits.util.replace_junctions.copy_one_layer_of_cell"><code class="docutils literal notranslate"><span class="pre">copy_one_layer_of_cell()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#kqcircuits.util.replace_junctions.replace_squids"><code class="docutils literal notranslate"><span class="pre">replace_squids()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#kqcircuits.util.replace_junctions.replace_squid"><code class="docutils literal notranslate"><span class="pre">replace_squid()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#kqcircuits.util.replace_junctions.convert_cells_to_static"><code class="docutils literal notranslate"><span class="pre">convert_cells_to_static()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.static_chip_helper.html">kqcircuits.util.static_chip_helper</a><ul>
@@ -1030,14 +1027,14 @@
 <p>See scripts/macros/export/export_tuned_junctions.lym for a use case of these functions</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="kqcircuits.util.replace_junctions.JunctionEntry">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.util.replace_junctions.</span></span><span class="sig-name descname"><span class="pre">JunctionEntry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trans</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DCplxTrans</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trans_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">DCplxTrans</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/replace_junctions.html#JunctionEntry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.replace_junctions.JunctionEntry" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.util.replace_junctions.</span></span><span class="sig-name descname"><span class="pre">JunctionEntry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trans</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DCplxTrans</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trans_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">DCplxTrans</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refpoints</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/replace_junctions.html#JunctionEntry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.replace_junctions.JunctionEntry" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>All junction properties we want to store when extracting junctions</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.util.replace_junctions.extract_junctions">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.replace_junctions.</span></span><span class="sig-name descname"><span class="pre">extract_junctions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuned_junction_parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#kqcircuits.util.replace_junctions.JunctionEntry" title="kqcircuits.util.replace_junctions.JunctionEntry"><span class="pre">JunctionEntry</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/kqcircuits/util/replace_junctions.html#extract_junctions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.replace_junctions.extract_junctions" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.replace_junctions.</span></span><span class="sig-name descname"><span class="pre">extract_junctions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuned_junction_parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halt_on_missing_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_paramset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_translation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#kqcircuits.util.replace_junctions.JunctionEntry" title="kqcircuits.util.replace_junctions.JunctionEntry"><span class="pre">JunctionEntry</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/kqcircuits/util/replace_junctions.html#extract_junctions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.replace_junctions.extract_junctions" title="Link to this definition"></a></dt>
 <dd><p>Extracts all junction elements placed in the <cite>top_cell</cite>.
 Junction parameters are tuned according to <cite>tuned_junction_parameters</cite> dict.</p>
 <p><cite>tuned_junction_parameters</cite> is a dict with junction’s parent cell name as key,
@@ -1047,11 +1044,21 @@ For example testarray cells may have multiple junction cells.
 Then <cite>tuned_junction_parameters[parent_name][name]</cite> is a dict of junction parameters.</p>
 <p>If <cite>top_cell</cite> has pcell data, the parameter values that are missing in <cite>tuned_junction_parameters</cite>
 can be inferred from the Junction PCell’s values. So <cite>tuned_junction_parameters</cite> may only contain
-parameter values that are different from how junctions were defined in <cite>top_cell</cite>.</p>
+parameter values that are different from how junctions were defined in <cite>top_cell</cite>.
+If “junction_type” in <cite>tuned_junction_parameters</cite> is changed from <cite>top_cell</cite>,
+then <cite>tuned_junction_parameters</cite> should also include parameters exclusive
+to new “junction_type”.</p>
 <p>If <cite>top_cell</cite> has no pcell data, <cite>tuned_junction_parameters</cite> must include all parameter keys
 of the junction parameter schema for each junction contained in the <cite>top_cell</cite>,
 even if the parameter values are the same as were used to construct <cite>top_cell</cite>.
-If that is not the case, <cite>extract_junctions</cite> will raise an exception.</p>
+If that is not the case, then depending on <cite>halt_on_missing_params</cite> argument,
+<cite>extract_junctions</cite> will either raise an exception, or simply print a warning.</p>
+<p>To prevent parameter schema checking, set <cite>check_paramset</cite> to False. This could be
+useful if you’re only interested in junction locations.</p>
+<p>Junctions will be transformed such that the chip face where the junctions preside is facing the viewer.
+For some chips this means that the layout gets mirrored. By default, mirrored chip is also
+translated so that bottom left corner is at origin. If <cite>old_translation</cite> is set to True,
+it will leave chip translation in place, only performing mirroring.</p>
 <p>Returns a list of <cite>JunctionEntry</cite> objects that can be used to place the extracted junctions
 into another cell that has tuned parameters but is otherwise identical in shape, placement and orientation.</p>
 <p>Junction type may also be changed, if <cite>junction_type</cite> is tuned to have some other junction class name.
@@ -1086,7 +1093,7 @@ using a cell with no pcell data, which is faster to read.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.util.replace_junctions.copy_one_layer_of_cell">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.replace_junctions.</span></span><span class="sig-name descname"><span class="pre">copy_one_layer_of_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">write_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">junctions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#kqcircuits.util.replace_junctions.JunctionEntry" title="kqcircuits.util.replace_junctions.JunctionEntry"><span class="pre">JunctionEntry</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/kqcircuits/util/replace_junctions.html#copy_one_layer_of_cell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.replace_junctions.copy_one_layer_of_cell" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.replace_junctions.</span></span><span class="sig-name descname"><span class="pre">copy_one_layer_of_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">write_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">junctions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#kqcircuits.util.replace_junctions.JunctionEntry" title="kqcircuits.util.replace_junctions.JunctionEntry"><span class="pre">JunctionEntry</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_translation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/kqcircuits/util/replace_junctions.html#copy_one_layer_of_cell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.replace_junctions.copy_one_layer_of_cell" title="Link to this definition"></a></dt>
 <dd><p>Extracts all geometry in <cite>top_cell</cite> at layer <cite>layer_string</cite>
 and saves the geometry into a new file at <cite>write_path</cite>.
 The face of the layer is determined from <cite>junctions</cite> parameters.</p>
@@ -1094,54 +1101,10 @@ The face of the layer is determined from <cite>junctions</cite> parameters.</p>
 to visualize junctions within a context of surrounding elements.
 The file at <cite>write_path</cite> may be loaded later and junctions may be placed using
 <cite>place_junctions</cite> into the top cell of the file, then saved again.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kqcircuits.util.replace_junctions.replace_squids">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.replace_junctions.</span></span><span class="sig-name descname"><span class="pre">replace_squids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">junction_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/replace_junctions.html#replace_squids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.replace_junctions.replace_squids" title="Link to this definition"></a></dt>
-<dd><p>DEPRECATED! Replaces squids by code generated squids with the given parameter sweep.</p>
-<p>All squids below top_cell in the cell hierarchy are removed. The number of code
-generated squids may be limited by the value of parameter_end.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>cell</strong> (<em>Cell</em>) – The cell where the squids to be replaced are</p></li>
-<li><p><strong>junction_type</strong> – class name of the code generated squid that replaces the other squids</p></li>
-<li><p><strong>parameter_name</strong> (<em>str</em>) – Name of the parameter to be swept</p></li>
-<li><p><strong>parameter_start</strong> – Start value of the parameter</p></li>
-<li><p><strong>parameter_step</strong> – Parameter value increment step</p></li>
-<li><p><strong>parameter_end</strong> – End value of the parameter. If None, there is no limit for the parameter value, so that all
-squids are replaced</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kqcircuits.util.replace_junctions.replace_squid">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.replace_junctions.</span></span><span class="sig-name descname"><span class="pre">replace_squid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inst_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">junction_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mirror</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">squid_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/replace_junctions.html#replace_squid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.replace_junctions.replace_squid" title="Link to this definition"></a></dt>
-<dd><p>DEPRECATED! Replaces a SQUID by the requested alternative in the named instance.</p>
-<p>Replaces the SQUID(s) in the sub-element(s) named <code class="docutils literal notranslate"><span class="pre">inst_name</span></code> with other SQUID(s) of
-<code class="docutils literal notranslate"><span class="pre">junction_type</span></code>. The necessary SQUID parameters are specified in <code class="docutils literal notranslate"><span class="pre">params</span></code>. If <code class="docutils literal notranslate"><span class="pre">inst_name</span></code> is
-a Test Structure then <code class="docutils literal notranslate"><span class="pre">squid_index</span></code> specifies which SQUID to change.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>top_cell</strong> – The top cell with SQUIDs to be replaced</p></li>
-<li><p><strong>inst_name</strong> – Instance name of PCell containing the SQUID to be replaced</p></li>
-<li><p><strong>junction_type</strong> – Name of SQUID Class or .gds/.oas file</p></li>
-<li><p><strong>mirror</strong> – Mirror the SQUID along its vertical axis</p></li>
-<li><p><strong>squid_index</strong> – Index of the SQUID to be replaced within a Test Structure</p></li>
-<li><p><strong>**params</strong> – Extra parameters for the new SQUID</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kqcircuits.util.replace_junctions.convert_cells_to_static">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.replace_junctions.</span></span><span class="sig-name descname"><span class="pre">convert_cells_to_static</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/replace_junctions.html#convert_cells_to_static"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.replace_junctions.convert_cells_to_static" title="Link to this definition"></a></dt>
-<dd><p>DEPRECATED! Converts all cells in the layout to static.</p>
+<p>Layout will be transformed such that the chip is facing the viewer.
+For some chips this means that the layout gets mirrored. By default, mirrored chip is also
+translated so that bottom left corner is at origin. If <cite>old_translation</cite> is set to True,
+it will leave chip translation in place, only performing mirroring.</p>
 </dd></dl>
 
 <img alt="../_images/kqcircuits.util.replace_junctions.png" src="../_images/kqcircuits.util.replace_junctions.png" />

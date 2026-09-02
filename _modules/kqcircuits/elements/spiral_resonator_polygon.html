@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.elements.spiral_resonator_polygon &mdash; KQCircuits 4.9.12 documentation</title>
+  <title>kqcircuits.elements.spiral_resonator_polygon &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=afd26838"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -914,9 +914,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.place_junctions"><code class="docutils literal notranslate"><span class="pre">place_junctions()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.get_tuned_junction_json"><code class="docutils literal notranslate"><span class="pre">get_tuned_junction_json()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.copy_one_layer_of_cell"><code class="docutils literal notranslate"><span class="pre">copy_one_layer_of_cell()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.replace_squids"><code class="docutils literal notranslate"><span class="pre">replace_squids()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.replace_squid"><code class="docutils literal notranslate"><span class="pre">replace_squid()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.convert_cells_to_static"><code class="docutils literal notranslate"><span class="pre">convert_cells_to_static()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.static_chip_helper.html">kqcircuits.util.static_chip_helper</a><ul>
@@ -1042,14 +1039,13 @@
 <span class="c1"># (meetiqm.com/iqm-open-source-trademark-policy). IQM welcomes contributions to the code.</span>
 <span class="c1"># Please see our contribution agreements for individuals (meetiqm.com/iqm-individual-contributor-license-agreement)</span>
 <span class="c1"># and organizations (meetiqm.com/iqm-organization-contributor-license-agreement).</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">pi</span><span class="p">,</span> <span class="n">tan</span><span class="p">,</span> <span class="n">degrees</span><span class="p">,</span> <span class="n">atan2</span><span class="p">,</span> <span class="n">sqrt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">pi</span><span class="p">,</span> <span class="n">tan</span><span class="p">,</span> <span class="n">degrees</span><span class="p">,</span> <span class="n">atan2</span><span class="p">,</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">cos</span><span class="p">,</span> <span class="n">sin</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.airbridges.airbridge</span><span class="w"> </span><span class="kn">import</span> <span class="n">Airbridge</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.airbridges.airbridge_multi_face</span><span class="w"> </span><span class="kn">import</span> <span class="n">AirbridgeMultiFace</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.element</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf</span><span class="w"> </span><span class="kn">import</span> <span class="n">FlipChipConnectorRf</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.waveguide_coplanar</span><span class="w"> </span><span class="kn">import</span> <span class="n">WaveguideCoplanar</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.elements.waveguide_coplanar_curved</span><span class="w"> </span><span class="kn">import</span> <span class="n">WaveguideCoplanarCurved</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.pya_resolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">pya</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.geometry_helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">vector_length_and_direction</span><span class="p">,</span> <span class="n">is_clockwise</span><span class="p">,</span> <span class="n">get_angle</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.parameters</span><span class="w"> </span><span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span><span class="p">,</span> <span class="n">add_parameters_from</span>
@@ -1320,36 +1316,28 @@
         <span class="n">length</span> <span class="o">=</span> <span class="n">tmp_cell</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
 
         <span class="c1"># handle correctly the last waveguide segment</span>
-        <span class="n">last_segment_curved</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fix_waveguide_end</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
-        <span class="n">term2</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">last_segment_curved</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">term2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fix_waveguide_end</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
 
         <span class="c1"># produce bridges</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_produce_airbridges</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
 
         <span class="c1"># insert waveguide with or without connector</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_insert_wg</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">term2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_insert_wg</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add_port</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">points</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">points</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_port</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_fix_waveguide_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">current_length</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Modifies the last points and places a WaveguideCoplanarCurved element at the end if needed.</span>
-
-<span class="sd">        This is required since WaveguideCoplanar cannot end in the middle of a curved segment.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Modifies the last points.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            points: list of points used to create the resonator waveguide, may be modified by this method</span>
 <span class="sd">            current_length: length of the resonator if points are not modified</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            True if the last segment is curved and False if it&#39;s straight</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">extra_len</span> <span class="o">=</span> <span class="n">current_length</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span>
         <span class="n">last_seg_len</span><span class="p">,</span> <span class="n">last_seg_dir</span> <span class="o">=</span> <span class="n">vector_length_and_direction</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">,</span> <span class="n">alpha1</span><span class="p">,</span> <span class="n">alpha2</span><span class="p">,</span> <span class="n">corner_pos</span> <span class="o">=</span> <span class="n">WaveguideCoplanar</span><span class="o">.</span><span class="n">get_corner_data</span><span class="p">(</span>
-                <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span>
-            <span class="p">)</span>
+            <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">,</span> <span class="n">alpha1</span><span class="p">,</span> <span class="n">alpha2</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">WaveguideCoplanar</span><span class="o">.</span><span class="n">get_corner_data</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">)</span>
             <span class="c1"># distance between points[-2] and start of the curve</span>
             <span class="n">corner_cut_dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">*</span> <span class="n">tan</span><span class="p">((</span><span class="n">pi</span> <span class="o">-</span> <span class="nb">abs</span><span class="p">(</span><span class="n">pi</span> <span class="o">-</span> <span class="nb">abs</span><span class="p">(</span><span class="n">alpha2</span> <span class="o">-</span> <span class="n">alpha1</span><span class="p">)))</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
             <span class="c1"># check if last waveguide segment is too short to be straight</span>
@@ -1364,25 +1352,18 @@
                     <span class="n">curve_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">-</span> <span class="n">tmp_cell</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
                     <span class="k">if</span> <span class="n">curve_length</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
                         <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">curve_length</span> <span class="o">*</span> <span class="n">new_last_dir</span>
-                        <span class="k">return</span> <span class="kc">False</span>
+                        <span class="k">return</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">curve_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">-</span> <span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
                 <span class="n">curve_alpha</span> <span class="o">=</span> <span class="n">curve_length</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span>
-                <span class="c1"># add new curve piece at the waveguide end</span>
-                <span class="n">face</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_connector_dist_list</span><span class="p">())</span> <span class="o">%</span> <span class="mi">2</span>
-                <span class="n">curve_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span>
-                    <span class="n">WaveguideCoplanarCurved</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">curve_alpha</span><span class="p">,</span> <span class="n">face_ids</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="n">face</span><span class="p">]]</span>
-                <span class="p">)</span>
-                <span class="n">curve_trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span>
-                    <span class="mi">1</span><span class="p">,</span> <span class="n">degrees</span><span class="p">(</span><span class="n">alpha1</span><span class="p">)</span> <span class="o">-</span> <span class="n">v1</span><span class="o">.</span><span class="n">vprod_sign</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">90</span><span class="p">,</span> <span class="n">v1</span><span class="o">.</span><span class="n">vprod_sign</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">corner_pos</span>
-                <span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">curve_cell</span><span class="p">,</span> <span class="n">curve_trans</span><span class="p">)</span>
-                <span class="n">WaveguideCoplanarCurved</span><span class="o">.</span><span class="n">produce_curve_termination</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">curve_alpha</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">term2</span><span class="p">,</span> <span class="n">curve_trans</span><span class="p">,</span> <span class="n">face</span><span class="p">)</span>
-                <span class="k">return</span> <span class="kc">True</span>
+                <span class="n">last_cut_dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">*</span> <span class="n">tan</span><span class="p">(</span><span class="n">curve_alpha</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="n">last_alpha</span> <span class="o">=</span> <span class="n">alpha1</span> <span class="o">+</span> <span class="n">v1</span><span class="o">.</span><span class="n">vprod_sign</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span> <span class="o">*</span> <span class="n">curve_alpha</span>
+                <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">last_cut_dist</span> <span class="o">*</span> <span class="n">new_last_dir</span>
+                <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">last_cut_dist</span> <span class="o">*</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="n">cos</span><span class="p">(</span><span class="n">last_alpha</span><span class="p">),</span> <span class="n">sin</span><span class="p">(</span><span class="n">last_alpha</span><span class="p">)))</span>
+                <span class="k">return</span>
 
         <span class="c1"># set last point to correct position based on length</span>
-        <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">extra_len</span> <span class="o">*</span> <span class="n">last_seg_dir</span>
-        <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-=</span> <span class="n">extra_len</span> <span class="o">*</span> <span class="n">last_seg_dir</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_produce_airbridges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Produces airbridges defined either by self.bridge_spacing or self.n_bridges_pattern.</span>
@@ -1437,16 +1418,15 @@
             <span class="k">return</span> <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector_dist</span> <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">connector_dist</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector_dist</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">[]</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_insert_wg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">term2</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_insert_wg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Produces waveguide with face-to-face connectors.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            points: list of points used to create the resonator waveguide</span>
-<span class="sd">            term2: end termination</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cdist_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_connector_dist_list</span><span class="p">())</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">cdist_list</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">points</span><span class="p">,</span> <span class="n">term2</span><span class="o">=</span><span class="n">term2</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">points</span><span class="p">)</span>
             <span class="k">return</span>
 
         <span class="c1"># Create connector cell</span>
@@ -1532,12 +1512,11 @@
                 <span class="n">WaveguideCoplanar</span><span class="p">,</span>
                 <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span>
                 <span class="n">term1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                <span class="n">term2</span><span class="o">=</span><span class="n">term2</span><span class="p">,</span>
                 <span class="n">face_ids</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">current_face</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">WaveguideCoplanar</span><span class="o">.</span><span class="n">produce_end_termination</span><span class="p">(</span>
-                <span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">[</span><span class="n">current_segment</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="n">current_segment</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">term2</span><span class="p">,</span> <span class="n">current_face</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">[</span><span class="n">current_segment</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="n">current_segment</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">term2</span><span class="p">,</span> <span class="n">current_face</span>
             <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_corner_cut_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point1</span><span class="p">,</span> <span class="n">point2</span><span class="p">,</span> <span class="n">point3</span><span class="p">):</span>

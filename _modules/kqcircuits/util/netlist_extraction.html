@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.util.netlist_extraction &mdash; KQCircuits 4.9.12 documentation</title>
+  <title>kqcircuits.util.netlist_extraction &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=afd26838"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -914,9 +914,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.place_junctions"><code class="docutils literal notranslate"><span class="pre">place_junctions()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.get_tuned_junction_json"><code class="docutils literal notranslate"><span class="pre">get_tuned_junction_json()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.copy_one_layer_of_cell"><code class="docutils literal notranslate"><span class="pre">copy_one_layer_of_cell()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.replace_squids"><code class="docutils literal notranslate"><span class="pre">replace_squids()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.replace_squid"><code class="docutils literal notranslate"><span class="pre">replace_squid()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.convert_cells_to_static"><code class="docutils literal notranslate"><span class="pre">convert_cells_to_static()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.static_chip_helper.html">kqcircuits.util.static_chip_helper</a><ul>
@@ -1171,13 +1168,16 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># first flatten subcircuits mentioned in elements to breakdown</span>
-    <span class="c1"># TODO implement an efficient depth first search or similar solution</span>
     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">internal_layout</span><span class="o">.</span><span class="n">top_cell</span><span class="p">()</span><span class="o">.</span><span class="n">hierarchy_levels</span><span class="p">()):</span>
         <span class="n">subcircuits</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">circuit</span><span class="o">.</span><span class="n">each_subcircuit</span><span class="p">())</span>
+        <span class="n">modified_circuit</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">for</span> <span class="n">subcircuit</span> <span class="ow">in</span> <span class="n">subcircuits</span><span class="p">:</span>
             <span class="n">internal_cell</span> <span class="o">=</span> <span class="n">internal_layout</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">subcircuit</span><span class="o">.</span><span class="n">circuit_ref</span><span class="p">()</span><span class="o">.</span><span class="n">cell_index</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">internal_cell</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;$&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="ow">in</span> <span class="n">breakdown_list</span><span class="p">:</span>
                 <span class="n">circuit</span><span class="o">.</span><span class="n">flatten_subcircuit</span><span class="p">(</span><span class="n">subcircuit</span><span class="p">)</span>
+                <span class="n">modified_circuit</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">modified_circuit</span><span class="p">:</span>
+            <span class="k">break</span>
 
     <span class="n">nets_for_export</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">net</span> <span class="ow">in</span> <span class="n">circuit</span><span class="o">.</span><span class="n">each_net</span><span class="p">():</span>
@@ -1304,6 +1304,8 @@
             <span class="s2">&quot;cell_name&quot;</span><span class="p">:</span> <span class="n">internal_cell</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
             <span class="s2">&quot;instance_name&quot;</span><span class="p">:</span> <span class="n">correct_instance</span><span class="o">.</span><span class="n">property</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">correct_instance</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
             <span class="s2">&quot;subcircuit_origin&quot;</span><span class="p">:</span> <span class="n">subcircuit_trans</span><span class="o">.</span><span class="n">disp</span><span class="p">,</span>
+            <span class="s2">&quot;subcircuit_angle&quot;</span><span class="p">:</span> <span class="n">subcircuit_trans</span><span class="o">.</span><span class="n">angle</span><span class="p">,</span>
+            <span class="s2">&quot;subcircuit_mirror&quot;</span><span class="p">:</span> <span class="n">subcircuit_trans</span><span class="o">.</span><span class="n">is_mirror</span><span class="p">(),</span>
             <span class="s2">&quot;subcircuit_location&quot;</span><span class="p">:</span> <span class="n">subcircuit_location</span><span class="p">,</span>
             <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="n">property_dict</span><span class="p">,</span>
         <span class="p">}</span>

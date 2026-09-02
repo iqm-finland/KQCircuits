@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>kqcircuits.simulations.export.elmer.elmer_solution &mdash; KQCircuits 4.9.12 documentation</title>
+  <title>kqcircuits.simulations.export.elmer.elmer_solution &mdash; KQCircuits  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=34bb78ad" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../../_static/documentation_options.js?v=afd26838"></script>
+        <script src="../../../../../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/js/theme.js"></script>
@@ -914,9 +914,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.place_junctions"><code class="docutils literal notranslate"><span class="pre">place_junctions()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.get_tuned_junction_json"><code class="docutils literal notranslate"><span class="pre">get_tuned_junction_json()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.copy_one_layer_of_cell"><code class="docutils literal notranslate"><span class="pre">copy_one_layer_of_cell()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.replace_squids"><code class="docutils literal notranslate"><span class="pre">replace_squids()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.replace_squid"><code class="docutils literal notranslate"><span class="pre">replace_squid()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.util.replace_junctions.html#kqcircuits.util.replace_junctions.convert_cells_to_static"><code class="docutils literal notranslate"><span class="pre">convert_cells_to_static()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.util.static_chip_helper.html">kqcircuits.util.static_chip_helper</a><ul>
@@ -1224,6 +1221,28 @@
 
 
 
+<div class="viewcode-block" id="ElmerEigenmodeSolution">
+<a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerEigenmodeSolution">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ElmerEigenmodeSolution</span><span class="p">(</span><span class="n">ElmerSolution</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for Elmer eigenmode solution parameters</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        n_modes: Number of eigenmodes to solve.</span>
+<span class="sd">        min_frequency: Minimum allowed eigenmode frequency in GHz</span>
+<span class="sd">        quadratic_approximation: Use edge finite elements of second order. Otherwise use first order.</span>
+<span class="sd">                                 If False, a direct solver such as `linear_system_method=zmumps` should be used.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">tool</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;eigenmode&quot;</span>
+
+    <span class="n">n_modes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">min_frequency</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span>  <span class="c1"># NOTE: sometimes this does not filter zero modes (appears to be some Elmer issue)</span>
+    <span class="n">quadratic_approximation</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+
+
 <div class="viewcode-block" id="ElmerCapacitanceSolution">
 <a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_solution.html#kqcircuits.simulations.export.elmer.elmer_solution.ElmerCapacitanceSolution">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -1310,7 +1329,13 @@
 <span class="sd">        tool: Determines the subclass of ElmerSolution.</span>
 <span class="sd">        solution_params: Arguments passed for  ElmerSolution subclass.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ElmerVectorHelmholtzSolution</span><span class="p">,</span> <span class="n">ElmerCapacitanceSolution</span><span class="p">,</span> <span class="n">ElmerCrossSectionSolution</span><span class="p">,</span> <span class="n">ElmerEPR3DSolution</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">[</span>
+        <span class="n">ElmerVectorHelmholtzSolution</span><span class="p">,</span>
+        <span class="n">ElmerCapacitanceSolution</span><span class="p">,</span>
+        <span class="n">ElmerCrossSectionSolution</span><span class="p">,</span>
+        <span class="n">ElmerEPR3DSolution</span><span class="p">,</span>
+        <span class="n">ElmerEigenmodeSolution</span><span class="p">,</span>
+    <span class="p">]:</span>
         <span class="k">if</span> <span class="n">tool</span> <span class="o">==</span> <span class="n">c</span><span class="o">.</span><span class="n">tool</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">c</span><span class="p">(</span><span class="o">**</span><span class="n">solution_params</span><span class="p">)</span>
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No ElmerSolution found for tool=</span><span class="si">{</span><span class="n">tool</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
