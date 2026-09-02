@@ -533,11 +533,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.layer_config.html">kqcircuits.layer_config</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.default_layer_config.html">kqcircuits.layer_config.default_layer_config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.example_layer_config.html">kqcircuits.layer_config.example_layer_config</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.stack_info.html">kqcircuits.layer_config.stack_info</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.layer_config.stack_info.html#kqcircuits.layer_config.stack_info.FaceInfo"><code class="docutils literal notranslate"><span class="pre">FaceInfo</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.layer_config.stack_info.html#kqcircuits.layer_config.stack_info.StackInfo"><code class="docutils literal notranslate"><span class="pre">StackInfo</span></code></a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.html#module-kqcircuits.layer_config">Module contents</a></li>
 </ul>
 </li>
@@ -1048,7 +1043,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">inspect</span><span class="w"> </span><span class="kn">import</span> <span class="n">isclass</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.defaults</span><span class="w"> </span><span class="kn">import</span> <span class="n">default_layers</span><span class="p">,</span> <span class="n">default_faces</span><span class="p">,</span> <span class="n">stacks</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.defaults</span><span class="w"> </span><span class="kn">import</span> <span class="n">default_layers</span><span class="p">,</span> <span class="n">default_faces</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.pya_resolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">pya</span><span class="p">,</span> <span class="n">lay</span><span class="p">,</span> <span class="n">is_standalone_session</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.simulations.epr.gui_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">epr_gui_visualised_partition_regions</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kqcircuits.util.geometry_helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_cell_path_length</span>
@@ -1182,7 +1177,6 @@
     <span class="n">r</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Turn radius&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
     <span class="n">margin</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Margin of the protection layer&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
     <span class="n">face_ids</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Chip face IDs list&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;1t1&quot;</span><span class="p">,</span> <span class="s2">&quot;2b1&quot;</span><span class="p">,</span> <span class="s2">&quot;1b1&quot;</span><span class="p">,</span> <span class="s2">&quot;2t1&quot;</span><span class="p">])</span>
-    <span class="n">active_face</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeInt</span><span class="p">,</span> <span class="s2">&quot;Active face when procession element&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
     <span class="n">display_name</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;Name displayed in GUI (empty for default)&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
     <span class="n">protect_opposite_face</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span>
         <span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span>
@@ -1193,7 +1187,6 @@
     <span class="n">opposing_face_id_groups</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span>
         <span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Opposing face ID groups (list of lists)&quot;</span><span class="p">,</span> <span class="p">[[</span><span class="s2">&quot;1t1&quot;</span><span class="p">,</span> <span class="s2">&quot;2b1&quot;</span><span class="p">]],</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
-    <span class="n">stack_name</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;Name of the stack defined in stack_info.py&quot;</span><span class="p">,</span> <span class="s2">&quot;default_stack&quot;</span><span class="p">)</span>
     <span class="n">duplicate_face_ids</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span>
         <span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span>
         <span class="s2">&quot;Duplicate face IDs (list of lists), where the first face of each group is copied into other faces&quot;</span><span class="p">,</span>
@@ -1347,12 +1340,6 @@
         <span class="k">return</span> <span class="n">cell</span><span class="p">,</span> <span class="n">refp</span></div>
 
 
-    <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">stack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stacks</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;A nice informative message that no </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">stack_name</span><span class="si">}</span><span class="s2"> stack was defined&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">stacks</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">stack_name</span><span class="p">]</span>
-
 <div class="viewcode-block" id="Element.add_element">
 <a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.add_element">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
@@ -1365,7 +1352,6 @@
 <span class="sd">        Returns:</span>
 <span class="sd">           the created cell</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;active_face&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;active_face&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_face</span><span class="p">)</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcell_params_by_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">LIBRARY_NAME</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span></div>
 
@@ -1420,7 +1406,7 @@
 
 <div class="viewcode-block" id="Element.face">
 <a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.face">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">face</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">face</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the face dictionary corresponding to face_id.</span>
 
 <span class="sd">        The face dictionary contains key &quot;id&quot; for the face ID and keys for all the available layers in that face.</span>
@@ -1428,8 +1414,6 @@
 <span class="sd">        Args:</span>
 <span class="sd">            face_id: name or index of the face, default=0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">face_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">face_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_face</span>
         <span class="k">return</span> <span class="n">default_faces</span><span class="p">[</span><span class="n">resolve_face</span><span class="p">(</span><span class="n">face_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">)]</span></div>
 
 
@@ -1464,7 +1448,7 @@
 
 <div class="viewcode-block" id="Element.add_port">
 <a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.add_port">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">add_port</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_port</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a port location to the list of reference points as well as ports layer for netlist extraction</span>
 
 <span class="sd">        Args:</span>
@@ -1476,8 +1460,6 @@
 <span class="sd">                added.</span>
 <span class="sd">            face_id: name or index of the face, default=0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">face_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">face_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_face</span>
         <span class="n">text</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DText</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">pos</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">pos</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ports&quot;</span><span class="p">,</span> <span class="n">face_id</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 
@@ -1591,10 +1573,13 @@
             <span class="n">etch_shape</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">begin_shapes_rec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">)))</span><span class="o">.</span><span class="n">merged</span><span class="p">()</span>
             <span class="n">etch_shape</span><span class="o">.</span><span class="n">size</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">etch_opposite_face_margin</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
             <span class="n">protection</span> <span class="o">=</span> <span class="n">etch_shape</span><span class="o">.</span><span class="n">sized</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">margin</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
-            <span class="n">opposite_face</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">get_face_info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">active_face</span><span class="p">])</span><span class="o">.</span><span class="n">face_id_across_vacuum</span>
-            <span class="k">if</span> <span class="n">opposite_face</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">,</span> <span class="n">opposite_face</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">etch_shape</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">,</span> <span class="n">opposite_face</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">protection</span><span class="p">)</span></div>
+            <span class="n">face</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">opposing_face_id_groups</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">group</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">other_face</span> <span class="ow">in</span> <span class="n">group</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">other_face</span> <span class="o">!=</span> <span class="n">face</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">,</span> <span class="n">other_face</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">etch_shape</span><span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">,</span> <span class="n">other_face</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">protection</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Element.duplicate_face_impl">
@@ -1658,21 +1643,16 @@
 
 <div class="viewcode-block" id="Element.get_layer">
 <a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.get_layer">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the specified Layer object.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            layer_name: layer name text</span>
 <span class="sd">            face_id: Name or index of the face to use, default=0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">face_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">face_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_face</span>
-        <span class="k">if</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">default_layers</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">face_id</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">layer_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="n">layer_name</span><span class="p">])</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">face_id</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">(</span><span class="n">face_id</span><span class="p">)[</span><span class="n">layer_name</span><span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">face_id</span><span class="p">))[</span><span class="n">layer_name</span><span class="p">])</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">(</span><span class="n">face_id</span><span class="p">)[</span><span class="n">layer_name</span><span class="p">])</span></div>
 
 
     <span class="nd">@staticmethod</span>
@@ -1767,7 +1747,7 @@
 
 <div class="viewcode-block" id="Element.add_protection">
 <a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.add_protection">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">add_protection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">protect_opposite_face</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_protection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add ground grid avoidance shape on given face (and on opposing face if self.protect_opposite_face is True).</span>
 <span class="sd">        Use this function to protect signal carrying elements that typically include some metal between gaps.</span>
 <span class="sd">        Do not use this function with pure flip-chip connectors, TSVs, or airbridges that doesn&#39;t include metal gaps.</span>
@@ -1775,34 +1755,15 @@
 <span class="sd">        Args:</span>
 <span class="sd">             shape: The shape (Region, DPolygon, etc.) to add to ground_grid_avoidance layer</span>
 <span class="sd">             face_id: Name or index of the primary face of ground_grid_avoidance layer, default=0</span>
-<span class="sd">             protect_opposite_face: If the opposite face should have ground grid avoidance</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">face_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">face_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_face</span>
-        <span class="n">face_id</span> <span class="o">=</span> <span class="n">resolve_face</span><span class="p">(</span><span class="n">face_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">,</span> <span class="n">face_id</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">protect_opposite_face</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">protect_opposite_face</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">protect_opposite_face</span>
-        <span class="k">if</span> <span class="n">protect_opposite_face</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">ml_stack</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">face_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">ml_stack</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">face_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">ml_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]:</span>
-                        <span class="n">face_above</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">get_face_above</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">face_id</span><span class="p">))</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="n">face_above</span><span class="p">]))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
-                            <span class="n">shape</span>
-                        <span class="p">)</span>
-                    <span class="k">if</span> <span class="n">face_id</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">ml_stack</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-                        <span class="n">face_below</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">get_face_below</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">face_id</span><span class="p">))</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="n">face_below</span><span class="p">]))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
-                            <span class="n">shape</span>
-                        <span class="p">)</span>
-                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">get_face_info</span><span class="p">(</span><span class="n">face_id</span><span class="p">)</span><span class="o">.</span><span class="n">face_id_across_vacuum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">opposite_face_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">face_id_x_vac</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">face_id</span><span class="p">))</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">,</span> <span class="n">opposite_face_id</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
-
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">get_face_info</span><span class="p">(</span><span class="n">face_id</span><span class="p">)</span><span class="o">.</span><span class="n">face_id_across_vacuum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">opposite_face_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">face_id_x_vac</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">face_id</span><span class="p">))</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">,</span> <span class="n">opposite_face_id</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span></div>
+        <span class="n">face</span> <span class="o">=</span> <span class="n">resolve_face</span><span class="p">(</span><span class="n">face_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">,</span> <span class="n">face</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">protect_opposite_face</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">opposing_face_id_groups</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">group</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">other_face</span> <span class="ow">in</span> <span class="n">group</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">other_face</span> <span class="o">!=</span> <span class="n">face</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">,</span> <span class="n">other_face</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Element.get_sim_ports">

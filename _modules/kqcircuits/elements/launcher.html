@@ -533,11 +533,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.layer_config.html">kqcircuits.layer_config</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.default_layer_config.html">kqcircuits.layer_config.default_layer_config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.example_layer_config.html">kqcircuits.layer_config.example_layer_config</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.stack_info.html">kqcircuits.layer_config.stack_info</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.layer_config.stack_info.html#kqcircuits.layer_config.stack_info.FaceInfo"><code class="docutils literal notranslate"><span class="pre">FaceInfo</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.layer_config.stack_info.html#kqcircuits.layer_config.stack_info.StackInfo"><code class="docutils literal notranslate"><span class="pre">StackInfo</span></code></a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.html#module-kqcircuits.layer_config">Module contents</a></li>
 </ul>
 </li>
@@ -1113,7 +1108,7 @@
         <span class="p">]</span>
         <span class="n">pts2</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="o">+</span> <span class="n">s</span> <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pts2</span><span class="p">,</span> <span class="n">shifts</span><span class="p">)]</span>
         <span class="n">shape</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span><span class="n">pts2</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_protection</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">protect_opposite_face</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_protection</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
 
         <span class="c1"># add reference point</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_port</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span></div>

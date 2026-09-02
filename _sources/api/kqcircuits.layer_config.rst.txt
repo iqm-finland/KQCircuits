@@ -8,7 +8,6 @@ kqcircuits.layer\_config
 
    kqcircuits.layer_config.default_layer_config
    kqcircuits.layer_config.example_layer_config
-   kqcircuits.layer_config.stack_info
 
 Module contents
 ---------------
