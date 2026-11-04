@@ -18,6 +18,7 @@
 
 
 import math
+from sys import float_info
 from typing import List
 from kqcircuits.pya_resolver import pya
 
@@ -72,43 +73,40 @@ def get_enclosing_polygon(points: List[List[float]]):
 
     Returns:
         ordered list of points [x,y]
+
+    Notes:
+        Points on the line joining the extreme vertices are kept on one
+        boundary chain, so collinear endpoints cannot cause backtracking.
     """
 
-    # Find y-coordinate of linear interpolation between p0 = [x0,y0] and
-    # p1 = [x1,y1] corresponding to x
-    def _linearinterpy(p0, p1, x):
-        """
-        Find y-coordinate of linear interpolation between p0 = [x0,y0] and p1 = [x1,y1] corresponding to x
-
-        Arguments:
-            p0, p1: Points [x,y]
-            x: x-coordinate to interpolate at
-
-        Returns:
-            y = y0 + (x-x0)*(dy/dx)
-        """
-        return p0[1] + (x - p0[0]) * ((p1[1] - p0[1]) / (p1[0] - p0[0]))
-
-    # Sort by x and then y, to ensure we go from lowest left-most point to
-    # highest right-most point.
     points.sort()
-
-    # Leftmost and rightmost point
-    pleft = points[0]
-    pright = points[-1]
-
-    # Split remaining points into groups above and below
-    # the line pleft - pright
-    pabove = []
-    pbelow = []
-    for p in points[1:-1]:
-        if p[1] > _linearinterpy(pleft, pright, p[0]):
-            pabove.append(p)
+    pleft, pright = points[0], points[-1]
+    dx, dy = pright[0] - pleft[0], pright[1] - pleft[1]
+    coordinate_scale = max(max(abs(point[0]), abs(point[1])) for point in points)
+    pabove, pbelow, boundary = [], [], []
+    for point in points[1:-1]:
+        vx, vy = point[0] - pleft[0], point[1] - pleft[1]
+        cross1, cross2 = dx * vy, dy * vx
+        cross = cross1 - cross2
+        # Include coordinate representation error, especially far from the
+        # origin, as well as roundoff in the cross-product calculation.
+        tolerance = (
+            8
+            * float_info.epsilon
+            * (abs(cross1) + abs(cross2) + coordinate_scale * (abs(dx) + abs(dy) + abs(vx) + abs(vy)))
+        )
+        if abs(cross) <= tolerance:
+            boundary.append(point)
+        elif cross > 0:
+            pabove.append(point)
         else:
-            pbelow.append(p)
+            pbelow.append(point)
 
-    # Construct polygon starting from pleft and going clockwise
-    # Note: we rely on the fact that pabove and pbelow are still sorted by x
-    # Note: the polygon is not closed.
-    pbelow.reverse()
-    return [pleft] + pabove + [pright] + pbelow
+    if boundary:
+        if pabove:
+            pbelow = sorted(pbelow + boundary)
+        else:
+            # Without an upper chain, its straight edge would overlap any
+            # collinear vertices placed on the lower chain.
+            pabove = boundary
+    return [pleft] + pabove + [pright] + pbelow[::-1]
